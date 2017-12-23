@@ -1,0 +1,181 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true">
+
+        <RelativeLayout
+            android:id="@id/rl_livevideo_learnfeedback_center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="26dp"
+            android:background="@drawable/shape_livevideo_evaluate_bg"
+            android:padding="3dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white">
+
+                <TextView
+                    android:id="@id/tv_livevideo_learntask_tip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="40dp"
+                    android:text="直播挑战"
+                    android:textColor="@color/black66"
+                    android:textSize="16dp"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignBottom="@id/tv_livevideo_learntask_tip"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@id/tv_livevideo_learntask_tip"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_toRightOf="@id/tv_livevideo_learntask_tip">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_centerVertical="true"
+                        android:background="@color/borderline"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/tv_livevideo_learntask_tip"
+                    android:layout_marginTop="24dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:id="@id/iv_livevideo_learntask_pacesetter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:src="@drawable/ic_livevideo_learntask_pacesetter"/>
+
+                            <LinearLayout
+                                android:id="@id/ll_livevideo_learntask_pacesetter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:gravity="center_vertical"
+                                android:layout_below="@id/iv_livevideo_learntask_pacesetter"
+                                android:layout_marginTop="15dp">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/ic_livevideo_learntask_pacesetter_star"/>
+
+                                <TextView
+                                    android:layout_marginLeft="5dp"
+                                    android:id="@id/tv_livevideo_learntask_pacesetter_star"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="×15"
+                                    android:textColor="@color/light_red"
+                                    android:textSize="16sp"/>
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/ll_livevideo_learntask_pacesetter"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="10dp"
+                                android:text="学习小标兵"
+                                android:textColor="@color/black66"
+                                android:textSize="14sp"/>
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="148dp"
+                            android:background="@color/borderline"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:id="@id/iv_livevideo_learntask_expert"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:src="@drawable/ic_livevideo_learntask_expert"/>
+
+                            <LinearLayout
+                                android:id="@id/ll_livevideo_learntask_expert"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:gravity="center_vertical"
+                                android:layout_below="@id/iv_livevideo_learntask_expert"
+                                android:layout_marginTop="15dp">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/ic_livevideo_learntask_pacesetter_star"/>
+
+                                <TextView
+                                    android:layout_marginLeft="5dp"
+                                    android:id="@id/tv_livevideo_learntask_expert_star"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="×15"
+                                    android:textColor="@color/light_red"
+                                    android:textSize="16sp"/>
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/ll_livevideo_learntask_expert"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="10dp"
+                                android:text="答题小能手"
+                                android:textColor="@color/black66"
+                                android:textSize="14sp"/>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@id/iv_livevideo_learnfeedback_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/bg_livevideo_learnfeedback_title"/>
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@id/iv_livevideo_redpackage_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/bg_live_dialog_red_packet"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/iv_livevideo_redpackage_bg"
+        android:layout_alignLeft="@id/iv_livevideo_redpackage_bg"
+        android:layout_alignRight="@id/iv_livevideo_redpackage_bg"
+        android:layout_alignTop="@id/iv_livevideo_redpackage_bg"
+        android:paddingBottom="12dp">
+
+        <ImageView
+            android:id="@id/iv_livevideo_redpackage_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/bg_livevideo_redpackage_close"/>
+
+        <TextView
+            android:id="@id/tv_livevideo_redpackage_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:includeFontPadding="false"
+            android:text="领取红包"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+        <TextView
+            android:id="@id/tv_livevideo_redpackage_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_livevideo_redpackage_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="35dp"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:text="恭喜你"
+            android:textColor="@color/white"
+            android:textSize="14sp"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_livevideo_redpackage_subtitle"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="55dp">
+            <ImageView
+                android:id="@id/iv_livevideo_redpackage_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_livevideo_redpackage_light"/>
+            <TextView
+                android:id="@id/tv_livevideo_redpackage_gold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="+5金币"
+                android:textColor="#ffff00"
+                android:textSize="16sp"/>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@id/tv_livevideo_redpackage_autoclose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="3秒自动关闭"
+            android:textColor="#ffff00"
+            android:textSize="14sp"/>
+    </RelativeLayout>
+
+</RelativeLayout>

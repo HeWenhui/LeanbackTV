@@ -1,0 +1,5 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="live_speech_star_left">0dp</dimen>
+    <dimen name="live_speech_star_top">20dp</dimen>
+</resources>

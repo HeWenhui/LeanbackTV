@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- 直播表扬渐现 -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+     android:fillAfter="true">
+
+    <translate
+        android:duration="500"
+        android:fromYDelta="100%"
+        android:toYDelta="0"/>
+
+</set>

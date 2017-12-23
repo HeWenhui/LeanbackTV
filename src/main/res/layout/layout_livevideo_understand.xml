@@ -1,0 +1,127 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mediacontroller_bg">
+
+    <ImageView
+        android:id="@id/iv_livevideo_under_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/bg_livevideo_under"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/iv_livevideo_under_bg"
+        android:layout_alignLeft="@id/iv_livevideo_under_bg"
+        android:layout_alignRight="@id/iv_livevideo_under_bg"
+        android:layout_alignTop="@id/iv_livevideo_under_bg">
+
+        <TextView
+            android:id="@id/tv_livevideo_under_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:includeFontPadding="false"
+            android:text="听懂了吗"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@id/tv_livevideo_under_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_livevideo_under_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="35dp"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:text="新的拉瑞 你好"
+            android:textColor="@color/white"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_livevideo_under_user"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="154dp"
+            android:gravity="center_vertical"
+            android:text="你听懂了吗？"
+            android:textColor="@color/black66"
+            android:textSize="16sp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_vertical"
+            android:paddingBottom="25dp">
+
+            <ImageView
+                android:id="@id/iv_livevideo_under_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"/>
+
+            <View
+                android:id="@id/v_livevideo_under_center"
+                android:layout_width="1px"
+                android:layout_height="1px"
+                android:layout_centerHorizontal="true"/>
+
+            <RelativeLayout
+                android:layout_width="100dp"
+                android:layout_height="35dp"
+                android:layout_below="@id/iv_livevideo_under_tip"
+                android:layout_marginTop="20dp"
+                android:layout_toLeftOf="@id/v_livevideo_under_center"
+                android:background="@drawable/selector_livevideo_understand_button">
+
+                <TextView
+                    android:id="@id/tv_livevideo_understand_donotunderstand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:layout_marginRight="15dp"
+                    android:drawableLeft="@drawable/bg_livevideo_understand_donotunderstand"
+                    android:drawablePadding="2dp"
+                    android:gravity="center"
+                    android:text="没听懂"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="100dp"
+                android:layout_height="35dp"
+                android:layout_below="@id/iv_livevideo_under_tip"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@id/v_livevideo_under_center"
+                android:background="@drawable/selector_livevideo_understand_button">
+
+                <TextView
+                    android:id="@id/tv_livevideo_understand_understand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/selector_livevideo_understand_button"
+                    android:drawableLeft="@drawable/bg_livevideo_understand_understand"
+                    android:drawablePadding="2dp"
+                    android:gravity="center"
+                    android:text="听懂了"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+</RelativeLayout>

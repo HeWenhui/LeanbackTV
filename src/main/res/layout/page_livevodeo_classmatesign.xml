@@ -1,0 +1,20 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/black50">
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:scrollbars="none">
+
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.ScrollLinearLayout
+            android:id="@id/ll_livevideo_classmate_sign"
+            android:layout_width="210dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+    </ScrollView>
+
+
+</RelativeLayout>

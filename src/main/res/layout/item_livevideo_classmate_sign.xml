@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp">
+
+    <com.xueersi.xesalib.view.image.CircleImageView
+        android:id="@id/iv_livevideo_classmate_head"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/ic_default_head_square"
+        app:border_color="@color/transparent"
+        app:border_width="0dp"/>
+
+    <TextView
+        android:id="@id/tv_livevideo_classmate_sign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="12dp"
+        android:text="准时参加了点名"
+        android:textColor="@color/white"/>
+
+    <TextView
+        android:id="@id/tv_livevideo_classmate_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toLeftOf="@id/tv_livevideo_classmate_sign"
+        android:layout_toRightOf="@id/iv_livevideo_classmate_head"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌"
+        android:textColor="@color/pingjia_yellow_color"/>
+
+</RelativeLayout>

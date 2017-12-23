@@ -1,0 +1,158 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@id/rl_livevideo_fight_root"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoFloatTitle
+        android:id="@id/lrf_livevideo_fight_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/rl_livevideo_fight_content"
+        app:floattitle="当前战况"
+        app:showcancle="false"/>
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_fight_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lrf_livevideo_fight_title"
+        android:background="@drawable/shape_livevideo_fightvs_bg">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_livevideo_fight_vs">
+
+            <TextView
+                android:id="@id/lrf_livevideo_fight_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:text="目前为止，你和学霸的正确率排名:"
+                android:textColor="@color/white"
+                android:textSize="14sp"/>
+
+            <com.xueersi.xesalib.view.image.CircleImageView
+                android:id="@id/civ_livevideo_fight_firsttip"
+                android:layout_width="49dp"
+                android:layout_height="54dp"
+                android:layout_marginLeft="33dp"
+                android:layout_marginTop="65dp"
+                android:src="@drawable/ic_default_head_square"/>
+
+            <TextView
+                android:id="@+id/tv_livevideo_fight_tip2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="56dp"
+                android:layout_toRightOf="@id/tv_livevideo_fight_tip"
+                android:includeFontPadding="false"
+                android:text="1"
+                android:textColor="@color/white"
+                android:textSize="30sp"/>
+
+            <TextView
+                android:id="@id/tv_livevideo_fight_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/tv_livevideo_fight_tip2"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/civ_livevideo_fight_firsttip"
+                android:includeFontPadding="false"
+                android:text="第"
+                android:textColor="@color/white"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@id/tv_livevideo_fight_tip3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/tv_livevideo_fight_tip2"
+                android:layout_toRightOf="@id/tv_livevideo_fight_tip2"
+                android:includeFontPadding="false"
+                android:text="名"
+                android:textColor="@color/white"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/tv_livevideo_fight_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_livevideo_fight_tip2"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/civ_livevideo_fight_firsttip"
+                android:text="正确率 100%"
+                android:textColor="@color/white"
+                android:textSize="14sp"/>
+
+            <ImageView
+                android:id="@id/iv_livevideo_fight_firsttip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="331dp"
+                android:layout_marginTop="155dp"
+                android:src="@drawable/bg_livevideo_fight_first"/>
+
+            <TextView
+                android:id="@id/tv_livevideo_fight_firsttip2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="146dp"
+                android:layout_toRightOf="@id/tv_livevideo_fight_firsttip"
+                android:includeFontPadding="false"
+                android:text="1"
+                android:textColor="@color/light_red"
+                android:textSize="30sp"/>
+
+            <TextView
+                android:id="@id/tv_livevideo_fight_firsttip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/tv_livevideo_fight_firsttip2"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/iv_livevideo_fight_firsttip"
+                android:includeFontPadding="false"
+                android:text="第"
+                android:textColor="@color/light_red"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@id/tv_livevideo_fight_firsttip3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/tv_livevideo_fight_firsttip2"
+                android:layout_toRightOf="@id/tv_livevideo_fight_firsttip2"
+                android:includeFontPadding="false"
+                android:text="名"
+                android:textColor="@color/light_red"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@id/tv_livevideo_fight_firstright"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_livevideo_fight_firsttip2"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/iv_livevideo_fight_firsttip"
+                android:text="正确率 "
+                android:textColor="@color/black77"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/tv_livevideo_fight_firstright_rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_livevideo_fight_firsttip2"
+                android:layout_toRightOf="@id/tv_livevideo_fight_firstright"
+                android:text="100%"
+                android:textColor="@color/light_red"
+                android:textSize="14sp"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,9 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="ProgressBar_live_english" parent="@android:style/Widget.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/layerlst_livevideo_english_prog</item>
+    </style>
+    <style name="ProgressBar_live_speech" parent="@android:style/Widget.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/layerlst_livevideo_speech_prog</item>
+    </style>
+</resources>

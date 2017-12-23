@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_livevideo_english_tip"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@id/tv_livevideo_english_tip"
+            style="@style/text_font11_black66_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="大声的回答问题，有机会获得星星哦！"/>
+
+        <Button
+            android:id="@id/bt_livevideo_english_tip_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/tv_livevideo_english_tip"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/shape_livevideo_english_tipbt_bg"
+            android:paddingBottom="2dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:paddingTop="2dp"
+            android:text="知道了"/>
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,238 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
+
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoFloatTitle
+        android:id="@id/lrf_livevideo_evaluate_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:floattitle="学习反馈"
+        app:showcancle="false"/>
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_learnfeedback_center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/lrf_livevideo_evaluate_title"
+        android:background="@drawable/shape_livevideo_evaluate_bg">
+
+        <TextView
+            android:id="@id/tv_livevideo_learnfeedback_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="40dp"
+            android:text="学习数据"
+            android:textColor="@color/black66"
+            android:textSize="16dp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@id/tv_livevideo_learnfeedback_tip"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/tv_livevideo_learnfeedback_tip"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_toRightOf="@id/tv_livevideo_learnfeedback_tip">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerVertical="true"
+                android:background="@color/borderline"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tv_livevideo_learnfeedback_tip"
+            android:layout_marginTop="24dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@id/iv_livevideo_learnfeedback_duration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:src="@drawable/ic_livevideo_learnfeedback_duration"/>
+
+                    <TextView
+                        android:id="@id/tv_livevideo_learnfeedback_duration_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/iv_livevideo_learnfeedback_duration"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="15dp"
+                        android:text="听课时长"
+                        android:textColor="@color/black66"
+                        android:textSize="14sp"/>
+
+                    <TextView
+                        android:id="@id/tv_livevideo_learnfeedback_duration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_livevideo_learnfeedback_duration_title"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
+                        android:text="1小时45分钟"
+                        android:textColor="@color/light_red"
+                        android:textSize="14sp"/>
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="148dp"
+                    android:background="@color/borderline"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@id/iv_livevideo_learnfeedback_accuracy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:src="@drawable/ic_livevideo_learnfeedback_accuracy"/>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/iv_livevideo_learnfeedback_accuracy"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="15dp">
+
+                        <TextView
+                            android:id="@id/tv_livevideo_learnfeedback_accuracy_lable"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="答题正确率 "
+                            android:textColor="@color/black66"
+                            android:textSize="14sp"/>
+
+                        <TextView
+                            android:id="@id/tv_livevideo_learnfeedback_accuracy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@id/tv_livevideo_learnfeedback_accuracy_lable"
+                            android:text="85%"
+                            android:textColor="@color/light_red"
+                            android:textSize="14sp"/>
+
+                        <TextView
+                            android:id="@id/tv_livevideo_learnfeedback_accuracy_average_lable"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/tv_livevideo_learnfeedback_accuracy_lable"
+                            android:layout_marginTop="10dp"
+                            android:text="平均正确率 "
+                            android:textColor="@color/black66"
+                            android:textSize="14sp"/>
+
+                        <TextView
+                            android:id="@id/tv_livevideo_learnfeedback_accuracy_average"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/tv_livevideo_learnfeedback_accuracy_lable"
+                            android:layout_marginTop="10dp"
+                            android:layout_toRightOf="@id/tv_livevideo_learnfeedback_accuracy_average_lable"
+                            android:text="79%"
+                            android:textColor="@color/light_red"
+                            android:textSize="14sp"/>
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="148dp"
+                    android:background="@color/borderline"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@id/iv_livevideo_learnfeedback_ranking"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:src="@drawable/ic_livevideo_learnfeedback_ranking"/>
+
+                    <View
+                        android:id="@id/v_livevideo_learnfeedback_ranking_center"
+                        android:layout_width="1dp"
+                        android:layout_height="148dp"
+                        android:layout_centerHorizontal="true"/>
+
+                    <TextView
+                        android:id="@id/tv_livevideo_learnfeedback_ranking_lable"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/iv_livevideo_learnfeedback_ranking"
+                        android:layout_marginTop="15dp"
+                        android:layout_toLeftOf="@id/v_livevideo_learnfeedback_ranking_center"
+                        android:text="你的排名 "
+                        android:textColor="@color/black66"
+                        android:textSize="14sp"/>
+
+                    <TextView
+                        android:id="@id/tv_livevideo_learnfeedback_ranking"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/iv_livevideo_learnfeedback_ranking"
+                        android:layout_marginTop="15dp"
+                        android:layout_toRightOf="@id/v_livevideo_learnfeedback_ranking_center"
+                        android:text="第43名"
+                        android:textColor="@color/light_red"
+                        android:textSize="14sp"/>
+
+                    <TextView
+                        android:id="@id/tv_livevideo_learnfeedback_ranking_tolast_lable"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignRight="@id/tv_livevideo_learnfeedback_ranking_lable"
+                        android:layout_below="@id/tv_livevideo_learnfeedback_ranking_lable"
+                        android:layout_marginTop="10dp"
+                        android:text="较上节课 "
+                        android:textColor="@color/black66"
+                        android:textSize="14sp"/>
+
+                    <TextView
+                        android:id="@id/tv_livevideo_learnfeedback_ranking_tolast"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@id/tv_livevideo_learnfeedback_ranking"
+                        android:layout_below="@id/tv_livevideo_learnfeedback_ranking"
+                        android:layout_marginTop="10dp"
+                        android:text="提高19名"
+                        android:textColor="@color/light_red"
+                        android:textSize="14sp"/>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

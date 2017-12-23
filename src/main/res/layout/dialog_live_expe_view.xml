@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="400dp"
+        android:layout_height="253dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/shape_livevideo_expe_course_dlg_bg"
+        android:paddingBottom="20dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/bt_livevideo_buycourse_cofirm">
+
+            <TextView
+                android:id="@id/tv_livevideo_buycourse_info"
+                style="@style/text_font18_black66_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"/>
+        </RelativeLayout>
+
+        <Button
+            android:id="@id/bt_livevideo_buycourse_cofirm"
+            android:layout_width="130dp"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/shape_livevideo_expe_course_bt_bg"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+    </RelativeLayout>
+
+</RelativeLayout>

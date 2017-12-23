@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@id/fl_livevideo_raise_hands_content"
+            android:layout_width="300dp"
+            android:layout_height="210dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/shape_livevideo_raisehand">
+
+            <RelativeLayout
+                android:id="@id/rl_livevideo_raise_hands_wait"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="58dp">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
+
+                        <ImageView
+                            android:id="@id/iv_livevideo_raise_hands_wait"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/bg_livevideo_raisehand_wait"/>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="15dp"
+                            android:layout_toRightOf="@id/iv_livevideo_raise_hands_wait"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@id/tv_livevideo_raise_hands_count_lable"
+                                style="@style/text_font16_333333_style"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="当前举手人数: "/>
+
+                            <TextView
+                                android:id="@id/tv_livevideo_raise_hands_count"
+                                style="@style/text_font16_333333_style"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/tv_livevideo_raise_hands_count_lable"
+                                android:text="0人"/>
+
+                            <TextView
+                                style="@style/text_font13_middle_grey_style"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/tv_livevideo_raise_hands_count_lable"
+                                android:layout_marginTop="10dp"
+                                android:text="你已发起举手，等待老师批准！"/>
+                        </RelativeLayout>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@id/bt_livevideo_raise_hands_giveup"
+                    android:layout_width="100dp"
+                    android:layout_height="35dp"
+                    android:layout_above="@id/v_livevideo_raise_hands_giveup"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/shape_livevideo_micro_bt"
+                    android:text="放弃"
+                    android:textColor="@color/COLOR_F13232"
+                    android:visibility="gone"/>
+
+                <View
+                    android:id="@id/v_livevideo_raise_hands_giveup"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@id/rl_livevideo_raise_hands_giveup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="58dp">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
+
+                        <ImageView
+                            android:id="@id/iv_livevideo_raise_hands_giveupask"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/bg_livevideo_raise_hands_giveupask"/>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="15dp"
+                            android:layout_toRightOf="@id/iv_livevideo_raise_hands_giveupask"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@id/tv_livevideo_raise_hands_giveupask"
+                                style="@style/text_font16_333333_style"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="你确定要放弃本次举手？"/>
+
+                            <TextView
+                                style="@style/text_font13_middle_grey_style"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/tv_livevideo_raise_hands_giveupask"
+                                android:layout_marginTop="10dp"
+                                android:text="放弃后，无法再次举手"/>
+                        </RelativeLayout>
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@id/bt_livevideo_raise_hands_giveup_cancle"
+                    android:layout_width="100dp"
+                    android:layout_height="35dp"
+                    android:layout_above="@id/v_livevideo_raise_hands_giveupask"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="25dp"
+                    android:background="@drawable/shape_livevideo_micro_bt"
+                    android:text="取消"
+                    android:textColor="@color/COLOR_F13232"/>
+
+                <Button
+                    android:id="@id/bt_livevideo_raise_hands_giveup_ok"
+                    android:layout_width="100dp"
+                    android:layout_height="35dp"
+                    android:layout_above="@id/v_livevideo_raise_hands_giveupask"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginRight="25dp"
+                    android:background="@drawable/shape_livevideo_fight_bg"
+                    android:text="确定"
+                    android:textColor="@color/white"/>
+
+                <View
+                    android:id="@id/v_livevideo_raise_hands_giveupask"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@id/rl_livevideo_raise_hands_fail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <ImageView
+                        android:id="@id/iv_livevideo_raise_hands_fail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/bg_livevideo_raise_hands_fail"/>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@id/iv_livevideo_raise_hands_fail"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@id/tv_livevideo_raise_hands_fail"
+                            style="@style/text_font16_333333_style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="很遗憾！"/>
+
+                        <TextView
+                            style="@style/text_font13_middle_grey_style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/tv_livevideo_raise_hands_fail"
+                            android:layout_marginTop="10dp"
+                            android:text="这次举手人数太多，\n没有被选中"/>
+                    </RelativeLayout>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@id/rl_livevideo_raise_hands_success"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <ImageView
+                        android:id="@id/iv_livevideo_raise_hands_success"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/bg_livevideo_raise_hands_success"/>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@id/iv_livevideo_raise_hands_success"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@id/tv_livevideo_raise_hands_success"
+                            style="@style/text_font16_333333_style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="恭喜你！"/>
+
+                        <TextView
+                            style="@style/text_font13_middle_grey_style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/tv_livevideo_raise_hands_success"
+                            android:layout_marginTop="10dp"
+                            android:text="你已经被老师选中，\n请准备一下等待接麦吧"/>
+                    </RelativeLayout>
+                </RelativeLayout>
+
+            </RelativeLayout>
+        </FrameLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

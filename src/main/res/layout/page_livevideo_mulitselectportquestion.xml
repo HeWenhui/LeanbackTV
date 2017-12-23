@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_question_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@id/tv_livevideo_question_title"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="互动题"
+            android:textColor="@color/black66" />
+
+        <View
+            android:id="@id/v_livevideo_question_line"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@id/tv_livevideo_question_title"
+            android:background="@color/borderline" />
+
+        <RelativeLayout
+            android:id="@id/rl_livevideo_question_content_question"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_above="@id/v_livevideo_question_line2"
+            android:layout_below="@id/v_livevideo_question_line"
+            android:background="@color/white">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.xueersi.xesalib.view.gridview.AutohGridview
+                    android:id="@id/gv_livevideo_question_mulitSelect"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:horizontalSpacing="20dp"
+                    android:listSelector="@color/transparent"
+                    android:numColumns="2"
+                    android:verticalSpacing="10dp" />
+            </ScrollView>
+        </RelativeLayout>
+
+        <View
+            android:id="@id/v_livevideo_question_line2"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_above="@id/rl_livevideo_question_fillin_bottom"
+            android:background="@color/borderline" />
+
+        <RelativeLayout
+            android:id="@id/rl_livevideo_question_fillin_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true">
+
+            <TextView
+                android:id="@id/tv_livevideo_question_sele_lable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="12dp"
+                android:text="你的选择是:"
+                android:textColor="@color/dark_selected"
+                android:textSize="14sp" />
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/btn_livevideo_question_fillin_submit"
+                android:layout_toRightOf="@id/tv_livevideo_question_sele_lable"
+                android:scrollbars="none">
+
+                <TextView
+                    android:id="@id/tv_livevideo_question_sele_answer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="@color/COLOR_F13232"
+                    android:textSize="25sp" />
+            </HorizontalScrollView>
+
+            <com.xueersi.xesalib.view.button.progressbutton.CircularProgressButton
+                android:id="@id/btn_livevideo_question_fillin_submit"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="12dp"
+                android:gravity="center"
+                android:padding="0dp"
+                android:textColor="@color/white"
+                app:cpb_cornerRadius="4dp"
+                app:cpb_iconComplete="@drawable/bg_action_accept"
+                app:cpb_iconError="@drawable/ic_action_cancel"
+                app:cpb_selectorIdle="@color/selector_idle_state_cpb"
+                app:cpb_textIdle="提交" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</FrameLayout>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="87dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/shape_livevideo_stat_bg">
+
+    <ImageView
+        android:id="@id/iv_livevideo_starinteract_stat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="15dp"
+        android:src="@drawable/bg_livevideo_statinteract_stat"/>
+
+    <TextView
+        android:id="@id/tv_livevideo_starinteract_count"
+        style="@style/text_font16_white_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="7dp"
+        android:layout_toRightOf="@id/iv_livevideo_starinteract_stat"
+        android:text="×01"/>
+</RelativeLayout>

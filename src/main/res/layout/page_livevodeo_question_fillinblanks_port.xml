@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@id/rl_livevideo_question_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@id/tv_livevideo_question_title"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="互动题"
+        android:textColor="@color/black66" />
+
+    <View
+        android:id="@id/v_livevideo_question_line"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@id/tv_livevideo_question_title"
+        android:background="@color/borderline" />
+
+    <ListView
+        android:id="@id/lv_livevideo_question_fillin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/v_livevideo_question_line2"
+        android:layout_below="@id/v_livevideo_question_line"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="40dp"
+        android:divider="@null"
+        android:dividerHeight="20dp"
+        android:listSelector="@color/transparent" />
+
+    <View
+        android:id="@id/v_livevideo_question_line2"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_above="@id/rl_livevideo_question_fillin_bottom"
+        android:background="@color/borderline" />
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_question_fillin_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true">
+
+        <com.xueersi.xesalib.view.button.progressbutton.CircularProgressButton
+            android:id="@id/btn_livevideo_question_fillin_submit"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
+            android:gravity="center"
+            android:padding="0dp"
+            android:textColor="@color/white"
+            app:cpb_cornerRadius="4dp"
+            app:cpb_iconComplete="@drawable/bg_action_accept"
+            app:cpb_iconError="@drawable/ic_action_cancel"
+            app:cpb_selectorIdle="@color/selector_idle_state_cpb"
+            app:cpb_textIdle="提交" />
+    </RelativeLayout>
+</RelativeLayout>

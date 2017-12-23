@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_question_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@id/rl_livevideo_question_fillin_down"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@id/iv_livevideo_question_fillin_down"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/ic_course_question_down"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
+
+                <com.xueersi.xesalib.view.button.progressbutton.CircularProgressButton
+                    android:id="@id/btn_livevideo_question_fillin_submit"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
+                    android:padding="0dp"
+                    android:textColor="@color/white"
+                    app:cpb_cornerRadius="4dp"
+                    app:cpb_iconComplete="@drawable/bg_action_accept"
+                    app:cpb_iconError="@drawable/ic_action_cancel"
+                    app:cpb_textIdle="提交"/>
+
+                <EditText
+                    android:id="@id/et_livevideo_question_fillin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_toLeftOf="@id/btn_livevideo_question_fillin_submit"
+                    android:background="@drawable/shape_livevideo_subjective_bg"
+                    android:imeOptions="flagNoExtractUi"
+                    android:maxLength="200"
+                    android:minHeight="40dp"
+                    android:minLines="1"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_question_hide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#00000000"
+        android:visibility="invisible">
+
+        <ImageView
+            android:id="@id/iv_pop_question_visible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/ic_course_question_up"/>
+    </RelativeLayout>
+</FrameLayout>

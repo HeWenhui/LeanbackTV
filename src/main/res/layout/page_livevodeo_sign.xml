@@ -1,0 +1,83 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="445dp"
+        android:layout_height="265dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/shape_livevideo_fight_bg">
+
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoFloatTitle
+            android:id="@id/lrf_livevideo_sign_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:floattitle="课前点名"
+            app:showback="false"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lrf_livevideo_sign_title">
+
+            <RelativeLayout
+                android:id="@id/rl_livevideo_sign_status1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@id/tv_livevideo_sign_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_vertical"
+                    android:text="新的拉瑞，你好，"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"/>
+
+                <Button
+                    android:id="@id/bt_livevideo_learnreport_check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_livevideo_sign_name"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/selector_livevideo_sign_button"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@id/rl_livevideo_sign_status2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@id/iv_livevideo_sign_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="45dp"
+                    android:src="@drawable/bg_livevideo_sign_suc"/>
+
+                <TextView
+                    android:id="@id/tv_livevideo_sign_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_livevideo_sign_status"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:text="签到成功"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"/>
+
+            </RelativeLayout>
+        </FrameLayout>
+    </RelativeLayout>
+
+
+</RelativeLayout>

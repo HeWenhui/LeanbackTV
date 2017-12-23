@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="40dp">
+
+    <TextView
+        android:id="@id/tv_livevideo_starinteract_lable"
+        style="@style/text_font10_white_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:text="本场成就"/>
+
+    <ImageView
+        android:id="@id/iv_livevideo_starinteract_stat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:layout_toLeftOf="@id/rl_livevideo_starinteract_count"
+        android:src="@drawable/bg_livevideo_statinteract_stat_small"/>
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_starinteract_count"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@id/iv_livevideo_starinteract_gold">
+
+        <TextView
+            android:id="@id/tv_livevideo_starinteract_count"
+            style="@style/text_font10_white_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="×01"/>
+
+        <TextView
+            android:id="@id/tv_livevideo_starinteract_count_hind"
+            style="@style/text_font10_white_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="×02"
+            android:visibility="invisible"/>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@id/iv_livevideo_starinteract_gold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:layout_toLeftOf="@id/rl_livevideo_starinteract_gold_count"
+        android:src="@drawable/bg_livevideo_statinteract_gold"/>
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_starinteract_gold_count"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="5dp">
+
+        <TextView
+            android:id="@id/tv_livevideo_starinteract_gold_count"
+            style="@style/text_font10_white_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="×01"/>
+
+        <TextView
+            android:id="@id/tv_livevideo_starinteract_gold_hind"
+            style="@style/text_font10_white_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="×01"
+            android:visibility="invisible"/>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true"
+        android:background="#5C5C5C"/>
+
+</RelativeLayout>

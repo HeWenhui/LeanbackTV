@@ -1,0 +1,22 @@
+apply plugin: 'com.android.library'
+apply from: rootDir.absolutePath + '/buildscript/module_extra_config.gradle'
+apply from: rootDir.absolutePath + '/buildscript/module_upload_config.gradle'
+
+android {
+    defaultConfig {
+        ndk {
+            abiFilters "armeabi-v7a"
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+}
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile 'com.xueersi.lib:ijkplayer:1.0.0'
+    compile(String.format('com.xueersi.lib:speechrecognizer:%s',mvn_speechrecognizer)) { changing = true }
+}

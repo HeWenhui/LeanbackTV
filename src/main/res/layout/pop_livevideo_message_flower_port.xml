@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
+
+    <LinearLayout
+        android:id="@id/ll_livevideo_message_flower"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/v_livevideo_message_flower_line"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal"/>
+    <View
+        android:id="@id/v_livevideo_message_flower_line"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_above="@id/rl_livevideo_message_flower_bottom"
+        android:background="@color/borderline"/>
+    <RelativeLayout
+        android:id="@id/rl_livevideo_message_flower_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@id/tv_livevideo_message_gold_lable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:text="余额:"
+            android:textColor="@color/black66"
+            android:textSize="14sp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@id/tv_livevideo_message_gold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="2dp"
+            android:layout_toRightOf="@id/tv_livevideo_message_gold_lable"
+            android:text="0"
+            android:textColor="@color/COLOR_F13232"
+            android:textSize="14sp"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@id/bt_livevideo_message_flowersend"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
+            android:background="@drawable/shape_livevideo_message_send"
+            android:text="发送"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+    </RelativeLayout>
+</RelativeLayout>
