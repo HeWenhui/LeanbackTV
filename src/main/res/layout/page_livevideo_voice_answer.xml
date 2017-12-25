@@ -48,7 +48,7 @@
         android:id="@id/rl_livevideo_speecteval_tip"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginBottom="42.8dp"
+        android:layout_marginBottom="48.2dp"
         android:visibility="gone">
 
         <ImageView
@@ -58,7 +58,7 @@
             android:layout_alignBottom="@id/iv_livevideo_speecteval_tip"
             android:layout_alignLeft="@id/iv_livevideo_speecteval_tip"
             android:layout_alignRight="@id/tv_livevideo_speecteval_tip"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="29.3dp"
             android:layout_marginLeft="50dp"
             android:background="@drawable/bg_livevideo_speecteval_tip_paopao" />
 

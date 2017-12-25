@@ -132,8 +132,16 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
         view.findViewById(R.id.btn_error_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                view.findViewById(R.id.rl_livevideo_subject_error).setVisibility(View.GONE);
-//                wvSubjectWeb.setVisibility(View.VISIBLE);
+                errorView.setVisibility(View.GONE);
+                wvSubjectWeb.setVisibility(View.VISIBLE);
+                View loadView = mView.findViewById(R.id.rl_livevideo_subject_loading);
+                /*if (loadView != null) {
+                    ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
+                    ((AnimationDrawable) ivLoading.getBackground()).stop();
+                    ViewGroup group = (ViewGroup) loadView.getParent();
+                    group.removeView(loadView);
+                }*/
+                loadView.setVisibility(View.VISIBLE);
                 wvSubjectWeb.reload();
             }
         });
@@ -199,14 +207,16 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
             super.onProgressChanged(view, newProgress);
             if (newProgress == 100) {
                 View loadView = mView.findViewById(R.id.rl_livevideo_subject_loading);
-                if (loadView != null) {
+                /*if (loadView != null) {
                     ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
                     ((AnimationDrawable) ivLoading.getBackground()).stop();
                     ViewGroup group = (ViewGroup) loadView.getParent();
                     group.removeView(loadView);
-                }
+                }*/
+                loadView.setVisibility(View.GONE);
             }
         }
+
     }
 
     public class MyWebViewClient extends WebViewClient {
@@ -214,6 +224,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
 
         @Override
         public void onPageFinished(WebView view, String url) {
+            Loger.i("SpeechWebPagerTest finish");
             if (failingUrl == null) {
                 wvSubjectWeb.setVisibility(View.VISIBLE);
                 errorView.setVisibility(View.GONE);
@@ -222,11 +233,15 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            Loger.i("SpeechWebPagerTest start");
             super.onPageStarted(view, url, favicon);
+            failingUrl=null;
         }
 
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            Loger.i("SpeechWebPagerTest error");
+            this.failingUrl = failingUrl;
             wvSubjectWeb.setVisibility(View.INVISIBLE);
             errorView.setVisibility(View.VISIBLE);
         }
@@ -437,7 +452,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
                             public void onVolumeUpdate(int i) {
                                 jsUpdateVolume(i);
                             }
-                        }, isEnglish);
+                        }, isEnglish, liveId);
             }
         }
 

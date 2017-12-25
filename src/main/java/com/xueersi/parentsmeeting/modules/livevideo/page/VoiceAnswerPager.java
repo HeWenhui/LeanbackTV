@@ -319,13 +319,13 @@ public class VoiceAnswerPager extends BasePager {
             tvSpeectevalTip.setText("麦克风不可用，\n快去检查一下");
             tvSpeectevalTip.setTag("3");
 //            tvSpeectevalError.setText("好像没网了，快检查一下");
-            mView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    rlSpeectevalTip.setVisibility(View.GONE);
-                    switchQuestion();
-                }
-            }, 1500);
+//            mView.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    rlSpeectevalTip.setVisibility(View.GONE);
+//                    switchQuestion();
+//                }
+//            }, 1500);
         } else if (resultEntity.getErrorNo() == ResultCode.WEBSOCKET_TIME_OUT || resultEntity.getErrorNo() == ResultCode.NETWORK_FAIL
                 || resultEntity.getErrorNo() == ResultCode.WEBSOCKET_CONN_REFUSE) {
             if (netWorkType == NetWorkHelper.NO_NETWORK) {
@@ -450,6 +450,7 @@ public class VoiceAnswerPager extends BasePager {
 
                                 @Override
                                 public void onAnswerFailure() {
+                                    isSpeechSuccess = false;
                                     if (isEnd) {
                                         questionSwitch.stopSpeech(VoiceAnswerPager.this, baseVideoQuestionEntity);
                                     } else {
@@ -520,6 +521,7 @@ public class VoiceAnswerPager extends BasePager {
 
                         @Override
                         public void onAnswerFailure() {
+                            isSpeechSuccess = false;
                             if (isEnd) {
                                 questionSwitch.stopSpeech(VoiceAnswerPager.this, baseVideoQuestionEntity);
                             } else {

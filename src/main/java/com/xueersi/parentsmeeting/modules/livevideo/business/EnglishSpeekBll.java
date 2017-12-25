@@ -88,6 +88,8 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
     int lastSecond;
     /** 打点开始开口次数 */
     int lastEnSegNum;
+    int totalEn_seg_num;
+    StringBuilder totalEn_seg_len = new StringBuilder();
     int second15;
     int MAX_SECOND = 15;
     String mode;
@@ -281,6 +283,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                                 String time_len = jsonObject.getString("time_len");
                                 int en_seg_num = jsonObject.getInt("en_seg_num");
                                 if (en_seg_num > 0) {
+                                    totalEn_seg_num += en_seg_num;
                                     String en_seg_len = jsonObject.getString("en_seg_len");
                                     String duration = getDuration(time_len);
 //                            Loger.d(TAG, "onProcessData:en_seg_num=" + en_seg_num + ",duration=" + duration);
@@ -381,16 +384,17 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                                             double douduration = Double.parseDouble(duration);
                                             int location[] = new int[2];
                                             tv_livevideo_english_prog.getLocationInWindow(location);
-                                            String speakingLen = en_seg_len;
+                                            totalEn_seg_len.append(en_seg_len).append(",");
+                                            String speakingLen = totalEn_seg_len.toString();
                                             if (!StringUtils.isEmpty(totalOpeningLength.speakingLen)) {
-                                                speakingLen = totalOpeningLength.speakingLen + "," + en_seg_len;
+                                                speakingLen = totalOpeningLength.speakingLen + "," + speakingLen;
                                             }
                                             liveBll.setTotalOpeningLength(1000, "" + (douduration + totalOpeningLength.duration),
-                                                    "" + (en_seg_num + totalOpeningLength.speakingNum), speakingLen,
+                                                    "" + (totalEn_seg_num + totalOpeningLength.speakingNum), speakingLen,
                                                     location[0] + tv_livevideo_english_prog.getWidth(), location[1]);
                                         }
                                         lastSecond = totalSecond;
-                                        lastEnSegNum = en_seg_num;
+                                        lastEnSegNum = totalEn_seg_num;
                                     }
                                 }
                             } catch (JSONException e) {

@@ -99,6 +99,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import tv.danmaku.ijk.media.player.AvformatOpenInputError;
+
 /**
  * 直播回放播放页
  *
@@ -241,6 +243,15 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     @Override
     protected void showRefresyLayout(int arg1, int arg2) {
         super.showRefresyLayout(arg1, arg2);
+        TextView errorInfo = (TextView) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.base.R.id.tv_course_video_errorinfo);
+        AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
+        if (error != null) {
+            errorInfo.setVisibility(View.VISIBLE);
+            String videoKey = getVideoKey();
+            if (error == AvformatOpenInputError.HTTP_NOT_FOUND) {
+                errorInfo.setText("(" + videoKey + ")" + " 回放未生成");
+            }
+        }
         if (rlQuestionContent != null) {
             if (subjectResultPager != null) {
                 for (int i = 0; i < rlQuestionContent.getChildCount(); i++) {

@@ -324,7 +324,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 vwvSpeectevalWave.setVolume(volume * 3);
                 lastVolume = volume;
             }
-        }, true);
+        }, true, "");
         if (!isLive) {
             mView.postDelayed(new Runnable() {
                 @Override
@@ -621,7 +621,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     @Override
                     public void run() {
                         errorSetGone();
-                        mIse.startEnglishEvaluator(content, saveVideoFile.getPath(), false, evaluatorListener, true);
+                        mIse.startEnglishEvaluator(content, saveVideoFile.getPath(), false, evaluatorListener, true, "");
                     }
                 }, 500);
                 return;
