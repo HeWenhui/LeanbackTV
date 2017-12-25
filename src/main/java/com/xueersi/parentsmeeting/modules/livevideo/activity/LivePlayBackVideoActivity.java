@@ -2134,7 +2134,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
      */
     private void answerResultChk(VideoQuestionEntity questionEntity, VideoResultEntity entity, boolean isVoice) {
         // 回答正确提示
-        if (entity.getResultType() == 1) {
+        if (entity.getResultType() == VideoResultEntity.QUE_RES_TYPE1 || entity.getResultType() == VideoResultEntity.QUE_RES_TYPE4) {
             if (isVoice) {
                 String type;
                 if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == questionEntity.getvCategory()) {
@@ -2151,7 +2151,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 initAnswerRightResult(entity.getGoldNum());
             }
             // 回答错误提示
-        } else if (entity.getResultType() == 2) {
+        } else if (entity.getResultType() == VideoResultEntity.QUE_RES_TYPE2) {
             if (isVoice) {
                 String type;
                 if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == questionEntity.getvCategory()) {
@@ -2168,7 +2168,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 initAnswerWrongResult();
             }
             // 填空题部分正确提示
-        } else if (entity.getResultType() == 3) {
+        } else if (entity.getResultType() == VideoResultEntity.QUE_RES_TYPE3) {
             initAnswerPartRightResult(entity.getGoldNum());
         }
     }

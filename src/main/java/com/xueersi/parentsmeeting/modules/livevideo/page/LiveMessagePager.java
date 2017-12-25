@@ -341,7 +341,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     @Override
                     public void onClickSwitch(boolean switchToPanel) {
                         if (switchToPanel) {
-                            btMessageExpress.setBackgroundResource(R.drawable.ic_keybord_change_normal);
+                            btMessageExpress.setBackgroundResource(R.drawable.im_input_jianpan_icon_normal);
                             etMessageContent.clearFocus();
                         } else {
                             btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);

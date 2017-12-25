@@ -232,7 +232,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                 boolean switchToPanel = KPSwitchConflictUtil.switchPanelAndKeyboard(switchFSPanelLinearLayout,
                         etMessageContent);
                 if (switchToPanel) {
-                    btMessageFlowers.setBackgroundResource(R.drawable.ic_keybord_change_normal);
+                    btMessageFlowers.setBackgroundResource(R.drawable.im_input_jianpan_icon_normal);
                 } else {
                     btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers_port);
                 }
@@ -291,7 +291,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                 final boolean switchToPanel = KPSwitchConflictUtil.switchPanelAndKeyboard(switchFSPanelLinearLayout,
                         etMessageContent);
                 if (switchToPanel) {
-                    btMessageExpress.setBackgroundResource(R.drawable.ic_keybord_change_normal);
+                    btMessageExpress.setBackgroundResource(R.drawable.im_input_jianpan_icon_normal);
                     etMessageContent.clearFocus();
                 } else {
                     btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
