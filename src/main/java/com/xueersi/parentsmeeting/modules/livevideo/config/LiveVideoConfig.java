@@ -124,6 +124,8 @@ public class LiveVideoConfig {
     public static String LIVE_H5_EXAM = "live_exam";
     /** 直播-语音评测 */
     public static String LIVE_SPEECH_TEST = "live_speechtest";
+    /** 直播-语音评测-二期 */
+    public static String LIVE_SPEECH_TEST2 = "live_speechtest_2";
     /** 直播-NB实验 */
     public static String LIVE_H5_EXPERIMENT = "live_h5experiment";
     /** 直播-星星互动 */

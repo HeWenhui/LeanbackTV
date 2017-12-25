@@ -80,7 +80,7 @@
                 android:layout_below="@id/iv_livevideo_under_tip"
                 android:layout_marginTop="20dp"
                 android:layout_toLeftOf="@id/v_livevideo_under_center"
-                android:background="@drawable/selector_livevideo_understand_button">
+                android:background="@drawable/shape_blue_corners_pressed">
 
                 <TextView
                     android:id="@id/tv_livevideo_understand_donotunderstand"
@@ -104,14 +104,13 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="20dp"
                 android:layout_toRightOf="@id/v_livevideo_under_center"
-                android:background="@drawable/selector_livevideo_understand_button">
+                android:background="@drawable/shape_blue_corners_pressed">
 
                 <TextView
                     android:id="@id/tv_livevideo_understand_understand"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/selector_livevideo_understand_button"
                     android:drawableLeft="@drawable/bg_livevideo_understand_understand"
                     android:drawablePadding="2dp"
                     android:gravity="center"

@@ -56,7 +56,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     public static boolean DEBUG = false;
-    String eventId = LiveVideoConfig.LIVE_SPEECH_TEST;
+    String eventId = LiveVideoConfig.LIVE_SPEECH_TEST2;
     /** 语音保存位置 */
     private String id;
     /** 时间倒计时，表情 */
