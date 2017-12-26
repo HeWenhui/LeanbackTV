@@ -80,7 +80,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="12dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/cy_bars_bock_icon_normal"
+                android:background="@drawable/cy_bars_bockwite_icon_normal"
                 android:contentDescription="@string/content_desc_lock"
                 android:padding="3dp"/>
 
