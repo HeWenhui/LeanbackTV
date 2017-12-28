@@ -402,6 +402,7 @@ public class LiveAchievementBll implements StarInteractAction {
             mData.put("star_id", id);
             mData.put("status", "" + (receive > -1 ? 1 : 0));
             mData.put("answer", myAnswer);
+            mData.put("starid", mStarid);
             mData.put("star_num", "" + (starCount));
             liveBll.umsAgentDebug(eventId, mData);
             if (receive > -1) {

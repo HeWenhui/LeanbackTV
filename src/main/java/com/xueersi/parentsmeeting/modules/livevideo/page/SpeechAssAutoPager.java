@@ -89,8 +89,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     TextView tvSpeectevalError;
     /** great动画 */
     Animation animSpeechEncourage;
-    /** 语音保存位置 */
-    private SpeechEvaluatorUtils mIse;
     /** 评测成功 */
     private boolean speechSuccess = false;
     /** 语音保存位置 */
@@ -155,7 +153,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mData.put("answer", content);
         mData.put("answertime", "" + time);
         speechEvalAction.umsAgentDebug3(eventId, mData);
-        initData();
     }
 
     public SpeechAssAutoPager(Context context, String liveid, String testId,
@@ -274,22 +271,17 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         setAudioRequest();
     }
 
-//    public void setIse(SpeechEvaluatorUtils mIse) {
-//        this.mIse = mIse;
-//    }
-
     public void setAudioRequest() {
         //语音评测开始
-//        if (mIse == null) {
-//            mIse = new SpeechEvaluatorUtils(false);
-//        }
-        mIse = new SpeechEvaluatorUtils(false);
+        if (mIse == null) {
+            mIse = new SpeechEvaluatorUtils(true);
+        }
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "startRecord");
         mData.put("testid", id);
         mData.put("islive", "" + isLive);
         speechEvalAction.umsAgentDebug2(eventId, mData);
-        mIse.startEnglishEvaluator(content, saveVideoFile.getPath(), false, new EvaluatorListener() {
+        mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, new EvaluatorListener() {
             int lastVolume = 0;
 
             @Override
@@ -324,7 +316,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 vwvSpeectevalWave.setVolume(volume * 3);
                 lastVolume = volume;
             }
-        }, true, "");
+        });
         if (!isLive) {
             mView.postDelayed(new Runnable() {
                 @Override
@@ -436,10 +428,10 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
     private void startSpeech(final int second) {
         if (getRootView().getParent() != null) {
-            LayerDrawable drawable = (LayerDrawable) progressBar.getProgressDrawable();
-            progressBarRun.drawable = drawable;
-            progressBarRun.second = second;
-            progressBar.postDelayed(progressBarRun, 1000);
+//            LayerDrawable drawable = (LayerDrawable) progressBar.getProgressDrawable();
+//            progressBarRun.drawable = drawable;
+//            progressBarRun.second = second;
+//            progressBar.postDelayed(progressBarRun, 1000);
         }
     }
 
@@ -621,7 +613,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     @Override
                     public void run() {
                         errorSetGone();
-                        mIse.startEnglishEvaluator(content, saveVideoFile.getPath(), false, evaluatorListener, true, "");
+                        mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
                     }
                 }, 500);
                 return;

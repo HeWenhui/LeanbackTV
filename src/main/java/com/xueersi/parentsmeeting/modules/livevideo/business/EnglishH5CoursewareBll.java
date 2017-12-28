@@ -1,24 +1,17 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -124,7 +117,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
                 if (mVSectionID.equals(vSectionID)) {
                     String url = jsonObject.optString("url");
                     if (!StringUtils.isSpace(url)) {
-                        mH5AndBool.add(url);
+//                        mH5AndBool.add(url);
                     }
                 }
             }
@@ -435,7 +428,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
         }
 
         @Override
-        public void onPutQuestionResult(final BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, double voiceTime, String isSubmit, final OnAnswerReslut answerReslut) {
+        public void onPutQuestionResult(final BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, final OnAnswerReslut answerReslut) {
             final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
             JSONObject answerObj = new JSONObject();
             JSONArray answerAnswer = new JSONArray();
@@ -456,7 +449,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
             }
             String testAnswer = "";
             testAnswer = answerAnswer.toString();
-            mLiveBll.liveSubmitTestH5Answer(videoQuestionLiveEntity1, mVSectionID, testAnswer, videoQuestionLiveEntity1.courseware_type, isSubmit, voiceTime, new OnAnswerReslut() {
+            mLiveBll.liveSubmitTestH5Answer(videoQuestionLiveEntity1, mVSectionID, testAnswer, videoQuestionLiveEntity1.courseware_type, isSubmit, voiceTime, isRight, new OnAnswerReslut() {
 
                 @Override
                 public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {

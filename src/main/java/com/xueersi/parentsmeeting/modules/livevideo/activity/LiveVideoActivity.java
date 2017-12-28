@@ -39,6 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PraiseOrEncourageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
@@ -48,6 +49,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
@@ -151,6 +153,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     EnglishH5CoursewareBll englishH5CoursewareBll;
     LiveAchievementBll starBll;
     EnglishSpeekBll englishSpeekBll;
+    LiveVoteBll liveVoteBll;
     boolean audioRequest = false;
     SpeechEvaluatorUtils mIse;
     RankBll rankBll;
@@ -793,6 +796,11 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             if (rankBll != null) {
                 rankBll.setGetInfo(mGetInfo);
             }
+        }
+        if (LiveVideoConfig.IS_SCIENCE) {
+            liveVoteBll = new LiveVoteBll(this);
+            liveVoteBll.initView(bottomContent);
+            mLiveBll.setLiveVoteAction(liveVoteBll);
         }
         //本场成就
         if (1 == getInfo.getIsAllowStar()) {

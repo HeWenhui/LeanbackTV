@@ -94,7 +94,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -1109,10 +1108,10 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         }
 
         @Override
-        public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, double voiceTime, String isSubmit, OnAnswerReslut answerReslut) {
+        public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, OnAnswerReslut answerReslut) {
 //            mLiveBll.liveSubmitTestAnswer((VideoQuestionLiveEntity) videoQuestionLiveEntity, mVSectionID, result, true, answerReslut);
             VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
-            sendQuestionResultVoice(answer, result, sorce, mQuestionEntity, isSubmit, voiceTime, answerReslut);
+            sendQuestionResultVoice(answer, result, sorce, mQuestionEntity, isSubmit, voiceTime, isRight, answerReslut);
         }
 
         @Override
@@ -1296,7 +1295,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 }
             }
         };
-        lectureLivePlayBackBll.saveQuestionResult(loadEntity, questionEntity, result, mVideoEntity.getLiveId(), mVideoEntity.getvLivePlayBackType(), false, callBack);
+        lectureLivePlayBackBll.saveQuestionResult(loadEntity, questionEntity, result, mVideoEntity.getLiveId(), mVideoEntity.getvLivePlayBackType(), false, false, callBack);
         XesMobAgent.playVideoStatisticsMessage(MobEnumUtil.QUESTION_LIVEPLAYBACK, MobEnumUtil.QUESTION_ANSWER,
                 XesMobAgent.XES_VIDEO_INTERACTIVE);
     }
@@ -1308,7 +1307,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
      * @param isSubmit
      * @param answerReslut
      */
-    private void sendQuestionResultVoice(String answer, String result, int sorce, final VideoQuestionEntity questionEntity, String isSubmit, double voiceTime, final QuestionSwitch.OnAnswerReslut answerReslut) {
+    private void sendQuestionResultVoice(String answer, String result, int sorce, final VideoQuestionEntity questionEntity, String isSubmit, double voiceTime, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
         DataLoadEntity loadEntity = new DataLoadEntity(mContext);
         loadEntity.setLoadingTip(R.string.loading_tip_default);
         BaseBll.postDataLoadEvent(loadEntity.beginLoading());
@@ -1321,7 +1320,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 questionEntity.setAnswered(true);
                 rlQuestionContent.removeAllViews();
                 questionViewGone("sendQuestionResultVoice");
-                answerResultChk(questionEntity, entity, true);
                 if (voiceAnswerPager != null) {
                     stopVoiceAnswerPager();
                 }
@@ -1332,6 +1330,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     seekTo(questionEntity.getvEndTime() * 1000);
                     start();
                 }
+                answerResultChk(questionEntity, entity, true);
             }
 
             @Override
@@ -1371,7 +1370,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             }
             String testAnswer = "";
             testAnswer = answerAnswer.toString();
-            lectureLivePlayBackBll.saveQuestionH5Result(loadEntity, questionEntity, testAnswer, mVideoEntity.getLiveId(), isSubmit, questionEntity.getvQuestionType(), voiceTime, callBack);
+            lectureLivePlayBackBll.saveQuestionH5Result(loadEntity, questionEntity, testAnswer, mVideoEntity.getLiveId(), isSubmit, questionEntity.getvQuestionType(), voiceTime, isRight, callBack);
         } else {
             String testAnswer;
             if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(questionEntity.getvQuestionType())) {
@@ -1380,7 +1379,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 testAnswer = result + ":" + sorce;
             }
             Loger.d(TAG, "saveQuestionResult:testAnswer=" + testAnswer);
-            lectureLivePlayBackBll.saveQuestionResult(loadEntity, questionEntity, testAnswer, mVideoEntity.getLiveId(), mVideoEntity.getvLivePlayBackType(), true, callBack);
+            lectureLivePlayBackBll.saveQuestionResult(loadEntity, questionEntity, testAnswer, mVideoEntity.getLiveId(), mVideoEntity.getvLivePlayBackType(), true, isRight, callBack);
         }
         XesMobAgent.playVideoStatisticsMessage(MobEnumUtil.QUESTION_LIVEPLAYBACK, MobEnumUtil.QUESTION_ANSWER,
                 XesMobAgent.XES_VIDEO_INTERACTIVE);

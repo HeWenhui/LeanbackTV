@@ -20,11 +20,12 @@ public interface QuestionSwitch {
      * @param answer
      * @param result
      * @param sorce
+     * @param isRight
      * @param voiceTime
      * @param isSubmit
      * @param answerReslut
      */
-    void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, double voiceTime, String isSubmit, OnAnswerReslut answerReslut);
+    void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, OnAnswerReslut answerReslut);
 
     /** 得到互动题，暂时没用 */
     void getQuestion(BaseVideoQuestionEntity baseQuestionEntity, OnQuestionGet onQuestionGet);

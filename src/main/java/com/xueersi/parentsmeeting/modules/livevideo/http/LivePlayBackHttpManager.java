@@ -30,11 +30,12 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
      * @param testResult
      * @param testDay
      * @param classId
+     * @param isRight
      * @param requestCallBack
      */
     public void saveTestRecord(String enStuId, String srcType, String testId, String testResult, String testDay,
                                String classId,
-                               int livePlayType, boolean voice, HttpCallBack requestCallBack) {
+                               int livePlayType, boolean voice, boolean isRight, HttpCallBack requestCallBack) {
         String liveUrl;
         // 如果是录播直播回放
         if (livePlayType == LocalCourseConfig.LIVETYPE_RECORDED) {
@@ -56,13 +57,14 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testId", testId);
         params.addBodyParam("testAnswer", testResult);
         params.addBodyParam("useVoice", voice ? "1" : "0");
+        params.addBodyParam("isRight", isRight ? "1" : "0");
         params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
         sendPost(liveUrl, params, requestCallBack);
     }
 
     public void sumitCourseWareH5(String enStuId, String srcType, String testId, String testResult, String testDay,
                                   String classId, String isSubmit, String type,
-                                  double voiceTime, HttpCallBack requestCallBack) {
+                                  double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
         String liveUrl = LiveVideoConfig.URL_LIVE_SUBMIT_TEST_H5_ANSWER;
         HttpRequestParams params = new HttpRequestParams();
         if (!StringUtils.isSpace(srcType)) {
@@ -80,6 +82,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("isSubmit", isSubmit);
         params.addBodyParam("useVoice", "1");
         params.addBodyParam("voiceTime", "" + voiceTime);
+        params.addBodyParam("isRight", isRight ? "1" : "0");
         sendPost(liveUrl, params, requestCallBack);
     }
 

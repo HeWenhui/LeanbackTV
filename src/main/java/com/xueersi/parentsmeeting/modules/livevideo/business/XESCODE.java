@@ -90,4 +90,6 @@ public interface XESCODE {
     int XCR_ROOM_DB_START = 193;
     /** 开启分贝能量条指令 */
     int XCR_ROOM_DB_CLOSE = 194;
+    /** 投票开始 */
+    int VOTE_START = 210;
 }

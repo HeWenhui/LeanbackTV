@@ -57,9 +57,6 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
     private boolean isLive;
     private SpeechEvalAction speechEvalAction;
 
-    /** 测评 */
-    private SpeechEvaluatorUtils mSpeechEvaluator;
-
     private File saveVideoFile, dir;
 
     /** 默认为mSpeechType */
@@ -69,8 +66,8 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
     private static final String SPEECH_NORMAL = "1";
     /** RolePlay语音评测 */
     private static final String SPEECH_ROLEPLAY = "2";
-    /**语文跟读*/
-    private static final String SPEECH_FOLLOW="3";
+    /** 语文跟读 */
+    private static final String SPEECH_FOLLOW = "3";
 
     /** 标准测评JS前缀 */
     private static final String jsNormalPrefix = "SpeechTouchObj";
@@ -115,12 +112,10 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
         this.nonce = nonce;
         this.isLive = isLive;
         this.speechEvalAction = speechEvalAction;
-        mSpeechEvaluator = new SpeechEvaluatorUtils(false);
         dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/liveSpeech/");
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        initData();
     }
 
 
@@ -157,7 +152,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
 //        wvSubjectWeb.loadUrl("file:///android_asset/testjs.html");
         ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
         ((AnimationDrawable) ivLoading.getBackground()).start();
- //       wvSubjectWeb.loadUrl("http://172.88.1.180:8084/");
+        //       wvSubjectWeb.loadUrl("http://172.88.1.180:8084/");
         String url = "http://live.xueersi.com/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
                 liveid + "/" + testId + "/" + stuId;
 //        String url = "http://172.88.1.180:8082";
@@ -235,7 +230,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             Loger.i("SpeechWebPagerTest start");
             super.onPageStarted(view, url, favicon);
-            failingUrl=null;
+            failingUrl = null;
         }
 
         @Override
@@ -365,8 +360,8 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
             if (!TextUtils.isEmpty(speechType)) {
                 if (speechType.equals(SPEECH_ROLEPLAY)) {
                     mSpeechType = speechType;
-                }else if(speechType.equals(SPEECH_FOLLOW)){
-                    mSpeechType=speechType;
+                } else if (speechType.equals(SPEECH_FOLLOW)) {
+                    mSpeechType = speechType;
                 }
             }
             jsAppVersion();
@@ -401,8 +396,8 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
 
         if (mParam != null) {
             String recordFileName = mParam.get("recordFileName");
-            if(recordFileName==null){
-                recordFileName="test";
+            if (recordFileName == null) {
+                recordFileName = "test";
             }
             if (mSpeechType.equals(SPEECH_ROLEPLAY)) {
                 //如果是RolePlay则记录名称，并在JS回调接口返回
@@ -414,45 +409,91 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
             String language = mParam.get("language");
             if (checkParam(recordFileName, assessRef, liveId, language)) {
                 saveVideoFile = new File(dir, recordFileName + ".mp3");
-                boolean isEnglish=!mSpeechType.equals(SPEECH_FOLLOW);
-                mSpeechEvaluator.startEnglishEvaluator(assessRef, saveVideoFile.getAbsolutePath(),false,
-                        new EvaluatorListener() {
-                            @Override
-                            public void onBeginOfSpeech() {
-                                jsRecord();
-                            }
-
-                            @Override
-                            public void onResult(ResultEntity resultEntity) {
-                                if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-                                    if (resultEntity.getErrorNo() > 0) {
-                                        jsRecordError(resultEntity.getErrorNo());
-                                    }if(mSpeechType.equals(SPEECH_FOLLOW)){
-                                        jsRecordCurrentResult(resultEntity);
-                                    }else {
-                                        jsRecordResultSuccess(resultEntity.getScore());
-                                    }
-                                } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                                    jsRecordError(resultEntity.getErrorNo());
-                                }else if(resultEntity.getStatus()==ResultEntity.EVALUATOR_ING){
-                                    jsRecordCurrentResult(resultEntity);
+                boolean isEnglish = !mSpeechType.equals(SPEECH_FOLLOW);
+                if (mIse == null) {
+                    mIse = new SpeechEvaluatorUtils(true);
+                }
+                if (isEnglish) {
+                    mIse.startEnglishEvaluatorOffline(assessRef, saveVideoFile.getAbsolutePath(), false,
+                            new EvaluatorListener() {
+                                @Override
+                                public void onBeginOfSpeech() {
+                                    jsRecord();
                                 }
-                                if (resultEntity.getStatus() == ResultEntity.SUCCESS || resultEntity.getStatus() == ResultEntity.ERROR) {
-                                    mHandler.removeMessages(RECORD_WITE);
-                                    if (!mIsFinishCurrentSpeech && mIsStopCommand) {
-                                        mIsFinishCurrentSpeech = true;
-                                        if (mSpeechType.equals(SPEECH_ROLEPLAY)) {
-                                            jsStartAnotherReading();
+
+                                @Override
+                                public void onResult(ResultEntity resultEntity) {
+                                    if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+                                        if (resultEntity.getErrorNo() > 0) {
+                                            jsRecordError(resultEntity.getErrorNo());
+                                        }
+                                        if (mSpeechType.equals(SPEECH_FOLLOW)) {
+                                            jsRecordCurrentResult(resultEntity);
+                                        } else {
+                                            jsRecordResultSuccess(resultEntity.getScore());
+                                        }
+                                    } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
+                                        jsRecordError(resultEntity.getErrorNo());
+                                    } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
+                                        jsRecordCurrentResult(resultEntity);
+                                    }
+                                    if (resultEntity.getStatus() == ResultEntity.SUCCESS || resultEntity.getStatus() == ResultEntity.ERROR) {
+                                        mHandler.removeMessages(RECORD_WITE);
+                                        if (!mIsFinishCurrentSpeech && mIsStopCommand) {
+                                            mIsFinishCurrentSpeech = true;
+                                            if (mSpeechType.equals(SPEECH_ROLEPLAY)) {
+                                                jsStartAnotherReading();
+                                            }
                                         }
                                     }
                                 }
-                            }
 
-                            @Override
-                            public void onVolumeUpdate(int i) {
-                                jsUpdateVolume(i);
-                            }
-                        }, isEnglish, liveId);
+                                @Override
+                                public void onVolumeUpdate(int i) {
+                                    jsUpdateVolume(i);
+                                }
+                            });
+                } else {
+                    mIse.startEnglishEvaluator(assessRef, saveVideoFile.getAbsolutePath(), false,
+                            new EvaluatorListener() {
+                                @Override
+                                public void onBeginOfSpeech() {
+                                    jsRecord();
+                                }
+
+                                @Override
+                                public void onResult(ResultEntity resultEntity) {
+                                    if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+                                        if (resultEntity.getErrorNo() > 0) {
+                                            jsRecordError(resultEntity.getErrorNo());
+                                        }
+                                        if (mSpeechType.equals(SPEECH_FOLLOW)) {
+                                            jsRecordCurrentResult(resultEntity);
+                                        } else {
+                                            jsRecordResultSuccess(resultEntity.getScore());
+                                        }
+                                    } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
+                                        jsRecordError(resultEntity.getErrorNo());
+                                    } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
+                                        jsRecordCurrentResult(resultEntity);
+                                    }
+                                    if (resultEntity.getStatus() == ResultEntity.SUCCESS || resultEntity.getStatus() == ResultEntity.ERROR) {
+                                        mHandler.removeMessages(RECORD_WITE);
+                                        if (!mIsFinishCurrentSpeech && mIsStopCommand) {
+                                            mIsFinishCurrentSpeech = true;
+                                            if (mSpeechType.equals(SPEECH_ROLEPLAY)) {
+                                                jsStartAnotherReading();
+                                            }
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onVolumeUpdate(int i) {
+                                    jsUpdateVolume(i);
+                                }
+                            }, false, liveId);
+                }
             }
         }
 
@@ -474,8 +515,8 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
                 jsStartAnotherReading();
             }
         }
-        if (mSpeechEvaluator != null) {
-            mSpeechEvaluator.stop();
+        if (mIse != null) {
+            mIse.stop();
         }
 
         //强制2秒内必须回结果
@@ -505,8 +546,8 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
         wvSubjectWeb.post(new Runnable() {
             @Override
             public void run() {
-                if (mSpeechEvaluator != null) {
-                    mSpeechEvaluator.stop();
+                if (mIse != null) {
+                    mIse.stop();
                 }
                 if (AudioPlayer.isPlaying()) {
                     new Thread() {
@@ -705,8 +746,8 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
      * 重新提交评测
      */
     private void reSubmitSpech() {
-        if (mSpeechEvaluator != null) {
-            mSpeechEvaluator.reSubmit();
+        if (mIse != null) {
+            mIse.reSubmit();
         }
     }
 
@@ -803,21 +844,22 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
 
     /**
      * 评测当前结果回调
+     *
      * @param entity
      */
-    private void jsRecordCurrentResult(final ResultEntity entity){
+    private void jsRecordCurrentResult(final ResultEntity entity) {
         if (wvSubjectWeb != null) {
             wvSubjectWeb.post(new Runnable() {
                 @Override
                 public void run() {
-                    if(mSpeechType.equals(SPEECH_FOLLOW)){
+                    if (mSpeechType.equals(SPEECH_FOLLOW)) {
                         try {
-                            String command="javascript:" + getCurrentJsPrefix() + ".showResult(" + entity.getCurStatus()
-                                    +","+entity.getCurString()+ ")";
+                            String command = "javascript:" + getCurrentJsPrefix() + ".showResult(" + entity.getCurStatus()
+                                    + "," + entity.getCurString() + ")";
                             wvSubjectWeb.loadUrl(command);
-                            Loger.i("SpeechAssessTest","command="+command);
-                        }catch (Exception e){
-                            Loger.i("SpeechAssessTest","currentResult"+e.getMessage());
+                            Loger.i("SpeechAssessTest", "command=" + command);
+                        } catch (Exception e) {
+                            Loger.i("SpeechAssessTest", "currentResult" + e.getMessage());
                         }
                     }
                 }
@@ -837,7 +879,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
                 @Override
                 public void run() {
                     Loger.i("SpeechWebPagerTest", "js.recordError:" + errStatus);
-                    if (mSpeechType.equals(SPEECH_NORMAL)||mSpeechType.equals(SPEECH_FOLLOW)) {
+                    if (mSpeechType.equals(SPEECH_NORMAL) || mSpeechType.equals(SPEECH_FOLLOW)) {
                         wvSubjectWeb.loadUrl("javascript: " + getCurrentJsPrefix() + ".recordError(" + errStatus + ")");
                     } else if (mSpeechType.equals(SPEECH_ROLEPLAY)) {
                         wvSubjectWeb.loadUrl("javascript: " + getCurrentJsPrefix() + ".recordError(" + errStatus + "," +

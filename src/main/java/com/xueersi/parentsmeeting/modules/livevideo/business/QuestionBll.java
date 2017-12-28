@@ -1,16 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -196,7 +192,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 if (mVSectionID.equals(vSectionID)) {
                     String testId = jsonObject.optString("testId");
                     if (!StringUtils.isSpace(testId)) {
-                        mQueAndBool.add(testId);
+//                        mQueAndBool.add(testId);
                     }
                 }
             }
@@ -537,10 +533,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                         videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time, QuestionBll.
                                         this);
                         speechAssessmentPager = speechAssAutoPager;
-//                        speechAssAutoPager.setIse(mIse);
+                        speechAssessmentPager.setIse(mIse);
                         int screenWidth = ScreenUtils.getScreenWidth();
                         int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
                         lp.rightMargin = wradio;
+                        speechAssessmentPager.initData();
 //                        rlQuestionContent.postDelayed(new Runnable() {
 //                            @Override
 //                            public void run() {
@@ -553,6 +550,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         speechAssessmentPager = new SpeechAssessmentWebPager(activity,
                                 liveGetInfo.getId(), id, liveGetInfo.getStuId(),
                                 true, videoQuestionLiveEntity.nonce, QuestionBll.this);
+                        speechAssessmentPager.setIse(mIse);
+                        speechAssessmentPager.initData();
                     }
                     setHaveSpeech(true);
                     rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
@@ -1106,7 +1105,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
         @Override
         public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity2, String result) {
-            mLiveBll.liveSubmitTestAnswer((VideoQuestionLiveEntity) videoQuestionLiveEntity2, mVSectionID, result, false, null);
+            mLiveBll.liveSubmitTestAnswer((VideoQuestionLiveEntity) videoQuestionLiveEntity2, mVSectionID, result, false, false, null);
         }
     };
 
@@ -1254,7 +1253,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
 
         @Override
-        public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, double voiceTime, String isSubmit, OnAnswerReslut answerReslut) {
+        public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, OnAnswerReslut answerReslut) {
             final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
             String testAnswer;
             if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)) {
@@ -1262,7 +1261,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             } else {
                 testAnswer = result + ":" + sorce;
             }
-            mLiveBll.liveSubmitTestAnswer(videoQuestionLiveEntity1, mVSectionID, testAnswer, true, answerReslut);
+            mLiveBll.liveSubmitTestAnswer(videoQuestionLiveEntity1, mVSectionID, testAnswer, true, isRight, answerReslut);
         }
 
         @Override

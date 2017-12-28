@@ -302,11 +302,12 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param testId          测试题ID
      * @param liveId          直播ID
      * @param testAnswer      测试题答案
+     * @param isRight
      * @param requestCallBack
      */
     public void liveSubmitTestAnswer(int type, String enstuId, String srcType, String testId, String liveId, String
             testAnswer, String userMode, boolean isVoice,
-                                     HttpCallBack requestCallBack) {
+                                     boolean isRight, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         String url;
         if (type == LiveBll.LIVE_TYPE_LIVE) {// 直播
@@ -330,12 +331,13 @@ public class LiveHttpManager extends BaseHttpBusiness {
             params.addBodyParam("srcType", srcType);
         }
         params.addBodyParam("useVoice", isVoice ? "1" : "0");
+        params.addBodyParam("isRight", isRight ? "1" : "0");
         sendPost(url, params, requestCallBack);
     }
 
     public void liveSubmitTestH5Answer(String enstuId, String srcType, String testId, String liveId, String
             testAnswer, String type, String userMode, String isSubmit,
-                                       double voiceTime, HttpCallBack requestCallBack) {
+                                       double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         String url = LiveVideoConfig.URL_LIVE_SUBMIT_TEST_H5_ANSWER;
         params.addBodyParam("enstuId", enstuId);
@@ -353,6 +355,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         }
         params.addBodyParam("useVoice", "1");
         params.addBodyParam("voiceTime", "" + voiceTime);
+        params.addBodyParam("isRight", isRight ? "1" : "0");
         sendPost(url, params, requestCallBack);
     }
 

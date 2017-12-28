@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <Button
+        android:id="@id/btn_livevideo_vote_item"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/shape_live_vote_select_normal"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text="A"
+        android:textColor="@color/white"
+        android:textSize="30sp" />
+</RelativeLayout>

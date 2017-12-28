@@ -113,7 +113,7 @@ public class LectureLivePlayBackBll extends BaseBll {
     }
 
     public void saveQuestionResult(final DataLoadEntity dataLoadEntity, final VideoQuestionEntity questionEntity,
-                                   final String result, final String liveId, final int livePlayType, final boolean voice, final AbstractBusinessDataCallBack callBack) {
+                                   final String result, final String liveId, final int livePlayType, final boolean voice, boolean isRight, final AbstractBusinessDataCallBack callBack) {
         // 从网络更新数据库数据
         if (!voice && !NetWorkHelper.isNetworkAvailable(mContext)) {
             postDataLoadEvent(dataLoadEntity.webDataError());
@@ -123,7 +123,7 @@ public class LectureLivePlayBackBll extends BaseBll {
         MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
         mCourseHttpManager.saveTestRecord(myUserInfoEntity.getEnstuId(), questionEntity.getSrcType(), questionEntity.getvQuestionID(), result, questionEntity.getAnswerDay(),
-                liveId, livePlayType, voice, new HttpCallBack(dataLoadEntity) {
+                liveId, livePlayType, voice, isRight, new HttpCallBack(dataLoadEntity) {
 
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
@@ -152,11 +152,11 @@ public class LectureLivePlayBackBll extends BaseBll {
 
     public void saveQuestionH5Result(final DataLoadEntity dataLoadEntity, final VideoQuestionEntity questionEntity,
                                      final String result, final String liveId, String isSubmit, String type,
-                                     double voiceTime, final AbstractBusinessDataCallBack callBack) {
+                                     double voiceTime, boolean isRight, final AbstractBusinessDataCallBack callBack) {
         MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
         mCourseHttpManager.sumitCourseWareH5(myUserInfoEntity.getEnstuId(), questionEntity.getSrcType(), questionEntity.getvQuestionID(), result, questionEntity.getAnswerDay(),
-                liveId, isSubmit, type, voiceTime, new HttpCallBack(dataLoadEntity) {
+                liveId, isSubmit, type, voiceTime, isRight, new HttpCallBack(dataLoadEntity) {
 
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
@@ -200,7 +200,7 @@ public class LectureLivePlayBackBll extends BaseBll {
         MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
         mCourseHttpManager.saveTestRecord(myUserInfoEntity.getEnstuId(), srcType, sectionId, result, testDay,
-                liveId, livePlayType, false, new HttpCallBack(dataLoadEntity) {
+                liveId, livePlayType, false, false, new HttpCallBack(dataLoadEntity) {
 
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {

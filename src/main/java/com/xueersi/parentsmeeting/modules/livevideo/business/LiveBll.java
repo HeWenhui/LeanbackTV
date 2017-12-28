@@ -84,6 +84,7 @@ public class LiveBll extends BaseBll {
     private VideoChatAction videoChatAction;
     private StarInteractAction starAction;
     private EnglishSpeekAction englishSpeekAction;
+    private LiveVoteAction liveVoteAction;
     private LiveHttpManager mHttpManager;
     private LiveHttpResponseParser mHttpResponseParser;
     private IRCMessage mIRCMessage;
@@ -420,9 +421,10 @@ public class LiveBll extends BaseBll {
      * @param videoQuestionLiveEntity
      * @param liveId
      * @param testAnswer
+     * @param isRight
      */
     public void liveSubmitTestAnswer(final VideoQuestionLiveEntity videoQuestionLiveEntity, String liveId, String
-            testAnswer, final boolean isVoice, final QuestionSwitch.OnAnswerReslut answerReslut) {
+            testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("liveSubmitTestAnswer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
                 videoQuestionLiveEntity.id + ",liveId=" + liveId + ",testAnswer="
@@ -434,7 +436,7 @@ public class LiveBll extends BaseBll {
             }
         }
         mHttpManager.liveSubmitTestAnswer(mLiveType, enstuId, videoQuestionLiveEntity.srcType,
-                videoQuestionLiveEntity.id, liveId, testAnswer, userMode, isVoice, new HttpCallBack() {
+                videoQuestionLiveEntity.id, liveId, testAnswer, userMode, isVoice, isRight, new HttpCallBack() {
 
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
@@ -445,11 +447,11 @@ public class LiveBll extends BaseBll {
                         if (StringUtils.isSpace(entity.getTestId())) {
                             entity.setTestId(videoQuestionLiveEntity.id);
                         }
-                        if (mQuestionAction != null) {
-                            mQuestionAction.onAnswerReslut(videoQuestionLiveEntity, entity);
-                        }
                         if (answerReslut != null) {
                             answerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
+                        }
+                        if (mQuestionAction != null) {
+                            mQuestionAction.onAnswerReslut(videoQuestionLiveEntity, entity);
                         }
                     }
 
@@ -481,7 +483,7 @@ public class LiveBll extends BaseBll {
     }
 
     public void liveSubmitTestH5Answer(final VideoQuestionLiveEntity videoQuestionLiveEntity, String liveId, String
-            testAnswer, String type, String isSubmit, double voiceTime, final QuestionSwitch.OnAnswerReslut answerReslut) {
+            testAnswer, String type, String isSubmit, double voiceTime, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("liveSubmitTestH5Answer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
                 videoQuestionLiveEntity.id + ",liveId=" + liveId + ",testAnswer="
@@ -493,7 +495,7 @@ public class LiveBll extends BaseBll {
             }
         }
         mHttpManager.liveSubmitTestH5Answer(enstuId, videoQuestionLiveEntity.srcType,
-                videoQuestionLiveEntity.id, liveId, testAnswer, type, userMode, isSubmit, voiceTime, new HttpCallBack() {
+                videoQuestionLiveEntity.id, liveId, testAnswer, type, userMode, isSubmit, voiceTime, isRight, new HttpCallBack() {
 
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
@@ -639,6 +641,10 @@ public class LiveBll extends BaseBll {
 
     public void setEnglishSpeekAction(EnglishSpeekAction englishSpeekAction) {
         this.englishSpeekAction = englishSpeekAction;
+    }
+
+    public void setLiveVoteAction(LiveVoteAction liveVoteAction) {
+        this.liveVoteAction = liveVoteAction;
     }
 
     private final IRCCallback mIRCcallback = new IRCCallback() {
@@ -1283,6 +1289,21 @@ public class LiveBll extends BaseBll {
                         }
                         break;
                     }
+                    case XESCODE.VOTE_START: {
+                        msg += ",VOTE_START";
+                        String open = object.optString("open");
+                        if (liveVoteAction != null) {
+                            liveVoteAction = new LiveVoteBll(mContext);
+                        }
+                        if ("on".equals(open)) {
+                            int choiceType = object.optInt("choiceType");
+                            int choiceNum = object.optInt("choiceNum");
+                            liveVoteAction.voteStart(choiceType, choiceNum);
+                        } else if ("off".equals(open)) {
+                            liveVoteAction.voteStop();
+                        }
+                        break;
+                    }
                     default:
                         msg += "default";
                         break;
@@ -1531,9 +1552,9 @@ public class LiveBll extends BaseBll {
         }
         if (mGetInfo.getIsArts() == 1) {
             appID = UmsConstants.ARTS_APP_ID;
-            LiveVideoConfig.IS_SCIENCE = true;
-        } else {
             LiveVideoConfig.IS_SCIENCE = false;
+        } else {
+            LiveVideoConfig.IS_SCIENCE = true;
             appID = UmsConstants.LIVE_APP_ID;
         }
         mGetInfo.setMode(mLiveTopic.getMode());
