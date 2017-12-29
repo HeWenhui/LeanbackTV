@@ -44,7 +44,11 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         } else if (livePlayType == LocalCourseConfig.LIVETYPE_LECTURE) {
             liveUrl = LiveVideoConfig.URL_PUBLIC_LIVE_COURSE_SUBMIT_QUESTION;
         } else {
-            liveUrl = LiveVideoConfig.URL_STUDY_SAVE_ANSWER_FOR_PLAYBACK;
+            if (voice) {
+                liveUrl = LiveVideoConfig.URL_LIVE_SUBMIT_TEST_ANSWER_VOICE;
+            } else {
+                liveUrl = LiveVideoConfig.URL_STUDY_SAVE_ANSWER_FOR_PLAYBACK;
+            }
         }
         HttpRequestParams params = new HttpRequestParams();
         if (!StringUtils.isSpace(srcType)) {

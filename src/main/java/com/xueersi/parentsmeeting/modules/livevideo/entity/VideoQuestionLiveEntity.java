@@ -41,13 +41,22 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     /** h5课件用-课件类型 */
     public String courseware_type;
     /** 是不是语音答题 */
-    public String isVoice;
+    private String isVoice;
     /** 语音答题,1.选择2.填空 */
     public String questiontype;
     /** 语音答题,评测内容 */
     public String assess_ref;
 
     public VideoQuestionLiveEntity() {
+    }
+
+    public String getIsVoice() {
+        return isVoice;
+    }
+
+    public void setIsVoice(String isVoice) {
+        //isVoice = "0";
+        this.isVoice = isVoice;
     }
 
     @Override
@@ -62,7 +71,7 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
         if ("1".equals(isAllow42)) {
             builder.append("\nspeechContent=" + speechContent);
         }
-        if ("1".equals(isVoice)) {
+        if ("1".equals(getIsVoice())) {
             builder.append("\nquestiontype=" + questiontype);
         }
         return builder.toString();

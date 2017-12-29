@@ -28,6 +28,8 @@ public class LiveVideoConfig {
     public final static String URL_LIVE_LECTURE_GOLD = AppConfig.HTTP_HOST + "/LiveLecture/receiveGold";
     /** 直播课的直播提交测试题 */
     public final static String URL_LIVE_SUBMIT_TEST_ANSWER = AppConfig.HTTP_HOST + "/LiveCourse/submitTestAnswer";
+    /** 直播课的直播提交测试题-语音答题 */
+    public final static String URL_LIVE_SUBMIT_TEST_ANSWER_VOICE = AppConfig.HTTP_HOST + "/LiveCourse/submitTestAnswerUseVoice";
     /** 直播课的直播提交测试题-h5课件 */
     public final static String URL_LIVE_SUBMIT_TEST_H5_ANSWER = AppConfig.HTTP_HOST + "/LiveCourse/sumitCourseWareH5AnswerUseVoice";
     /** 直播献花 */
@@ -99,7 +101,8 @@ public class LiveVideoConfig {
     public final static String URL_LIVE_NOT_OPEN = AppConfig.HTTP_HOST + "/LiveCourse/setNotOpeningNum";
     /** 得到试题 */
     public final static String URL_LIVE_GET_QUESTION = AppConfig.HTTP_HOST + "/LiveCourse/getQuestion";
-
+    /** 得到h5课件 */
+    public final static String URL_LIVE_GET_WARE_URL = AppConfig.HTTP_HOST + "/LiveCourse/getCourseWareUrl";
 
     /** 是不是文理 */
     public static boolean IS_SCIENCE = true;

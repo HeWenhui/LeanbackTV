@@ -393,9 +393,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     videoQuestionLiveEntity.isAllow42 = topic.optString("isAllow42", "0");
                     topicEntity.setSpeechContent(topic.optString("answer"));
                     videoQuestionLiveEntity.speechContent = topic.optString("answer");
-                    videoQuestionLiveEntity.isVoice = topic.optString("isVoice", "0");
+                    videoQuestionLiveEntity.setIsVoice(topic.optString("isVoice", "0"));
 //                    liveTopic.setTopic(topicEntity);
-                    if ("1".equals(videoQuestionLiveEntity.isVoice)) {
+                    if ("1".equals(videoQuestionLiveEntity.getIsVoice())) {
                         videoQuestionLiveEntity.questiontype = topic.optString("questiontype");
                         videoQuestionLiveEntity.assess_ref = topic.optString("assess_ref");
                     }

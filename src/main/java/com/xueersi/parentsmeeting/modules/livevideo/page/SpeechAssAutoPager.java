@@ -87,8 +87,12 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     ImageView ivSpeectevalError;
     /** 提示文字 */
     TextView tvSpeectevalError;
+    TextView tv_livevideo_speecteval_countdown;
     /** great动画 */
     Animation animSpeechEncourage;
+    /** 倒计时动画 */
+    Animation timeCountDown;
+    int timeCount = 1;
     /** 评测成功 */
     private boolean speechSuccess = false;
     /** 语音保存位置 */
@@ -220,6 +224,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         rlSpeectevalError = (RelativeLayout) view.findViewById(R.id.rl_livevideo_speecteval_error);
         ivSpeectevalError = (ImageView) view.findViewById(R.id.iv_livevideo_speecteval_error);
         tvSpeectevalError = (TextView) view.findViewById(R.id.tv_livevideo_speecteval_error);
+        tv_livevideo_speecteval_countdown = (TextView) view.findViewById(R.id.tv_livevideo_speecteval_countdown);
         Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.bg_live_star_result_bg);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) spStarResult.getLayoutParams();
         lp.width = bitmap.getWidth();
@@ -232,6 +237,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     public void initData() {
         animSpeechEncourage = AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_speech_encourage);
         animSpeechEncourage.setInterpolator(new OvershootInterpolator());
+        timeCountDown = AnimationUtils.loadAnimation(mContext, R.anim.anim_live_speech_countdown);
 //        tvSpeectevalContent.setText(Html.fromHtml(content));
         tvSpeectevalContent.setText(content);
         String[] split = content.split(" ");
@@ -255,13 +261,38 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         ScaleDrawable scaleDrawable = (ScaleDrawable) drawable.getDrawable(1);
         GradientDrawable gradientDrawable = (GradientDrawable) scaleDrawable.getDrawable();
         gradientDrawable.setColor(startProgColor);
-        prepareSpeech();
+//        prepareSpeech();
         mView.postDelayed(new Runnable() {
             @Override
             public void run() {
+                tv_livevideo_speecteval_countdown.setText("" + timeCount);
+                tv_livevideo_speecteval_countdown.startAnimation(timeCountDown);
                 vwvSpeectevalWave.start();
             }
         }, 100);
+        timeCountDown.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                timeCount++;
+                if (timeCount > 3) {
+                    tv_livevideo_speecteval_countdown.setVisibility(View.GONE);
+                    return;
+                }
+                tv_livevideo_speecteval_countdown.clearAnimation();
+                tv_livevideo_speecteval_countdown.setText("" + timeCount);
+                tv_livevideo_speecteval_countdown.startAnimation(timeCountDown);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
 //        mView.post(new Runnable() {
 //            @Override
 //            public void run() {
@@ -511,7 +542,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 e.printStackTrace();
             }
         }
-        rlSpeectevalEncourage.setVisibility(View.GONE);
+        rlSpeectevalEncourage.setVisibility(View.VISIBLE);
         vwvSpeectevalWave.stop();
     }
 
@@ -780,7 +811,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     private Runnable encourageRun = new Runnable() {
         @Override
         public void run() {
-            rlSpeectevalEncourage.setVisibility(View.INVISIBLE);
+            rlSpeectevalEncourage.setVisibility(View.VISIBLE);
         }
     };
 

@@ -90,7 +90,7 @@ public class VoiceAnswerPager extends BasePager {
         } else {
             try {
                 JSONArray array = assess_ref.getJSONArray("options");
-                answer = array.getJSONObject(0).getString("content");
+                answer = array.getJSONObject(0).getJSONArray("content").getString(0);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

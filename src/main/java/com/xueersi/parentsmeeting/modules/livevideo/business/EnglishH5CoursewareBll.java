@@ -219,7 +219,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
                             bottomContent.removeView(h5CoursewarePager.getRootView());
                         }
                     }
-                    if ("1".equals(videoQuestionLiveEntity.isVoice) && !mErrorVoiceQue.contains(videoQuestionLiveEntity.url)) {
+                    if ("1".equals(videoQuestionLiveEntity.getIsVoice()) && !mErrorVoiceQue.contains(videoQuestionLiveEntity.url)) {
                         try {
                             showVoiceAnswer(videoQuestionLiveEntity);
                         } catch (Exception e) {

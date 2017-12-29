@@ -801,7 +801,7 @@ public class LiveBll extends BaseBll {
                         videoQuestionLiveEntity.url = play_url;
                         videoQuestionLiveEntity.nonce = "";
                         String isVoice = h5_Experiment.optString("isVoice");
-                        videoQuestionLiveEntity.isVoice = isVoice;
+                        videoQuestionLiveEntity.setIsVoice(isVoice);
                         if ("1".equals(isVoice)) {
                             videoQuestionLiveEntity.type = videoQuestionLiveEntity.questiontype = h5_Experiment.optString("questiontype");
                             videoQuestionLiveEntity.assess_ref = h5_Experiment.optString("assess_ref");
@@ -868,7 +868,7 @@ public class LiveBll extends BaseBll {
 //                            videoQuestionLiveEntity.isTestUseH5 = true;
 //                        }
                         String isVoice = object.optString("isVoice");
-                        videoQuestionLiveEntity.isVoice = isVoice;
+                        videoQuestionLiveEntity.setIsVoice(isVoice);
                         if ("1".equals(isVoice)) {
                             videoQuestionLiveEntity.questiontype = object.optString("questiontype");
                             videoQuestionLiveEntity.assess_ref = object.optString("assess_ref");
@@ -1092,7 +1092,7 @@ public class LiveBll extends BaseBll {
                                 videoQuestionLiveEntity.url = play_url;
                                 videoQuestionLiveEntity.nonce = nonce;
                                 String isVoice = object.optString("isVoice");
-                                videoQuestionLiveEntity.isVoice = isVoice;
+                                videoQuestionLiveEntity.setIsVoice(isVoice);
                                 if ("1".equals(isVoice)) {
                                     videoQuestionLiveEntity.type = videoQuestionLiveEntity.questiontype = object.optString("questiontype");
                                     videoQuestionLiveEntity.assess_ref = object.optString("assess_ref");
@@ -1632,6 +1632,10 @@ public class LiveBll extends BaseBll {
         }
         mLogtf.d("onGetInfoSuccess:mode=" + mLiveTopic.getMode());
         liveGetPlayServerFirst();
+        if (mLiveType == LIVE_TYPE_LIVE) {
+            EnglishH5Cache englishH5Cache = new EnglishH5Cache(mContext,this, mLiveId);
+            englishH5Cache.getCourseWareUrl();
+        }
     }
 
     /**
@@ -2656,6 +2660,10 @@ public class LiveBll extends BaseBll {
                 callBack.onDataSucess();
             }
         });
+    }
+
+    public void getCourseWareUrl(HttpCallBack requestCallBack) {
+        mHttpManager.getCourseWareUrl(requestCallBack);
     }
 
     static HashMap<String, String> channelAndRoomid = new HashMap();

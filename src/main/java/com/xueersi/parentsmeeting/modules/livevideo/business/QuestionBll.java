@@ -467,7 +467,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             public void run() {
                 mLogtf.d("showQuestion:type=" + videoQuestionLiveEntity.type);
                 if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
-                    if ("1".equals(videoQuestionLiveEntity.isVoice) && !mErrorVoiceQue.contains(videoQuestionLiveEntity.id)) {
+                    if ("1".equals(videoQuestionLiveEntity.getIsVoice()) && !mErrorVoiceQue.contains(videoQuestionLiveEntity.id)) {
                         try {
                             showVoiceAnswer(videoQuestionLiveEntity);
                         } catch (Exception e) {
@@ -487,7 +487,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         }
                     }
                 } else if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity.type)) {
-                    if ("1".equals(videoQuestionLiveEntity.isVoice) && !mErrorVoiceQue.contains(videoQuestionLiveEntity.id)) {
+                    if ("1".equals(videoQuestionLiveEntity.getIsVoice()) && !mErrorVoiceQue.contains(videoQuestionLiveEntity.id)) {
                         try {
                             showVoiceAnswer(videoQuestionLiveEntity);
                         } catch (Exception e) {

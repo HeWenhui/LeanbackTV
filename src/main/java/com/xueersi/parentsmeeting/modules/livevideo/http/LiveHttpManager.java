@@ -311,7 +311,11 @@ public class LiveHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         String url;
         if (type == LiveBll.LIVE_TYPE_LIVE) {// 直播
-            url = LiveVideoConfig.URL_LIVE_SUBMIT_TEST_ANSWER;
+            if (isVoice) {
+                url = LiveVideoConfig.URL_LIVE_SUBMIT_TEST_ANSWER_VOICE;
+            } else {
+                url = LiveVideoConfig.URL_LIVE_SUBMIT_TEST_ANSWER;
+            }
             params.addBodyParam("liveId", liveId);
             setDefaultParameter(params);
         } else if (type == LiveBll.LIVE_TYPE_TUTORIAL) {// 辅导
@@ -601,5 +605,12 @@ public class LiveHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         requestCallBack.url = LiveVideoConfig.URL_LIVE_GET_QUESTION;
         sendPost(LiveVideoConfig.URL_LIVE_GET_QUESTION, params, requestCallBack);
+    }
+
+    public void getCourseWareUrl(HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        requestCallBack.url = LiveVideoConfig.URL_LIVE_GET_WARE_URL;
+        sendPost(LiveVideoConfig.URL_LIVE_GET_WARE_URL, params, requestCallBack);
     }
 }

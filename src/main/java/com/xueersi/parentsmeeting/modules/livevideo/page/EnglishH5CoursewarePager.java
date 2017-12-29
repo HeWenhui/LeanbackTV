@@ -1,7 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.content.Context;
+import android.os.Environment;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -12,6 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +32,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
     String id;
     String courseware_type;
     boolean isPlayBack;
+    File cacheFile;
 
     public EnglishH5CoursewarePager(Context context, boolean isPlayBack, EnglishH5CoursewareBll.OnH5ResultClose onClose, String url, String id, final String courseware_type, String nonce) {
         super(context);
@@ -41,6 +45,11 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         initWebView();
         setErrorTip("H5课件加载失败，请重试");
         setLoadTip("H5课件正在加载，请稍候");
+//        cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webview/");
+        cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
+        if (!cacheFile.exists()) {
+            cacheFile.mkdirs();
+        }
         initData();
     }
 
@@ -64,7 +73,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
 
     @Override
     public View initView() {
-        final View view = View.inflate(mContext, R.layout.page_livevideo_h5_courseware, null);
+        View view = View.inflate(mContext, R.layout.page_livevideo_h5_courseware, null);
         return view;
     }
 
@@ -141,6 +150,18 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         super.initData();
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
+
+        webSetting.setCacheMode(WebSettings.LOAD_DEFAULT);
+        webSetting.setDatabasePath(cacheFile.getPath());
+        //设置 应用 缓存目录
+        webSetting.setAppCachePath(cacheFile.getPath());
+        //开启 DOM 存储功能
+        webSetting.setDomStorageEnabled(true);
+        //开启 数据库 存储功能
+        webSetting.setDatabaseEnabled(true);
+        //开启 应用缓存 功能
+        webSetting.setAppCacheEnabled(true);
+
         String loadUrl = url + "?t=" + System.currentTimeMillis();
         if (isPlayBack) {
             loadUrl += "&isPlayBack=1";
