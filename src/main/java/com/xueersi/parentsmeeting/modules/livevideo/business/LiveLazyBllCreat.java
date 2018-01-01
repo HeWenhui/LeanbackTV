@@ -13,6 +13,7 @@ public class LiveLazyBllCreat {
     RelativeLayout bottomContent;
     LiveBll liveBll;
     private LiveVoteBll liveVoteBll;
+    private PraiseOrEncourageBll praiseOrEncourageBll;
 
     public LiveLazyBllCreat(LiveVideoActivity liveVideoActivity, LiveBll liveBll) {
         this.liveVideoActivity = liveVideoActivity;
@@ -31,5 +32,13 @@ public class LiveLazyBllCreat {
             liveBll.setLiveVoteAction(liveVoteBll);
         }
         return liveVoteBll;
+    }
+
+    PraiseOrEncourageAction createPraiseOrEncourageAction() {
+        if (praiseOrEncourageBll == null) {
+            praiseOrEncourageBll = new PraiseOrEncourageBll(liveVideoActivity);
+            praiseOrEncourageBll.initView(bottomContent);
+        }
+        return praiseOrEncourageBll;
     }
 }

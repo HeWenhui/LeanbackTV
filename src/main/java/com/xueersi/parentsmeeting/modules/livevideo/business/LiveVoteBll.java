@@ -1,6 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -9,7 +12,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.dialog.VoteDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
@@ -29,6 +34,7 @@ public class LiveVoteBll implements LiveVoteAction {
     RelativeLayout contentView;
     LiveTopic.VoteEntity voteEntity;
     LiveBll liveBll;
+    VoteDialog voteDialog;
     HashMap<LiveTopic.VoteEntity, Integer> idAndAnswer = new HashMap<>();
     int answer;
 
@@ -47,6 +53,10 @@ public class LiveVoteBll implements LiveVoteAction {
     private void showResult(LiveTopic.VoteEntity voteEntity) {
         if (contentView != null) {
             bottomContent.removeView(contentView);
+        }
+        if (voteDialog != null) {
+            voteDialog.cancelDialog();
+            voteDialog = null;
         }
         final View view1 = LayoutInflater.from(context).inflate(R.layout.layout_livevideo_vote_result, bottomContent, false);
         contentView = new RelativeLayout(context);
@@ -82,9 +92,7 @@ public class LiveVoteBll implements LiveVoteAction {
                 }
             }
             LiveTopic.VoteResult result = voteResults.get(i);
-            ProgressBar pb_livevideo_vote_result_item = (ProgressBar) convertView.findViewById(R.id.pb_livevideo_vote_result_item);
-            pb_livevideo_vote_result_item.setMax(voteEntity.getTotal());
-            pb_livevideo_vote_result_item.setProgress(result.getPople());
+
             float rado;
             if (voteEntity.getTotal() == 0) {
                 rado = 0;
@@ -95,6 +103,22 @@ public class LiveVoteBll implements LiveVoteAction {
             tv_livevideo_vote_result_count.setText(result.getPople() + "人" + (int) rado + "%");
 //            Drawable drawable = context.getResources().getDrawable(R.drawable.shape_live_vote_prog_max);
 //            pb_livevideo_vote_result_item.setProgressDrawable(drawable);
+            final ProgressBar pb_livevideo_vote_result_item = (ProgressBar) convertView.findViewById(R.id.pb_livevideo_vote_result_item);
+            pb_livevideo_vote_result_item.setMax(voteEntity.getTotal());
+//            pb_livevideo_vote_result_item.setProgress(result.getPople());
+            int newProgress = result.getPople();
+            final ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, newProgress);
+            final float finalNewProgress = newProgress;
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float fraction = animation.getAnimatedFraction();
+                    float oldProgress = (finalNewProgress) * fraction;
+                    pb_livevideo_vote_result_item.setProgress((int) oldProgress);
+                }
+            });
+            valueAnimator.setDuration(1000);
+            valueAnimator.start();
         }
         if (answer > 0) {
             View convertView = linearLayout.getChildAt(answer - 1);
@@ -138,6 +162,10 @@ public class LiveVoteBll implements LiveVoteAction {
                 if (contentView != null) {
                     bottomContent.removeView(contentView);
                 }
+                if (voteDialog != null) {
+                    voteDialog.cancelDialog();
+                    voteDialog = null;
+                }
                 final View view = LayoutInflater.from(context).inflate(R.layout.page_livevodeo_vote_select, bottomContent, false);
                 contentView = new RelativeLayout(context);
                 contentView.addView(view);
@@ -166,6 +194,19 @@ public class LiveVoteBll implements LiveVoteAction {
                     btn_livevideo_vote_item.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
+                            voteDialog = new VoteDialog(context, baseApplication, false);
+                            voteDialog.showDialog();
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (voteDialog != null) {
+                                        voteDialog.cancelDialog();
+                                        voteDialog = null;
+                                    }
+                                }
+                            }, 20000);
                             bottomContent.removeView(contentView);
                             contentView = null;
                             LiveVoteBll.this.answer = answer;

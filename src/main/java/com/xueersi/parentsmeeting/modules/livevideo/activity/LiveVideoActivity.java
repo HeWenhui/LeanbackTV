@@ -330,7 +330,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         h5CoursewareBll = new H5CoursewareBll(this);
         englishH5CoursewareBll = new EnglishH5CoursewareBll(this);
         questionBll.setShareDataManager(mShareDataManager);
-        questionBll.setPraiseOrEncourageBll(praiseOrEncourageBll);
 
         LogToFile.liveBll = mLiveBll;
         mPlayStatistics = mLiveBll.getVideoListener();

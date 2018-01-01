@@ -32,7 +32,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideo.business.PraiseOrEncourageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
@@ -153,7 +152,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     QuestionBll questionBll;
     RollCallBll rollCallBll;
     RedPackageBll redPackageBll;
-    PraiseOrEncourageBll praiseOrEncourageBll;
     LearnReportBll learnReportBll;
     H5CoursewareBll h5CoursewareBll;
 //    StarInteractBll starBll;
@@ -188,12 +186,10 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         questionBll = new QuestionBll(this);
         liveMessageBll.setQuestionBll(questionBll);
         rollCallBll = new RollCallBll(this);
-        praiseOrEncourageBll = new PraiseOrEncourageBll(this);
         redPackageBll = new RedPackageBll(this);
         learnReportBll = new LearnReportBll(this);
         h5CoursewareBll = new H5CoursewareBll(this);
         questionBll.setShareDataManager(mShareDataManager);
-        questionBll.setPraiseOrEncourageBll(praiseOrEncourageBll);
         AppBll.getInstance().registerAppEvent(this);
         boolean init = initData();
         if (!init) {
@@ -235,10 +231,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         //聊天
         //if (liveType != LiveBll.LIVE_TYPE_LECTURE) {
         //}
-        //公开表扬,只有直播有
-        if (liveType == LiveBll.LIVE_TYPE_LIVE) {
-            praiseOrEncourageBll.initView(questionContent);
-        }
         //点名
         rollCallBll.initView(questionContent);
         //互动题和懂了吗
@@ -304,7 +296,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         mPlayStatistics = mLiveBll.getVideoListener();
         mLiveBll.setQuestionAction(questionBll);
         mLiveBll.setRollCallAction(rollCallBll);
-        mLiveBll.setPraiseOrEncourageAction(praiseOrEncourageBll);
         mLiveBll.setReadPackageBll(redPackageBll);
         mLiveBll.setLearnReportAction(learnReportBll);
         mLiveBll.setVideoAction(this);
@@ -371,10 +362,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 rlContent.addView(questionContent, lp);
                 questionContent.removeAllViews();
                 liveMessageBll.initView(questionContent, mIsLand);
-                //公开表扬,只有直播有
-                if (liveType == LiveBll.LIVE_TYPE_LIVE) {
-                    praiseOrEncourageBll.initView(questionContent);
-                }
                 //点名
                 rollCallBll.initView(questionContent);
                 //互动题和懂了吗
@@ -418,10 +405,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 content.addView(questionContent, lp);
                 questionContent.removeAllViews();
                 liveMessageBll.initView(questionContent, mIsLand);
-                //公开表扬,只有直播有
-                if (liveType == LiveBll.LIVE_TYPE_LIVE) {
-                    praiseOrEncourageBll.initView(questionContent);
-                }
                 //点名
                 rollCallBll.initView(questionContent);
                 //互动题和懂了吗
@@ -791,7 +774,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         }
         liveMessageBll.setLiveGetInfo(getInfo);
         rollCallBll.onLiveInit(getInfo);
-        praiseOrEncourageBll.onLiveInit(getInfo);
         questionBll.setUserName(getInfo);
 //        if (1 == getInfo.getIsArts()) {
 //            starBll = new StarInteractBll(this, liveType, getInfo.getStarCount(), mIsLand);

@@ -21,7 +21,6 @@
         android:layout_centerHorizontal="true"
         android:indeterminateOnly="false"
         android:max="100"
-        android:progress="40"
         android:progressDrawable="@drawable/shape_live_vote_prog_max" />
 
     <TextView

@@ -60,6 +60,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.Call;
@@ -1327,8 +1328,10 @@ public class LiveBll extends BaseBll {
                                 int total = 0;
                                 for (int i = 0; i < result.length(); i++) {
                                     LiveTopic.VoteResult voteResult = new LiveTopic.VoteResult();
-                                    voteResult.setPople(result.getInt(i));
-                                    total += voteResult.getPople();
+                                    int people = result.getInt(i);
+//                                    people += 10 * new Random().nextInt(22);
+                                    voteResult.setPople(people);
+                                    total += people;
                                     voteResults.add(voteResult);
                                 }
                                 voteEntity.setTotal(total);

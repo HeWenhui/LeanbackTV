@@ -108,7 +108,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     /** video缓存时间 */
     private long videoCachedDuration;
     private LiveGetInfo liveGetInfo;
-    private PraiseOrEncourageBll praiseOrEncourageBll;
     /** 存互动题 */
     private static final String QUESTION = "live_question";
     /** 存试卷 */
@@ -176,10 +175,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     public void setIse(SpeechEvaluatorUtils ise) {
         this.mIse = ise;
-    }
-
-    public void setPraiseOrEncourageBll(PraiseOrEncourageBll praiseOrEncourageBll) {
-        this.praiseOrEncourageBll = praiseOrEncourageBll;
     }
 
     public void initData() {
