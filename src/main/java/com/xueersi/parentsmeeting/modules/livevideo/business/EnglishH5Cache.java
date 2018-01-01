@@ -1,25 +1,19 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Environment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
-import com.xueersi.parentsmeeting.logerhelper.LogerTag;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewPager;
 import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.xesalib.utils.network.NetWorkHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,9 +21,13 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import okhttp3.Call;
+import ren.yale.android.cachewebviewlib.CachePreLoadService;
 import ren.yale.android.cachewebviewlib.CacheWebView;
 
 /**
@@ -44,6 +42,9 @@ public class EnglishH5Cache {
     ArrayList<String> urls = new ArrayList<>();
     File cacheFile;
     RelativeLayout bottomContent;
+    CacheReceiver cacheReceiver;
+    /** 网络类型 */
+    private int netWorkType;
 
     public EnglishH5Cache(Context context, LiveBll liveBll, String liveId) {
         this.context = context;
@@ -62,9 +63,29 @@ public class EnglishH5Cache {
         liveBll.getCourseWareUrl(new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
-                File file = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
-                File file2 = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/org.chromium.android_webview");
-                FileUtils.copyDir(file, file2);
+                final File dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+                Date date = new Date();
+                String today = dateFormat.format(date);
+                final File file = new File(dir, today);
+                new Thread() {
+                    @Override
+                    public void run() {
+                        File files[] = dir.listFiles();
+                        if (files != null) {
+                            for (int i = 0; i < files.length; i++) {
+                                File delectFile = files[i];
+                                if (!delectFile.getPath().equals(file.getPath())) {
+                                    if (delectFile.isDirectory()) {
+                                        FileUtils.deleteDir(delectFile);
+                                    } else {
+                                        FileUtils.deleteFile(delectFile);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }.start();
                 final JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                 Loger.d(TAG, "getCourseWareUrl:onPmSuccess:jsonObject=" + jsonObject);
                 try {
@@ -84,6 +105,11 @@ public class EnglishH5Cache {
                         Loger.d(TAG, "getCourseWareUrl:onPmSuccess:play_url=" + play_url);
 //                        urls.add(play_url);
                     }
+                    ArrayList<String> urls2 = new ArrayList<>();
+                    urls2.addAll(urls);
+                    IntentFilter intentFilter = new IntentFilter(CachePreLoadService.URL_CACHE_ACTION);
+                    cacheReceiver = new CacheReceiver(urls2);
+                    context.registerReceiver(cacheReceiver, intentFilter);
 //                    File cacheFile = new File(this.getCacheDir(), "cache_path_name");
 
                     CacheWebView.getCacheConfig().init(context, file.getPath(), 1024 * 1024 * 100, 1024 * 1024 * 10)
@@ -94,7 +120,23 @@ public class EnglishH5Cache {
                             @Override
                             public void run() {
 //                                loadUrl(index);
-                                CacheWebView.servicePreload(context, urls.get(index));
+                                String url = urls.get(index);
+                                int netWorkType = NetWorkHelper.getNetWorkState(context);
+                                boolean load = true;
+                                if (netWorkType == NetWorkHelper.NO_NETWORK) {
+                                    cacheReceiver.error(url);
+                                    load = false;
+                                } else if (netWorkType == NetWorkHelper.MOBILE_STATE) {
+                                    cacheReceiver.error(url);
+                                    load = false;
+                                }
+                                if (load) {
+                                    CacheWebView.servicePreload(context, url);
+                                } else {
+                                    if (cacheReceiver.urls.isEmpty()) {
+
+                                    }
+                                }
 //                                CacheWebView.cacheWebView(context).loadUrl(urls.get(index));
                             }
                         }, i * 5000);
@@ -118,6 +160,77 @@ public class EnglishH5Cache {
         });
     }
 
+    class CacheReceiver extends BroadcastReceiver {
+        ArrayList<String> urls = new ArrayList<>();
+        ArrayList<String> errorUrls = new ArrayList<>();
+        ArrayList<String> successUrls = new ArrayList<>();
+
+        public CacheReceiver(ArrayList<String> urls) {
+            this.urls = urls;
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int status = intent.getIntExtra("status", 0);
+            String url = intent.getStringExtra("url");
+            long time = intent.getLongExtra("time", -1);
+            if (status == 0) {
+                success(url);
+                ifOnEnd();
+            } else {
+                error(url);
+            }
+            Loger.d(TAG, "onReceive:status=" + status + ",time=" + time + ",url=" + url);
+        }
+
+        private void success(String url) {
+            urls.remove(url);
+            successUrls.add(url);
+            Loger.d(TAG, "onReceive:success:urls=" + urls.size() + ",errorUrls=" + errorUrls.size());
+        }
+
+        private void error(String url) {
+            urls.remove(url);
+            errorUrls.add(url);
+            Loger.d(TAG, "onReceive:error:urls=" + urls.size() + ",errorUrls=" + errorUrls.size());
+            ifOnEnd();
+        }
+
+        private void ifOnEnd() {
+            if (urls.isEmpty()) {
+                Loger.d(TAG, "onReceive:ifOnEnd:errorUrls=" + errorUrls.size() + ",successUrls=" + successUrls.size());
+                if (errorUrls.isEmpty()) {
+                    context.unregisterReceiver(this);
+                    Intent intent = new Intent(context, CachePreLoadService.class);
+                    context.stopService(intent);
+                    cacheReceiver = null;
+                }
+            }
+        }
+    }
+
+    public void destory() {
+        Intent intent = new Intent(context, CachePreLoadService.class);
+        context.stopService(intent);
+        if(cacheReceiver!=null){
+            context.unregisterReceiver(cacheReceiver);
+        }
+    }
+
+    public void onNetWorkChange(int netWorkType) {
+        this.netWorkType = netWorkType;
+        if (netWorkType == NetWorkHelper.NO_NETWORK) {
+            return;
+        } else if (netWorkType == NetWorkHelper.MOBILE_STATE) {
+            return;
+        }
+        if (cacheReceiver != null) {
+            Loger.d(TAG, "onNetWorkChange:urls=" + cacheReceiver.urls.size() + ",errorUrls=" + cacheReceiver.errorUrls.size());
+            if (cacheReceiver.urls.isEmpty() && !cacheReceiver.errorUrls.isEmpty()) {
+
+            }
+        }
+    }
 //    private void loadUrl(int i) {
 //        String url = urls.get(i);
 //        final View view = LayoutInflater.from(context).inflate(R.layout.page_livevideo_h5_courseware_web, bottomContent, false);

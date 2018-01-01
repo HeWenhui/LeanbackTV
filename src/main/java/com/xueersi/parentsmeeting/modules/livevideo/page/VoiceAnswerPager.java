@@ -335,6 +335,7 @@ public class VoiceAnswerPager extends BasePager {
 //            }, 1500);
         } else if (resultEntity.getErrorNo() == ResultCode.WEBSOCKET_TIME_OUT || resultEntity.getErrorNo() == ResultCode.NETWORK_FAIL
                 || resultEntity.getErrorNo() == ResultCode.WEBSOCKET_CONN_REFUSE) {
+            int netWorkType = NetWorkHelper.getNetWorkState(mContext);
             if (netWorkType == NetWorkHelper.NO_NETWORK) {
                 rlSpeectevalTip.setVisibility(View.VISIBLE);
                 ivSpeectevalTip.setImageResource(R.drawable.bg_livevideo_speecteval_tip1);

@@ -45,6 +45,7 @@ import com.xueersi.xesalib.umsagent.UmsConstants;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
+import com.xueersi.xesalib.utils.string.ConstUtils;
 import com.xueersi.xesalib.utils.string.StringUtils;
 
 import org.json.JSONArray;
@@ -55,10 +56,13 @@ import org.xutils.xutils.ex.HttpException;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -1687,10 +1691,6 @@ public class LiveBll extends BaseBll {
         }
         mLogtf.d("onGetInfoSuccess:mode=" + mLiveTopic.getMode());
         liveGetPlayServerFirst();
-        if (mLiveType == LIVE_TYPE_LIVE) {
-            EnglishH5Cache englishH5Cache = new EnglishH5Cache(mContext, this, mLiveId);
-            englishH5Cache.getCourseWareUrl();
-        }
     }
 
     /**
@@ -2932,7 +2932,10 @@ public class LiveBll extends BaseBll {
         entity.addBodyParam("userid", mGetInfo.getStuId());
         entity.addBodyParam("username", mGetInfo.getUname());
         entity.addBodyParam("channelname", channelname);
-        entity.addBodyParam("start", "" + openStartTime);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
+        Date date = new Date();
+        date.setTime(openStartTime);
+        entity.addBodyParam("start", "" + dateFormat.format(date));
         entity.addBodyParam("cost", "" + (cost / 1000));
         entity.addBodyParam("ccode", mServer.getCcode());
         entity.addBodyParam("pcode", mServer.getPcode());

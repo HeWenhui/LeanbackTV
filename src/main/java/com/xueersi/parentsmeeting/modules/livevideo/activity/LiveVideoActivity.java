@@ -31,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishSpeekBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ExpeBll;
@@ -158,6 +159,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     boolean audioRequest = false;
     SpeechEvaluatorUtils mIse;
     RankBll rankBll;
+    EnglishH5Cache englishH5Cache;
     /** 视频宽度 */
     public static final float VIDEO_WIDTH = 1280f;
     /** 视频高度 */
@@ -191,15 +193,13 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             return false;
         }
         Loger.d(TAG, "onVideoCreate:time1=" + (System.currentTimeMillis() - startTime));
+        long before = System.currentTimeMillis();
         initAllBll();
+        Loger.d(TAG, "onVideoCreate:time2=" + (System.currentTimeMillis() - before));
+        before = System.currentTimeMillis();
         initView();
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mLiveBll.getInfo();
-                Loger.d(TAG, "onVideoCreate:time2=" + (System.currentTimeMillis() - startTime));
-            }
-        });
+        mLiveBll.getInfo();
+        Loger.d(TAG, "onVideoCreate:time3=" + (System.currentTimeMillis() - before));
 //        SpeechAssessmentWebPager pager=new SpeechAssessmentWebPager(mContext,"","","",true,"",null);
 //        ((RelativeLayout)findViewById(R.id.rl_speech_test)).addView(pager.getRootView());
         return true;
@@ -226,6 +226,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         liveLazyBllCreat.setBottomContent(bottomContent);
         liveMessageBll.initView(bottomContent, true);
         Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
+        before = System.currentTimeMillis();
         //聊天
         //if (liveType != LiveBll.LIVE_TYPE_LECTURE) {
         //}
@@ -259,6 +260,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         if (rankBll != null) {
             rankBll.setVideoLayout(lp.width, lp.height);
         }
+        Loger.d(TAG, "initView:time2=" + (System.currentTimeMillis() - before));
         final View contentView = findViewById(android.R.id.content);
         contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -365,11 +367,13 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             rankBll = new RankBll(this);
             rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
             rankBll.setLiveBll(mLiveBll);
+            englishH5Cache = new EnglishH5Cache(this, mLiveBll, mVSectionID);
         }
         videoChatBll.setLiveBll(mLiveBll);
 
         liveLazyBllCreat = new LiveLazyBllCreat(this, mLiveBll);
         mLiveBll.setLiveLazyBllCreat(liveLazyBllCreat);
+
     }
 
     /**
@@ -804,6 +808,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             if (rankBll != null) {
                 rankBll.setGetInfo(mGetInfo);
             }
+            englishH5Cache.getCourseWareUrl();
         }
         //本场成就
         if (1 == getInfo.getIsAllowStar()) {
@@ -1227,6 +1232,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         Loger.i(TAG, "onEvent:netWorkType=" + event.netWorkType);
         videoChatBll.onNetWorkChange(event.netWorkType);
         mLiveBll.onNetWorkChange(event.netWorkType);
+        if (englishH5Cache != null) {
+            englishH5Cache.onNetWorkChange(event.netWorkType);
+        }
     }
 
     /**
@@ -1334,6 +1342,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         englishH5CoursewareBll.destroy();
         if (englishSpeekBll != null) {
             englishSpeekBll.destory();
+        }
+        if (englishH5Cache != null) {
+            englishH5Cache.destory();
         }
         super.onDestroy();
     }
