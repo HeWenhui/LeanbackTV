@@ -323,7 +323,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         });
     }
 
-
     protected boolean initData() {
         Intent intent = getIntent();
         courseId = intent.getStringExtra("courseId");

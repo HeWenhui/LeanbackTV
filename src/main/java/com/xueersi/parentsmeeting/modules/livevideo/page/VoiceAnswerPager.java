@@ -462,7 +462,7 @@ public class VoiceAnswerPager extends BasePager {
                     } else {
 //                        XESToastUtils.showToast(mContext, "重读");
                         rlSpeectevalTip.setVisibility(View.VISIBLE);
-                        tvSpeectevalTip.setText("认真些，\n再来一次吧（" + resultEntity.getCurStatus() + ")");
+                        tvSpeectevalTip.setText("认真些，\n再来一次吧(" + resultEntity.getCurStatus() + ")");
                         tvSpeectevalTip.setTag("8");
                         mView.postDelayed(new Runnable() {
                             @Override

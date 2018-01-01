@@ -113,7 +113,7 @@ public class LiveMessageBll implements RoomAction {
         mLiveMessagePager.getInfo = getInfo;
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(this);
+        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setLiveBll(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
         mLiveMessagePager.setIsRegister(isRegister);

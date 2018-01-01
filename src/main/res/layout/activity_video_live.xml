@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@id/rl_course_video_contentview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/white"
-                android:orientation="vertical">
+    android:id="@id/rl_course_video_contentview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@id/rl_course_video_content"
@@ -69,7 +69,7 @@
             android:id="@id/rl_course_video_first_backgroud"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/black">
+            android:background="#000000">
 
             <!-- 退出按钮 （横屏的时候变成竖屏，竖屏的时候退出当前Activity） -->
 
@@ -165,7 +165,7 @@
         </RelativeLayout>
     </RelativeLayout>
     <!--<RelativeLayout-->
-        <!--android:id="@+id/rl_speech_test"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"></RelativeLayout>-->
+    <!--android:id="@+id/rl_speech_test"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"></RelativeLayout>-->
 </RelativeLayout>

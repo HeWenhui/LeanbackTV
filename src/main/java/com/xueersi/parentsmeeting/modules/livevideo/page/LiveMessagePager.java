@@ -6,6 +6,8 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -497,17 +499,17 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     private void initFlower() {
         long before = System.currentTimeMillis();
-        ArrayList<FlowerEntity> flowerEntities = new ArrayList<>();
+        final ArrayList<FlowerEntity> flowerEntities = new ArrayList<>();
         flowerEntities.add(new FlowerEntity(FLOWERS_SMALL, flowsDrawTips[0], "1支玫瑰", 10));
         flowerEntities.add(new FlowerEntity(FLOWERS_MIDDLE, flowsDrawTips[1], "1束玫瑰", 50));
         flowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "1束蓝色妖姬", 100));
-        mFlowerWindow = new PopupWindow(mContext);
-        mFlowerWindow.setBackgroundDrawable(new BitmapDrawable());
-        mFlowerWindow.setOutsideTouchable(true);
-        mFlowerWindow.setFocusable(true);
+        PopupWindow flowerWindow = new PopupWindow(mContext);
+        flowerWindow.setBackgroundDrawable(new BitmapDrawable());
+        flowerWindow.setOutsideTouchable(true);
+        flowerWindow.setFocusable(true);
         flowerContentView = View.inflate(mContext, R.layout.pop_livevideo_message_flower, null);
-        mFlowerWindow.setContentView(flowerContentView);
-        mFlowerWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+        flowerWindow.setContentView(flowerContentView);
+        flowerWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
                 isHaveFlowers = false;
@@ -515,32 +517,40 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         });
         tvMessageGold = (TextView) flowerContentView.findViewById(R.id.tv_livevideo_message_gold);
         tvMessageGoldLable = (TextView) flowerContentView.findViewById(R.id.tv_livevideo_message_gold_lable);
-        LinearLayout llMessageFlower = (LinearLayout) flowerContentView.findViewById(R.id.ll_livevideo_message_flower);
-        LayoutInflater factory = LayoutInflater.from(mContext);
-        CompoundButtonGroup group = new CompoundButtonGroup();
+        final LinearLayout llMessageFlower = (LinearLayout) flowerContentView.findViewById(R.id.ll_livevideo_message_flower);
+        final LayoutInflater factory = LayoutInflater.from(mContext);
+        final CompoundButtonGroup group = new CompoundButtonGroup();
         Loger.i(TAG, "initFlower:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
+        mFlowerWindow = flowerWindow;
+        Handler handler = new Handler(Looper.getMainLooper());
         for (int i = 0; i < flowerEntities.size(); i++) {
-            final FlowerEntity entity = flowerEntities.get(i);
-            FlowerItem flowerItem = new FlowerItem(mContext);
-            View root = factory.inflate(flowerItem.getLayoutResId(), llMessageFlower, false);
-            flowerItem.initViews(root);
-            flowerItem.updateViews(flowerEntities.get(i), i, null);
-            llMessageFlower.addView(root);
-            group.addCheckBox((CheckBox) root.findViewById(R.id.ck_livevideo_message_flower), new CompoundButton
-                    .OnCheckedChangeListener() {
+            final int index = i;
+            handler.postDelayed(new Runnable() {
                 @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-                        flowerContentView.setTag(entity);
-                    } else {
-                        FlowerEntity entity2 = (FlowerEntity) flowerContentView.getTag();
-                        if (entity == entity2) {
-                            flowerContentView.setTag(null);
+                public void run() {
+                    final FlowerEntity entity = flowerEntities.get(index);
+                    FlowerItem flowerItem = new FlowerItem(mContext);
+                    View root = factory.inflate(flowerItem.getLayoutResId(), llMessageFlower, false);
+                    flowerItem.initViews(root);
+                    flowerItem.updateViews(flowerEntities.get(index), index, null);
+                    llMessageFlower.addView(root);
+                    group.addCheckBox((CheckBox) root.findViewById(R.id.ck_livevideo_message_flower), new CompoundButton
+                            .OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            if (isChecked) {
+                                flowerContentView.setTag(entity);
+                            } else {
+                                FlowerEntity entity2 = (FlowerEntity) flowerContentView.getTag();
+                                if (entity == entity2) {
+                                    flowerContentView.setTag(null);
+                                }
+                            }
                         }
-                    }
+                    });
                 }
-            });
+            }, i * 10);
         }
         Loger.i(TAG, "initFlower:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
@@ -599,8 +609,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 }
             }
         });
-        mFlowerWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        mFlowerWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        flowerWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        flowerWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         Loger.i(TAG, "initFlower:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
@@ -703,10 +713,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void setHaveFlowers(boolean haveFlowers) {
         super.setHaveFlowers(haveFlowers);
-        if (haveFlowers) {
-            mFlowerWindow.showAtLocation(btMessageFlowers, Gravity.BOTTOM, 0, 0);
-        } else {
-            mFlowerWindow.dismiss();
+        if (mFlowerWindow != null) {
+            if (haveFlowers) {
+                mFlowerWindow.showAtLocation(btMessageFlowers, Gravity.BOTTOM, 0, 0);
+            } else {
+                mFlowerWindow.dismiss();
+            }
         }
     }
 

@@ -298,7 +298,11 @@
     <item name="iv_livevideo_speecteval_encourage" type="id" />
     <item name="tv_livevideo_speecteval_encourage" type="id" />
     <item name="rl_livevideo_speecteval_bg" type="id" />
+    <item name="rl_livevideo_speecteval_countdown" type="id" />
     <item name="tv_livevideo_speecteval_countdown" type="id" />
+    <item name="tv_livevideo_speecteval_countdown2" type="id" />
+    <item name="tv_livevideo_speecteval_countdown3" type="id" />
+    <item name="tv_livevideo_speecteval_countdown4" type="id" />
     <item name="vwv_livevideo_speecteval_wave" type="id" />
     <item name="rl_livevideo_speecteval_error" type="id" />
     <item name="iv_livevideo_speecteval_error" type="id" />

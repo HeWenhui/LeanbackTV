@@ -69,11 +69,11 @@ public class EnglishH5Cache {
                 Loger.d(TAG, "getCourseWareUrl:onPmSuccess:jsonObject=" + jsonObject);
                 try {
                     JSONObject liveIdObj = jsonObject.getJSONObject(liveId);
-//                    JSONArray urlArray = liveIdObj.getJSONArray("url");
-//                    for (int i = 0; i < urlArray.length(); i++) {
-//                        String play_url = urlArray.getString(i);
-//                        urls.add(play_url);
-//                    }
+                    JSONArray urlArray = liveIdObj.getJSONArray("url");
+                    for (int i = 0; i < urlArray.length(); i++) {
+                        String play_url = urlArray.getString(i);
+                        urls.add(play_url);
+                    }
                     JSONArray infoArray = liveIdObj.getJSONArray("infos");
                     for (int i = 0; i < infoArray.length(); i++) {
                         JSONObject infoObj = infoArray.getJSONObject(i);
@@ -82,7 +82,7 @@ public class EnglishH5Cache {
                         String play_url = "https://live.xueersi.com/Live/coursewareH5/" + liveId + "/" + id + "/" + courseware_type
                                 + "/123456";
                         Loger.d(TAG, "getCourseWareUrl:onPmSuccess:play_url=" + play_url);
-                        urls.add(play_url);
+//                        urls.add(play_url);
                     }
 //                    File cacheFile = new File(this.getCacheDir(), "cache_path_name");
 
@@ -118,86 +118,86 @@ public class EnglishH5Cache {
         });
     }
 
-    private void loadUrl(int i) {
-        String url = urls.get(i);
-        final View view = LayoutInflater.from(context).inflate(R.layout.page_livevideo_h5_courseware_web, bottomContent, false);
-        final WebView webView = (WebView) view.findViewById(R.id.wv_livevideo_subject_web);
-        webView.setWebViewClient(new MyWebViewClient());
-        WebSettings webSetting = webView.getSettings();
-        File file = new File(cacheFile, liveId);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        webSetting.setCacheMode(WebSettings.LOAD_DEFAULT);
-        webSetting.setDatabasePath(cacheFile.getPath());
-        //设置 应用 缓存目录
-        webSetting.setAppCachePath(cacheFile.getPath());
-        //开启 DOM 存储功能
-        webSetting.setDomStorageEnabled(true);
-        //开启 数据库 存储功能
-        webSetting.setDatabaseEnabled(true);
-        //开启 应用缓存 功能
-        webSetting.setAppCacheEnabled(true);
-
-        webSetting.setJavaScriptEnabled(true);
-        webSetting.setDomStorageEnabled(true);
-        webSetting.setLoadWithOverviewMode(true);
-        webSetting.setBuiltInZoomControls(false);
-
-        view.setVisibility(View.GONE);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        bottomContent.addView(view, lp);
-        webView.loadUrl(url);
-        Loger.i(TAG, "loadUrl:url=" + url);
-        bottomContent.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                webView.destroy();
-                bottomContent.removeView(view);
-            }
-        }, 10000);
-    }
-
-    public class MyWebViewClient extends WebViewClient {
-        String failingUrl;
-
-        @Override
-        public void onPageFinished(final WebView view, String url) {
-            File file2 = new File(context.getCacheDir(), "org.chromium.android_webview");
-            Loger.i(TAG, "onPageFinished:url=" + url + ",size=" + FileUtils.getDirSize(file2));
-//            bottomContent.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    View view1 = (View) view.getParent();
-//                    bottomContent.removeView(view1);
-//                }
-//            }, 3000);
-            view.destroy();
-            View view1 = (View) view.getParent();
-            bottomContent.removeView(view1);
-        }
-
-        @Override
-        public void onPageStarted(WebView view, String url, Bitmap favicon) {
-//            Loger.i(TAG, "onPageStarted");
-        }
-
-        @Override
-        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            Loger.d(context, LogerTag.DEBUG_WEBVIEW_ERROR, TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
-                    "&&," + description, true);
-        }
-
-//        @Override
-//        public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-//            Loger.i(TAG, "shouldInterceptRequest:url=" + url);
-//            return super.shouldInterceptRequest(view, url);
+//    private void loadUrl(int i) {
+//        String url = urls.get(i);
+//        final View view = LayoutInflater.from(context).inflate(R.layout.page_livevideo_h5_courseware_web, bottomContent, false);
+//        final WebView webView = (WebView) view.findViewById(R.id.wv_livevideo_subject_web);
+//        webView.setWebViewClient(new MyWebViewClient());
+//        WebSettings webSetting = webView.getSettings();
+//        File file = new File(cacheFile, liveId);
+//        if (!file.exists()) {
+//            file.mkdirs();
 //        }
+//        webSetting.setCacheMode(WebSettings.LOAD_DEFAULT);
+//        webSetting.setDatabasePath(cacheFile.getPath());
+//        //设置 应用 缓存目录
+//        webSetting.setAppCachePath(cacheFile.getPath());
+//        //开启 DOM 存储功能
+//        webSetting.setDomStorageEnabled(true);
+//        //开启 数据库 存储功能
+//        webSetting.setDatabaseEnabled(true);
+//        //开启 应用缓存 功能
+//        webSetting.setAppCacheEnabled(true);
+//
+//        webSetting.setJavaScriptEnabled(true);
+//        webSetting.setDomStorageEnabled(true);
+//        webSetting.setLoadWithOverviewMode(true);
+//        webSetting.setBuiltInZoomControls(false);
+//
+//        view.setVisibility(View.GONE);
+//        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+//        bottomContent.addView(view, lp);
+//        webView.loadUrl(url);
+//        Loger.i(TAG, "loadUrl:url=" + url);
+//        bottomContent.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                webView.destroy();
+//                bottomContent.removeView(view);
+//            }
+//        }, 10000);
+//    }
 
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return true;
-        }
-    }
+//    public class MyWebViewClient extends WebViewClient {
+//        String failingUrl;
+//
+//        @Override
+//        public void onPageFinished(final WebView view, String url) {
+//            File file2 = new File(context.getCacheDir(), "org.chromium.android_webview");
+//            Loger.i(TAG, "onPageFinished:url=" + url + ",size=" + FileUtils.getDirSize(file2));
+////            bottomContent.postDelayed(new Runnable() {
+////                @Override
+////                public void run() {
+////                    View view1 = (View) view.getParent();
+////                    bottomContent.removeView(view1);
+////                }
+////            }, 3000);
+//            view.destroy();
+//            View view1 = (View) view.getParent();
+//            bottomContent.removeView(view1);
+//        }
+//
+//        @Override
+//        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+////            Loger.i(TAG, "onPageStarted");
+//        }
+//
+//        @Override
+//        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+//            Loger.d(context, LogerTag.DEBUG_WEBVIEW_ERROR, TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
+//                    "&&," + description, true);
+//        }
+//
+////        @Override
+////        public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+////            Loger.i(TAG, "shouldInterceptRequest:url=" + url);
+////            return super.shouldInterceptRequest(view, url);
+////        }
+//
+//        @Override
+//        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//            view.loadUrl(url);
+//            return true;
+//        }
+//    }
 }
