@@ -72,6 +72,7 @@ import okhttp3.Response;
  */
 public class LiveBll extends BaseBll {
     private String TAG = "LiveBllLog";
+    LiveLazyBllCreat liveLazyBllCreat;
     private QuestionAction mQuestionAction;
     private RollCallAction mRollCallAction;
     private PraiseOrEncourageAction mPraiseOrEncourageAction;
@@ -197,6 +198,10 @@ public class LiveBll extends BaseBll {
         if (type != LIVE_TYPE_LIVE) {
             mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         }
+    }
+
+    public void setLiveLazyBllCreat(LiveLazyBllCreat liveLazyBllCreat) {
+        this.liveLazyBllCreat = liveLazyBllCreat;
     }
 
     /**
@@ -712,6 +717,17 @@ public class LiveBll extends BaseBll {
                             mQuestionAction.onExamStop();
                         }
                     }
+//                    if (liveVoteAction == null && liveLazyBllCreat != null) {
+//                        liveLazyBllCreat.createLiveVoteAction();
+//                    }
+//                    if (liveVoteAction != null) {
+//                        LiveTopic.VoteEntity voteEntity = mainRoomstatus.getVoteEntity();
+//                        if (voteEntity != null) {
+//                            liveVoteAction.voteStart(voteEntity, false);
+//                        } else {
+//                            liveVoteAction.onCancle();
+//                        }
+//                    }
                     if (englishSpeekAction != null) {
                         boolean openDbEnergy = mainRoomstatus.isOpenDbEnergy();
                         if (openDbEnergy) {
@@ -1292,15 +1308,51 @@ public class LiveBll extends BaseBll {
                     case XESCODE.VOTE_START: {
                         msg += ",VOTE_START";
                         String open = object.optString("open");
-                        if (liveVoteAction != null) {
-                            liveVoteAction = new LiveVoteBll(mContext);
+                        if (liveVoteAction == null && liveLazyBllCreat != null) {
+                            liveLazyBllCreat.createLiveVoteAction();
                         }
-                        if ("on".equals(open)) {
+                        if (liveVoteAction != null) {
+                            String choiceId = object.getString("choiceId");
                             int choiceType = object.optInt("choiceType");
                             int choiceNum = object.optInt("choiceNum");
-                            liveVoteAction.voteStart(choiceType, choiceNum);
-                        } else if ("off".equals(open)) {
-                            liveVoteAction.voteStop();
+                            LiveTopic.VoteEntity voteEntity = new LiveTopic.VoteEntity();
+                            voteEntity.setChoiceNum(choiceNum);
+                            voteEntity.setChoiceType(choiceType);
+                            voteEntity.setChoiceId(choiceId);
+                            if ("on".equals(open)) {
+                                liveVoteAction.voteStart(voteEntity);
+                            } else if ("off".equals(open)) {
+                                ArrayList<LiveTopic.VoteResult> voteResults = voteEntity.getVoteResults();
+                                JSONArray result = object.getJSONArray("result");
+                                int total = 0;
+                                for (int i = 0; i < result.length(); i++) {
+                                    LiveTopic.VoteResult voteResult = new LiveTopic.VoteResult();
+                                    voteResult.setPople(result.getInt(i));
+                                    total += voteResult.getPople();
+                                    voteResults.add(voteResult);
+                                }
+                                voteEntity.setTotal(total);
+                                liveVoteAction.voteStop(voteEntity);
+                            }
+                        }
+                        break;
+                    }
+                    case XESCODE.VOTE_START_JOIN: {
+                        msg += ",VOTE_START_JOIN";
+                        String open = object.optString("open");
+                        if (liveVoteAction == null && liveLazyBllCreat != null) {
+                            liveLazyBllCreat.createLiveVoteAction();
+                        }
+                        if (liveVoteAction != null) {
+                            String choiceId = object.getString("choiceId");
+                            int choiceType = object.optInt("choiceType");
+                            int choiceNum = object.optInt("choiceNum");
+                            LiveTopic.VoteEntity voteEntity = new LiveTopic.VoteEntity();
+                            voteEntity.setChoiceNum(choiceNum);
+                            voteEntity.setChoiceType(choiceType);
+                            voteEntity.setChoiceId(choiceId);
+                            int answer = object.getInt("answer");
+                            liveVoteAction.voteJoin(voteEntity, answer);
                         }
                         break;
                     }
@@ -1633,7 +1685,7 @@ public class LiveBll extends BaseBll {
         mLogtf.d("onGetInfoSuccess:mode=" + mLiveTopic.getMode());
         liveGetPlayServerFirst();
         if (mLiveType == LIVE_TYPE_LIVE) {
-            EnglishH5Cache englishH5Cache = new EnglishH5Cache(mContext,this, mLiveId);
+            EnglishH5Cache englishH5Cache = new EnglishH5Cache(mContext, this, mLiveId);
             englishH5Cache.getCourseWareUrl();
         }
     }
@@ -2382,6 +2434,19 @@ public class LiveBll extends BaseBll {
         } catch (Exception e) {
             // Loger.e(TAG, "understand", e);
             mLogtf.e("sendDBStudent", e);
+        }
+    }
+
+    public void sendVote(int answer) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type", "" + XESCODE.VOTE_SEND);
+            jsonObject.put("id", "" + mGetInfo.getStuId());
+            jsonObject.put("answer", "" + answer);
+            mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
+        } catch (Exception e) {
+            // Loger.e(TAG, "understand", e);
+            mLogtf.e("sendVote", e);
         }
     }
 

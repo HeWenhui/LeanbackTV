@@ -92,4 +92,8 @@ public interface XESCODE {
     int XCR_ROOM_DB_CLOSE = 194;
     /** 投票开始 */
     int VOTE_START = 210;
+    /** 投票开始，学生重新进入 */
+    int VOTE_START_JOIN = 211;
+    /** 投票发送给老师答案 */
+    int VOTE_SEND = 212;
 }

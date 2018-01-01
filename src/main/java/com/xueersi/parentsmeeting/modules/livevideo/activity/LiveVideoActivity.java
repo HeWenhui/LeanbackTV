@@ -38,6 +38,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.H5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLazyBllCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -141,6 +142,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     private boolean isPlay = false;
     /** video缓存时间 */
     private long videoCachedDuration;
+    LiveLazyBllCreat liveLazyBllCreat;
     ExpeBll expeBll;
     LiveMessageBll liveMessageBll;
     VideoChatBll videoChatBll;
@@ -153,7 +155,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     EnglishH5CoursewareBll englishH5CoursewareBll;
     LiveAchievementBll starBll;
     EnglishSpeekBll englishSpeekBll;
-    LiveVoteBll liveVoteBll;
     boolean audioRequest = false;
     SpeechEvaluatorUtils mIse;
     RankBll rankBll;
@@ -181,20 +182,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         mLogtf.clear();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         liveType = getIntent().getIntExtra("type", 0);
-        LiveMediaControllerBottom liveMediaControllerBottom = new LiveMediaControllerBottom(this, mMediaController, this);
-        liveMessageBll = new LiveMessageBll(this, liveType);
-        liveMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-        questionBll = new QuestionBll(this);
-        liveMessageBll.setQuestionBll(questionBll);
-        videoChatBll = new VideoChatBll(this);
-        rollCallBll = new RollCallBll(this);
-        praiseOrEncourageBll = new PraiseOrEncourageBll(this);
-        redPackageBll = new RedPackageBll(this);
-        learnReportBll = new LearnReportBll(this);
-        h5CoursewareBll = new H5CoursewareBll(this);
-        englishH5CoursewareBll = new EnglishH5CoursewareBll(this);
-        questionBll.setShareDataManager(mShareDataManager);
-        questionBll.setPraiseOrEncourageBll(praiseOrEncourageBll);
         // 设置不可自动横竖屏
         setAutoOrientation(false);
         AppBll.getInstance().registerAppEvent(this);
@@ -203,27 +190,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             onUserBackPressed();
             return false;
         }
-        liveMessageBll.setLiveBll(mLiveBll);
-        rollCallBll.setLiveBll(mLiveBll);
-        redPackageBll.setLiveBll(mLiveBll);
-        learnReportBll.setLiveBll(mLiveBll);
-        questionBll.setLiveBll(mLiveBll);
-        questionBll.setVSectionID(mVSectionID);
-        redPackageBll.setVSectionID(mVSectionID);
-        questionBll.setLiveType(liveType);
-        questionBll.initData();
-        englishH5CoursewareBll.setShareDataManager(mShareDataManager);
-        englishH5CoursewareBll.setLiveType(liveType);
-        englishH5CoursewareBll.setVSectionID(mVSectionID);
-        englishH5CoursewareBll.setLiveBll(mLiveBll);
-        englishH5CoursewareBll.initData();
-        if (liveType == LiveBll.LIVE_TYPE_LIVE) {
-            rankBll = new RankBll(this);
-            rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
-            rankBll.setLiveBll(mLiveBll);
-        }
-        videoChatBll.setLiveBll(mLiveBll);
         Loger.d(TAG, "onVideoCreate:time1=" + (System.currentTimeMillis() - startTime));
+        initAllBll();
         initView();
         mHandler.post(new Runnable() {
             @Override
@@ -255,7 +223,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         bottomContent.setVisibility(View.VISIBLE);
         //聊天
         long before = System.currentTimeMillis();
-
+        liveLazyBllCreat.setBottomContent(bottomContent);
         liveMessageBll.initView(bottomContent, true);
         Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
         //聊天
@@ -345,6 +313,25 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             Toast.makeText(this, "直播类型不支持", Toast.LENGTH_SHORT).show();
             return false;
         }
+        return true;
+    }
+
+    private void initAllBll() {
+        LiveMediaControllerBottom liveMediaControllerBottom = new LiveMediaControllerBottom(this, mMediaController, this);
+        liveMessageBll = new LiveMessageBll(this, liveType);
+        liveMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+        questionBll = new QuestionBll(this);
+        liveMessageBll.setQuestionBll(questionBll);
+        videoChatBll = new VideoChatBll(this);
+        rollCallBll = new RollCallBll(this);
+        praiseOrEncourageBll = new PraiseOrEncourageBll(this);
+        redPackageBll = new RedPackageBll(this);
+        learnReportBll = new LearnReportBll(this);
+        h5CoursewareBll = new H5CoursewareBll(this);
+        englishH5CoursewareBll = new EnglishH5CoursewareBll(this);
+        questionBll.setShareDataManager(mShareDataManager);
+        questionBll.setPraiseOrEncourageBll(praiseOrEncourageBll);
+
         LogToFile.liveBll = mLiveBll;
         mPlayStatistics = mLiveBll.getVideoListener();
         mLiveBll.setQuestionAction(questionBll);
@@ -360,7 +347,30 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         videoChatBll.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
         mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
         setMediaControllerBottomParam(videoView.getLayoutParams());
-        return true;
+
+        liveMessageBll.setLiveBll(mLiveBll);
+        rollCallBll.setLiveBll(mLiveBll);
+        redPackageBll.setLiveBll(mLiveBll);
+        learnReportBll.setLiveBll(mLiveBll);
+        questionBll.setLiveBll(mLiveBll);
+        questionBll.setVSectionID(mVSectionID);
+        redPackageBll.setVSectionID(mVSectionID);
+        questionBll.setLiveType(liveType);
+        questionBll.initData();
+        englishH5CoursewareBll.setShareDataManager(mShareDataManager);
+        englishH5CoursewareBll.setLiveType(liveType);
+        englishH5CoursewareBll.setVSectionID(mVSectionID);
+        englishH5CoursewareBll.setLiveBll(mLiveBll);
+        englishH5CoursewareBll.initData();
+        if (liveType == LiveBll.LIVE_TYPE_LIVE) {
+            rankBll = new RankBll(this);
+            rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
+            rankBll.setLiveBll(mLiveBll);
+        }
+        videoChatBll.setLiveBll(mLiveBll);
+
+        liveLazyBllCreat = new LiveLazyBllCreat(this, mLiveBll);
+        mLiveBll.setLiveLazyBllCreat(liveLazyBllCreat);
     }
 
     /**
@@ -795,11 +805,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             if (rankBll != null) {
                 rankBll.setGetInfo(mGetInfo);
             }
-        }
-        if (LiveVideoConfig.IS_SCIENCE) {
-            liveVoteBll = new LiveVoteBll(this);
-            liveVoteBll.initView(bottomContent);
-            mLiveBll.setLiveVoteAction(liveVoteBll);
         }
         //本场成就
         if (1 == getInfo.getIsAllowStar()) {

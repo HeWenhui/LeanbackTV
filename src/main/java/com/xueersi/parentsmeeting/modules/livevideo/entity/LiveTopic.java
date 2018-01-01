@@ -134,6 +134,7 @@ public class LiveTopic {
         private JSONArray students;
         private boolean classmateChange = true;
         private boolean openDbEnergy;
+        private LiveTopic.VoteEntity voteEntity;
 
         public RoomStatusEntity() {
             classbegin = false;
@@ -285,6 +286,14 @@ public class LiveTopic {
         public void setOpenDbEnergy(boolean openDbEnergy) {
             this.openDbEnergy = openDbEnergy;
         }
+
+        public VoteEntity getVoteEntity() {
+            return voteEntity;
+        }
+
+        public void setVoteEntity(VoteEntity voteEntity) {
+            this.voteEntity = voteEntity;
+        }
     }
 
     /**
@@ -428,6 +437,67 @@ public class LiveTopic {
 
         public void setSpeechContent(String speechContent) {
             this.speechContent = speechContent;
+        }
+    }
+
+    public static class VoteEntity {
+        private String choiceId;//  "choiceId": "1210471514786221416",
+        private int choiceNum;//        "choiceNum": "4",
+        private int choiceType;// "choiceType": "1"
+        int total = 0;
+        private ArrayList<VoteResult> voteResults = new ArrayList<>();
+
+        public String getChoiceId() {
+            return choiceId;
+        }
+
+        public void setChoiceId(String choiceId) {
+            this.choiceId = choiceId;
+        }
+
+        public int getChoiceNum() {
+            return choiceNum;
+        }
+
+        public void setChoiceNum(int choiceNum) {
+            this.choiceNum = choiceNum;
+        }
+
+        public int getChoiceType() {
+            return choiceType;
+        }
+
+        public void setChoiceType(int choiceType) {
+            this.choiceType = choiceType;
+        }
+
+        public ArrayList<VoteResult> getVoteResults() {
+            return voteResults;
+        }
+
+        public int getTotal() {
+            return total;
+        }
+
+        public void setTotal(int total) {
+            this.total = total;
+        }
+
+        @Override
+        public String toString() {
+            return "choiceId=" + choiceId + ",choiceNum=" + choiceNum + ",choiceType=" + choiceType;
+        }
+    }
+
+    public static class VoteResult {
+        private int pople;
+
+        public int getPople() {
+            return pople;
+        }
+
+        public void setPople(int pople) {
+            this.pople = pople;
         }
     }
 }
