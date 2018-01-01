@@ -105,20 +105,23 @@ public class LiveVoteBll implements LiveVoteAction {
 //            pb_livevideo_vote_result_item.setProgressDrawable(drawable);
             final ProgressBar pb_livevideo_vote_result_item = (ProgressBar) convertView.findViewById(R.id.pb_livevideo_vote_result_item);
             pb_livevideo_vote_result_item.setMax(voteEntity.getTotal());
-//            pb_livevideo_vote_result_item.setProgress(result.getPople());
             int newProgress = result.getPople();
-            final ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, newProgress);
-            final float finalNewProgress = newProgress;
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float fraction = animation.getAnimatedFraction();
-                    float oldProgress = (finalNewProgress) * fraction;
-                    pb_livevideo_vote_result_item.setProgress((int) oldProgress);
-                }
-            });
-            valueAnimator.setDuration(1000);
-            valueAnimator.start();
+            if (newProgress > 1) {
+                final ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, newProgress);
+                final float finalNewProgress = newProgress;
+                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        float fraction = animation.getAnimatedFraction();
+                        float oldProgress = (finalNewProgress) * fraction;
+                        pb_livevideo_vote_result_item.setProgress((int) oldProgress);
+                    }
+                });
+                valueAnimator.setDuration(1000);
+                valueAnimator.start();
+            } else {
+                pb_livevideo_vote_result_item.setProgress(newProgress);
+            }
         }
         if (answer > 0) {
             View convertView = linearLayout.getChildAt(answer - 1);

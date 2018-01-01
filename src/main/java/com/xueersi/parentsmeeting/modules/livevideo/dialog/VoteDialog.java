@@ -10,9 +10,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.xesalib.view.alertdialog.BaseAlertDialog;
 
 /**
- * Created by lyqai on 2018/1/1.
+ * Created by linyuqiang on 2018/1/1.
+ * 投票锁屏对话框
  */
-
 public class VoteDialog extends BaseAlertDialog {
     public VoteDialog(Context context, BaseApplication application, boolean isSystem) {
         super(context, application, isSystem);
