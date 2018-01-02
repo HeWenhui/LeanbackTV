@@ -6,8 +6,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:background="@color/transparent_80"
-        android:layout_alignParentBottom="true">
+        android:clickable="true">
 
         <LinearLayout
             android:id="@id/il_livevideo_vote_choice"
