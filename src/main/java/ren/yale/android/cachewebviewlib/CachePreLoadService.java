@@ -64,8 +64,8 @@ public class CachePreLoadService extends Service {
 //        if (!NetworkUtils.isConnected(this.getApplicationContext())) {
 //            return super.onStartCommand(intent, flags, startId);
 //        }
-
-        if (!TextUtils.isEmpty(url) && mLastFinish) {
+//        if (!TextUtils.isEmpty(url) && mLastFinish) {
+        if (!TextUtils.isEmpty(url)) {
             mLastFinish = false;
             CacheWebView cacheWebView = new CacheWebView(this.getApplicationContext());
             cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.FORCE);
