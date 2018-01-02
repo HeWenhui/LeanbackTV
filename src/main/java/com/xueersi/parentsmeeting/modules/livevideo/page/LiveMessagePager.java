@@ -136,7 +136,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         this.otherLiveMessageEntities = otherLiveMessageEntities;
         Resources resources = context.getResources();
         nameColors[0] = resources.getColor(R.color.green);
-        nameColors[1] = resources.getColor(R.color.light_red);
+        nameColors[1] = resources.getColor(R.color.COLOR_E74C3C);
         nameColors[2] = resources.getColor(R.color.COLOR_20ABFF);
         initListener();
         initData();

@@ -15,7 +15,7 @@
             android:layout_height="40dp"
             android:gravity="center"
             android:text="互动题"
-            android:textColor="@color/black66" />
+            android:textColor="@color/COLOR_333333" />
 
         <View
             android:id="@id/v_livevideo_question_line"

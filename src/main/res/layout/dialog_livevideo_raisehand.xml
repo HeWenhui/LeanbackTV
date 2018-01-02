@@ -63,7 +63,7 @@
                                 android:text="0人"/>
 
                             <TextView
-                                style="@style/text_font13_middle_grey_style"
+                                style="@style/text_font13_666666_style"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/tv_livevideo_raise_hands_count_lable"
@@ -134,7 +134,7 @@
                                 android:text="你确定要放弃本次举手？"/>
 
                             <TextView
-                                style="@style/text_font13_middle_grey_style"
+                                style="@style/text_font13_666666_style"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/tv_livevideo_raise_hands_giveupask"
@@ -209,7 +209,7 @@
                             android:text="很遗憾！"/>
 
                         <TextView
-                            style="@style/text_font13_middle_grey_style"
+                            style="@style/text_font13_666666_style"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tv_livevideo_raise_hands_fail"
@@ -254,7 +254,7 @@
                             android:text="恭喜你！"/>
 
                         <TextView
-                            style="@style/text_font13_middle_grey_style"
+                            style="@style/text_font13_666666_style"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tv_livevideo_raise_hands_success"

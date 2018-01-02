@@ -116,7 +116,7 @@
 
                 <TextView
                     android:id="@id/tv_course_video_loading_content"
-                    style="@style/text_font12_white_style"
+                    style="@style/text_font12_ffffff_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -125,7 +125,7 @@
 
                 <TextView
                     android:id="@id/tv_course_video_loading_fail"
-                    style="@style/text_font12_white_style"
+                    style="@style/text_font12_ffffff_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"

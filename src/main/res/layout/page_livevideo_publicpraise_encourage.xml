@@ -25,7 +25,7 @@
             android:layout_marginTop="107dp"
             android:layout_toRightOf="@id/iv_livevideo_encourage"
             android:text="小新新同学"
-            android:textColor="@color/black66"
+            android:textColor="@color/COLOR_333333"
             android:textSize="20sp"/>
     </RelativeLayout>
 </RelativeLayout>

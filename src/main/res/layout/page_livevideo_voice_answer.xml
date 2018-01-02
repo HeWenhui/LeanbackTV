@@ -16,7 +16,7 @@
 
             <TextView
                 android:id="@id/tv_livevideo_voiceans_title"
-                style="@style/text_font12_white_style"
+                style="@style/text_font12_ffffff_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -24,7 +24,7 @@
 
             <TextView
                 android:id="@id/tv_livevideo_voiceans_switch"
-                style="@style/text_font12_white_style"
+                style="@style/text_font12_ffffff_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"

@@ -363,7 +363,7 @@ public class SpeechAssessmentPager extends BasePager {
             //颜色变化
             final AtomicInteger color = new AtomicInteger(0);
             if (evalEntity.getNowTime() > evalEntity.getEndTime()) {
-                tvSpeectevalEvaltime.setTextColor(mContext.getResources().getColor(R.color.light_red));
+                tvSpeectevalEvaltime.setTextColor(mContext.getResources().getColor(R.color.COLOR_E74C3C));
                 color.set(1);
             } else {
                 tvSpeectevalEvaltime.setTextColor(mContext.getResources().getColor(R.color.color_6462a2));
@@ -377,7 +377,7 @@ public class SpeechAssessmentPager extends BasePager {
                         evalEntity.setNowTime(evalEntity.getNowTime() + 1);
                         if (evalEntity.getNowTime() > evalEntity.getEndTime()) {
                             if (color.get() != 1) {
-                                tvSpeectevalEvaltime.setTextColor(mContext.getResources().getColor(R.color.light_red));
+                                tvSpeectevalEvaltime.setTextColor(mContext.getResources().getColor(R.color.COLOR_E74C3C));
                                 color.set(1);
                             }
                         } else {

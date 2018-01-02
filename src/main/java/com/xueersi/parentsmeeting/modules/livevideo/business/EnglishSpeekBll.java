@@ -220,7 +220,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
 
     private void setTime(int second) {
         SpannableString sp = new SpannableString("再说" + second + "秒获得");
-        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.pingjia_yellow_color));
+        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.COLOR_FFFF00));
         sp.setSpan(foregroundColorSpan, 2, 2 + ("" + second).length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         tv_livevideo_english_time2.setText(sp);
     }

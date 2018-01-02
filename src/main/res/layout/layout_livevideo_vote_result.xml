@@ -59,7 +59,7 @@
 
         <TextView
             android:id="@id/tv_livevideo_vote_result_mine"
-            style="@style/text_font14_white_style"
+            style="@style/text_font14_ffffff_style"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"

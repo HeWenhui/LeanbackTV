@@ -37,6 +37,6 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:text="胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌胡歌"
-        android:textColor="@color/pingjia_yellow_color"/>
+        android:textColor="@color/COLOR_FFFF00"/>
 
 </RelativeLayout>

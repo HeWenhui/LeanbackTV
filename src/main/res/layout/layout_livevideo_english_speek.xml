@@ -11,7 +11,7 @@
 
         <TextView
             android:id="@id/tv_livevideo_english_lable"
-            style="@style/text_font10_white_style"
+            style="@style/text_font10_ffffff_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -20,7 +20,7 @@
 
         <TextView
             android:id="@id/tv_livevideo_english_time"
-            style="@style/text_font10_white_style"
+            style="@style/text_font10_ffffff_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -85,7 +85,7 @@
 
         <TextView
             android:id="@id/tv_livevideo_english_speak_error_tip"
-            style="@style/text_font11_white_style"
+            style="@style/text_font11_ffffff_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"

@@ -128,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="在线0人"
-                android:textColor="@color/black66" />
+                android:textColor="@color/COLOR_333333" />
 
             <ImageView
                 android:id="@id/iv_livevideo_message_clean"

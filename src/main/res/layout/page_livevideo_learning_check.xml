@@ -26,7 +26,7 @@
             android:layout_marginLeft="19dp"
             android:layout_marginTop="42dp"
             android:text="XX同学，我是XX老师"
-            android:textColor="@color/black66"
+            android:textColor="@color/COLOR_333333"
             android:textSize="16sp"
             android:textStyle="bold"/>
 
@@ -49,7 +49,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="34dp"
             android:text="本课堂的学习报告已经生成"
-            android:textColor="@color/light_red"
+            android:textColor="@color/COLOR_E74C3C"
             android:textSize="20sp"/>
 
         <TextView
@@ -60,7 +60,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="22dp"
             android:text="同时，别忘了对AA老师的教学进行点评"
-            android:textColor="@color/black77"
+            android:textColor="@color/COLOR_666666"
             android:textSize="14sp"/>
 
         <Button

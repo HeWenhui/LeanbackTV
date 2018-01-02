@@ -359,7 +359,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                     public void initViews(View root) {
                         tvMessageItem = (TextView) root.findViewById(R.id.tv_livevideo_message_item);
                         tvMessageItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
-                        tvMessageItem.setTextColor(mContext.getResources().getColor(R.color.black66));
+                        tvMessageItem.setTextColor(mContext.getResources().getColor(R.color.COLOR_333333));
                     }
 
                     @Override

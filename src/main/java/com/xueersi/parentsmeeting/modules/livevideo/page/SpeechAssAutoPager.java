@@ -468,7 +468,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                             progColor = Color.RED;
                             gradientDrawable.setColor(progColor);
                             ivSpeectevalTimeEmoji.setImageResource(R.drawable.bg_livevideo_speecteval_time_emoji2);
-                            tvSpeectevalTime.setTextColor(mContext.getResources().getColor(R.color.light_red));
+                            tvSpeectevalTime.setTextColor(mContext.getResources().getColor(R.color.COLOR_E74C3C));
                             tvSpeectevalTime.setText("要快点读啦~");
                         }
                     }
@@ -489,7 +489,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     tvSpeectevalTime.setText("完成啦！");
                 } else {
                     ivSpeectevalTimeEmoji.setImageResource(R.drawable.bg_livevideo_speecteval_time_emoji2);
-                    tvSpeectevalTime.setTextColor(mContext.getResources().getColor(R.color.light_red));
+                    tvSpeectevalTime.setTextColor(mContext.getResources().getColor(R.color.COLOR_E74C3C));
                     tvSpeectevalTime.setText("要快点读啦~");
                 }
                 progressBar.setVisibility(View.GONE);
@@ -879,14 +879,14 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     private void wordChangeColor(int score, List<PhoneScore> lstPhonemeScore) {
-        int red = mContext.getResources().getColor(R.color.color_ff4343);
+        int COLOR_FF0000 = mContext.getResources().getColor(R.color.COLOR_FF4343);
         int dark_selected = mContext.getResources().getColor(R.color.dark_selected);
         int green = 0xff2A9933;
         if (lstPhonemeScore.isEmpty()) {
             if (score > encourageScore) {
                 tvSpeectevalContent.setTextColor(green);
             } else if (score < 60) {
-                tvSpeectevalContent.setTextColor(red);
+                tvSpeectevalContent.setTextColor(COLOR_FF0000);
             } else {
                 tvSpeectevalContent.setTextColor(dark_selected);
             }
@@ -908,7 +908,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     spannable.setSpan(new ForegroundColorSpan(green), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 } else if (lstPhonemeScore.get(i).getScore() < 60) {
                     // 显示红色
-                    spannable.setSpan(new ForegroundColorSpan(red), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannable.setSpan(new ForegroundColorSpan(COLOR_FF0000), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 } else {
                     // 显示黑色
                     spannable.setSpan(new ForegroundColorSpan(dark_selected), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

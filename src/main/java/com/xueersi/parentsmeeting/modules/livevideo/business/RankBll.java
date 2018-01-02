@@ -50,7 +50,7 @@ public class RankBll {
 
     public RankBll(Activity liveVideoActivity) {
         this.liveVideoActivity = liveVideoActivity;
-        colorYellow = liveVideoActivity.getResources().getColor(R.color.pingjia_yellow_color);
+        colorYellow = liveVideoActivity.getResources().getColor(R.color.COLOR_FFFF00);
         colorWhite = liveVideoActivity.getResources().getColor(R.color.white);
     }
 

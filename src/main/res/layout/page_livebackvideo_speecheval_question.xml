@@ -21,7 +21,7 @@
 
         <TextView
             android:id="@id/tv_error_center_refresh_tip"
-            style="@style/text_font14_black_style"
+            style="@style/text_font14_333333_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/iv_error_center_refresh"
@@ -93,7 +93,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
                 android:text="1分1秒"
-                android:textColor="@color/light_red"
+                android:textColor="@color/COLOR_E74C3C"
                 android:textSize="10sp" />
         </RelativeLayout>
 
@@ -120,7 +120,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="7dp"
                 android:text="语句段落阅读"
-                android:textColor="@color/black66"
+                android:textColor="@color/COLOR_333333"
                 android:textSize="14dp" />
 
             <com.xueersi.xesalib.view.activity.browser.XESNoZoomWebView
@@ -129,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_livevideo_speecteval_evaltype"
                 android:layout_marginLeft="15dp"
-                android:textColor="@color/black66" />
+                android:textColor="@color/COLOR_333333" />
 
         </RelativeLayout>
 
@@ -178,7 +178,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="9dp"
-                android:textColor="@color/light_red"
+                android:textColor="@color/COLOR_E74C3C"
                 android:textSize="10sp"
                 android:visibility="gone" />
 
@@ -267,7 +267,7 @@
                 android:layout_marginTop="5dp"
                 android:gravity="center"
                 android:text="录音"
-                android:textColor="@color/light_red"
+                android:textColor="@color/COLOR_E74C3C"
                 android:textSize="10sp" />
         </RelativeLayout>
 
@@ -298,7 +298,7 @@
 
         <TextView
             android:id="@id/tv_data_loading_tip"
-            style="@style/text_font12_black66_style"
+            style="@style/text_font12_333333_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

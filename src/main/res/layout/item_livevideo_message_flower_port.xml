@@ -19,7 +19,7 @@
         android:layout_centerHorizontal="true"
         android:includeFontPadding="false"
         android:singleLine="true"
-        android:textColor="@color/black66"
+        android:textColor="@color/COLOR_333333"
         android:textSize="14sp"/>
 
     <TextView

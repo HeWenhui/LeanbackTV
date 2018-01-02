@@ -14,7 +14,7 @@
 
         <TextView
             android:id="@id/tv_livevideo_english_tip"
-            style="@style/text_font11_black66_style"
+            style="@style/text_font11_333333_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"

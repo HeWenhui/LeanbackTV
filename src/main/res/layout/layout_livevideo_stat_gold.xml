@@ -6,7 +6,7 @@
 
     <TextView
         android:id="@id/tv_livevideo_starinteract_lable"
-        style="@style/text_font10_white_style"
+        style="@style/text_font10_ffffff_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -31,7 +31,7 @@
 
         <TextView
             android:id="@id/tv_livevideo_starinteract_count"
-            style="@style/text_font10_white_style"
+            style="@style/text_font10_ffffff_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -39,7 +39,7 @@
 
         <TextView
             android:id="@id/tv_livevideo_starinteract_count_hind"
-            style="@style/text_font10_white_style"
+            style="@style/text_font10_ffffff_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -66,7 +66,7 @@
 
         <TextView
             android:id="@id/tv_livevideo_starinteract_gold_count"
-            style="@style/text_font10_white_style"
+            style="@style/text_font10_ffffff_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -74,7 +74,7 @@
 
         <TextView
             android:id="@id/tv_livevideo_starinteract_gold_hind"
-            style="@style/text_font10_white_style"
+            style="@style/text_font10_ffffff_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"

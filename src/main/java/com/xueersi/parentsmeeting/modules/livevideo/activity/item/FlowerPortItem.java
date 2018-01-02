@@ -56,7 +56,7 @@ public class FlowerPortItem implements AdapterItemInterface<FlowerEntity> {
         spanttt.setSpan(characterStyle, 0, spanttt.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         tvMessageFlower2.append(spanttt);
         spanttt = new SpannableString("金币");
-        characterStyle = new ForegroundColorSpan(context.getResources().getColor(R.color.black66));
+        characterStyle = new ForegroundColorSpan(context.getResources().getColor(R.color.COLOR_333333));
         spanttt.setSpan(characterStyle, 0, 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         tvMessageFlower2.append(spanttt);
         checkBox = (CheckBox) root.findViewById(R.id.ck_livevideo_message_flower);

@@ -177,7 +177,7 @@
 
                 <TextView
                     android:id="@id/tv_course_video_loading_content"
-                    style="@style/text_font12_white_style"
+                    style="@style/text_font12_ffffff_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -186,7 +186,7 @@
 
                 <TextView
                     android:id="@id/tv_course_video_loading_fail"
-                    style="@style/text_font12_white_style"
+                    style="@style/text_font12_ffffff_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -247,25 +247,25 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/text_font11_white_style"
+                        style="@style/text_font11_ffffff_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="签到时间："/>
 
                     <TextView
-                        style="@style/text_font11_white_style"
+                        style="@style/text_font11_ffffff_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="在线时长："/>
 
                     <TextView
-                        style="@style/text_font11_white_style"
+                        style="@style/text_font11_ffffff_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="正  确  率："/>
 
                     <TextView
-                        style="@style/text_font11_white_style"
+                        style="@style/text_font11_ffffff_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="组内排名："/>
@@ -282,28 +282,28 @@
 
                     <TextView
                         android:id="@id/tv_livevideo_student_check_time"
-                        style="@style/text_font11_white_style"
+                        style="@style/text_font11_ffffff_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=""/>
 
                     <TextView
                         android:id="@id/tv_livevideo_student_online"
-                        style="@style/text_font11_white_style"
+                        style="@style/text_font11_ffffff_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=""/>
 
                     <TextView
                         android:id="@id/tv_livevideo_student_radio"
-                        style="@style/text_font11_white_style"
+                        style="@style/text_font11_ffffff_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=""/>
 
                     <TextView
                         android:id="@id/tv_livevideo_student_team"
-                        style="@style/text_font11_white_style"
+                        style="@style/text_font11_ffffff_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=""/>
