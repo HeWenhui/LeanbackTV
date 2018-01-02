@@ -316,10 +316,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
         @Override
         public void onAnimationEnd(Animation animation) {
-            ViewGroup group = (ViewGroup) textView.getParent();
-            if (group != null) {
-                group.removeView(textView);
-            }
             textView.setVisibility(View.GONE);
             if (!tvCountDown.isEmpty()) {
                 mView.post(new Runnable() {
@@ -331,7 +327,8 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 });
             } else {
                 RelativeLayout rl_livevideo_speecteval_countdown = (RelativeLayout) mView.findViewById(R.id.rl_livevideo_speecteval_countdown);
-                group = (ViewGroup) rl_livevideo_speecteval_countdown.getParent();
+                rl_livevideo_speecteval_countdown.removeAllViews();
+                ViewGroup group = (ViewGroup) rl_livevideo_speecteval_countdown.getParent();
                 group.removeView(rl_livevideo_speecteval_countdown);
                 Loger.d(TAG, "onAnimationEnd:" + textView.getText() + ",group=null");
                 vwvSpeectevalWave.start();
@@ -520,6 +517,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         final int score = resultEntity.getScore();
         if (!isEnd) {
             if (score == 1) {
+                errorSetVisible();
                 tvSpeectevalError.setText("要认真些，再来一次哦！");
                 spStarResult.postDelayed(new Runnable() {
                     @Override
@@ -528,17 +526,18 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                         mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
                     }
                 }, 500);
+                return;
             } else if (score < 60) {
+                errorSetVisible();
                 tvSpeectevalError.setText("你可以说的更好，再来一次哦！");
-                if (!isEnd) {
-                    spStarResult.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            errorSetGone();
-                            mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
-                        }
-                    }, 500);
-                }
+                spStarResult.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        errorSetGone();
+                        mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
+                    }
+                }, 500);
+                return;
             }
         }
         tvSpeectevalError.removeCallbacks(autoUploadRunnable);
@@ -607,7 +606,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 e.printStackTrace();
             }
         }
-        rlSpeectevalEncourage.setVisibility(View.VISIBLE);
+        rlSpeectevalEncourage.setVisibility(View.GONE);
         vwvSpeectevalWave.stop();
     }
 
@@ -851,7 +850,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 rlSpeectevalEncourage.removeCallbacks(encourageRun);
                 rlSpeectevalEncourage.startAnimation(animSpeechEncourage);
 //                ivSpeectevalEncourage.setImageResource(R.drawable.bg_livevideo_speecteval_encourage90);
-                tvSpeectevalEncourage.setText("Perfect");
+                tvSpeectevalEncourage.setText("Perfect!");
                 rlSpeectevalEncourage.postDelayed(encourageRun, 3000);
                 logToFile.d("onResult(perfect):nbest=" + nbest);
             } else if (!point90_3s.isEmpty()) {
@@ -865,7 +864,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 rlSpeectevalEncourage.removeCallbacks(encourageRun);
                 rlSpeectevalEncourage.startAnimation(animSpeechEncourage);
 //                ivSpeectevalEncourage.setImageResource(R.drawable.bg_livevideo_speecteval_encourage60);
-                tvSpeectevalEncourage.setText("Great");
+                tvSpeectevalEncourage.setText("Great!");
                 rlSpeectevalEncourage.postDelayed(encourageRun, 3000);
                 logToFile.d("onResult(great):nbest=" + nbest);
             }
@@ -876,7 +875,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     private Runnable encourageRun = new Runnable() {
         @Override
         public void run() {
-            rlSpeectevalEncourage.setVisibility(View.VISIBLE);
+            rlSpeectevalEncourage.setVisibility(View.INVISIBLE);
         }
     };
 

@@ -182,7 +182,7 @@
             android:id="@id/rl_livevideo_speecteval_countdown"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#a8eaebf9">
+            android:background="#e6eaebf9">
 
             <TextView
                 android:id="@id/tv_livevideo_speecteval_countdown"

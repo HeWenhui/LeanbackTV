@@ -221,9 +221,12 @@ public class VoiceAnswerPager extends BasePager {
         public void run() {
             tvSpeectevalTip.setText(count + "秒后自动提交");
             if (count > 0) {
+                tvSpeectevalTip.setTag("200");
                 tvSpeectevalTip.postDelayed(this, 1000);
             } else {
+                tvSpeectevalTip.setTag("0");
                 rlSpeectevalTip.setVisibility(View.GONE);
+//                rlSpeectevalTipGone();
                 if (mIse != null) {
                     mIse.stop();
                 }
@@ -252,7 +255,7 @@ public class VoiceAnswerPager extends BasePager {
             rlSpeectevalTip.setVisibility(View.VISIBLE);
             ivSpeectevalTip.setImageResource(R.drawable.bg_livevideo_speecteval_tip3);
             tvSpeectevalTip.setText(count + "秒后自动提交");
-            tvSpeectevalTip.setTag("6");
+            tvSpeectevalTip.setTag("200");
             tvSpeectevalTip.postDelayed(autoUploadRunnable, 1000);
             count--;
         }
@@ -306,7 +309,7 @@ public class VoiceAnswerPager extends BasePager {
                 .MUTE) {
             rlSpeectevalTip.setVisibility(View.VISIBLE);
             tvSpeectevalTip.setText("声音有点小，\n再来一次哦！");
-            tvSpeectevalTip.setTag("2");
+//            tvSpeectevalTip.setTag("2");
             mView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -316,7 +319,8 @@ public class VoiceAnswerPager extends BasePager {
             mView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    rlSpeectevalTip.setVisibility(View.GONE);
+//                    rlSpeectevalTip.setVisibility(View.GONE);
+                    rlSpeectevalTipGone();
                 }
             }, 1500);
             return;
@@ -350,7 +354,8 @@ public class VoiceAnswerPager extends BasePager {
                 mView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        rlSpeectevalTip.setVisibility(View.GONE);
+//                        rlSpeectevalTip.setVisibility(View.GONE);
+                        rlSpeectevalTipGone();
                         switchQuestion();
                     }
                 }, 1500);
@@ -400,7 +405,8 @@ public class VoiceAnswerPager extends BasePager {
                     mView.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            rlSpeectevalTip.setVisibility(View.GONE);
+//                            rlSpeectevalTip.setVisibility(View.GONE);
+                            rlSpeectevalTipGone();
                         }
                     }, 1500);
                     Loger.d(TAG, "onResult(SUCCESS):more");
@@ -441,7 +447,8 @@ public class VoiceAnswerPager extends BasePager {
                                     mView.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
-                                            rlSpeectevalTip.setVisibility(View.GONE);
+//                                            rlSpeectevalTip.setVisibility(View.GONE);
+                                            rlSpeectevalTipGone();
                                         }
                                     }, 1500);
                                     Loger.d(TAG, "onResult(SUCCESS):onAnswerFailure");
@@ -468,7 +475,8 @@ public class VoiceAnswerPager extends BasePager {
                         mView.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                rlSpeectevalTip.setVisibility(View.GONE);
+//                                rlSpeectevalTip.setVisibility(View.GONE);
+                                rlSpeectevalTipGone();
                             }
                         }, 1500);
                         Loger.d(TAG, "onResult(SUCCESS):reread");
@@ -527,9 +535,16 @@ public class VoiceAnswerPager extends BasePager {
         this.netWorkType = netWorkType;
         if (netWorkType != NetWorkHelper.NO_NETWORK) {
             if ("100".equals(tvSpeectevalTip.getTag())) {
-                rlSpeectevalTip.setVisibility(View.GONE);
+//                rlSpeectevalTip.setVisibility(View.GONE);
+                rlSpeectevalTipGone();
                 startEvaluator();
             }
+        }
+    }
+
+    private void rlSpeectevalTipGone() {
+        if (!"200".equals(tvSpeectevalTip.getTag())) {
+            rlSpeectevalTip.setVisibility(View.GONE);
         }
     }
 
