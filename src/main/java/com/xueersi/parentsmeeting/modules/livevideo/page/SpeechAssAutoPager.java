@@ -374,7 +374,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     mData.put("islive", "" + isLive);
                     mData.put("testid", "" + id);
                     speechEvalAction.umsAgentDebug2(eventId, mData);
-                    onEvaluatorSuccess(resultEntity);
+                    onEvaluatorSuccess(resultEntity, this);
                 } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                     isSpeechError = true;
                     onEvaluatorError(resultEntity, this);
@@ -516,14 +516,37 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         rlSpeectevalError.setVisibility(View.GONE);
     }
 
-    private void onEvaluatorSuccess(final ResultEntity resultEntity) {
+    private void onEvaluatorSuccess(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {
+        final int score = resultEntity.getScore();
+        if (!isEnd) {
+            if (score == 1) {
+                tvSpeectevalError.setText("要认真些，再来一次哦！");
+                spStarResult.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        errorSetGone();
+                        mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
+                    }
+                }, 500);
+            } else if (score < 60) {
+                tvSpeectevalError.setText("你可以说的更好，再来一次哦！");
+                if (!isEnd) {
+                    spStarResult.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            errorSetGone();
+                            mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
+                        }
+                    }, 500);
+                }
+            }
+        }
         tvSpeectevalError.removeCallbacks(autoUploadRunnable);
         ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_upload);
         errorSetVisible();
         tvSpeectevalError.setTextColor(mContext.getResources().getColor(R.color.color_6462a2));
         tvSpeectevalError.setText("录音上传中");
         speechSuccess = true;
-        final int score = resultEntity.getScore();
         List<PhoneScore> lstPhonemeScore = resultEntity.getLstPhonemeScore();
         wordChangeColor(score, lstPhonemeScore);
         String nbest = "";

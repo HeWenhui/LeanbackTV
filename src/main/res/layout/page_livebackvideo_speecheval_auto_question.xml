@@ -109,7 +109,6 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="5dp"
-                        android:text="Great"
                         android:textColor="#ff6c3f"
                         android:textSize="30dp" />
                 </RelativeLayout>
