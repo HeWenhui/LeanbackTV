@@ -306,6 +306,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                                             int d = (int) totalOpeningLength.duration;
                                             setEnglishTime((totalSecond + d) / 60, (totalSecond + d) % 60);
                                         }
+//                                        Loger.d(TAG, "onProcessData:totalSecond=" + totalSecond);
                                         second15 += totalSecond - lastSecond;
                                         int oldProgress = tv_livevideo_english_prog.getProgress();
                                         if (second15 * 3 != oldProgress) {
@@ -313,8 +314,10 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                                             final float startProgress = oldProgress;
                                             float newProgress;
                                             if (second < 0) {
-                                                newProgress = (second15 - 15) * 3;
-                                                setTime(2 * MAX_SECOND - second15);
+//                                                newProgress = (second15 - 15) * 3;
+//                                                setTime(2 * MAX_SECOND - second15);
+                                                newProgress = (second15 % MAX_SECOND) * 3;
+                                                setTime(MAX_SECOND - second15 % MAX_SECOND);
 //                                                        Loger.d(TAG, "onProcessData(<0):oldProgress=" + oldProgress + ",second15=" + second15);
                                             } else {
                                                 newProgress = second15 * 3;
@@ -380,7 +383,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
 //                                    }
                                         }
                                         if (second15 >= 15) {
-                                            second15 -= 15;
+                                            second15 = second15 % MAX_SECOND;
                                             double douduration = Double.parseDouble(duration);
                                             int location[] = new int[2];
                                             tv_livevideo_english_prog.getLocationInWindow(location);

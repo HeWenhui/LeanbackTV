@@ -606,7 +606,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 e.printStackTrace();
             }
         }
-        rlSpeectevalEncourage.setVisibility(View.GONE);
+        rlSpeectevalEncourage.setVisibility(View.INVISIBLE);
         vwvSpeectevalWave.stop();
     }
 
@@ -746,14 +746,21 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         List<PhoneScore> lstPhonemeScore = resultEntity.getLstPhonemeScore();
         if (!lstPhonemeScore.isEmpty()) {
             String nbest = "";
+            int count90 = 0;
             for (int i = 0; i < lstPhonemeScore.size(); i++) {
                 PhoneScore phoneScore = lstPhonemeScore.get(i);
                 nbest += phoneScore.getWord() + ":" + phoneScore.getScore();
                 if (i != lstPhonemeScore.size() - 1) {
                     nbest += ",";
                 }
+                if (phoneScore.getScore() > encourageScore) {
+                    count90++;
+                }
             }
-            int count90 = 0;
+            if (count90 <= 3) {
+                logToFile.d("onEvaluatorIng:nbest=" + nbest);
+                return;
+            }
             Point90 point90_6 = null;
             Point90 point90_3 = null;
             ArrayList<Point90> arrayList90_6 = new ArrayList<Point90>();
@@ -761,7 +768,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             for (int i = 0; i < lstPhonemeScore.size(); i++) {
                 PhoneScore phoneScore = lstPhonemeScore.get(i);
                 if (phoneScore.getScore() > encourageScore && !point90WordArrayList.contains("" + i)) {
-                    count90++;
                     if (point90_6 == null) {
                         point90_6 = new Point90();
                         point90_6.left = point90_6.right = i;
@@ -788,7 +794,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     }
                 }
                 if (phoneScore.getScore() > encourageScore && !point30WordArrayList.contains("" + i)) {
-                    count90++;
                     if (point90_3 == null) {
                         point90_3 = new Point90();
                         point90_3.left = point90_3.right = i;
@@ -852,7 +857,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //                ivSpeectevalEncourage.setImageResource(R.drawable.bg_livevideo_speecteval_encourage90);
                 tvSpeectevalEncourage.setText("Perfect!");
                 rlSpeectevalEncourage.postDelayed(encourageRun, 3000);
-                logToFile.d("onResult(perfect):nbest=" + nbest);
+                logToFile.d("onEvaluatorIng(perfect):nbest=" + nbest);
             } else if (!point90_3s.isEmpty()) {
                 for (int i = 0; i < point90_3s.size(); i++) {
                     Point90 point901 = point90_3s.get(i);
@@ -866,9 +871,9 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //                ivSpeectevalEncourage.setImageResource(R.drawable.bg_livevideo_speecteval_encourage60);
                 tvSpeectevalEncourage.setText("Great!");
                 rlSpeectevalEncourage.postDelayed(encourageRun, 3000);
-                logToFile.d("onResult(great):nbest=" + nbest);
+                logToFile.d("onEvaluatorIng(great):nbest=" + nbest);
             }
-            Loger.d(TAG, "onResult:onEvaluatorIng:count90=" + count90 + ",point90WordArrayList=" + point90WordArrayList.size() + ",point90_6s=" + point90_6s.size() + ",point90_3s=" + point90_3s.size() + ",nbest=" + nbest);
+            Loger.d(TAG, "onEvaluatorIng:count90=" + count90 + ",point90WordArrayList=" + point90WordArrayList.size() + ",point90_6s=" + point90_6s.size() + ",point90_3s=" + point90_3s.size() + ",nbest=" + nbest);
         }
     }
 
