@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_below="@id/tv_livevideo_question_title"
-        android:background="@color/borderline" />
+        android:background="@color/COLOR_DCDCDC" />
 
     <ListView
         android:id="@id/lv_livevideo_question_fillin"
@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_above="@id/rl_livevideo_question_fillin_bottom"
-        android:background="@color/borderline" />
+        android:background="@color/COLOR_DCDCDC" />
 
     <RelativeLayout
         android:id="@id/rl_livevideo_question_fillin_bottom"

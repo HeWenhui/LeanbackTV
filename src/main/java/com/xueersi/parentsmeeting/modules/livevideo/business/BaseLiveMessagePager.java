@@ -128,7 +128,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
         });
         Resources resources = context.getResources();
         nameColors = new int[]{resources.getColor(R.color.COLOR_E74C3C), resources.getColor(R.color.COLOR_20ABFF),
-                resources.getColor(R.color.middle_grey), resources.getColor(R.color.COLOR_E74C3C)};
+                resources.getColor(R.color.COLOR_666666), resources.getColor(R.color.COLOR_E74C3C)};
     }
 
     public void setMessageBll(LiveMessageBll messageBll) {

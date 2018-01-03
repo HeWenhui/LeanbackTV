@@ -274,7 +274,7 @@ public class MediaCodecVideoEncoder {
     if (mime.equals(H264_MIME_TYPE)) {
       List<String> exceptionModels = Arrays.asList(H264_HW_EXCEPTION_MODELS);
       if (exceptionModels.contains(Build.MODEL)) {
-        Logging.w(TAG, "Model: " + Build.MODEL + " has black listed H.264 encoder.");
+        Logging.w(TAG, "Model: " + Build.MODEL + " has COLOR_000000 listed H.264 encoder.");
         return null;
       }
     }

@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:layout_below="@id/tv_livevideo_question_title"
-            android:background="@color/borderline" />
+            android:background="@color/COLOR_DCDCDC" />
 
         <RelativeLayout
             android:id="@id/rl_livevideo_question_content_question"
@@ -53,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:layout_above="@id/rl_livevideo_question_fillin_bottom"
-            android:background="@color/borderline" />
+            android:background="@color/COLOR_DCDCDC" />
 
         <RelativeLayout
             android:id="@id/rl_livevideo_question_fillin_bottom"
@@ -68,7 +68,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="12dp"
                 android:text="你的选择是:"
-                android:textColor="@color/dark_selected"
+                android:textColor="@color/COLOR_333333"
                 android:textSize="14sp" />
 
             <HorizontalScrollView

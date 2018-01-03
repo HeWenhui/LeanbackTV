@@ -176,7 +176,7 @@ public class RendererCommon {
 
   // Types of video scaling:
   // SCALE_ASPECT_FIT - video frame is scaled to fit the size of the view by
-  //    maintaining the aspect ratio (black borders may be displayed).
+  //    maintaining the aspect ratio (COLOR_000000 borders may be displayed).
   // SCALE_ASPECT_FILL - video frame is scaled to fill the size of the view by
   //    maintaining the aspect ratio. Some portion of the video frame may be
   //    clipped.

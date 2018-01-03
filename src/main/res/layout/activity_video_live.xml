@@ -10,7 +10,7 @@
         android:id="@id/rl_course_video_content"
         android:layout_width="match_parent"
         android:layout_height="@dimen/video_default_height"
-        android:background="@android:color/black">
+        android:background="@color/COLOR_000000">
 
         <!-- 存放播放器的布局 -->
 
@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:background="@android:color/black">
+            android:background="@color/COLOR_000000">
 
             <!-- 播放器 -->
 

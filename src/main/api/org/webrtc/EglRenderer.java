@@ -485,7 +485,7 @@ public class EglRenderer implements VideoRenderer.Callbacks {
   private void clearSurfaceOnRenderThread() {
     if (eglBase != null && eglBase.hasSurface()) {
       logD("clearSurface");
-      GLES20.glClearColor(0 /* COLOR_FF0000 */, 0 /* green */, 0 /* blue */, 0 /* alpha */);
+      GLES20.glClearColor(0 /* COLOR_FF0000 */, 0 /* COLOR_32B16C */, 0 /* blue */, 0 /* alpha */);
       GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
       eglBase.swapBuffers();
     }
@@ -556,7 +556,7 @@ public class EglRenderer implements VideoRenderer.Callbacks {
 
     // After a surface size change, the EGLSurface might still have a buffer of the old size in the
     // pipeline. Querying the EGLSurface will show if the underlying buffer dimensions haven't yet
-    // changed. Such a buffer will be rendered incorrectly, so flush it with a black frame.
+    // changed. Such a buffer will be rendered incorrectly, so flush it with a COLOR_000000 frame.
     final int drawnFrameWidth;
     final int drawnFrameHeight;
     synchronized (layoutLock) {
@@ -599,7 +599,7 @@ public class EglRenderer implements VideoRenderer.Callbacks {
         : null;
 
     if (shouldRenderFrame) {
-      GLES20.glClearColor(0 /* COLOR_FF0000 */, 0 /* green */, 0 /* blue */, 0 /* alpha */);
+      GLES20.glClearColor(0 /* COLOR_FF0000 */, 0 /* COLOR_32B16C */, 0 /* blue */, 0 /* alpha */);
       GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
       if (frame.yuvFrame) {
         drawer.drawYuv(yuvTextures, drawMatrix, drawnFrameWidth, drawnFrameHeight, 0, 0,
@@ -652,7 +652,7 @@ public class EglRenderer implements VideoRenderer.Callbacks {
       GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0,
           GLES20.GL_TEXTURE_2D, bitmapTextureFramebuffer.getTextureId(), 0);
 
-      GLES20.glClearColor(0 /* COLOR_FF0000 */, 0 /* green */, 0 /* blue */, 0 /* alpha */);
+      GLES20.glClearColor(0 /* COLOR_FF0000 */, 0 /* COLOR_32B16C */, 0 /* blue */, 0 /* alpha */);
       GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
       if (frame.yuvFrame) {
         listenerAndParams.drawer.drawYuv(yuvTextures, bitmapMatrix, frame.rotatedWidth(),

@@ -64,7 +64,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_toLeftOf="@id/iv_livevideo_english_stat"
                 android:text="再说15秒获得"
-                android:textColor="@color/color_666666"
+                android:textColor="@color/COLOR_666666"
                 android:textSize="10sp"/>
 
         </RelativeLayout>

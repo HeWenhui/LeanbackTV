@@ -132,7 +132,7 @@ public class QuestionMulitSelectPortLivePager extends BaseLiveQuestionPager {
                 v.setBackgroundResource(R.drawable.shape_question_mulitselect_answer_selected);
             } else {
                 mAnswerEntityLst.get(position).setStuAnswer("0");
-                ((Button) v).setTextColor(mContext.getResources().getColor(R.color.dark_selected));
+                ((Button) v).setTextColor(mContext.getResources().getColor(R.color.COLOR_333333));
                 v.setBackgroundResource(R.drawable.shape_question_mulitselect_answer_normal);
             }
             mAnswer = "";
@@ -218,7 +218,7 @@ public class QuestionMulitSelectPortLivePager extends BaseLiveQuestionPager {
                 mAnswer += button.getText() + ",";
                 button.setBackgroundResource(R.drawable.shape_question_mulitselect_answer_selected);
             } else {
-                button.setTextColor(mContext.getResources().getColor(R.color.dark_selected));
+                button.setTextColor(mContext.getResources().getColor(R.color.COLOR_333333));
                 button.setBackgroundResource(R.drawable.shape_question_mulitselect_answer_normal);
             }
             button.setOnClickListener(new AnswerOnClickListener());

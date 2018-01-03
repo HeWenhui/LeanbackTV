@@ -96,7 +96,7 @@ public class Colors {
 
 
     /**
-     * Dark green coloured text.
+     * Dark COLOR_32B16C coloured text.
      */
     public static final String DARK_GREEN = "\u000303";
 

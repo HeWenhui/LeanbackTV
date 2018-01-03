@@ -955,15 +955,15 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
     private void wordChangeColor(int score, List<PhoneScore> lstPhonemeScore) {
         int COLOR_FF0000 = mContext.getResources().getColor(R.color.COLOR_FF4343);
-        int dark_selected = mContext.getResources().getColor(R.color.dark_selected);
-        int green = 0xff2A9933;
+        int COLOR_333333 = mContext.getResources().getColor(R.color.COLOR_333333);
+        int COLOR_32B16C = 0xff2A9933;
         if (lstPhonemeScore.isEmpty()) {
             if (score > encourageScore) {
-                tvSpeectevalContent.setTextColor(green);
+                tvSpeectevalContent.setTextColor(COLOR_32B16C);
             } else if (score < 60) {
                 tvSpeectevalContent.setTextColor(COLOR_FF0000);
             } else {
-                tvSpeectevalContent.setTextColor(dark_selected);
+                tvSpeectevalContent.setTextColor(COLOR_333333);
             }
         } else {
             String stemText = content;
@@ -980,13 +980,13 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 lastSub += index;
                 if (lstPhonemeScore.get(i).getScore() > encourageScore) {
                     //显示绿色
-                    spannable.setSpan(new ForegroundColorSpan(green), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannable.setSpan(new ForegroundColorSpan(COLOR_32B16C), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 } else if (lstPhonemeScore.get(i).getScore() < 60) {
                     // 显示红色
                     spannable.setSpan(new ForegroundColorSpan(COLOR_FF0000), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 } else {
                     // 显示黑色
-                    spannable.setSpan(new ForegroundColorSpan(dark_selected), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannable.setSpan(new ForegroundColorSpan(COLOR_333333), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
             }
             tvSpeectevalContent.setText(spannable);
