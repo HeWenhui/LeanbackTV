@@ -642,7 +642,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         ivSpeectevalTimeEmoji.setImageResource(R.drawable.bg_livevideo_speecteval_time_emoji4);
         tvSpeectevalTime.setTextColor(mContext.getResources().getColor(R.color.color_6462a2));
         tvSpeectevalTime.setText("完成啦!");
-        progressBar.removeCallbacks(progressBarRun);
+//        progressBar.removeCallbacks(progressBarRun);
         progressBar.setVisibility(View.GONE);
         final View v_live_star_result_out = mView.findViewById(R.id.v_live_star_result_out);
         v_live_star_result_out.setVisibility(View.VISIBLE);
@@ -735,7 +735,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                         errorSetGone();
                         speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
                     }
-                }, 500);
+                }, 1000);
                 return;
             }
         } else if (resultEntity.getErrorNo() == ResultCode.NO_AUTHORITY) {
@@ -754,7 +754,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                             errorSetGone();
                             speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
                         }
-                    }, 500);
+                    }, 1000);
                     return;
                 }
             }
@@ -771,19 +771,12 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                             errorSetGone();
                             speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
                         }
-                    }, 500);
+                    }, 1000);
                     return;
                 }
             }
-//                            XESToastUtils.showToast(mContext, "测评君罢工了，程序员哥哥会尽快修复（" + resultEntity.getErrorNo() + "）");
-//                            spStarResult.postDelayed(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    mIse.startEnglishEvaluator(content, saveVideoFile.getPath(), evaluatorListener);
-//                                }
-//                            }, 1000);
         }
-        progressBar.removeCallbacks(progressBarRun);
+//        progressBar.removeCallbacks(progressBarRun);
 //        progressBar.setVisibility(View.GONE);
 //        vwvSpeectevalWave.setVisibility(View.INVISIBLE);
         vwvSpeectevalWave.stop();
