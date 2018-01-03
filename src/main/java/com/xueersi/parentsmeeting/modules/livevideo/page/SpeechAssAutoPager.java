@@ -308,7 +308,9 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //                mView.postDelayed(new Runnable() {
 //                    @Override
 //                    public void run() {
-//                        examSubmitAll();
+//                        if (mIse != null) {
+//                            mIse.stop();
+//                        }
 //                    }
 //                }, 5000);
             }
@@ -394,7 +396,8 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     onEvaluatorSuccess(resultEntity, this);
 
 //                    resultEntity.setStatus(ResultEntity.ERROR);
-//                    resultEntity.setErrorNo(ResultCode.MUTE_AUDIO);
+////                    resultEntity.setErrorNo(ResultCode.MUTE_AUDIO);
+//                    resultEntity.setErrorNo(ResultCode.WEBSOCKET_TIME_OUT);
 //                    isSpeechError = true;
 //                    onEvaluatorError(resultEntity, this);
                 } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
@@ -720,7 +723,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     private void onEvaluatorError(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {
-        logToFile.d("onResult:ERROR:ErrorNo=" + resultEntity.getErrorNo() + ",isEnd=" + isEnd);
+        logToFile.d("onResult:ERROR:ErrorNo=" + resultEntity.getErrorNo() + ",isEnd=" + isEnd + ",isOfflineFail=" + SpeechEvaluatorUtils.isOfflineFail());
         tvSpeectevalError.removeCallbacks(autoUploadRunnable);
         ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_error);
         errorSetVisible();
@@ -743,36 +746,40 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         } else if (resultEntity.getErrorNo() == ResultCode.WEBSOCKET_TIME_OUT || resultEntity.getErrorNo() == ResultCode.NETWORK_FAIL
                 || resultEntity.getErrorNo() == ResultCode.WEBSOCKET_CONN_REFUSE) {
             tvSpeectevalError.setText("好像没网了，快检查一下");
-            if (speechEvaluatorInter instanceof TalSpeech) {
-                onLineError++;
-            }
-            if (onLineError == 1) {
-                if (!isEnd) {
-                    spStarResult.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            errorSetGone();
-                            speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
+            if (!SpeechEvaluatorUtils.isOfflineFail()) {
+                if (speechEvaluatorInter instanceof TalSpeech) {
+                    onLineError++;
+                    if (onLineError == 1) {
+                        if (!isEnd) {
+                            spStarResult.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    errorSetGone();
+                                    speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
+                                }
+                            }, 1000);
+                            return;
                         }
-                    }, 1000);
-                    return;
+                    }
                 }
             }
         } else {
             tvSpeectevalError.setText("测评君罢工了，程序员哥哥会尽快修复（" + resultEntity.getErrorNo() + "）");
-            if (speechEvaluatorInter instanceof TalSpeech) {
-                onLineError++;
-            }
-            if (onLineError == 1) {
-                if (!isEnd) {
-                    spStarResult.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            errorSetGone();
-                            speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
+            if (!SpeechEvaluatorUtils.isOfflineFail()) {
+                if (speechEvaluatorInter instanceof TalSpeech) {
+                    onLineError++;
+                    if (onLineError == 1) {
+                        if (!isEnd) {
+                            spStarResult.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    errorSetGone();
+                                    speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
+                                }
+                            }, 1000);
+                            return;
                         }
-                    }, 1000);
-                    return;
+                    }
                 }
             }
         }
