@@ -70,7 +70,6 @@ public class EnglishH5Cache {
         final File cacheDir = new File(cacheFile, today);
         CacheWebView.getCacheConfig().init(context, cacheDir.getPath(), 1024 * 1024 * 100, 1024 * 1024 * 10)
                 .enableDebug(true);//100M 磁盘缓存空间,10M 内存缓存空间
-
         liveBll.getCourseWareUrl(new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -120,6 +119,10 @@ public class EnglishH5Cache {
 //                        urls.add(play_url);
                     }
                     if (urls.isEmpty()) {
+                        if (context instanceof WebViewRequest) {
+                            WebViewRequest webViewRequest = (WebViewRequest) context;
+                            webViewRequest.onWebViewEnd();
+                        }
                         return;
                     }
                     final ArrayList<String> urls2 = new ArrayList<>();
@@ -168,6 +171,21 @@ public class EnglishH5Cache {
                 Loger.e(TAG, "getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
             }
         });
+    }
+
+    public void start() {
+        Loger.d(TAG, "start");
+        getCourseWareUrl();
+    }
+
+    public void stop() {
+        Loger.d(TAG, "stop");
+        if (cacheReceiver != null) {
+            context.unregisterReceiver(cacheReceiver);
+            cacheReceiver = null;
+        }
+        Intent intent = new Intent(context, CachePreLoadService.class);
+        context.stopService(intent);
     }
 
     class CacheReceiver extends BroadcastReceiver {
@@ -233,6 +251,10 @@ public class EnglishH5Cache {
                     mData.put("error", "" + errorUrls.size());
                     mData.put("total", "" + total);
                     liveBll.umsAgentDebug(eventId, mData);
+                    if (context instanceof WebViewRequest) {
+                        WebViewRequest webViewRequest = (WebViewRequest) context;
+                        webViewRequest.onWebViewEnd();
+                    }
                 } else {
                     if (errorUrls.isEmpty()) {
                         context.unregisterReceiver(this);
@@ -245,6 +267,10 @@ public class EnglishH5Cache {
                         mData.put("error", "0");
                         mData.put("total", "" + total);
                         liveBll.umsAgentDebug(eventId, mData);
+                        if (context instanceof WebViewRequest) {
+                            WebViewRequest webViewRequest = (WebViewRequest) context;
+                            webViewRequest.onWebViewEnd();
+                        }
                     } else {
                         if (netWorkType == NetWorkHelper.NO_NETWORK) {
                             return;

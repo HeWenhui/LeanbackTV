@@ -151,16 +151,16 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
 
-        webSetting.setCacheMode(WebSettings.LOAD_DEFAULT);
-        webSetting.setDatabasePath(cacheFile.getPath());
-        //设置 应用 缓存目录
-        webSetting.setAppCachePath(cacheFile.getPath());
-        //开启 DOM 存储功能
-        webSetting.setDomStorageEnabled(true);
-        //开启 数据库 存储功能
-        webSetting.setDatabaseEnabled(true);
-        //开启 应用缓存 功能
-        webSetting.setAppCacheEnabled(true);
+//        webSetting.setCacheMode(WebSettings.LOAD_DEFAULT);
+//        webSetting.setDatabasePath(cacheFile.getPath());
+//        //设置 应用 缓存目录
+//        webSetting.setAppCachePath(cacheFile.getPath());
+//        //开启 DOM 存储功能
+//        webSetting.setDomStorageEnabled(true);
+//        //开启 数据库 存储功能
+//        webSetting.setDatabaseEnabled(true);
+//        //开启 应用缓存 功能
+//        webSetting.setAppCacheEnabled(true);
 
         String loadUrl = url + "?t=" + System.currentTimeMillis();
         if (isPlayBack) {

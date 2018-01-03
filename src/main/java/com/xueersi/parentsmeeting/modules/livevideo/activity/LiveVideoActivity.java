@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLazyBllCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PraiseOrEncourageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
@@ -50,6 +51,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
@@ -84,7 +86,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  *
  * @author linyuqiang
  */
-public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest {
+public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest {
 
     private String TAG = "LiveVideoActivityLog";
     /** 播放器同步 */
@@ -1402,5 +1404,26 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         if (englishSpeekBll != null) {
             handler.sendEmptyMessageDelayed(1, 2000);
         }
+    }
+
+    @Override
+    public void requestWebView() {
+        Loger.d(TAG, "requestWebView:englishH5Cache=" + (englishH5Cache == null));
+        if (englishH5Cache != null) {
+            englishH5Cache.stop();
+        }
+    }
+
+    @Override
+    public void releaseWebView() {
+        Loger.d(TAG, "releaseWebView:englishH5Cache=" + (englishH5Cache == null));
+        if (englishH5Cache != null) {
+            englishH5Cache.start();
+        }
+    }
+
+    @Override
+    public void onWebViewEnd() {
+        englishH5Cache = null;
     }
 }

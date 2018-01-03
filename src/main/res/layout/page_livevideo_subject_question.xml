@@ -1,12 +1,11 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.xueersi.xesalib.view.activity.browser.XESNoZoomWebView
         android:id="@id/wv_livevideo_subject_web"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
     <LinearLayout
         android:id="@id/rl_livevideo_subject_loading"
@@ -14,14 +13,15 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:background="@drawable/shape_loading_bg"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="5dp">
 
         <ImageView
             android:id="@id/iv_data_loading_show"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/animlst_app_loading"/>
+            android:background="@drawable/animlst_app_loading" />
 
         <TextView
             android:id="@id/tv_data_loading_tip"
@@ -32,7 +32,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
-            android:text="答题正在加载，请稍候 "/>
+            android:text="答题正在加载，请稍候 " />
 
     </LinearLayout>
 
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/bg_web_request_error"/>
+            android:background="@drawable/bg_web_request_error" />
 
         <TextView
             android:id="@id/tv_error_center_refresh_tip"
@@ -65,7 +65,7 @@
             android:ellipsize="end"
             android:gravity="center_horizontal"
             android:maxLines="2"
-            android:text="测试卷加载失败，请重试"/>
+            android:text="测试卷加载失败，请重试" />
 
         <Button
             android:id="@id/btn_error_refresh"
@@ -74,10 +74,10 @@
             android:layout_below="@id/tv_error_center_refresh_tip"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bg_app_button"
+            android:background="@drawable/shape_video_refresh_button"
             android:text="刷新"
-            android:textColor="@color/COLOR_F13232"
-            android:textSize="14sp"/>
+            android:textColor="@color/white"
+            android:textSize="14sp" />
     </RelativeLayout>
 
     <Button
@@ -86,7 +86,7 @@
         android:layout_height="40dp"
         android:layout_centerHorizontal="true"
         android:text="关"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <Button
         android:id="@id/bt_livevideo_subject_calljs"
@@ -94,6 +94,6 @@
         android:layout_height="40dp"
         android:layout_toLeftOf="@id/bt_livevideo_subject_close"
         android:text="js"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </RelativeLayout>

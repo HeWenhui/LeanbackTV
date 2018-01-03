@@ -66,7 +66,6 @@
             android:gravity="center_horizontal"
             android:maxLines="2"
             android:text="测试卷加载失败，请重试"/>
-
         <Button
             android:id="@id/btn_error_refresh"
             android:layout_width="100dp"
@@ -74,9 +73,9 @@
             android:layout_below="@id/tv_error_center_refresh_tip"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bg_app_button"
+            android:background="@drawable/shape_video_refresh_button"
             android:text="刷新"
-            android:textColor="@color/COLOR_F13232"
+            android:textColor="@color/white"
             android:textSize="14sp"/>
     </RelativeLayout>
 
