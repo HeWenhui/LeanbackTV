@@ -27,6 +27,8 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.PhoneScore;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
+import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
+import com.tal.speech.speechrecognizer.TalSpeech;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -96,6 +98,9 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     /** 语音保存位置 */
     private File saveVideoFile;
     private SpeechEvalAction speechEvalAction;
+    private SpeechEvaluatorInter speechEvaluatorInter;
+    /** 在线语音失败次数 */
+    int onLineError = 0;
     private LogToFile logToFile;
     private long entranceTime;
     /** 是不是考试结束 */
@@ -296,7 +301,18 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //                vwvSpeectevalWave.start();
 //            }
 //        });
-        setAudioRequest();
+        mView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setAudioRequest();
+//                mView.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        examSubmitAll();
+//                    }
+//                }, 5000);
+            }
+        }, 2300);
     }
 
     class CountDownListener implements Animation.AnimationListener {
@@ -342,6 +358,10 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     public void setAudioRequest() {
+        Loger.d(TAG, "setAudioRequest:userBack=" + userBack + ",isEnd=" + isEnd);
+        if (userBack) {
+            return;
+        }
         //语音评测开始
         if (mIse == null) {
             mIse = new SpeechEvaluatorUtils(true);
@@ -351,7 +371,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mData.put("testid", id);
         mData.put("islive", "" + isLive);
         speechEvalAction.umsAgentDebug2(eventId, mData);
-        mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, new EvaluatorListener() {
+        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, new EvaluatorListener() {
             int lastVolume = 0;
 
             @Override
@@ -372,6 +392,11 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     mData.put("testid", "" + id);
                     speechEvalAction.umsAgentDebug2(eventId, mData);
                     onEvaluatorSuccess(resultEntity, this);
+
+//                    resultEntity.setStatus(ResultEntity.ERROR);
+//                    resultEntity.setErrorNo(ResultCode.MUTE_AUDIO);
+//                    isSpeechError = true;
+//                    onEvaluatorError(resultEntity, this);
                 } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                     isSpeechError = true;
                     onEvaluatorError(resultEntity, this);
@@ -523,7 +548,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     @Override
                     public void run() {
                         errorSetGone();
-                        mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
+                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
                     }
                 }, 500);
                 return;
@@ -534,7 +559,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     @Override
                     public void run() {
                         errorSetGone();
-                        mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
+                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
                     }
                 }, 500);
                 return;
@@ -708,7 +733,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     @Override
                     public void run() {
                         errorSetGone();
-                        mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
+                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
                     }
                 }, 500);
                 return;
@@ -718,8 +743,38 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         } else if (resultEntity.getErrorNo() == ResultCode.WEBSOCKET_TIME_OUT || resultEntity.getErrorNo() == ResultCode.NETWORK_FAIL
                 || resultEntity.getErrorNo() == ResultCode.WEBSOCKET_CONN_REFUSE) {
             tvSpeectevalError.setText("好像没网了，快检查一下");
+            if (speechEvaluatorInter instanceof TalSpeech) {
+                onLineError++;
+            }
+            if (onLineError == 1) {
+                if (!isEnd) {
+                    spStarResult.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            errorSetGone();
+                            speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
+                        }
+                    }, 500);
+                    return;
+                }
+            }
         } else {
             tvSpeectevalError.setText("测评君罢工了，程序员哥哥会尽快修复（" + resultEntity.getErrorNo() + "）");
+            if (speechEvaluatorInter instanceof TalSpeech) {
+                onLineError++;
+            }
+            if (onLineError == 1) {
+                if (!isEnd) {
+                    spStarResult.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            errorSetGone();
+                            speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
+                        }
+                    }, 500);
+                    return;
+                }
+            }
 //                            XESToastUtils.showToast(mContext, "测评君罢工了，程序员哥哥会尽快修复（" + resultEntity.getErrorNo() + "）");
 //                            spStarResult.postDelayed(new Runnable() {
 //                                @Override
