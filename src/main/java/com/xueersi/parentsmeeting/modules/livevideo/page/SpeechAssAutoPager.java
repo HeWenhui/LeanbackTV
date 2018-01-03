@@ -103,6 +103,8 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     int onLineError = 0;
     private LogToFile logToFile;
     private long entranceTime;
+    /** 是不是已经开始 */
+    private boolean isSpeechStart = false;
     /** 是不是考试结束 */
     private boolean isEnd = false;
     /** 是不是评测失败 */
@@ -340,9 +342,12 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 rl_livevideo_speecteval_countdown.removeAllViews();
                 ViewGroup group = (ViewGroup) rl_livevideo_speecteval_countdown.getParent();
                 group.removeView(rl_livevideo_speecteval_countdown);
-                Loger.d(TAG, "onAnimationEnd:" + textView.getText() + ",group=null");
-                setAudioRequest();
-                vwvSpeectevalWave.start();
+                Loger.d(TAG, "onAnimationEnd:isEnd=" + isEnd);
+                if (!isEnd) {
+                    isSpeechStart = true;
+                    setAudioRequest();
+                    vwvSpeectevalWave.start();
+                }
             }
         }
 
@@ -1020,7 +1025,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         if (group == null) {
             return;
         }
-        if (isSpeechError || isSpeechSuccess) {
+        if (!isSpeechStart || isSpeechError || isSpeechSuccess) {
             speechEvalAction.stopSpeech(SpeechAssAutoPager.this, id);
         } else {
             ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_error);
