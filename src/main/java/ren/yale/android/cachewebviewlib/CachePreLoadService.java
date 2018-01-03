@@ -76,7 +76,7 @@ public class CachePreLoadService extends Service {
             RelativeLayout relativeLayout = new RelativeLayout(this.getApplicationContext());
             final CacheWebView cacheWebView = new CacheWebView(this.getApplicationContext());
             relativeLayout.addView(cacheWebView, new RelativeLayout.LayoutParams(ScreenUtils.getScreenWidth(), ScreenUtils.getScreenHeight()));
-            cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.FORCE);
+            cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NORMAL);
             Map header = null;
             try {
                 header = (Map) intent.getSerializableExtra(KEY_URL_HEADER);
