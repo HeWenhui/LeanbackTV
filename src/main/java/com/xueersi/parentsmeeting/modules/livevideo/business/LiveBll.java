@@ -45,7 +45,6 @@ import com.xueersi.xesalib.umsagent.UmsConstants;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
-import com.xueersi.xesalib.utils.string.ConstUtils;
 import com.xueersi.xesalib.utils.string.StringUtils;
 
 import org.json.JSONArray;
@@ -64,7 +63,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.Call;
@@ -152,6 +150,7 @@ public class LiveBll extends BaseBll {
     long openStartTime;
     /** 区分文理appid */
     String appID = UmsConstants.LIVE_APP_ID;
+    private AnswerRankBll mAnswerRankBll;
 
     public LiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form) {
         super(context);
@@ -2972,6 +2971,9 @@ public class LiveBll extends BaseBll {
             this.msgid = msgid;
             this.detail = detail;
         }
+    }
+    public void setAnswerRankBll(AnswerRankBll bll){
+        mAnswerRankBll=bll;
     }
 
     public void streamReport(MegId msgid, String channelname, long connsec) {

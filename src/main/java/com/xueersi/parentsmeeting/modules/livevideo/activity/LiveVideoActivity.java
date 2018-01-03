@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.business.AnswerRankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
@@ -41,7 +42,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLazyBllCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PraiseOrEncourageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
@@ -51,7 +51,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
@@ -177,6 +176,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     long startTime = System.currentTimeMillis();
     /** onPause状态不暂停视频 */
     boolean onPauseNotStopVideo = false;
+    /**领奖台业务*/
+    private AnswerRankBll answerRankBll;
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -289,8 +290,12 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 if (englishSpeekBll != null) {
                     englishSpeekBll.setVideoWidthAndHeight(lp.width, lp.height);
                 }
+                if(answerRankBll!=null){
+                    answerRankBll.setVideoLayout(lp.width,lp.height);
+                }
             }
         });
+
     }
 
     protected boolean initData() {
@@ -373,6 +378,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
 
         liveLazyBllCreat = new LiveLazyBllCreat(this, mLiveBll);
         mLiveBll.setLiveLazyBllCreat(liveLazyBllCreat);
+        answerRankBll=new AnswerRankBll(mContext,bottomContent);
+        mLiveBll.setAnswerRankBll(answerRankBll);
 
     }
 

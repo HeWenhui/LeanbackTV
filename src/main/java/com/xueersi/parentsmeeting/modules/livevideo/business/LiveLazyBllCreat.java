@@ -41,4 +41,5 @@ public class LiveLazyBllCreat {
         }
         return praiseOrEncourageBll;
     }
+
 }

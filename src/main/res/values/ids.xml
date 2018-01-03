@@ -383,4 +383,7 @@
     <item name="tv_livevideo_vote_result_count" type="id" />
     <item name="pb_livevideo_vote_result_item" type="id" />
     <item name="tv_livevideo_vote_result_item" type="id" />
+    <item name="iv_live_rank_list_head" type="id" />
+    <item name="tv_live_rank_list_name" type="id" />
+    <item name="iv_live_rank_list_crown" type="id" />
 </resources>
