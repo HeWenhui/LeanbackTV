@@ -1,10 +1,10 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -14,12 +14,11 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.dialog.VoteDialog;
+import com.xueersi.parentsmeeting.modules.livevideo.dialog.VoteWaitDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -34,7 +33,7 @@ public class LiveVoteBll implements LiveVoteAction {
     RelativeLayout contentView;
     LiveTopic.VoteEntity voteEntity;
     LiveBll liveBll;
-    VoteDialog voteDialog;
+    VoteWaitDialog voteWaitDialog;
     HashMap<LiveTopic.VoteEntity, Integer> idAndAnswer = new HashMap<>();
     int answer;
 
@@ -54,9 +53,9 @@ public class LiveVoteBll implements LiveVoteAction {
         if (contentView != null) {
             bottomContent.removeView(contentView);
         }
-        if (voteDialog != null) {
-            voteDialog.cancelDialog();
-            voteDialog = null;
+        if (voteWaitDialog != null) {
+            voteWaitDialog.cancelDialog();
+            voteWaitDialog = null;
         }
         final View view1 = LayoutInflater.from(context).inflate(R.layout.layout_livevideo_vote_result, bottomContent, false);
         contentView = new RelativeLayout(context);
@@ -165,11 +164,17 @@ public class LiveVoteBll implements LiveVoteAction {
                 if (contentView != null) {
                     bottomContent.removeView(contentView);
                 }
-                if (voteDialog != null) {
-                    voteDialog.cancelDialog();
-                    voteDialog = null;
+                if (voteWaitDialog != null) {
+                    voteWaitDialog.cancelDialog();
+                    voteWaitDialog = null;
                 }
                 final View view = LayoutInflater.from(context).inflate(R.layout.page_livevodeo_vote_select, bottomContent, false);
+                view.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        return true;
+                    }
+                });
                 contentView = new RelativeLayout(context);
                 contentView.addView(view);
                 bottomContent.addView(contentView);
@@ -198,15 +203,15 @@ public class LiveVoteBll implements LiveVoteAction {
                         @Override
                         public void onClick(View v) {
                             BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
-                            voteDialog = new VoteDialog(context, baseApplication, false);
-                            voteDialog.showDialog();
+                            voteWaitDialog = new VoteWaitDialog(context, baseApplication, false);
+                            voteWaitDialog.showDialog();
                             Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (voteDialog != null) {
-                                        voteDialog.cancelDialog();
-                                        voteDialog = null;
+                                    if (voteWaitDialog != null) {
+                                        voteWaitDialog.cancelDialog();
+                                        voteWaitDialog = null;
                                     }
                                 }
                             }, 20000);
@@ -229,7 +234,19 @@ public class LiveVoteBll implements LiveVoteAction {
         bottomContent.post(new Runnable() {
             @Override
             public void run() {
-                showResult(voteEntity);
+                ArrayList<LiveTopic.VoteResult> voteResults = voteEntity.getVoteResults();
+                if (voteResults.isEmpty()) {
+                    if (contentView != null) {
+                        bottomContent.removeView(contentView);
+                        contentView = null;
+                    }
+                    if (voteWaitDialog != null) {
+                        voteWaitDialog.cancelDialog();
+                        voteWaitDialog = null;
+                    }
+                } else {
+                    showResult(voteEntity);
+                }
             }
         });
     }
