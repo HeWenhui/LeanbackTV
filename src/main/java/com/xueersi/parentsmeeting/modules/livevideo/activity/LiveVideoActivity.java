@@ -1344,7 +1344,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             englishSpeekBll.destory();
         }
         if (englishH5Cache != null) {
-            englishH5Cache.destory();
+            englishH5Cache.stop();
         }
         super.onDestroy();
     }

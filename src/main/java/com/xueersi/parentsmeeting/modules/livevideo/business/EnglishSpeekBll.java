@@ -51,7 +51,8 @@ import java.util.Map;
  * Created by lyqai on 2017/10/31.
  */
 public class EnglishSpeekBll implements EnglishSpeekAction {
-    static String TAG = "EnglishSpeekBll";
+    static int staticInt = 0;
+    String TAG = "EnglishSpeekBll" + staticInt++;
     static boolean loadSuccess = false;
     private Activity activity;
     private LiveBll liveBll;
@@ -99,13 +100,13 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
 
     static {
         try {
-            Loger.i(TAG, "loadLibrary");
+            Loger.i("EnglishSpeekBll", "loadLibrary");
             System.loadLibrary(SpeechEvaluatorUtils.TAL_ASSESS_LIB);
-            Loger.i(TAG, "loadLibrary ok");
+            Loger.i("EnglishSpeekBll", "loadLibrary ok");
             loadSuccess = true;
         } catch (Throwable e) {
             loadSuccess = false;
-            Loger.e(TAG, "loadLibrary", e);
+            Loger.e("EnglishSpeekBll", "loadLibrary", e);
         }
     }
 
@@ -262,6 +263,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
 
                 @Override
                 public void onError(ResultEntity result) {
+                    Loger.d(TAG, "onError:isDestory=" + isDestory + ",result=" + result);
                     isDestory = true;
                     rl_livevideo_english_speak_content.setVisibility(View.INVISIBLE);
                     rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
@@ -496,6 +498,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
     }
 
     public void destory() {
+        Loger.d(TAG, "destory:isDestory=" + isDestory);
         isDestory = true;
         stop(null);
     }
