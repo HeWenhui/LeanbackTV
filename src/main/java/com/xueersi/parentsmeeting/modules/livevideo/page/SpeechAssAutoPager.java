@@ -301,20 +301,12 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //                vwvSpeectevalWave.start();
 //            }
 //        });
-        mView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setAudioRequest();
-//                mView.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if (mIse != null) {
-//                            mIse.stop();
-//                        }
-//                    }
-//                }, 5000);
-            }
-        }, 2300);
+//        mView.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                setAudioRequest();
+//            }
+//        }, 2300);
     }
 
     class CountDownListener implements Animation.AnimationListener {
@@ -349,6 +341,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 ViewGroup group = (ViewGroup) rl_livevideo_speecteval_countdown.getParent();
                 group.removeView(rl_livevideo_speecteval_countdown);
                 Loger.d(TAG, "onAnimationEnd:" + textView.getText() + ",group=null");
+                setAudioRequest();
                 vwvSpeectevalWave.start();
             }
         }
