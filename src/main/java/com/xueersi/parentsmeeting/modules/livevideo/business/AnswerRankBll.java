@@ -69,6 +69,7 @@ public class AnswerRankBll {
             }
             llCurRow.addView(getItemView(lst.get(i),i));
         }
+        mLst=lst;
     }
     private View getItemView(RankUserEntity entity,int i){
         View root=View.inflate(mContext, R.layout.item_live_rank_list,null);
