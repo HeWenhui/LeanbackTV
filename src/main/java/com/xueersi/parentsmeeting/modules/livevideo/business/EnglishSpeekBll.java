@@ -63,6 +63,8 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
     LiveMessageBll liveMessageBll;
     LiveGetInfo.TotalOpeningLength totalOpeningLength;
     boolean isDestory = false;
+    /** 静态destory */
+    static boolean isDestory2 = false;
     boolean isAudioStart = false;
     RelativeLayout bottomContent;
     private ViewGroup myView;
@@ -97,6 +99,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
     boolean showTip = false;
     int tips;
     AudioRequest.OnAudioRequest onAudioRequest;
+    LogToFile mLogtf;
 
     static {
         try {
@@ -112,6 +115,12 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
 
     public EnglishSpeekBll(Activity activity) {
         this.activity = activity;
+        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+                + ".txt"));
+        if (isDestory2) {
+            mLogtf.d("EnglishSpeekBll:isDestory2=true");
+        }
+        isDestory2 = false;
     }
 
     public void setLiveBll(LiveBll liveBll) {
@@ -180,6 +189,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
             public void onClick(View v) {
                 myView.removeView(layout_livevideo_stat_gold);
                 isDestory = true;
+                isDestory2 = true;
             }
         });
         talLanguage = new TalLanguage(activity);
@@ -243,7 +253,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
     }
 
     public void start() {
-        Loger.d(TAG, "start:isDestory=" + isDestory + ",mode=" + mode);
+        Loger.d(TAG, "start:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",mode=" + mode);
         if (isDestory) {
             return;
         }
@@ -263,8 +273,9 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
 
                 @Override
                 public void onError(ResultEntity result) {
-                    Loger.d(TAG, "onError:isDestory=" + isDestory + ",result=" + result);
+                    Loger.d(TAG, "onError:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",result=" + result);
                     isDestory = true;
+                    isDestory2 = true;
                     rl_livevideo_english_speak_content.setVisibility(View.INVISIBLE);
                     rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
                     if (onAudioRequest != null) {
@@ -378,11 +389,6 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                                                 }
                                                 tv_livevideo_english_prog.setProgress(0);
                                             }
-//                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                                        tv_livevideo_english_prog.setProgress(second15 * 3, true);
-//                                    } else {
-//                                        tv_livevideo_english_prog.setProgress(second15 * 3);
-//                                    }
                                         }
                                         if (second15 >= 15) {
                                             second15 = second15 % MAX_SECOND;
@@ -407,23 +413,6 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                             }
                         }
                     });
-//                    String time_len = getTime_len(out);
-//                    if (time_len != null) {
-//                        String[] split = out.split("\\.");
-//                        if (split.length == 2) {
-//                            tv_livevideo_english_time.setText(split[0] + ":" + split[1]);
-//                            int second = Integer.parseInt(split[0]);
-//                            int progress = second / 15;
-//                            int oldProgress = tv_livevideo_english_prog.getProgress();
-//                            if (progress != oldProgress) {
-//                                String duration = time_len;
-//                                String speakingNum = getSpeakingNum(out);
-//                                String speakingLen = "";
-//                                tv_livevideo_english_prog.setProgress(progress);
-////                                liveBll.setTotalOpeningLength(duration, speakingNum, speakingLen);
-//                            }
-//                        }
-//                    }
                 }
 
                 private String getDuration(String out) {
@@ -435,41 +424,15 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                     return null;
                 }
 
-                private String getTime_len(String out) {
-                    int index = out.indexOf("3:");
-                    if (index != -1) {
-                        out = out.substring(index);
-                        int index2 = out.indexOf("\",");
-                        if (index2 != -1) {
-                            out = out.substring(2, index2);
-                            return out;
-                        }
-                    }
-                    return null;
-                }
-
-                private String getSpeakingNum(String out) {
-                    int index = out.indexOf("en_seg_num");
-                    if (index != -1) {
-                        out = out.substring(index);
-                        int index2 = out.indexOf("\",");
-                        if (index2 != -1) {
-                            out = out.substring(2, index2);
-                            return out;
-                        }
-                    }
-                    return "";
-                }
-
                 @Override
                 public void onProcessEnd(LanguageEncodeThread languageEncodeThread) {
-                    Loger.d(TAG, "onProcessEnd:Free:isDestory=" + isDestory);
+                    mLogtf.d("onProcessEnd:Free:isDestory=" + isDestory + ",isDestory2=" + isDestory2);
                     isAudioStart = false;
                     if (onAudioRequest != null) {
                         onAudioRequest.requestSuccess();
                         onAudioRequest = null;
                     }
-                    if (isDestory) {
+                    if (isDestory && isDestory2) {
                         talAsrJni.LangIDFree();
                     }
                 }
@@ -498,8 +461,9 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
     }
 
     public void destory() {
-        Loger.d(TAG, "destory:isDestory=" + isDestory);
+        Loger.d(TAG, "destory:isDestory=" + isDestory + ",isDestory2=" + isDestory2);
         isDestory = true;
+        isDestory2 = true;
         stop(null);
     }
 
