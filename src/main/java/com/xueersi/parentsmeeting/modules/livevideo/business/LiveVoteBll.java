@@ -129,7 +129,7 @@ public class LiveVoteBll implements LiveVoteAction {
             String myAnwer = tv_livevideo_vote_result_item.getText() + "";
             tv_livevideo_vote_result_mine.setText("我的选择: " + myAnwer);
         } else {
-            tv_livevideo_vote_result_mine.setText("我没有选择");
+            tv_livevideo_vote_result_mine.setText("你错过了本次选择");
         }
         view1.findViewById(R.id.iv_livevideo_vote_result_close).setOnClickListener(new View.OnClickListener() {
             @Override
