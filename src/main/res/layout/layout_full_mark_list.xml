@@ -92,7 +92,7 @@
 
     <TextView
         android:id="@id/tv_full_mark_list_no1"
-        style="@style/text_font11_white_style"
+        style="@style/text_font11_ffffff_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -101,7 +101,7 @@
 
     <TextView
         android:id="@id/tv_full_mark_list_no2"
-        style="@style/text_font11_white_style"
+        style="@style/text_font11_ffffff_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -109,7 +109,7 @@
 
     <TextView
         android:id="@id/tv_full_mark_list_no3"
-        style="@style/text_font11_white_style"
+        style="@style/text_font11_ffffff_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
