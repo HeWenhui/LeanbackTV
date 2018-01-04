@@ -104,7 +104,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
 
     private final int RECORD_WITE = 11000;
 
-    private AudioPlayerManager mAudioPlayerManager;
+   // private AudioPlayerManager mAudioPlayerManager;
 
     public SpeechAssessmentWebPager(Context context, String liveid, String testId, String stuId, boolean isLive,
                                     String nonce,
@@ -149,7 +149,6 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
 
     @Override
     public void initData() {
-        mAudioPlayerManager = AudioPlayerManager.get(ContextManager.getApplication());
         addJavascriptInterface();
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
         wvSubjectWeb.setWebViewClient(new MyWebViewClient());
@@ -597,32 +596,12 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
                         }
                         Loger.i("SpeechWebPagerTest", "playRecordFile:" + playUrl);
 
-
                         if (mCurrentPlayVoiceUrl != null && mCurrentPlayVoiceUrl.equals(playUrl)) {
                             //如果和当前播放的是一样的语音则停止
 
-                            if(mAudioPlayerManager.getState()== AudioPlayerManager.State.playing){
-                                mAudioPlayerManager.stop();
-                                mAudioPlayerManager.release();
-                                mCurrentPlayVoiceUrl = "";
-                                if (mIsStop) {
-                                    if (!TextUtils.isEmpty(tip)) {
-                                        isRebotLast = false;
-                                        if (tip.equals("false")) {
-                                            jsStopRecordBtn();
-                                        } else if (tip.equals("last")) {
-                                            isRebotLast = true;
-                                            jsStopRecordBtn();
-                                        }
-                                    }
-                                }
-                                mIsStop = true;
-                                return;
-                            }
-
-//                            if (AudioPlayer.isPlaying()) {
-//                                AudioPlayer.stop();
-//                                AudioPlayer.releaseAudioPlayer(mContext);
+//                            if (mAudioPlayerManager != null && mAudioPlayerManager.getState() == AudioPlayerManager.State.playing) {
+//                                mAudioPlayerManager.stop();
+//                                mAudioPlayerManager.release();
 //                                mCurrentPlayVoiceUrl = "";
 //                                if (mIsStop) {
 //                                    if (!TextUtils.isEmpty(tip)) {
@@ -638,41 +617,11 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
 //                                mIsStop = true;
 //                                return;
 //                            }
-                        } else {
-                            if(mAudioPlayerManager.getState()==AudioPlayerManager.State.playing){
-                                mIsStop=false;
-                            }
-//                            if (AudioPlayer.isPlaying()) {
-//                                mIsStop = false;
-//                            }
-                        }
 
-
-                        mAudioPlayerManager.setCallback(new PlayerCallback() {
-                            @Override
-                            public void onPreparing(Object o, AudioPlayerManager audioPlayerManager) {
-                                Loger.i("SpeechWebPagerTest", "prepared:");
-                                mCurrentPlayVoiceUrl = mVoiceUrl;
-                                AudioPlayer.play();
-                            }
-
-                            @Override
-                            public void onPlaying(Object o, AudioPlayerManager audioPlayerManager) {
-
-                            }
-
-                            @Override
-                            public void onPause(Object o, AudioPlayerManager audioPlayerManager) {
-
-                            }
-
-                            @Override
-                            public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
-                                try {
-                                    AudioPlayer.stop();
-                                } catch (Exception e) {
-
-                                }
+                            if (AudioPlayer.isPlaying()) {
+                                AudioPlayer.stop();
+                                AudioPlayer.releaseAudioPlayer(mContext);
+                                mCurrentPlayVoiceUrl = "";
                                 if (mIsStop) {
                                     if (!TextUtils.isEmpty(tip)) {
                                         isRebotLast = false;
@@ -685,97 +634,46 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
                                     }
                                 }
                                 mIsStop = true;
-                                Loger.i(TAG, "playComplete");
+                                return;
                             }
-
-                            @Override
-                            public void onStop(Object o, AudioPlayerManager audioPlayerManager) {
-
+                        } else {
+//                            if (mAudioPlayerManager != null && mAudioPlayerManager.getState() == AudioPlayerManager.State.playing) {
+//                                mIsStop = false;
+//                            }
+                            if (AudioPlayer.isPlaying()) {
+                                mIsStop = false;
                             }
+                        }
 
-                            @Override
-                            public void onError(String s, Object o, AudioPlayerManager audioPlayerManager) {
-                                Loger.i("SpeechWebPagerTest", "onError:");
-                                if (!TextUtils.isEmpty(tip)) {
-                                    isRebotLast = false;
-                                    if (tip.equals("false")) {
-                                        jsStopRecordBtn();
-                                    } else if (tip.equals("last")) {
-                                        isRebotLast = true;
-                                        jsStopRecordBtn();
-                                    }
-                                }
-                                jsRecordError(ResultCode.PLAY_RECORD_FAIL);
-                            }
 
-                            @Override
-                            public void onRelease(Object o, AudioPlayerManager audioPlayerManager) {
-
-                            }
-
-                            @Override
-                            public void onGetMaxDuration(int i) {
-
-                            }
-
-                            @Override
-                            public void onProgress(int i, Object o, AudioPlayerManager audioPlayerManager) {
-
-                            }
-
-                            @Override
-                            public void onSeeking(Object o, AudioPlayerManager audioPlayerManager) {
-
-                            }
-
-                            @Override
-                            public void onBufferingUpdate(int i, AudioPlayerManager audioPlayerManager) {
-
-                            }
-                        }).start(playUrl);
-
-//                        final boolean result = AudioPlayer.audioPlayerAsyncControl(playUrl, mContext, 1000, new
-//                                AudioPlayerListening() {
-//                                    @Override
-//                                    public void playComplete(int where) {
-//                                        try {
-//                                            AudioPlayer.stop();
-//                                        } catch (Exception e) {
+//                        if (mAudioPlayerManager == null) {
+//                            mAudioPlayerManager = AudioPlayerManager.get(ContextManager.getApplication());
+//                            mAudioPlayerManager.setCallback(new PlayerCallback() {
+//                                @Override
+//                                public void onPreparing(Object o, AudioPlayerManager audioPlayerManager) {
+//                                    Loger.i("SpeechWebPagerTest", "prepared:");
+//                                    mCurrentPlayVoiceUrl = mVoiceUrl;
+//                                    AudioPlayer.play();
+//                                }
 //
-//                                        }
-//                                        if (mIsStop) {
-//                                            if (!TextUtils.isEmpty(tip)) {
-//                                                isRebotLast = false;
-//                                                if (tip.equals("false")) {
-//                                                    jsStopRecordBtn();
-//                                                } else if (tip.equals("last")) {
-//                                                    isRebotLast = true;
-//                                                    jsStopRecordBtn();
-//                                                }
-//                                            }
-//                                        }
-//                                        mIsStop = true;
-//                                        Loger.i(TAG, "playComplete");
-//                                    }
+//                                @Override
+//                                public void onPlaying(Object o, AudioPlayerManager audioPlayerManager) {
 //
-//                                    @Override
-//                                    public void prepared(int duration) {
-//                                        Loger.i("SpeechWebPagerTest", "prepared:");
-//                                        mCurrentPlayVoiceUrl = mVoiceUrl;
-//                                        AudioPlayer.play();
-//                                    }
+//                                }
 //
-//                                    @Override
-//                                    public void currentDuration(int current, int duration) {
-//                                        Loger.i(TAG, "currentDuration:current=" + current + ",duration=" +
-//                                                duration);
+//                                @Override
+//                                public void onPause(Object o, AudioPlayerManager audioPlayerManager) {
+//
+//                                }
+//
+//                                @Override
+//                                public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
+//                                    try {
+//                                        AudioPlayer.stop();
+//                                    } catch (Exception e) {
 //
 //                                    }
-//
-//                                    @Override
-//                                    public void onError(int what, int code) {
-//                                        super.onError(what, code);
-//                                        Loger.i("SpeechWebPagerTest", "onError:");
+//                                    if (mIsStop) {
 //                                        if (!TextUtils.isEmpty(tip)) {
 //                                            isRebotLast = false;
 //                                            if (tip.equals("false")) {
@@ -786,11 +684,116 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
 //                                            }
 //                                        }
 //                                    }
-//                                }, false, 0, true);
-
-//                        if (!result) {
-//                            jsRecordError(ResultCode.PLAY_RECORD_FAIL);
+//                                    mIsStop = true;
+//                                    Loger.i(TAG, "playComplete");
+//                                }
+//
+//                                @Override
+//                                public void onStop(Object o, AudioPlayerManager audioPlayerManager) {
+//
+//                                }
+//
+//                                @Override
+//                                public void onError(String s, Object o, AudioPlayerManager audioPlayerManager) {
+//                                    Loger.i("SpeechWebPagerTest", "onError:");
+//                                    if (!TextUtils.isEmpty(tip)) {
+//                                        isRebotLast = false;
+//                                        if (tip.equals("false")) {
+//                                            jsStopRecordBtn();
+//                                        } else if (tip.equals("last")) {
+//                                            isRebotLast = true;
+//                                            jsStopRecordBtn();
+//                                        }
+//                                    }
+//                                    jsRecordError(ResultCode.PLAY_RECORD_FAIL);
+//                                }
+//
+//                                @Override
+//                                public void onRelease(Object o, AudioPlayerManager audioPlayerManager) {
+//
+//                                }
+//
+//                                @Override
+//                                public void onGetMaxDuration(int i) {
+//
+//                                }
+//
+//                                @Override
+//                                public void onProgress(int i, Object o, AudioPlayerManager audioPlayerManager) {
+//
+//                                }
+//
+//                                @Override
+//                                public void onSeeking(Object o, AudioPlayerManager audioPlayerManager) {
+//
+//                                }
+//
+//                                @Override
+//                                public void onBufferingUpdate(int i, AudioPlayerManager audioPlayerManager) {
+//
+//                                }
+//                            }).setDataSource(playUrl).start();
+//
+//                        } else {
+//                            mAudioPlayerManager.start(playUrl);
 //                        }
+                        final boolean result = AudioPlayer.audioPlayerAsyncControl(playUrl, mContext, 1000, new
+                                AudioPlayerListening() {
+                                    @Override
+                                    public void playComplete(int where) {
+                                        try {
+                                            AudioPlayer.stop();
+                                        } catch (Exception e) {
+
+                                        }
+                                        if (mIsStop) {
+                                            if (!TextUtils.isEmpty(tip)) {
+                                                isRebotLast = false;
+                                                if (tip.equals("false")) {
+                                                    jsStopRecordBtn();
+                                                } else if (tip.equals("last")) {
+                                                    isRebotLast = true;
+                                                    jsStopRecordBtn();
+                                                }
+                                            }
+                                        }
+                                        mIsStop = true;
+                                        Loger.i(TAG, "playComplete");
+                                    }
+
+                                    @Override
+                                    public void prepared(int duration) {
+                                        Loger.i("SpeechWebPagerTest", "prepared:");
+                                        mCurrentPlayVoiceUrl = mVoiceUrl;
+                                        AudioPlayer.play();
+                                    }
+
+                                    @Override
+                                    public void currentDuration(int current, int duration) {
+                                        Loger.i(TAG, "currentDuration:current=" + current + ",duration=" +
+                                                duration);
+
+                                    }
+
+                                    @Override
+                                    public void onError(int what, int code) {
+                                        super.onError(what, code);
+                                        Loger.i("SpeechWebPagerTest", "onError:");
+                                        if (!TextUtils.isEmpty(tip)) {
+                                            isRebotLast = false;
+                                            if (tip.equals("false")) {
+                                                jsStopRecordBtn();
+                                            } else if (tip.equals("last")) {
+                                                isRebotLast = true;
+                                                jsStopRecordBtn();
+                                            }
+                                        }
+                                    }
+                                }, false, 0, true);
+
+                        if (!result) {
+                            jsRecordError(ResultCode.PLAY_RECORD_FAIL);
+                        }
                     }
                 });
             }
