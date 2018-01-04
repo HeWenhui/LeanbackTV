@@ -490,7 +490,28 @@ public class VoiceAnswerPager extends BasePager {
                 }
             } else {
                 int score = phoneScores.get(0).getScore();
+                boolean isRight = score > 0;
                 Loger.d(TAG, "onResult(SUCCESS):score=" + score);
+                if (!isEnd && !isRight && resultEntity.getCurStatus() == 5) {
+                    rlSpeectevalTip.setVisibility(View.VISIBLE);
+                    tvSpeectevalTip.setText("认真些，\n再来一次吧");
+                    tvSpeectevalTip.setTag("9");
+                    mView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+//                                rlSpeectevalTip.setVisibility(View.GONE);
+                            rlSpeectevalTipGone();
+                        }
+                    }, 1500);
+                    Loger.d(TAG, "onResult(SUCCESS):reread");
+                    mView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            startEvaluator();
+                        }
+                    }, 200);
+                    return;
+                }
                 try {
                     JSONArray options = assess_ref.getJSONArray("options");
                     JSONObject jsonObject = options.getJSONObject(0);
@@ -499,7 +520,6 @@ public class VoiceAnswerPager extends BasePager {
                     tvVoiceansSwitch.setVisibility(View.GONE);
                     questionSwitch.uploadVoiceFile(saveVideoFile);
                     isSpeechSuccess = true;
-                    boolean isRight = score > 0;
                     questionSwitch.onPutQuestionResult(baseVideoQuestionEntity, content1.getString(0), content1.getString(0), 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
                         @Override
                         public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {

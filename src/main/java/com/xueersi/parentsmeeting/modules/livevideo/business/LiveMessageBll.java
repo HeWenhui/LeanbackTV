@@ -75,6 +75,29 @@ public class LiveMessageBll implements RoomAction {
         return rlLiveMessageContent;
     }
 
+    public void initViewLive(RelativeLayout bottomContent) {
+        rlLiveMessageContent = new RelativeLayout(activity);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        bottomContent.addView(rlLiveMessageContent, params);
+
+        long before = System.currentTimeMillis();
+        LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+        mLiveMessagePager = liveMessagePager;
+        Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
+
+        mLiveMessagePager.getInfo = getInfo;
+        mLiveMessagePager.urlclick = urlclick;
+        mLiveMessagePager.setPeopleCount(peopleCount);
+        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
+        mLiveMessagePager.setLiveBll(mLiveBll);
+        mLiveMessagePager.onModeChange(mLiveBll.getMode());
+
+        if (mode != null) {
+            mLiveMessagePager.onopenchat(openchat, mode, false);
+        }
+        rlLiveMessageContent.addView(mLiveMessagePager.getRootView(), params);
+    }
+
     public void initView(RelativeLayout bottomContent, boolean isLand) {
         rlLiveMessageContent = new RelativeLayout(activity);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);

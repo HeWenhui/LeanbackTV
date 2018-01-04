@@ -224,7 +224,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         //聊天
         long before = System.currentTimeMillis();
         liveLazyBllCreat.setBottomContent(bottomContent);
-        liveMessageBll.initView(bottomContent, true);
+        liveMessageBll.initViewLive(bottomContent);
         Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         //聊天
