@@ -845,7 +845,7 @@ public class LiveBll extends BaseBll {
             // mLogtf.i("onNotice:target=" + target + ",notice=" + notice);
             String msg = "onNotice:target=" + target;
             try {
-                JSONObject object = new JSONObject(notice);
+                final JSONObject object = new JSONObject(notice);
                 int mtype = object.getInt("type");
                 msg += ",mtype=" + mtype + ",voiceChatStatu=" + voiceChatStatus + ",";
                 switch (mtype) {
@@ -1058,8 +1058,17 @@ public class LiveBll extends BaseBll {
                     }
                     case XESCODE.PRAISE: {
                         msg += "PRAISE";
+                        if (mPraiseOrEncourageAction == null&&liveLazyBllCreat!=null) {
+                            liveLazyBllCreat.createPraiseOrEncourageAction();
+                        }
                         if (mPraiseOrEncourageAction != null) {
-                            mPraiseOrEncourageAction.onPraiseOrEncourage(object);
+                            final JSONObject finalObject = object;
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mPraiseOrEncourageAction.onPraiseOrEncourage(finalObject);
+                                }
+                            });
                         }
                     }
                     break;

@@ -143,6 +143,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
                             h5CoursewarePager.destroy();
                             bottomContent.removeView(h5CoursewarePager.getRootView());
                             h5CoursewarePager = null;
+                            if (context instanceof WebViewRequest) {
+                                WebViewRequest webViewRequest = (WebViewRequest) context;
+                                webViewRequest.releaseWebView();
+                            }
                         }
                     }
                 });
@@ -249,6 +253,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
 //                        liveVideoActivityBase.setAutoOrientation(true);
 //                        bottomContent.removeView(h5CoursewarePager.getRootView());
 //                        h5CoursewarePager = null;
+                        if (context instanceof WebViewRequest) {
+                            WebViewRequest webViewRequest = (WebViewRequest) context;
+                            webViewRequest.releaseWebView();
+                        }
                     }
                 }
             }
@@ -263,7 +271,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
         mData.put("coursewaretype", videoQuestionH5Entity.courseware_type);
         mData.put("loadurl", videoQuestionH5Entity.url);
         mLiveBll.umsAgentDebug2(eventId, mData);
-        h5CoursewarePager = new EnglishH5CoursewarePager(context, false, new OnH5ResultClose() {
+        h5CoursewarePager = new EnglishH5CoursewarePager(context, false, mVSectionID, videoQuestionH5Entity.url, videoQuestionH5Entity.id,
+                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, new OnH5ResultClose() {
             @Override
             public void onH5ResultClose() {
                 mH5AndBool.add(h5CoursewarePager.getUrl());
@@ -280,6 +289,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
                 bottomContent.removeView(h5CoursewarePager.getRootView());
                 h5CoursewarePager = null;
                 mLiveBll.getStuGoldCount();
+                if (context instanceof WebViewRequest) {
+                    WebViewRequest webViewRequest = (WebViewRequest) context;
+                    webViewRequest.releaseWebView();
+                }
             }
 
             @Override
@@ -296,9 +309,13 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
             public void umsAgentDebug3(String eventId, Map<String, String> mData) {
                 mLiveBll.umsAgentDebug3(eventId, mData);
             }
-        }, videoQuestionH5Entity.url, videoQuestionH5Entity.id, videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce);
+        });
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         bottomContent.addView(h5CoursewarePager.getRootView(), lp);
+        if (context instanceof WebViewRequest) {
+            WebViewRequest webViewRequest = (WebViewRequest) context;
+            webViewRequest.requestWebView();
+        }
     }
 
     private void showVoiceAnswer(final VideoQuestionLiveEntity videoQuestionLiveEntity) {
@@ -518,7 +535,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
 //                rlVoiceQuestionContent = null;
 //                if (context instanceof AudioRequest) {
 //                    AudioRequest audioRequest = (AudioRequest) context;
-//                    audioRequest.release();
+//                    audioRequest.releaseWebView();
 //                }
 //            }
         }

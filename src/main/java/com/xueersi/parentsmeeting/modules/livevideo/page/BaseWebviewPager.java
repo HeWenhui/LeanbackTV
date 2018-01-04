@@ -90,6 +90,7 @@ public abstract class BaseWebviewPager extends BasePager {
         public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
             if (newProgress == 100) {
+                Loger.i(TAG, "onProgressChanged");
                 View loadView = mView.findViewById(R.id.rl_livevideo_subject_loading);
                 if (loadView != null) {
                     ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);

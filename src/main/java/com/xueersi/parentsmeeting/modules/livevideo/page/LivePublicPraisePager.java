@@ -61,7 +61,7 @@ public class LivePublicPraisePager extends BasePager {
     View vEncourage;
     ImageView ivEncourage;
     TextView tvEncourage;
-    int lightRedColor, black66;
+    int lightRedColor, COLOR_333333;
     Animation animationIn, animationOut;
     boolean isHave = false;
     ArrayList<JsonType> runs = new ArrayList<>();
@@ -75,8 +75,8 @@ public class LivePublicPraisePager extends BasePager {
         super(context);
         activity = (Activity) context;
         Resources resources = context.getResources();
-        lightRedColor = resources.getColor(R.color.light_red);
-        black66 = resources.getColor(R.color.black66);
+        lightRedColor = resources.getColor(R.color.COLOR_E74C3C);
+        COLOR_333333 = resources.getColor(R.color.COLOR_333333);
         initData();
     }
 
@@ -681,8 +681,8 @@ public class LivePublicPraisePager extends BasePager {
                 tvName.setTextColor(lightRedColor);
                 tvSign.setTextColor(lightRedColor);
             } else {
-                tvName.setTextColor(black66);
-                tvSign.setTextColor(black66);
+                tvName.setTextColor(COLOR_333333);
+                tvSign.setTextColor(COLOR_333333);
             }
             tvName.setText(classmateEntity.getName());
 //            if (position == getCount() - 1) {

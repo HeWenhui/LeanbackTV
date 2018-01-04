@@ -1,11 +1,11 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:visibility="invisible">
 
-    <com.xueersi.xesalib.view.activity.browser.XESNoZoomWebView
+    <ren.yale.android.cachewebviewlib.CacheWebView
         android:id="@id/wv_livevideo_subject_web"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

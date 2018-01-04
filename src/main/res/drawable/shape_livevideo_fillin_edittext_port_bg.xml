@@ -9,5 +9,5 @@
         android:height="40dp"/>
     <stroke
         android:width="1px"
-        android:color="@color/middlegrey"/>
+        android:color="@color/COLOR_A0A0A0"/>
 </shape>

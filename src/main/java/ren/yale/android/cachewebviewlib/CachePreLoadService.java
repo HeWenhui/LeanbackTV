@@ -9,9 +9,13 @@ import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.RelativeLayout;
 
+import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
+import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import ren.yale.android.cachewebviewlib.utils.NetworkUtils;
@@ -25,6 +29,8 @@ public class CachePreLoadService extends Service {
     public static final String KEY_URL_HEADER = "preload_url_key_header";
     public static final String URL_CACHE_ACTION = "url_cache_action";
     private boolean mLastFinish = true;
+    ArrayList<CacheWebView> cacheWebViews = new ArrayList<>();
+    private String TAG = "CachePreLoadService";
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -64,17 +70,20 @@ public class CachePreLoadService extends Service {
 //        if (!NetworkUtils.isConnected(this.getApplicationContext())) {
 //            return super.onStartCommand(intent, flags, startId);
 //        }
-
-        if (!TextUtils.isEmpty(url) && mLastFinish) {
+//        if (!TextUtils.isEmpty(url) && mLastFinish) {
+        if (!TextUtils.isEmpty(url)) {
             mLastFinish = false;
-            CacheWebView cacheWebView = new CacheWebView(this.getApplicationContext());
-            cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.FORCE);
+            RelativeLayout relativeLayout = new RelativeLayout(this.getApplicationContext());
+            final CacheWebView cacheWebView = new CacheWebView(this.getApplicationContext());
+            relativeLayout.addView(cacheWebView, new RelativeLayout.LayoutParams(ScreenUtils.getScreenWidth(), ScreenUtils.getScreenHeight()));
+            cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NORMAL);
             Map header = null;
             try {
                 header = (Map) intent.getSerializableExtra(KEY_URL_HEADER);
             } catch (Exception e) {
             }
             cacheWebView.loadUrl(url, header);
+            cacheWebViews.add(cacheWebView);
             cacheWebView.setWebViewClient(new WebViewClient() {
                 long before = System.currentTimeMillis();
                 String failingUrl;
@@ -93,6 +102,8 @@ public class CachePreLoadService extends Service {
                     intent1.putExtra("status", status);
                     intent1.putExtra("time", (System.currentTimeMillis() - before));
                     sendBroadcast(intent1);
+                    cacheWebViews.remove(cacheWebView);
+                    view.destroy();
                 }
 
                 @Override
@@ -110,5 +121,10 @@ public class CachePreLoadService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Loger.d(TAG, "onDestroy:cacheWebViews=" + cacheWebViews.size());
+        for (int i = 0; i < cacheWebViews.size(); i++) {
+            WebView view = cacheWebViews.get(i);
+            view.destroy();
+        }
     }
 }

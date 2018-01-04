@@ -51,7 +51,7 @@
             android:layout_marginTop="154dp"
             android:gravity="center_vertical"
             android:text="你听懂了吗？"
-            android:textColor="@color/black66"
+            android:textColor="@color/COLOR_333333"
             android:textSize="16sp"/>
 
         <RelativeLayout

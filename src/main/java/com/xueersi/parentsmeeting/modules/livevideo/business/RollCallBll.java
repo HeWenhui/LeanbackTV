@@ -104,23 +104,28 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
 //        }
     }
 
-    public void initView(RelativeLayout bottomContent) {
-        int screenWidth = ScreenUtils.getScreenWidth();
-        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
-        rlRollCallContent = new RelativeLayout(activity);
-        bottomContent.addView(rlRollCallContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        //点名
-        RelativeLayout rlClassmateContent = new RelativeLayout(activity);
-        classmateSignPager = new ClassmateSignPager(activity, mLiveBll);
-        classmateSignPager.setClassSignStop(classSignStop);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        params.rightMargin = wradio;
-        if (IS_SHOW_CLASSMATE_SIGN) {
-            classmateSignPager.start();
-            rlClassmateContent.addView(classmateSignPager.getRootView(), params);
-        }
-        bottomContent.addView(rlClassmateContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    public void initView(final RelativeLayout bottomContent) {
+        bottomContent.post(new Runnable() {
+            @Override
+            public void run() {
+                int screenWidth = ScreenUtils.getScreenWidth();
+                int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
+                rlRollCallContent = new RelativeLayout(activity);
+                bottomContent.addView(rlRollCallContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                //点名
+                RelativeLayout rlClassmateContent = new RelativeLayout(activity);
+                classmateSignPager = new ClassmateSignPager(activity, mLiveBll);
+                classmateSignPager.setClassSignStop(classSignStop);
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                params.rightMargin = wradio;
+                if (IS_SHOW_CLASSMATE_SIGN) {
+                    classmateSignPager.start();
+                    rlClassmateContent.addView(classmateSignPager.getRootView(), params);
+                }
+                bottomContent.addView(rlClassmateContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+        });
     }
 
     public void onPlayOpenSuccess(ViewGroup.LayoutParams lp) {

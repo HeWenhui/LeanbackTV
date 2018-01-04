@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 
 /**
  * Created by linyuqiang on 2018/1/1.
@@ -14,6 +15,7 @@ public class LiveLazyBllCreat {
     LiveBll liveBll;
     private LiveVoteBll liveVoteBll;
     private PraiseOrEncourageBll praiseOrEncourageBll;
+    private LiveGetInfo liveGetInfo;
 
     public LiveLazyBllCreat(LiveVideoActivity liveVideoActivity, LiveBll liveBll) {
         this.liveVideoActivity = liveVideoActivity;
@@ -22,6 +24,10 @@ public class LiveLazyBllCreat {
 
     public void setBottomContent(RelativeLayout bottomContent) {
         this.bottomContent = bottomContent;
+    }
+
+    public void setGetInfo(LiveGetInfo getInfo) {
+        this.liveGetInfo = getInfo;
     }
 
     LiveVoteAction createLiveVoteAction() {
@@ -37,7 +43,14 @@ public class LiveLazyBllCreat {
     PraiseOrEncourageAction createPraiseOrEncourageAction() {
         if (praiseOrEncourageBll == null) {
             praiseOrEncourageBll = new PraiseOrEncourageBll(liveVideoActivity);
-            praiseOrEncourageBll.initView(bottomContent);
+            bottomContent.post(new Runnable() {
+                @Override
+                public void run() {
+                    praiseOrEncourageBll.initView(bottomContent);
+                    praiseOrEncourageBll.onLiveInit(liveGetInfo);
+                }
+            });
+            liveBll.setPraiseOrEncourageAction(praiseOrEncourageBll);
         }
         return praiseOrEncourageBll;
     }

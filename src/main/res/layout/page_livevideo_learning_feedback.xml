@@ -26,7 +26,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="40dp"
             android:text="学习数据"
-            android:textColor="@color/black66"
+            android:textColor="@color/COLOR_333333"
             android:textSize="16dp"/>
 
         <RelativeLayout
@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_centerVertical="true"
-                android:background="@color/borderline"/>
+                android:background="@color/COLOR_DCDCDC"/>
 
         </RelativeLayout>
 
@@ -78,7 +78,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="15dp"
                         android:text="听课时长"
-                        android:textColor="@color/black66"
+                        android:textColor="@color/COLOR_333333"
                         android:textSize="14sp"/>
 
                     <TextView
@@ -89,7 +89,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
                         android:text="1小时45分钟"
-                        android:textColor="@color/light_red"
+                        android:textColor="@color/COLOR_E74C3C"
                         android:textSize="14sp"/>
 
                 </RelativeLayout>
@@ -97,7 +97,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="148dp"
-                    android:background="@color/borderline"/>
+                    android:background="@color/COLOR_DCDCDC"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -124,7 +124,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="答题正确率 "
-                            android:textColor="@color/black66"
+                            android:textColor="@color/COLOR_333333"
                             android:textSize="14sp"/>
 
                         <TextView
@@ -133,7 +133,7 @@
                             android:layout_height="wrap_content"
                             android:layout_toRightOf="@id/tv_livevideo_learnfeedback_accuracy_lable"
                             android:text="85%"
-                            android:textColor="@color/light_red"
+                            android:textColor="@color/COLOR_E74C3C"
                             android:textSize="14sp"/>
 
                         <TextView
@@ -143,7 +143,7 @@
                             android:layout_below="@id/tv_livevideo_learnfeedback_accuracy_lable"
                             android:layout_marginTop="10dp"
                             android:text="平均正确率 "
-                            android:textColor="@color/black66"
+                            android:textColor="@color/COLOR_333333"
                             android:textSize="14sp"/>
 
                         <TextView
@@ -154,7 +154,7 @@
                             android:layout_marginTop="10dp"
                             android:layout_toRightOf="@id/tv_livevideo_learnfeedback_accuracy_average_lable"
                             android:text="79%"
-                            android:textColor="@color/light_red"
+                            android:textColor="@color/COLOR_E74C3C"
                             android:textSize="14sp"/>
                     </RelativeLayout>
 
@@ -163,7 +163,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="148dp"
-                    android:background="@color/borderline"/>
+                    android:background="@color/COLOR_DCDCDC"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -192,7 +192,7 @@
                         android:layout_marginTop="15dp"
                         android:layout_toLeftOf="@id/v_livevideo_learnfeedback_ranking_center"
                         android:text="你的排名 "
-                        android:textColor="@color/black66"
+                        android:textColor="@color/COLOR_333333"
                         android:textSize="14sp"/>
 
                     <TextView
@@ -203,7 +203,7 @@
                         android:layout_marginTop="15dp"
                         android:layout_toRightOf="@id/v_livevideo_learnfeedback_ranking_center"
                         android:text="第43名"
-                        android:textColor="@color/light_red"
+                        android:textColor="@color/COLOR_E74C3C"
                         android:textSize="14sp"/>
 
                     <TextView
@@ -214,7 +214,7 @@
                         android:layout_below="@id/tv_livevideo_learnfeedback_ranking_lable"
                         android:layout_marginTop="10dp"
                         android:text="较上节课 "
-                        android:textColor="@color/black66"
+                        android:textColor="@color/COLOR_333333"
                         android:textSize="14sp"/>
 
                     <TextView
@@ -225,7 +225,7 @@
                         android:layout_below="@id/tv_livevideo_learnfeedback_ranking"
                         android:layout_marginTop="10dp"
                         android:text="提高19名"
-                        android:textColor="@color/light_red"
+                        android:textColor="@color/COLOR_E74C3C"
                         android:textSize="14sp"/>
 
                 </RelativeLayout>

@@ -27,7 +27,7 @@
             android:layout_width="1px"
             android:layout_height="match_parent"
             android:layout_toLeftOf="@id/iv_livevideo_message_expression_cancle"
-            android:background="@color/borderline"/>
+            android:background="@color/COLOR_DCDCDC"/>
     </RelativeLayout>
 
     <LinearLayout

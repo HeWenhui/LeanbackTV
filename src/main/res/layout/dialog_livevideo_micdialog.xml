@@ -50,7 +50,7 @@
 
                         <TextView
                             android:id="@id/tv_livevideo_raise_hands_fail_content"
-                            style="@style/text_font13_middle_grey_style"
+                            style="@style/text_font13_666666_style"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tv_livevideo_raise_hands_fail"
@@ -96,7 +96,7 @@
 
                         <TextView
                             android:id="@id/tv_livevideo_raise_hands_success_content"
-                            style="@style/text_font13_middle_grey_style"
+                            style="@style/text_font13_666666_style"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tv_livevideo_raise_hands_success"

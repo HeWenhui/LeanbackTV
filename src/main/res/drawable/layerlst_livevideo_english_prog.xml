@@ -12,4 +12,4 @@
             android:drawable="@drawable/shape_livevideo_english_bg"
             android:scaleWidth="100%" />
     </item>
-</layer-list>  
+</layer-list>

@@ -61,7 +61,7 @@
             android:background="@drawable/shape_livevideo_flower_disable"
             android:gravity="center"
             android:text="10s"
-            android:textColor="@color/dark_selected"
+            android:textColor="@color/COLOR_333333"
             android:visibility="gone" />
 
         <Button
@@ -128,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="在线0人"
-                android:textColor="@color/black66" />
+                android:textColor="@color/COLOR_333333" />
 
             <ImageView
                 android:id="@id/iv_livevideo_message_clean"
@@ -155,7 +155,7 @@
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:layout_below="@id/rl_livevideo_message_status"
-            android:background="@color/borderline" />
+            android:background="@color/COLOR_DCDCDC" />
 
         <ListView
             android:id="@id/lv_livevideo_message"

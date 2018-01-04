@@ -941,7 +941,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (rlQuestionContent != null && mQuestionEntity != null) {
             Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showEnglishH5CoursewarePager");
             mPlayVideoControlHandler.sendMessage(msg);
-            englishH5CoursewarePager = new EnglishH5CoursewarePager(LivePlayBackVideoActivity.this, true, new
+            englishH5CoursewarePager = new EnglishH5CoursewarePager(LivePlayBackVideoActivity.this, true, mVideoEntity.getLiveId(), mQuestionEntity.getEnglishH5Play_url(),
+                    mQuestionEntity.getvQuestionID(), mQuestionEntity.getvQuestionType(), "", new
                     EnglishH5CoursewareBll.OnH5ResultClose() {
                         @Override
                         public void onH5ResultClose() {
@@ -962,8 +963,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                         public void umsAgentDebug3(String eventId, Map<String, String> mData) {
                             LivePlayBackVideoActivity.this.umsAgentDebug3(eventId, mData);
                         }
-                    }, mQuestionEntity.getEnglishH5Play_url(), mQuestionEntity.getvQuestionID(), mQuestionEntity
-                    .getvQuestionType(), "");
+                    });
             rlQuestionContent.removeAllViews();
             rlQuestionContent.addView(englishH5CoursewarePager.getRootView(), new LayoutParams(LayoutParams
                     .MATCH_PARENT,

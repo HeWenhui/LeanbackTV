@@ -119,12 +119,17 @@ public class VideoChatBll implements VideoChatAction {
         this.getInfo = getInfo;
         boolean allowLinkMic = getInfo.isAllowLinkMic();
         if (allowLinkMic) {
-            try {
-                isHasPermission = isHasPermission() != -1;
-            } catch (Exception e) {
-                Loger.e(activity, TAG, "onLiveInit", e, true);
-                isHasPermission = true;
-            }
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        isHasPermission = isHasPermission() != -1;
+                    } catch (Exception e) {
+                        Loger.e(activity, TAG, "onLiveInit", e, true);
+                        isHasPermission = true;
+                    }
+                }
+            }.start();
             wiredHeadsetReceiver = new WiredHeadsetReceiver();
             activity.registerReceiver(wiredHeadsetReceiver, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
             btRaiseHands.setVisibility(View.VISIBLE);

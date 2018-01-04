@@ -4,7 +4,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="65dp"
         android:layout_alignParentBottom="true"
         android:background="@color/transparent_80">
 
@@ -16,7 +16,7 @@
 
             <TextView
                 android:id="@id/tv_livevideo_voiceans_title"
-                style="@style/text_font12_white_style"
+                style="@style/text_font12_ffffff_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -24,14 +24,18 @@
 
             <TextView
                 android:id="@id/tv_livevideo_voiceans_switch"
-                style="@style/text_font12_white_style"
+                style="@style/text_font12_ffffff_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="20dp"
                 android:background="@drawable/shape_livevideo_voice_answer_switch_bt"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:paddingBottom="3dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="3dp"
                 android:text="手动答题" />
 
         </RelativeLayout>
@@ -40,7 +44,6 @@
             android:id="@id/vwv_livevideo_speecteval_wave"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/rl_livevideo_voiceans_switch"
             android:layout_marginTop="12dp" />
     </RelativeLayout>
 
@@ -64,7 +67,7 @@
 
         <TextView
             android:id="@id/tv_livevideo_speecteval_tip"
-            style="@style/text_font12_ff4343"
+            style="@style/text_font12_ff4343_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/iv_livevideo_speecteval_tip_pao"
@@ -72,7 +75,7 @@
             android:layout_toRightOf="@id/iv_livevideo_speecteval_tip"
             android:gravity="center_vertical"
             android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:paddingRight="7dp"
             android:text="语音输入有点小问题，请先手动答题哦（1131)" />
 
         <ImageView

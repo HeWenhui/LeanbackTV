@@ -3,5 +3,5 @@
        android:shape="oval">
     <!-- 填充 -->
     <solid
-        android:color="@color/light_red"/><!-- 填充的颜色 -->
+        android:color="@color/COLOR_E74C3C"/><!-- 填充的颜色 -->
 </shape>

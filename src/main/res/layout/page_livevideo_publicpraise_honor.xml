@@ -40,7 +40,7 @@
             android:layout_toRightOf="@id/iv_livevideo_public_praise"
             android:gravity="center_vertical"
             android:text="小新新同学"
-            android:textColor="@color/black66"
+            android:textColor="@color/COLOR_333333"
             android:textSize="20sp"/>
 
         <GridView

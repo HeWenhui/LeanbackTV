@@ -67,7 +67,7 @@
                 android:layout_alignTop="@id/rb_livevideo_evaluate_star"
                 android:gravity="center_vertical"
                 android:text="知识掌握程度"
-                android:textColor="@color/black77"
+                android:textColor="@color/COLOR_666666"
                 android:textSize="14sp"/>
 
             <com.xueersi.xesalib.view.ratingbar.RatingBar
@@ -101,7 +101,7 @@
                 android:layout_alignTop="@id/rb_livevideo_evaluate_star2"
                 android:gravity="center_vertical"
                 android:text="课堂互动氛围"
-                android:textColor="@color/black77"
+                android:textColor="@color/COLOR_666666"
                 android:textSize="14sp"/>
 
             <com.xueersi.xesalib.view.ratingbar.RatingBar
@@ -135,7 +135,7 @@
                 android:layout_alignTop="@id/rb_livevideo_evaluate_star3"
                 android:gravity="center_vertical"
                 android:text="老师精神状态"
-                android:textColor="@color/black77"
+                android:textColor="@color/COLOR_666666"
                 android:textSize="14sp"/>
 
             <com.xueersi.xesalib.view.ratingbar.RatingBar

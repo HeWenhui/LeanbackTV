@@ -10,7 +10,7 @@
         android:id="@id/rl_course_video_content"
         android:layout_width="match_parent"
         android:layout_height="@dimen/video_default_height"
-        android:background="@android:color/black">
+        android:background="@color/COLOR_000000">
         <!-- 播放器 -->
         <RelativeLayout
             android:id="@id/rl_livevideo_student_video"
@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:background="@android:color/black">
+            android:background="@color/COLOR_000000">
 
             <!-- 播放器 -->
 
@@ -130,7 +130,7 @@
             android:id="@id/rl_course_video_first_backgroud"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/black">
+            android:background="@color/COLOR_000000">
 
             <!-- 退出按钮 （横屏的时候变成竖屏，竖屏的时候退出当前Activity） -->
 
@@ -177,7 +177,7 @@
 
                 <TextView
                     android:id="@id/tv_course_video_loading_content"
-                    style="@style/text_font12_white_style"
+                    style="@style/text_font12_ffffff_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -186,7 +186,7 @@
 
                 <TextView
                     android:id="@id/tv_course_video_loading_fail"
-                    style="@style/text_font12_white_style"
+                    style="@style/text_font12_ffffff_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -223,7 +223,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_below="@id/rl_livevideo_student_video"
-            android:background="@color/dark_selected">
+            android:background="@color/COLOR_333333">
 
             <RelativeLayout
                 android:id="@id/rl_livevideo_student_liveinfo"
@@ -247,25 +247,25 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/text_font11_white_style"
+                        style="@style/text_font11_ffffff_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="签到时间："/>
 
                     <TextView
-                        style="@style/text_font11_white_style"
+                        style="@style/text_font11_ffffff_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="在线时长："/>
 
                     <TextView
-                        style="@style/text_font11_white_style"
+                        style="@style/text_font11_ffffff_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="正  确  率："/>
 
                     <TextView
-                        style="@style/text_font11_white_style"
+                        style="@style/text_font11_ffffff_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="组内排名："/>
@@ -282,28 +282,28 @@
 
                     <TextView
                         android:id="@id/tv_livevideo_student_check_time"
-                        style="@style/text_font11_white_style"
+                        style="@style/text_font11_ffffff_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=""/>
 
                     <TextView
                         android:id="@id/tv_livevideo_student_online"
-                        style="@style/text_font11_white_style"
+                        style="@style/text_font11_ffffff_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=""/>
 
                     <TextView
                         android:id="@id/tv_livevideo_student_radio"
-                        style="@style/text_font11_white_style"
+                        style="@style/text_font11_ffffff_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=""/>
 
                     <TextView
                         android:id="@id/tv_livevideo_student_team"
-                        style="@style/text_font11_white_style"
+                        style="@style/text_font11_ffffff_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=""/>

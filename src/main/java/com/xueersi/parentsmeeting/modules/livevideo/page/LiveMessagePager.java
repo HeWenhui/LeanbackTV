@@ -135,11 +135,23 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
         Resources resources = context.getResources();
-        nameColors[0] = resources.getColor(R.color.green);
-        nameColors[1] = resources.getColor(R.color.light_red);
+        nameColors[0] = resources.getColor(R.color.COLOR_32B16C);
+        nameColors[1] = resources.getColor(R.color.COLOR_E74C3C);
         nameColors[2] = resources.getColor(R.color.COLOR_20ABFF);
-        initListener();
-        initData();
+
+        btMesOpen = liveMediaControllerBottom.getBtMesOpen();
+        btMsgCommon = liveMediaControllerBottom.getBtMsgCommon();
+        btMessageFlowers = liveMediaControllerBottom.getBtMessageFlowers();
+        cbMessageClock = liveMediaControllerBottom.getCbMessageClock();
+        lvCommonWord = liveMediaControllerBottom.getLvCommonWord();
+
+        mView.post(new Runnable() {
+            @Override
+            public void run() {
+                initListener();
+                initData();
+            }
+        });
     }
 
     @Override
@@ -170,11 +182,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void initListener() {
-        btMesOpen = liveMediaControllerBottom.getBtMesOpen();
-        btMsgCommon = liveMediaControllerBottom.getBtMsgCommon();
-        btMessageFlowers = liveMediaControllerBottom.getBtMessageFlowers();
-        cbMessageClock = liveMediaControllerBottom.getCbMessageClock();
-        lvCommonWord = liveMediaControllerBottom.getLvCommonWord();
         rl_livevideo_common_word = (RelativeLayout) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_word);
         int screenWidth = ScreenUtils.getScreenWidth();
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
@@ -323,34 +330,39 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 return false;
             }
         });
-        KeyboardUtil.attach((Activity) mContext, switchFSPanelLinearLayout, new KeyboardUtil
-                .OnKeyboardShowingListener() {
+        mView.postDelayed(new Runnable() {
             @Override
-            public void onKeyboardShowing(boolean isShowing) {
-                Loger.i(TAG, "onKeyboardShowing:isShowing=" + isShowing);
-                if (!isShowing && switchFSPanelLinearLayout.getVisibility() == View.GONE) {
-                    onTitleShow(true);
-                }
-                keyboardShowing = isShowing;
-                questionBll.onKeyboardShowing(isShowing);
-                if (keyboardShowing) {
-                    btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
-                }
-            }
-        });
-        KPSwitchConflictUtil.attach(switchFSPanelLinearLayout, btMessageExpress, etMessageContent,
-                new KPSwitchConflictUtil.SwitchClickListener() {
+            public void run() {
+                KeyboardUtil.attach((Activity) mContext, switchFSPanelLinearLayout, new KeyboardUtil
+                        .OnKeyboardShowingListener() {
                     @Override
-                    public void onClickSwitch(boolean switchToPanel) {
-                        if (switchToPanel) {
-                            btMessageExpress.setBackgroundResource(R.drawable.im_input_jianpan_icon_normal);
-                            etMessageContent.clearFocus();
-                        } else {
+                    public void onKeyboardShowing(boolean isShowing) {
+                        Loger.i(TAG, "onKeyboardShowing:isShowing=" + isShowing);
+                        if (!isShowing && switchFSPanelLinearLayout.getVisibility() == View.GONE) {
+                            onTitleShow(true);
+                        }
+                        keyboardShowing = isShowing;
+                        questionBll.onKeyboardShowing(isShowing);
+                        if (keyboardShowing) {
                             btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
-                            etMessageContent.requestFocus();
                         }
                     }
                 });
+                KPSwitchConflictUtil.attach(switchFSPanelLinearLayout, btMessageExpress, etMessageContent,
+                        new KPSwitchConflictUtil.SwitchClickListener() {
+                            @Override
+                            public void onClickSwitch(boolean switchToPanel) {
+                                if (switchToPanel) {
+                                    btMessageExpress.setBackgroundResource(R.drawable.im_input_jianpan_icon_normal);
+                                    etMessageContent.clearFocus();
+                                } else {
+                                    btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
+                                    etMessageContent.requestFocus();
+                                }
+                            }
+                        });
+            }
+        }, 10);
     }
 
     int c = 0;
@@ -444,13 +456,23 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         lvMessage.setAdapter(messageAdapter);
         Loger.i(TAG, "initData:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        initDanmaku();
+        mView.post(new Runnable() {
+            @Override
+            public void run() {
+                initDanmaku();
+            }
+        });
         Loger.i(TAG, "initData:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         initCommonWord();
         Loger.i(TAG, "initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        initFlower();
+        mView.post(new Runnable() {
+            @Override
+            public void run() {
+                initFlower();
+            }
+        });
         Loger.i(TAG, "initData:time5=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }

@@ -51,7 +51,8 @@ import java.util.Map;
  * Created by lyqai on 2017/10/31.
  */
 public class EnglishSpeekBll implements EnglishSpeekAction {
-    static String TAG = "EnglishSpeekBll";
+    static int staticInt = 0;
+    String TAG = "EnglishSpeekBll" + staticInt++;
     static boolean loadSuccess = false;
     private Activity activity;
     private LiveBll liveBll;
@@ -62,6 +63,8 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
     LiveMessageBll liveMessageBll;
     LiveGetInfo.TotalOpeningLength totalOpeningLength;
     boolean isDestory = false;
+    /** 静态destory */
+    static boolean isDestory2 = false;
     boolean isAudioStart = false;
     RelativeLayout bottomContent;
     private ViewGroup myView;
@@ -96,21 +99,28 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
     boolean showTip = false;
     int tips;
     AudioRequest.OnAudioRequest onAudioRequest;
+    LogToFile mLogtf;
 
     static {
         try {
-            Loger.i(TAG, "loadLibrary");
+            Loger.i("EnglishSpeekBll", "loadLibrary");
             System.loadLibrary(SpeechEvaluatorUtils.TAL_ASSESS_LIB);
-            Loger.i(TAG, "loadLibrary ok");
+            Loger.i("EnglishSpeekBll", "loadLibrary ok");
             loadSuccess = true;
         } catch (Throwable e) {
             loadSuccess = false;
-            Loger.e(TAG, "loadLibrary", e);
+            Loger.e("EnglishSpeekBll", "loadLibrary", e);
         }
     }
 
     public EnglishSpeekBll(Activity activity) {
         this.activity = activity;
+        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+                + ".txt"));
+        if (isDestory2) {
+            mLogtf.d("EnglishSpeekBll:isDestory2=true");
+        }
+        isDestory2 = false;
     }
 
     public void setLiveBll(LiveBll liveBll) {
@@ -179,6 +189,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
             public void onClick(View v) {
                 myView.removeView(layout_livevideo_stat_gold);
                 isDestory = true;
+                isDestory2 = true;
             }
         });
         talLanguage = new TalLanguage(activity);
@@ -220,7 +231,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
 
     private void setTime(int second) {
         SpannableString sp = new SpannableString("再说" + second + "秒获得");
-        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.pingjia_yellow_color));
+        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.COLOR_FFFF00));
         sp.setSpan(foregroundColorSpan, 2, 2 + ("" + second).length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         tv_livevideo_english_time2.setText(sp);
     }
@@ -242,7 +253,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
     }
 
     public void start() {
-        Loger.d(TAG, "start:isDestory=" + isDestory + ",mode=" + mode);
+        Loger.d(TAG, "start:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",mode=" + mode);
         if (isDestory) {
             return;
         }
@@ -262,7 +273,9 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
 
                 @Override
                 public void onError(ResultEntity result) {
+                    Loger.d(TAG, "onError:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",result=" + result);
                     isDestory = true;
+                    isDestory2 = true;
                     rl_livevideo_english_speak_content.setVisibility(View.INVISIBLE);
                     rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
                     if (onAudioRequest != null) {
@@ -306,6 +319,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                                             int d = (int) totalOpeningLength.duration;
                                             setEnglishTime((totalSecond + d) / 60, (totalSecond + d) % 60);
                                         }
+//                                        Loger.d(TAG, "onProcessData:totalSecond=" + totalSecond);
                                         second15 += totalSecond - lastSecond;
                                         int oldProgress = tv_livevideo_english_prog.getProgress();
                                         if (second15 * 3 != oldProgress) {
@@ -313,8 +327,10 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                                             final float startProgress = oldProgress;
                                             float newProgress;
                                             if (second < 0) {
-                                                newProgress = (second15 - 15) * 3;
-                                                setTime(2 * MAX_SECOND - second15);
+//                                                newProgress = (second15 - 15) * 3;
+//                                                setTime(2 * MAX_SECOND - second15);
+                                                newProgress = (second15 % MAX_SECOND) * 3;
+                                                setTime(MAX_SECOND - second15 % MAX_SECOND);
 //                                                        Loger.d(TAG, "onProcessData(<0):oldProgress=" + oldProgress + ",second15=" + second15);
                                             } else {
                                                 newProgress = second15 * 3;
@@ -373,14 +389,9 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                                                 }
                                                 tv_livevideo_english_prog.setProgress(0);
                                             }
-//                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                                        tv_livevideo_english_prog.setProgress(second15 * 3, true);
-//                                    } else {
-//                                        tv_livevideo_english_prog.setProgress(second15 * 3);
-//                                    }
                                         }
                                         if (second15 >= 15) {
-                                            second15 -= 15;
+                                            second15 = second15 % MAX_SECOND;
                                             double douduration = Double.parseDouble(duration);
                                             int location[] = new int[2];
                                             tv_livevideo_english_prog.getLocationInWindow(location);
@@ -402,23 +413,6 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                             }
                         }
                     });
-//                    String time_len = getTime_len(out);
-//                    if (time_len != null) {
-//                        String[] split = out.split("\\.");
-//                        if (split.length == 2) {
-//                            tv_livevideo_english_time.setText(split[0] + ":" + split[1]);
-//                            int second = Integer.parseInt(split[0]);
-//                            int progress = second / 15;
-//                            int oldProgress = tv_livevideo_english_prog.getProgress();
-//                            if (progress != oldProgress) {
-//                                String duration = time_len;
-//                                String speakingNum = getSpeakingNum(out);
-//                                String speakingLen = "";
-//                                tv_livevideo_english_prog.setProgress(progress);
-////                                liveBll.setTotalOpeningLength(duration, speakingNum, speakingLen);
-//                            }
-//                        }
-//                    }
                 }
 
                 private String getDuration(String out) {
@@ -430,41 +424,15 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                     return null;
                 }
 
-                private String getTime_len(String out) {
-                    int index = out.indexOf("3:");
-                    if (index != -1) {
-                        out = out.substring(index);
-                        int index2 = out.indexOf("\",");
-                        if (index2 != -1) {
-                            out = out.substring(2, index2);
-                            return out;
-                        }
-                    }
-                    return null;
-                }
-
-                private String getSpeakingNum(String out) {
-                    int index = out.indexOf("en_seg_num");
-                    if (index != -1) {
-                        out = out.substring(index);
-                        int index2 = out.indexOf("\",");
-                        if (index2 != -1) {
-                            out = out.substring(2, index2);
-                            return out;
-                        }
-                    }
-                    return "";
-                }
-
                 @Override
                 public void onProcessEnd(LanguageEncodeThread languageEncodeThread) {
-                    Loger.d(TAG, "onProcessEnd:Free:isDestory=" + isDestory);
+                    mLogtf.d("onProcessEnd:Free:isDestory=" + isDestory + ",isDestory2=" + isDestory2);
                     isAudioStart = false;
                     if (onAudioRequest != null) {
                         onAudioRequest.requestSuccess();
                         onAudioRequest = null;
                     }
-                    if (isDestory) {
+                    if (isDestory && isDestory2) {
                         talAsrJni.LangIDFree();
                     }
                 }
@@ -493,7 +461,9 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
     }
 
     public void destory() {
+        Loger.d(TAG, "destory:isDestory=" + isDestory + ",isDestory2=" + isDestory2);
         isDestory = true;
+        isDestory2 = true;
         stop(null);
     }
 

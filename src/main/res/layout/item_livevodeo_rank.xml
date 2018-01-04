@@ -12,7 +12,7 @@
 
         <TextView
             android:id="@id/tv_livevideo_rank_item_left"
-            style="@style/text_font11_white_style"
+            style="@style/text_font11_ffffff_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -24,7 +24,7 @@
 
     <TextView
         android:id="@id/tv_livevideo_rank_item_mid"
-        style="@style/text_font11_white_style"
+        style="@style/text_font11_ffffff_style"
         android:layout_width="30dp"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -37,7 +37,7 @@
 
     <TextView
         android:id="@id/tv_livevideo_rank_item_right"
-        style="@style/text_font11_white_style"
+        style="@style/text_font11_ffffff_style"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

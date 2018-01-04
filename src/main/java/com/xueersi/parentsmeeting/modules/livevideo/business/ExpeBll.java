@@ -243,14 +243,14 @@ public class ExpeBll {
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder("你还可以试听");
         {
             SpannableString originalSpan = new SpannableString("" + time / 60000);
-            ForegroundColorSpan colorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.light_red));
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.COLOR_E74C3C));
             originalSpan.setSpan(colorSpan, 0, originalSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             stringBuilder.append(originalSpan);
         }
         stringBuilder.append("分");
         {
             SpannableString originalSpan = new SpannableString("" + time % 60000 / 1000);
-            ForegroundColorSpan colorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.light_red));
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.COLOR_E74C3C));
             originalSpan.setSpan(colorSpan, 0, originalSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             stringBuilder.append(originalSpan);
         }
