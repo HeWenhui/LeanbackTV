@@ -67,7 +67,7 @@
 
         <TextView
             android:id="@id/tv_livevideo_speecteval_tip"
-            style="@style/text_font12_ff4343"
+            style="@style/text_font12_ff4343_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/iv_livevideo_speecteval_tip_pao"

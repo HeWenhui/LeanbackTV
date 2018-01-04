@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
                     android:layout_toRightOf="@id/iv_livevideo_speecteval_time_emoji"
-                    android:textColor="@color/color_6462a2"
+                    android:textColor="@color/COLOR_6462A2"
                     android:textSize="12dp" />
 
                 <ProgressBar
@@ -191,7 +191,7 @@
                 android:layout_centerInParent="true"
                 android:gravity="center"
                 android:text="3"
-                android:textColor="@color/color_6462a2"
+                android:textColor="@color/COLOR_6462A2"
                 android:textSize="160dp"
                 android:textStyle="bold"
                 android:visibility="invisible" />
@@ -203,7 +203,7 @@
                 android:layout_centerInParent="true"
                 android:gravity="center"
                 android:text="2"
-                android:textColor="@color/color_6462a2"
+                android:textColor="@color/COLOR_6462A2"
                 android:textSize="160dp"
                 android:textStyle="bold"
                 android:visibility="invisible" />
@@ -215,7 +215,7 @@
                 android:layout_centerInParent="true"
                 android:gravity="center"
                 android:text="1"
-                android:textColor="@color/color_6462a2"
+                android:textColor="@color/COLOR_6462A2"
                 android:textSize="160dp"
                 android:textStyle="bold"
                 android:visibility="invisible" />
@@ -227,7 +227,7 @@
                 android:layout_centerInParent="true"
                 android:gravity="center"
                 android:text="GO"
-                android:textColor="@color/color_6462a2"
+                android:textColor="@color/COLOR_6462A2"
                 android:textSize="160dp"
                 android:textStyle="bold"
                 android:visibility="invisible" />

@@ -146,7 +146,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         this.speechEvalAction = speechEvalAction;
         logToFile.i("SpeechAssessmentPager:id=" + id);
         entranceTime = System.currentTimeMillis();
-        startProgColor = context.getResources().getColor(R.color.color_6462a2);
+        startProgColor = context.getResources().getColor(R.color.COLOR_6462A2);
         progColor = 0;
 //        content = "You are very good,You are very clever,welcome to my home";
 //        content = "welcome to my home";
@@ -175,7 +175,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         this.speechEvalAction = speechEvalAction;
         logToFile.i("SpeechAssessmentPager:id=" + id);
         entranceTime = System.currentTimeMillis();
-        startProgColor = context.getResources().getColor(R.color.color_6462a2);
+        startProgColor = context.getResources().getColor(R.color.COLOR_6462A2);
         progColor = 0;
 //        content = "You are very good,You are very good";
 //        this.content = "C" + content.substring(1);
@@ -508,7 +508,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             } else {
                 if (speechSuccess) {
                     ivSpeectevalTimeEmoji.setImageResource(R.drawable.bg_livevideo_speecteval_time_emoji4);
-                    tvSpeectevalTime.setTextColor(mContext.getResources().getColor(R.color.color_6462a2));
+                    tvSpeectevalTime.setTextColor(mContext.getResources().getColor(R.color.COLOR_6462A2));
                     tvSpeectevalTime.setText("完成啦！");
                 } else {
                     ivSpeectevalTimeEmoji.setImageResource(R.drawable.bg_livevideo_speecteval_time_emoji2);
@@ -569,7 +569,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         tvSpeectevalError.removeCallbacks(autoUploadRunnable);
         ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_upload);
         errorSetVisible();
-        tvSpeectevalError.setTextColor(mContext.getResources().getColor(R.color.color_6462a2));
+        tvSpeectevalError.setTextColor(mContext.getResources().getColor(R.color.COLOR_6462A2));
         tvSpeectevalError.setText("录音上传中");
         speechSuccess = true;
         List<PhoneScore> lstPhonemeScore = resultEntity.getLstPhonemeScore();
@@ -641,7 +641,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         rlSpeectevalBg.setVisibility(View.GONE);
         rlSpeectevalBg.removeAllViews();
         ivSpeectevalTimeEmoji.setImageResource(R.drawable.bg_livevideo_speecteval_time_emoji4);
-        tvSpeectevalTime.setTextColor(mContext.getResources().getColor(R.color.color_6462a2));
+        tvSpeectevalTime.setTextColor(mContext.getResources().getColor(R.color.COLOR_6462A2));
         tvSpeectevalTime.setText("完成啦!");
 //        progressBar.removeCallbacks(progressBarRun);
         progressBar.setVisibility(View.GONE);
