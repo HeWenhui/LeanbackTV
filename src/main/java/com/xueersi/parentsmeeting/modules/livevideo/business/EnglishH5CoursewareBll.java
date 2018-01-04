@@ -271,7 +271,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
         mData.put("coursewaretype", videoQuestionH5Entity.courseware_type);
         mData.put("loadurl", videoQuestionH5Entity.url);
         mLiveBll.umsAgentDebug2(eventId, mData);
-        h5CoursewarePager = new EnglishH5CoursewarePager(context, false, new OnH5ResultClose() {
+        h5CoursewarePager = new EnglishH5CoursewarePager(context, false, mVSectionID, videoQuestionH5Entity.url, videoQuestionH5Entity.id,
+                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, new OnH5ResultClose() {
             @Override
             public void onH5ResultClose() {
                 mH5AndBool.add(h5CoursewarePager.getUrl());
@@ -308,7 +309,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
             public void umsAgentDebug3(String eventId, Map<String, String> mData) {
                 mLiveBll.umsAgentDebug3(eventId, mData);
             }
-        }, videoQuestionH5Entity.url, videoQuestionH5Entity.id, videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce);
+        });
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         bottomContent.addView(h5CoursewarePager.getRootView(), lp);
         if (context instanceof WebViewRequest) {

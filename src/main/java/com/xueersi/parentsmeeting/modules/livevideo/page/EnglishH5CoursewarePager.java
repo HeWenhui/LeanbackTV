@@ -3,13 +3,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 import android.content.Context;
 import android.os.Environment;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
@@ -17,6 +15,10 @@ import com.xueersi.xesalib.utils.string.StringUtils;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
+import ren.yale.android.cachewebviewlib.CacheInterceptor;
+import ren.yale.android.cachewebviewlib.CacheWebView;
+import ren.yale.android.cachewebviewlib.WebViewCache;
 
 /**
  * Created by linyuqiang on 2017/3/25.
@@ -33,9 +35,11 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
     String courseware_type;
     boolean isPlayBack;
     File cacheFile;
+    String liveId;
 
-    public EnglishH5CoursewarePager(Context context, boolean isPlayBack, EnglishH5CoursewareBll.OnH5ResultClose onClose, String url, String id, final String courseware_type, String nonce) {
+    public EnglishH5CoursewarePager(Context context, boolean isPlayBack, String liveId, String url, String id, final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose) {
         super(context);
+        this.liveId = liveId;
         this.url = url;
         this.isPlayBack = isPlayBack;
         this.onClose = onClose;
@@ -148,9 +152,21 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
     @Override
     public void initData() {
         super.initData();
+        CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
+        cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NORMAL);
+        cacheWebView.setCacheInterceptor(new CacheInterceptor() {
+
+            @Override
+            public boolean canCache(String url) {
+                if (url.startsWith("https://live.xueersi.com/Live/coursewareH5/" + liveId)) {
+                    return false;
+                }
+                return true;
+            }
+        });
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
-
+//        webSetting.setUseWideViewPort(false);
 //        webSetting.setCacheMode(WebSettings.LOAD_DEFAULT);
 //        webSetting.setDatabasePath(cacheFile.getPath());
 //        //设置 应用 缓存目录
