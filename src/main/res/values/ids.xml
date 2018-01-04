@@ -386,4 +386,13 @@
     <item name="iv_live_rank_list_head" type="id" />
     <item name="tv_live_rank_list_name" type="id" />
     <item name="iv_live_rank_list_crown" type="id" />
+    <item name="ll_full_mark_list_no1_line" type="id" />
+    <item name="ll_full_mark_list_no2_line" type="id" />
+    <item name="tv_full_mark_list_no1" type="id" />
+    <item name="tv_full_mark_list_no2" type="id" />
+    <item name="tv_full_mark_list_no3" type="id" />
+    <item name="ll_full_mark_list_no3_line" type="id" />
+    <item name="ll_full_mark_list_no4_line" type="id" />
+    <item name="sv_live_full_mark_list" type="id" />
+    <item name="ll_full_mark_container" type="id" />
 </resources>

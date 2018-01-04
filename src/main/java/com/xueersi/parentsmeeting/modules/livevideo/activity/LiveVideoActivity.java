@@ -295,7 +295,21 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 }
             }
         });
-
+        answerRankBll=new AnswerRankBll(mContext,bottomContent);
+        mLiveBll.setAnswerRankBll(answerRankBll);
+        /*final ArrayList<FullMarkListEntity> lst=new ArrayList<>();
+        for(int i=0;i<25;i++){
+            FullMarkListEntity entity=new FullMarkListEntity();
+            entity.setAnswer_time(""+i);
+            entity.setStuName("李亚龙啊"+i);
+            lst.add(entity);
+        }
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                answerRankBll.showFullMarkList(lst);
+            }
+        },3000);*/
     }
 
     protected boolean initData() {
@@ -378,8 +392,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
 
         liveLazyBllCreat = new LiveLazyBllCreat(this, mLiveBll);
         mLiveBll.setLiveLazyBllCreat(liveLazyBllCreat);
-        answerRankBll=new AnswerRankBll(mContext,bottomContent);
-        mLiveBll.setAnswerRankBll(answerRankBll);
+
 
     }
 
