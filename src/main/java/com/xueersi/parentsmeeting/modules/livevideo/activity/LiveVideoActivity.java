@@ -150,7 +150,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     QuestionBll questionBll;
     RollCallBll rollCallBll;
     RedPackageBll redPackageBll;
-    PraiseOrEncourageBll praiseOrEncourageBll;
     LearnReportBll learnReportBll;
     H5CoursewareBll h5CoursewareBll;
     EnglishH5CoursewareBll englishH5CoursewareBll;
@@ -179,6 +178,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     boolean onPauseNotStopVideo = false;
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
+        long before = System.currentTimeMillis();
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
@@ -192,8 +192,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             onUserBackPressed();
             return false;
         }
-        Loger.d(TAG, "onVideoCreate:time1=" + (System.currentTimeMillis() - startTime));
-        long before = System.currentTimeMillis();
+        Loger.d(TAG, "onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System.currentTimeMillis() - before));
+        before = System.currentTimeMillis();
         initAllBll();
         Loger.d(TAG, "onVideoCreate:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
@@ -221,19 +221,25 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
         bottomContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
+        tvLoadingHint = (TextView) findViewById(R.id.tv_course_video_loading_content);
+        // 预加载布局中退出事件
+        findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
+        tvLoadingHint.setText("获取课程信息");
         //聊天
         long before = System.currentTimeMillis();
         liveLazyBllCreat.setBottomContent(bottomContent);
         liveMessageBll.initViewLive(bottomContent);
         Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        //聊天
-        //if (liveType != LiveBll.LIVE_TYPE_LECTURE) {
-        //}
+
+        //先让播放器按照默认模式设置
+        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
+                (int) VIDEO_HEIGHT, VIDEO_RATIO);
+        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+
         //公开表扬,只有直播有
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
-            rankBll.initView(bottomContent);
-            praiseOrEncourageBll.initView(bottomContent);
+            rankBll.initView(bottomContent, lp);
         }
         videoChatBll.initView(bottomContent);
         //点名
@@ -246,20 +252,10 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         learnReportBll.initView(bottomContent);
         h5CoursewareBll.initView(bottomContent);
         englishH5CoursewareBll.initView(bottomContent);
-        tvLoadingHint = (TextView) findViewById(R.id.tv_course_video_loading_content);
-        // 预加载布局中退出事件
-        findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
-        tvLoadingHint.setText("获取课程信息");
-        //先让播放器按照默认模式设置
-        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
-                (int) VIDEO_HEIGHT, VIDEO_RATIO);
-        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+
         setFirstParam(lp);
         liveMessageBll.setVideoLayout(lp.width, lp.height);
-        questionBll.setVideoLayout(lp.width, lp.height);
-        if (rankBll != null) {
-            rankBll.setVideoLayout(lp.width, lp.height);
-        }
+
         Loger.d(TAG, "initView:time2=" + (System.currentTimeMillis() - before));
         final View contentView = findViewById(android.R.id.content);
         contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -326,7 +322,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         liveMessageBll.setQuestionBll(questionBll);
         videoChatBll = new VideoChatBll(this);
         rollCallBll = new RollCallBll(this);
-        praiseOrEncourageBll = new PraiseOrEncourageBll(this);
         redPackageBll = new RedPackageBll(this);
         learnReportBll = new LearnReportBll(this);
         h5CoursewareBll = new H5CoursewareBll(this);
@@ -337,7 +332,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         mPlayStatistics = mLiveBll.getVideoListener();
         mLiveBll.setQuestionAction(questionBll);
         mLiveBll.setRollCallAction(rollCallBll);
-        mLiveBll.setPraiseOrEncourageAction(praiseOrEncourageBll);
         mLiveBll.setReadPackageBll(redPackageBll);
         mLiveBll.setLearnReportAction(learnReportBll);
         mLiveBll.setVideoAction(this);
@@ -796,6 +790,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     @Override
     public void onLiveInit(LiveGetInfo getInfo) {
         mGetInfo = getInfo;
+        if(liveLazyBllCreat!=null){
+            liveLazyBllCreat.setGetInfo(getInfo);
+        }
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
             if (studentLiveInfo != null && studentLiveInfo.isExpe()) {
@@ -859,7 +856,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         }
         liveMessageBll.setLiveGetInfo(getInfo);
         rollCallBll.onLiveInit(getInfo);
-        praiseOrEncourageBll.onLiveInit(getInfo);
         questionBll.setUserName(getInfo);
         videoChatBll.onLiveInit(getInfo);
     }

@@ -467,7 +467,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         initCommonWord();
         Loger.i(TAG, "initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        initFlower();
+        mView.post(new Runnable() {
+            @Override
+            public void run() {
+                initFlower();
+            }
+        });
         Loger.i(TAG, "initData:time5=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
