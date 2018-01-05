@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
@@ -599,6 +602,27 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
                 rlQuestionResContent.removeAllViews();
             }
         }, 3000);
+    }
+
+    public void setVideoLayout(int width, int height) {
+        if (voiceAnswerPager != null) {
+            final View contentView = ((Activity) context).findViewById(android.R.id.content);
+            final View actionBarOverlayLayout = (View) contentView.getParent();
+            Rect r = new Rect();
+            actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
+            int screenWidth = (r.right - r.left);
+            if (width > 0) {
+                int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
+                wradio += (screenWidth - width) / 2;
+                if (voiceAnswerPager != null) {
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) voiceAnswerPager.getRootView().getLayoutParams();
+                    if (wradio != params.rightMargin) {
+                        params.rightMargin = wradio;
+                        LayoutParamsUtil.setViewLayoutParams(voiceAnswerPager.getRootView(), params);
+                    }
+                }
+            }
+        }
     }
 
     @Override

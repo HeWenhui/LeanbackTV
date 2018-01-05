@@ -104,9 +104,12 @@ public class LiveHttpManager extends BaseHttpBusiness {
                 try {
                     URL url = new URL(url2);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setConnectTimeout(20000);
+                    connection.setReadTimeout(20000);
                     cancelable.connection = connection;
                     cancelable.callback = requestCallBack;
                     connection.setRequestProperty("Connection", "Keep-Alive");
+                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                     connection.connect();
                     int statusCode = connection.getResponseCode();
                     if (statusCode == 200) {

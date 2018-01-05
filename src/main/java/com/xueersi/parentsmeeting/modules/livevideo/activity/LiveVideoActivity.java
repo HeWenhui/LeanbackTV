@@ -256,35 +256,43 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
 
         Loger.d(TAG, "initView:time2=" + (System.currentTimeMillis() - before));
         final View contentView = findViewById(android.R.id.content);
-        contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        contentView.postDelayed(new Runnable() {
             @Override
-            public void onGlobalLayout() {
-                if (videoView.getWidth() <= 0) {
-                    return;
-                }
-                boolean isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-                //Loger.i(TAG, "setVideoWidthAndHeight:isLand=" + isLand);
-                if (!isLand) {
-                    return;
-                }
-                videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
-                        (int) VIDEO_HEIGHT, VIDEO_RATIO);
-                ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-                setFirstParam(lp);
-                liveMessageBll.setVideoLayout(lp.width, lp.height);
-                questionBll.setVideoLayout(lp.width, lp.height);
-                if (rankBll != null) {
-                    rankBll.setVideoLayout(lp.width, lp.height);
-                }
-                if (expeBll != null) {
-                    expeBll.setVideoLayout(lp.width, lp.height);
-                }
-                setMediaControllerBottomParam(lp);
-                if (englishSpeekBll != null) {
-                    englishSpeekBll.setVideoWidthAndHeight(lp.width, lp.height);
-                }
+            public void run() {
+                contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        if (videoView.getWidth() <= 0) {
+                            return;
+                        }
+                        boolean isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+                        //Loger.i(TAG, "setVideoWidthAndHeight:isLand=" + isLand);
+                        if (!isLand) {
+                            return;
+                        }
+                        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
+                                (int) VIDEO_HEIGHT, VIDEO_RATIO);
+                        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+                        setFirstParam(lp);
+                        liveMessageBll.setVideoLayout(lp.width, lp.height);
+                        questionBll.setVideoLayout(lp.width, lp.height);
+                        if (rankBll != null) {
+                            rankBll.setVideoLayout(lp.width, lp.height);
+                        }
+                        if (expeBll != null) {
+                            expeBll.setVideoLayout(lp.width, lp.height);
+                        }
+                        setMediaControllerBottomParam(lp);
+                        if (englishSpeekBll != null) {
+                            englishSpeekBll.setVideoWidthAndHeight(lp.width, lp.height);
+                        }
+                        if(englishH5CoursewareBll!=null){
+                            englishH5CoursewareBll.setVideoLayout(lp.width, lp.height);
+                        }
+                    }
+                });
             }
-        });
+        }, 10);
     }
 
     protected boolean initData() {
