@@ -70,6 +70,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     SpeechEvaluatorUtils mIse;
     String examQuestionEventId = LiveVideoConfig.LIVE_H5_EXAM;
     String questionEventId = LiveVideoConfig.LIVE_PUBLISH_TEST;
+    String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
     String understandEventId = LiveVideoConfig.LIVE_DOYOUSEE;
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     private VideoQuestionLiveEntity videoQuestionLiveEntity;
@@ -354,11 +355,18 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             return;
         }
         Map<String, String> mData = new HashMap<>();
-        mData.put("testtype", "" + videoQuestionLiveEntity.type);
-        mData.put("testid", "" + videoQuestionLiveEntity.id);
-        mData.put("logtype", "receiveInteractTest");
-        mData.put("ish5test", "" + videoQuestionLiveEntity.isTestUseH5);
-        mLiveBll.umsAgentDebug(questionEventId, mData);
+        if ("1".equals(videoQuestionLiveEntity.getIsVoice())) {
+            mData.put("testtype", "" + videoQuestionLiveEntity.type);
+            mData.put("testid", "" + videoQuestionLiveEntity.id);
+            mData.put("logtype", "h5test");
+            umsAgentDebug(voicequestionEventId, mData);
+        } else {
+            mData.put("testtype", "" + videoQuestionLiveEntity.type);
+            mData.put("testid", "" + videoQuestionLiveEntity.id);
+            mData.put("logtype", "receiveInteractTest");
+            mData.put("ish5test", "" + videoQuestionLiveEntity.isTestUseH5);
+            umsAgentDebug(questionEventId, mData);
+        }
         if (!"4".equals(videoQuestionLiveEntity.type)) {//不是语音评测
             if (videoQuestionLiveEntity.isTestUseH5) {
                 mVPlayVideoControlHandler.post(new Runnable() {
@@ -723,7 +731,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void understand(final String nonce) {
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "understandReceive");
-        mLiveBll.umsAgentDebug(understandEventId, mData);
+        umsAgentDebug(understandEventId, mData);
         Runnable runnable = new Runnable() {
 
             @Override
@@ -754,7 +762,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         mData.put("nonce", "" + UUID.randomUUID());
                         mData.put("sno", "3");
                         mData.put("stable", "1");
-                        mLiveBll.umsAgentDebug2(understandEventId, mData);
+                        umsAgentDebug2(understandEventId, mData);
                     }
                 };
                 activity.findViewById(R.id.tv_livevideo_understand_donotunderstand).setOnClickListener(listener);
@@ -764,7 +772,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         if (mIsShowUnderstand) {
                             Map<String, String> mData = new HashMap<>();
                             mData.put("logtype", "understandTimeout");
-                            mLiveBll.umsAgentDebug(understandEventId, mData);
+                            umsAgentDebug(understandEventId, mData);
                             removeQuestionViews();
                             mVPlayVideoControlHandler.sendEmptyMessage(NO_UNDERSTAND);
                         }
@@ -778,7 +786,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mData.put("ex", "Y");
                 mData.put("sno", "2");
                 mData.put("stable", "1");
-                mLiveBll.umsAgentDebug3(understandEventId, mData);
+                umsAgentDebug3(understandEventId, mData);
             }
         };
         mVPlayVideoControlHandler.post(runnable);
@@ -799,7 +807,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 Map<String, String> mData = new HashMap<>();
                 mData.put("logtype", "receiveExam");
                 mData.put("examid", num);
-                mLiveBll.umsAgentDebug(examQuestionEventId, mData);
+                umsAgentDebug(examQuestionEventId, mData);
                 examQuestionPager = new ExamQuestionPager(activity, mLiveBll, QuestionBll.this, liveGetInfo.getStuId
                         (), liveGetInfo.getUname(), liveid, num, nonce);
                 rlQuestionContent.addView(examQuestionPager.getRootView());
@@ -842,7 +850,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         mData.put("logtype", "examClose");
                         mData.put("examid", examQuestionPager.getNum());
                         mData.put("closetype", "clickBackButton");
-                        mLiveBll.umsAgentDebug(examQuestionEventId, mData);
+                        umsAgentDebug(examQuestionEventId, mData);
                     }
                     if (speechAssessmentPager != null) {
                         rlQuestionContent.removeView(speechAssessmentPager.getRootView());
@@ -859,7 +867,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         mData.put("testid", "" + questionWebPager.getTestId());
                         mData.put("closetype", "clickBackButton");
                         mData.put("logtype", "interactTestClose");
-                        mLiveBll.umsAgentDebug(questionEventId, mData);
+                        umsAgentDebug(questionEventId, mData);
                     }
                     if (subjectResultPager != null) {
                         rlQuestionContent.removeView(subjectResultPager.getRootView());
@@ -929,18 +937,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             subjectResultPager = null;
         }
         mLiveBll.getStuGoldCount();
-    }
-
-    public void umsAgentDebug(String eventId, final Map<String, String> mData) {
-        mLiveBll.umsAgentDebug(eventId, mData);
-    }
-
-    public void umsAgentDebug2(String eventId, final Map<String, String> mData) {
-        mLiveBll.umsAgentDebug2(eventId, mData);
-    }
-
-    public void umsAgentDebug3(String eventId, final Map<String, String> mData) {
-        mLiveBll.umsAgentDebug3(eventId, mData);
     }
 
     @Override
@@ -1045,68 +1041,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             mErrorVoiceQue.add(videoQuestionLiveEntity.id);
             showQuestion(videoQuestionLiveEntity);
         }
-//        if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
-//            JSONArray answer = new JSONArray();
-//            try {
-//                answer.put("B");
-//                assess_ref.put("answer", answer);
-//                JSONArray options = new JSONArray();
-//                {
-//                    JSONObject options1 = new JSONObject();
-//                    options1.put("option", "A");
-//                    JSONArray content1 = new JSONArray();
-//                    content1.put("yes it is");
-//                    options1.put("content", content1);
-//                    options.put(options1);
-//                }
-//                {
-//                    JSONObject options1 = new JSONObject();
-//                    options1.put("option", "B");
-//                    JSONArray content1 = new JSONArray();
-//                    content1.put("no it isn't");
-//                    options1.put("content", content1);
-//                    options.put(options1);
-//                }
-//                {
-//                    JSONObject options1 = new JSONObject();
-//                    options1.put("option", "C");
-//                    JSONArray content1 = new JSONArray();
-//                    content1.put("you are beautiful");
-//                    options1.put("content", content1);
-//                    options.put(options1);
-//                }
-//                {
-//                    JSONObject options1 = new JSONObject();
-//                    options1.put("option", "D");
-//                    JSONArray content1 = new JSONArray();
-//                    content1.put("you are very good");
-//                    options1.put("content", content1);
-//                    options.put(options1);
-//                }
-//                assess_ref.put("options", options);
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            JSONArray answer = new JSONArray();
-//            try {
-//                answer.put("A");
-//                assess_ref.put("answer", answer);
-//                JSONArray options = new JSONArray();
-//                {
-//                    JSONObject options1 = new JSONObject();
-//                    options1.put("option", "A");
-//                    JSONArray content1 = new JSONArray();
-//                    content1.put("are");
-//                    options1.put("content", content1);
-//                    options.put(options1);
-//                }
-//                assess_ref.put("options", options);
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        }
-        VoiceAnswerPager voiceAnswerPager2 = new VoiceAnswerPager(activity, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch);
+        VoiceAnswerPager voiceAnswerPager2 = new VoiceAnswerPager(activity, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch, this);
         voiceAnswerPager2.setIse(mIse);
         removeQuestionViews();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -1127,6 +1062,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
             });
         }
+        Map<String, String> mData = new HashMap<>();
+        mData.put("testtype", "" + videoQuestionLiveEntity.type);
+        mData.put("testid", "" + videoQuestionLiveEntity.id);
+        mData.put("logtype", "receiveInteractTest");
+        umsAgentDebug(voicequestionEventId, mData);
     }
 
     QuestionSwitch questionSwitch = new QuestionSwitch() {
@@ -1175,9 +1115,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
             String testAnswer;
             if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)) {
-                testAnswer = "" + sorce;
+//                testAnswer = "" + sorce;
+                testAnswer = "A";
             } else {
-                testAnswer = result + ":" + sorce;
+//                testAnswer = result + ":" + sorce;
+                testAnswer = result;
             }
             mLiveBll.liveSubmitTestAnswer(videoQuestionLiveEntity1, mVSectionID, testAnswer, true, isRight, answerReslut);
         }
@@ -1492,6 +1434,18 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             AudioRequest audioRequest = (AudioRequest) activity;
             audioRequest.release();
         }
+    }
+
+    public void umsAgentDebug(String eventId, final Map<String, String> mData) {
+        mLiveBll.umsAgentDebug(eventId, mData);
+    }
+
+    public void umsAgentDebug2(String eventId, final Map<String, String> mData) {
+        mLiveBll.umsAgentDebug2(eventId, mData);
+    }
+
+    public void umsAgentDebug3(String eventId, final Map<String, String> mData) {
+        mLiveBll.umsAgentDebug3(eventId, mData);
     }
 
     @Override

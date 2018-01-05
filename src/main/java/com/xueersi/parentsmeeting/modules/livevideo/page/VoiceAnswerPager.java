@@ -17,7 +17,9 @@ import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionSwitch;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VolumeWaveView;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
@@ -39,6 +41,7 @@ import java.util.List;
  */
 
 public class VoiceAnswerPager extends BasePager {
+    String eventId = LiveVideoConfig.LIVE_TEST_VOICE;
     private SpeechEvaluatorUtils mIse;
     BaseVideoQuestionEntity baseVideoQuestionEntity;
     /** 评测标题 */
@@ -54,6 +57,7 @@ public class VoiceAnswerPager extends BasePager {
     /** 答题切换 */
     TextView tvVoiceansSwitch;
     QuestionSwitch questionSwitch;
+    LiveAndBackDebug liveAndBackDebug;
     /** 语音保存位置-目录 */
     File dir;
     /** 语音保存位置 */
@@ -75,10 +79,11 @@ public class VoiceAnswerPager extends BasePager {
     ScoreAndIndex lastMaxScoreAndIndex = null;
     int netWorkType = NetWorkHelper.WIFI_STATE;
 
-    public VoiceAnswerPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch) {
+    public VoiceAnswerPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch, LiveAndBackDebug liveAndBackDebug) {
         super(context);
         this.baseVideoQuestionEntity = baseVideoQuestionEntity;
         this.questionSwitch = questionSwitch;
+        this.liveAndBackDebug = liveAndBackDebug;
         this.type = type;
         this.assess_ref = assess_ref;
         if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {

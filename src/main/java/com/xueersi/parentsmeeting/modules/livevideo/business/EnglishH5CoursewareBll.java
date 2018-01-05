@@ -46,7 +46,7 @@ import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE4;
  * Created by linyuqiang on 2017/3/25.
  * 英语h5课件业务类
  */
-public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
+public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAndBackDebug {
     String TAG = "EH5CoursewareBll";
     String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
     Context context;
@@ -297,22 +297,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
                     webViewRequest.releaseWebView();
                 }
             }
-
-            @Override
-            public void umsAgentDebug(String eventId, Map<String, String> mData) {
-                mLiveBll.umsAgentDebug(eventId, mData);
-            }
-
-            @Override
-            public void umsAgentDebug2(String eventId, Map<String, String> mData) {
-                mLiveBll.umsAgentDebug2(eventId, mData);
-            }
-
-            @Override
-            public void umsAgentDebug3(String eventId, Map<String, String> mData) {
-                mLiveBll.umsAgentDebug3(eventId, mData);
-            }
-        });
+        },this );
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         bottomContent.addView(h5CoursewarePager.getRootView(), lp);
         if (context instanceof WebViewRequest) {
@@ -401,7 +386,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
 //                e.printStackTrace();
 //            }
 //        }
-        VoiceAnswerPager voiceAnswerPager2 = new VoiceAnswerPager(context, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.questiontype, questionSwitch);
+        VoiceAnswerPager voiceAnswerPager2 = new VoiceAnswerPager(context, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.questiontype, questionSwitch, this);
         voiceAnswerPager2.setIse(mIse);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -632,13 +617,22 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
         }
     }
 
+    @Override
+    public void umsAgentDebug(String eventId, Map<String, String> mData) {
+        mLiveBll.umsAgentDebug(eventId, mData);
+    }
+
+    @Override
+    public void umsAgentDebug2(String eventId, Map<String, String> mData) {
+        mLiveBll.umsAgentDebug2(eventId, mData);
+    }
+
+    @Override
+    public void umsAgentDebug3(String eventId, Map<String, String> mData) {
+        mLiveBll.umsAgentDebug3(eventId, mData);
+    }
+
     public interface OnH5ResultClose {
         void onH5ResultClose();
-
-        void umsAgentDebug(String eventId, final Map<String, String> mData);
-
-        void umsAgentDebug2(String eventId, final Map<String, String> mData);
-
-        void umsAgentDebug3(String eventId, final Map<String, String> mData);
     }
 }

@@ -116,7 +116,7 @@ public class EnglishH5Cache {
         CacheExtensionConfig.addGlobalExtension("mp3");
         CacheExtensionConfig.addGlobalExtension("WAV");
         CacheExtensionConfig.removeNoCacheExtension("mp3");
-        liveBll.getCourseWareUrl(new HttpCallBack() {
+        liveBll.getCourseWareUrl(new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 if (responseEntity.getJsonObject() instanceof JSONArray) {

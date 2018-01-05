@@ -141,6 +141,11 @@ public class LiveVideoConfig {
     public static String LIVE_ENGLISH_SPEEK = "live_english_speek";
     /** 直播-h5课件缓存 */
     public static String LIVE_H5_CACHE = "live_h5_cache";
+    /** 直播-语音答题 */
+    public static String LIVE_TEST_VOICE = "live_test_voice";
+    /** 直播-投票 */
+    public static String LIVE_VOTE = "live_vote";
+
 
     /** 直播时间-当天据算，live_expe_time按单个场次计算 */
     public static String LIVE_EXPE_TIME = "live_expe_time_all";

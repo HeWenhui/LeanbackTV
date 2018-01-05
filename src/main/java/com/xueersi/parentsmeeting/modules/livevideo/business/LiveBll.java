@@ -1333,6 +1333,7 @@ public class LiveBll extends BaseBll {
                             voteEntity.setChoiceNum(choiceNum);
                             voteEntity.setChoiceType(choiceType);
                             voteEntity.setChoiceId(choiceId);
+                            voteEntity.setNonce(object.getString("nonce"));
                             if ("on".equals(open)) {
                                 liveVoteAction.voteStart(voteEntity);
                             } else if ("off".equals(open)) {
@@ -3046,7 +3047,7 @@ public class LiveBll extends BaseBll {
      * @param mData
      */
     public void umsAgentDebug(String eventId, final Map<String, String> mData) {
-        mData.put("uid", mGetInfo.getStuId());
+        mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getUname());
         StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
         if (studentLiveInfo != null) {
@@ -3059,7 +3060,8 @@ public class LiveBll extends BaseBll {
         mData.put("liveid", mLiveId);
         mData.put("livetype", "" + mLiveType);
         mData.put("clits", "" + System.currentTimeMillis());
-        Loger.d(mContext, eventId, mData, true);
+//        Loger.d(mContext, eventId, mData, true);
+        UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
     }
 
     /**
@@ -3069,7 +3071,7 @@ public class LiveBll extends BaseBll {
      * @param mData
      */
     public void umsAgentDebug2(String eventId, final Map<String, String> mData) {
-        mData.put("uid", mGetInfo.getStuId());
+        mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getStuName());
         StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
         if (studentLiveInfo != null) {
@@ -3093,7 +3095,7 @@ public class LiveBll extends BaseBll {
      * @param mData
      */
     public void umsAgentDebug3(String eventId, final Map<String, String> mData) {
-        mData.put("uid", mGetInfo.getStuId());
+        mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getStuName());
         StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
         if (studentLiveInfo != null) {

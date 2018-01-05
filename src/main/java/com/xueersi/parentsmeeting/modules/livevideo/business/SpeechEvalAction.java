@@ -8,7 +8,7 @@ import java.util.Map;
  * Created by linyuqiang on 2017/2/28.
  * 语言评测得到试题和停止
  */
-public interface SpeechEvalAction {
+public interface SpeechEvalAction extends LiveAndBackDebug {
 
     /**
      * @param id           试题id
@@ -28,12 +28,6 @@ public interface SpeechEvalAction {
     void onSpeechSuccess(String num);
 
     void speechIsAnswered(String num, SpeechIsAnswered isAnswered);
-
-    void umsAgentDebug(String eventId, final Map<String, String> mData);
-
-    void umsAgentDebug2(String eventId, final Map<String, String> mData);
-
-    void umsAgentDebug3(String eventId, final Map<String, String> mData);
 
     interface SpeechIsAnswered {
         void isAnswer(boolean answer);

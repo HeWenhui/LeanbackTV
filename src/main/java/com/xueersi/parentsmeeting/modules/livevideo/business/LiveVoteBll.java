@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.VoteWaitDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -21,6 +22,8 @@ import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by linyuqiang on 2017/12/27.
@@ -28,6 +31,7 @@ import java.util.HashMap;
  */
 public class LiveVoteBll implements LiveVoteAction {
     String TAG = "LiveVoteBll";
+    String eventId = LiveVideoConfig.LIVE_VOTE;
     Context context;
     RelativeLayout bottomContent;
     RelativeLayout contentView;
@@ -137,6 +141,14 @@ public class LiveVoteBll implements LiveVoteAction {
                 contentView = null;
             }
         });
+        Map<String, String> mData = new HashMap<>();
+        mData.put("logtype", "showVoteResult");
+        mData.put("voteid", "" + voteEntity.getChoiceId());
+        mData.put("sno", "8");
+        mData.put("nonce", "" + voteEntity.getNonce());
+        mData.put("ex", "Y");
+        mData.put("stable", "1");
+        umsAgentDebug3(eventId, mData);
     }
 
     @Override
@@ -154,6 +166,13 @@ public class LiveVoteBll implements LiveVoteAction {
         Loger.d(TAG, "voteStart:voteEntity=" + voteEntity);
         this.voteEntity = voteEntity;
         this.answer = 0;
+        Map<String, String> mData = new HashMap<>();
+        mData.put("logtype", "receiveVote");
+        mData.put("voteid", "" + voteEntity.getChoiceId());
+        mData.put("sno", "3");
+        mData.put("nonce", "" + voteEntity.getNonce());
+        mData.put("stable", "2");
+        umsAgentDebug(eventId, mData);
         showChoice(voteEntity);
     }
 
@@ -220,8 +239,31 @@ public class LiveVoteBll implements LiveVoteAction {
                             LiveVoteBll.this.answer = answer;
                             idAndAnswer.put(voteEntity, answer);
                             liveBll.sendVote(answer);
+                            Map<String, String> mData = new HashMap<>();
+                            mData.put("logtype", "submitVote");
+                            mData.put("voteid", "" + voteEntity.getChoiceId());
+                            mData.put("stuvote", "" + answer);
+                            mData.put("sno", "5");
+                            mData.put("nonce", "" + UUID.randomUUID());
+                            mData.put("stable", "2");
+                            umsAgentDebug2(eventId, mData);
                         }
                     });
+                    view.findViewById(R.id.iv_livevideo_vote_result_close).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            bottomContent.removeView(contentView);
+                            contentView = null;
+                        }
+                    });
+                    Map<String, String> mData = new HashMap<>();
+                    mData.put("logtype", "showVote");
+                    mData.put("voteid", "" + voteEntity.getChoiceId());
+                    mData.put("sno", "4");
+                    mData.put("ex", "Y");
+                    mData.put("nonce", "" + voteEntity.getNonce());
+                    mData.put("stable", "1");
+                    umsAgentDebug3(eventId, mData);
                 }
             }
         });
@@ -245,6 +287,13 @@ public class LiveVoteBll implements LiveVoteAction {
                         voteWaitDialog = null;
                     }
                 } else {
+                    Map<String, String> mData = new HashMap<>();
+                    mData.put("logtype", "receiveVoteResult");
+                    mData.put("voteid", "" + voteEntity.getChoiceId());
+                    mData.put("sno", "7");
+                    mData.put("nonce", "" + voteEntity.getNonce());
+                    mData.put("stable", "2");
+                    umsAgentDebug(eventId, mData);
                     showResult(voteEntity);
                 }
             }
@@ -254,5 +303,17 @@ public class LiveVoteBll implements LiveVoteAction {
     @Override
     public void onCancle() {
         this.voteEntity = null;
+    }
+
+    public void umsAgentDebug(String eventId, final Map<String, String> mData) {
+        liveBll.umsAgentDebug(eventId, mData);
+    }
+
+    public void umsAgentDebug2(String eventId, final Map<String, String> mData) {
+        liveBll.umsAgentDebug2(eventId, mData);
+    }
+
+    public void umsAgentDebug3(String eventId, final Map<String, String> mData) {
+        liveBll.umsAgentDebug3(eventId, mData);
     }
 }
