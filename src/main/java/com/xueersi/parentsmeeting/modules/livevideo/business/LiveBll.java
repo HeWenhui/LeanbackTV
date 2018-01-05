@@ -1059,7 +1059,7 @@ public class LiveBll extends BaseBll {
                     }
                     case XESCODE.PRAISE: {
                         msg += "PRAISE";
-                        if (mPraiseOrEncourageAction == null&&liveLazyBllCreat!=null) {
+                        if (mPraiseOrEncourageAction == null && liveLazyBllCreat != null) {
                             liveLazyBllCreat.createPraiseOrEncourageAction();
                         }
                         if (mPraiseOrEncourageAction != null) {
@@ -2364,7 +2364,7 @@ public class LiveBll extends BaseBll {
             jsonObject.put("type", "" + XESCODE.FLOWERS);
             jsonObject.put("name", mGetInfo.getStuName());
             jsonObject.put("ftype", ftype);
-            mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
+            mIRCMessage.sendMessage(jsonObject.toString());
 //            mIRCMessage.sendMessage(mMainTeacherStr, jsonObject.toString());
         } catch (Exception e) {
             // Loger.e(TAG, "understand", e);

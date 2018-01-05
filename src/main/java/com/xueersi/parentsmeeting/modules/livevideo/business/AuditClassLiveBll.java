@@ -1788,21 +1788,6 @@ public class AuditClassLiveBll extends BaseBll {
         return mLiveTopic.getMainRoomstatus().isOpenbarrage();
     }
 
-    /** 发生献花消息 */
-    public void sendFlowerMessage(int ftype) {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("type", "" + XESCODE.FLOWERS);
-            jsonObject.put("name", mGetInfo.getStuName());
-            jsonObject.put("ftype", ftype);
-            mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
-//            mIRCMessage.sendMessage(mMainTeacherStr, jsonObject.toString());
-        } catch (Exception e) {
-            // Loger.e(TAG, "understand", e);
-            mLogtf.e("sendFlowerMessage", e);
-        }
-    }
-
 //    public void requestMicro(int times) {
 //        try {
 //            JSONObject jsonObject = new JSONObject();
