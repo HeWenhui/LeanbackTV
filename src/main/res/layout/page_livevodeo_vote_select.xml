@@ -23,8 +23,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignTop="@id/il_livevideo_vote_choice"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
             android:src="@drawable/bg_livevideo_vote_result_close" />
 
     </RelativeLayout>
