@@ -113,6 +113,9 @@ public class EnglishH5Cache {
         final File cacheDir = new File(cacheFile, today);
         CacheWebView.getCacheConfig().init(context, cacheDir.getPath(), 1024 * 1024 * 100, 1024 * 1024 * 10)
                 .enableDebug(true);//100M 磁盘缓存空间,10M 内存缓存空间
+        CacheExtensionConfig.addGlobalExtension("mp3");
+        CacheExtensionConfig.addGlobalExtension("WAV");
+        CacheExtensionConfig.removeNoCacheExtension("mp3");
         liveBll.getCourseWareUrl(new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {

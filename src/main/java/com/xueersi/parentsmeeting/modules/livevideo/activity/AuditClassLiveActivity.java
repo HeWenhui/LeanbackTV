@@ -107,6 +107,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     private int lastStudentIndex;
     private LiveTopic mLiveTopic;
     private String mVSectionID;
+    private String stuCouId;
     private long createTime;
     /** Activity暂停过，执行onStop */
     private boolean mHaveStop = false;
@@ -401,6 +402,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     protected boolean initData() {
         Intent intent = getIntent();
         mVSectionID = intent.getStringExtra("vSectionID");
+        stuCouId = intent.getStringExtra("stuCouId");
         mVideoType = MobEnumUtil.VIDEO_LIVE;
         if (TextUtils.isEmpty(mVSectionID)) {
             Toast.makeText(this, "直播场次不存在", Toast.LENGTH_SHORT).show();
@@ -1307,8 +1309,9 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
      * @param context
      * @param liveId
      */
-    public static void intentTo(Context context, String liveId) {
+    public static void intentTo(Context context, String stuCouId, String liveId) {
         Intent intent = new Intent(context, AuditClassLiveActivity.class);
+        intent.putExtra("stuCouId", stuCouId);
         intent.putExtra("vSectionID", liveId);
         intent.putExtra("type", LiveBll.LIVE_TYPE_LIVE);
         context.startActivity(intent);

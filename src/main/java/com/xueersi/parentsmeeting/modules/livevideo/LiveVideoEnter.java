@@ -138,8 +138,8 @@ public class LiveVideoEnter {
      * @param context
      * @param vSectionID
      */
-    public static boolean intentToAuditClassActivity(Activity context, String vSectionID) {
-        AuditClassLiveActivity.intentTo(context, vSectionID);
+    public static boolean intentToAuditClassActivity(Activity context, String stuCouId, String vSectionID) {
+        AuditClassLiveActivity.intentTo(context, stuCouId, vSectionID);
         return true;
     }
 
