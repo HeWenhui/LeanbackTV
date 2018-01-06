@@ -16,6 +16,7 @@ import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -346,17 +347,14 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 }
             });
         }
-        Map<String, String> mData = new HashMap<>();
-        mData.put("logtype", "showAnswerDialog");
-        mData.put("testtype", "" + videoQuestionLiveEntity.type);
-        mData.put("testid", "" + videoQuestionLiveEntity.id);
-        mData.put("sourcetype", "h5ware");
-        mData.put("answertype", "voice");
-        mData.put("ex", "Y");
-        mData.put("sno", "2");
-        mData.put("nonce", "" + videoQuestionLiveEntity.nonce);
-        mData.put("stable", "1");
-        umsAgentDebug3(voicequestionEventId, mData);
+        StableLogHashMap logHashMap = new StableLogHashMap("showAnswerDialog");
+        logHashMap.put("testtype", "" + videoQuestionLiveEntity.type);
+        logHashMap.put("testid", "" + videoQuestionLiveEntity.id);
+        logHashMap.put("sourcetype", "h5ware");
+        logHashMap.put("answertype", "voice");
+        logHashMap.addEx("Y").addSno("2").addNonce("" + videoQuestionLiveEntity.nonce);
+        logHashMap.addStable("1");
+        umsAgentDebug3(voicequestionEventId, logHashMap.getData());
     }
 
     QuestionSwitch questionSwitch = new QuestionSwitch() {
@@ -437,15 +435,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                                     initFillAnswerWrongResultVoice(entity);
                                 }
                             }
-                            Map<String, String> mData = new HashMap<>();
-                            mData.put("logtype", "showResultDialog");
-                            mData.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
-                            mData.put("sourcetype", "h5ware");
-                            mData.put("ex", "Y");
-                            mData.put("expect", "0");
-                            mData.put("sno", "6");
-                            mData.put("stable", "1");
-                            umsAgentDebug3(voicequestionEventId, mData);
+                            StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
+                            logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
+                            logHashMap.put("sourcetype", "h5ware");
+                            logHashMap.addEx("Y").addExpect("0").addSno("5").addStable("1");
+                            umsAgentDebug3(voicequestionEventId, logHashMap.getData());
                         }
                     }
                     if (voiceAnswerPager != null) {

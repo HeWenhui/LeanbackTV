@@ -558,7 +558,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
                         logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
                         logHashMap.put("sourcetype", "h5test");
-                        logHashMap.addEx("Y").addExpect("0").addSno("6").addStable("1");
+                        logHashMap.addEx("Y").addExpect("0").addSno("5").addStable("1");
                         umsAgentDebug3(voicequestionEventId, logHashMap.getData());
                     } else {
                         // 回答正确提示
