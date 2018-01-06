@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
@@ -354,15 +355,16 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             mLogtf.d("showQuestion answer:id=" + videoQuestionLiveEntity.id);
             return;
         }
-        Map<String, String> mData = new HashMap<>();
         if (!LiveVideoConfig.IS_SCIENCE && "1".equals(videoQuestionLiveEntity.getIsVoice())) {
-            mData.put("logtype", "receiveh5test");
-            mData.put("sourcetype", "h5test");
-            mData.put("testtype", "" + videoQuestionLiveEntity.type);
-            mData.put("testid", "" + videoQuestionLiveEntity.id);
-            mData.put("stable", "2");
-            umsAgentDebug(voicequestionEventId, mData);
+            StableLogHashMap logHashMap = new StableLogHashMap("receiveh5test");
+            logHashMap.put("logtype", "receiveh5test");
+            logHashMap.put("sourcetype", "h5test");
+            logHashMap.put("testtype", "" + videoQuestionLiveEntity.type);
+            logHashMap.put("testid", "" + videoQuestionLiveEntity.id);
+            logHashMap.put("stable", "2");
+            umsAgentDebug(voicequestionEventId, logHashMap.getData());
         } else {
+            Map<String, String> mData = new HashMap<>();
             mData.put("testtype", "" + videoQuestionLiveEntity.type);
             mData.put("testid", "" + videoQuestionLiveEntity.id);
             mData.put("logtype", "receiveInteractTest");
@@ -553,15 +555,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             }
                             // 填空题部分正确提示
                         }
-                        Map<String, String> mData = new HashMap<>();
-                        mData.put("logtype", "showResultDialog");
-                        mData.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
-                        mData.put("sourcetype", "h5test");
-                        mData.put("ex", "Y");
-                        mData.put("expect", "0");
-                        mData.put("sno", "6");
-                        mData.put("stable", "1");
-                        umsAgentDebug3(voicequestionEventId, mData);
+                        StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
+                        logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
+                        logHashMap.put("sourcetype", "h5test");
+                        logHashMap.addEx("Y").addExpect("0").addSno("6").addStable("1");
+                        umsAgentDebug3(voicequestionEventId, logHashMap.getData());
                     } else {
                         // 回答正确提示
                         if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
@@ -1073,17 +1071,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
             });
         }
-        Map<String, String> mData = new HashMap<>();
-        mData.put("logtype", "showAnswerDialog");
-        mData.put("testtype", "" + videoQuestionLiveEntity.type);
-        mData.put("testid", "" + videoQuestionLiveEntity.id);
-        mData.put("sourcetype", "h5test");
-        mData.put("answertype", "voice");
-        mData.put("ex", "Y");
-        mData.put("sno", "2");
-        mData.put("nonce", "" + videoQuestionLiveEntity.nonce);
-        mData.put("stable", "1");
-        umsAgentDebug3(voicequestionEventId, mData);
+        StableLogHashMap logHashMap = new StableLogHashMap("showAnswerDialog");
+        logHashMap.put("testtype", "" + videoQuestionLiveEntity.type);
+        logHashMap.put("testid", "" + videoQuestionLiveEntity.id);
+        logHashMap.put("sourcetype", "h5test");
+        logHashMap.put("answertype", "voice");
+        logHashMap.addEx("Y").addSno("2").addNonce("" + videoQuestionLiveEntity.nonce);
+        logHashMap.addStable("1");
+        umsAgentDebug3(voicequestionEventId, logHashMap.getData());
     }
 
     QuestionSwitch questionSwitch = new QuestionSwitch() {

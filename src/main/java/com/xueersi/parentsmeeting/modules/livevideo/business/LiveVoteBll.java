@@ -17,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.VoteWaitDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
@@ -141,14 +142,11 @@ public class LiveVoteBll implements LiveVoteAction {
                 contentView = null;
             }
         });
-        Map<String, String> mData = new HashMap<>();
-        mData.put("logtype", "showVoteResult");
-        mData.put("voteid", "" + voteEntity.getChoiceId());
-        mData.put("sno", "8");
-        mData.put("nonce", "" + voteEntity.getNonce());
-        mData.put("ex", "Y");
-        mData.put("stable", "1");
-        umsAgentDebug3(eventId, mData);
+        StableLogHashMap logHashMap = new StableLogHashMap("showVoteResult");
+        logHashMap.put("voteid", "" + voteEntity.getChoiceId());
+        logHashMap.addSno("8").addNonce("" + voteEntity.getNonce());
+        logHashMap.addEx("Y").addStable("1");
+        umsAgentDebug3(eventId, logHashMap.getData());
     }
 
     @Override
@@ -166,13 +164,10 @@ public class LiveVoteBll implements LiveVoteAction {
         Loger.d(TAG, "voteStart:voteEntity=" + voteEntity);
         this.voteEntity = voteEntity;
         this.answer = 0;
-        Map<String, String> mData = new HashMap<>();
-        mData.put("logtype", "receiveVote");
-        mData.put("voteid", "" + voteEntity.getChoiceId());
-        mData.put("sno", "3");
-        mData.put("nonce", "" + voteEntity.getNonce());
-        mData.put("stable", "2");
-        umsAgentDebug(eventId, mData);
+        StableLogHashMap logHashMap = new StableLogHashMap("receiveVote");
+        logHashMap.put("voteid", "" + voteEntity.getChoiceId());
+        logHashMap.addSno("3").addNonce("" + voteEntity.getNonce()).addStable("2");
+        umsAgentDebug(eventId, logHashMap.getData());
         showChoice(voteEntity);
     }
 
@@ -239,14 +234,11 @@ public class LiveVoteBll implements LiveVoteAction {
                             LiveVoteBll.this.answer = answer;
                             idAndAnswer.put(voteEntity, answer);
                             liveBll.sendVote(answer);
-                            Map<String, String> mData = new HashMap<>();
-                            mData.put("logtype", "submitVote");
-                            mData.put("voteid", "" + voteEntity.getChoiceId());
-                            mData.put("stuvote", "" + answer);
-                            mData.put("sno", "5");
-                            mData.put("nonce", "" + UUID.randomUUID());
-                            mData.put("stable", "2");
-                            umsAgentDebug2(eventId, mData);
+                            StableLogHashMap logHashMap = new StableLogHashMap("submitVote");
+                            logHashMap.put("voteid", "" + voteEntity.getChoiceId());
+                            logHashMap.put("stuvote", "" + answer);
+                            logHashMap.addSno("5").addNonce("" + UUID.randomUUID()).addStable("2");
+                            umsAgentDebug2(eventId, logHashMap.getData());
                         }
                     });
                     view.findViewById(R.id.iv_livevideo_vote_result_close).setOnClickListener(new View.OnClickListener() {
@@ -256,14 +248,10 @@ public class LiveVoteBll implements LiveVoteAction {
                             contentView = null;
                         }
                     });
-                    Map<String, String> mData = new HashMap<>();
-                    mData.put("logtype", "showVote");
-                    mData.put("voteid", "" + voteEntity.getChoiceId());
-                    mData.put("sno", "4");
-                    mData.put("ex", "Y");
-                    mData.put("nonce", "" + voteEntity.getNonce());
-                    mData.put("stable", "1");
-                    umsAgentDebug3(eventId, mData);
+                    StableLogHashMap logHashMap = new StableLogHashMap("showVote");
+                    logHashMap.put("voteid", "" + voteEntity.getChoiceId());
+                    logHashMap.addSno("4").addEx("Y").addNonce("" + voteEntity.getNonce()).addStable("1");
+                    umsAgentDebug3(eventId, logHashMap.getData());
                 }
             }
         });
@@ -287,13 +275,12 @@ public class LiveVoteBll implements LiveVoteAction {
                         voteWaitDialog = null;
                     }
                 } else {
-                    Map<String, String> mData = new HashMap<>();
-                    mData.put("logtype", "receiveVoteResult");
-                    mData.put("voteid", "" + voteEntity.getChoiceId());
-                    mData.put("sno", "7");
-                    mData.put("nonce", "" + voteEntity.getNonce());
-                    mData.put("stable", "2");
-                    umsAgentDebug(eventId, mData);
+                    StableLogHashMap logHashMap = new StableLogHashMap("receiveVoteResult");
+                    logHashMap.put("voteid", "" + voteEntity.getChoiceId());
+                    logHashMap.addSno("7");
+                    logHashMap.addNonce("" + voteEntity.getNonce());
+                    logHashMap.addStable("2");
+                    umsAgentDebug(eventId, logHashMap.getData());
                     showResult(voteEntity);
                 }
             }

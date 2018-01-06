@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VolumeWaveView;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
@@ -33,9 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 语音答题
@@ -437,19 +436,14 @@ public class VoiceAnswerPager extends BasePager {
                         boolean isRight = option.equalsIgnoreCase(answer);
 
                         String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
-                        Map<String, String> mData = new HashMap<>();
-                        mData.put("logtype", "showAnswerDialog");
-                        mData.put("testtype", "" + type);
-                        mData.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
-                        mData.put("submittype", isEnd ? "force" : "active");
-                        mData.put("sourcetype", sourcetype);
-                        mData.put("stuanswer", isRight ? "Y" : "N");
-                        mData.put("ex", "Y");
-                        mData.put("expect", "1");
-                        mData.put("sno", "2");
-                        mData.put("nonce", "" + endnonce);
-                        mData.put("stable", "1");
-                        liveAndBackDebug.umsAgentDebug2(eventId, mData);
+                        StableLogHashMap logHashMap = new StableLogHashMap("showAnswerDialog");
+                        logHashMap.put("testtype", "" + type);
+                        logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
+                        logHashMap.put("submittype", isEnd ? "force" : "active");
+                        logHashMap.put("sourcetype", sourcetype).put("stuanswer", isRight ? "Y" : "N");
+                        logHashMap.put("ex", "Y").put("expect", "1").put("sno", "2");
+                        logHashMap.addNonce("" + endnonce).addStable("1");
+                        liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
                         questionSwitch.onPutQuestionResult(baseVideoQuestionEntity, answer, option, 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
                             @Override
                             public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
@@ -539,19 +533,13 @@ public class VoiceAnswerPager extends BasePager {
                     return;
                 }
                 String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
-                Map<String, String> mData = new HashMap<>();
-                mData.put("logtype", "showAnswerDialog");
-                mData.put("testtype", "" + type);
-                mData.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
-                mData.put("submittype", isEnd ? "force" : "active");
-                mData.put("sourcetype", sourcetype);
-                mData.put("stuanswer", isRight ? "Y" : "N");
-                mData.put("ex", "Y");
-                mData.put("expect", "1");
-                mData.put("sno", "2");
-                mData.put("nonce", "" + endnonce);
-                mData.put("stable", "1");
-                liveAndBackDebug.umsAgentDebug2(eventId, mData);
+                StableLogHashMap logHashMap = new StableLogHashMap("showAnswerDialog");
+                logHashMap.put("testtype", "" + type);
+                logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
+                logHashMap.put("submittype", isEnd ? "force" : "active").put("sourcetype", sourcetype);
+                logHashMap.put("stuanswer", isRight ? "Y" : "N");
+                logHashMap.addEx("1").addSno("2").addNonce("" + endnonce).addStable("1");
+                liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
                 try {
                     JSONArray options = assess_ref.getJSONArray("options");
                     JSONObject jsonObject = options.getJSONObject(0);
