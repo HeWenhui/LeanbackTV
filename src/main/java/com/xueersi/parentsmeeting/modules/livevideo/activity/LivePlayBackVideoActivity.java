@@ -1046,7 +1046,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
         @Override
         public String getsourcetype(BaseVideoQuestionEntity baseQuestionEntity) {
-            if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == mQuestionEntity.getvCategory()) {
+            VideoQuestionEntity entity = (VideoQuestionEntity) baseQuestionEntity;
+            if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == entity.getvCategory()) {
                 return "h5ware";
             } else {
                 return "h5test";
