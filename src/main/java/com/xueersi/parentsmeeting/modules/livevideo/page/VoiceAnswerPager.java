@@ -436,12 +436,12 @@ public class VoiceAnswerPager extends BasePager {
                         boolean isRight = option.equalsIgnoreCase(answer);
 
                         String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
-                        StableLogHashMap logHashMap = new StableLogHashMap("showAnswerDialog");
+                        StableLogHashMap logHashMap = new StableLogHashMap("submitAnswerResult");
                         logHashMap.put("testtype", "" + type);
                         logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
                         logHashMap.put("submittype", isEnd ? "force" : "active");
                         logHashMap.put("sourcetype", sourcetype).put("stuanswer", isRight ? "Y" : "N");
-                        logHashMap.put("ex", "Y").put("expect", "1").put("sno", "2");
+                        logHashMap.put("ex", "Y").put("expect", "1").put("sno", "5");
                         logHashMap.addNonce("" + endnonce).addStable("1");
                         liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
                         questionSwitch.onPutQuestionResult(baseVideoQuestionEntity, answer, option, 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
@@ -533,12 +533,12 @@ public class VoiceAnswerPager extends BasePager {
                     return;
                 }
                 String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
-                StableLogHashMap logHashMap = new StableLogHashMap("showAnswerDialog");
+                StableLogHashMap logHashMap = new StableLogHashMap("submitAnswerResult");
                 logHashMap.put("testtype", "" + type);
                 logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
                 logHashMap.put("submittype", isEnd ? "force" : "active").put("sourcetype", sourcetype);
                 logHashMap.put("stuanswer", isRight ? "Y" : "N");
-                logHashMap.addEx("1").addSno("2").addNonce("" + endnonce).addStable("1");
+                logHashMap.addEx("1").addSno("5").addNonce("" + endnonce).addStable("1");
                 liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
                 try {
                     JSONArray options = assess_ref.getJSONArray("options");
