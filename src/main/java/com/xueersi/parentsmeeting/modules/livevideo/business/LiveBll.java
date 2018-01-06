@@ -45,7 +45,6 @@ import com.xueersi.xesalib.umsagent.UmsConstants;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
-import com.xueersi.xesalib.utils.string.ConstUtils;
 import com.xueersi.xesalib.utils.string.StringUtils;
 
 import org.json.JSONArray;
@@ -64,7 +63,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.Call;
@@ -907,7 +905,7 @@ public class LiveBll extends BaseBll {
 //                        mGetInfo.getLiveTopic().setTopic(null);
                         mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(null);
                         if (mQuestionAction != null) {
-                            mQuestionAction.onStopQuestion(object.getString("ptype"));
+                            mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
                         }
 //                        getStuGoldCount();
                         break;

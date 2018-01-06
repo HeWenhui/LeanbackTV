@@ -1045,6 +1045,15 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     QuestionSwitch questionSwitch = new QuestionSwitch() {
 
         @Override
+        public String getsourcetype(BaseVideoQuestionEntity baseQuestionEntity) {
+            if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == mQuestionEntity.getvCategory()) {
+                return "h5ware";
+            } else {
+                return "h5test";
+            }
+        }
+
+        @Override
         public BasePager questionSwitch(BaseVideoQuestionEntity baseQuestionEntity) {
             if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == mQuestionEntity.getvCategory()) {
                 if (voiceAnswerPager != null) {
@@ -1313,7 +1322,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 if (answerReslut != null) {
                     Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 14, 14, mQuestionEntity);
                     mPlayVideoControlHandler.sendMessage(msg);
-                    answerReslut.onAnswerReslut(questionEntity, null);
+                    answerReslut.onAnswerReslut(questionEntity, entity);
                     seekTo(questionEntity.getvEndTime() * 1000);
                     start();
                 }

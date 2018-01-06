@@ -338,7 +338,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mVPlayVideoControlHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        answerPager.examSubmitAll("showQuestion");
+                        answerPager.examSubmitAll("showQuestion", "");
                     }
                 });
             }
@@ -355,10 +355,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             return;
         }
         Map<String, String> mData = new HashMap<>();
-        if ("1".equals(videoQuestionLiveEntity.getIsVoice())) {
+        if (!LiveVideoConfig.IS_SCIENCE && "1".equals(videoQuestionLiveEntity.getIsVoice())) {
+            mData.put("logtype", "receiveh5test");
+            mData.put("sourcetype", "h5test");
             mData.put("testtype", "" + videoQuestionLiveEntity.type);
             mData.put("testid", "" + videoQuestionLiveEntity.id);
-            mData.put("logtype", "h5test");
+            mData.put("stable", "2");
             umsAgentDebug(voicequestionEventId, mData);
         } else {
             mData.put("testtype", "" + videoQuestionLiveEntity.type);
@@ -367,7 +369,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             mData.put("ish5test", "" + videoQuestionLiveEntity.isTestUseH5);
             umsAgentDebug(questionEventId, mData);
         }
-        if (!"4".equals(videoQuestionLiveEntity.type)) {//不是语音评测
+        if (LiveVideoConfig.IS_SCIENCE && !"4".equals(videoQuestionLiveEntity.type)) {//不是语音评测
             if (videoQuestionLiveEntity.isTestUseH5) {
                 mVPlayVideoControlHandler.post(new Runnable() {
                     @Override
@@ -551,6 +553,15 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             }
                             // 填空题部分正确提示
                         }
+                        Map<String, String> mData = new HashMap<>();
+                        mData.put("logtype", "showResultDialog");
+                        mData.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
+                        mData.put("sourcetype", "h5test");
+                        mData.put("ex", "Y");
+                        mData.put("expect", "0");
+                        mData.put("sno", "6");
+                        mData.put("stable", "1");
+                        umsAgentDebug3(voicequestionEventId, mData);
                     } else {
                         // 回答正确提示
                         if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
@@ -625,14 +636,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     }
 
     @Override
-    public void onStopQuestion(String ptype) {
+    public void onStopQuestion(String ptype, final String nonce) {
         isAnaswer = false;
         if (voiceAnswerPager != null) {
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     if (voiceAnswerPager != null) {
-                        voiceAnswerPager.examSubmitAll("onStopQuestion");
+                        voiceAnswerPager.examSubmitAll("onStopQuestion", nonce);
 //                        stopVoiceAnswerPager();
                     }
                 }
@@ -1063,13 +1074,24 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             });
         }
         Map<String, String> mData = new HashMap<>();
+        mData.put("logtype", "showAnswerDialog");
         mData.put("testtype", "" + videoQuestionLiveEntity.type);
         mData.put("testid", "" + videoQuestionLiveEntity.id);
-        mData.put("logtype", "receiveInteractTest");
-        umsAgentDebug(voicequestionEventId, mData);
+        mData.put("sourcetype", "h5test");
+        mData.put("answertype", "voice");
+        mData.put("ex", "Y");
+        mData.put("sno", "2");
+        mData.put("nonce", "" + videoQuestionLiveEntity.nonce);
+        mData.put("stable", "1");
+        umsAgentDebug3(voicequestionEventId, mData);
     }
 
     QuestionSwitch questionSwitch = new QuestionSwitch() {
+
+        @Override
+        public String getsourcetype(BaseVideoQuestionEntity baseQuestionEntity) {
+            return "h5test";
+        }
 
         @Override
         public BasePager questionSwitch(BaseVideoQuestionEntity baseQuestionEntity) {

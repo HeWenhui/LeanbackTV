@@ -33,7 +33,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 语音答题
@@ -71,6 +73,7 @@ public class VoiceAnswerPager extends BasePager {
     boolean multRef = true;
     /** 是不是结束答题 */
     boolean isEnd = false;
+    String endnonce;
     /** 是不是用户返回 */
     boolean userBack = false;
     /** 是不是用户切换答题 */
@@ -247,8 +250,9 @@ public class VoiceAnswerPager extends BasePager {
         return isEnd;
     }
 
-    public void examSubmitAll(String method) {
+    public void examSubmitAll(String method, String nonce) {
         isEnd = true;
+        endnonce = nonce;
         ViewGroup group = (ViewGroup) mView.getParent();
         Loger.d(TAG, "examSubmitAll:method=" + method + ",error=" + isSpeechError + ",success=" + isSpeechSuccess);
         if (group == null) {
@@ -431,11 +435,28 @@ public class VoiceAnswerPager extends BasePager {
                         questionSwitch.uploadVoiceFile(saveVideoFile);
                         isSpeechSuccess = true;
                         boolean isRight = option.equalsIgnoreCase(answer);
+
+                        String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
+                        Map<String, String> mData = new HashMap<>();
+                        mData.put("logtype", "showAnswerDialog");
+                        mData.put("testtype", "" + type);
+                        mData.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
+                        mData.put("submittype", isEnd ? "force" : "active");
+                        mData.put("sourcetype", sourcetype);
+                        mData.put("stuanswer", isRight ? "Y" : "N");
+                        mData.put("ex", "Y");
+                        mData.put("expect", "1");
+                        mData.put("sno", "2");
+                        mData.put("nonce", "" + endnonce);
+                        mData.put("stable", "1");
+                        liveAndBackDebug.umsAgentDebug2(eventId, mData);
                         questionSwitch.onPutQuestionResult(baseVideoQuestionEntity, answer, option, 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
                             @Override
                             public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
-                                entity.setYourAnswer(option);
-                                entity.setStandardAnswer(answer);
+                                if (entity != null) {
+                                    entity.setYourAnswer(option);
+                                    entity.setStandardAnswer(answer);
+                                }
                             }
 
                             @Override
@@ -517,6 +538,20 @@ public class VoiceAnswerPager extends BasePager {
                     }, 200);
                     return;
                 }
+                String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
+                Map<String, String> mData = new HashMap<>();
+                mData.put("logtype", "showAnswerDialog");
+                mData.put("testtype", "" + type);
+                mData.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
+                mData.put("submittype", isEnd ? "force" : "active");
+                mData.put("sourcetype", sourcetype);
+                mData.put("stuanswer", isRight ? "Y" : "N");
+                mData.put("ex", "Y");
+                mData.put("expect", "1");
+                mData.put("sno", "2");
+                mData.put("nonce", "" + endnonce);
+                mData.put("stable", "1");
+                liveAndBackDebug.umsAgentDebug2(eventId, mData);
                 try {
                     JSONArray options = assess_ref.getJSONArray("options");
                     JSONObject jsonObject = options.getJSONObject(0);
@@ -528,7 +563,9 @@ public class VoiceAnswerPager extends BasePager {
                     questionSwitch.onPutQuestionResult(baseVideoQuestionEntity, content1.getString(0), content1.getString(0), 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
                         @Override
                         public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
-                            entity.setStandardAnswer(answer);
+                            if (entity != null) {
+                                entity.setStandardAnswer(answer);
+                            }
                         }
 
                         @Override

@@ -49,6 +49,7 @@ import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE4;
 public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAndBackDebug {
     String TAG = "EH5CoursewareBll";
     String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
+    String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
     Context context;
     Handler handler = new Handler(Looper.getMainLooper());
     /** 互动题作答成功的布局 */
@@ -248,7 +249,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 //                        rlVoiceQuestionContent.addView(view, lp);
 //                        bottomContent.addView(rlVoiceQuestionContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 //                                ViewGroup.LayoutParams.MATCH_PARENT));
-                        answerPager.examSubmitAll("onH5Courseware");
+                        answerPager.examSubmitAll("onH5Courseware", videoQuestionLiveEntity.nonce);
                     }
                     if (h5CoursewarePager != null) {
                         h5CoursewarePager.submitData();
@@ -297,7 +298,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     webViewRequest.releaseWebView();
                 }
             }
-        },this );
+        }, this);
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         bottomContent.addView(h5CoursewarePager.getRootView(), lp);
         if (context instanceof WebViewRequest) {
@@ -325,67 +326,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             showH5Paper(videoQuestionLiveEntity);
             return;
         }
-//        if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
-//            JSONArray answer = new JSONArray();
-//            try {
-//                answer.put("B");
-//                assess_ref.put("answer", answer);
-//                JSONArray options = new JSONArray();
-//                {
-//                    JSONObject options1 = new JSONObject();
-//                    options1.put("option", "A");
-//                    JSONArray content1 = new JSONArray();
-//                    content1.put("yes it is");
-//                    options1.put("content", content1);
-//                    options.put(options1);
-//                }
-//                {
-//                    JSONObject options1 = new JSONObject();
-//                    options1.put("option", "B");
-//                    JSONArray content1 = new JSONArray();
-//                    content1.put("no it isn't");
-//                    options1.put("content", content1);
-//                    options.put(options1);
-//                }
-//                {
-//                    JSONObject options1 = new JSONObject();
-//                    options1.put("option", "C");
-//                    JSONArray content1 = new JSONArray();
-//                    content1.put("you are beautiful");
-//                    options1.put("content", content1);
-//                    options.put(options1);
-//                }
-//                {
-//                    JSONObject options1 = new JSONObject();
-//                    options1.put("option", "D");
-//                    JSONArray content1 = new JSONArray();
-//                    content1.put("you are very good");
-//                    options1.put("content", content1);
-//                    options.put(options1);
-//                }
-//                assess_ref.put("options", options);
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            JSONArray answer = new JSONArray();
-//            try {
-//                answer.put("A");
-//                assess_ref.put("answer", answer);
-//                JSONArray options = new JSONArray();
-//                {
-//                    JSONObject options1 = new JSONObject();
-//                    options1.put("option", "A");
-//                    JSONArray content1 = new JSONArray();
-//                    content1.put("are");
-//                    options1.put("content", content1);
-//                    options.put(options1);
-//                }
-//                assess_ref.put("options", options);
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        }
         VoiceAnswerPager voiceAnswerPager2 = new VoiceAnswerPager(context, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.questiontype, questionSwitch, this);
         voiceAnswerPager2.setIse(mIse);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -406,9 +346,25 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 }
             });
         }
+        Map<String, String> mData = new HashMap<>();
+        mData.put("logtype", "showAnswerDialog");
+        mData.put("testtype", "" + videoQuestionLiveEntity.type);
+        mData.put("testid", "" + videoQuestionLiveEntity.id);
+        mData.put("sourcetype", "h5ware");
+        mData.put("answertype", "voice");
+        mData.put("ex", "Y");
+        mData.put("sno", "2");
+        mData.put("nonce", "" + videoQuestionLiveEntity.nonce);
+        mData.put("stable", "1");
+        umsAgentDebug3(voicequestionEventId, mData);
     }
 
     QuestionSwitch questionSwitch = new QuestionSwitch() {
+
+        @Override
+        public String getsourcetype(BaseVideoQuestionEntity baseQuestionEntity) {
+            return "h5ware";
+        }
 
         @Override
         public BasePager questionSwitch(BaseVideoQuestionEntity baseQuestionEntity) {
@@ -481,6 +437,15 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                                     initFillAnswerWrongResultVoice(entity);
                                 }
                             }
+                            Map<String, String> mData = new HashMap<>();
+                            mData.put("logtype", "showResultDialog");
+                            mData.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
+                            mData.put("sourcetype", "h5ware");
+                            mData.put("ex", "Y");
+                            mData.put("expect", "0");
+                            mData.put("sno", "6");
+                            mData.put("stable", "1");
+                            umsAgentDebug3(voicequestionEventId, mData);
                         }
                     }
                     if (voiceAnswerPager != null) {
