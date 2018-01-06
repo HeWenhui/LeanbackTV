@@ -332,9 +332,9 @@ public class LiveHttpManager extends BaseHttpBusiness {
         }
         params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("testId", testId);
-        if(isVoice){
+        if (isVoice) {
             params.addBodyParam("answer", testAnswer);
-        }else {
+        } else {
             params.addBodyParam("testAnswer", testAnswer);
         }
         params.addBodyParam("userMode", userMode);

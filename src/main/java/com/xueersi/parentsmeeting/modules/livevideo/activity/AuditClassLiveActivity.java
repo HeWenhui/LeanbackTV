@@ -413,10 +413,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 "times=" + times + ",mVSectionID=" + mVSectionID);
         from = intent.getIntExtra(ENTER_ROOM_FROM, 0);
         //XesMobAgent.enterLiveRoomFrom(from);
-        if (liveType == LiveBll.LIVE_TYPE_LIVE || liveType == LiveBll.LIVE_TYPE_LECTURE) {// 直播
-            mLiveBll = new AuditClassLiveBll(this, mVSectionID, liveType);
-        } else if (liveType == LiveBll.LIVE_TYPE_TUTORIAL) {// 辅导
-            mLiveBll = new AuditClassLiveBll(this, mVSectionID, intent.getStringExtra("currentDutyId"), liveType);
+        if (liveType == LiveBll.LIVE_TYPE_LIVE) {// 直播
+            mLiveBll = new AuditClassLiveBll(this, stuCouId, "", mVSectionID, from);
         } else {
             Toast.makeText(this, "直播类型不支持", Toast.LENGTH_SHORT).show();
             return false;
