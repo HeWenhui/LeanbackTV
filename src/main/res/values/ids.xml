@@ -395,4 +395,21 @@
     <item name="ll_full_mark_list_no4_line" type="id" />
     <item name="sv_live_full_mark_list" type="id" />
     <item name="ll_full_mark_container" type="id" />
+    <!--讲座学习反馈-->
+    <item name="iv_livelec_learnfeedback_top" type="id" />
+    <item name="ll_livelec_learnfeedback_mid" type="id" />
+    <item name="bt_livelec_learnfeedback_close" type="id" />
+    <item name="iv_livelec_dialog_xxsc_icon_normal" type="id" />
+    <item name="tv_livelec_dialog_xxsc_lable" type="id" />
+    <item name="tv_livelec_dialog_xxsc_text" type="id" />
+    <item name="iv_livelec_dialog_zhengquelv_icon_normal" type="id" />
+    <item name="tv_livelec_dialog_zhengquelv_lable" type="id" />
+    <item name="tv_livelec_dialog_zhengquelv_text" type="id" />
+    <item name="tv_livelec_dialog_zhengquelv_lable2" type="id" />
+    <item name="tv_livelec_dialog_zhengquelv_text2" type="id" />
+    <item name="iv_livelec_dialog_paiming_icon_normal" type="id" />
+    <item name="tv_livelec_dialog_paiming_lable" type="id" />
+    <item name="tv_livelec_dialog_paiming_text" type="id" />
+    <item name="tv_livelec_dialog_paiming_lable2" type="id" />
+    <item name="tv_livelec_dialog_paiming_text2" type="id" />
 </resources>

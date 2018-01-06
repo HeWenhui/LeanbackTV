@@ -83,6 +83,7 @@ public class LiveBll extends BaseBll {
     private VideoAction mVideoAction;
     private RoomAction mRoomAction;
     private LearnReportAction mLearnReportAction;
+    private LecLearnReportAction mLecLearnReportAction;
     private H5CoursewareAction h5CoursewareAction;
     private EnglishH5CoursewareAction englishH5CoursewareAction;
     private VideoChatAction videoChatAction;
@@ -626,6 +627,10 @@ public class LiveBll extends BaseBll {
 
     public void setLearnReportAction(LearnReportAction mLearnReportAction) {
         this.mLearnReportAction = mLearnReportAction;
+    }
+
+    public void setLecLearnReportAction(LecLearnReportAction mLearnReportAction) {
+        this.mLecLearnReportAction = mLearnReportAction;
     }
 
     public void setH5CoursewareAction(H5CoursewareAction h5CoursewareAction) {
@@ -2982,8 +2987,9 @@ public class LiveBll extends BaseBll {
             this.detail = detail;
         }
     }
-    public void setAnswerRankBll(AnswerRankBll bll){
-        mAnswerRankBll=bll;
+
+    public void setAnswerRankBll(AnswerRankBll bll) {
+        mAnswerRankBll = bll;
     }
 
     public void streamReport(MegId msgid, String channelname, long connsec) {
