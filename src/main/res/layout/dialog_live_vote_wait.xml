@@ -3,16 +3,32 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <TextView
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@drawable/shape_transparent_corners"
-        android:gravity="center"
-        android:paddingBottom="20dp"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp"
-        android:paddingTop="20dp"
-        android:text="投票中，请稍后"
-        android:textColor="@color/white" />
+        android:background="@drawable/shape_transparent_corners">
+
+        <ProgressBar
+            android:id="@id/probar_course_video_loading_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="40dp"
+            android:indeterminateDrawable="@drawable/animlst_video_loading" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/probar_course_video_loading_progress"
+            android:gravity="center"
+            android:paddingBottom="20dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="40dp"
+            android:paddingTop="20dp"
+            android:text="投票中，请稍后"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
 </RelativeLayout>

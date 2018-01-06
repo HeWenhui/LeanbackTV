@@ -17,6 +17,16 @@
             android:layout_centerHorizontal="true"
             android:orientation="horizontal" />
 
+        <ImageView
+            android:id="@id/iv_livevideo_vote_result_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/il_livevideo_vote_choice"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/bg_livevideo_vote_result_close" />
+
     </RelativeLayout>
 
 </RelativeLayout>

@@ -47,6 +47,7 @@ import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PutQuestion;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionResultView;
@@ -108,7 +109,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 @SuppressLint("HandlerLeak")
 @SuppressWarnings("unchecked")
 public class LivePlayBackVideoActivity extends VideoActivity implements LivePlaybackMediaController.OnPointClick,
-        SpeechEvalAction, QuestionWebPager.StopWebQuestion {
+        SpeechEvalAction, QuestionWebPager.StopWebQuestion, LiveAndBackDebug {
 
     String TAG = "LivePlayBackVideoActivityLog";
     /** 互动题的布局 */
@@ -949,21 +950,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                             stopEnglishH5Exam();
                         }
 
-                        @Override
-                        public void umsAgentDebug(String eventId, Map<String, String> mData) {
-                            LivePlayBackVideoActivity.this.umsAgentDebug(eventId, mData);
-                        }
-
-                        @Override
-                        public void umsAgentDebug2(String eventId, Map<String, String> mData) {
-                            LivePlayBackVideoActivity.this.umsAgentDebug2(eventId, mData);
-                        }
-
-                        @Override
-                        public void umsAgentDebug3(String eventId, Map<String, String> mData) {
-                            LivePlayBackVideoActivity.this.umsAgentDebug3(eventId, mData);
-                        }
-                    });
+                    }, this);
             rlQuestionContent.removeAllViews();
             rlQuestionContent.addView(englishH5CoursewarePager.getRootView(), new LayoutParams(LayoutParams
                     .MATCH_PARENT,
@@ -1048,7 +1035,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 //        }
         rlQuestionContent.removeAllViews();
         rlQuestionContent.setVisibility(View.VISIBLE);
-        voiceAnswerPager = new VoiceAnswerPager(this, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.getVoiceQuestiontype(), questionSwitch);
+        voiceAnswerPager = new VoiceAnswerPager(this, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.getVoiceQuestiontype(), questionSwitch, this);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         rlQuestionContent.addView(voiceAnswerPager.getRootView(), params);
@@ -1056,6 +1043,16 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     }
 
     QuestionSwitch questionSwitch = new QuestionSwitch() {
+
+        @Override
+        public String getsourcetype(BaseVideoQuestionEntity baseQuestionEntity) {
+            VideoQuestionEntity entity = (VideoQuestionEntity) baseQuestionEntity;
+            if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == entity.getvCategory()) {
+                return "h5ware";
+            } else {
+                return "h5test";
+            }
+        }
 
         @Override
         public BasePager questionSwitch(BaseVideoQuestionEntity baseQuestionEntity) {
@@ -1326,7 +1323,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 if (answerReslut != null) {
                     Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 14, 14, mQuestionEntity);
                     mPlayVideoControlHandler.sendMessage(msg);
-                    answerReslut.onAnswerReslut(questionEntity, null);
+                    answerReslut.onAnswerReslut(questionEntity, entity);
                     seekTo(questionEntity.getvEndTime() * 1000);
                     start();
                 }
@@ -1374,9 +1371,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         } else {
             String testAnswer;
             if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(questionEntity.getvQuestionType())) {
-                testAnswer = "" + sorce;
+//                testAnswer = "" + sorce;
+                testAnswer = "A";
             } else {
-                testAnswer = result + ":" + sorce;
+//                testAnswer = result + ":" + sorce;
+                testAnswer = result;
             }
             Loger.d(TAG, "saveQuestionResult:testAnswer=" + testAnswer);
             lectureLivePlayBackBll.saveQuestionResult(loadEntity, questionEntity, testAnswer, mVideoEntity.getLiveId(), mVideoEntity.getvLivePlayBackType(), true, isRight, callBack);

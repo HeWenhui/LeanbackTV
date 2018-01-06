@@ -88,6 +88,11 @@ public class CacheExtensionConfig
         remove(STATIC_RAM, extension);
     }
 
+    public static void removeNoCacheExtension(String extension)
+    {
+        remove(NO_CACH, extension);
+    }
+
     private static void add(HashSet set, String extension)
     {
         if (TextUtils.isEmpty(extension))

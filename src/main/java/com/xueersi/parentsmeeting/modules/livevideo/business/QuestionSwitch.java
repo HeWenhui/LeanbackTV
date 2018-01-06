@@ -14,8 +14,11 @@ import java.io.File;
 public interface QuestionSwitch {
     BasePager questionSwitch(BaseVideoQuestionEntity baseQuestionEntity);
 
+    String getsourcetype(BaseVideoQuestionEntity baseQuestionEntity);
+
     /**
      * 提交答案
+     *
      * @param videoQuestionLiveEntity
      * @param answer
      * @param result
@@ -37,7 +40,7 @@ public interface QuestionSwitch {
      */
     void uploadVoiceFile(File file);
 
-    void stopSpeech(VoiceAnswerPager answerPager,BaseVideoQuestionEntity baseVideoQuestionEntity);
+    void stopSpeech(VoiceAnswerPager answerPager, BaseVideoQuestionEntity baseVideoQuestionEntity);
 
     /** 得到互动题，暂时没用 */
     interface OnQuestionGet {

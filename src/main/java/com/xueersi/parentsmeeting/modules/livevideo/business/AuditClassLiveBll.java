@@ -130,6 +130,22 @@ public class AuditClassLiveBll extends BaseBll {
     /** 是不是有分组 */
     private boolean haveTeam = false;
 
+    public AuditClassLiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form) {
+        super(context);
+        this.mLiveId = vSectionID;
+        this.mLiveType = LIVE_TYPE_LIVE;
+        mHttpManager = new LiveHttpManager(mContext);
+        mHttpManager.addBodyParam("courseId", courseId);
+        mHttpManager.addBodyParam("stuCouID", vStuCourseID);
+        mHttpManager.addBodyParam("liveId", vSectionID);
+        mHttpResponseParser = new LiveHttpResponseParser(context);
+        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+                + ".txt"));
+        mLogtf.clear();
+        netWorkType = NetWorkHelper.getNetWorkState(context);
+        mLiveTopic.setMode(LiveTopic.MODE_CLASS);
+    }
+
     public AuditClassLiveBll(Context context, String vSectionID, int type) {
         super(context);
         this.mLiveId = vSectionID;
@@ -141,22 +157,6 @@ public class AuditClassLiveBll extends BaseBll {
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         mLiveTopic.setMode(LiveTopic.MODE_CLASS);
-    }
-
-    public AuditClassLiveBll(Context context, String vSectionID, String currentDutyId, int type) {
-        super(context);
-        this.mLiveId = vSectionID;
-        this.mLiveType = type;
-        this.mCurrentDutyId = currentDutyId;
-        mHttpManager = new LiveHttpManager(mContext);
-        mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
-        mLogtf.clear();
-        netWorkType = NetWorkHelper.getNetWorkState(context);
-        if (type != LIVE_TYPE_LIVE) {
-            mLiveTopic.setMode(LiveTopic.MODE_CLASS);
-        }
     }
 
     /**
@@ -202,10 +202,6 @@ public class AuditClassLiveBll extends BaseBll {
         };
         if (mLiveType == LIVE_TYPE_LIVE) {// 直播
             mHttpManager.liveGetInfo(enstuId, "", mLiveId, 1, callBack);
-        } else if (mLiveType == LIVE_TYPE_TUTORIAL) {// 辅导
-            mHttpManager.liveTutorialGetInfo(enstuId, mLiveId, callBack);
-        } else if (mLiveType == LIVE_TYPE_LECTURE) {
-            mHttpManager.liveLectureGetInfo(enstuId, mLiveId, callBack);
         }
     }
 
@@ -298,53 +294,12 @@ public class AuditClassLiveBll extends BaseBll {
         });
     }
 
-
-    public void setQuestionAction(QuestionAction action) {
-        this.mQuestionAction = action;
-    }
-
-    public void setRollCallAction(RollCallAction action) {
-        this.mRollCallAction = action;
-    }
-
-    public void setPraiseOrEncourageAction(PraiseOrEncourageAction action) {
-        this.mPraiseOrEncourageAction = action;
-    }
-
-    public void setReadPackageBll(RedPackageBll readPackageBll) {
-        this.readPackageBll = readPackageBll;
-    }
-
     public void setVideoAction(AuditVideoAction videoAction) {
         this.mVideoAction = videoAction;
     }
 
-    public void setRoomAction(RoomAction roomAction) {
-        this.mRoomAction = roomAction;
-    }
-
     public void setAuditClassAction(AuditClassAction auditClassAction) {
         this.auditClassAction = auditClassAction;
-    }
-
-    public void setLearnReportAction(LearnReportAction mLearnReportAction) {
-        this.mLearnReportAction = mLearnReportAction;
-    }
-
-    public void setH5CoursewareAction(H5CoursewareAction h5CoursewareAction) {
-        this.h5CoursewareAction = h5CoursewareAction;
-    }
-
-    public void setEnglishH5CoursewareAction(EnglishH5CoursewareAction englishH5CoursewareAction) {
-        this.englishH5CoursewareAction = englishH5CoursewareAction;
-    }
-
-    public VideoChatAction getVideoChatAction() {
-        return videoChatAction;
-    }
-
-    public void setVideoChatAction(VideoChatAction videoChatAction) {
-        this.videoChatAction = videoChatAction;
     }
 
     private final AuditIRCCallback mIRCcallback = new AuditIRCCallback() {
@@ -1652,87 +1607,6 @@ public class AuditClassLiveBll extends BaseBll {
         }
     };
 
-    /**
-     * IRC互动题和直播互动题转换
-     *
-     * @param topic
-     * @return
-     */
-//    public VideoQuestionLiveEntity getQuestionFromTopic(TopicEntity topic) {
-//        VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-//        videoQuestionLiveEntity.id = topic.getId();
-//        videoQuestionLiveEntity.num = topic.getNum();
-//        videoQuestionLiveEntity.gold = topic.getGold_count();
-//        videoQuestionLiveEntity.time = topic.getTime();
-//        videoQuestionLiveEntity.type = topic.getType();
-//        videoQuestionLiveEntity.choiceType = topic.getChoiceType();
-//        videoQuestionLiveEntity.srcType = topic.getSrcType();
-////        if (topic.getType().equals("1")) {
-////            videoQuestionLiveEntity.num = 20;
-////            videoQuestionLiveEntity.choiceType = "2";
-////        }
-//        videoQuestionLiveEntity.setStuAnswer(topic.getAnswer());
-//        return videoQuestionLiveEntity;
-//    }
-
-    /**
-     * 直播互动题和IRC互动题转换
-     *
-     * @param videoQuestionLiveEntity
-     * @return
-     */
-//    public TopicEntity getTopicFromQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
-//        TopicEntity topic = new TopicEntity();
-//        topic.setId(videoQuestionLiveEntity.id);
-//        topic.setNum((int) videoQuestionLiveEntity.num);
-//        topic.setGold_count((int) videoQuestionLiveEntity.gold);
-//        topic.setTime((int) videoQuestionLiveEntity.time);
-//        topic.setType(videoQuestionLiveEntity.type);
-//        topic.setChoiceType(videoQuestionLiveEntity.choiceType);
-//        topic.setAnswer(videoQuestionLiveEntity.getStuAnswer());
-//        topic.setSrcType(videoQuestionLiveEntity.srcType);
-//        return topic;
-//    }
-
-    /**
-     * 懂了吗提交
-     *
-     * @param understand
-     */
-//    public void understand(boolean understand) {
-//        if (mMainTeacherStr != null) {
-//            try {
-//                JSONObject jsonObject = new JSONObject();
-//                jsonObject.put("type", "" + XESCODE.UNDERSTANDS);
-//                jsonObject.put("understand", understand);
-//                mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
-//                mLogtf.d("understand ok");
-//            } catch (Exception e) {
-//                // Loger.e(TAG, "understand", e);
-//                mLogtf.e("understand", e);
-//            }
-//        } else {
-//            mLogtf.d("understand mMainTeacherStr=null");
-//        }
-//    }
-
-    /** 点名成功，状态设置为2.发notice信息 */
-//    public void onRollCallSuccess() {
-//        try {
-//            mGetInfo.getStudentLiveInfo().setSignStatus(2);
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put("type", "" + XESCODE.CLASS_MATEROLLCALL);
-//            jsonObject.put("id", "" + mGetInfo.getStuId());
-//            jsonObject.put("name", "" + mGetInfo.getStuName());
-//            jsonObject.put("path", "" + mGetInfo.getHeadImgPath());
-//            jsonObject.put("Version", "" + mGetInfo.getHeadImgVersion());
-//            mIRCMessage.sendNotice(jsonObject.toString());
-//            mLogtf.d("onRollCallSuccess ok");
-//        } catch (Exception e) {
-//            // Loger.e(TAG, "understand", e);
-//            mLogtf.e("onRollCallSuccess", e);
-//        }
-//    }
     public boolean isDisable() {
         return mLiveTopic.isDisable();
     }
@@ -1743,104 +1617,6 @@ public class AuditClassLiveBll extends BaseBll {
         }
         return mIRCMessage.isConnected();
     }
-
-    /** 是否开启聊天 */
-//    public boolean openchat() {
-//        boolean openchat;
-//        if (LiveTopic.MODE_CLASS.equals(getMode())) {
-//            openchat = mLiveTopic.getMainRoomstatus().isOpenchat();
-//        } else {
-//            openchat = mLiveTopic.getCoachRoomstatus().isOpenchat();
-//        }
-//        mLogtf.d("openchat:getMode=" + getMode() + ",isOpenchat=" + openchat);
-//        return openchat;
-//    }
-
-//    /** 发生聊天消息 */
-//    public boolean sendMessage(String msg) {
-//        if (mLiveTopic.isDisable()) {
-//            return false;
-//        } else {
-//            try {
-//                JSONObject jsonObject = new JSONObject();
-//                jsonObject.put("type", "" + XESCODE.TEACHER_MESSAGE);
-//                jsonObject.put("name", mGetInfo.getStuName());
-//                jsonObject.put("path", "" + mGetInfo.getHeadImgPath());
-//                jsonObject.put("version", "" + mGetInfo.getHeadImgVersion());
-//                jsonObject.put("msg", msg);
-//                if (haveTeam) {
-//                    StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
-//                    String teamId = studentLiveInfo.getTeamId();
-//                    jsonObject.put("from", "android_" + teamId);
-//                    jsonObject.put("to", teamId);
-//                }
-//                mIRCMessage.sendMessage(jsonObject.toString());
-//            } catch (Exception e) {
-//                // Loger.e(TAG, "understand", e);
-//                mLogtf.e("sendMessage", e);
-//            }
-//            return true;
-//        }
-//    }
-
-    /** 是否开启献花 */
-    public boolean isOpenbarrage() {
-        return mLiveTopic.getMainRoomstatus().isOpenbarrage();
-    }
-
-    /** 发生献花消息 */
-    public void sendFlowerMessage(int ftype) {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("type", "" + XESCODE.FLOWERS);
-            jsonObject.put("name", mGetInfo.getStuName());
-            jsonObject.put("ftype", ftype);
-            mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
-//            mIRCMessage.sendMessage(mMainTeacherStr, jsonObject.toString());
-        } catch (Exception e) {
-            // Loger.e(TAG, "understand", e);
-            mLogtf.e("sendFlowerMessage", e);
-        }
-    }
-
-//    public void requestMicro(int times) {
-//        try {
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put("type", "" + XESCODE.REQUEST_MICRO);
-//            jsonObject.put("status", "on");
-//            jsonObject.put("network", "normal");
-//            jsonObject.put("id", mGetInfo.getStuId());
-//            jsonObject.put("name", mGetInfo.getStuName());
-//            jsonObject.put("img", mGetInfo.getStuImg());
-//            jsonObject.put("times", times);
-//            if (LiveTopic.MODE_CLASS.equals(getMode())) {
-//                mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
-//            } else {
-//                mIRCMessage.sendNotice(mCounteacher.get_nick(), jsonObject.toString());
-//            }
-//        } catch (Exception e) {
-//            // Loger.e(TAG, "understand", e);
-//            mLogtf.e("requestMicro", e);
-//        }
-//    }
-
-    /** 放弃举手 */
-//    public void giveupMicro() {
-//        try {
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put("type", "" + XESCODE.REQUEST_MICRO);
-//            jsonObject.put("id", mGetInfo.getStuId());
-//            jsonObject.put("status", "off");
-//            if (LiveTopic.MODE_CLASS.equals(getMode())) {
-//                mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
-//            } else {
-//                mIRCMessage.sendNotice(mCounteacher.get_nick(), jsonObject.toString());
-//            }
-//        } catch (Exception e) {
-//            // Loger.e(TAG, "understand", e);
-//            mLogtf.e("giveupMicro", e);
-//        }
-//    }
 
     /**
      * 直播修复

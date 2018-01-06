@@ -17,7 +17,10 @@ import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionSwitch;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VolumeWaveView;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
@@ -39,6 +42,7 @@ import java.util.List;
  */
 
 public class VoiceAnswerPager extends BasePager {
+    String eventId = LiveVideoConfig.LIVE_TEST_VOICE;
     private SpeechEvaluatorUtils mIse;
     BaseVideoQuestionEntity baseVideoQuestionEntity;
     /** 评测标题 */
@@ -54,6 +58,7 @@ public class VoiceAnswerPager extends BasePager {
     /** 答题切换 */
     TextView tvVoiceansSwitch;
     QuestionSwitch questionSwitch;
+    LiveAndBackDebug liveAndBackDebug;
     /** 语音保存位置-目录 */
     File dir;
     /** 语音保存位置 */
@@ -67,6 +72,7 @@ public class VoiceAnswerPager extends BasePager {
     boolean multRef = true;
     /** 是不是结束答题 */
     boolean isEnd = false;
+    String endnonce;
     /** 是不是用户返回 */
     boolean userBack = false;
     /** 是不是用户切换答题 */
@@ -75,10 +81,11 @@ public class VoiceAnswerPager extends BasePager {
     ScoreAndIndex lastMaxScoreAndIndex = null;
     int netWorkType = NetWorkHelper.WIFI_STATE;
 
-    public VoiceAnswerPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch) {
+    public VoiceAnswerPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch, LiveAndBackDebug liveAndBackDebug) {
         super(context);
         this.baseVideoQuestionEntity = baseVideoQuestionEntity;
         this.questionSwitch = questionSwitch;
+        this.liveAndBackDebug = liveAndBackDebug;
         this.type = type;
         this.assess_ref = assess_ref;
         if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
@@ -242,8 +249,9 @@ public class VoiceAnswerPager extends BasePager {
         return isEnd;
     }
 
-    public void examSubmitAll(String method) {
+    public void examSubmitAll(String method, String nonce) {
         isEnd = true;
+        endnonce = nonce;
         ViewGroup group = (ViewGroup) mView.getParent();
         Loger.d(TAG, "examSubmitAll:method=" + method + ",error=" + isSpeechError + ",success=" + isSpeechSuccess);
         if (group == null) {
@@ -426,11 +434,22 @@ public class VoiceAnswerPager extends BasePager {
                         questionSwitch.uploadVoiceFile(saveVideoFile);
                         isSpeechSuccess = true;
                         boolean isRight = option.equalsIgnoreCase(answer);
+
+                        String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
+                        StableLogHashMap logHashMap = new StableLogHashMap("submitAnswerResult");
+                        logHashMap.put("testtype", "" + type);
+                        logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
+                        logHashMap.put("submittype", isEnd ? "force" : "active");
+                        logHashMap.put("sourcetype", sourcetype).put("stuanswer", isRight ? "Y" : "N");
+                        logHashMap.addEx("Y").addExpect("1").addSno("4").addNonce("" + endnonce).addStable("1");
+                        liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
                         questionSwitch.onPutQuestionResult(baseVideoQuestionEntity, answer, option, 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
                             @Override
                             public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
-                                entity.setYourAnswer(option);
-                                entity.setStandardAnswer(answer);
+                                if (entity != null) {
+                                    entity.setYourAnswer(option);
+                                    entity.setStandardAnswer(answer);
+                                }
                             }
 
                             @Override
@@ -512,6 +531,14 @@ public class VoiceAnswerPager extends BasePager {
                     }, 200);
                     return;
                 }
+                String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
+                StableLogHashMap logHashMap = new StableLogHashMap("submitAnswerResult");
+                logHashMap.put("testtype", "" + type);
+                logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
+                logHashMap.put("submittype", isEnd ? "force" : "active").put("sourcetype", sourcetype);
+                logHashMap.put("stuanswer", isRight ? "Y" : "N");
+                logHashMap.addEx("Y").addExpect("1").addSno("4").addNonce("" + endnonce).addStable("1");
+                liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
                 try {
                     JSONArray options = assess_ref.getJSONArray("options");
                     JSONObject jsonObject = options.getJSONObject(0);
@@ -523,7 +550,9 @@ public class VoiceAnswerPager extends BasePager {
                     questionSwitch.onPutQuestionResult(baseVideoQuestionEntity, content1.getString(0), content1.getString(0), 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
                         @Override
                         public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
-                            entity.setStandardAnswer(answer);
+                            if (entity != null) {
+                                entity.setStandardAnswer(answer);
+                            }
                         }
 
                         @Override

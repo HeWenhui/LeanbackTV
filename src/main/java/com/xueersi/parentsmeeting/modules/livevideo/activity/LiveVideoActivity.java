@@ -43,7 +43,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLazyBllCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideo.business.PraiseOrEncourageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
@@ -260,8 +259,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
 
         Loger.d(TAG, "initView:time2=" + (System.currentTimeMillis() - before));
         final View contentView = findViewById(android.R.id.content);
-        contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        contentView.postDelayed(new Runnable() {
             @Override
+<<<<<<< HEAD
             public void onGlobalLayout() {
                 if (videoView.getWidth() <= 0) {
                     return;
@@ -307,6 +307,43 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 answerRankBll.showFullMarkList(lst);
             }
         },3000);*/
+=======
+            public void run() {
+                contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        if (videoView.getWidth() <= 0) {
+                            return;
+                        }
+                        boolean isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+                        //Loger.i(TAG, "setVideoWidthAndHeight:isLand=" + isLand);
+                        if (!isLand) {
+                            return;
+                        }
+                        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
+                                (int) VIDEO_HEIGHT, VIDEO_RATIO);
+                        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+                        setFirstParam(lp);
+                        liveMessageBll.setVideoLayout(lp.width, lp.height);
+                        questionBll.setVideoLayout(lp.width, lp.height);
+                        if (rankBll != null) {
+                            rankBll.setVideoLayout(lp.width, lp.height);
+                        }
+                        if (expeBll != null) {
+                            expeBll.setVideoLayout(lp.width, lp.height);
+                        }
+                        setMediaControllerBottomParam(lp);
+                        if (englishSpeekBll != null) {
+                            englishSpeekBll.setVideoWidthAndHeight(lp.width, lp.height);
+                        }
+                        if(englishH5CoursewareBll!=null){
+                            englishH5CoursewareBll.setVideoLayout(lp.width, lp.height);
+                        }
+                    }
+                });
+            }
+        }, 10);
+>>>>>>> origin/601
     }
 
     protected boolean initData() {
@@ -811,7 +848,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     @Override
     public void onLiveInit(LiveGetInfo getInfo) {
         mGetInfo = getInfo;
-        if(liveLazyBllCreat!=null){
+        long before = System.currentTimeMillis();
+        if (liveLazyBllCreat != null) {
             liveLazyBllCreat.setGetInfo(getInfo);
         }
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
@@ -828,6 +866,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             }
             englishH5Cache.getCourseWareUrl();
         }
+        Loger.d(TAG, "onLiveInit:time=" + (System.currentTimeMillis() - before));
+        before = System.currentTimeMillis();
         //本场成就
         if (1 == getInfo.getIsAllowStar()) {
 //            starBll = new StarInteractBll(this, liveType, getInfo.getStarCount(), mIsLand);
@@ -836,36 +876,19 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             starBll.initView(bottomContent);
             mLiveBll.setStarAction(starBll);
             //能量条
-            englishSpeekBll = new EnglishSpeekBll(this);
+            EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(this);
             boolean initView = englishSpeekBll.initView(bottomContent, mGetInfo.getMode());
-            if (!initView) {
-                englishSpeekBll = null;
-            } else {
+            if (initView) {
                 englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                 englishSpeekBll.setLiveBll(mLiveBll);
                 englishSpeekBll.setLiveMessageBll(liveMessageBll);
                 englishSpeekBll.setmShareDataManager(mShareDataManager);
                 mLiveBll.setEnglishSpeekAction(englishSpeekBll);
-//                handler.sendEmptyMessageDelayed(1, 2000);
-//            bottomContent.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    if (count % 2 == 0) {
-//                        englishSpeekBll.stop();
-//                        if (!isFinishing()) {
-//                            bottomContent.postDelayed(this, 5000);
-//                        }
-//                    } else {
-//                        englishSpeekBll.start(false);
-//                        if (!isFinishing()) {
-//                            bottomContent.postDelayed(this, 10000);
-//                        }
-//                    }
-//                    count++;
-//                }
-//            }, 10000);
+                LiveVideoActivity.this.englishSpeekBll = englishSpeekBll;
             }
         }
+        Loger.d(TAG, "onLiveInit:time2=" + (System.currentTimeMillis() - before));
+        before = System.currentTimeMillis();
         if (1 == getInfo.getIsEnglish()) {
             mIse = new SpeechEvaluatorUtils(true);
             questionBll.setIse(mIse);
@@ -879,6 +902,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         rollCallBll.onLiveInit(getInfo);
         questionBll.setUserName(getInfo);
         videoChatBll.onLiveInit(getInfo);
+        Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
     }
 
     @Override

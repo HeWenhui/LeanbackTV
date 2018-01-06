@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,8 +16,10 @@ import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
@@ -43,9 +47,10 @@ import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE4;
  * Created by linyuqiang on 2017/3/25.
  * 英语h5课件业务类
  */
-public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
+public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAndBackDebug {
     String TAG = "EH5CoursewareBll";
     String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
+    String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
     Context context;
     Handler handler = new Handler(Looper.getMainLooper());
     /** 互动题作答成功的布局 */
@@ -245,7 +250,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
 //                        rlVoiceQuestionContent.addView(view, lp);
 //                        bottomContent.addView(rlVoiceQuestionContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 //                                ViewGroup.LayoutParams.MATCH_PARENT));
-                        answerPager.examSubmitAll("onH5Courseware");
+                        answerPager.examSubmitAll("onH5Courseware", videoQuestionLiveEntity.nonce);
                     }
                     if (h5CoursewarePager != null) {
                         h5CoursewarePager.submitData();
@@ -294,22 +299,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
                     webViewRequest.releaseWebView();
                 }
             }
-
-            @Override
-            public void umsAgentDebug(String eventId, Map<String, String> mData) {
-                mLiveBll.umsAgentDebug(eventId, mData);
-            }
-
-            @Override
-            public void umsAgentDebug2(String eventId, Map<String, String> mData) {
-                mLiveBll.umsAgentDebug2(eventId, mData);
-            }
-
-            @Override
-            public void umsAgentDebug3(String eventId, Map<String, String> mData) {
-                mLiveBll.umsAgentDebug3(eventId, mData);
-            }
-        });
+        }, this);
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         bottomContent.addView(h5CoursewarePager.getRootView(), lp);
         if (context instanceof WebViewRequest) {
@@ -337,68 +327,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
             showH5Paper(videoQuestionLiveEntity);
             return;
         }
-//        if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
-//            JSONArray answer = new JSONArray();
-//            try {
-//                answer.put("B");
-//                assess_ref.put("answer", answer);
-//                JSONArray options = new JSONArray();
-//                {
-//                    JSONObject options1 = new JSONObject();
-//                    options1.put("option", "A");
-//                    JSONArray content1 = new JSONArray();
-//                    content1.put("yes it is");
-//                    options1.put("content", content1);
-//                    options.put(options1);
-//                }
-//                {
-//                    JSONObject options1 = new JSONObject();
-//                    options1.put("option", "B");
-//                    JSONArray content1 = new JSONArray();
-//                    content1.put("no it isn't");
-//                    options1.put("content", content1);
-//                    options.put(options1);
-//                }
-//                {
-//                    JSONObject options1 = new JSONObject();
-//                    options1.put("option", "C");
-//                    JSONArray content1 = new JSONArray();
-//                    content1.put("you are beautiful");
-//                    options1.put("content", content1);
-//                    options.put(options1);
-//                }
-//                {
-//                    JSONObject options1 = new JSONObject();
-//                    options1.put("option", "D");
-//                    JSONArray content1 = new JSONArray();
-//                    content1.put("you are very good");
-//                    options1.put("content", content1);
-//                    options.put(options1);
-//                }
-//                assess_ref.put("options", options);
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            JSONArray answer = new JSONArray();
-//            try {
-//                answer.put("A");
-//                assess_ref.put("answer", answer);
-//                JSONArray options = new JSONArray();
-//                {
-//                    JSONObject options1 = new JSONObject();
-//                    options1.put("option", "A");
-//                    JSONArray content1 = new JSONArray();
-//                    content1.put("are");
-//                    options1.put("content", content1);
-//                    options.put(options1);
-//                }
-//                assess_ref.put("options", options);
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        }
-        VoiceAnswerPager voiceAnswerPager2 = new VoiceAnswerPager(context, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.questiontype, questionSwitch);
+        VoiceAnswerPager voiceAnswerPager2 = new VoiceAnswerPager(context, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.questiontype, questionSwitch, this);
         voiceAnswerPager2.setIse(mIse);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -418,9 +347,22 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
                 }
             });
         }
+        StableLogHashMap logHashMap = new StableLogHashMap("showAnswerDialog");
+        logHashMap.put("testtype", "" + videoQuestionLiveEntity.type);
+        logHashMap.put("testid", "" + videoQuestionLiveEntity.id);
+        logHashMap.put("sourcetype", "h5ware");
+        logHashMap.put("answertype", "voice");
+        logHashMap.addEx("Y").addSno("2").addNonce("" + videoQuestionLiveEntity.nonce);
+        logHashMap.addStable("1");
+        umsAgentDebug3(voicequestionEventId, logHashMap.getData());
     }
 
     QuestionSwitch questionSwitch = new QuestionSwitch() {
+
+        @Override
+        public String getsourcetype(BaseVideoQuestionEntity baseQuestionEntity) {
+            return "h5ware";
+        }
 
         @Override
         public BasePager questionSwitch(BaseVideoQuestionEntity baseQuestionEntity) {
@@ -493,6 +435,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
                                     initFillAnswerWrongResultVoice(entity);
                                 }
                             }
+                            StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
+                            logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
+                            logHashMap.put("sourcetype", "h5ware");
+                            logHashMap.addEx("Y").addExpect("0").addSno("5").addStable("1");
+                            umsAgentDebug3(voicequestionEventId, logHashMap.getData());
                         }
                     }
                     if (voiceAnswerPager != null) {
@@ -601,6 +548,27 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
         }, 3000);
     }
 
+    public void setVideoLayout(int width, int height) {
+        if (voiceAnswerPager != null) {
+            final View contentView = ((Activity) context).findViewById(android.R.id.content);
+            final View actionBarOverlayLayout = (View) contentView.getParent();
+            Rect r = new Rect();
+            actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
+            int screenWidth = (r.right - r.left);
+            if (width > 0) {
+                int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
+                wradio += (screenWidth - width) / 2;
+                if (voiceAnswerPager != null) {
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) voiceAnswerPager.getRootView().getLayoutParams();
+                    if (wradio != params.rightMargin) {
+                        params.rightMargin = wradio;
+                        LayoutParamsUtil.setViewLayoutParams(voiceAnswerPager.getRootView(), params);
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public void onNetWorkChange(int netWorkType) {
         if (voiceAnswerPager != null) {
@@ -608,13 +576,22 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
         }
     }
 
+    @Override
+    public void umsAgentDebug(String eventId, Map<String, String> mData) {
+        mLiveBll.umsAgentDebug(eventId, mData);
+    }
+
+    @Override
+    public void umsAgentDebug2(String eventId, Map<String, String> mData) {
+        mLiveBll.umsAgentDebug2(eventId, mData);
+    }
+
+    @Override
+    public void umsAgentDebug3(String eventId, Map<String, String> mData) {
+        mLiveBll.umsAgentDebug3(eventId, mData);
+    }
+
     public interface OnH5ResultClose {
         void onH5ResultClose();
-
-        void umsAgentDebug(String eventId, final Map<String, String> mData);
-
-        void umsAgentDebug2(String eventId, final Map<String, String> mData);
-
-        void umsAgentDebug3(String eventId, final Map<String, String> mData);
     }
 }
