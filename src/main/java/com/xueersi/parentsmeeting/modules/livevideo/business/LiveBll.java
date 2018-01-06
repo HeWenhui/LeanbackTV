@@ -1333,7 +1333,7 @@ public class LiveBll extends BaseBll {
                             voteEntity.setChoiceNum(choiceNum);
                             voteEntity.setChoiceType(choiceType);
                             voteEntity.setChoiceId(choiceId);
-                            voteEntity.setNonce(object.getString("nonce"));
+                            voteEntity.setNonce(object.optString("nonce"));
                             if ("on".equals(open)) {
                                 liveVoteAction.voteStart(voteEntity);
                             } else if ("off".equals(open)) {
