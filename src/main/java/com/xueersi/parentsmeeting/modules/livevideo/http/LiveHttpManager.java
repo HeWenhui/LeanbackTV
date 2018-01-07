@@ -613,4 +613,29 @@ public class LiveHttpManager extends BaseHttpBusiness {
         requestCallBack.url = LiveVideoConfig.URL_LIVE_GET_WARE_URL;
         sendPost(LiveVideoConfig.URL_LIVE_GET_WARE_URL, params, requestCallBack);
     }
+    public void getFullMarkListQuestion(String testId,String classId,String teamId,HttpCallBack callBack){
+        HttpRequestParams params=new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("classId",classId);
+        params.addBodyParam("teamId",teamId);
+        params.addBodyParam("testId",testId);
+        sendPost(LiveVideoConfig.LIVE_FULL_MARK_LIST_QUESTION,params,callBack);
+    }
+    public void getFullMarkListTest(String classId,String teamId,String testPlan,HttpCallBack callBack){
+        HttpRequestParams params=new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("classId",classId);
+        params.addBodyParam("teamId",teamId);
+        params.addBodyParam("testPlan",testPlan);
+        sendPost(LiveVideoConfig.LIVE_FULL_MARK_LIST_TEST,params,callBack);
+    }
+    public void getFullMarkListH5(String classId,String teamId,String testId,String type,HttpCallBack callBack){
+        HttpRequestParams params=new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("classId",classId);
+        params.addBodyParam("teamId",teamId);
+        params.addBodyParam("testId",testId);
+        params.addBodyParam("type",type);
+        sendPost(LiveVideoConfig.LIVE_FULL_MARK_LIST_H5,params,callBack);
+    }
 }

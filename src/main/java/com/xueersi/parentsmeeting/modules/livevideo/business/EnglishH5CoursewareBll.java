@@ -8,18 +8,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.alibaba.fastjson.JSON;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.http.HttpCallBack;
+import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
-import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.string.StringUtils;
@@ -31,8 +35,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE1;
@@ -70,6 +76,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
     protected ShareDataManager mShareDataManager;
     private LiveBll mLiveBll;
     SpeechEvaluatorUtils mIse;
+    private AnswerRankBll mAnswerRankBll;
+
+    public void setAnswerRankBll(AnswerRankBll answerRankBll) {
+        mAnswerRankBll = answerRankBll;
+    }
 
     public EnglishH5CoursewareBll(Context context) {
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -258,6 +269,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
                             webViewRequest.releaseWebView();
                         }
                     }
+                    showFullMarkList();
                 }
             }
         });
@@ -616,5 +628,37 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction {
         void umsAgentDebug2(String eventId, final Map<String, String> mData);
 
         void umsAgentDebug3(String eventId, final Map<String, String> mData);
+    }
+    private void showFullMarkList(){
+        mAnswerRankBll.getFullMarkListH5(new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                final List<FullMarkListEntity> lst=new ArrayList<>();
+                try {
+                    com.alibaba.fastjson.JSONObject jsonObject=(com.alibaba.fastjson.JSONObject) responseEntity.getJsonObject();
+                    com.alibaba.fastjson.JSONObject data= JSON.parseObject(jsonObject.getString("ranks"));
+                    List<FullMarkListEntity> tmplst = JSON.parseArray(data.getString("ranks"), FullMarkListEntity.class);
+                    if(tmplst!=null){
+                        lst.addAll(tmplst);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+
+                }
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        try{
+                            if(h5CoursewarePager!=null){
+                                bottomContent.removeView(h5CoursewarePager.getRootView());
+                            }
+                            mAnswerRankBll.showFullMarkList(lst);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                },3000);
+            }
+        });
     }
 }

@@ -10,14 +10,18 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
-import com.xueersi.parentsmeeting.base.BasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.base.BaseApplication;
+import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.http.HttpCallBack;
+import com.xueersi.parentsmeeting.http.ResponseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -50,8 +54,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -133,6 +139,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     boolean isLand;
     private LiveMessageBll liveMessageBll;
     private boolean isAnaswer = false;
+    private AnswerRankBll mAnswerRankBll;
+    private VideoQuestionLiveEntity mVideoQuestionLiveEntity;
 
     public QuestionBll(Activity activity) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -343,6 +351,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
             return;
         }
+        mVideoQuestionLiveEntity=videoQuestionLiveEntity;
         isAnaswer = true;
         if (this.videoQuestionLiveEntity != null) {
             mLogtf.d("showQuestion:Entity=" + this.videoQuestionLiveEntity.id + "," + videoQuestionLiveEntity.id);
@@ -651,8 +660,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     if (questionWebPager != null) {
                         questionWebPager.examSubmitAll();
                     }
+                    showFullMarkList(XESCODE.STOPQUESTION);
                 }
             });
+
         }
         if ("4".equals(ptype)) {
             return;
@@ -818,6 +829,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 if (examQuestionPager != null) {
                     examQuestionPager.examSubmitAll();
                 }
+                showFullMarkList(XESCODE.EXAM_STOP);
             }
         });
     }
@@ -1498,6 +1510,62 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void onNetWorkChange(int netWorkType) {
         if (voiceAnswerPager != null) {
             voiceAnswerPager.onNetWorkChange(netWorkType);
+        }
+    }
+    public void setAnswerRankBll(AnswerRankBll bll){
+        mAnswerRankBll=bll;
+    }
+    private void showFullMarkList(final int type){
+        HttpCallBack callBack=new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                final List<FullMarkListEntity> lst=new ArrayList<>();
+                            try {
+                                com.alibaba.fastjson.JSONObject jsonObject=(com.alibaba.fastjson.JSONObject) responseEntity.getJsonObject();
+                                com.alibaba.fastjson.JSONObject data= JSON.parseObject(jsonObject.getString("ranks"));
+                                List<FullMarkListEntity> tmplst = JSON.parseArray(data.getString("ranks"), FullMarkListEntity.class);
+                                if(tmplst!=null){
+                                    lst.addAll(tmplst);
+                                }
+                            }catch (Exception e){
+                                e.printStackTrace();
+
+                            }
+                            mVPlayVideoControlHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try{
+                            switch (type) {
+                                case XESCODE.STOPQUESTION:
+                                    rlQuestionContent.removeView(questionWebPager.getRootView());
+                                    break;
+                                case XESCODE.EXAM_STOP:
+                                    rlQuestionContent.removeView(examQuestionPager.getRootView());
+                                    break;
+
+                            }
+                            mAnswerRankBll.showFullMarkList(lst);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                },3000);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+            }
+        };
+        if(type==XESCODE.STOPQUESTION) {
+            mAnswerRankBll.getFullMarkListQuestion(callBack);
+        }else if(type==XESCODE.EXAM_STOP){
+            mAnswerRankBll.getFullMarkListTest(callBack);
         }
     }
 }

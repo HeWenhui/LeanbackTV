@@ -14,16 +14,24 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.xueersi.parentsmeeting.http.HttpCallBack;
+import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
 
 /**
  * Created by Tang on 2018/1/3.
@@ -38,12 +46,81 @@ public class AnswerRankBll {
     private List<RankUserEntity> mLst;
     private int displayWidth, displayHeight, videoWidth;
     private View root;
+    private HttpCallBack fullMarkListCallBack;
+    private LiveHttpManager mLiveHttpManager;
+    private String classId;
+    private String teamId;
+    private String testId;
+    private String type;
+
+    public String getClassId() {
+        return classId;
+    }
+
+    public void setClassId(String classId) {
+        this.classId = classId;
+    }
+
+    public String getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(String teamId) {
+        this.teamId = teamId;
+    }
+
+    public String getTestId() {
+        return testId;
+    }
+
+    public void setTestId(String testId) {
+        this.testId = testId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setLiveHttpManager(LiveHttpManager liveHttpManager) {
+        mLiveHttpManager = liveHttpManager;
+    }
 
     public AnswerRankBll(Context context, RelativeLayout bottomContent) {
         mContext = context;
         this.bottomContent = bottomContent;
         mLst = new ArrayList<>();
         setVideoLayout(ScreenUtils.getScreenWidth(), ScreenUtils.getScreenHeight());
+        fullMarkListCallBack=new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                List<FullMarkListEntity> lst=null;
+                try {
+                    JSONObject jsonObject=(JSONObject) responseEntity.getJsonObject();
+                    JSONObject data=JSON.parseObject(jsonObject.getString("ranks"));
+                    lst = JSON.parseArray(data.getString("ranks"), FullMarkListEntity.class);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                if(lst==null){
+                    lst=new ArrayList<>();
+                }
+                showFullMarkList(lst);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+            }
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                super.onFailure(call, e);
+            }
+        };
     }
 
     /**
@@ -156,17 +233,17 @@ public class AnswerRankBll {
         for (int i = 0; i < lst.size(); i++) {
             if (i == 0) {
                 tvNo1.setLayoutParams(params1);
-                tvNo1.setText("abc\n3分16秒");
+                tvNo1.setText(lst.get(i).getAnswer_time());
                 continue;
             }
             if (i == 1) {
                 tvNo2.setLayoutParams(params2);
-                tvNo2.setText("abc\n3分17秒");
+                tvNo2.setText(lst.get(i).getAnswer_time());
                 continue;
             }
             if (i == 2) {
                 tvNo3.setLayoutParams(params3);
-                tvNo3.setText("abc\n3分18秒");
+                tvNo3.setText(lst.get(i).getAnswer_time());
                 continue;
             }
             View v=new View(mContext);
@@ -201,6 +278,12 @@ public class AnswerRankBll {
         }
 
         bottomContent.addView(root);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                bottomContent.removeView(root);
+            }
+        },7000);
     }
     /**
      * 隐藏满分榜视图
@@ -332,5 +415,14 @@ public class AnswerRankBll {
             params.setMargins(0, 0, 0, bottomMargin);
             llRankList.setLayoutParams(params);
         }
+    }
+    public void getFullMarkListQuestion(HttpCallBack callBack){
+        mLiveHttpManager.getFullMarkListQuestion(testId,classId,teamId,callBack);
+    }
+    public void getFullMarkListTest(HttpCallBack callBack){
+        mLiveHttpManager.getFullMarkListTest(classId,teamId,testId,callBack);
+    }
+    public void getFullMarkListH5(HttpCallBack callBack){
+        mLiveHttpManager.getFullMarkListH5(classId,teamId,testId,type,callBack);
     }
 }

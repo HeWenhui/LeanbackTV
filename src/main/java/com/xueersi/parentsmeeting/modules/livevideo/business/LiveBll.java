@@ -717,6 +717,7 @@ public class LiveBll extends BaseBll {
                         if ("on".equals(mainRoomstatus.getExamStatus())) {
                             String num = mainRoomstatus.getExamNum();
                             mQuestionAction.onExamStart(mLiveId, num, "");
+                            mAnswerRankBll.setTestId(num);
                         } else {
                             mQuestionAction.onExamStop();
                         }
@@ -774,6 +775,7 @@ public class LiveBll extends BaseBll {
                 if (liveTopic.getVideoQuestionLiveEntity() != null) {
                     if (mQuestionAction != null) {
                         mQuestionAction.showQuestion(liveTopic.getVideoQuestionLiveEntity());
+                        mAnswerRankBll.setTestId(liveTopic.getVideoQuestionLiveEntity().getvQuestionID());
                     }
                 } else {
                     if (mQuestionAction != null) {
@@ -847,6 +849,7 @@ public class LiveBll extends BaseBll {
             try {
                 final JSONObject object = new JSONObject(notice);
                 int mtype = object.getInt("type");
+                Loger.i("===========notice type"+mtype);
                 msg += ",mtype=" + mtype + ",voiceChatStatu=" + voiceChatStatus + ",";
                 switch (mtype) {
                     case XESCODE.READPACAGE:
@@ -897,6 +900,7 @@ public class LiveBll extends BaseBll {
 //                            mGetInfo.getLiveTopic().setTopic(getTopicFromQuestion(videoQuestionLiveEntity));
                             mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(videoQuestionLiveEntity);
                             mQuestionAction.showQuestion(videoQuestionLiveEntity);
+                            mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                         }
                         msg += "SENDQUESTION:id=" + videoQuestionLiveEntity.id + ",gold=" + videoQuestionLiveEntity.gold;
                     }
@@ -908,6 +912,7 @@ public class LiveBll extends BaseBll {
                         if (mQuestionAction != null) {
                             mQuestionAction.onStopQuestion(object.getString("ptype"));
                         }
+
 //                        getStuGoldCount();
                         break;
                     case XESCODE.CLASSBEGIN: {
@@ -1078,6 +1083,7 @@ public class LiveBll extends BaseBll {
                             String num = object.optString("num", "0");
                             String nonce = object.optString("nonce");
                             mQuestionAction.onExamStart(mLiveId, num, nonce);
+                            mAnswerRankBll.setTestId(num);
                         }
                     }
                     break;
@@ -1126,6 +1132,8 @@ public class LiveBll extends BaseBll {
                                     videoQuestionLiveEntity.type = videoQuestionLiveEntity.questiontype = object.optString("questiontype");
                                     videoQuestionLiveEntity.assess_ref = object.optString("assess_ref");
                                 }
+                                mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                                mAnswerRankBll.setType(videoQuestionLiveEntity.type);
                             }
                             englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
                         }
@@ -1617,6 +1625,8 @@ public class LiveBll extends BaseBll {
             onLiveFailure("服务器异常", null);
             return;
         }
+        mAnswerRankBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
+        mAnswerRankBll.setTeamId(mGetInfo.getStudentLiveInfo().getTeamId());
         if (mGetInfo.getIsArts() == 1) {
             appID = UmsConstants.ARTS_APP_ID;
             LiveVideoConfig.IS_SCIENCE = false;
@@ -2983,6 +2993,7 @@ public class LiveBll extends BaseBll {
     }
     public void setAnswerRankBll(AnswerRankBll bll){
         mAnswerRankBll=bll;
+        mAnswerRankBll.setLiveHttpManager(mHttpManager);
     }
 
     public void streamReport(MegId msgid, String channelname, long connsec) {

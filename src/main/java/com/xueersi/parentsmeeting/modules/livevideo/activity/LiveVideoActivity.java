@@ -43,7 +43,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLazyBllCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideo.business.PraiseOrEncourageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
@@ -294,6 +293,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         });
         answerRankBll=new AnswerRankBll(mContext,bottomContent);
         mLiveBll.setAnswerRankBll(answerRankBll);
+        questionBll.setAnswerRankBll(answerRankBll);
+        englishH5CoursewareBll.setAnswerRankBll(answerRankBll);
         /*final ArrayList<FullMarkListEntity> lst=new ArrayList<>();
         for(int i=0;i<25;i++){
             FullMarkListEntity entity=new FullMarkListEntity();
