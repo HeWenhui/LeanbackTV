@@ -26,7 +26,7 @@ public interface QuestionAction {
     void onAnswerFailure();
 
     /** 结束互动题 */
-    void onStopQuestion(String ptype);
+    void onStopQuestion(String ptype, String nonce);
 
     /** 懂了吗 */
     void understand(String nonce);

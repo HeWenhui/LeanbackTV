@@ -8,6 +8,7 @@ import android.webkit.WebView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
@@ -36,13 +37,15 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
     boolean isPlayBack;
     File cacheFile;
     String liveId;
+    LiveAndBackDebug liveAndBackDebug;
 
-    public EnglishH5CoursewarePager(Context context, boolean isPlayBack, String liveId, String url, String id, final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose) {
+    public EnglishH5CoursewarePager(Context context, boolean isPlayBack, String liveId, String url, String id, final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose, LiveAndBackDebug liveAndBackDebug) {
         super(context);
         this.liveId = liveId;
         this.url = url;
         this.isPlayBack = isPlayBack;
         this.onClose = onClose;
+        this.liveAndBackDebug = liveAndBackDebug;
         this.id = id;
         this.courseware_type = courseware_type;
         this.nonce = nonce;
@@ -88,7 +91,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         mData.put("logtype", "coursewareEnd");
         mData.put("coursewareid", id);
         mData.put("coursewaretype", courseware_type);
-        onClose.umsAgentDebug2(eventId, mData);
+        liveAndBackDebug.umsAgentDebug2(eventId, mData);
     }
 
     @Override
@@ -102,7 +105,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         mData.put("coursewaretype", courseware_type);
         mData.put("status", "success");
         mData.put("loadurl", url);
-        onClose.umsAgentDebug(eventId, mData);
+        liveAndBackDebug.umsAgentDebug(eventId, mData);
     }
 
     @Override
@@ -115,7 +118,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         mData.put("status", "fail");
         mData.put("loadurl", url);
         mData.put("msg", description);
-        onClose.umsAgentDebug(eventId, mData);
+        liveAndBackDebug.umsAgentDebug(eventId, mData);
     }
 
     public void onBack() {
@@ -125,7 +128,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         mData.put("coursewaretype", courseware_type);
         mData.put("closetype", "clickBackButton");
         mData.put("isFinish", "" + isFinish);
-        onClose.umsAgentDebug(eventId, mData);
+        liveAndBackDebug.umsAgentDebug(eventId, mData);
     }
 
     public void close() {
@@ -143,7 +146,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
             mData.put("coursewareid", id);
             mData.put("coursewaretype", courseware_type);
             mData.put("closetype", "clickWebCloseButton");
-            onClose.umsAgentDebug(eventId, mData);
+            liveAndBackDebug.umsAgentDebug(eventId, mData);
             return true;
         }
         return super.shouldOverrideUrlLoading(view, url);

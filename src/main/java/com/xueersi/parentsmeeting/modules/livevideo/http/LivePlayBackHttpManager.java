@@ -59,7 +59,11 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testDay", testDay);
         params.addBodyParam("enstuId", enStuId);
         params.addBodyParam("testId", testId);
-        params.addBodyParam("testAnswer", testResult);
+        if(voice){
+            params.addBodyParam("answer", testResult);
+        }else {
+            params.addBodyParam("testAnswer", testResult);
+        }
         params.addBodyParam("useVoice", voice ? "1" : "0");
         params.addBodyParam("isRight", isRight ? "1" : "0");
         params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());

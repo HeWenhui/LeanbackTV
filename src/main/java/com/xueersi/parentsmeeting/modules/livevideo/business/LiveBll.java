@@ -83,6 +83,7 @@ public class LiveBll extends BaseBll {
     private VideoAction mVideoAction;
     private RoomAction mRoomAction;
     private LearnReportAction mLearnReportAction;
+    private LecLearnReportAction mLecLearnReportAction;
     private H5CoursewareAction h5CoursewareAction;
     private EnglishH5CoursewareAction englishH5CoursewareAction;
     private VideoChatAction videoChatAction;
@@ -628,6 +629,10 @@ public class LiveBll extends BaseBll {
         this.mLearnReportAction = mLearnReportAction;
     }
 
+    public void setLecLearnReportAction(LecLearnReportAction mLearnReportAction) {
+        this.mLecLearnReportAction = mLearnReportAction;
+    }
+
     public void setH5CoursewareAction(H5CoursewareAction h5CoursewareAction) {
         this.h5CoursewareAction = h5CoursewareAction;
     }
@@ -910,7 +915,7 @@ public class LiveBll extends BaseBll {
 //                        mGetInfo.getLiveTopic().setTopic(null);
                         mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(null);
                         if (mQuestionAction != null) {
-                            mQuestionAction.onStopQuestion(object.getString("ptype"));
+                            mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
                         }
 
 //                        getStuGoldCount();
@@ -1063,7 +1068,7 @@ public class LiveBll extends BaseBll {
                     }
                     case XESCODE.PRAISE: {
                         msg += "PRAISE";
-                        if (mPraiseOrEncourageAction == null&&liveLazyBllCreat!=null) {
+                        if (mPraiseOrEncourageAction == null && liveLazyBllCreat != null) {
                             liveLazyBllCreat.createPraiseOrEncourageAction();
                         }
                         if (mPraiseOrEncourageAction != null) {
@@ -1340,6 +1345,7 @@ public class LiveBll extends BaseBll {
                             voteEntity.setChoiceNum(choiceNum);
                             voteEntity.setChoiceType(choiceType);
                             voteEntity.setChoiceId(choiceId);
+                            voteEntity.setNonce(object.optString("nonce"));
                             if ("on".equals(open)) {
                                 liveVoteAction.voteStart(voteEntity);
                             } else if ("off".equals(open)) {
@@ -2373,7 +2379,7 @@ public class LiveBll extends BaseBll {
             jsonObject.put("type", "" + XESCODE.FLOWERS);
             jsonObject.put("name", mGetInfo.getStuName());
             jsonObject.put("ftype", ftype);
-            mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
+            mIRCMessage.sendMessage(jsonObject.toString());
 //            mIRCMessage.sendMessage(mMainTeacherStr, jsonObject.toString());
         } catch (Exception e) {
             // Loger.e(TAG, "understand", e);
@@ -2994,6 +3000,9 @@ public class LiveBll extends BaseBll {
     public void setAnswerRankBll(AnswerRankBll bll){
         mAnswerRankBll=bll;
         mAnswerRankBll.setLiveHttpManager(mHttpManager);
+
+    public void setAnswerRankBll(AnswerRankBll bll) {
+        mAnswerRankBll = bll;
     }
 
     public void streamReport(MegId msgid, String channelname, long connsec) {
@@ -3059,7 +3068,7 @@ public class LiveBll extends BaseBll {
      * @param mData
      */
     public void umsAgentDebug(String eventId, final Map<String, String> mData) {
-        mData.put("uid", mGetInfo.getStuId());
+        mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getUname());
         StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
         if (studentLiveInfo != null) {
@@ -3072,7 +3081,8 @@ public class LiveBll extends BaseBll {
         mData.put("liveid", mLiveId);
         mData.put("livetype", "" + mLiveType);
         mData.put("clits", "" + System.currentTimeMillis());
-        Loger.d(mContext, eventId, mData, true);
+//        Loger.d(mContext, eventId, mData, true);
+        UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
     }
 
     /**
@@ -3082,7 +3092,7 @@ public class LiveBll extends BaseBll {
      * @param mData
      */
     public void umsAgentDebug2(String eventId, final Map<String, String> mData) {
-        mData.put("uid", mGetInfo.getStuId());
+        mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getStuName());
         StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
         if (studentLiveInfo != null) {
@@ -3106,7 +3116,7 @@ public class LiveBll extends BaseBll {
      * @param mData
      */
     public void umsAgentDebug3(String eventId, final Map<String, String> mData) {
-        mData.put("uid", mGetInfo.getStuId());
+        mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getStuName());
         StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
         if (studentLiveInfo != null) {

@@ -183,12 +183,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void initListener() {
         rl_livevideo_common_word = (RelativeLayout) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_word);
-        int screenWidth = ScreenUtils.getScreenWidth();
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
-        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
-        params.rightMargin = wradio;
-//        cbMessageClock.setLayoutParams(params);
-        LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
+//        int screenWidth = ScreenUtils.getScreenWidth();
+//        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
+//        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
+//        params.rightMargin = wradio;
+//        LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
         btMesOpen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

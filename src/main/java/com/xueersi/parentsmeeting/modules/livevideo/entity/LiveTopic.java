@@ -444,6 +444,7 @@ public class LiveTopic {
         private String choiceId;//  "choiceId": "1210471514786221416",
         private int choiceNum;//        "choiceNum": "4",
         private int choiceType;// "choiceType": "1"
+        private String nonce;
         int total = 0;
         private ArrayList<VoteResult> voteResults = new ArrayList<>();
 
@@ -481,6 +482,14 @@ public class LiveTopic {
 
         public void setTotal(int total) {
             this.total = total;
+        }
+
+        public String getNonce() {
+            return nonce;
+        }
+
+        public void setNonce(String nonce) {
+            this.nonce = nonce;
         }
 
         @Override

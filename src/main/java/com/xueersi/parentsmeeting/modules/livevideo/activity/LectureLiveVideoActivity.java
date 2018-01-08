@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.H5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LecLearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -152,7 +153,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     QuestionBll questionBll;
     RollCallBll rollCallBll;
     RedPackageBll redPackageBll;
-    LearnReportBll learnReportBll;
+    LecLearnReportBll learnReportBll;
     H5CoursewareBll h5CoursewareBll;
 //    StarInteractBll starBll;
     /**
@@ -187,7 +188,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         liveMessageBll.setQuestionBll(questionBll);
         rollCallBll = new RollCallBll(this);
         redPackageBll = new RedPackageBll(this);
-        learnReportBll = new LearnReportBll(this);
+        learnReportBll = new LecLearnReportBll(this);
         h5CoursewareBll = new H5CoursewareBll(this);
         questionBll.setShareDataManager(mShareDataManager);
         AppBll.getInstance().registerAppEvent(this);
@@ -297,7 +298,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         mLiveBll.setQuestionAction(questionBll);
         mLiveBll.setRollCallAction(rollCallBll);
         mLiveBll.setReadPackageBll(redPackageBll);
-        mLiveBll.setLearnReportAction(learnReportBll);
+        mLiveBll.setLecLearnReportAction(learnReportBll);
         mLiveBll.setVideoAction(this);
         mLiveBll.setRoomAction(liveMessageBll);
         mLiveBll.setH5CoursewareAction(h5CoursewareBll);

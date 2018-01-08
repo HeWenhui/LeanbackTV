@@ -76,14 +76,12 @@ public class LearnReportPager extends BasePager {
     View vEvaluateSuccess;
     /** 评价提交关闭 */
     Button btEvaluateSubmitClose;
-    LiveVideoActivity videoActivity;
     LiveBll liveBll;
     LearnReportBll learnReportBll;
     private LogToFile logToFile;
 
     public LearnReportPager(Context context, LearnReportEntity reportEntity, LiveBll liveBll, LearnReportBll learnReportBll) {
         super(context);
-        videoActivity = (LiveVideoActivity) context;
         this.reportEntity = reportEntity;
         this.liveBll = liveBll;
         this.learnReportBll = learnReportBll;

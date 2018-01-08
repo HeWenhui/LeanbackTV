@@ -104,9 +104,12 @@ public class LiveHttpManager extends BaseHttpBusiness {
                 try {
                     URL url = new URL(url2);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setConnectTimeout(20000);
+                    connection.setReadTimeout(20000);
                     cancelable.connection = connection;
                     cancelable.callback = requestCallBack;
                     connection.setRequestProperty("Connection", "Keep-Alive");
+                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                     connection.connect();
                     int statusCode = connection.getResponseCode();
                     if (statusCode == 200) {
@@ -329,7 +332,11 @@ public class LiveHttpManager extends BaseHttpBusiness {
         }
         params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("testId", testId);
-        params.addBodyParam("testAnswer", testAnswer);
+        if (isVoice) {
+            params.addBodyParam("answer", testAnswer);
+        } else {
+            params.addBodyParam("testAnswer", testAnswer);
+        }
         params.addBodyParam("userMode", userMode);
         if (!StringUtils.isSpace(srcType)) {
             params.addBodyParam("srcType", srcType);
