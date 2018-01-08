@@ -17,8 +17,8 @@ import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.logerhelper.LogerTag;
 import com.xueersi.parentsmeeting.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
-import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.StudentLi
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -35,6 +36,8 @@ import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.xesalib.umsagent.UmsAgent;
+import com.xueersi.xesalib.umsagent.UmsAgentManager;
+import com.xueersi.xesalib.umsagent.UmsConstants;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
@@ -50,6 +53,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.Call;
@@ -60,8 +64,9 @@ import okhttp3.Response;
  *
  * @author linyuqiang
  */
-public class AuditClassLiveBll extends BaseBll {
+public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     private String TAG = "AuditClassLiveBllLog";
+    String liveListenEventid = LiveVideoConfig.LIVE_LISTEN;
     private QuestionAction mQuestionAction;
     private RollCallAction mRollCallAction;
     private PraiseOrEncourageAction mPraiseOrEncourageAction;
@@ -76,6 +81,7 @@ public class AuditClassLiveBll extends BaseBll {
     private LiveHttpManager mHttpManager;
     private LiveHttpResponseParser mHttpResponseParser;
     private AuditIRCMessage mIRCMessage;
+    private String courseId;
     private String mLiveId;
     private String mCurrentDutyId;
     public final int mLiveType;
@@ -129,6 +135,8 @@ public class AuditClassLiveBll extends BaseBll {
     private boolean liveGetStudyPlayServerError = false;
     /** 是不是有分组 */
     private boolean haveTeam = false;
+    /** 区分文理appid */
+    String appID = UmsConstants.LIVE_APP_ID;
 
     public AuditClassLiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form) {
         super(context);
@@ -833,6 +841,13 @@ public class AuditClassLiveBll extends BaseBll {
                             liveGetStudentPlayServer();
                         }
                         mLogtf.d("onStudentPrivateMessage:playUrl=" + playUrl);
+
+                        //旁听日志
+                        StableLogHashMap stableLogHashMap = new StableLogHashMap("startPlay");
+                        stableLogHashMap.put("nickname", sender);
+                        stableLogHashMap.put("playurl", playUrl);
+                        stableLogHashMap.addSno("4").addEx("Y").addStable("1");
+                        umsAgentDebug(liveListenEventid, stableLogHashMap.getData());
                     }
                     break;
                     case XESCODE.STUDENT_MODECHANGE: {
@@ -1071,6 +1086,13 @@ public class AuditClassLiveBll extends BaseBll {
             onLiveFailure("服务器异常", null);
             return;
         }
+        if (mGetInfo.getIsArts() == 1) {
+            appID = UmsConstants.ARTS_APP_ID;
+            LiveVideoConfig.IS_SCIENCE = false;
+        } else {
+            LiveVideoConfig.IS_SCIENCE = true;
+            appID = UmsConstants.LIVE_APP_ID;
+        }
         if (mGetInfo.getStat() == 1) {
             if (mVideoAction != null) {
                 mVideoAction.onTeacherNotPresent(true);
@@ -1098,6 +1120,7 @@ public class AuditClassLiveBll extends BaseBll {
             channel = "2" + ROOM_MIDDLE + mGetInfo.getId();
         } else {
             StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+            courseId = studentLiveInfo.getCourseId();
             if (!StringUtils.isEmpty(studentLiveInfo.getTeamId()) && !"0".equals(studentLiveInfo.getTeamId())) {
                 haveTeam = true;
             }
@@ -1106,7 +1129,7 @@ public class AuditClassLiveBll extends BaseBll {
         s += ",liveType=" + mLiveType + ",channel=" + channel;
         String nickname = mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
-        mIRCMessage = new AuditIRCMessage(netWorkType, channel, mGetInfo.getStuName(), nickname);
+        mIRCMessage = new AuditIRCMessage(netWorkType, channel, mGetInfo.getStuName(), nickname, this);
         mIRCMessage.setNewTalkConf(newTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
@@ -1960,4 +1983,78 @@ public class AuditClassLiveBll extends BaseBll {
         });
     }
 
+    /**
+     * 调试信息
+     *
+     * @param eventId
+     * @param mData
+     */
+    @Override
+    public void umsAgentDebug(String eventId, final Map<String, String> mData) {
+        mData.put("userid", mGetInfo.getStuId());
+        mData.put("uname", mGetInfo.getUname());
+        StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+        if (studentLiveInfo != null) {
+            mData.put("classid", studentLiveInfo.getClassId());
+            mData.put("teamid", studentLiveInfo.getTeamId());
+        }
+        mData.put("courseId", courseId);
+        mData.put("teacherid", mGetInfo.getMainTeacherId());
+        mData.put("coachid", mGetInfo.getTeacherId());
+        mData.put("liveid", mLiveId);
+        mData.put("livetype", "" + mLiveType);
+        mData.put("clits", "" + System.currentTimeMillis());
+//        Loger.d(mContext, eventId, mData, true);
+        UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
+    }
+
+    /**
+     * 交互日志
+     *
+     * @param eventId
+     * @param mData
+     */
+    @Override
+    public void umsAgentDebug2(String eventId, final Map<String, String> mData) {
+        mData.put("userid", mGetInfo.getStuId());
+        mData.put("uname", mGetInfo.getStuName());
+        StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+        if (studentLiveInfo != null) {
+            mData.put("classid", studentLiveInfo.getClassId());
+            mData.put("teamid", studentLiveInfo.getTeamId());
+        }
+        mData.put("courseid", courseId);
+        mData.put("teacherid", mGetInfo.getMainTeacherId());
+        mData.put("coachid", mGetInfo.getTeacherId());
+        mData.put("liveid", mLiveId);
+        mData.put("livetype", "" + mLiveType);
+        mData.put("eventid", "" + eventId);
+        mData.put("clits", "" + System.currentTimeMillis());
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData);
+    }
+
+    /**
+     * 展现日志
+     *
+     * @param eventId
+     * @param mData
+     */
+    @Override
+    public void umsAgentDebug3(String eventId, final Map<String, String> mData) {
+        mData.put("userid", mGetInfo.getStuId());
+        mData.put("uname", mGetInfo.getStuName());
+        StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+        if (studentLiveInfo != null) {
+            mData.put("classid", studentLiveInfo.getClassId());
+            mData.put("teamid", studentLiveInfo.getTeamId());
+        }
+        mData.put("courseid", courseId);
+        mData.put("teacherid", mGetInfo.getMainTeacherId());
+        mData.put("coachid", mGetInfo.getTeacherId());
+        mData.put("liveid", mLiveId);
+        mData.put("livetype", "" + mLiveType);
+        mData.put("eventid", "" + eventId);
+        mData.put("clits", "" + System.currentTimeMillis());
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
+    }
 }

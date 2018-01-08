@@ -145,6 +145,8 @@ public class LiveVideoConfig {
     public static String LIVE_TEST_VOICE = "live_test_voice";
     /** 直播-投票 */
     public static String LIVE_VOTE = "live_vote";
+    /** 直播-旁听 */
+    public static String LIVE_LISTEN = "live_listen";
 
 
     /** 直播时间-当天据算，live_expe_time按单个场次计算 */
