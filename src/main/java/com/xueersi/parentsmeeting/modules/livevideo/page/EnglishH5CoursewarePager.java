@@ -1,10 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Environment;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.ImageView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
@@ -28,6 +30,7 @@ import ren.yale.android.cachewebviewlib.WebViewCache;
 public class EnglishH5CoursewarePager extends BaseWebviewPager {
     String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
     String url;
+    String reloadurl;
     String nonce;
     public boolean isFinish = false;
     String jsSubmitData = "javascript:submitData()";
@@ -139,6 +142,8 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
     @Override
     protected boolean shouldOverrideUrlLoading(WebView view, String url) {
         //      if ("http://baidu.com/".equals(url)) {
+        Loger.d(TAG, "shouldOverrideUrlLoading:url=" + url);
+        reloadurl = url;
         if (url.contains("baidu.com")) {
             onClose.onH5ResultClose();
             Map<String, String> mData = new HashMap<>();
@@ -191,6 +196,26 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         }
         Loger.i(TAG, "initData:loadUrl=" + loadUrl);
         loadUrl(loadUrl);
+        reloadurl = loadUrl;
+        mView.findViewById(R.id.iv_livevideo_subject_refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadUrl(reloadurl);
+            }
+        });
+        mView.findViewById(R.id.btn_error_refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                wvSubjectWeb.reload();
+                errorView.setVisibility(View.GONE);
+                wvSubjectWeb.setVisibility(View.VISIBLE);
+                View loadView = mView.findViewById(R.id.rl_livevideo_subject_loading);
+                loadView.setVisibility(View.VISIBLE);
+                ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
+                ((AnimationDrawable) ivLoading.getBackground()).start();
+                loadUrl(reloadurl);
+            }
+        });
     }
 
 }
