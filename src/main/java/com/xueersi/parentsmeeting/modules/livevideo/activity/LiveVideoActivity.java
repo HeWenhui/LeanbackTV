@@ -142,6 +142,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     /** video缓存时间 */
     private long videoCachedDuration;
     LiveLazyBllCreat liveLazyBllCreat;
+    LiveMediaControllerBottom liveMediaControllerBottom;
     ExpeBll expeBll;
     LiveMessageBll liveMessageBll;
     VideoChatBll videoChatBll;
@@ -286,7 +287,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         if (englishSpeekBll != null) {
                             englishSpeekBll.setVideoWidthAndHeight(lp.width, lp.height);
                         }
-                        if(englishH5CoursewareBll!=null){
+                        if (englishH5CoursewareBll != null) {
                             englishH5CoursewareBll.setVideoLayout(lp.width, lp.height);
                         }
                     }
@@ -321,7 +322,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     }
 
     private void initAllBll() {
-        LiveMediaControllerBottom liveMediaControllerBottom = new LiveMediaControllerBottom(this, mMediaController, this);
+        liveMediaControllerBottom = new LiveMediaControllerBottom(this, mMediaController, this);
+        liveMediaControllerBottom.setVisibility(View.INVISIBLE);
         liveMessageBll = new LiveMessageBll(this, liveType);
         liveMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
         questionBll = new QuestionBll(this);
@@ -796,6 +798,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     @Override
     public void onLiveInit(LiveGetInfo getInfo) {
         mGetInfo = getInfo;
+        liveMediaControllerBottom.setVisibility(View.VISIBLE);
         long before = System.currentTimeMillis();
         if (liveLazyBllCreat != null) {
             liveLazyBllCreat.setGetInfo(getInfo);

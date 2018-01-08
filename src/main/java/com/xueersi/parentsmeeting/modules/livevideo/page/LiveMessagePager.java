@@ -579,7 +579,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 .OnClickListener() {
             @Override
             public void onClick(View v) {
-                FlowerEntity entity = (FlowerEntity) flowerContentView.getTag();
+                final FlowerEntity entity = (FlowerEntity) flowerContentView.getTag();
                 if (entity != null) {
                     if (LiveTopic.MODE_CLASS.equals(liveBll.getMode())) {
                         if (liveBll.isOpenbarrage()) {
@@ -600,6 +600,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                                             }
                                         }
                                     }
+                                    addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
                                     mView.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
