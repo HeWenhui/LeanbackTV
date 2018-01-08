@@ -406,7 +406,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
                     XESToastUtils.showToast(mContext, "正在答题，不能献花");
                     return;
                 }
-                FlowerEntity entity = (FlowerEntity) flowerContentView.getTag();
+                final FlowerEntity entity = (FlowerEntity) flowerContentView.getTag();
                 if (entity != null) {
                     if (LiveTopic.MODE_CLASS.equals(liveBll.getMode())) {
                         if (liveBll.isOpenbarrage()) {
@@ -427,6 +427,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
                                             }
                                         }
                                     }
+                                    addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
                                     mView.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
