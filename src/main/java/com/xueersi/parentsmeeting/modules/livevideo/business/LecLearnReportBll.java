@@ -73,16 +73,16 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
         rlLearnReportContent = new RelativeLayout(activity);
         rlLearnReportContent.setId(R.id.rl_livevideo_content_learnreport);
         bottomContent.addView(rlLearnReportContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        if (mLearnReport != null) {
-            mLearnReport = new LecLearnReportPager(activity, null, mLiveBll, LecLearnReportBll.this);
-            rlLearnReportContent.removeAllViews();
-            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT);
-            rlLearnReportContent.addView(mLearnReport.getRootView(), params);
-            rlLearnReportContent.setVisibility(View.VISIBLE);
-        } else {
-            onLearnReport(null);
-        }
+//        if (mLearnReport != null) {
+//            mLearnReport = new LecLearnReportPager(activity, null, mLiveBll, LecLearnReportBll.this);
+//            rlLearnReportContent.removeAllViews();
+//            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+//                    ViewGroup.LayoutParams.MATCH_PARENT);
+//            rlLearnReportContent.addView(mLearnReport.getRootView(), params);
+//            rlLearnReportContent.setVisibility(View.VISIBLE);
+//        } else {
+//            onLearnReport(null);
+//        }
     }
 
     @Override

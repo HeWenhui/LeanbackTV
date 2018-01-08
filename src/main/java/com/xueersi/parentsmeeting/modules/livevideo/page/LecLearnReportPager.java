@@ -29,6 +29,7 @@ import com.xueersi.xesalib.view.ratingbar.RatingBar;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author linyuqiang 学习报告
@@ -53,8 +54,9 @@ public class LecLearnReportPager extends BasePager {
             stu.setTime(111111);
             stu.setRate("20%");
             stu.setAverageRate("25%");
-            stu.setRank(12);
-            stu.setLastRank(11);
+            Random random = new Random();
+            stu.setRank(random.nextInt(10));
+            stu.setLastRank(random.nextInt(10));
             reportEntity.setStu(stu);
         }
         this.reportEntity = reportEntity;
@@ -78,6 +80,12 @@ public class LecLearnReportPager extends BasePager {
 
     @Override
     public void initData() {
+        mView.findViewById(R.id.bt_livelec_learnfeedback_close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                learnReportBll.stopLearnReport();
+            }
+        });
         LearnReportEntity.ReportEntity stu = reportEntity.getStu();
         int time = stu.getTime() / 60;
         tv_livelec_dialog_xxsc_text.setText(time + "分钟");
