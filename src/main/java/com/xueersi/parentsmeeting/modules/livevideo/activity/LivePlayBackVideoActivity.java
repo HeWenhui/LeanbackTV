@@ -173,6 +173,9 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     QuestionFillInBlankLivePager mVideoCourseQuestionPager;
     /** 从哪个页面跳转 */
     String where;
+    int isArts;
+    /** 区分文理appid */
+    String appID = UmsConstants.LIVE_APP_ID;
     /** 本地视频 */
     boolean islocal;
     static int times = -1;
@@ -312,6 +315,14 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         lectureLivePlayBackBll = new LectureLivePlayBackBll(LivePlayBackVideoActivity.this);
         mVideoType = MobEnumUtil.VIDEO_LIVEPLAYBACK;
         where = getIntent().getStringExtra("where");
+        isArts = getIntent().getIntExtra("isArts", 0);
+        if (isArts == 1) {
+            appID = UmsConstants.ARTS_APP_ID;
+            LiveVideoConfig.IS_SCIENCE = false;
+        } else {
+            LiveVideoConfig.IS_SCIENCE = true;
+            appID = UmsConstants.LIVE_APP_ID;
+        }
         // 如果加载不出来
         if (tvLoadingContent != null) {
             tvLoadingContent.setText("正在获取视频资源，请稍候");
@@ -2343,7 +2354,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mData.put("livetype", "" + 3);
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
-        UmsAgentManager.umsAgentOtherBusiness(mContext, UmsConstants.LIVE_APP_ID, UmsConstants.uploadBehavior, mData);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData);
     }
 
     public void umsAgentDebug3(String eventId, final Map<String, String> mData) {
@@ -2355,7 +2366,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mData.put("livetype", "" + 3);
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
-        UmsAgentManager.umsAgentOtherBusiness(mContext, UmsConstants.LIVE_APP_ID, UmsConstants.uploadShow, mData);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
     }
 
     class LivePlayBackAlertDialog extends VerifyCancelAlertDialog {
