@@ -2342,7 +2342,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mData.put("liveid", mVideoEntity.getLiveId());
         mData.put("livetype", "" + 3);
         mData.put("clits", "" + System.currentTimeMillis());
-        Loger.d(mContext, eventId, mData, true);
+//        Loger.d(mContext, eventId, mData, true);
+        UmsAgentManager.umsAgentDebug(this, appID, eventId, mData);
     }
 
     public void umsAgentDebug2(String eventId, final Map<String, String> mData) {
@@ -2354,7 +2355,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mData.put("livetype", "" + 3);
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
-        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData);
+        UmsAgentManager.umsAgentOtherBusiness(this, appID, UmsConstants.uploadBehavior, mData);
     }
 
     public void umsAgentDebug3(String eventId, final Map<String, String> mData) {
@@ -2366,7 +2367,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mData.put("livetype", "" + 3);
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
-        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
+        UmsAgentManager.umsAgentOtherBusiness(this, appID, UmsConstants.uploadShow, mData);
     }
 
     class LivePlayBackAlertDialog extends VerifyCancelAlertDialog {

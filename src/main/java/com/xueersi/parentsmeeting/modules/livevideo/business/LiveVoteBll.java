@@ -24,7 +24,6 @@ import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Created by linyuqiang on 2017/12/27.
@@ -237,7 +236,7 @@ public class LiveVoteBll implements LiveVoteAction {
                             StableLogHashMap logHashMap = new StableLogHashMap("submitVote");
                             logHashMap.put("voteid", "" + voteEntity.getChoiceId());
                             logHashMap.put("stuvote", "" + answer);
-                            logHashMap.addSno("5").addNonce("" + UUID.randomUUID()).addStable("2");
+                            logHashMap.addSno("5").creatNonce().addStable("2");
                             umsAgentDebug2(eventId, logHashMap.getData());
                         }
                     });
