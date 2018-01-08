@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -136,7 +137,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     boolean haveAnswer;
 
     public SpeechAssAutoPager(Context context, String liveid, String testId,
-                              String nonce, String content, int time, SpeechEvalAction speechEvalAction) {
+                              String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction) {
         super(context);
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
@@ -148,6 +149,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         entranceTime = System.currentTimeMillis();
         startProgColor = context.getResources().getColor(R.color.COLOR_6462A2);
         progColor = 0;
+        this.haveAnswer = haveAnswer;
 //        content = "You are very good,You are very clever,welcome to my home";
 //        content = "welcome to my home";
 //        this.content = "C" + content.substring(1);
@@ -421,17 +423,29 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }
             }, examSubmit * 1000);
         }
-        speechEvalAction.speechIsAnswered(id, new SpeechEvalAction.SpeechIsAnswered() {
-            @Override
-            public void isAnswer(boolean answer) {
-                SpeechAssAutoPager.this.haveAnswer = answer;
-                if (answer) {
-                    ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_error);
-                    errorSetVisible();
-                    tvSpeectevalError.setText("题目已作答");
+        Random random = new Random();
+        if (haveAnswer) {
+            ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_error);
+            errorSetVisible();
+            tvSpeectevalError.setText("题目已作答");
+        } else {
+            mView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    speechEvalAction.speechIsAnswered(id, new SpeechEvalAction.SpeechIsAnswered() {
+                        @Override
+                        public void isAnswer(boolean answer) {
+                            SpeechAssAutoPager.this.haveAnswer = answer;
+                            if (answer) {
+                                ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_error);
+                                errorSetVisible();
+                                tvSpeectevalError.setText("题目已作答");
+                            }
+                        }
+                    });
                 }
-            }
-        });
+            }, random.nextInt(2000));
+        }
     }
 
     private void prepareSpeech() {
@@ -611,6 +625,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                         int gold = jsonObject.optInt("gold");
                         haveAnswer = jsonObject.optInt("isAnswered", 0) == 1;
                         onSpeechEvalSuccess(resultEntity, gold);
+                        speechEvalAction.stopSpeech(SpeechAssAutoPager.this, id);
                     }
 
                     @Override

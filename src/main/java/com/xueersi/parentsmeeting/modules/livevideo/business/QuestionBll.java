@@ -189,7 +189,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 if (mVSectionID.equals(vSectionID)) {
                     String testId = jsonObject.optString("testId");
                     if (!StringUtils.isSpace(testId)) {
-//                        mQueAndBool.add(testId);
+                        mQueAndBool.add(testId);
                     }
                 }
             }
@@ -353,7 +353,15 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         if (mQueAndBool.contains(videoQuestionLiveEntity.id)) {
             mLogtf.d("showQuestion answer:id=" + videoQuestionLiveEntity.id);
-            return;
+            boolean reTry = false;
+            if (LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(videoQuestionLiveEntity.type)) {
+                if ("1".equals(videoQuestionLiveEntity.isAllow42)) {
+                    reTry = true;
+                }
+            }
+            if (!reTry) {
+                return;
+            }
         }
         if (!LiveVideoConfig.IS_SCIENCE && "1".equals(videoQuestionLiveEntity.getIsVoice())) {
             StableLogHashMap logHashMap = new StableLogHashMap("receiveh5test");
@@ -458,9 +466,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT);
                     if ("1".equals(videoQuestionLiveEntity.isAllow42)) {
+                        /** 已经作答 */
+                        boolean haveAnswer = mQueAndBool.contains(videoQuestionLiveEntity.id);
                         SpeechAssAutoPager speechAssAutoPager =
                                 new SpeechAssAutoPager(activity, liveGetInfo.getId(), id, videoQuestionLiveEntity.nonce,
-                                        videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time, QuestionBll.
+                                        videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time, haveAnswer, QuestionBll.
                                         this);
                         speechAssessmentPager = speechAssAutoPager;
                         speechAssessmentPager.setIse(mIse);
@@ -976,15 +986,15 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void onSpeechSuccess(String num) {
         Loger.d(TAG, "onSpeechSuccess:num=" + num);
         mQueAndBool.add("" + num);
-//        JSONObject object = new JSONObject();
-//        try {
-//            object.put("liveType", liveType);
-//            object.put("vSectionID", mVSectionID);
-//            object.put("testId", num);
-//            mShareDataManager.put(QUESTION, object.toString(), ShareDataManager.SHAREDATA_USER);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
+        JSONObject object = new JSONObject();
+        try {
+            object.put("liveType", liveType);
+            object.put("vSectionID", mVSectionID);
+            object.put("testId", num);
+            mShareDataManager.put(QUESTION, object.toString(), ShareDataManager.SHAREDATA_USER);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
