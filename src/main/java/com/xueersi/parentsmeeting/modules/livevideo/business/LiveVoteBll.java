@@ -24,7 +24,6 @@ import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Created by linyuqiang on 2017/12/27.
@@ -104,7 +103,7 @@ public class LiveVoteBll implements LiveVoteAction {
                 rado = result.getPople() * 100 / voteEntity.getTotal();
             }
             TextView tv_livevideo_vote_result_count = (TextView) convertView.findViewById(R.id.tv_livevideo_vote_result_count);
-            tv_livevideo_vote_result_count.setText(result.getPople() + "人" + Math.round(rado) + "%");
+            tv_livevideo_vote_result_count.setText(Math.round(rado) + "% " + result.getPople() + "人");
 //            Drawable drawable = context.getResources().getDrawable(R.drawable.shape_live_vote_prog_max);
 //            pb_livevideo_vote_result_item.setProgressDrawable(drawable);
             final ProgressBar pb_livevideo_vote_result_item = (ProgressBar) convertView.findViewById(R.id.pb_livevideo_vote_result_item);
@@ -237,7 +236,7 @@ public class LiveVoteBll implements LiveVoteAction {
                             StableLogHashMap logHashMap = new StableLogHashMap("submitVote");
                             logHashMap.put("voteid", "" + voteEntity.getChoiceId());
                             logHashMap.put("stuvote", "" + answer);
-                            logHashMap.addSno("5").addNonce("" + UUID.randomUUID()).addStable("2");
+                            logHashMap.addSno("5").creatNonce().addStable("2");
                             umsAgentDebug2(eventId, logHashMap.getData());
                         }
                     });

@@ -6,7 +6,9 @@ import android.os.Looper;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
 
@@ -24,6 +26,7 @@ import java.util.Vector;
  */
 public class AuditIRCMessage {
     private String TAG = "AuditIRCMessage";
+    String eventid = LiveVideoConfig.LIVE_LISTEN;
     private IRCConnection mConnection;
     private int mConnectCount = 0, mDisconnectCount = 0;
     private AuditIRCCallback mIRCCallback;
@@ -45,11 +48,13 @@ public class AuditIRCMessage {
     /** 学生推流失败 */
     private boolean stuPushSuccess = false;
     String stuPushStatus = "";
+    LiveAndBackDebug liveAndBackDebug;
 
-    public AuditIRCMessage(int netWorkType, String channel, String login, String nickname) {
+    public AuditIRCMessage(int netWorkType, String channel, String login, String nickname, LiveAndBackDebug liveAndBackDebug) {
         this.netWorkType = netWorkType;
         this.mChannel = channel;
         this.mNickname = nickname;
+        this.liveAndBackDebug = liveAndBackDebug;
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
@@ -156,6 +161,12 @@ public class AuditIRCMessage {
                                             mIRCCallback.onStudentError(msg);
                                             mHandler.postDelayed(mStudyTimeoutRunnable, 15000);
                                         }
+                                        //旁听日志
+                                        StableLogHashMap stableLogHashMap = new StableLogHashMap("studentError");
+                                        stableLogHashMap.put("nickname", sender);
+                                        stableLogHashMap.put("status", status);
+                                        stableLogHashMap.addSno("5").addEx("Y").addStable("1");
+                                        liveAndBackDebug.umsAgentDebug(eventid, stableLogHashMap.getData());
                                         return;
                                     } else {
                                         stuPushSuccess = true;
@@ -379,6 +390,12 @@ public class AuditIRCMessage {
                 mConnection.sendMessage(target, jsonObject.toString());
                 target = "ws_" + mNickname;
                 mConnection.sendMessage(target, jsonObject.toString());
+                //旁听日志
+                StableLogHashMap stableLogHashMap = new StableLogHashMap("sendListenCmd");
+                stableLogHashMap.put("status", "on");
+                stableLogHashMap.put("nickname", mNickname);
+                stableLogHashMap.addSno("1").addExpect("1").addStable("1");
+                liveAndBackDebug.umsAgentDebug(eventid, stableLogHashMap.getData());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -501,6 +518,12 @@ public class AuditIRCMessage {
             mConnection.sendMessage(target, jsonObject.toString());
             target = "ws_" + mNickname;
             mConnection.sendMessage(target, jsonObject.toString());
+            //旁听日志
+            StableLogHashMap stableLogHashMap = new StableLogHashMap("sendListenCmd");
+            stableLogHashMap.put("status", "off");
+            stableLogHashMap.put("nickname", mNickname);
+            stableLogHashMap.creatNonce().addSno("6").addExpect("1").addStable("1");
+            liveAndBackDebug.umsAgentDebug(eventid, stableLogHashMap.getData());
         } catch (JSONException e) {
             e.printStackTrace();
         }
