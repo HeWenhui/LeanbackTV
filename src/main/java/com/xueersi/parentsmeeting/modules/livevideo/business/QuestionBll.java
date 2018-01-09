@@ -156,8 +156,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 答题的暂存状态
      */
     private HashSet<String> mQueAndBool = new HashSet<>();
-    /** 答题的暂存状态 */
-    private HashSet<String> mQueAnswerBool = new HashSet<>();
+    /** 答题的暂存状态-可以重复作答的 */
+    private HashSet<String> mQueReAnswer = new HashSet<>();
     /** 语音答题错误 */
     private HashSet<String> mErrorVoiceQue = new HashSet<>();
     /**
@@ -248,7 +248,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     String testId = jsonObject.optString("testId");
                     if (!StringUtils.isSpace(testId)) {
                         mQueAndBool.add(testId);
-                        mQueAnswerBool.add(testId);
+                        mQueReAnswer.add(testId);
                     }
                 }
             }
@@ -416,7 +416,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             boolean reTry = false;
             if (LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(videoQuestionLiveEntity.type)) {
                 if ("1".equals(videoQuestionLiveEntity.isAllow42)) {
-                    if (mQueAnswerBool.contains(videoQuestionLiveEntity.id)) {
+                    if (mQueReAnswer.contains(videoQuestionLiveEntity.id)) {
+                        mQueReAnswer.remove(videoQuestionLiveEntity.id);
                         reTry = true;
                     }
                 }
