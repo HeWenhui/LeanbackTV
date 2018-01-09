@@ -18,6 +18,8 @@ import android.widget.ImageView;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
+import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
+import com.tal.speech.speechrecognizer.TalSpeech;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
@@ -58,7 +60,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
     /** 是不是直播 */
     private boolean isLive;
     private SpeechEvalAction speechEvalAction;
-
+    private SpeechEvaluatorInter speechEvaluatorInter;
     private File saveVideoFile, dir;
 
     /** 默认为mSpeechType */
@@ -104,7 +106,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
 
     private final int RECORD_WITE = 11000;
 
-   // private AudioPlayerManager mAudioPlayerManager;
+    // private AudioPlayerManager mAudioPlayerManager;
 
     public SpeechAssessmentWebPager(Context context, String liveid, String testId, String stuId, boolean isLive,
                                     String nonce,
@@ -316,38 +318,38 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
 
         if (command.equals("startRecordEvaluator")) {
             //发起录音
-            Loger.i("SpeechWebPagerTest", "startRecordEvaluator");
+            Loger.i(TAG, "startRecordEvaluator");
             startRecordEvaluator(mData);
         } else if (command.equals("stopRecordEvaluator")) {
             //停止录音
-            Loger.i("SpeechWebPagerTest", "stopRecordEvaluator");
+            Loger.i(TAG, "stopRecordEvaluator");
             stopRecordEvaluator(mData);
         } else if (command.equals("clickRecordFileBtn")) {
             //播放录音文件
-            Loger.i("SpeechWebPagerTest", "clickRecordFileBtn");
+            Loger.i(TAG, "clickRecordFileBtn");
             playRecordFile(mData);
         } else if (command.equals("pauseRecordFile")) {
             //暂停录音
             //pauseRecordFile();
         } else if (command.equals("closeCurrentPage")) {
             //关闭页面
-            Loger.i("SpeechWebPagerTest", "closeCurrentPage");
+            Loger.i(TAG, "closeCurrentPage");
             closeCurrentPage();
         } else if (command.equals("reSubmit")) {
             //重新提交
-            Loger.i("SpeechWebPagerTest", "reSubmit");
+            Loger.i(TAG, "reSubmit");
             reSubmitSpech();
         } else if (command.equals("getAppVersion")) {
             //获取版本号（并告知当前的评测类型）
-            Loger.i("SpeechWebPagerTest", "getAppVersion");
+            Loger.i(TAG, "getAppVersion");
             getAppVersion(mData);
         } else if (command.equals("readingDone")) {
             //对话完毕指示
-            Loger.i("SpeechWebPagerTest", "readingDone");
+            Loger.i(TAG, "readingDone");
             mIsRecordFinish = true;
         } else if (command.equals("stopPlaynRoleChat")) {
             //停止播放按钮
-            Loger.i("SpeechWebPagerTest", "stopPlaynRoleChat");
+            Loger.i(TAG, "stopPlaynRoleChat");
             mIsStop = false;
             stopPlayer();
         }
@@ -418,7 +420,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
                     mIse = new SpeechEvaluatorUtils(true);
                 }
                 if (isEnglish) {
-                    mIse.startEnglishEvaluatorOffline(assessRef, saveVideoFile.getAbsolutePath(), false,
+                    speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(assessRef, saveVideoFile.getAbsolutePath(), false,
                             new EvaluatorListener() {
                                 @Override
                                 public void onBeginOfSpeech() {
@@ -507,7 +509,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
      * 停止录音
      */
     private void stopRecordEvaluator(Map<String, String> params) {
-
+        Loger.d(TAG, "stopRecordEvaluator");
         if (params != null) {
             mStopPrefix = params.get("isLast");
         }
@@ -522,10 +524,16 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
         if (mIse != null) {
             mIse.stop();
         }
-
-        //强制2秒内必须回结果
-        mHandler.sendEmptyMessageDelayed(RECORD_WITE, 2000);
-
+        boolean isEnglish = !mSpeechType.equals(SPEECH_FOLLOW);
+        if (isEnglish) {
+            if (speechEvaluatorInter instanceof TalSpeech) {
+                //强制2秒内必须回结果
+                mHandler.sendEmptyMessageDelayed(RECORD_WITE, 2000);
+            }
+        } else {
+            //强制2秒内必须回结果
+            mHandler.sendEmptyMessageDelayed(RECORD_WITE, 2000);
+        }
     }
 
     private Handler mHandler = new Handler() {
@@ -533,6 +541,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == RECORD_WITE) {
+                Loger.d(TAG, "handleMessage:jsStartAnotherReading");
                 if (!mIsFinishCurrentSpeech && mIsStopCommand) {
                     mIsFinishCurrentSpeech = true;
                     if (mSpeechType.equals(SPEECH_ROLEPLAY)) {
@@ -1098,7 +1107,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
                 @Override
                 public void run() {
                     if (mSpeechType.equals(SPEECH_ROLEPLAY)) {
-                        Loger.i("SpeechWebPagerTest", "js.startAnotherReading:" + (mStopPrefix != null ? mStopPrefix
+                        Loger.i(TAG, "js.startAnotherReading:" + (mStopPrefix != null ? mStopPrefix
                                 : ""));
                         wvSubjectWeb.loadUrl("javascript: startAnotherReading(" +
                                 (mStopPrefix != null ? mStopPrefix : "") + ")");
