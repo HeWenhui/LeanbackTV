@@ -189,21 +189,28 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         reloadurl = loadUrl;
         mView.findViewById(R.id.iv_livevideo_subject_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 loadUrl(reloadurl);
+                v.setVisibility(View.GONE);
+                v.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        v.setVisibility(View.VISIBLE);
+                    }
+                }, 2000);
             }
         });
         mView.findViewById(R.id.btn_error_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                wvSubjectWeb.reload();
+                wvSubjectWeb.reload();
                 errorView.setVisibility(View.GONE);
                 wvSubjectWeb.setVisibility(View.VISIBLE);
                 View loadView = mView.findViewById(R.id.rl_livevideo_subject_loading);
                 loadView.setVisibility(View.VISIBLE);
                 ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
                 ((AnimationDrawable) ivLoading.getBackground()).start();
-                loadUrl(reloadurl);
+//                loadUrl(reloadurl);
             }
         });
     }
