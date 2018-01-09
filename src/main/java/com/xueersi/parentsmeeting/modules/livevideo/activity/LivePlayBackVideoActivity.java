@@ -920,6 +920,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                                 mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), userInfoEntity.getStuId(),
                                 false, "", LivePlayBackVideoActivity.this);
                     }
+                    speechQuestionPlaybackPager.initData();
                     rlQuestionContent.removeAllViews();
                     rlQuestionContent.addView(speechQuestionPlaybackPager.getRootView(), lp);
                     rlQuestionContent.setVisibility(View.VISIBLE);
