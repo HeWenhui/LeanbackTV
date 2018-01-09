@@ -162,16 +162,6 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         super.initData();
         CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
         cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NORMAL);
-        cacheWebView.setCacheInterceptor(new CacheInterceptor() {
-
-            @Override
-            public boolean canCache(String url) {
-                if (url.startsWith("https://live.xueersi.com/Live/coursewareH5/" + liveId)) {
-                    return false;
-                }
-                return true;
-            }
-        });
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
 //        webSetting.setUseWideViewPort(false);
