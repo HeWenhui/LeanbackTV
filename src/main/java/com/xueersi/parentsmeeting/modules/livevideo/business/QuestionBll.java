@@ -122,6 +122,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private static final String EXAM = "live_exam";
     /** 答题的暂存状态 */
     private HashSet<String> mQueAndBool = new HashSet<>();
+    /** 答题的暂存状态 */
+    private HashSet<String> mQueAnswerBool = new HashSet<>();
     /** 语音答题错误 */
     private HashSet<String> mErrorVoiceQue = new HashSet<>();
     /** 试卷的暂存状态 */
@@ -198,6 +200,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     String testId = jsonObject.optString("testId");
                     if (!StringUtils.isSpace(testId)) {
                         mQueAndBool.add(testId);
+                        mQueAnswerBool.add(testId);
                     }
                 }
             }
@@ -365,7 +368,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             boolean reTry = false;
             if (LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(videoQuestionLiveEntity.type)) {
                 if ("1".equals(videoQuestionLiveEntity.isAllow42)) {
-                    reTry = true;
+                    if (mQueAnswerBool.contains(videoQuestionLiveEntity.id)) {
+                        reTry = true;
+                    }
                 }
             }
             if (!reTry) {

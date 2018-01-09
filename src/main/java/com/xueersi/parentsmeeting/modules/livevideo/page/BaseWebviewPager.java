@@ -28,7 +28,7 @@ public abstract class BaseWebviewPager extends BasePager {
     protected WebView wvSubjectWeb;
     private TextView tv_error_center_refresh_tip;
     private TextView tv_data_loading_tip;
-    private View errorView;
+    protected View errorView;
     private String errorTip;
     private String loadTip;
 
@@ -44,6 +44,12 @@ public abstract class BaseWebviewPager extends BasePager {
         mView.findViewById(R.id.btn_error_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                errorView.setVisibility(View.GONE);
+                wvSubjectWeb.setVisibility(View.VISIBLE);
+                View loadView = mView.findViewById(R.id.rl_livevideo_subject_loading);
+                loadView.setVisibility(View.VISIBLE);
+                ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
+                ((AnimationDrawable) ivLoading.getBackground()).stop();
                 wvSubjectWeb.reload();
             }
         });
@@ -95,8 +101,9 @@ public abstract class BaseWebviewPager extends BasePager {
                 if (loadView != null) {
                     ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
                     ((AnimationDrawable) ivLoading.getBackground()).stop();
-                    ViewGroup group = (ViewGroup) loadView.getParent();
-                    group.removeView(loadView);
+                    loadView.setVisibility(View.GONE);
+//                    ViewGroup group = (ViewGroup) loadView.getParent();
+//                    group.removeView(loadView);
                 }
             }
         }

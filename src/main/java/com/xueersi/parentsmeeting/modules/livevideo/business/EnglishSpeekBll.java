@@ -158,11 +158,13 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
         if (!loadSuccess) {
             return false;
         }
+        long before = System.currentTimeMillis();
         saveFile();
         if (!initLanuage()) {
             return false;
         }
         talAsrJni.LangIDReset(0);
+        Loger.d(TAG, "initView:time1="+(System.currentTimeMillis()-before));
         this.bottomContent = bottomContent;
         myView = (ViewGroup) activity.findViewById(R.id.rl_livevideo_english_content);
         myView.setVisibility(View.VISIBLE);

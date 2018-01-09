@@ -193,7 +193,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mData.put("answer", content);
         mData.put("answertime", "" + time);
         speechEvalAction.umsAgentDebug3(eventId, mData);
-        initData();
     }
 
     public String getId() {
@@ -604,7 +603,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 final JSONObject answers = new JSONObject();
                 JSONObject answers1 = new JSONObject();
                 entranceTime = System.currentTimeMillis() - entranceTime;
-                answers1.put("entranceTime", entranceTime);
+                answers1.put("entranceTime", (int) (entranceTime / 1000));
                 answers1.put("score", score);
                 JSONObject detail = new JSONObject();
                 detail.put("cont_score", score);

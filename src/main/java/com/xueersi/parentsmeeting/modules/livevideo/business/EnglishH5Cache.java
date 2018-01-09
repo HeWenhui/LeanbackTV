@@ -364,16 +364,6 @@ public class EnglishH5Cache {
         cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NORMAL);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         bottomContent.addView(view, lp);
-        cacheWebView.setCacheInterceptor(new CacheInterceptor() {
-
-            @Override
-            public boolean canCache(String url) {
-                if (url.startsWith("https://live.xueersi.com/Live/coursewareH5/" + liveId)) {
-                    return false;
-                }
-                return true;
-            }
-        });
         cacheWebView.setWebViewClient(new WebViewClient() {
             long before = System.currentTimeMillis();
             String failingUrl;
