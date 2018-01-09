@@ -2,14 +2,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <ren.yale.android.cachewebviewlib.CacheWebView
+        android:id="@id/wv_livevideo_subject_web"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ren.yale.android.cachewebviewlib.CacheWebView
-            android:id="@id/wv_livevideo_subject_web"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        android:layout_height="match_parent" />
 
         <ImageView
             android:id="@id/iv_livevideo_subject_refresh"
@@ -17,7 +13,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:background="@color/COLOR_000000" />
+            android:src="@drawable/cy_main_shuaxinbai_icon_normal" />
     </RelativeLayout>
 
     <RelativeLayout
