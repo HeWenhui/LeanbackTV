@@ -624,7 +624,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                         int gold = jsonObject.optInt("gold");
                         haveAnswer = jsonObject.optInt("isAnswered", 0) == 1;
                         onSpeechEvalSuccess(resultEntity, gold);
-                        speechEvalAction.stopSpeech(SpeechAssAutoPager.this, id);
+                        speechEvalAction.onSpeechSuccess(id);
                     }
 
                     @Override
