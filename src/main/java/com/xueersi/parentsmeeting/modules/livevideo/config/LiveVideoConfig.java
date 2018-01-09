@@ -63,6 +63,8 @@ public class LiveVideoConfig {
     public static String SPEECH_URL = "https://live.xueersi.com/LivePlayBack/speechEvalResult/";
     /** 获取学习报告 */
     public final static String URL_LIVE_GET_LEARNING_STAT = AppConfig.HTTP_HOST + "/LiveCourse/getLearningStat";
+    /** 获取学习报告-讲座 */
+    public final static String URL_LIVE_GET_FEED_BACK = AppConfig.HTTP_HOST + "/LiveLecture/getFeedback";
     /** 获取红包金币 */
     public final static String URL_STUDY_GET_RED_PACKET = AppConfig.HTTP_HOST + "/MyCourse/receiveLiveTutoringGold";
     /** 直播回放提交答案地址 */
@@ -153,10 +155,10 @@ public class LiveVideoConfig {
     public static String LIVE_EXPE_TIME = "live_expe_time_all";
     /** 英语能量条提示 */
     public static String LIVE_ENGLISH_TIP = "live_english_speeak_tip";
-    /**互动题满分榜接口*/
-    public static String LIVE_FULL_MARK_LIST_QUESTION=AppConfig.HTTP_HOST+"/LiveCourse/teamTestFullScoreRank";
-    /**互动课件满分榜接口*/
-    public static String LIVE_FULL_MARK_LIST_H5=AppConfig.HTTP_HOST+"/LiveCourse/teamCourseWareH5FullScoreRank";
-    /**测试卷满分榜接口*/
-    public static String LIVE_FULL_MARK_LIST_TEST=AppConfig.HTTP_HOST+"/LiveCourse/teamFullScoreRank";
+    /** 互动题满分榜接口 */
+    public static String LIVE_FULL_MARK_LIST_QUESTION = AppConfig.HTTP_HOST + "/LiveCourse/teamTestFullScoreRank";
+    /** 互动课件满分榜接口 */
+    public static String LIVE_FULL_MARK_LIST_H5 = AppConfig.HTTP_HOST + "/LiveCourse/teamCourseWareH5FullScoreRank";
+    /** 测试卷满分榜接口 */
+    public static String LIVE_FULL_MARK_LIST_TEST = AppConfig.HTTP_HOST + "/LiveCourse/teamFullScoreRank";
 }

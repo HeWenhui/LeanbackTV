@@ -392,15 +392,22 @@ public class LiveHttpManager extends BaseHttpBusiness {
      *
      * @param enstuId         用户加密ID
      * @param liveId          直播ID
+     * @param livetype
      * @param requestCallBack
      */
-    public void getLearnReport(String enstuId, String liveId, HttpCallBack
+    public void getLearnReport(String enstuId, String liveId, int livetype, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("enstuId", enstuId);
         setDefaultParameter(params);
-        sendPost(LiveVideoConfig.URL_LIVE_GET_LEARNING_STAT, params, requestCallBack);
+        String url;
+        if (livetype == LiveBll.LIVE_TYPE_LIVE) {
+            url = LiveVideoConfig.URL_LIVE_GET_LEARNING_STAT;
+        } else {
+            url = LiveVideoConfig.URL_LIVE_GET_FEED_BACK;
+        }
+        sendPost(url, params, requestCallBack);
     }
 
     /**
@@ -621,31 +628,34 @@ public class LiveHttpManager extends BaseHttpBusiness {
         requestCallBack.url = LiveVideoConfig.URL_LIVE_GET_WARE_URL;
         sendPost(LiveVideoConfig.URL_LIVE_GET_WARE_URL, params, requestCallBack);
     }
-    public void getFullMarkListQuestion(String testId,String classId,String teamId,HttpCallBack callBack){
-        HttpRequestParams params=new HttpRequestParams();
+
+    public void getFullMarkListQuestion(String testId, String classId, String teamId, HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
-        params.addBodyParam("classId",classId);
-        params.addBodyParam("teamId",teamId);
-        params.addBodyParam("testId",testId);
-        String i=JSON.toJSON(params).toString();
-        sendPost(LiveVideoConfig.LIVE_FULL_MARK_LIST_QUESTION,params,callBack);
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        params.addBodyParam("testId", testId);
+        String i = JSON.toJSON(params).toString();
+        sendPost(LiveVideoConfig.LIVE_FULL_MARK_LIST_QUESTION, params, callBack);
     }
-    public void getFullMarkListTest(String classId,String teamId,String testPlan,HttpCallBack callBack){
-        HttpRequestParams params=new HttpRequestParams();
+
+    public void getFullMarkListTest(String classId, String teamId, String testPlan, HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
-        params.addBodyParam("classId",classId);
-        params.addBodyParam("teamId",teamId);
-        params.addBodyParam("testPlan",testPlan);
-        sendPost(LiveVideoConfig.LIVE_FULL_MARK_LIST_TEST,params,callBack);
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        params.addBodyParam("testPlan", testPlan);
+        sendPost(LiveVideoConfig.LIVE_FULL_MARK_LIST_TEST, params, callBack);
     }
-    public void getFullMarkListH5(String classId,String teamId,String testId,String type,HttpCallBack callBack){
-        HttpRequestParams params=new HttpRequestParams();
+
+    public void getFullMarkListH5(String classId, String teamId, String testId, String type, HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
-        params.addBodyParam("classId",classId);
-        params.addBodyParam("teamId",teamId);
-        params.addBodyParam("testId",testId);
-        params.addBodyParam("type",type);
-        String i=JSON.toJSON(params).toString();
-        sendPost(LiveVideoConfig.LIVE_FULL_MARK_LIST_H5,params,callBack);
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        params.addBodyParam("testId", testId);
+        params.addBodyParam("type", type);
+        String i = JSON.toJSON(params).toString();
+        sendPost(LiveVideoConfig.LIVE_FULL_MARK_LIST_H5, params, callBack);
     }
 }

@@ -1165,7 +1165,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         XesMobAgent.liveLearnReport("request:" + from);
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("getLearnReport:enstuId=" + enstuId + ",liveId=" + mLiveId);
-        mHttpManager.getLearnReport(enstuId, mLiveId, new HttpCallBack(false) {
+        mHttpManager.getLearnReport(enstuId, mLiveId, mLiveType, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {

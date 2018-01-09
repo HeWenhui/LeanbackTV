@@ -857,7 +857,7 @@ public class LiveBll extends BaseBll {
             try {
                 final JSONObject object = new JSONObject(notice);
                 int mtype = object.getInt("type");
-                Loger.i("===========notice type"+mtype);
+                Loger.i("===========notice type" + mtype);
                 msg += ",mtype=" + mtype + ",voiceChatStatu=" + voiceChatStatus + ",";
                 switch (mtype) {
                     case XESCODE.READPACAGE:
@@ -1392,7 +1392,7 @@ public class LiveBll extends BaseBll {
                         try {
                             List<RankUserEntity> lst = JSON.parseArray(object.optString("stuInfo"), RankUserEntity.class);
                             mAnswerRankBll.showRankList(lst);
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     default:
@@ -1779,7 +1779,7 @@ public class LiveBll extends BaseBll {
         XesMobAgent.liveLearnReport("request:" + from);
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("getLearnReport:enstuId=" + enstuId + ",liveId=" + mLiveId);
-        mHttpManager.getLearnReport(enstuId, mLiveId, new HttpCallBack(false) {
+        mHttpManager.getLearnReport(enstuId, mLiveId, mLiveType, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -2377,18 +2377,19 @@ public class LiveBll extends BaseBll {
             return true;
         }
     }
-    /**发送上墙信号聊天消息*/
-    public void sendRankMessage(int code){
-        if(mLiveTopic.isDisable()){
+
+    /** 发送上墙信号聊天消息 */
+    public void sendRankMessage(int code) {
+        if (mLiveTopic.isDisable()) {
             return;
         }
-        try{
-            JSONObject jsonObject=new JSONObject();
-            jsonObject.put("type",code);
-            jsonObject.put("classId",mGetInfo.getStudentLiveInfo().getClassId());
-            jsonObject.put("teamId",mGetInfo.getStudentLiveInfo().getTeamId());
-            mIRCMessage.sendMessage(mMainTeacherStr,jsonObject.toString());
-        }catch (Exception e){
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type", code);
+            jsonObject.put("classId", mGetInfo.getStudentLiveInfo().getClassId());
+            jsonObject.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
+            mIRCMessage.sendMessage(mMainTeacherStr, jsonObject.toString());
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -3023,8 +3024,9 @@ public class LiveBll extends BaseBll {
             this.detail = detail;
         }
     }
-    public void setAnswerRankBll(AnswerRankBll bll){
-        mAnswerRankBll=bll;
+
+    public void setAnswerRankBll(AnswerRankBll bll) {
+        mAnswerRankBll = bll;
         mAnswerRankBll.setLiveHttpManager(mHttpManager);
     }
 
