@@ -846,7 +846,8 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                         StableLogHashMap stableLogHashMap = new StableLogHashMap("startPlay");
                         stableLogHashMap.put("nickname", sender);
                         stableLogHashMap.put("playurl", playUrl);
-                        stableLogHashMap.addSno("4").addEx("Y").addStable("1");
+                        String nonce = jsonObject.optString("nonce");
+                        stableLogHashMap.addSno("4").addNonce(nonce).addEx("Y").addStable("1");
                         umsAgentDebug(liveListenEventid, stableLogHashMap.getData());
                     }
                     break;

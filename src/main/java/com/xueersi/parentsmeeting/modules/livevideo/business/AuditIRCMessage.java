@@ -162,10 +162,11 @@ public class AuditIRCMessage {
                                             mHandler.postDelayed(mStudyTimeoutRunnable, 15000);
                                         }
                                         //旁听日志
+                                        String nonce = jsonObject.optString("nonce");
                                         StableLogHashMap stableLogHashMap = new StableLogHashMap("studentError");
                                         stableLogHashMap.put("nickname", sender);
                                         stableLogHashMap.put("status", status);
-                                        stableLogHashMap.addSno("5").addEx("Y").addStable("1");
+                                        stableLogHashMap.addSno("5").addNonce(nonce).addEx("Y").addStable("1");
                                         liveAndBackDebug.umsAgentDebug(eventid, stableLogHashMap.getData());
                                         return;
                                     } else {
@@ -394,7 +395,7 @@ public class AuditIRCMessage {
                 StableLogHashMap stableLogHashMap = new StableLogHashMap("sendListenCmd");
                 stableLogHashMap.put("status", "on");
                 stableLogHashMap.put("nickname", mNickname);
-                stableLogHashMap.addSno("1").addExpect("1").addStable("1");
+                stableLogHashMap.addSno("1").creatNonce().addExpect("1").addStable("1");
                 liveAndBackDebug.umsAgentDebug(eventid, stableLogHashMap.getData());
             } catch (JSONException e) {
                 e.printStackTrace();
