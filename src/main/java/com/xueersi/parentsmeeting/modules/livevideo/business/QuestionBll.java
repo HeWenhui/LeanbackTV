@@ -85,59 +85,105 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private Activity activity;
     private LiveBll mLiveBll;
     private LiveTopic mLiveTopic;
-    /** 直播id */
+    /**
+     * 直播id
+     */
     private String mVSectionID;
-    /** 直播类型 */
+    /**
+     * 直播类型
+     */
     private int liveType;
     protected ShareDataManager mShareDataManager;
-    /** 显示互动题 */
+    /**
+     * 显示互动题
+     */
     private static final int SHOW_QUESTION = 0;
-    /** 没有互动题 */
+    /**
+     * 没有互动题
+     */
     private static final int NO_QUESTION = 1;
-    /** 显示懂了吗 */
+    /**
+     * 显示懂了吗
+     */
     private static final int SHOW_UNDERSTAND = 2;
-    /** 没有懂了吗显示 */
+    /**
+     * 没有懂了吗显示
+     */
     private static final int NO_UNDERSTAND = 3;
-    /** 当前是否正在显示互动题 */
+    /**
+     * 当前是否正在显示互动题
+     */
     private boolean mIsShowQuestion = false;
-    /** 当前是否正在显示懂了吗 */
+    /**
+     * 当前是否正在显示懂了吗
+     */
     private boolean mIsShowUnderstand = false;
-    /** 语音答题 */
+    /**
+     * 语音答题
+     */
     private VoiceAnswerPager voiceAnswerPager;
-    /** 语音强制提交，外层 */
+    /**
+     * 语音强制提交，外层
+     */
     private RelativeLayout rlVoiceQuestionContent;
-    /** 互动题布局 */
+    /**
+     * 互动题布局
+     */
     private BaseLiveQuestionPager baseQuestionPager;
     RelativeLayout bottomContent;
-    /** 互动题的布局 */
+    /**
+     * 互动题的布局
+     */
     private RelativeLayout rlQuestionContent;
-    /** 互动题作答成功的布局 */
+    /**
+     * 互动题作答成功的布局
+     */
     private RelativeLayout rlQuestionResContent;
-    /** video缓存时间 */
+    /**
+     * video缓存时间
+     */
     private long videoCachedDuration;
     private LiveGetInfo liveGetInfo;
-    /** 存互动题 */
+    /**
+     * 存互动题
+     */
     private static final String QUESTION = "live_question";
-    /** 存试卷 */
+    /**
+     * 存试卷
+     */
     private static final String EXAM = "live_exam";
-    /** 答题的暂存状态 */
+    /**
+     * 答题的暂存状态
+     */
     private HashSet<String> mQueAndBool = new HashSet<>();
     /** 答题的暂存状态 */
     private HashSet<String> mQueAnswerBool = new HashSet<>();
     /** 语音答题错误 */
     private HashSet<String> mErrorVoiceQue = new HashSet<>();
-    /** 试卷的暂存状态 */
+    /**
+     * 试卷的暂存状态
+     */
     private HashSet<String> mExamAndBool = new HashSet<>();
-    /** 试卷正在作答 */
+    /**
+     * 试卷正在作答
+     */
     private boolean isHaveExam = false;
-    /** 语音评测正在作答 */
+    /**
+     * 语音评测正在作答
+     */
     private boolean isHaveSpeech = false;
-    /** 网页互动题正在作答 */
+    /**
+     * 网页互动题正在作答
+     */
     private boolean isHaveWebQuestion = false;
     private QuestionWebPager questionWebPager;
-    /** 试卷页面 */
+    /**
+     * 试卷页面
+     */
     private ExamQuestionPager examQuestionPager;
-    /** 语音评测页面 */
+    /**
+     * 语音评测页面
+     */
     private BaseSpeechAssessmentPager speechAssessmentPager;
     private SubjectResultPager subjectResultPager;
     boolean isLand;
@@ -145,6 +191,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private boolean isAnaswer = false;
     private AnswerRankBll mAnswerRankBll;
     private VideoQuestionLiveEntity mVideoQuestionLiveEntity;
+    private boolean hasQuestion;
+    private long submitTime;
 
     public QuestionBll(Activity activity) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -356,7 +404,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
             return;
         }
-        mVideoQuestionLiveEntity=videoQuestionLiveEntity;
+        mVideoQuestionLiveEntity = videoQuestionLiveEntity;
         isAnaswer = true;
         if (this.videoQuestionLiveEntity != null) {
             mLogtf.d("showQuestion:Entity=" + this.videoQuestionLiveEntity.id + "," + videoQuestionLiveEntity.id);
@@ -407,6 +455,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(), videoQuestionLiveEntity.nonce);
                         rlQuestionContent.addView(questionWebPager.getRootView());
                         setHaveWebQuestion(true);
+                        hasQuestion = true;
                     }
                 });
                 return;
@@ -692,11 +741,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     if (questionWebPager != null) {
                         questionWebPager.examSubmitAll();
                     }
-                    showFullMarkList(XESCODE.STOPQUESTION);
                 }
             });
 
         }
+        showFullMarkList(XESCODE.STOPQUESTION);
         if ("4".equals(ptype)) {
             return;
         }
@@ -847,6 +896,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         (), liveGetInfo.getUname(), liveid, num, nonce);
                 rlQuestionContent.addView(examQuestionPager.getRootView());
                 setHaveExam(true);
+                hasQuestion = true;
                 activity.getWindow().getDecorView().requestLayout();
                 activity.getWindow().getDecorView().invalidate();
             }
@@ -860,8 +910,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             public void run() {
                 if (examQuestionPager != null) {
                     examQuestionPager.examSubmitAll();
+                    showFullMarkList(XESCODE.EXAM_STOP);
                 }
-                showFullMarkList(XESCODE.EXAM_STOP);
+
             }
         });
     }
@@ -1050,12 +1101,24 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 // .LayoutParams.FLAG_FULLSCREEN);
     }
 
-    /** 填完互动题回调,提交测试题 */
+    /**
+     * 填完互动题回调,提交测试题
+     */
     public PutQuestion mPutQuestion = new PutQuestion() {
 
         @Override
         public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity2, String result) {
-            mLiveBll.liveSubmitTestAnswer((VideoQuestionLiveEntity) videoQuestionLiveEntity2, mVSectionID, result, false, false, null);
+            mLiveBll.liveSubmitTestAnswer((VideoQuestionLiveEntity) videoQuestionLiveEntity2, mVSectionID, result, false, false, new QuestionSwitch.OnAnswerReslut() {
+                @Override
+                public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+                    //onSubmit();
+                }
+
+                @Override
+                public void onAnswerFailure() {
+
+                }
+            });
         }
     };
 
@@ -1193,7 +1256,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     };
 
-    /** 填空题 */
+    /**
+     * 填空题
+     */
     private void showFillBlankQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         long before = System.currentTimeMillis();
         if (isLand) {
@@ -1218,7 +1283,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 .currentTimeMillis() - before));
     }
 
-    /** 显示选择题 */
+    /**
+     * 显示选择题
+     */
     private void showSelectQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         long before = System.currentTimeMillis();
         if (isLand) {
@@ -1239,7 +1306,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 .currentTimeMillis() - before));
     }
 
-    /** 显示多选择题 */
+    /**
+     * 显示多选择题
+     */
     private void showMulitSelectQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         long before = System.currentTimeMillis();
         if (isLand) {
@@ -1260,7 +1329,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 .currentTimeMillis() - before));
     }
 
-    /** 文科主观题 */
+    /**
+     * 文科主观题
+     */
     private void showSubjectiveQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         baseQuestionPager = new QuestionSubjectivePager(activity, videoQuestionLiveEntity);
         baseQuestionPager.setPutQuestion(mPutQuestion);
@@ -1270,7 +1341,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         rlQuestionContent.addView(baseQuestionPager.getRootView(), params);
     }
 
-    /** 创建互动题作答，抢红包结果提示PopupWindow */
+    /**
+     * 创建互动题作答，抢红包结果提示PopupWindow
+     */
     private void initQuestionAnswerReslut(View popupWindow_view) {
         rlQuestionResContent.addView(popupWindow_view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -1284,7 +1357,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         disMissAnswerResult();
     }
 
-    /** 试题布局隐藏 */
+    /**
+     * 试题布局隐藏
+     */
     private void questionViewGone(boolean delay) {
         mIsShowQuestion = false;
         liveMessageBll.showInput();
@@ -1319,7 +1394,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }, 5000);
     }
 
-    /** 试题布局隐藏 */
+    /**
+     * 试题布局隐藏
+     */
     private void understandViewGone() {
         mIsShowUnderstand = false;
         if (videoQuestionLiveEntity != null) {
@@ -1352,37 +1429,49 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         initQuestionAnswerReslut(popupWindow_view);
     }
 
-    /** 语音答题选择题回答正确 */
+    /**
+     * 语音答题选择题回答正确
+     */
     private void initSelectAnswerRightResultVoice(VideoResultEntity entity) {
         final View popupWindow_view = QuestionResultView.initSelectAnswerRightResultVoice(activity, entity);
         initQuestionAnswerReslut(popupWindow_view);
     }
 
-    /** 语音答题填空题回答正确 */
+    /**
+     * 语音答题填空题回答正确
+     */
     private void initFillinAnswerRightResultVoice(VideoResultEntity entity) {
         View popupWindow_view = QuestionResultView.initFillinAnswerRightResultVoice(activity, entity);
         initQuestionAnswerReslut(popupWindow_view);
     }
 
-    /** 语音答题回答错误 */
+    /**
+     * 语音答题回答错误
+     */
     private void initSelectAnswerWrongResultVoice(VideoResultEntity entity) {
         View popupWindow_view = QuestionResultView.initSelectAnswerWrongResultVoice(activity, entity);
         initQuestionAnswerReslut(popupWindow_view);
     }
 
-    /** 语音答题回答错误 */
+    /**
+     * 语音答题回答错误
+     */
     private void initFillAnswerWrongResultVoice(VideoResultEntity entity) {
         View popupWindow_view = QuestionResultView.initFillAnswerWrongResultVoice(activity, entity);
         initQuestionAnswerReslut(popupWindow_view);
     }
 
-    /** 互动题回答错误 */
+    /**
+     * 互动题回答错误
+     */
     private void initAnswerWrongResult() {
         View popupWindow_view = activity.getLayoutInflater().inflate(R.layout.pop_question_answer_wrong, null, false);
         initQuestionAnswerReslut(popupWindow_view);
     }
 
-    /** 互动题回答部分正确 */
+    /**
+     * 互动题回答部分正确
+     */
     private void initAnswerPartRightResult(VideoResultEntity entity) {
         int goldNum = entity.getGoldNum();
         int resultType = entity.getResultType();
@@ -1403,7 +1492,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         initQuestionAnswerReslut(popupWindow_view);
     }
 
-    /** 移除除了战况以外的view */
+    /**
+     * 移除除了战况以外的view
+     */
     private void removeQuestionViews() {
         for (int i = rlQuestionContent.getChildCount() - 1; i >= 0; i--) {
             View v = rlQuestionContent.getChildAt(i);
@@ -1498,29 +1589,43 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             voiceAnswerPager.onNetWorkChange(netWorkType);
         }
     }
-    public void setAnswerRankBll(AnswerRankBll bll){
-        mAnswerRankBll=bll;
+
+    public void setAnswerRankBll(AnswerRankBll bll) {
+        mAnswerRankBll = bll;
     }
-    private void showFullMarkList(final int type){
-        HttpCallBack callBack=new HttpCallBack() {
+
+    private void showFullMarkList(final int type) {
+        if (hasQuestion) {
+            hasQuestion = false;
+        } else {
+            return;
+        }
+        HttpCallBack callBack = new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                final List<FullMarkListEntity> lst=new ArrayList<>();
-                            try {
-                                com.alibaba.fastjson.JSONObject jsonObject=(com.alibaba.fastjson.JSONObject) responseEntity.getJsonObject();
-                                com.alibaba.fastjson.JSONObject data= JSON.parseObject(jsonObject.getString("ranks"));
-                                List<FullMarkListEntity> tmplst = JSON.parseArray(data.getString("ranks"), FullMarkListEntity.class);
-                                if(tmplst!=null){
-                                    lst.addAll(tmplst);
-                                }
-                            }catch (Exception e){
-                                e.printStackTrace();
+                long cur = System.currentTimeMillis();
+                long delay = 3000;
+                if (submitTime != 0 && cur - submitTime > 3000) {
+                    delay = 0;
+                } else if (submitTime != 0) {
+                    delay = 3000 - (cur - submitTime);
+                }
+                submitTime=0;
+                final List<FullMarkListEntity> lst = new ArrayList<>();
+                try {
+                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    List<FullMarkListEntity> tmplst = JSON.parseArray(jsonObject.optString("ranks"), FullMarkListEntity.class);
+                    if (tmplst != null) {
+                        lst.addAll(tmplst);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
 
-                            }
-                            mVPlayVideoControlHandler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try{
+                }
+                mVPlayVideoControlHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
                             switch (type) {
                                 case XESCODE.STOPQUESTION:
                                     rlQuestionContent.removeView(questionWebPager.getRootView());
@@ -1530,12 +1635,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                     break;
 
                             }
-                            mAnswerRankBll.showFullMarkList(lst);
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        mAnswerRankBll.showFullMarkList(lst);
+
                     }
-                },3000);
+                }, delay);
+
             }
 
             @Override
@@ -1548,10 +1655,15 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 super.onPmError(responseEntity);
             }
         };
-        if(type==XESCODE.STOPQUESTION) {
+        if (type == XESCODE.STOPQUESTION) {
             mAnswerRankBll.getFullMarkListQuestion(callBack);
-        }else if(type==XESCODE.EXAM_STOP){
+        } else if (type == XESCODE.EXAM_STOP) {
             mAnswerRankBll.getFullMarkListTest(callBack);
         }
+    }
+
+    public void onSubmit() {
+        submitTime = System.currentTimeMillis();
+        mLiveBll.sendRankMessage(XESCODE.RANK_STU_MESSAGE);
     }
 }

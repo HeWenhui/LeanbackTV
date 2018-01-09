@@ -41,6 +41,11 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
     File cacheFile;
     String liveId;
     LiveAndBackDebug liveAndBackDebug;
+    private EnglishH5CoursewareBll mEnglishH5CoursewareBll;
+
+    public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
+        mEnglishH5CoursewareBll = englishH5CoursewareBll;
+    }
 
     public EnglishH5CoursewarePager(Context context, boolean isPlayBack, String liveId, String url, String id, final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose, LiveAndBackDebug liveAndBackDebug) {
         super(context);
@@ -153,6 +158,12 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
             mData.put("closetype", "clickWebCloseButton");
             liveAndBackDebug.umsAgentDebug(eventId, mData);
             return true;
+        }
+        if(url.contains("https://submit.com")){
+            if(mEnglishH5CoursewareBll!=null){
+                mEnglishH5CoursewareBll.onSubmit();
+                return true;
+            }
         }
         return super.shouldOverrideUrlLoading(view, url);
     }

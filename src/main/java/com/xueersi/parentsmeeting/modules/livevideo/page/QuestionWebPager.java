@@ -13,11 +13,11 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.logerhelper.LogerTag;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
@@ -148,6 +148,9 @@ public class QuestionWebPager extends BasePager {
 //        wvSubjectWeb.loadUrl(String.format("javascript:examSubmitAll(" + code + ")"));
         isEnd = true;
         wvSubjectWeb.loadUrl(jsExamSubmitAll);
+        if(questionBll instanceof QuestionBll){
+            ((QuestionBll) questionBll).onSubmit();
+        }
     }
 
     public class MyWebChromeClient extends android.webkit.WebChromeClient {
@@ -201,6 +204,9 @@ public class QuestionWebPager extends BasePager {
             logToFile.i("onPageFinished:url=" + url + ",failingUrl=" + failingUrl + ",isEnd=" + isEnd);
             if (isEnd && url.equals(examUrl)) {
                 wvSubjectWeb.loadUrl(jsExamSubmitAll);
+                if(questionBll instanceof QuestionBll){
+                    ((QuestionBll) questionBll).onSubmit();
+                }
                 logToFile.i("onPageFinished:examSubmitAll");
             }
             if (failingUrl == null) {
@@ -248,6 +254,11 @@ public class QuestionWebPager extends BasePager {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             logToFile.i("shouldOverrideUrlLoading:url=" + url);
+            if(url.contains("https://submit.com")){
+                if(questionBll instanceof QuestionBll){
+                    ((QuestionBll) questionBll).onSubmit();
+                }
+            }
             if ("xueersi://livevideo/examPaper/close".equals(url) || "http://baidu.com/".equals(url)) {
                 ViewGroup group = (ViewGroup) mView.getParent();
                 if (group != null) {

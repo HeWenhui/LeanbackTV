@@ -82,6 +82,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     private LiveBll mLiveBll;
     SpeechEvaluatorUtils mIse;
     private AnswerRankBll mAnswerRankBll;
+    private boolean hasQuestion;
+    private long submitTime;
 
     public void setAnswerRankBll(AnswerRankBll answerRankBll) {
         mAnswerRankBll = answerRankBll;
@@ -218,6 +220,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             @Override
             public void run() {
                 if ("on".equals(status)) {
+                    hasQuestion=true;
                     if (mH5AndBool.contains(videoQuestionLiveEntity.url)) {
                         logToFile.i("onH5Courseware:url.contains");
                         return;
@@ -607,15 +610,27 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         void onH5ResultClose();
     }
     private void showFullMarkList(){
+        if (hasQuestion) {
+            hasQuestion = false;
+        } else {
+            return;
+        }
         mAnswerRankBll.getFullMarkListH5(new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                long cur = System.currentTimeMillis();
+                long delay = 3000;
+                if (submitTime != 0 && cur - submitTime > 3000) {
+                    delay = 0;
+                } else if (submitTime != 0) {
+                    delay = 3000 - (cur - submitTime);
+                }
+                submitTime=0;
                 final List<FullMarkListEntity> lst=new ArrayList<>();
                 try {
-                    com.alibaba.fastjson.JSONObject jsonObject=(com.alibaba.fastjson.JSONObject) responseEntity.getJsonObject();
-                    com.alibaba.fastjson.JSONObject data= JSON.parseObject(jsonObject.getString("ranks"));
-                    List<FullMarkListEntity> tmplst = JSON.parseArray(data.getString("ranks"), FullMarkListEntity.class);
-                    if(tmplst!=null){
+                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    List<FullMarkListEntity> tmplst = JSON.parseArray(jsonObject.optString("ranks"), FullMarkListEntity.class);
+                    if (tmplst != null) {
                         lst.addAll(tmplst);
                     }
                 }catch (Exception e){
@@ -629,13 +644,17 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                             if(h5CoursewarePager!=null){
                                 bottomContent.removeView(h5CoursewarePager.getRootView());
                             }
-                            mAnswerRankBll.showFullMarkList(lst);
                         }catch (Exception e){
                             e.printStackTrace();
                         }
+                        mAnswerRankBll.showFullMarkList(lst);
                     }
-                },3000);
+                },delay);
             }
         });
+    }
+    public void onSubmit(){
+        submitTime = System.currentTimeMillis();
+        mLiveBll.sendRankMessage(XESCODE.RANK_STU_MESSAGE);
     }
 }

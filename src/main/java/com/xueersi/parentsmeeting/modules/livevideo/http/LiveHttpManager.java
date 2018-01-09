@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.alibaba.fastjson.JSON;
 import com.xueersi.parentsmeeting.base.BaseHttpBusiness;
 import com.xueersi.parentsmeeting.http.CommonRequestCallBack;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
@@ -626,6 +627,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("classId",classId);
         params.addBodyParam("teamId",teamId);
         params.addBodyParam("testId",testId);
+        String i=JSON.toJSON(params).toString();
         sendPost(LiveVideoConfig.LIVE_FULL_MARK_LIST_QUESTION,params,callBack);
     }
     public void getFullMarkListTest(String classId,String teamId,String testPlan,HttpCallBack callBack){
@@ -643,6 +645,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("teamId",teamId);
         params.addBodyParam("testId",testId);
         params.addBodyParam("type",type);
+        String i=JSON.toJSON(params).toString();
         sendPost(LiveVideoConfig.LIVE_FULL_MARK_LIST_H5,params,callBack);
     }
 }

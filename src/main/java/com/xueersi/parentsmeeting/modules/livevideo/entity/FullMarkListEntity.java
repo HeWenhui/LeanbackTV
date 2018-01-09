@@ -14,7 +14,7 @@ public class FullMarkListEntity {
      */
 
     private String id;
-    private int rate;
+    private String rate;
     private String answer_time;
     private String stuName;
 
@@ -26,15 +26,25 @@ public class FullMarkListEntity {
         this.id = id;
     }
 
-    public int getRate() {
+    public String getRate() {
         return rate;
     }
 
-    public void setRate(int rate) {
+    public void setRate(String rate) {
         this.rate = rate;
     }
 
     public String getAnswer_time() {
+        try{
+            int t=Integer.parseInt(answer_time);
+            if(t>=60){
+                answer_time=t/60+"分"+t%60+"秒";
+            }else{
+                answer_time=t+"秒";
+            }
+        }catch (Exception e){
+            answer_time="";
+        }
         return answer_time;
     }
 

@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 
+import com.alibaba.fastjson.JSON;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseBll;
@@ -31,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkCo
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.StudentLiveInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
@@ -781,6 +783,7 @@ public class LiveBll extends BaseBll {
                     if (mQuestionAction != null) {
                         mQuestionAction.showQuestion(liveTopic.getVideoQuestionLiveEntity());
                         mAnswerRankBll.setTestId(liveTopic.getVideoQuestionLiveEntity().getvQuestionID());
+                        sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                     }
                 } else {
                     if (mQuestionAction != null) {
@@ -1138,7 +1141,7 @@ public class LiveBll extends BaseBll {
                                     videoQuestionLiveEntity.assess_ref = object.optString("assess_ref");
                                 }
                                 mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
-                                mAnswerRankBll.setType(videoQuestionLiveEntity.type);
+                                mAnswerRankBll.setType(videoQuestionLiveEntity.courseware_type);
                             }
                             englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
                         }
@@ -1385,6 +1388,13 @@ public class LiveBll extends BaseBll {
                         }
                         break;
                     }
+                    case XESCODE.RANK_TEA_MESSAGE:
+                        try {
+                            List<RankUserEntity> lst = JSON.parseArray(object.optString("stuInfo"), RankUserEntity.class);
+                            mAnswerRankBll.showRankList(lst);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     default:
                         msg += "default";
                         break;
@@ -1633,6 +1643,7 @@ public class LiveBll extends BaseBll {
         }
         mAnswerRankBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
         mAnswerRankBll.setTeamId(mGetInfo.getStudentLiveInfo().getTeamId());
+        mAnswerRankBll.setIsShow(mGetInfo.getIs_show_ranks());
         if (mGetInfo.getIsArts() == 1) {
             appID = UmsConstants.ARTS_APP_ID;
             LiveVideoConfig.IS_SCIENCE = false;
@@ -2366,6 +2377,21 @@ public class LiveBll extends BaseBll {
             return true;
         }
     }
+    /**发送上墙信号聊天消息*/
+    public void sendRankMessage(int code){
+        if(mLiveTopic.isDisable()){
+            return;
+        }
+        try{
+            JSONObject jsonObject=new JSONObject();
+            jsonObject.put("type",code);
+            jsonObject.put("classId",mGetInfo.getStudentLiveInfo().getClassId());
+            jsonObject.put("teamId",mGetInfo.getStudentLiveInfo().getTeamId());
+            mIRCMessage.sendMessage(mMainTeacherStr,jsonObject.toString());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     /** 是否开启献花 */
     public boolean isOpenbarrage() {
@@ -3000,9 +3026,6 @@ public class LiveBll extends BaseBll {
     public void setAnswerRankBll(AnswerRankBll bll){
         mAnswerRankBll=bll;
         mAnswerRankBll.setLiveHttpManager(mHttpManager);
-
-    public void setAnswerRankBll(AnswerRankBll bll) {
-        mAnswerRankBll = bll;
     }
 
     public void streamReport(MegId msgid, String channelname, long connsec) {

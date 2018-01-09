@@ -96,4 +96,10 @@ public interface XESCODE {
     int VOTE_START_JOIN = 211;
     /** 投票发送给老师答案 */
     int VOTE_SEND = 212;
+    /**上墙-学生发送消息*/
+    int RANK_STU_MESSAGE=225;
+    /**上墙-老师发送消息*/
+    int RANK_TEA_MESSAGE=226;
+    /**上墙-学生重连发送消息*/
+    int RANK_STU_RECONNECT_MESSAGE=227;
 }

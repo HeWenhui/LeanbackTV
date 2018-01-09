@@ -45,13 +45,22 @@ public class AnswerRankBll {
     private LinearLayout llCurRow;
     private List<RankUserEntity> mLst;
     private int displayWidth, displayHeight, videoWidth;
-    private View root;
+    private View rlFullMarkList;
     private HttpCallBack fullMarkListCallBack;
     private LiveHttpManager mLiveHttpManager;
     private String classId;
     private String teamId;
     private String testId;
     private String type;
+    private String isShow;
+
+    public String getIsShow() {
+        return isShow;
+    }
+
+    public void setIsShow(String isShow) {
+        this.isShow = isShow;
+    }
 
     public String getClassId() {
         return classId;
@@ -128,11 +137,15 @@ public class AnswerRankBll {
      * @param lst
      */
     public void showRankList(List<RankUserEntity> lst) {
+        if("0".equals(isShow)){
+            return;
+        }
         if (lst.size() != 0 && lst.size() <= mLst.size()) {
             return;
         }
         if (llRankList == null) {
             llRankList = new LinearLayout(mContext);
+            llRankList.setClickable(true);
             llRankList.setOrientation(LinearLayout.VERTICAL);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -140,6 +153,11 @@ public class AnswerRankBll {
             params.setMargins(0,0,0,(ScreenUtils.getScreenHeight()-displayHeight)/2);
             llRankList.setLayoutParams(params);
             llRankList.setBackgroundColor(Color.parseColor("#343b46"));
+            View v=new View(mContext);
+            LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(1,0);
+            layoutParams.weight=1;
+            v.setLayoutParams(layoutParams);
+            llRankList.addView(v);
             TextView textView = new TextView(mContext);
             textView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             textView.setGravity(Gravity.CENTER);
@@ -149,7 +167,7 @@ public class AnswerRankBll {
             textView.setTextSize(13);
             textView.setPadding(0, SizeUtils.Dp2Px(mContext, 3), 0, SizeUtils.Dp2Px(mContext, 3));
             llRankList.addView(textView);
-            bottomContent.addView(llRankList, params);
+            bottomContent.addView(llRankList,2, params);
         }
         for (int i = mLst.size(); i < lst.size(); i++) {
             if (i % 2 == 0) {
@@ -174,6 +192,7 @@ public class AnswerRankBll {
         if (bottomContent != null && llRankList != null) {
             try {
                 bottomContent.removeView(llRankList);
+                llRankList=null;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -185,23 +204,23 @@ public class AnswerRankBll {
      * @param lst
      */
     public void showFullMarkList(List<FullMarkListEntity> lst) {
-        root = View.inflate(mContext, R.layout.layout_full_mark_list, null);
+        rlFullMarkList = View.inflate(mContext, R.layout.layout_full_mark_list, null);
         //设置四个榜单区域参数
         int dp11=SizeUtils.Dp2Px(mContext,11);
         LinearLayout.LayoutParams llParam=new LinearLayout.LayoutParams(videoWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
         llParam.setMargins(0,dp11,0,0);
-        LinearLayout ll1 = (LinearLayout) root.findViewById(R.id.ll_full_mark_list_no1_line);
-        LinearLayout ll2 = (LinearLayout) root.findViewById(R.id.ll_full_mark_list_no2_line);
+        LinearLayout ll1 = (LinearLayout) rlFullMarkList.findViewById(R.id.ll_full_mark_list_no1_line);
+        LinearLayout ll2 = (LinearLayout) rlFullMarkList.findViewById(R.id.ll_full_mark_list_no2_line);
         ll2.setPadding(dp11,0,dp11,0);
-        LinearLayout ll3 = (LinearLayout) root.findViewById(R.id.ll_full_mark_list_no3_line);
-        LinearLayout ll4 = (LinearLayout) root.findViewById(R.id.ll_full_mark_list_no4_line);
+        LinearLayout ll3 = (LinearLayout) rlFullMarkList.findViewById(R.id.ll_full_mark_list_no3_line);
+        LinearLayout ll4 = (LinearLayout) rlFullMarkList.findViewById(R.id.ll_full_mark_list_no4_line);
         ll4.setPadding(dp11,0,dp11,0);
         ll1.setLayoutParams(llParam);
         ll2.setLayoutParams(llParam);
         ll3.setLayoutParams(llParam);
         ll4.setLayoutParams(llParam);
         //scrollview禁止滚动
-        final HorizontalScrollView sv=(HorizontalScrollView) root.findViewById(R.id.sv_live_full_mark_list);
+        final HorizontalScrollView sv=(HorizontalScrollView) rlFullMarkList.findViewById(R.id.sv_live_full_mark_list);
         sv.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -209,41 +228,21 @@ public class AnswerRankBll {
             }
         });
         //前三名显示区域
-        TextView tvNo1 = (TextView) root.findViewById(R.id.tv_full_mark_list_no1);
-        TextView tvNo2 = (TextView) root.findViewById(R.id.tv_full_mark_list_no2);
-        TextView tvNo3 = (TextView) root.findViewById(R.id.tv_full_mark_list_no3);
-        tvNo1.setTextSize(11);
-        tvNo2.setTextSize(11);
-        tvNo3.setTextSize(11);
-        tvNo1.setMaxLines(2);
-        tvNo2.setMaxLines(2);
-        tvNo3.setMaxLines(2);
-        RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams((int)(videoWidth*0.086f), ViewGroup.LayoutParams.WRAP_CONTENT);
-        params1.setMargins((int) (0.115f * videoWidth), 0, 0, (int) (0.148f * displayHeight));
-        params1.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        params1.addRule(RelativeLayout.RIGHT_OF,R.id.tv_full_mark_list_no2);
-        RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams((int)(videoWidth*0.086f), ViewGroup.LayoutParams.WRAP_CONTENT);
-        params2.setMargins((int) (0.255f * videoWidth), 0, 0, (int) (0.12f * displayHeight));
-        params2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        params2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        RelativeLayout.LayoutParams params3 = new RelativeLayout.LayoutParams((int)(videoWidth*0.086f), ViewGroup.LayoutParams.WRAP_CONTENT);
-        params3.setMargins((int) (0.124f * videoWidth), 0, 0, (int) (0.101f * displayHeight));
-        params3.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        params3.addRule(RelativeLayout.RIGHT_OF,R.id.tv_full_mark_list_no1);
+        TextView[] trophys=setTrophyParam();
+        if(trophys==null||trophys.length==0){
+            trophys=new TextView[3];
+        }
         for (int i = 0; i < lst.size(); i++) {
             if (i == 0) {
-                tvNo1.setLayoutParams(params1);
-                tvNo1.setText(lst.get(i).getAnswer_time());
+                trophys[0].setText(lst.get(i).getStuName()+"\n"+lst.get(i).getAnswer_time());
                 continue;
             }
             if (i == 1) {
-                tvNo2.setLayoutParams(params2);
-                tvNo2.setText(lst.get(i).getAnswer_time());
+                trophys[1].setText(lst.get(i).getStuName()+"\n"+lst.get(i).getAnswer_time());
                 continue;
             }
             if (i == 2) {
-                tvNo3.setLayoutParams(params3);
-                tvNo3.setText(lst.get(i).getAnswer_time());
+                trophys[2].setText(lst.get(i).getStuName()+"\n"+lst.get(i).getAnswer_time());
                 continue;
             }
             View v=new View(mContext);
@@ -259,15 +258,16 @@ public class AnswerRankBll {
             } else if (i < 20) {
                 ll3.addView(getFullMarkListItem(lst.get(i)));
                 ll3.addView(v);
-            } else {
+            } else if(i<25){
                 ll4.addView(getFullMarkListItem(lst.get(i)));
                 ll4.addView(v);
             }
         }
         //设置主视图参数
-        RelativeLayout.LayoutParams mainParam=new RelativeLayout.LayoutParams(videoWidth,displayHeight);
+        RelativeLayout.LayoutParams mainParam=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        mainParam.setMargins(0,(ScreenUtils.getScreenHeight()-displayHeight)/2,displayWidth-videoWidth,(ScreenUtils.getScreenHeight()-displayHeight)/2);
         mainParam.addRule(RelativeLayout.CENTER_VERTICAL);
-        root.setLayoutParams(mainParam);
+        rlFullMarkList.setLayoutParams(mainParam);
         if(lst.size()>14){
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -277,11 +277,11 @@ public class AnswerRankBll {
             },3000);
         }
 
-        bottomContent.addView(root);
+        bottomContent.addView(rlFullMarkList);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                bottomContent.removeView(root);
+                hideFullMarkList();
             }
         },7000);
     }
@@ -289,9 +289,11 @@ public class AnswerRankBll {
      * 隐藏满分榜视图
      */
     public void hideFullMarkList(){
-        if(bottomContent!=null&&root!=null){
+        if(bottomContent!=null&& rlFullMarkList !=null){
             try{
-                bottomContent.removeView(root);
+                bottomContent.removeView(rlFullMarkList);
+                rlFullMarkList =null;
+                hideRankList();
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -393,11 +395,11 @@ public class AnswerRankBll {
             wradio += (screenWidth - width) / 2;
             videoWidth = displayWidth - wradio;
         }
-        if(root!=null){
-            RelativeLayout.LayoutParams params=(RelativeLayout.LayoutParams) root.getLayoutParams();
+        if(rlFullMarkList !=null){
+            RelativeLayout.LayoutParams params=(RelativeLayout.LayoutParams) rlFullMarkList.getLayoutParams();
             params.height=displayHeight;
             params.width=videoWidth;
-            root.setLayoutParams(params);
+            rlFullMarkList.setLayoutParams(params);
         }
         if (height > 0) {
             topMargin = (int) ((LiveVideoActivity.VIDEO_HEIGHT - LiveVideoActivity.VIDEO_HEAD_HEIGHT) * height /
@@ -415,14 +417,51 @@ public class AnswerRankBll {
             params.setMargins(0, 0, 0, bottomMargin);
             llRankList.setLayoutParams(params);
         }
+        setTrophyParam();
     }
     public void getFullMarkListQuestion(HttpCallBack callBack){
-        mLiveHttpManager.getFullMarkListQuestion(testId,classId,teamId,callBack);
+        if("1".equals(isShow)) {
+            mLiveHttpManager.getFullMarkListQuestion(testId, classId, teamId, callBack);
+        }
     }
     public void getFullMarkListTest(HttpCallBack callBack){
-        mLiveHttpManager.getFullMarkListTest(classId,teamId,testId,callBack);
+        if("1".equals(isShow)) {
+            mLiveHttpManager.getFullMarkListTest(classId, teamId, testId, callBack);
+        }
     }
     public void getFullMarkListH5(HttpCallBack callBack){
-        mLiveHttpManager.getFullMarkListH5(classId,teamId,testId,type,callBack);
+        if("1".equals(isShow)) {
+            mLiveHttpManager.getFullMarkListH5(classId, teamId, testId, type, callBack);
+        }
+    }
+    private TextView[] setTrophyParam(){
+        if(rlFullMarkList ==null){
+            return null;
+        }
+        TextView tvNo1 = (TextView) rlFullMarkList.findViewById(R.id.tv_full_mark_list_no1);
+        TextView tvNo2 = (TextView) rlFullMarkList.findViewById(R.id.tv_full_mark_list_no2);
+        TextView tvNo3 = (TextView) rlFullMarkList.findViewById(R.id.tv_full_mark_list_no3);
+        tvNo1.setTextSize(11);
+        tvNo2.setTextSize(11);
+        tvNo3.setTextSize(11);
+        tvNo1.setMaxLines(2);
+        tvNo2.setMaxLines(2);
+        tvNo3.setMaxLines(2);
+        RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams((int)(videoWidth*0.086f), ViewGroup.LayoutParams.WRAP_CONTENT);
+        params1.setMargins((int) (0.115f * videoWidth), 0, 0, (int) (0.148f * displayHeight));
+        params1.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        params1.addRule(RelativeLayout.RIGHT_OF,R.id.tv_full_mark_list_no2);
+        RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams((int)(videoWidth*0.086f), ViewGroup.LayoutParams.WRAP_CONTENT);
+        params2.setMargins((int) (0.255f * videoWidth), 0, 0, (int) (0.12f * displayHeight));
+        params2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        params2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        RelativeLayout.LayoutParams params3 = new RelativeLayout.LayoutParams((int)(videoWidth*0.086f), ViewGroup.LayoutParams.WRAP_CONTENT);
+        params3.setMargins((int) (0.124f * videoWidth), 0, 0, (int) (0.101f * displayHeight));
+        params3.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        params3.addRule(RelativeLayout.RIGHT_OF,R.id.tv_full_mark_list_no1);
+        tvNo1.setLayoutParams(params1);
+        tvNo2.setLayoutParams(params2);
+        tvNo3.setLayoutParams(params3);
+        return new TextView[]{tvNo1,tvNo2,tvNo3};
     }
 }

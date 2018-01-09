@@ -129,6 +129,16 @@ public class LiveGetInfo {
     /** 当前的直播模式 */
     private String mode = LiveTopic.MODE_TRANING;
     private TotalOpeningLength totalOpeningLength;
+    /**是否显示满分榜*/
+    private String is_show_ranks;
+
+    public String getIs_show_ranks() {
+        return is_show_ranks;
+    }
+
+    public void setIs_show_ranks(String is_show_ranks) {
+        this.is_show_ranks = is_show_ranks;
+    }
 
     public LiveGetInfo(LiveTopic liveTopic) {
         this.liveTopic = liveTopic;
