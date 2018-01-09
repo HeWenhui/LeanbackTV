@@ -17,6 +17,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 import java.util.Vector;
 
 /**
@@ -385,8 +386,10 @@ public class AuditIRCMessage {
             }
             JSONObject jsonObject = new JSONObject();
             try {
+                String nonce = "" + UUID.randomUUID();
                 jsonObject.put("type", "" + XESCODE.REQUEST_STUDENT_PUSH);
                 jsonObject.put("status", "on");
+                jsonObject.put("nonce", nonce);
                 String target = "s_" + mNickname;
                 mConnection.sendMessage(target, jsonObject.toString());
                 target = "ws_" + mNickname;
@@ -395,7 +398,7 @@ public class AuditIRCMessage {
                 StableLogHashMap stableLogHashMap = new StableLogHashMap("sendListenCmd");
                 stableLogHashMap.put("status", "on");
                 stableLogHashMap.put("nickname", mNickname);
-                stableLogHashMap.addSno("1").creatNonce().addExpect("1").addStable("1");
+                stableLogHashMap.addSno("1").addNonce(nonce).addExpect("1").addStable("1");
                 liveAndBackDebug.umsAgentDebug(eventid, stableLogHashMap.getData());
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -513,8 +516,10 @@ public class AuditIRCMessage {
         mHandler.removeCallbacks(mTimeoutRunnable);
         JSONObject jsonObject = new JSONObject();
         try {
+            String nonce = "" + UUID.randomUUID();
             jsonObject.put("type", "" + XESCODE.REQUEST_STUDENT_PUSH);
             jsonObject.put("status", "off");
+            jsonObject.put("nonce", nonce);
             String target = "s_" + mNickname;
             mConnection.sendMessage(target, jsonObject.toString());
             target = "ws_" + mNickname;
@@ -523,7 +528,7 @@ public class AuditIRCMessage {
             StableLogHashMap stableLogHashMap = new StableLogHashMap("sendListenCmd");
             stableLogHashMap.put("status", "off");
             stableLogHashMap.put("nickname", mNickname);
-            stableLogHashMap.creatNonce().addSno("6").addExpect("1").addStable("1");
+            stableLogHashMap.addNonce(nonce).addSno("6").addExpect("1").addStable("1");
             liveAndBackDebug.umsAgentDebug(eventid, stableLogHashMap.getData());
         } catch (JSONException e) {
             e.printStackTrace();
