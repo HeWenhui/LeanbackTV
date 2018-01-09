@@ -193,7 +193,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mData.put("answer", content);
         mData.put("answertime", "" + time);
         speechEvalAction.umsAgentDebug3(eventId, mData);
-        initData();
     }
 
     public String getId() {
