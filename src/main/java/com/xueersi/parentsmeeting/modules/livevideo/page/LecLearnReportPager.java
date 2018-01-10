@@ -48,17 +48,17 @@ public class LecLearnReportPager extends BasePager {
 
     public LecLearnReportPager(Context context, LearnReportEntity reportEntity, LiveBll liveBll, LecLearnReportBll learnReportBll) {
         super(context);
-        if (reportEntity == null) {
-            reportEntity = new LearnReportEntity();
-            LearnReportEntity.ReportEntity stu = new LearnReportEntity.ReportEntity();
-            stu.setTime(111111);
-            stu.setRate("20%");
-            stu.setAverageRate("25%");
-            Random random = new Random();
-            stu.setRank(random.nextInt(10));
-            stu.setLastRank(random.nextInt(10));
-            reportEntity.setStu(stu);
-        }
+//        if (reportEntity == null) {
+//            reportEntity = new LearnReportEntity();
+//            LearnReportEntity.ReportEntity stu = new LearnReportEntity.ReportEntity();
+//            stu.setTime(111111);
+//            stu.setRate("20%");
+//            stu.setAverageRate("25%");
+//            Random random = new Random();
+//            stu.setRank(random.nextInt(10));
+//            stu.setLastRank(random.nextInt(10));
+//            reportEntity.setStu(stu);
+//        }
         this.reportEntity = reportEntity;
         this.liveBll = liveBll;
         this.learnReportBll = learnReportBll;
@@ -88,23 +88,29 @@ public class LecLearnReportPager extends BasePager {
         });
         LearnReportEntity.ReportEntity stu = reportEntity.getStu();
         int time = stu.getTime() / 60;
-        tv_livelec_dialog_xxsc_text.setText(time + "分钟");
+        int hour = time / 60;
+        if (hour == 0) {
+            tv_livelec_dialog_xxsc_text.setText(time % 60 + "分钟");
+        } else {
+            tv_livelec_dialog_xxsc_text.setText(hour + "小时" + time % 60 + "分钟");
+        }
         tv_livelec_dialog_zhengquelv_text.setText(stu.getRate());
         tv_livelec_dialog_zhengquelv_text2.setText(stu.getAverageRate());
         tv_livelec_dialog_paiming_text.setText("" + stu.getRank());
-        int lastRank = stu.getLastRank();
-        if (lastRank == 0) {
-            tv_livelec_dialog_paiming_text2.setVisibility(View.INVISIBLE);
-        } else {
-            int difference = stu.getRank() - lastRank;
-            if (difference < 0) {
-                tv_livelec_dialog_paiming_text2.setText("提高" + (-difference) + "名");
-            } else if (difference > 0) {
-                tv_livelec_dialog_paiming_text2.setText("退步" + difference + "名");
-            } else {
-                tv_livelec_dialog_paiming_text2.setText("排名相同");
-            }
-        }
+        tv_livelec_dialog_paiming_text2.setText("-");
+//        int lastRank = stu.getLastRank();
+//        if (lastRank == 0) {
+//            tv_livelec_dialog_paiming_text2.setVisibility(View.INVISIBLE);
+//        } else {
+//            int difference = stu.getRank() - lastRank;
+//            if (difference < 0) {
+//                tv_livelec_dialog_paiming_text2.setText("提高" + (-difference) + "名");
+//            } else if (difference > 0) {
+//                tv_livelec_dialog_paiming_text2.setText("退步" + difference + "名");
+//            } else {
+//                tv_livelec_dialog_paiming_text2.setText("排名相同");
+//            }
+//        }
     }
 
 }

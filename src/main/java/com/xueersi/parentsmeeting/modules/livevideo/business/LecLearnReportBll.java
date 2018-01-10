@@ -8,9 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.page.LearnReportPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecLearnReportPager;
 
 import java.io.File;
@@ -19,7 +20,7 @@ import java.io.File;
  * Created by linyuqiang on 2016/9/23.
  */
 public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback {
-    String TAG = "LearnReportBll";
+    String TAG = "LecLearnReportBll";
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     private LogToFile mLogtf;
     private Activity activity;
@@ -34,6 +35,10 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
     private static final int NO_LEARNREPORT = 5;
     /** 当前是否正在显示学习报告 */
     private boolean mIsShowLearnReport = false;
+    /**
+     * 存学习报告
+     */
+    private static final String lecLearnReport = LiveVideoConfig.LEC_LEARN_REPORT;
 
     public LecLearnReportBll(Activity activity) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -70,27 +75,31 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
 
     public void initView(RelativeLayout bottomContent) {
         //学习报告
-        rlLearnReportContent = new RelativeLayout(activity);
-        rlLearnReportContent.setId(R.id.rl_livevideo_content_learnreport);
+        if (rlLearnReportContent == null) {
+            rlLearnReportContent = new RelativeLayout(activity);
+            rlLearnReportContent.setId(R.id.rl_livevideo_content_learnreport);
+        } else {
+            ViewGroup group = (ViewGroup) rlLearnReportContent.getParent();
+            if (group != null) {
+                group.removeView(rlLearnReportContent);
+            }
+        }
         bottomContent.addView(rlLearnReportContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-//        if (mLearnReport != null) {
-//            mLearnReport = new LecLearnReportPager(activity, null, mLiveBll, LecLearnReportBll.this);
-//            rlLearnReportContent.removeAllViews();
-//            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-//                    ViewGroup.LayoutParams.MATCH_PARENT);
-//            rlLearnReportContent.addView(mLearnReport.getRootView(), params);
-//            rlLearnReportContent.setVisibility(View.VISIBLE);
-//        } else {
-//            onLearnReport(null);
-//        }
+        if (mLearnReport != null) {
+            rlLearnReportContent.removeAllViews();
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+            rlLearnReportContent.addView(mLearnReport.getRootView(), params);
+            rlLearnReportContent.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
-    public void onLearnReport(final LearnReportEntity reportEntity) {
-        mVPlayVideoControlHandler.post(new Runnable() {
-
+    public void onLearnReport(String liveId) {
+        mLiveBll.getLecLearnReport(1000, new AbstractBusinessDataCallBack() {
             @Override
-            public void run() {
+            public void onDataSucess(Object... objData) {
+                LearnReportEntity reportEntity = (LearnReportEntity) objData[0];
                 mLearnReport = new LecLearnReportPager(activity, reportEntity, mLiveBll, LecLearnReportBll.this);
                 rlLearnReportContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -104,9 +113,9 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
                 mLogtf.d("onLearnReport");
                 activity.getWindow().getDecorView().requestLayout();
                 activity.getWindow().getDecorView().invalidate();
+                mVPlayVideoControlHandler.sendEmptyMessage(SHOW_LEARNREPORT);
             }
         });
-        mVPlayVideoControlHandler.sendEmptyMessage(SHOW_LEARNREPORT);
     }
 
     /**

@@ -724,7 +724,7 @@ public class LiveBll extends BaseBll {
                         if ("on".equals(mainRoomstatus.getExamStatus())) {
                             String num = mainRoomstatus.getExamNum();
                             mQuestionAction.onExamStart(mLiveId, num, "");
-                            if(mAnswerRankBll!=null) {
+                            if (mAnswerRankBll != null) {
                                 mAnswerRankBll.setTestId(num);
                             }
                         } else {
@@ -784,7 +784,7 @@ public class LiveBll extends BaseBll {
                 if (liveTopic.getVideoQuestionLiveEntity() != null) {
                     if (mQuestionAction != null) {
                         mQuestionAction.showQuestion(liveTopic.getVideoQuestionLiveEntity());
-                        if(mAnswerRankBll!=null) {
+                        if (mAnswerRankBll != null) {
                             mAnswerRankBll.setTestId(liveTopic.getVideoQuestionLiveEntity().getvQuestionID());
                         }
                         sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
@@ -912,7 +912,7 @@ public class LiveBll extends BaseBll {
 //                            mGetInfo.getLiveTopic().setTopic(getTopicFromQuestion(videoQuestionLiveEntity));
                             mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(videoQuestionLiveEntity);
                             mQuestionAction.showQuestion(videoQuestionLiveEntity);
-                            if(mAnswerRankBll!=null) {
+                            if (mAnswerRankBll != null) {
                                 mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                             }
                         }
@@ -1015,7 +1015,7 @@ public class LiveBll extends BaseBll {
                         break;
                     case XESCODE.LEARNREPORT: {
                         msg += "LEARNREPORT";
-                        getLearnReport(2);
+                        getLearnReport(2, 1000);
                         break;
                     }
                     case XESCODE.ROLLCALL: {
@@ -1097,7 +1097,7 @@ public class LiveBll extends BaseBll {
                             String num = object.optString("num", "0");
                             String nonce = object.optString("nonce");
                             mQuestionAction.onExamStart(mLiveId, num, nonce);
-                            if(mAnswerRankBll!=null) {
+                            if (mAnswerRankBll != null) {
                                 mAnswerRankBll.setTestId(num);
                             }
                         }
@@ -1148,7 +1148,7 @@ public class LiveBll extends BaseBll {
                                     videoQuestionLiveEntity.type = videoQuestionLiveEntity.questiontype = object.optString("questiontype");
                                     videoQuestionLiveEntity.assess_ref = object.optString("assess_ref");
                                 }
-                                if(mAnswerRankBll!=null) {
+                                if (mAnswerRankBll != null) {
                                     mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                                     mAnswerRankBll.setType(videoQuestionLiveEntity.courseware_type);
                                 }
@@ -1347,7 +1347,7 @@ public class LiveBll extends BaseBll {
                     case XESCODE.LEC_LEARNREPORT: {
                         msg += ",LEC_LEARNREPORT";
                         if (mLecLearnReportAction != null) {
-                            getLearnReport(2);
+                            mLecLearnReportAction.onLearnReport(mLiveId);
                         }
                         break;
                     }
@@ -1408,7 +1408,7 @@ public class LiveBll extends BaseBll {
                     case XESCODE.RANK_TEA_MESSAGE:
                         try {
                             List<RankUserEntity> lst = JSON.parseArray(object.optString("stuInfo"), RankUserEntity.class);
-                            if(mAnswerRankBll!=null) {
+                            if (mAnswerRankBll != null) {
                                 mAnswerRankBll.showRankList(lst);
                             }
                         } catch (Exception e) {
@@ -1660,7 +1660,7 @@ public class LiveBll extends BaseBll {
             onLiveFailure("服务器异常", null);
             return;
         }
-        if(mAnswerRankBll!=null&&mGetInfo.getStudentLiveInfo()!=null) {
+        if (mAnswerRankBll != null && mGetInfo.getStudentLiveInfo() != null) {
             mAnswerRankBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
             mAnswerRankBll.setTeamId(mGetInfo.getStudentLiveInfo().getTeamId());
             mAnswerRankBll.setIsShow(mGetInfo.getIs_show_ranks());
@@ -1730,7 +1730,7 @@ public class LiveBll extends BaseBll {
         if (mGetInfo.getStudentLiveInfo() != null) {
             if (mGetInfo.getStudentLiveInfo().getEvaluateStatus() == 1) {
                 mLogtf.d("onGetInfoSuccess:getLearnReport");
-                getLearnReport(1);
+                getLearnReport(1, 1000);
             }
             mLogtf.d("onGetInfoSuccess:getSignStatus=" + mGetInfo.getStudentLiveInfo().getSignStatus());
             if (mGetInfo.getStudentLiveInfo().getSignStatus() != 0 && mGetInfo.getStudentLiveInfo().getSignStatus()
@@ -1796,10 +1796,10 @@ public class LiveBll extends BaseBll {
     /**
      * 获取学习报告
      */
-    private synchronized void getLearnReport(final int from) {
+    private synchronized void getLearnReport(final int from, final long delayTime) {
         XesMobAgent.liveLearnReport("request:" + from);
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mLogtf.d("getLearnReport:enstuId=" + enstuId + ",liveType=" + mLiveType + ",liveId=" + mLiveId);
+        mLogtf.d("getLearnReport:enstuId=" + enstuId + ",liveType=" + mLiveType + ",liveId=" + mLiveId + ",delayTime=" + delayTime);
         mHttpManager.getLearnReport(enstuId, mLiveId, mLiveType, new HttpCallBack(false) {
 
             @Override
@@ -1811,11 +1811,8 @@ public class LiveBll extends BaseBll {
                     learnReportEntity.getStu().setTeacherIMG(mGetInfo.getTeacherIMG());
                     if (mLearnReportAction != null) {
                         mLearnReportAction.onLearnReport(learnReportEntity);
-                    } else if (mLecLearnReportAction != null) {
-                        mLecLearnReportAction.onLearnReport(learnReportEntity);
                     }
                 }
-
                 XesMobAgent.liveLearnReport("request-ok:" + from);
                 mLogtf.d("getLearnReport:onPmSuccess:learnReportEntity=" + (learnReportEntity == null) + "," +
                         "JsonObject=" + responseEntity.getJsonObject());
@@ -1824,13 +1821,60 @@ public class LiveBll extends BaseBll {
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 XesMobAgent.liveLearnReport("request-fail:" + from);
-                mLogtf.d("getLearnReport:onPmFailure=" + error + ",msg=" + msg);
+                mLogtf.d("getLearnReport:onPmFailure=" + error + ",msg=" + msg + ",delayTime=" + delayTime);
+                if (delayTime < 15000) {
+                    postDelayedIfNotFinish(new Runnable() {
+                        @Override
+                        public void run() {
+                            getLearnReport(3, delayTime + 5000);
+                        }
+                    }, delayTime);
+                }
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 XesMobAgent.liveLearnReport("request-error:" + from);
                 mLogtf.d("getLearnReport:onPmError=" + responseEntity.getErrorMsg());
+                showToast("" + responseEntity.getErrorMsg());
+            }
+        });
+    }
+
+    public void getLecLearnReport(final long delayTime, final AbstractBusinessDataCallBack callBack) {
+        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        mLogtf.d("getLecLearnReport:enstuId=" + enstuId + ",liveType=" + mLiveType + ",liveId=" + mLiveId + ",delayTime=" + delayTime);
+        mHttpManager.getLearnReport(enstuId, mLiveId, mLiveType, new HttpCallBack(false) {
+
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                LearnReportEntity learnReportEntity = mHttpResponseParser.parseLecLearnReport(responseEntity);
+                if (learnReportEntity != null) {
+                    learnReportEntity.getStu().setStuName(mGetInfo.getStuName());
+                    learnReportEntity.getStu().setTeacherName(mGetInfo.getTeacherName());
+                    learnReportEntity.getStu().setTeacherIMG(mGetInfo.getTeacherIMG());
+                    callBack.onDataSucess(learnReportEntity);
+                }
+                mLogtf.d("getLecLearnReport:onPmSuccess:learnReportEntity=" + (learnReportEntity == null) + "," +
+                        "JsonObject=" + responseEntity.getJsonObject());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                mLogtf.d("getLecLearnReport:onPmFailure=" + error + ",msg=" + msg + ",delayTime=" + delayTime);
+                if (delayTime < 15000) {
+                    postDelayedIfNotFinish(new Runnable() {
+                        @Override
+                        public void run() {
+                            getLecLearnReport(delayTime + 5000, callBack);
+                        }
+                    }, delayTime);
+                }
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                mLogtf.d("getLecLearnReport:onPmError=" + responseEntity.getErrorMsg());
                 showToast("" + responseEntity.getErrorMsg());
             }
         });
