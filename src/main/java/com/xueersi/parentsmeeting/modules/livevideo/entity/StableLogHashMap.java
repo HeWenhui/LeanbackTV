@@ -73,9 +73,8 @@ public class StableLogHashMap {
      *
      * @return
      */
-    public StableLogHashMap creatNonce() {
-        mData.put("nonce", "" + UUID.randomUUID());
-        return this;
+    public static String creatNonce() {
+        return "" + UUID.randomUUID();
     }
 
     /**

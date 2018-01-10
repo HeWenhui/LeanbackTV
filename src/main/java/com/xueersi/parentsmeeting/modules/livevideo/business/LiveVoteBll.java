@@ -232,11 +232,12 @@ public class LiveVoteBll implements LiveVoteAction {
                             contentView = null;
                             LiveVoteBll.this.answer = answer;
                             idAndAnswer.put(voteEntity, answer);
-                            liveBll.sendVote(answer);
+                            String nonce = "" + StableLogHashMap.creatNonce();
+                            liveBll.sendVote(answer, nonce);
                             StableLogHashMap logHashMap = new StableLogHashMap("submitVote");
                             logHashMap.put("voteid", "" + voteEntity.getChoiceId());
                             logHashMap.put("stuvote", "" + answer);
-                            logHashMap.addSno("5").creatNonce().addStable("2");
+                            logHashMap.addSno("5").addNonce(nonce).addStable("2");
                             umsAgentDebug2(eventId, logHashMap.getData());
                         }
                     });

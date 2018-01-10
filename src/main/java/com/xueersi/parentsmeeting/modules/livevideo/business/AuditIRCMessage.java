@@ -386,7 +386,7 @@ public class AuditIRCMessage {
             }
             JSONObject jsonObject = new JSONObject();
             try {
-                String nonce = "" + UUID.randomUUID();
+                String nonce = "" + StableLogHashMap.creatNonce();
                 jsonObject.put("type", "" + XESCODE.REQUEST_STUDENT_PUSH);
                 jsonObject.put("status", "on");
                 jsonObject.put("nonce", nonce);
@@ -516,7 +516,7 @@ public class AuditIRCMessage {
         mHandler.removeCallbacks(mTimeoutRunnable);
         JSONObject jsonObject = new JSONObject();
         try {
-            String nonce = "" + UUID.randomUUID();
+            String nonce = "" + StableLogHashMap.creatNonce();
             jsonObject.put("type", "" + XESCODE.REQUEST_STUDENT_PUSH);
             jsonObject.put("status", "off");
             jsonObject.put("nonce", nonce);

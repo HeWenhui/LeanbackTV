@@ -837,14 +837,15 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     public void onClick(View v) {
                         boolean isUnderstand = v.getId() == R.id.tv_livevideo_understand_understand;
                         mLogtf.d("understand:isUnderstand=" + isUnderstand);
-                        mLiveBll.understand(isUnderstand);
+                        String nonce = "" + StableLogHashMap.creatNonce();
+                        mLiveBll.understand(isUnderstand, nonce);
                         removeQuestionViews();
                         mVPlayVideoControlHandler.sendEmptyMessage(NO_UNDERSTAND);
                         Map<String, String> mData = new HashMap<>();
                         mData.put("logtype", "sendUnderstand");
                         mData.put("answerType", isUnderstand ? "1" : "0");
                         mData.put("expect", "1");
-                        mData.put("nonce", "" + UUID.randomUUID());
+                        mData.put("nonce", "" + nonce);
                         mData.put("sno", "3");
                         mData.put("stable", "1");
                         umsAgentDebug2(understandEventId, mData);
