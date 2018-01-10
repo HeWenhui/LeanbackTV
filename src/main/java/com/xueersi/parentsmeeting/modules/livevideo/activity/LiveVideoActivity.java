@@ -369,7 +369,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             rankBll = new RankBll(this);
             rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
             rankBll.setLiveBll(mLiveBll);
-            englishH5Cache = new EnglishH5Cache(this, mLiveBll, mVSectionID);
+//            englishH5Cache = new EnglishH5Cache(this, mLiveBll, mVSectionID);
         }
         videoChatBll.setLiveBll(mLiveBll);
 
@@ -815,7 +815,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             if (rankBll != null) {
                 rankBll.setGetInfo(mGetInfo);
             }
-            englishH5Cache.getCourseWareUrl();
+            if (englishH5Cache != null) {
+                englishH5Cache.getCourseWareUrl();
+            }
         }
         Loger.d(TAG, "onLiveInit:time=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
