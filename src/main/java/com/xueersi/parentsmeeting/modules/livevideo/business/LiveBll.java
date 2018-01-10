@@ -724,7 +724,9 @@ public class LiveBll extends BaseBll {
                         if ("on".equals(mainRoomstatus.getExamStatus())) {
                             String num = mainRoomstatus.getExamNum();
                             mQuestionAction.onExamStart(mLiveId, num, "");
-                            mAnswerRankBll.setTestId(num);
+                            if(mAnswerRankBll!=null) {
+                                mAnswerRankBll.setTestId(num);
+                            }
                         } else {
                             mQuestionAction.onExamStop();
                         }
@@ -782,7 +784,9 @@ public class LiveBll extends BaseBll {
                 if (liveTopic.getVideoQuestionLiveEntity() != null) {
                     if (mQuestionAction != null) {
                         mQuestionAction.showQuestion(liveTopic.getVideoQuestionLiveEntity());
-                        mAnswerRankBll.setTestId(liveTopic.getVideoQuestionLiveEntity().getvQuestionID());
+                        if(mAnswerRankBll!=null) {
+                            mAnswerRankBll.setTestId(liveTopic.getVideoQuestionLiveEntity().getvQuestionID());
+                        }
                         sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                     }
                 } else {
@@ -908,7 +912,9 @@ public class LiveBll extends BaseBll {
 //                            mGetInfo.getLiveTopic().setTopic(getTopicFromQuestion(videoQuestionLiveEntity));
                             mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(videoQuestionLiveEntity);
                             mQuestionAction.showQuestion(videoQuestionLiveEntity);
-                            mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                            if(mAnswerRankBll!=null) {
+                                mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                            }
                         }
                         msg += "SENDQUESTION:id=" + videoQuestionLiveEntity.id + ",gold=" + videoQuestionLiveEntity.gold;
                     }
@@ -1091,7 +1097,9 @@ public class LiveBll extends BaseBll {
                             String num = object.optString("num", "0");
                             String nonce = object.optString("nonce");
                             mQuestionAction.onExamStart(mLiveId, num, nonce);
-                            mAnswerRankBll.setTestId(num);
+                            if(mAnswerRankBll!=null) {
+                                mAnswerRankBll.setTestId(num);
+                            }
                         }
                     }
                     break;
@@ -1140,8 +1148,10 @@ public class LiveBll extends BaseBll {
                                     videoQuestionLiveEntity.type = videoQuestionLiveEntity.questiontype = object.optString("questiontype");
                                     videoQuestionLiveEntity.assess_ref = object.optString("assess_ref");
                                 }
-                                mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
-                                mAnswerRankBll.setType(videoQuestionLiveEntity.courseware_type);
+                                if(mAnswerRankBll!=null) {
+                                    mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                                    mAnswerRankBll.setType(videoQuestionLiveEntity.courseware_type);
+                                }
                             }
                             englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
                         }
@@ -1398,7 +1408,9 @@ public class LiveBll extends BaseBll {
                     case XESCODE.RANK_TEA_MESSAGE:
                         try {
                             List<RankUserEntity> lst = JSON.parseArray(object.optString("stuInfo"), RankUserEntity.class);
-                            mAnswerRankBll.showRankList(lst);
+                            if(mAnswerRankBll!=null) {
+                                mAnswerRankBll.showRankList(lst);
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
