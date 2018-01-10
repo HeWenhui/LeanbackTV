@@ -176,7 +176,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     long startTime = System.currentTimeMillis();
     /** onPause状态不暂停视频 */
     boolean onPauseNotStopVideo = false;
-    /**领奖台业务*/
+    /** 领奖台业务 */
     private AnswerRankBll answerRankBll;
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -293,14 +293,14 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         if (englishH5CoursewareBll != null) {
                             englishH5CoursewareBll.setVideoLayout(lp.width, lp.height);
                         }
-                        if(answerRankBll!=null){
-                            answerRankBll.setVideoLayout(lp.width,lp.height);
+                        if (answerRankBll != null) {
+                            answerRankBll.setVideoLayout(lp.width, lp.height);
                         }
                     }
                 });
             }
         }, 10);
-        answerRankBll=new AnswerRankBll(mContext,bottomContent);
+        answerRankBll = new AnswerRankBll(mContext, bottomContent);
         mLiveBll.setAnswerRankBll(answerRankBll);
         questionBll.setAnswerRankBll(answerRankBll);
         englishH5CoursewareBll.setAnswerRankBll(answerRankBll);
@@ -837,7 +837,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             if (rankBll != null) {
                 rankBll.setGetInfo(mGetInfo);
             }
-            englishH5Cache.getCourseWareUrl();
+            if (englishH5Cache != null) {
+                englishH5Cache.getCourseWareUrl();
+            }
         }
         Loger.d(TAG, "onLiveInit:time=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
