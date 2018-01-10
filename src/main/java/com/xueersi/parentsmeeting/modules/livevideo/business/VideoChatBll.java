@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.dialog.MicTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.RaiseHandDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.AgoraVideoChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VideoChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -296,7 +297,7 @@ public class VideoChatBll implements VideoChatAction {
                         @Override
                         public void run() {
                             Map<String, String> mData = new HashMap<>();
-                            String nonce = UUID.randomUUID().toString();
+                            String nonce = StableLogHashMap.creatNonce();
                             mData.put("logtype", "raiseHand");
                             mData.put("clicktype", "clicked");
                             mData.put("status", "1");

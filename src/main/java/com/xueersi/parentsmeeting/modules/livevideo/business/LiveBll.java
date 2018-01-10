@@ -2195,12 +2195,13 @@ public class LiveBll extends BaseBll {
      *
      * @param understand
      */
-    public void understand(boolean understand) {
+    public void understand(boolean understand, String nonce) {
         if (mMainTeacherStr != null) {
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("type", "" + XESCODE.UNDERSTANDS);
                 jsonObject.put("understand", understand);
+                jsonObject.put("nonce", nonce);
                 mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
                 mLogtf.d("understand ok");
             } catch (Exception e) {
@@ -2448,12 +2449,13 @@ public class LiveBll extends BaseBll {
         }
     }
 
-    public void sendVote(int answer) {
+    public void sendVote(int answer, String nonce) {
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "" + XESCODE.VOTE_SEND);
             jsonObject.put("id", "" + mGetInfo.getStuId());
             jsonObject.put("answer", "" + answer);
+            jsonObject.put("nonce", "" + nonce);
             mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
         } catch (Exception e) {
             // Loger.e(TAG, "understand", e);
