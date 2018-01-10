@@ -19,7 +19,7 @@ import java.io.File;
  * Created by linyuqiang on 2016/9/23.
  */
 public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback {
-    String TAG = "LearnReportBll";
+    String TAG = "LecLearnReportBll";
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     private LogToFile mLogtf;
     private Activity activity;
@@ -70,19 +70,23 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
 
     public void initView(RelativeLayout bottomContent) {
         //学习报告
-        rlLearnReportContent = new RelativeLayout(activity);
-        rlLearnReportContent.setId(R.id.rl_livevideo_content_learnreport);
+        if (rlLearnReportContent == null) {
+            rlLearnReportContent = new RelativeLayout(activity);
+            rlLearnReportContent.setId(R.id.rl_livevideo_content_learnreport);
+        } else {
+            ViewGroup group = (ViewGroup) rlLearnReportContent.getParent();
+            if (group != null) {
+                group.removeView(rlLearnReportContent);
+            }
+        }
         bottomContent.addView(rlLearnReportContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-//        if (mLearnReport != null) {
-//            mLearnReport = new LecLearnReportPager(activity, null, mLiveBll, LecLearnReportBll.this);
-//            rlLearnReportContent.removeAllViews();
-//            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-//                    ViewGroup.LayoutParams.MATCH_PARENT);
-//            rlLearnReportContent.addView(mLearnReport.getRootView(), params);
-//            rlLearnReportContent.setVisibility(View.VISIBLE);
-//        } else {
-//            onLearnReport(null);
-//        }
+        if (mLearnReport != null) {
+            rlLearnReportContent.removeAllViews();
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+            rlLearnReportContent.addView(mLearnReport.getRootView(), params);
+            rlLearnReportContent.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

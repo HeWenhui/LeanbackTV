@@ -511,6 +511,34 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return null;
     }
 
+    /**
+     * 解析学习报告
+     *
+     * @param responseEntity
+     * @return
+     */
+    public LearnReportEntity parseLecLearnReport(ResponseEntity responseEntity) {
+        try {
+            JSONObject dataObject = (JSONObject) responseEntity.getJsonObject();
+            LearnReportEntity learnReportEntity = new LearnReportEntity();
+            LearnReportEntity.ReportEntity stu = new LearnReportEntity.ReportEntity();
+            learnReportEntity.setStu(stu);
+            stu.setStuId(dataObject.getInt("stu_id"));
+            //stu.setGold(stuObject.getInt("group_id"));
+            stu.setRate(dataObject.getString("rate"));
+            stu.setAverageRate(dataObject.getString("averageRate"));
+            stu.setRank(dataObject.optInt("rank"));
+            stu.setLastRank(dataObject.optInt("last_rank", 0));
+            stu.setTime(dataObject.optInt("time"));
+            //stu.setStuName(stuObject.getString("stuName"));
+            return learnReportEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parseLearnReport", e.getMessage());
+        }
+        return null;
+    }
+
     public SpeechEvalEntity parseSpeechEval(ResponseEntity responseEntity) {
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         SpeechEvalEntity speechEvalEntity = new SpeechEvalEntity();
