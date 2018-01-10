@@ -53,6 +53,7 @@ public class AnswerRankBll {
     private String testId;
     private String type;
     private String isShow;
+    private View vCameraArea;
 
     public String getIsShow() {
         return isShow;
@@ -102,6 +103,8 @@ public class AnswerRankBll {
         mContext = context;
         this.bottomContent = bottomContent;
         mLst = new ArrayList<>();
+        vCameraArea=new View(context);
+        vCameraArea.setBackgroundColor(context.getResources().getColor(R.color.transparent));
         setVideoLayout(ScreenUtils.getScreenWidth(), ScreenUtils.getScreenHeight());
         fullMarkListCallBack=new HttpCallBack() {
             @Override
@@ -147,17 +150,13 @@ public class AnswerRankBll {
             llRankList = new LinearLayout(mContext);
             llRankList.setClickable(true);
             llRankList.setOrientation(LinearLayout.VERTICAL);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(displayWidth-videoWidth, ViewGroup.LayoutParams.MATCH_PARENT);
             params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             params.setMargins(0,0,0,(ScreenUtils.getScreenHeight()-displayHeight)/2);
             llRankList.setLayoutParams(params);
             llRankList.setBackgroundColor(Color.parseColor("#343b46"));
-            View v=new View(mContext);
-            LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(1,0);
-            layoutParams.weight=1;
-            v.setLayoutParams(layoutParams);
-            llRankList.addView(v);
+            llRankList.addView(vCameraArea);
             TextView textView = new TextView(mContext);
             textView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             textView.setGravity(Gravity.CENTER);
@@ -167,7 +166,7 @@ public class AnswerRankBll {
             textView.setTextSize(13);
             textView.setPadding(0, SizeUtils.Dp2Px(mContext, 3), 0, SizeUtils.Dp2Px(mContext, 3));
             llRankList.addView(textView);
-            bottomContent.addView(llRankList,2, params);
+            bottomContent.addView(llRankList,1, params);
         }
         for (int i = mLst.size(); i < lst.size(); i++) {
             if (i % 2 == 0) {
@@ -193,6 +192,7 @@ public class AnswerRankBll {
             try {
                 bottomContent.removeView(llRankList);
                 llRankList=null;
+                mLst.clear();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -406,12 +406,14 @@ public class AnswerRankBll {
                     LiveVideoActivity.VIDEO_HEIGHT);
             topMargin = height - topMargin + (screenHeight - height) / 2;
             topMargin = screenHeight - topMargin;
+            LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(wradio,topMargin);
+            vCameraArea.setLayoutParams(params);
             bottomMargin = (screenHeight - displayHeight) / 2;
         }
         if (llRankList != null) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) llRankList.getLayoutParams();
             params.width = wradio;
-            params.height = topMargin;
+            params.height = displayHeight;
             params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             params.setMargins(0, 0, 0, bottomMargin);

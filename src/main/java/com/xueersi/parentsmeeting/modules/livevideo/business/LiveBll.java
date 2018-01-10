@@ -1641,9 +1641,11 @@ public class LiveBll extends BaseBll {
             onLiveFailure("服务器异常", null);
             return;
         }
-        mAnswerRankBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
-        mAnswerRankBll.setTeamId(mGetInfo.getStudentLiveInfo().getTeamId());
-        mAnswerRankBll.setIsShow(mGetInfo.getIs_show_ranks());
+        if(mAnswerRankBll!=null&&mGetInfo.getStudentLiveInfo()!=null) {
+            mAnswerRankBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
+            mAnswerRankBll.setTeamId(mGetInfo.getStudentLiveInfo().getTeamId());
+            mAnswerRankBll.setIsShow(mGetInfo.getIs_show_ranks());
+        }
         if (mGetInfo.getIsArts() == 1) {
             appID = UmsConstants.ARTS_APP_ID;
             LiveVideoConfig.IS_SCIENCE = false;
