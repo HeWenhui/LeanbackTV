@@ -269,7 +269,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return null;
     }
 
-    /** 解析直播h、缓存数据 */
+    /** 解析直播topic数据 */
     public LiveTopic parseLiveTopic(LiveTopic oldLiveTopic, JSONObject liveTopicJson, int type) throws JSONException {
         LiveTopic liveTopic = new LiveTopic();
         if (type != LiveBll.LIVE_TYPE_LIVE) {
