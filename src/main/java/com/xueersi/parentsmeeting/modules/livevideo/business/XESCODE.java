@@ -90,16 +90,18 @@ public interface XESCODE {
     int XCR_ROOM_DB_START = 193;
     /** 开启分贝能量条指令 */
     int XCR_ROOM_DB_CLOSE = 194;
+    /** 学习报告-讲座 */
+    int LEC_LEARNREPORT = 199;
     /** 投票开始 */
     int VOTE_START = 210;
     /** 投票开始，学生重新进入 */
     int VOTE_START_JOIN = 211;
     /** 投票发送给老师答案 */
     int VOTE_SEND = 212;
-    /**上墙-学生发送消息*/
-    int RANK_STU_MESSAGE=225;
-    /**上墙-老师发送消息*/
-    int RANK_TEA_MESSAGE=226;
-    /**上墙-学生重连发送消息*/
-    int RANK_STU_RECONNECT_MESSAGE=227;
+    /** 上墙-学生发送消息 */
+    int RANK_STU_MESSAGE = 225;
+    /** 上墙-老师发送消息 */
+    int RANK_TEA_MESSAGE = 226;
+    /** 上墙-学生重连发送消息 */
+    int RANK_STU_RECONNECT_MESSAGE = 227;
 }
