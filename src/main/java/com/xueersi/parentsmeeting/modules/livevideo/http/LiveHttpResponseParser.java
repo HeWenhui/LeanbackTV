@@ -272,6 +272,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     /** 解析直播h、缓存数据 */
     public LiveTopic parseLiveTopic(LiveTopic oldLiveTopic, JSONObject liveTopicJson, int type) throws JSONException {
         LiveTopic liveTopic = new LiveTopic();
+        if (type != LiveBll.LIVE_TYPE_LIVE) {
+            liveTopic.setMode(LiveTopic.MODE_CLASS);
+        }
         if (type == LiveBll.LIVE_TYPE_LIVE && liveTopicJson.has("room_2")) {
             JSONObject status = liveTopicJson.getJSONObject("room_2");
             RoomStatusEntity coachStatusEntity = liveTopic.getCoachRoomstatus();
