@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -53,7 +55,7 @@ public class AnswerRankBll {
     private String testId;
     private String type;
     private String isShow;
-    private View vCameraArea;
+    private SoundPool mSoundPool;
 
     public String getIsShow() {
         return isShow;
@@ -103,8 +105,6 @@ public class AnswerRankBll {
         mContext = context;
         this.bottomContent = bottomContent;
         mLst = new ArrayList<>();
-        vCameraArea=new View(context);
-        vCameraArea.setBackgroundColor(context.getResources().getColor(R.color.transparent));
         setVideoLayout(ScreenUtils.getScreenWidth(), ScreenUtils.getScreenHeight());
         fullMarkListCallBack=new HttpCallBack() {
             @Override
@@ -140,6 +140,7 @@ public class AnswerRankBll {
      * @param lst
      */
     public void showRankList(List<RankUserEntity> lst) {
+        bottomContent.setClickable(true);
         if("0".equals(isShow)){
             return;
         }
@@ -150,13 +151,16 @@ public class AnswerRankBll {
             llRankList = new LinearLayout(mContext);
             llRankList.setClickable(true);
             llRankList.setOrientation(LinearLayout.VERTICAL);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(displayWidth-videoWidth, ViewGroup.LayoutParams.MATCH_PARENT);
+            int topMargin = (int) ((LiveVideoActivity.VIDEO_HEIGHT - LiveVideoActivity.VIDEO_HEAD_HEIGHT) * displayHeight /
+                    LiveVideoActivity.VIDEO_HEIGHT);
+            topMargin = displayHeight - topMargin + (ScreenUtils.getScreenHeight() - displayHeight) / 2;
+            topMargin = ScreenUtils.getScreenHeight() - topMargin;
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(displayWidth-videoWidth, topMargin);
             params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             params.setMargins(0,0,0,(ScreenUtils.getScreenHeight()-displayHeight)/2);
             llRankList.setLayoutParams(params);
             llRankList.setBackgroundColor(Color.parseColor("#343b46"));
-            llRankList.addView(vCameraArea);
             TextView textView = new TextView(mContext);
             textView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             textView.setGravity(Gravity.CENTER);
@@ -192,6 +196,7 @@ public class AnswerRankBll {
             try {
                 bottomContent.removeView(llRankList);
                 llRankList=null;
+                bottomContent.setClickable(false);
                 mLst.clear();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -278,6 +283,7 @@ public class AnswerRankBll {
         }
 
         bottomContent.addView(rlFullMarkList);
+        playVoice();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -406,14 +412,12 @@ public class AnswerRankBll {
                     LiveVideoActivity.VIDEO_HEIGHT);
             topMargin = height - topMargin + (screenHeight - height) / 2;
             topMargin = screenHeight - topMargin;
-            LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(wradio,topMargin);
-            vCameraArea.setLayoutParams(params);
             bottomMargin = (screenHeight - displayHeight) / 2;
         }
         if (llRankList != null) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) llRankList.getLayoutParams();
             params.width = wradio;
-            params.height = displayHeight;
+            params.height = topMargin;
             params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             params.setMargins(0, 0, 0, bottomMargin);
@@ -465,5 +469,12 @@ public class AnswerRankBll {
         tvNo2.setLayoutParams(params2);
         tvNo3.setLayoutParams(params3);
         return new TextView[]{tvNo1,tvNo2,tvNo3};
+    }
+    private void playVoice(){
+        if(mSoundPool==null){
+            mSoundPool=new SoundPool(10, AudioManager.STREAM_MUSIC,5);
+            mSoundPool.load(mContext,R.raw.full_mark_list,1);
+        }
+        mSoundPool.play(1,1, 1, 0, 0, 1);
     }
 }

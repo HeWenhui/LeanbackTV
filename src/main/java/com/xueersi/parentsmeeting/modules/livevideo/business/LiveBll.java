@@ -2416,6 +2416,7 @@ public class LiveBll extends BaseBll {
             jsonObject.put("classId", mGetInfo.getStudentLiveInfo().getClassId());
             jsonObject.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
             mIRCMessage.sendMessage(mMainTeacherStr, jsonObject.toString());
+            Loger.i(mMainTeacherStr+"======notice send"+jsonObject.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
