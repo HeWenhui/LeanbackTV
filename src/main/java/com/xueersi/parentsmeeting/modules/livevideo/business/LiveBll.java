@@ -1334,6 +1334,13 @@ public class LiveBll extends BaseBll {
                         }
                         break;
                     }
+                    case XESCODE.LEC_LEARNREPORT: {
+                        msg += ",LEC_LEARNREPORT";
+                        if (mLecLearnReportAction != null) {
+                            getLearnReport(2);
+                        }
+                        break;
+                    }
                     case XESCODE.VOTE_START: {
                         msg += ",VOTE_START";
                         String open = object.optString("open");
@@ -1780,18 +1787,23 @@ public class LiveBll extends BaseBll {
     private synchronized void getLearnReport(final int from) {
         XesMobAgent.liveLearnReport("request:" + from);
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mLogtf.d("getLearnReport:enstuId=" + enstuId + ",liveId=" + mLiveId);
+        mLogtf.d("getLearnReport:enstuId=" + enstuId + ",liveType=" + mLiveType + ",liveId=" + mLiveId);
         mHttpManager.getLearnReport(enstuId, mLiveId, mLiveType, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 LearnReportEntity learnReportEntity = mHttpResponseParser.parseLearnReport(responseEntity);
-                if (mLearnReportAction != null && learnReportEntity != null) {
+                if (learnReportEntity != null) {
                     learnReportEntity.getStu().setStuName(mGetInfo.getStuName());
                     learnReportEntity.getStu().setTeacherName(mGetInfo.getTeacherName());
                     learnReportEntity.getStu().setTeacherIMG(mGetInfo.getTeacherIMG());
-                    mLearnReportAction.onLearnReport(learnReportEntity);
+                    if (mLearnReportAction != null) {
+                        mLearnReportAction.onLearnReport(learnReportEntity);
+                    } else if (mLecLearnReportAction != null) {
+                        mLecLearnReportAction.onLearnReport(learnReportEntity);
+                    }
                 }
+
                 XesMobAgent.liveLearnReport("request-ok:" + from);
                 mLogtf.d("getLearnReport:onPmSuccess:learnReportEntity=" + (learnReportEntity == null) + "," +
                         "JsonObject=" + responseEntity.getJsonObject());
@@ -2224,12 +2236,13 @@ public class LiveBll extends BaseBll {
      *
      * @param understand
      */
-    public void understand(boolean understand) {
+    public void understand(boolean understand, String nonce) {
         if (mMainTeacherStr != null) {
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("type", "" + XESCODE.UNDERSTANDS);
                 jsonObject.put("understand", understand);
+                jsonObject.put("nonce", nonce);
                 mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
                 mLogtf.d("understand ok");
             } catch (Exception e) {
@@ -2493,12 +2506,13 @@ public class LiveBll extends BaseBll {
         }
     }
 
-    public void sendVote(int answer) {
+    public void sendVote(int answer, String nonce) {
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "" + XESCODE.VOTE_SEND);
             jsonObject.put("id", "" + mGetInfo.getStuId());
             jsonObject.put("answer", "" + answer);
+            jsonObject.put("nonce", "" + nonce);
             mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
         } catch (Exception e) {
             // Loger.e(TAG, "understand", e);
