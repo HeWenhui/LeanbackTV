@@ -19,7 +19,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import ren.yale.android.cachewebviewlib.CacheInterceptor;
 import ren.yale.android.cachewebviewlib.CacheWebView;
 import ren.yale.android.cachewebviewlib.WebViewCache;
 

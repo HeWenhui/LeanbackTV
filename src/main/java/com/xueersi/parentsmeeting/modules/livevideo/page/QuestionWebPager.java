@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.logerhelper.LogerTag;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
@@ -85,6 +86,10 @@ public class QuestionWebPager extends BasePager {
 //                view.findViewById(R.id.rl_livevideo_subject_error).setVisibility(View.GONE);
 //                wvSubjectWeb.setVisibility(View.VISIBLE);
                 wvSubjectWeb.reload();
+                errorView.setVisibility(View.GONE);
+                mView.findViewById(R.id.rl_livevideo_subject_loading).setVisibility(View.VISIBLE);
+                ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
+                ((AnimationDrawable) ivLoading.getBackground()).start();
             }
         });
         return view;
@@ -148,9 +153,6 @@ public class QuestionWebPager extends BasePager {
 //        wvSubjectWeb.loadUrl(String.format("javascript:examSubmitAll(" + code + ")"));
         isEnd = true;
         wvSubjectWeb.loadUrl(jsExamSubmitAll);
-        if(questionBll instanceof QuestionBll){
-            ((QuestionBll) questionBll).onSubmit();
-        }
     }
 
     public class MyWebChromeClient extends android.webkit.WebChromeClient {
@@ -189,8 +191,9 @@ public class QuestionWebPager extends BasePager {
                 if (loadView != null) {
                     ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
                     ((AnimationDrawable) ivLoading.getBackground()).stop();
-                    ViewGroup group = (ViewGroup) loadView.getParent();
-                    group.removeView(loadView);
+                    /*ViewGroup group = (ViewGroup) loadView.getParent();
+                    group.removeView(loadView);*/
+                    loadView.setVisibility(View.GONE);
                 }
             }
         }
@@ -204,9 +207,6 @@ public class QuestionWebPager extends BasePager {
             logToFile.i("onPageFinished:url=" + url + ",failingUrl=" + failingUrl + ",isEnd=" + isEnd);
             if (isEnd && url.equals(examUrl)) {
                 wvSubjectWeb.loadUrl(jsExamSubmitAll);
-                if(questionBll instanceof QuestionBll){
-                    ((QuestionBll) questionBll).onSubmit();
-                }
                 logToFile.i("onPageFinished:examSubmitAll");
             }
             if (failingUrl == null) {
@@ -255,10 +255,16 @@ public class QuestionWebPager extends BasePager {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             logToFile.i("shouldOverrideUrlLoading:url=" + url);
             if(url.contains("live.xueersi.com/Live/getMultiTestResult")
-                    ||url.contains("live.xueersi.com/LiveExam/examResult")){
+                    ){
                 if(questionBll instanceof QuestionBll){
-                    ((QuestionBll) questionBll).onSubmit();
+                    ((QuestionBll) questionBll).onSubmit(XESCODE.STOPQUESTION,url.contains("submitType=force"));
                 }
+                return false;
+            }else if(url.contains("live.xueersi.com/LiveExam/examResult")){
+                if(questionBll instanceof QuestionBll){
+                    ((QuestionBll) questionBll).onSubmit(XESCODE.EXAM_STOP,url.contains("submitType=force"));
+                }
+                return false;
             }
             if ("xueersi://livevideo/examPaper/close".equals(url) || "http://baidu.com/".equals(url)) {
                 ViewGroup group = (ViewGroup) mView.getParent();

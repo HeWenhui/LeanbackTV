@@ -85,6 +85,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     private AnswerRankBll mAnswerRankBll;
     private boolean hasQuestion;
     private long submitTime;
+    private boolean hasSubmit;
 
     public void setAnswerRankBll(AnswerRankBll answerRankBll) {
         mAnswerRankBll = answerRankBll;
@@ -621,6 +622,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         } else {
             return;
         }
+        //hasSubmit=false;
         mAnswerRankBll.getFullMarkListH5(new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -662,5 +664,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     public void onSubmit(){
         submitTime = System.currentTimeMillis();
         mLiveBll.sendRankMessage(XESCODE.RANK_STU_MESSAGE);
+        /*if(isShowFullMarkList){
+            showFullMarkList(3000);
+        }else{
+            hasSubmit=true;
+        }*/
     }
 }

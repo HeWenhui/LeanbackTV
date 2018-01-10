@@ -56,6 +56,7 @@ public class AnswerRankBll {
     private String type;
     private String isShow;
     private SoundPool mSoundPool;
+    private TextView tvStatus;
 
     public String getIsShow() {
         return isShow;
@@ -161,15 +162,15 @@ public class AnswerRankBll {
             params.setMargins(0,0,0,(ScreenUtils.getScreenHeight()-displayHeight)/2);
             llRankList.setLayoutParams(params);
             llRankList.setBackgroundColor(Color.parseColor("#343b46"));
-            TextView textView = new TextView(mContext);
-            textView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            textView.setGravity(Gravity.CENTER);
-            textView.setText("答题进行中...");
-            textView.setBackgroundColor(Color.parseColor("#1affffff"));
-            textView.setTextColor(Color.parseColor("#ffffff"));
-            textView.setTextSize(13);
-            textView.setPadding(0, SizeUtils.Dp2Px(mContext, 3), 0, SizeUtils.Dp2Px(mContext, 3));
-            llRankList.addView(textView);
+            tvStatus = new TextView(mContext);
+            tvStatus.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            tvStatus.setGravity(Gravity.CENTER);
+            tvStatus.setText("答题进行中...");
+            tvStatus.setBackgroundColor(Color.parseColor("#1affffff"));
+            tvStatus.setTextColor(Color.parseColor("#ffffff"));
+            tvStatus.setTextSize(13);
+            tvStatus.setPadding(0, SizeUtils.Dp2Px(mContext, 3), 0, SizeUtils.Dp2Px(mContext, 3));
+            llRankList.addView(tvStatus);
             bottomContent.addView(llRankList,1, params);
         }
         for (int i = mLst.size(); i < lst.size(); i++) {
@@ -283,6 +284,9 @@ public class AnswerRankBll {
         }
 
         bottomContent.addView(rlFullMarkList);
+        if(tvStatus!=null){
+            tvStatus.setText("答题结束");
+        }
         playVoice();
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -475,6 +479,6 @@ public class AnswerRankBll {
             mSoundPool=new SoundPool(10, AudioManager.STREAM_MUSIC,5);
             mSoundPool.load(mContext,R.raw.full_mark_list,1);
         }
-        mSoundPool.play(1,1, 1, 0, 0, 1);
+        mSoundPool.play(1,1, 1, 10, 0, 1);
     }
 }

@@ -61,7 +61,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE1;
 import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE2;
@@ -195,6 +194,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private boolean hasQuestion;
     private boolean hasExam;
     private long submitTime;
+    private boolean hasSubmit;
 
     public QuestionBll(Activity activity) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -750,7 +750,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             });
             delayTime=3000;
         }
-        showFullMarkList(XESCODE.STOPQUESTION,delayTime);
+        if(hasSubmit) {
+            showFullMarkList(XESCODE.STOPQUESTION, delayTime);
+        }
         if ("4".equals(ptype)) {
             return;
         }
@@ -920,7 +922,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     examQuestionPager.examSubmitAll();
                     delayTime=3000;
                 }
-                showFullMarkList(XESCODE.EXAM_STOP,delayTime);
+                if(hasSubmit) {
+                    showFullMarkList(XESCODE.EXAM_STOP, delayTime);
+                }
             }
         });
     }
@@ -1603,7 +1607,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     }
 
     private void showFullMarkList(final int type, final int delayTime) {
-        if(type==XESCODE.STOPQUESTION) {
+        /*if(type==XESCODE.STOPQUESTION) {
             if (hasQuestion) {
                 hasQuestion = false;
             } else {
@@ -1615,7 +1619,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }else{
                 return;
             }
-        }
+        }*/
+        hasSubmit=false;
         HttpCallBack callBack = new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -1676,8 +1681,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
-    public void onSubmit() {
+    public void onSubmit(int type,boolean isShowFullMarkList) {
         submitTime = System.currentTimeMillis();
         mLiveBll.sendRankMessage(XESCODE.RANK_STU_MESSAGE);
+        if(isShowFullMarkList){
+            showFullMarkList(type,3000);
+        }else{
+            hasSubmit=true;
+        }
     }
 }
