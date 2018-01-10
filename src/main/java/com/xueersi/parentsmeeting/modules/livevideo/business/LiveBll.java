@@ -42,6 +42,7 @@ import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.Simple
 import com.xueersi.xesalib.umsagent.UmsAgent;
 import com.xueersi.xesalib.umsagent.UmsAgentManager;
 import com.xueersi.xesalib.umsagent.UmsConstants;
+import com.xueersi.xesalib.utils.app.DeviceUtils;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
@@ -2955,7 +2956,15 @@ public class LiveBll extends BaseBll {
         entity.addBodyParam("serverpc", this.playserverEntity.getPcode());
         entity.addBodyParam("serverac", this.playserverEntity.getAcode());
         entity.addBodyParam("serveric", this.playserverEntity.getIcode());
-        entity.addBodyParam("cfrom", "android");
+        try {
+            if (DeviceUtils.isTablet(mContext)) {
+                entity.addBodyParam("cfrom", "androidpad");
+            } else {
+                entity.addBodyParam("cfrom", "android");
+            }
+        } catch (Exception e) {
+            entity.addBodyParam("cfrom", "android");
+        }
         entity.addBodyParam("detail", detail);
         mHttpManager.sendGetNoBusiness(url, entity, new okhttp3.Callback() {
 
@@ -3020,7 +3029,15 @@ public class LiveBll extends BaseBll {
         entity.addBodyParam("appname", mServer.getAppname());
         entity.addBodyParam("reconnnum", "" + (mOpenCount.get() - 1));
         entity.addBodyParam("connsec", "" + (connsec / 1000));
-        entity.addBodyParam("cfrom", "android");
+        try {
+            if (DeviceUtils.isTablet(mContext)) {
+                entity.addBodyParam("cfrom", "androidpad");
+            } else {
+                entity.addBodyParam("cfrom", "android");
+            }
+        } catch (Exception e) {
+            entity.addBodyParam("cfrom", "android");
+        }
         if (playserverEntity.isUseFlv()) {
             entity.addBodyParam("detail", msgid.detail + " flv");
         } else {
