@@ -8,9 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.page.LearnReportPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecLearnReportPager;
 
 import java.io.File;
@@ -34,6 +35,10 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
     private static final int NO_LEARNREPORT = 5;
     /** 当前是否正在显示学习报告 */
     private boolean mIsShowLearnReport = false;
+    /**
+     * 存学习报告
+     */
+    private static final String lecLearnReport = LiveVideoConfig.LEC_LEARN_REPORT;
 
     public LecLearnReportBll(Activity activity) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -90,11 +95,11 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
     }
 
     @Override
-    public void onLearnReport(final LearnReportEntity reportEntity) {
-        mVPlayVideoControlHandler.post(new Runnable() {
-
+    public void onLearnReport(String liveId) {
+        mLiveBll.getLecLearnReport(1000, new AbstractBusinessDataCallBack() {
             @Override
-            public void run() {
+            public void onDataSucess(Object... objData) {
+                LearnReportEntity reportEntity = (LearnReportEntity) objData[0];
                 mLearnReport = new LecLearnReportPager(activity, reportEntity, mLiveBll, LecLearnReportBll.this);
                 rlLearnReportContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -108,9 +113,9 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
                 mLogtf.d("onLearnReport");
                 activity.getWindow().getDecorView().requestLayout();
                 activity.getWindow().getDecorView().invalidate();
+                mVPlayVideoControlHandler.sendEmptyMessage(SHOW_LEARNREPORT);
             }
         });
-        mVPlayVideoControlHandler.sendEmptyMessage(SHOW_LEARNREPORT);
     }
 
     /**

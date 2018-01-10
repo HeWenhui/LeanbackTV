@@ -155,6 +155,8 @@ public class LiveVideoConfig {
     public static String LIVE_EXPE_TIME = "live_expe_time_all";
     /** 英语能量条提示 */
     public static String LIVE_ENGLISH_TIP = "live_english_speeak_tip";
+    /** 英语能量条提示 */
+    public static String LEC_LEARN_REPORT = "lec_learn_report";
     /** 互动题满分榜接口 */
     public static String LIVE_FULL_MARK_LIST_QUESTION = AppConfig.HTTP_HOST + "/LiveCourse/teamTestFullScoreRank";
     /** 互动课件满分榜接口 */

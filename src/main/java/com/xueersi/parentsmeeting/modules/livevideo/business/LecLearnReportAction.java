@@ -10,8 +10,8 @@ public interface LecLearnReportAction {
     /**
      * 学习报告
      *
-     * @param reportEntity
+     * @param liveId
      */
-    void onLearnReport(LearnReportEntity reportEntity);
+    void onLearnReport(String liveId);
 
 }
