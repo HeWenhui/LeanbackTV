@@ -254,7 +254,8 @@ public class QuestionWebPager extends BasePager {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             logToFile.i("shouldOverrideUrlLoading:url=" + url);
-            if(url.contains("https://submit.com")){
+            if(url.contains("live.xueersi.com/Live/getMultiTestResult")
+                    ||url.contains("live.xueersi.com/LiveExam/examResult")){
                 if(questionBll instanceof QuestionBll){
                     ((QuestionBll) questionBll).onSubmit();
                 }
