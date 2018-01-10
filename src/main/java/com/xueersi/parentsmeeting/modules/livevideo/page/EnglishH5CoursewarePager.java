@@ -171,8 +171,8 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
     @Override
     public void initData() {
         super.initData();
-        CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
-        cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NORMAL);
+//        CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
+//        cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NORMAL);
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
 //        webSetting.setUseWideViewPort(false);
