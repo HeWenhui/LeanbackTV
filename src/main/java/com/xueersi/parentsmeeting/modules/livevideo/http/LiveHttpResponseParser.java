@@ -2,9 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
 
-import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.http.HttpResponseParser;
-import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
@@ -25,11 +23,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
+import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.http.ResponseEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -321,6 +321,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             mainStatusEntity.setClassbegin(status.getBoolean("classbegin"));
             mainStatusEntity.setOpenbarrage(status.getBoolean("openbarrage"));
             mainStatusEntity.setOpenchat(status.getBoolean("openchat"));
+            mainStatusEntity.setOpenFeedback(status.optBoolean("isOpenFeedback"));
             if (status.has("exam")) {
                 mainStatusEntity.setHaveExam(true);
                 JSONObject jsonObject = status.getJSONObject("exam");

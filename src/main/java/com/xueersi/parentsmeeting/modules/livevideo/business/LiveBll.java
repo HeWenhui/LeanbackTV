@@ -843,6 +843,12 @@ public class LiveBll extends BaseBll {
                     }
                     englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
                 }
+                if (mLecLearnReportAction != null) {
+                    LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
+                    if (mainRoomstatus.isOpenFeedback()) {
+                        mLecLearnReportAction.onLearnReport(mLiveId);
+                    }
+                }
             } catch (JSONException e) {
                 mLogtf.e("onTopic", e);
                 MobAgent.httpResponseParserError(TAG, "onTopic", e.getMessage());
@@ -1869,6 +1875,8 @@ public class LiveBll extends BaseBll {
                             getLecLearnReport(delayTime + 5000, callBack);
                         }
                     }, delayTime);
+                } else {
+                    callBack.onDataFail(0, msg);
                 }
             }
 

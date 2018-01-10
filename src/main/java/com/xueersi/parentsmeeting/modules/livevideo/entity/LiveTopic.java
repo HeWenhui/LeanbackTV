@@ -135,6 +135,8 @@ public class LiveTopic {
         private boolean classmateChange = true;
         private boolean openDbEnergy;
         private LiveTopic.VoteEntity voteEntity;
+        /** 是否打开反馈 */
+        private boolean isOpenFeedback;
 
         public RoomStatusEntity() {
             classbegin = false;
@@ -161,6 +163,7 @@ public class LiveTopic {
             for (ClassmateEntity entity : roomStatusEntity.classmateEntities) {
                 classmateEntities.add(entity);
             }
+            isOpenFeedback = roomStatusEntity.isOpenFeedback;
         }
 
         public void setClassbegin(boolean classbegin) {
@@ -293,6 +296,14 @@ public class LiveTopic {
 
         public void setVoteEntity(VoteEntity voteEntity) {
             this.voteEntity = voteEntity;
+        }
+
+        public boolean isOpenFeedback() {
+            return isOpenFeedback;
+        }
+
+        public void setOpenFeedback(boolean openFeedback) {
+            isOpenFeedback = openFeedback;
         }
     }
 

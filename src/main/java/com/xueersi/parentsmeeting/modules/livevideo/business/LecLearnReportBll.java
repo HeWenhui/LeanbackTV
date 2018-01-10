@@ -13,8 +13,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecLearnReportPager;
+import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by linyuqiang on 2016/9/23.
@@ -35,10 +42,13 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
     private static final int NO_LEARNREPORT = 5;
     /** 当前是否正在显示学习报告 */
     private boolean mIsShowLearnReport = false;
+    protected ShareDataManager mShareDataManager;
     /**
      * 存学习报告
      */
     private static final String lecLearnReport = LiveVideoConfig.LEC_LEARN_REPORT;
+    boolean isGetReport = false;
+    String liveId;
 
     public LecLearnReportBll(Activity activity) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -47,8 +57,32 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
         this.activity = activity;
     }
 
+    public void setLiveId(String liveId) {
+        this.liveId = liveId;
+    }
+
     public void setLiveBll(LiveBll mLiveBll) {
         this.mLiveBll = mLiveBll;
+    }
+
+    public void setmShareDataManager(ShareDataManager mShareDataManager) {
+        this.mShareDataManager = mShareDataManager;
+        String learn = mShareDataManager.getString(lecLearnReport, "{}", ShareDataManager.SHAREDATA_NOT_CLEAR);
+        try {
+            JSONObject jsonObject = new JSONObject(learn);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+            Date date = new Date();
+            String dayStr = dateFormat.format(date);
+            JSONObject dayObj;
+            if (jsonObject.has(dayStr)) {
+                dayObj = jsonObject.getJSONObject(dayStr);
+                if (dayObj.has(liveId)) {
+                    isGetReport = true;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -95,10 +129,33 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
     }
 
     @Override
-    public void onLearnReport(String liveId) {
+    public void onLearnReport(final String liveId) {
+        if (isGetReport) {
+            return;
+        }
+        isGetReport = true;
         mLiveBll.getLecLearnReport(1000, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
+                try {
+                    String learn = mShareDataManager.getString(lecLearnReport, "{}", ShareDataManager.SHAREDATA_NOT_CLEAR);
+                    JSONObject jsonObject = new JSONObject(learn);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+                    Date date = new Date();
+                    String dayStr = dateFormat.format(date);
+                    JSONObject dayObj;
+                    if (jsonObject.has(dayStr)) {
+                        dayObj = jsonObject.getJSONObject(dayStr);
+                    } else {
+                        dayObj = new JSONObject();
+                    }
+                    dayObj.put(liveId, "true");
+                    jsonObject = new JSONObject();
+                    jsonObject.put(dayStr, dayObj);
+                    mShareDataManager.put(lecLearnReport, jsonObject.toString(), ShareDataManager.SHAREDATA_NOT_CLEAR);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 LearnReportEntity reportEntity = (LearnReportEntity) objData[0];
                 mLearnReport = new LecLearnReportPager(activity, reportEntity, mLiveBll, LecLearnReportBll.this);
                 rlLearnReportContent.removeAllViews();
@@ -114,6 +171,12 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
                 activity.getWindow().getDecorView().requestLayout();
                 activity.getWindow().getDecorView().invalidate();
                 mVPlayVideoControlHandler.sendEmptyMessage(SHOW_LEARNREPORT);
+            }
+
+            @Override
+            public void onDataFail(int errStatus, String failMsg) {
+                super.onDataFail(errStatus, failMsg);
+                isGetReport = false;
             }
         });
     }
