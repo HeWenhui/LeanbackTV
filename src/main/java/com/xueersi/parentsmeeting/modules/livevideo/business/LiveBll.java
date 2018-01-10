@@ -2864,7 +2864,7 @@ public class LiveBll extends BaseBll {
     }
 
     public void getCourseWareUrl(HttpCallBack requestCallBack) {
-//        mHttpManager.getCourseWareUrl(requestCallBack);
+        mHttpManager.getCourseWareUrl(requestCallBack);
     }
 
     static HashMap<String, String> channelAndRoomid = new HashMap();

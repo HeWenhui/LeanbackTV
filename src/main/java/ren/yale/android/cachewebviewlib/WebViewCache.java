@@ -421,6 +421,7 @@ public class WebViewCache {
                 return null;
             }
         }
+        CacheWebViewLog.d("getWebResourceResponse:cache=" + url);
 
         String extension = MimeTypeMap.getFileExtensionFromUrl(url.toLowerCase());
         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
@@ -435,7 +436,7 @@ public class WebViewCache {
         if (!mCacheExtensionConfig.canCache(extension)) {
             return null;
         }
-        CacheWebViewLog.d("getWebResourceResponse:cache=" + url);
+
         InputStream inputStream = null;
 
         if (mCacheExtensionConfig.isHtml(extension)) {
