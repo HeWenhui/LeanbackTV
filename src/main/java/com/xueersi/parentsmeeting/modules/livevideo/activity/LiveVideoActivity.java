@@ -33,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.AnswerRankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
+import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CacheAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishSpeekBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ExpeBll;
@@ -158,7 +159,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     boolean audioRequest = false;
     SpeechEvaluatorUtils mIse;
     RankBll rankBll;
-    EnglishH5Cache englishH5Cache;
+    EnglishH5CacheAction englishH5Cache;
     /** 视频宽度 */
     public static final float VIDEO_WIDTH = 1280f;
     /** 视频高度 */
@@ -393,6 +394,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
             rankBll.setLiveBll(mLiveBll);
             englishH5Cache = new EnglishH5Cache(this, mLiveBll, mVSectionID);
+//            englishH5Cache = new EnglishH5CacheZip(this, mLiveBll, mVSectionID);
         }
         videoChatBll.setLiveBll(mLiveBll);
 

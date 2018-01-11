@@ -49,7 +49,7 @@ import ren.yale.android.cachewebviewlib.config.CacheExtensionConfig;
  * 英语课件缓存
  * Created by linyuqiang on 2017/12/28.
  */
-public class EnglishH5Cache {
+public class EnglishH5Cache implements EnglishH5CacheAction {
     String TAG = "EnglishH5Cache";
     String eventId = LiveVideoConfig.LIVE_H5_CACHE;
     Context context;
@@ -61,7 +61,7 @@ public class EnglishH5Cache {
     CacheReceiver cacheReceiver;
     /** 网络类型 */
     private int netWorkType;
-    boolean useService = false;
+    boolean useService = true;
     boolean isStart = true;
 
     public EnglishH5Cache(Context context, LiveBll liveBll, String liveId) {
@@ -106,12 +106,19 @@ public class EnglishH5Cache {
         }
     };
 
+    @Override
     public void getCourseWareUrl() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
-        String today = dateFormat.format(date);
-        final File cacheDir = new File(cacheFile, today);
-        CacheWebView.getCacheConfig().init(context, cacheDir.getPath(), 1024 * 1024 * 100, 1024 * 1024 * 10)
+        final String today = dateFormat.format(date);
+        final File todayCacheDir = new File(cacheFile, today + "/" + liveId);
+        boolean exists = todayCacheDir.exists();
+        boolean mkdirs = false;
+        if (!todayCacheDir.exists()) {
+            mkdirs = todayCacheDir.mkdirs();
+        }
+        Loger.d(TAG, "getCourseWareUrl:exists=" + exists + ",mkdirs=" + mkdirs);
+        CacheWebView.getCacheConfig().init(context, todayCacheDir.getPath(), 1024 * 1024 * 100, 1024 * 1024 * 10)
                 .enableDebug(true);//100M 磁盘缓存空间,10M 内存缓存空间
         CacheExtensionConfig.addGlobalExtension("mp3");
         CacheExtensionConfig.addGlobalExtension("WAV");
@@ -132,7 +139,7 @@ public class EnglishH5Cache {
                         if (files != null) {
                             for (int i = 0; i < files.length; i++) {
                                 File delectFile = files[i];
-                                if (!delectFile.getPath().equals(cacheDir.getPath())) {
+                                if (!delectFile.getPath().equals(todayCacheDir.getPath())) {
                                     if (delectFile.isDirectory()) {
                                         FileUtils.deleteDir(delectFile);
                                     } else {
@@ -151,10 +158,13 @@ public class EnglishH5Cache {
                     final ArrayList<String> urls = new ArrayList<>();
                     for (int i = 0; i < urlArray.length(); i++) {
                         String play_url = urlArray.getString(i);
-                        File file = new File(cacheDir, MD5.md5(play_url));
+                        File file = new File(todayCacheDir, MD5.md5(play_url));
+                        int index = play_url.indexOf("/index.html");
+                        String startUrl = play_url.substring(0, index);
                         if (!file.exists()) {
                             urls.add(play_url);
                         }
+//                        urls.add(play_url);
                     }
                     Loger.d(TAG, "getCourseWareUrl:onPmSuccess:urlArray=" + urlArray.length() + ",urls=" + urls.size());
                     JSONArray infoArray = liveIdObj.getJSONArray("infos");
@@ -177,7 +187,7 @@ public class EnglishH5Cache {
                     final ArrayList<String> urls2 = new ArrayList<>();
                     urls2.addAll(urls);
                     IntentFilter intentFilter = new IntentFilter(CachePreLoadService.URL_CACHE_ACTION);
-                    cacheReceiver = new CacheReceiver(urls2, cacheDir);
+                    cacheReceiver = new CacheReceiver(urls2, todayCacheDir);
                     context.registerReceiver(cacheReceiver, intentFilter);
 //                    File cacheFile = new File(this.getCacheDir(), "cache_path_name");
                     for (int i = 0; i < urls.size(); i++) {

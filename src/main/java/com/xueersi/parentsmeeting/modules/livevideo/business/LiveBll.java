@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseBll;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.http.CommonRequestCallBack;
+import com.xueersi.parentsmeeting.http.DownloadCallBack;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.HttpRequestParams;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
@@ -2469,7 +2470,7 @@ public class LiveBll extends BaseBll {
             jsonObject.put("classId", mGetInfo.getStudentLiveInfo().getClassId());
             jsonObject.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
             mIRCMessage.sendMessage(mMainTeacherStr, jsonObject.toString());
-            Loger.i(mMainTeacherStr+"======notice send"+jsonObject.toString());
+            Loger.i(mMainTeacherStr + "======notice send" + jsonObject.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -2865,6 +2866,10 @@ public class LiveBll extends BaseBll {
 
     public void getCourseWareUrl(HttpCallBack requestCallBack) {
         mHttpManager.getCourseWareUrl(requestCallBack);
+    }
+
+    public Call download(final String url, final String saveDir, DownloadCallBack downloadCallBack) {
+        return mHttpManager.download(url, saveDir, downloadCallBack);
     }
 
     static HashMap<String, String> channelAndRoomid = new HashMap();
