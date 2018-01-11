@@ -3203,7 +3203,7 @@ public class LiveBll extends BaseBll {
             mData.put("classid", studentLiveInfo.getClassId());
             mData.put("teamid", studentLiveInfo.getTeamId());
         }
-        mData.put("courseId", courseId);
+        mData.put("courseid", courseId);
         mData.put("teacherid", mGetInfo.getMainTeacherId());
         mData.put("coachid", mGetInfo.getTeacherId());
         mData.put("liveid", mLiveId);
