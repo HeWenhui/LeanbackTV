@@ -310,6 +310,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             FullMarkListEntity entity=new FullMarkListEntity();
             entity.setAnswer_time(""+i);
             entity.setStuName("李亚龙啊"+i);
+            entity.setId("abc");
             lst.add(entity);
         }
         handler.postDelayed(new Runnable() {

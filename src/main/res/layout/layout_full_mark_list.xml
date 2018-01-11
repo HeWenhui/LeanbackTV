@@ -5,7 +5,7 @@
     android:background="@drawable/livevideo_pic_img_normal"
     android:clickable="true">
 
-    <HorizontalScrollView
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.SlowHorizontalScrollView
         android:id="@id/sv_live_full_mark_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </HorizontalScrollView>
+    </com.xueersi.parentsmeeting.modules.livevideo.widget.SlowHorizontalScrollView>
 
     <TextView
         android:id="@id/tv_full_mark_list_no1"

@@ -11,7 +11,6 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -26,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.SlowHorizontalScrollView;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
@@ -248,7 +248,7 @@ public class AnswerRankBll {
         ll3.setLayoutParams(llParam);
         ll4.setLayoutParams(llParam);
         //scrollview禁止滚动
-        final HorizontalScrollView sv=(HorizontalScrollView) rlFullMarkList.findViewById(R.id.sv_live_full_mark_list);
+        final SlowHorizontalScrollView sv=(SlowHorizontalScrollView) rlFullMarkList.findViewById(R.id.sv_live_full_mark_list);
         sv.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -300,9 +300,9 @@ public class AnswerRankBll {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    sv.smoothScrollTo(videoWidth,0);
+                    sv.smoothScrollToSlow(videoWidth,0,500);
                 }
-            },3000);
+            },2000);
         }
 
         bottomContent.addView(rlFullMarkList);
@@ -315,7 +315,7 @@ public class AnswerRankBll {
             public void run() {
                 hideFullMarkList();
             }
-        },7000);
+        },4500);
     }
     /**
      * 隐藏满分榜视图
@@ -501,10 +501,8 @@ public class AnswerRankBll {
         return new TextView[]{tvNo1,tvNo2,tvNo3};
     }
     private void playVoice(){
-        /*if(mSoundPool==null){
-            mSoundPool=new SoundPool(10, AudioManager.STREAM_MUSIC,5);
-            mSoundPool.load(mContext,R.raw.full_mark_list,1);
-        }*/
-        mSoundPool.play(1,1, 1, 10, 0, 1);
+        if(mSoundPool!=null) {
+            mSoundPool.play(1, 1, 1, 10, 0, 1);
+        }
     }
 }
