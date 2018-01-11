@@ -48,6 +48,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
@@ -156,6 +158,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     EnglishH5CoursewareBll englishH5CoursewareBll;
     LiveAchievementBll starBll;
     EnglishSpeekBll englishSpeekBll;
+    SpeechFeedBackAction speechFeedBackAction;
     boolean audioRequest = false;
     SpeechEvaluatorUtils mIse;
     RankBll rankBll;
@@ -296,6 +299,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         }
                         if (answerRankBll != null) {
                             answerRankBll.setVideoLayout(lp.width, lp.height);
+                        }
+                        if (speechFeedBackAction != null) {
+                            speechFeedBackAction.setVideoLayout(lp.width, lp.height);
                         }
                     }
                 });
@@ -843,6 +849,10 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             if (englishH5Cache != null) {
                 englishH5Cache.getCourseWareUrl();
             }
+//            SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(this, mLiveBll);
+//            speechFeedBackBll.setBottomContent(bottomContent);
+//            speechFeedBackAction = speechFeedBackBll;
+//            speechFeedBackBll.start();
         }
         Loger.d(TAG, "onLiveInit:time=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
@@ -1364,6 +1374,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         }
         if (englishH5Cache != null) {
             englishH5Cache.stop();
+        }
+        if (speechFeedBackAction != null) {
+            speechFeedBackAction.stop();
         }
         super.onDestroy();
     }
