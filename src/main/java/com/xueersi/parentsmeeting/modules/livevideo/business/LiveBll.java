@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseBll;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.http.CommonRequestCallBack;
+import com.xueersi.parentsmeeting.http.DownloadCallBack;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.HttpRequestParams;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
@@ -2865,6 +2866,10 @@ public class LiveBll extends BaseBll {
         mHttpManager.getCourseWareUrl(requestCallBack);
     }
 
+    public Call download(final String url, final String saveDir, DownloadCallBack downloadCallBack) {
+        return mHttpManager.download(url, saveDir, downloadCallBack);
+    }
+
     static HashMap<String, String> channelAndRoomid = new HashMap();
 
     public void getToken(final LicodeToken licodeToken) {
@@ -3196,7 +3201,7 @@ public class LiveBll extends BaseBll {
             mData.put("classid", studentLiveInfo.getClassId());
             mData.put("teamid", studentLiveInfo.getTeamId());
         }
-        mData.put("courseId", courseId);
+        mData.put("courseid", courseId);
         mData.put("teacherid", mGetInfo.getMainTeacherId());
         mData.put("coachid", mGetInfo.getTeacherId());
         mData.put("liveid", mLiveId);
