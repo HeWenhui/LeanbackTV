@@ -111,14 +111,15 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
         final String today = dateFormat.format(date);
-        final File todayCacheDir = new File(cacheFile, today + "/" + liveId);
-        boolean exists = todayCacheDir.exists();
+        final File todayCacheDir = new File(cacheFile, today);
+        final File todayLiveCacheDir = new File(todayCacheDir, liveId);
+        boolean exists = todayLiveCacheDir.exists();
         boolean mkdirs = false;
-        if (!todayCacheDir.exists()) {
-            mkdirs = todayCacheDir.mkdirs();
+        if (!todayLiveCacheDir.exists()) {
+            mkdirs = todayLiveCacheDir.mkdirs();
         }
         Loger.d(TAG, "getCourseWareUrl:exists=" + exists + ",mkdirs=" + mkdirs);
-        CacheWebView.getCacheConfig().init(context, todayCacheDir.getPath(), 1024 * 1024 * 100, 1024 * 1024 * 10)
+        CacheWebView.getCacheConfig().init(context, todayLiveCacheDir.getPath(), 1024 * 1024 * 100, 1024 * 1024 * 10)
                 .enableDebug(true);//100M 磁盘缓存空间,10M 内存缓存空间
         CacheExtensionConfig.addGlobalExtension("mp3");
         CacheExtensionConfig.addGlobalExtension("WAV");
@@ -158,7 +159,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                     final ArrayList<String> urls = new ArrayList<>();
                     for (int i = 0; i < urlArray.length(); i++) {
                         String play_url = urlArray.getString(i);
-                        File file = new File(todayCacheDir, MD5.md5(play_url));
+                        File file = new File(todayLiveCacheDir, MD5.md5(play_url));
                         int index = play_url.indexOf("/index.html");
                         String startUrl = play_url.substring(0, index);
                         if (!file.exists()) {
@@ -187,7 +188,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                     final ArrayList<String> urls2 = new ArrayList<>();
                     urls2.addAll(urls);
                     IntentFilter intentFilter = new IntentFilter(CachePreLoadService.URL_CACHE_ACTION);
-                    cacheReceiver = new CacheReceiver(urls2, todayCacheDir);
+                    cacheReceiver = new CacheReceiver(urls2, todayLiveCacheDir);
                     context.registerReceiver(cacheReceiver, intentFilter);
 //                    File cacheFile = new File(this.getCacheDir(), "cache_path_name");
                     for (int i = 0; i < urls.size(); i++) {
