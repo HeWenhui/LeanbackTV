@@ -50,6 +50,7 @@ public class AuditIRCMessage {
     private boolean stuPushSuccess = false;
     String stuPushStatus = "";
     LiveAndBackDebug liveAndBackDebug;
+    long enterTime;
 
     public AuditIRCMessage(int netWorkType, String channel, String login, String nickname, LiveAndBackDebug liveAndBackDebug) {
         this.netWorkType = netWorkType;
@@ -60,6 +61,7 @@ public class AuditIRCMessage {
                 + ".txt"));
         mLogtf.clear();
         mLogtf.d("AuditIRCMessage:channel=" + channel + ",login=" + login + ",nickname=" + nickname);
+        enterTime = System.currentTimeMillis();
     }
 
     /**
@@ -519,6 +521,7 @@ public class AuditIRCMessage {
             String nonce = "" + StableLogHashMap.creatNonce();
             jsonObject.put("type", "" + XESCODE.REQUEST_STUDENT_PUSH);
             jsonObject.put("status", "off");
+            jsonObject.put("time", "" + (System.currentTimeMillis() - enterTime) / 1000);
             jsonObject.put("nonce", nonce);
             String target = "s_" + mNickname;
             mConnection.sendMessage(target, jsonObject.toString());
