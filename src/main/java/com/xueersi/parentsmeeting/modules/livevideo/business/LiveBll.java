@@ -788,7 +788,6 @@ public class LiveBll extends BaseBll {
                         if (mAnswerRankBll != null) {
                             mAnswerRankBll.setTestId(liveTopic.getVideoQuestionLiveEntity().getvQuestionID());
                         }
-                        sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                     }
                 } else {
                     if (mQuestionAction != null) {
@@ -1419,7 +1418,7 @@ public class LiveBll extends BaseBll {
                                 mAnswerRankBll.showRankList(lst);
                             }
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            Loger.i("=====notice "+e.getMessage());
                         }
                     default:
                         msg += "default";
@@ -2465,11 +2464,10 @@ public class LiveBll extends BaseBll {
         }
         try {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("type", code);
+            jsonObject.put("type", code+"");
             jsonObject.put("classId", mGetInfo.getStudentLiveInfo().getClassId());
             jsonObject.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
-            mIRCMessage.sendMessage(mMainTeacherStr, jsonObject.toString());
-            Loger.i(mMainTeacherStr+"======notice send"+jsonObject.toString());
+            mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }

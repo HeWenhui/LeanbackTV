@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
+import android.text.TextUtils;
+
 /**
  * Created by Tang on 2018/1/4.
  */
@@ -53,6 +55,9 @@ public class FullMarkListEntity {
     }
 
     public String getStuName() {
+        if(TextUtils.isEmpty(stuName)){
+            stuName="网校学员";
+        }
         return stuName;
     }
 

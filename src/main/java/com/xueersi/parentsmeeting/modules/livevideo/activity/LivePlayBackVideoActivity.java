@@ -795,7 +795,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                                         LivePlayBackVideoActivity.this, "http://live.xueersi" +
                                         ".com/Live/getMultiTestPaper",
                                         userInfoEntity.getStuId(), mAppInfoEntity.getLoginUserName(), mQuestionEntity
-                                        .getvSectionID(), mQuestionEntity.getvQuestionID(), "");
+                                        .getvSectionID(), mQuestionEntity.getvQuestionID(), "", "0");
                                 rlQuestionContent.removeAllViews();
                                 rlQuestionContent.addView(questionWebPager.getRootView(), new LayoutParams
                                         (LayoutParams.MATCH_PARENT,
@@ -962,7 +962,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                             stopEnglishH5Exam();
                         }
 
-                    }, this);
+                    }, this, "0");
             rlQuestionContent.removeAllViews();
             rlQuestionContent.addView(englishH5CoursewarePager.getRootView(), new LayoutParams(LayoutParams
                     .MATCH_PARENT,

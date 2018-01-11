@@ -16,7 +16,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot
 
 import android.os.HandlerThread;
 import android.util.Base64;
-import android.util.Log;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.yaaic.pircbot.NaiveTrustManager;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -468,6 +467,7 @@ public abstract class PircBot implements ReplyConstants {
             return;
         }
         _outputhandler.add("PRIVMSG " + target + " :" + message);
+
     }
 
     /**
@@ -489,6 +489,7 @@ public abstract class PircBot implements ReplyConstants {
      */
     public final void sendNotice(String target, String notice) {
         _outputhandler.add("NOTICE " + target + " :" + notice);
+        Loger.i("====notice send  ","NOTICE " + target + " :" + notice);
     }
 
     /**

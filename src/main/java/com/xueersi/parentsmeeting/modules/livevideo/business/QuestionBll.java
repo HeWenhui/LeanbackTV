@@ -406,6 +406,22 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
             return;
         }
+        if (LiveVideoConfig.IS_SCIENCE && !"4".equals(videoQuestionLiveEntity.type)) {//不是语音评测
+            if (videoQuestionLiveEntity.isTestUseH5) {
+                mVPlayVideoControlHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (questionWebPager != null && questionWebPager.getTestId().equals(videoQuestionLiveEntity
+                                .getvQuestionID())) {
+                            return;
+                        }
+                        mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
+                        mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
+                        hasQuestion = true;
+                    }
+                });
+            }
+        }
         mVideoQuestionLiveEntity = videoQuestionLiveEntity;
         isAnaswer = true;
         if (this.videoQuestionLiveEntity != null) {
@@ -455,11 +471,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         }
                         questionWebPager = new QuestionWebPager(activity, QuestionBll.this, liveGetInfo
                                 .getTestPaperUrl(), liveGetInfo.getStuId(), liveGetInfo.getUname(),
-                                liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(), videoQuestionLiveEntity.nonce);
+                                liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(), videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks());
                         rlQuestionContent.addView(questionWebPager.getRootView());
-                        mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
+                        /*mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
+                        mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
+                        hasQuestion = true;*/
                         setHaveWebQuestion(true);
-                        hasQuestion = true;
+
                     }
                 });
                 return;
@@ -749,9 +767,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
             });
             delayTime=3000;
+        }else if(hasQuestion&&!hasSubmit){
+            getFullMarkList(XESCODE.STOPQUESTION, delayTime);
         }
         if(hasSubmit) {
-            showFullMarkList(XESCODE.STOPQUESTION, delayTime);
+            getFullMarkList(XESCODE.STOPQUESTION, delayTime);
         }
         if ("4".equals(ptype)) {
             return;
@@ -904,6 +924,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         (), liveGetInfo.getUname(), liveid, num, nonce);
                 rlQuestionContent.addView(examQuestionPager.getRootView());
                 mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
+                mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                 setHaveExam(true);
                 hasExam = true;
                 activity.getWindow().getDecorView().requestLayout();
@@ -921,9 +942,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 if (examQuestionPager != null) {
                     examQuestionPager.examSubmitAll();
                     delayTime=3000;
+                }else if(hasExam&&!hasSubmit){
+                    getFullMarkList(XESCODE.EXAM_STOP, delayTime);
                 }
                 if(hasSubmit) {
-                    showFullMarkList(XESCODE.EXAM_STOP, delayTime);
+                    getFullMarkList(XESCODE.EXAM_STOP, delayTime);
                 }
             }
         });
@@ -1606,7 +1629,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         mAnswerRankBll = bll;
     }
 
-    private void showFullMarkList(final int type, final int delayTime) {
+    private void getFullMarkList(final int type, final int delayTime) {
         /*if(type==XESCODE.STOPQUESTION) {
             if (hasQuestion) {
                 hasQuestion = false;
@@ -1621,7 +1644,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
         }*/
         hasSubmit=false;
-        HttpCallBack callBack = new HttpCallBack() {
+        HttpCallBack callBack = new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 final List<FullMarkListEntity> lst = new ArrayList<>();
@@ -1633,45 +1656,20 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-
                 }
-                mVPlayVideoControlHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            switch (type) {
-                                case XESCODE.STOPQUESTION:
-                                    if(questionWebPager!=null) {
-                                        rlQuestionContent.removeView(questionWebPager.getRootView());
-                                        questionWebPager=null;
-                                    }
-                                    break;
-                                case XESCODE.EXAM_STOP:
-                                    if(examQuestionPager!=null) {
-                                        rlQuestionContent.removeView(examQuestionPager.getRootView());
-                                        examQuestionPager = null;
-                                    }
-                                    break;
-
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        mAnswerRankBll.showFullMarkList(lst);
-
-                    }
-                }, delayTime);
-
+                showFullMarkList(type,lst,delayTime);
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
+                showFullMarkList(type,new ArrayList<FullMarkListEntity>(),delayTime);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
+                showFullMarkList(type,new ArrayList<FullMarkListEntity>(),delayTime);
             }
         };
         if (type == XESCODE.STOPQUESTION) {
@@ -1685,9 +1683,37 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         submitTime = System.currentTimeMillis();
         mLiveBll.sendRankMessage(XESCODE.RANK_STU_MESSAGE);
         if(isShowFullMarkList){
-            showFullMarkList(type,3000);
+            getFullMarkList(type,3000);
         }else{
             hasSubmit=true;
         }
+    }
+    private void showFullMarkList(final int type,final List<FullMarkListEntity> lst,int delayTime){
+        mVPlayVideoControlHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    switch (type) {
+                        case XESCODE.STOPQUESTION:
+                            if(questionWebPager!=null) {
+                                rlQuestionContent.removeView(questionWebPager.getRootView());
+                                questionWebPager=null;
+                            }
+                            break;
+                        case XESCODE.EXAM_STOP:
+                            if(examQuestionPager!=null) {
+                                rlQuestionContent.removeView(examQuestionPager.getRootView());
+                                examQuestionPager = null;
+                            }
+                            break;
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                mAnswerRankBll.showFullMarkList(lst);
+
+            }
+        }, delayTime);
     }
 }

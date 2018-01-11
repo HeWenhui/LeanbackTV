@@ -53,8 +53,9 @@ public class QuestionWebPager extends BasePager {
     private boolean isEnd = false;
     String testPaperUrl;
     String jsExamSubmitAll = "javascript:examSubmitAll()";
+    private String isShowRanks;
 
-    public QuestionWebPager(Context context, StopWebQuestion questionBll, String testPaperUrl, String stuId, String stuName, String liveid, String testId, String nonce) {
+    public QuestionWebPager(Context context, StopWebQuestion questionBll, String testPaperUrl, String stuId, String stuName, String liveid, String testId, String nonce, String isShowRanks) {
         super(context);
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
@@ -65,6 +66,7 @@ public class QuestionWebPager extends BasePager {
         this.testId = testId;
         this.testPaperUrl = testPaperUrl;
         this.nonce = nonce;
+        this.isShowRanks=isShowRanks;
         logToFile.i("ExamQuestionPager:liveid=" + liveid + ",testId=" + testId);
         initData();
     }
@@ -118,7 +120,7 @@ public class QuestionWebPager extends BasePager {
         ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
         ((AnimationDrawable) ivLoading.getBackground()).start();
         examUrl = testPaperUrl + "?liveId=" + liveid + "&testId=" + testId
-                + "&stuId=" + stuId + "&stuName=" + stuName;
+                + "&stuId=" + stuId + "&stuName=" + stuName+"&isTowall="+isShowRanks;
 //        String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
 //        examUrl = BrowserBll.getAutoLoginURL(mEnStuId, examUrl, "", 0, true);
         if (!StringUtils.isEmpty(nonce)) {

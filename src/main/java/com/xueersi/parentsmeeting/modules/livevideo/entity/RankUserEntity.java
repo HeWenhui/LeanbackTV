@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
+import android.text.TextUtils;
+
 /**
  * Created by Tang on 2018/1/3.
  */
@@ -17,6 +19,9 @@ public class RankUserEntity {
     }
 
     public String getName() {
+        if(TextUtils.isEmpty(name)){
+            name="网校学员";
+        }
         return name;
     }
 

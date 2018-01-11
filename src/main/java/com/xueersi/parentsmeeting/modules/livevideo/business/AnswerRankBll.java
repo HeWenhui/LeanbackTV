@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.media.AudioManager;
@@ -140,7 +141,9 @@ public class AnswerRankBll {
      * 显示上墙列表
      * @param lst
      */
-    public void showRankList(List<RankUserEntity> lst) {
+    public void showRankList(final List<RankUserEntity> lst) {
+        mSoundPool=new SoundPool(10, AudioManager.STREAM_MUSIC,5);
+        mSoundPool.load(mContext,R.raw.full_mark_list,1);
         bottomContent.setClickable(true);
         if("0".equals(isShow)){
             return;
@@ -173,7 +176,26 @@ public class AnswerRankBll {
             llRankList.addView(tvStatus);
             bottomContent.addView(llRankList,1, params);
         }
-        for (int i = mLst.size(); i < lst.size(); i++) {
+        ((Activity)mContext).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = mLst.size(); i < lst.size(); i++) {
+                    if (i % 2 == 0) {
+                        LinearLayout linearLayout = new LinearLayout(mContext);
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        params.setMargins(0, SizeUtils.Dp2Px(mContext, 7), 0, 0);
+                        linearLayout.setPadding(0, 0, SizeUtils.Dp2Px(mContext, 5), 0);
+                        linearLayout.setLayoutParams(params);
+                        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+                        llRankList.addView(linearLayout);
+                        llCurRow = linearLayout;
+                    }
+                    llCurRow.addView(getRankListItemView(lst.get(i), i));
+                }
+                mLst = lst;
+            }
+        });
+        /*for (int i = mLst.size(); i < lst.size(); i++) {
             if (i % 2 == 0) {
                 LinearLayout linearLayout = new LinearLayout(mContext);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -185,8 +207,8 @@ public class AnswerRankBll {
                 llCurRow = linearLayout;
             }
             llCurRow.addView(getRankListItemView(lst.get(i), i));
-        }
-        mLst = lst;
+        }*/
+
     }
 
     /**
@@ -323,7 +345,11 @@ public class AnswerRankBll {
         tv.setGravity(Gravity.CENTER);
         tv.setEllipsize(TextUtils.TruncateAt.END);
         tv.setPadding(SizeUtils.Dp2Px(mContext, 5), SizeUtils.Dp2Px(mContext, 1), SizeUtils.Dp2Px(mContext, 5), SizeUtils.Dp2Px(mContext, 1));
-        tv.setBackgroundResource(R.drawable.shape_corners_10dp_b0c7de);
+        if(entity.getId().equals(UserBll.getInstance().getMyUserInfoEntity().getStuId())) {
+            tv.setBackgroundResource(R.drawable.shape_corners_10dp_7f8cd1);
+        }else{
+            tv.setBackgroundResource(R.drawable.shape_corners_10dp_b0c7de);
+        }
         tv.setTextColor(Color.parseColor("#ffffff"));
         tv.setMaxLines(1);
         tv.setMaxEms(4);
@@ -364,7 +390,7 @@ public class AnswerRankBll {
         ImageView ivHead = (ImageView) root.findViewById(R.id.iv_live_rank_list_head);
         if (entity.getId().equals(UserBll.getInstance().getMyUserInfoEntity().getStuId())) {
             ivHead.setImageResource(R.drawable.livevideo_ic_hands_me);
-            textView.setTextColor(Color.parseColor("#20abff"));
+            textView.setTextColor(Color.parseColor("#ffedce"));
         } else {
             ivHead.setImageResource(R.drawable.livevideo_ic_hands_normal);
             textView.setTextColor(Color.parseColor("#ffffff"));
@@ -475,10 +501,10 @@ public class AnswerRankBll {
         return new TextView[]{tvNo1,tvNo2,tvNo3};
     }
     private void playVoice(){
-        if(mSoundPool==null){
+        /*if(mSoundPool==null){
             mSoundPool=new SoundPool(10, AudioManager.STREAM_MUSIC,5);
             mSoundPool.load(mContext,R.raw.full_mark_list,1);
-        }
+        }*/
         mSoundPool.play(1,1, 1, 10, 0, 1);
     }
 }

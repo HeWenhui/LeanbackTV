@@ -41,12 +41,13 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
     String liveId;
     LiveAndBackDebug liveAndBackDebug;
     private EnglishH5CoursewareBll mEnglishH5CoursewareBll;
+    private String isShowRanks;
 
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
         mEnglishH5CoursewareBll = englishH5CoursewareBll;
     }
 
-    public EnglishH5CoursewarePager(Context context, boolean isPlayBack, String liveId, String url, String id, final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose, LiveAndBackDebug liveAndBackDebug) {
+    public EnglishH5CoursewarePager(Context context, boolean isPlayBack, String liveId, String url, String id, final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose, LiveAndBackDebug liveAndBackDebug, String isShowRanks) {
         super(context);
         this.liveId = liveId;
         this.url = url;
@@ -56,6 +57,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         this.id = id;
         this.courseware_type = courseware_type;
         this.nonce = nonce;
+        this.isShowRanks=isShowRanks;
         initWebView();
         setErrorTip("H5课件加载失败，请重试");
         setLoadTip("H5课件正在加载，请稍候");
@@ -194,6 +196,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         if (!StringUtils.isEmpty(nonce)) {
             loadUrl += "&nonce=" + nonce;
         }
+        loadUrl+="&isTowall="+isShowRanks;
         Loger.i(TAG, "initData:loadUrl=" + loadUrl);
         loadUrl(loadUrl);
         reloadurl = loadUrl;

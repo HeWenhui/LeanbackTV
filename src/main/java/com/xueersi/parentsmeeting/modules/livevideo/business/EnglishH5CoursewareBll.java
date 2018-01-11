@@ -222,7 +222,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             @Override
             public void run() {
                 if ("on".equals(status)) {
-
+                    if (!"1".equals(videoQuestionLiveEntity.getIsVoice()) ||mErrorVoiceQue.contains(videoQuestionLiveEntity.url)) {
+                        hasQuestion=true;
+                        mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
+                        mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
+                    }
                     if (mH5AndBool.contains(videoQuestionLiveEntity.url)) {
                         logToFile.i("onH5Courseware:url.contains");
                         return;
@@ -281,14 +285,14 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         }
                         delayTime=3000;
                     }
-                    showFullMarkList(delayTime);
+                    getFullMarkList(delayTime);
                 }
             }
         });
     }
 
     private void showH5Paper(final VideoQuestionLiveEntity videoQuestionH5Entity) {
-        hasQuestion=true;
+
         logToFile.i("onH5Courseware:url=" + videoQuestionH5Entity.url);
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "receiveCourseware");
@@ -319,11 +323,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     webViewRequest.releaseWebView();
                 }
             }
-        }, this);
+        }, this, "0");
         h5CoursewarePager.setEnglishH5CoursewareBll(this);
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         bottomContent.addView(h5CoursewarePager.getRootView(), lp);
-        mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
         if (context instanceof WebViewRequest) {
             WebViewRequest webViewRequest = (WebViewRequest) context;
             webViewRequest.requestWebView();
@@ -616,7 +619,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     public interface OnH5ResultClose {
         void onH5ResultClose();
     }
-    private void showFullMarkList(final int delayTime){
+    private void getFullMarkList(final int delayTime){
         if (hasQuestion) {
             hasQuestion = false;
         } else {
@@ -659,13 +662,49 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     }
                 },delayTime);
             }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        try{
+                            if(h5CoursewarePager!=null){
+                                bottomContent.removeView(h5CoursewarePager.getRootView());
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        mAnswerRankBll.showFullMarkList(new ArrayList<FullMarkListEntity>());
+                    }
+                },delayTime);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        try{
+                            if(h5CoursewarePager!=null){
+                                bottomContent.removeView(h5CoursewarePager.getRootView());
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        mAnswerRankBll.showFullMarkList(new ArrayList<FullMarkListEntity>());
+                    }
+                },delayTime);
+            }
         });
     }
     public void onSubmit(){
         submitTime = System.currentTimeMillis();
         mLiveBll.sendRankMessage(XESCODE.RANK_STU_MESSAGE);
         /*if(isShowFullMarkList){
-            showFullMarkList(3000);
+            getFullMarkList(3000);
         }else{
             hasSubmit=true;
         }*/
