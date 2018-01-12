@@ -14,30 +14,25 @@ public class VideoChatLog {
 
     /** 接麦第一步，举手 */
     public static void sno1(LiveAndBackDebug liveAndBackDebug, String nonce) {
-        StableLogHashMap stableLogHashMap = new StableLogHashMap("raiseHand");
-        stableLogHashMap.put("clicktype", "clicked");
-        stableLogHashMap.put("status", "1");
-        stableLogHashMap.put("sno", "1");
-        stableLogHashMap.put("expect", "1");
-        stableLogHashMap.put("nonce", nonce);
-        stableLogHashMap.put("stable", "1");
-        liveAndBackDebug.umsAgentDebug2(eventId, stableLogHashMap.getData());
+        StableLogHashMap logHashMap = new StableLogHashMap("raiseHand");
+        logHashMap.put("clicktype", "clicked");
+        logHashMap.put("status", "1");
+        logHashMap.addSno("1").addExpect("1").addNonce(nonce).addStable("1");
+        liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
     }
 
     /** 接麦第四步，加入房间 */
     public static void sno4(LiveAndBackDebug liveAndBackDebug, String nonce, String room, int joinChannel) {
-        StableLogHashMap stableLogHashMap = new StableLogHashMap("joinChannelSuccess");
-        stableLogHashMap.put("channelname", room);
-        stableLogHashMap.put("status", (joinChannel == 0 ? "1" : "0"));
-        stableLogHashMap.put("ex", (joinChannel == 0 ? "Y" : "N"));
+        StableLogHashMap logHashMap = new StableLogHashMap("joinChannelSuccess");
+        logHashMap.put("channelname", room);
+        logHashMap.put("status", (joinChannel == 0 ? "1" : "0"));
+        logHashMap.addEx((joinChannel == 0 ? "Y" : "N"));
         if (!StringUtils.isEmpty(nonce)) {
-            stableLogHashMap.put("nonce", nonce);
-            stableLogHashMap.put("sno", "4");
-            stableLogHashMap.put("stable", "1");
+            logHashMap.addNonce(nonce).addSno("4").addStable("1");
         }
         if (joinChannel != 0) {
-            stableLogHashMap.put("errcode", "" + joinChannel);
+            logHashMap.put("errcode", "" + joinChannel);
         }
-        liveAndBackDebug.umsAgentDebug3(eventId, stableLogHashMap.getData());
+        liveAndBackDebug.umsAgentDebug3(eventId, logHashMap.getData());
     }
 }

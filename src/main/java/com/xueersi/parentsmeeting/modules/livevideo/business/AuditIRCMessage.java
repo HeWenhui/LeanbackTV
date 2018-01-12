@@ -166,11 +166,11 @@ public class AuditIRCMessage {
                                         }
                                         //旁听日志
                                         String nonce = jsonObject.optString("nonce");
-                                        StableLogHashMap stableLogHashMap = new StableLogHashMap("studentError");
-                                        stableLogHashMap.put("nickname", sender);
-                                        stableLogHashMap.put("status", status);
-                                        stableLogHashMap.addSno("5").addNonce(nonce).addEx("Y").addStable("1");
-                                        liveAndBackDebug.umsAgentDebug(eventid, stableLogHashMap.getData());
+                                        StableLogHashMap logHashMap = new StableLogHashMap("studentError");
+                                        logHashMap.put("nickname", sender);
+                                        logHashMap.put("status", status);
+                                        logHashMap.addSno("5").addNonce(nonce).addExY().addStable("1");
+                                        liveAndBackDebug.umsAgentDebug(eventid, logHashMap.getData());
                                         return;
                                     } else {
                                         stuPushSuccess = true;
@@ -397,11 +397,11 @@ public class AuditIRCMessage {
                 target = "ws_" + mNickname;
                 mConnection.sendMessage(target, jsonObject.toString());
                 //旁听日志
-                StableLogHashMap stableLogHashMap = new StableLogHashMap("sendListenCmd");
-                stableLogHashMap.put("status", "on");
-                stableLogHashMap.put("nickname", mNickname);
-                stableLogHashMap.addSno("1").addNonce(nonce).addExpect("1").addStable("1");
-                liveAndBackDebug.umsAgentDebug(eventid, stableLogHashMap.getData());
+                StableLogHashMap logHashMap = new StableLogHashMap("sendListenCmd");
+                logHashMap.put("status", "on");
+                logHashMap.put("nickname", mNickname);
+                logHashMap.addSno("1").addNonce(nonce).addExpect("1").addStable("1");
+                liveAndBackDebug.umsAgentDebug(eventid, logHashMap.getData());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -527,12 +527,12 @@ public class AuditIRCMessage {
             target = "ws_" + mNickname;
             mConnection.sendMessage(target, jsonObject.toString());
             //旁听日志
-            StableLogHashMap stableLogHashMap = new StableLogHashMap("sendListenCmd");
-            stableLogHashMap.put("status", "off");
-            stableLogHashMap.put("nickname", mNickname);
-            stableLogHashMap.put("time", "" + (System.currentTimeMillis() - enterTime) / 1000);
-            stableLogHashMap.addNonce(nonce).addSno("6").addExpect("1").addStable("1");
-            liveAndBackDebug.umsAgentDebug(eventid, stableLogHashMap.getData());
+            StableLogHashMap logHashMap = new StableLogHashMap("sendListenCmd");
+            logHashMap.put("status", "off");
+            logHashMap.put("nickname", mNickname);
+            logHashMap.put("time", "" + (System.currentTimeMillis() - enterTime) / 1000);
+            logHashMap.addNonce(nonce).addSno("6").addExpect("1").addStable("1");
+            liveAndBackDebug.umsAgentDebug(eventid, logHashMap.getData());
         } catch (JSONException e) {
             e.printStackTrace();
         }
