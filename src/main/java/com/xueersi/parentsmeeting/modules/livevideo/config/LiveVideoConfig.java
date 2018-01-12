@@ -164,4 +164,13 @@ public class LiveVideoConfig {
     /** 英语能量条提示 */
     public static String LEC_LEARN_REPORT = "lec_learn_report";
 
+    /** 获取光荣榜 */
+    public final static String URL_LIVE_GET_HONOR_LIST = AppConfig.HTTP_HOST + "/LiveCourse/getClassExcellentList";
+    /** 获取点赞榜 */
+    public final static String URL_LIVE_GET_LIKE_LIST = AppConfig.HTTP_HOST + "/LiveCourse/getClassStuPraiseList";
+    /** 获取进步榜 */
+    public final static String URL_LIVE_GET_PRPGRESS_LIST = AppConfig.HTTP_HOST + "/LiveCourse/getStuIsOnProgressList";
+    /** 获取点赞概率 */
+    public final static String URL_LIVE_GET_LIKE_PROBABILITY = AppConfig.HTTP_HOST + "/LiveCourse/getStuOnList";
+
 }
