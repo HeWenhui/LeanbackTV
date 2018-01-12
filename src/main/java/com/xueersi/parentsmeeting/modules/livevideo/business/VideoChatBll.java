@@ -297,7 +297,6 @@ public class VideoChatBll implements VideoChatAction {
                     final Runnable runnable = new Runnable() {
                         @Override
                         public void run() {
-                            StableLogHashMap stableLogHashMap = new StableLogHashMap("raiseHand");
                             String nonce = StableLogHashMap.creatNonce();
                             VideoChatLog.sno1(liveBll, nonce);
                             raisehand = true;
