@@ -19,6 +19,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
@@ -118,11 +120,10 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
         @Override
         public void onError(int err) {
             mLogtf.d("onError:err=" + err);
-            Map<String, String> mData = new HashMap<>();
-            mData.put("log_type", "AGEventHandlerError");
-            mData.put("channel_name", room);
-            mData.put("err", "" + err);
-            liveBll.umsAgentDebug(eventId, mData);
+            StableLogHashMap stableLogHashMap = new StableLogHashMap("AGEventHandlerError");
+            stableLogHashMap.put("channel_name", room);
+            stableLogHashMap.put("err", "" + err);
+            liveBll.umsAgentDebug(eventId, stableLogHashMap.getData());
         }
     };
 
@@ -159,20 +160,7 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
         mWorkerThread.joinChannel(null, room, stuid, new WorkerThread.OnJoinChannel() {
             @Override
             public void onJoinChannel(int joinChannel) {
-                Map<String, String> mData = new HashMap<>();
-                mData.put("logtype", "joinChannelSuccess");
-                mData.put("channelname", room);
-                mData.put("status", (joinChannel == 0 ? "1" : "0"));
-                mData.put("ex", (joinChannel == 0 ? "Y" : "N"));
-                if (!StringUtils.isEmpty(nonce)) {
-                    mData.put("nonce", nonce);
-                    mData.put("sno", "4");
-                    mData.put("stable", "1");
-                }
-                if (joinChannel != 0) {
-                    mData.put("errcode", "" + joinChannel);
-                }
-                liveBll.umsAgentDebug3(eventId, mData);
+                VideoChatLog.sno4(liveBll, nonce, room, joinChannel);
             }
         });
     }
@@ -182,13 +170,12 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
         mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLevelChannel() {
             @Override
             public void onLevelChannel(int leaveChannel) {
-                Map<String, String> mData = new HashMap<>();
-                mData.put("logtype", "getLeaveChannel");
-                mData.put("status", (leaveChannel == 0 ? "1" : "0"));
+                StableLogHashMap stableLogHashMap = new StableLogHashMap("getLeaveChannel");
+                stableLogHashMap.put("status", (leaveChannel == 0 ? "1" : "0"));
                 if (leaveChannel != 0) {
-                    mData.put("errcode", "" + leaveChannel);
+                    stableLogHashMap.put("errcode", "" + leaveChannel);
                 }
-                liveBll.umsAgentDebug(eventId, mData);
+                liveBll.umsAgentDebug(eventId, stableLogHashMap.getData());
             }
         });
         mWorkerThread.eventHandler().removeEventHandler(agEventHandler);

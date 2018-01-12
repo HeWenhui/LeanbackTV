@@ -32,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.AgoraVideoChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VideoChatPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VP;
@@ -296,16 +297,9 @@ public class VideoChatBll implements VideoChatAction {
                     final Runnable runnable = new Runnable() {
                         @Override
                         public void run() {
-                            Map<String, String> mData = new HashMap<>();
+                            StableLogHashMap stableLogHashMap = new StableLogHashMap("raiseHand");
                             String nonce = StableLogHashMap.creatNonce();
-                            mData.put("logtype", "raiseHand");
-                            mData.put("clicktype", "clicked");
-                            mData.put("status", "1");
-                            mData.put("sno", "1");
-                            mData.put("expect", "1");
-                            mData.put("nonce", nonce);
-                            mData.put("stable", "1");
-                            liveBll.umsAgentDebug2(eventId, mData);
+                            VideoChatLog.sno1(liveBll, nonce);
                             raisehand = true;
                             liveBll.requestMicro(nonce, from);
                             BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
@@ -552,10 +546,9 @@ public class VideoChatBll implements VideoChatAction {
             public void run() {
                 openhandsStatus = status;
                 if ("on".equals(status)) {
-                    Map<String, String> mData = new HashMap<>();
-                    mData.put("logtype", "getStartLinkMic");
-                    mData.put("teacher_type", from);
-                    liveBll.umsAgentDebug3(eventId, mData);
+                    StableLogHashMap stableLogHashMap = new StableLogHashMap("getStartLinkMic");
+                    stableLogHashMap.put("teacher_type", from);
+                    liveBll.umsAgentDebug3(eventId, stableLogHashMap.getData());
                     activity.showLongMediaController();
                     if (!isHasPermission) {
                         if (!permissionPrompt) {
@@ -579,10 +572,9 @@ public class VideoChatBll implements VideoChatAction {
                         liveBll.requestMicro("", from);
                     }
                 } else {
-                    Map<String, String> mData = new HashMap<>();
-                    mData.put("logtype", "getStopRaiseHand");
-                    mData.put("teacher_type", from);
-                    liveBll.umsAgentDebug(eventId, mData);
+                    StableLogHashMap stableLogHashMap = new StableLogHashMap("getStopRaiseHand");
+                    stableLogHashMap.put("teacher_type", from);
+                    liveBll.umsAgentDebug(eventId, stableLogHashMap.getData());
                     isSuccess = false;
                     if (raiseHandDialog != null) {
                         raiseHandDialog.cancelDialog();
@@ -625,10 +617,9 @@ public class VideoChatBll implements VideoChatAction {
         containMe = true;
         isSuccess = true;
         mLogtf.d("requestAccept");
-        Map<String, String> mData = new HashMap<>();
-        mData.put("logtype", "getSelection");
-        mData.put("teacher_type", from);
-        liveBll.umsAgentDebug(eventId, mData);
+        StableLogHashMap stableLogHashMap = new StableLogHashMap("getSelection");
+        stableLogHashMap.put("teacher_type", from);
+        liveBll.umsAgentDebug(eventId, stableLogHashMap.getData());
         btRaiseHands.post(new Runnable() {
             @Override
             public void run() {
@@ -665,11 +656,10 @@ public class VideoChatBll implements VideoChatAction {
             public void run() {
                 onmicStatus = status;
                 if ("on".equals(status)) {
-                    Map<String, String> mData = new HashMap<>();
-                    mData.put("logtype", "getStartLinkMic");
-                    mData.put("teacher_type", from);
-                    mData.put("is_selected", contain ? "1" : "0");
-                    liveBll.umsAgentDebug(eventId, mData);
+                    StableLogHashMap stableLogHashMap = new StableLogHashMap("getStartLinkMic");
+                    stableLogHashMap.put("teacher_type", from);
+                    stableLogHashMap.put("is_selected", contain ? "1" : "0");
+                    liveBll.umsAgentDebug(eventId, stableLogHashMap.getData());
                     if (contain) {
                         if (raiseHandDialog != null) {
                             raiseHandDialog.cancelDialog();
@@ -726,11 +716,10 @@ public class VideoChatBll implements VideoChatAction {
 
     @Override
     public void quit(String status, String room, String from) {
-        Map<String, String> mData = new HashMap<>();
-        mData.put("log_type", "getKick");
-        mData.put("teacher_type", from);
-        mData.put("status", status);
-        liveBll.umsAgentDebug(eventId, mData);
+        StableLogHashMap stableLogHashMap = new StableLogHashMap("getKick");
+        stableLogHashMap.put("teacher_type", from);
+        stableLogHashMap.put("status", status);
+        liveBll.umsAgentDebug(eventId, stableLogHashMap.getData());
         if ("on".equals(status)) {
             startMicro("on", "", true, room, from);
             return;
