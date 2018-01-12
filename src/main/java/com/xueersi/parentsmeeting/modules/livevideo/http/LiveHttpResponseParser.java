@@ -286,7 +286,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             coachStatusEntity.setMode(status.getString("mode"));
             coachStatusEntity.setOpenchat(status.getBoolean("openchat"));
             coachStatusEntity.setCalling(status.getBoolean("isCalling"));
-            coachStatusEntity.setListStatus(status.getString("listStatus"));
+            coachStatusEntity.setListStatus(status.optString("listStatus"));
             if (status.has("link_mic")) {
                 JSONObject link_mic = status.getJSONObject("link_mic");
                 coachStatusEntity.setOnmic(link_mic.optString("onmic", "off"));
