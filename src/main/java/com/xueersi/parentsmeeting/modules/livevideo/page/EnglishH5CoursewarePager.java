@@ -7,6 +7,7 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
@@ -18,9 +19,6 @@ import com.xueersi.xesalib.utils.string.StringUtils;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-
-import ren.yale.android.cachewebviewlib.CacheWebView;
-import ren.yale.android.cachewebviewlib.WebViewCache;
 
 /**
  * Created by linyuqiang on 2017/3/25.
@@ -42,6 +40,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
     LiveAndBackDebug liveAndBackDebug;
     private EnglishH5CoursewareBll mEnglishH5CoursewareBll;
     private String isShowRanks;
+    RelativeLayout rl_livevideo_subject_web;
 
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
         mEnglishH5CoursewareBll = englishH5CoursewareBll;
@@ -57,7 +56,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         this.id = id;
         this.courseware_type = courseware_type;
         this.nonce = nonce;
-        this.isShowRanks=isShowRanks;
+        this.isShowRanks = isShowRanks;
         initWebView();
         setErrorTip("H5课件加载失败，请重试");
         setLoadTip("H5课件正在加载，请稍候");
@@ -90,6 +89,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_h5_courseware, null);
+        rl_livevideo_subject_web = (RelativeLayout) view.findViewById(R.id.rl_livevideo_subject_web);
         return view;
     }
 
@@ -160,8 +160,8 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
             liveAndBackDebug.umsAgentDebug(eventId, mData);
             return true;
         }
-        if(url.contains("https://submit.com")){
-            if(mEnglishH5CoursewareBll!=null){
+        if (url.contains("https://submit.com")) {
+            if (mEnglishH5CoursewareBll != null) {
                 mEnglishH5CoursewareBll.onSubmit();
                 return true;
             }
@@ -172,21 +172,9 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
     @Override
     public void initData() {
         super.initData();
-        CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
-        cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NORMAL);
+
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
-//        webSetting.setUseWideViewPort(false);
-//        webSetting.setCacheMode(WebSettings.LOAD_DEFAULT);
-//        webSetting.setDatabasePath(cacheFile.getPath());
-//        //设置 应用 缓存目录
-//        webSetting.setAppCachePath(cacheFile.getPath());
-//        //开启 DOM 存储功能
-//        webSetting.setDomStorageEnabled(true);
-//        //开启 数据库 存储功能
-//        webSetting.setDatabaseEnabled(true);
-//        //开启 应用缓存 功能
-//        webSetting.setAppCacheEnabled(true);
 
         String loadUrl = url + "?t=" + System.currentTimeMillis();
         if (isPlayBack) {
@@ -196,13 +184,14 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         if (!StringUtils.isEmpty(nonce)) {
             loadUrl += "&nonce=" + nonce;
         }
-        loadUrl+="&isTowall="+isShowRanks;
+        loadUrl += "&isTowall=" + isShowRanks;
         Loger.i(TAG, "initData:loadUrl=" + loadUrl);
         loadUrl(loadUrl);
         reloadurl = loadUrl;
         mView.findViewById(R.id.iv_livevideo_subject_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+//                newWebView();
                 loadUrl(reloadurl);
                 v.setVisibility(View.GONE);
                 v.postDelayed(new Runnable() {
@@ -216,9 +205,11 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         mView.findViewById(R.id.btn_error_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                wvSubjectWeb.reload();
-                errorView.setVisibility(View.GONE);
-                wvSubjectWeb.setVisibility(View.VISIBLE);
+//                errorView.setVisibility(View.GONE);
+//                wvSubjectWeb.setVisibility(View.VISIBLE);
+
+                newWebView();
+
                 View loadView = mView.findViewById(R.id.rl_livevideo_subject_loading);
                 loadView.setVisibility(View.VISIBLE);
                 ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
@@ -226,6 +217,19 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
                 loadUrl(reloadurl);
             }
         });
+    }
+
+    private void newWebView() {
+        rl_livevideo_subject_web.removeView(wvSubjectWeb);
+        wvSubjectWeb = (WebView) View.inflate(mContext, R.layout.page_livevideo_h5_courseware_cacheweb, null);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        rl_livevideo_subject_web.addView(wvSubjectWeb, 0, lp);
+
+        addJavascriptInterface();
+        WebSettings webSetting = wvSubjectWeb.getSettings();
+        webSetting.setBuiltInZoomControls(true);
+        wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
+        wvSubjectWeb.setWebViewClient(new MyWebViewClient());
     }
 
 }

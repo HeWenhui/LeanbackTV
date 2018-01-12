@@ -521,7 +521,6 @@ public class AuditIRCMessage {
             String nonce = "" + StableLogHashMap.creatNonce();
             jsonObject.put("type", "" + XESCODE.REQUEST_STUDENT_PUSH);
             jsonObject.put("status", "off");
-            jsonObject.put("time", "" + (System.currentTimeMillis() - enterTime) / 1000);
             jsonObject.put("nonce", nonce);
             String target = "s_" + mNickname;
             mConnection.sendMessage(target, jsonObject.toString());
@@ -531,6 +530,7 @@ public class AuditIRCMessage {
             StableLogHashMap stableLogHashMap = new StableLogHashMap("sendListenCmd");
             stableLogHashMap.put("status", "off");
             stableLogHashMap.put("nickname", mNickname);
+            stableLogHashMap.put("time", "" + (System.currentTimeMillis() - enterTime) / 1000);
             stableLogHashMap.addNonce(nonce).addSno("6").addExpect("1").addStable("1");
             liveAndBackDebug.umsAgentDebug(eventid, stableLogHashMap.getData());
         } catch (JSONException e) {
