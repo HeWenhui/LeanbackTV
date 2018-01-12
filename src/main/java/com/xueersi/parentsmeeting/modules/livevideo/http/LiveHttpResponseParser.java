@@ -746,7 +746,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         ProgressListEntity progressListEntity= new ProgressListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
-            progressListEntity.setPraiseStatus(data.getInt("praise_status"));
+            progressListEntity.setPraiseStatus(data.getInt("praiseStatus"));
             JSONArray array = data.getJSONArray("list");
 
             for (int i = 0; i < array.length(); i++) {

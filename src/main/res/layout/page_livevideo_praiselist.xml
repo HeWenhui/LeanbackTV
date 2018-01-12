@@ -39,8 +39,7 @@
             android:gravity="center"
             android:layout_marginTop="24dp"
             android:text="全对或者订正到全对的同学可以上榜哦~"
-            android:textSize="12sp"
-            android:textColor="#999999"/>
+            style="@style/text_font12_999999_style" />
 
         <GridView
             android:id="@+id/gv_livevideo_praiselist"
@@ -137,8 +136,7 @@
             android:layout_centerInParent="true"
             android:paddingBottom="4dp"
             android:gravity="center"
-            android:textSize="14sp"
-            android:textColor="#FFFFFF"/>
+            style="@style/text_font14_999999_style"/>
 
     </RelativeLayout>
 
