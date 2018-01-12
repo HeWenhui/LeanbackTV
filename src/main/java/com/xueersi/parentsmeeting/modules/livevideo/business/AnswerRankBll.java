@@ -232,6 +232,9 @@ public class AnswerRankBll {
      * @param lst
      */
     public void showFullMarkList(List<FullMarkListEntity> lst) {
+        if(rlFullMarkList!=null){
+            return;
+        }
         rlFullMarkList = View.inflate(mContext, R.layout.layout_full_mark_list, null);
         //设置四个榜单区域参数
         int dp11=SizeUtils.Dp2Px(mContext,11);
