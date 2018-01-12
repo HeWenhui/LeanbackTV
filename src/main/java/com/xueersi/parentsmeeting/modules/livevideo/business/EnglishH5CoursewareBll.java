@@ -294,11 +294,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     private void showH5Paper(final VideoQuestionLiveEntity videoQuestionH5Entity) {
 
         logToFile.i("onH5Courseware:url=" + videoQuestionH5Entity.url);
-        StableLogHashMap stableLogHashMap = new StableLogHashMap("receiveCourseware");
-        stableLogHashMap.put("coursewareid", videoQuestionH5Entity.id);
-        stableLogHashMap.put("coursewaretype", videoQuestionH5Entity.courseware_type);
-        stableLogHashMap.put("loadurl", videoQuestionH5Entity.url);
-        mLiveBll.umsAgentDebug2(eventId, stableLogHashMap.getData());
+        StableLogHashMap logHashMap = new StableLogHashMap("receiveCourseware");
+        logHashMap.put("coursewareid", videoQuestionH5Entity.id);
+        logHashMap.put("coursewaretype", videoQuestionH5Entity.courseware_type);
+        logHashMap.put("loadurl", videoQuestionH5Entity.url);
+        mLiveBll.umsAgentDebug2(eventId, logHashMap.getData());
         h5CoursewarePager = new EnglishH5CoursewarePager(context, false, mVSectionID, videoQuestionH5Entity.url, videoQuestionH5Entity.id,
                 videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, new OnH5ResultClose() {
             @Override

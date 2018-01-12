@@ -446,7 +446,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         if (!LiveVideoConfig.IS_SCIENCE && "1".equals(videoQuestionLiveEntity.getIsVoice())) {
             StableLogHashMap logHashMap = new StableLogHashMap("receiveh5test");
-            logHashMap.put("logtype", "receiveh5test");
             logHashMap.put("sourcetype", "h5test");
             logHashMap.put("testtype", "" + videoQuestionLiveEntity.type);
             logHashMap.put("testid", "" + videoQuestionLiveEntity.id);

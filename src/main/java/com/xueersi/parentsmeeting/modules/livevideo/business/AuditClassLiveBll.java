@@ -843,12 +843,12 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                         mLogtf.d("onStudentPrivateMessage:playUrl=" + playUrl);
 
                         //旁听日志
-                        StableLogHashMap stableLogHashMap = new StableLogHashMap("startPlay");
-                        stableLogHashMap.put("nickname", sender);
-                        stableLogHashMap.put("playurl", playUrl);
+                        StableLogHashMap logHashMap = new StableLogHashMap("startPlay");
+                        logHashMap.put("nickname", sender);
+                        logHashMap.put("playurl", playUrl);
                         String nonce = jsonObject.optString("nonce");
-                        stableLogHashMap.addSno("4").addNonce(nonce).addEx("Y").addStable("1");
-                        umsAgentDebug(liveListenEventid, stableLogHashMap.getData());
+                        logHashMap.addSno("4").addNonce(nonce).addEx("Y").addStable("1");
+                        umsAgentDebug(liveListenEventid, logHashMap.getData());
                     }
                     break;
                     case XESCODE.STUDENT_MODECHANGE: {
