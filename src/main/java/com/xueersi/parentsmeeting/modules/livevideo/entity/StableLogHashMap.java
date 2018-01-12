@@ -36,6 +36,26 @@ public class StableLogHashMap {
     }
 
     /**
+     * 收到上一步，期望成功
+     *
+     * @return
+     */
+    public StableLogHashMap addExY() {
+        mData.put("ex", "Y");
+        return this;
+    }
+
+    /**
+     * 收到上一步，期望不成功
+     *
+     * @return
+     */
+    public StableLogHashMap addExN() {
+        mData.put("ex", "N");
+        return this;
+    }
+
+    /**
      * 期望下一步收到的数量
      *
      * @param expect
@@ -69,7 +89,7 @@ public class StableLogHashMap {
     }
 
     /**
-     * 随机值
+     * 创建随机值
      *
      * @return
      */
@@ -78,7 +98,7 @@ public class StableLogHashMap {
     }
 
     /**
-     * 稳定行
+     * 稳定性
      *
      * @param stable
      * @return

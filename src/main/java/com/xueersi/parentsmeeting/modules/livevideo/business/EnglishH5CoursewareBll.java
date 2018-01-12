@@ -376,7 +376,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         logHashMap.put("testid", "" + videoQuestionLiveEntity.id);
         logHashMap.put("sourcetype", "h5ware");
         logHashMap.put("answertype", "voice");
-        logHashMap.addEx("Y").addSno("2").addNonce("" + videoQuestionLiveEntity.nonce);
+        logHashMap.addExY().addSno("2").addNonce("" + videoQuestionLiveEntity.nonce);
         logHashMap.addStable("1");
         umsAgentDebug3(voicequestionEventId, logHashMap.getData());
     }
@@ -462,7 +462,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                             StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
                             logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
                             logHashMap.put("sourcetype", "h5ware");
-                            logHashMap.addEx("Y").addExpect("0").addSno("5").addStable("1");
+                            logHashMap.addExY().addExpect("0").addSno("5").addStable("1");
                             umsAgentDebug3(voicequestionEventId, logHashMap.getData());
                         }
                     }

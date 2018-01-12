@@ -169,7 +169,7 @@ public class AuditIRCMessage {
                                         StableLogHashMap logHashMap = new StableLogHashMap("studentError");
                                         logHashMap.put("nickname", sender);
                                         logHashMap.put("status", status);
-                                        logHashMap.addSno("5").addNonce(nonce).addEx("Y").addStable("1");
+                                        logHashMap.addSno("5").addNonce(nonce).addExY().addStable("1");
                                         liveAndBackDebug.umsAgentDebug(eventid, logHashMap.getData());
                                         return;
                                     } else {
