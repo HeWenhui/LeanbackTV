@@ -294,11 +294,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     private void showH5Paper(final VideoQuestionLiveEntity videoQuestionH5Entity) {
 
         logToFile.i("onH5Courseware:url=" + videoQuestionH5Entity.url);
-        StableLogHashMap stableLogHashMap = new StableLogHashMap("receiveCourseware");
-        stableLogHashMap.put("coursewareid", videoQuestionH5Entity.id);
-        stableLogHashMap.put("coursewaretype", videoQuestionH5Entity.courseware_type);
-        stableLogHashMap.put("loadurl", videoQuestionH5Entity.url);
-        mLiveBll.umsAgentDebug2(eventId, stableLogHashMap.getData());
+        StableLogHashMap logHashMap = new StableLogHashMap("receiveCourseware");
+        logHashMap.put("coursewareid", videoQuestionH5Entity.id);
+        logHashMap.put("coursewaretype", videoQuestionH5Entity.courseware_type);
+        logHashMap.put("loadurl", videoQuestionH5Entity.url);
+        mLiveBll.umsAgentDebug2(eventId, logHashMap.getData());
         h5CoursewarePager = new EnglishH5CoursewarePager(context, false, mVSectionID, videoQuestionH5Entity.url, videoQuestionH5Entity.id,
                 videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, new OnH5ResultClose() {
             @Override
@@ -376,7 +376,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         logHashMap.put("testid", "" + videoQuestionLiveEntity.id);
         logHashMap.put("sourcetype", "h5ware");
         logHashMap.put("answertype", "voice");
-        logHashMap.addEx("Y").addSno("2").addNonce("" + videoQuestionLiveEntity.nonce);
+        logHashMap.addExY().addSno("2").addNonce("" + videoQuestionLiveEntity.nonce);
         logHashMap.addStable("1");
         umsAgentDebug3(voicequestionEventId, logHashMap.getData());
     }
@@ -462,7 +462,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                             StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
                             logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
                             logHashMap.put("sourcetype", "h5ware");
-                            logHashMap.addEx("Y").addExpect("0").addSno("5").addStable("1");
+                            logHashMap.addExY().addExpect("0").addSno("5").addStable("1");
                             umsAgentDebug3(voicequestionEventId, logHashMap.getData());
                         }
                     }

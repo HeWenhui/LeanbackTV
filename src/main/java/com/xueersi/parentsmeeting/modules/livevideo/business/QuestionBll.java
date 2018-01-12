@@ -446,7 +446,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         if (!LiveVideoConfig.IS_SCIENCE && "1".equals(videoQuestionLiveEntity.getIsVoice())) {
             StableLogHashMap logHashMap = new StableLogHashMap("receiveh5test");
-            logHashMap.put("logtype", "receiveh5test");
             logHashMap.put("sourcetype", "h5test");
             logHashMap.put("testtype", "" + videoQuestionLiveEntity.type);
             logHashMap.put("testid", "" + videoQuestionLiveEntity.id);
@@ -653,7 +652,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
                         logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
                         logHashMap.put("sourcetype", "h5test");
-                        logHashMap.addEx("Y").addExpect("0").addSno("5").addStable("1");
+                        logHashMap.addExY().addExpect("0").addSno("5").addStable("1");
                         umsAgentDebug3(voicequestionEventId, logHashMap.getData());
                     } else {
                         // 回答正确提示
@@ -755,7 +754,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             });
             return;
         }
-        int delayTime=0;
+        int delayTime = 0;
         if (questionWebPager != null) {
             mLogtf.d("onStopQuestion:questionWebPager");
             mVPlayVideoControlHandler.post(new Runnable() {
@@ -766,12 +765,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     }
                 }
             });
-            delayTime=3000;
-        }else if(hasQuestion&&!hasSubmit){
+            delayTime = 3000;
+        } else if (hasQuestion && !hasSubmit) {
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
-            hasQuestion=false;
+            hasQuestion = false;
         }
-        if(hasSubmit) {
+        if (hasSubmit) {
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
             hasQuestion=false;
         }
@@ -940,15 +939,15 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
-                int delayTime=0;
+                int delayTime = 0;
                 if (examQuestionPager != null) {
                     examQuestionPager.examSubmitAll();
-                    delayTime=3000;
-                }else if(hasExam&&!hasSubmit){
+                    delayTime = 3000;
+                } else if (hasExam && !hasSubmit) {
                     getFullMarkList(XESCODE.EXAM_STOP, delayTime);
-                    hasExam=false;
+                    hasExam = false;
                 }
-                if(hasSubmit) {
+                if (hasSubmit) {
                     getFullMarkList(XESCODE.EXAM_STOP, delayTime);
                     hasExam=false;
                 }
@@ -1205,7 +1204,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         logHashMap.put("testid", "" + videoQuestionLiveEntity.id);
         logHashMap.put("sourcetype", "h5test");
         logHashMap.put("answertype", "voice");
-        logHashMap.addEx("Y").addSno("2").addNonce("" + videoQuestionLiveEntity.nonce);
+        logHashMap.addExY().addSno("2").addNonce("" + videoQuestionLiveEntity.nonce);
         logHashMap.addStable("1");
         umsAgentDebug3(voicequestionEventId, logHashMap.getData());
     }
@@ -1647,7 +1646,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 return;
             }
         }*/
-        hasSubmit=false;
+        hasSubmit = false;
         HttpCallBack callBack = new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -1661,19 +1660,19 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                showFullMarkList(type,lst,delayTime);
+                showFullMarkList(type, lst, delayTime);
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                showFullMarkList(type,new ArrayList<FullMarkListEntity>(),delayTime);
+                showFullMarkList(type, new ArrayList<FullMarkListEntity>(), delayTime);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                showFullMarkList(type,new ArrayList<FullMarkListEntity>(),delayTime);
+                showFullMarkList(type, new ArrayList<FullMarkListEntity>(), delayTime);
             }
         };
         if (type == XESCODE.STOPQUESTION) {
@@ -1683,29 +1682,30 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
-    public void onSubmit(int type,boolean isShowFullMarkList) {
+    public void onSubmit(int type, boolean isShowFullMarkList) {
         submitTime = System.currentTimeMillis();
         mLiveBll.sendRankMessage(XESCODE.RANK_STU_MESSAGE);
-        if(isShowFullMarkList){
-            getFullMarkList(type,3000);
-        }else{
-            hasSubmit=true;
+        if (isShowFullMarkList) {
+            getFullMarkList(type, 3000);
+        } else {
+            hasSubmit = true;
         }
     }
-    private void showFullMarkList(final int type,final List<FullMarkListEntity> lst,int delayTime){
+
+    private void showFullMarkList(final int type, final List<FullMarkListEntity> lst, int delayTime) {
         mVPlayVideoControlHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 try {
                     switch (type) {
                         case XESCODE.STOPQUESTION:
-                            if(questionWebPager!=null) {
+                            if (questionWebPager != null) {
                                 rlQuestionContent.removeView(questionWebPager.getRootView());
-                                questionWebPager=null;
+                                questionWebPager = null;
                             }
                             break;
                         case XESCODE.EXAM_STOP:
-                            if(examQuestionPager!=null) {
+                            if (examQuestionPager != null) {
                                 rlQuestionContent.removeView(examQuestionPager.getRootView());
                                 examQuestionPager = null;
                             }

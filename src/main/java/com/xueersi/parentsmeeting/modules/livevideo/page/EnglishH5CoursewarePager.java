@@ -97,10 +97,10 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
     public void submitData() {
         isFinish = true;
         wvSubjectWeb.loadUrl(jsSubmitData);
-        StableLogHashMap stableLogHashMap = new StableLogHashMap("coursewareEnd");
-        stableLogHashMap.put("coursewareid", id);
-        stableLogHashMap.put("coursewaretype", courseware_type);
-        liveAndBackDebug.umsAgentDebug2(eventId, stableLogHashMap.getData());
+        StableLogHashMap logHashMap = new StableLogHashMap("coursewareEnd");
+        logHashMap.put("coursewareid", id);
+        logHashMap.put("coursewaretype", courseware_type);
+        liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
     }
 
     @Override
@@ -108,33 +108,33 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         if (isFinish) {
             wvSubjectWeb.loadUrl(jsSubmitData);
         }
-        StableLogHashMap stableLogHashMap = new StableLogHashMap("coursewareDidLoad");
-        stableLogHashMap.put("coursewareid", id);
-        stableLogHashMap.put("coursewaretype", courseware_type);
-        stableLogHashMap.put("status", "success");
-        stableLogHashMap.put("loadurl", url);
-        liveAndBackDebug.umsAgentDebug(eventId, stableLogHashMap.getData());
+        StableLogHashMap logHashMap = new StableLogHashMap("coursewareDidLoad");
+        logHashMap.put("coursewareid", id);
+        logHashMap.put("coursewaretype", courseware_type);
+        logHashMap.put("status", "success");
+        logHashMap.put("loadurl", url);
+        liveAndBackDebug.umsAgentDebug(eventId, logHashMap.getData());
     }
 
     @Override
     protected void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         super.onReceivedError(view, errorCode, description, failingUrl);
-        StableLogHashMap stableLogHashMap = new StableLogHashMap("coursewareDidLoad");
-        stableLogHashMap.put("coursewareid", id);
-        stableLogHashMap.put("coursewaretype", courseware_type);
-        stableLogHashMap.put("status", "fail");
-        stableLogHashMap.put("loadurl", url);
-        stableLogHashMap.put("msg", description);
-        liveAndBackDebug.umsAgentDebug(eventId, stableLogHashMap.getData());
+        StableLogHashMap logHashMap = new StableLogHashMap("coursewareDidLoad");
+        logHashMap.put("coursewareid", id);
+        logHashMap.put("coursewaretype", courseware_type);
+        logHashMap.put("status", "fail");
+        logHashMap.put("loadurl", url);
+        logHashMap.put("msg", description);
+        liveAndBackDebug.umsAgentDebug(eventId, logHashMap.getData());
     }
 
     public void onBack() {
-        StableLogHashMap stableLogHashMap = new StableLogHashMap("coursewareClose");
-        stableLogHashMap.put("coursewareid", id);
-        stableLogHashMap.put("coursewaretype", courseware_type);
-        stableLogHashMap.put("closetype", "clickBackButton");
-        stableLogHashMap.put("isFinish", "" + isFinish);
-        liveAndBackDebug.umsAgentDebug(eventId, stableLogHashMap.getData());
+        StableLogHashMap logHashMap = new StableLogHashMap("coursewareClose");
+        logHashMap.put("coursewareid", id);
+        logHashMap.put("coursewaretype", courseware_type);
+        logHashMap.put("closetype", "clickBackButton");
+        logHashMap.put("isFinish", "" + isFinish);
+        liveAndBackDebug.umsAgentDebug(eventId, logHashMap.getData());
     }
 
     public void close() {
@@ -149,11 +149,11 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         reloadurl = url;
         if (url.contains("baidu.com")) {
             onClose.onH5ResultClose();
-            StableLogHashMap stableLogHashMap = new StableLogHashMap("coursewareClose");
-            stableLogHashMap.put("coursewareid", id);
-            stableLogHashMap.put("coursewaretype", courseware_type);
-            stableLogHashMap.put("closetype", "clickWebCloseButton");
-            liveAndBackDebug.umsAgentDebug(eventId, stableLogHashMap.getData());
+            StableLogHashMap logHashMap = new StableLogHashMap("coursewareClose");
+            logHashMap.put("coursewareid", id);
+            logHashMap.put("coursewaretype", courseware_type);
+            logHashMap.put("closetype", "clickWebCloseButton");
+            liveAndBackDebug.umsAgentDebug(eventId, logHashMap.getData());
             return true;
         }
         if (url.contains("https://submit.com")) {

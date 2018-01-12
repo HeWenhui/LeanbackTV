@@ -120,10 +120,10 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
         @Override
         public void onError(int err) {
             mLogtf.d("onError:err=" + err);
-            StableLogHashMap stableLogHashMap = new StableLogHashMap("AGEventHandlerError");
-            stableLogHashMap.put("channel_name", room);
-            stableLogHashMap.put("err", "" + err);
-            liveBll.umsAgentDebug(eventId, stableLogHashMap.getData());
+            StableLogHashMap logHashMap = new StableLogHashMap("AGEventHandlerError");
+            logHashMap.put("channel_name", room);
+            logHashMap.put("err", "" + err);
+            liveBll.umsAgentDebug(eventId, logHashMap.getData());
         }
     };
 
@@ -170,12 +170,12 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
         mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLevelChannel() {
             @Override
             public void onLevelChannel(int leaveChannel) {
-                StableLogHashMap stableLogHashMap = new StableLogHashMap("getLeaveChannel");
-                stableLogHashMap.put("status", (leaveChannel == 0 ? "1" : "0"));
+                StableLogHashMap logHashMap = new StableLogHashMap("getLeaveChannel");
+                logHashMap.put("status", (leaveChannel == 0 ? "1" : "0"));
                 if (leaveChannel != 0) {
-                    stableLogHashMap.put("errcode", "" + leaveChannel);
+                    logHashMap.put("errcode", "" + leaveChannel);
                 }
-                liveBll.umsAgentDebug(eventId, stableLogHashMap.getData());
+                liveBll.umsAgentDebug(eventId, logHashMap.getData());
             }
         });
         mWorkerThread.eventHandler().removeEventHandler(agEventHandler);
