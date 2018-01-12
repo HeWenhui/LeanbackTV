@@ -769,6 +769,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             delayTime=3000;
         }else if(hasQuestion&&!hasSubmit){
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
+            hasQuestion=false;
         }
         if(hasSubmit) {
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
@@ -944,6 +945,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     delayTime=3000;
                 }else if(hasExam&&!hasSubmit){
                     getFullMarkList(XESCODE.EXAM_STOP, delayTime);
+                    hasExam=false;
                 }
                 if(hasSubmit) {
                     getFullMarkList(XESCODE.EXAM_STOP, delayTime);

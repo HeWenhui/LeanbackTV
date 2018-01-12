@@ -626,7 +626,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             return;
         }
         //hasSubmit=false;
-        mAnswerRankBll.getFullMarkListH5(new HttpCallBack() {
+        mAnswerRankBll.getFullMarkListH5(new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 /*long cur = System.currentTimeMillis();
