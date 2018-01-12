@@ -257,6 +257,7 @@
     <!--直播-专题问题-->
     <item name="bt_livevideo_subject_calljs" type="id" />
     <item name="bt_livevideo_subject_close" type="id" />
+    <item name="rl_livevideo_subject_web" type="id" />
     <item name="wv_livevideo_subject_web" type="id" />
     <item name="rl_livevideo_subject_loading" type="id" />
     <item name="rl_livevideo_subject_error" type="id" />
