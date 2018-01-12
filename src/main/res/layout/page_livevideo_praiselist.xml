@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+
+    <ImageView
+        android:id="@+id/iv_livevideo_praiselist_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/bg_livevideo_praiselist_bg" />
+
+
+    <RelativeLayout
+        android:id="@+id/rv_livevideo_praiselist_light"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="114dp"
+        android:layout_marginBottom="81dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:background="@drawable/shape_livevideo_praiselist_content" >
+
+        <TextView
+            android:id="@+id/tv_livevideo_praiselist_tips"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="17dp"
+            android:gravity="center"
+            android:layout_marginTop="24dp"
+            android:text="全对或者订正到全对的同学可以上榜哦~"
+            android:textSize="12sp"
+            android:textColor="#999999"/>
+
+        <GridView
+            android:id="@+id/gv_livevideo_praiselist"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="53dp"
+            android:layout_marginBottom="48dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="30dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rv_livevideo_praiselist_message"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="60dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:background="@drawable/shape_livevideo_praiselist_message">
+
+        <ImageView
+            android:id="@+id/iv_livevideo_praiselist_heart"
+            android:layout_width="14dp"
+            android:layout_height="11.8dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/ic_livevideo_praiselist_heart"/>
+
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTextView
+            android:id="@+id/tv_livevideo_praiselist_message"
+            android:layout_width="wrap_content"
+            android:layout_height="17dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="44dp" />
+
+        <Button
+            android:id="@+id/btn_livevideo_praiselist_like"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/ic_livevideo_praiselist_like"/>
+
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/iv_livevideo_praiselist_light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bg_livevideo_praiselist_light"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/iv_livevideo_praiselist_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bg_livevideo_praiselist_title_honor"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_livevideo_praiselist_scroll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+        <ImageView
+            android:id="@+id/iv_livevideo_praiselist_scroll_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/bg_livevideo_praiselist_light" />
+        <ImageView
+            android:id="@+id/iv_livevideo_praiselist_scroll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/bg_livevideo_praiselist_scroll"
+            />
+        <TextView
+            android:id="@+id/tv_livevideo_praiselist_scroll"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:paddingBottom="4dp"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textColor="#FFFFFF"/>
+
+    </RelativeLayout>
+
+<!--    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/text_1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="表扬榜"
+        />
+        <TextView
+            android:id="@+id/text_2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="进步榜"
+            />
+        <TextView
+            android:id="@+id/text_3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="获赞榜"
+            />
+        <TextView
+            android:id="@+id/text_4"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="表扬条幅"
+            />
+        <TextView
+            android:id="@+id/text_5"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="弹幕"
+            />
+        <TextView
+            android:id="@+id/text_6"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="关闭榜单"
+            />
+    </LinearLayout>-->
+
+</RelativeLayout>
