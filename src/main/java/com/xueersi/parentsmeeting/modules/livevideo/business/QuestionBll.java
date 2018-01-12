@@ -773,6 +773,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         if(hasSubmit) {
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
+            hasQuestion=false;
         }
         if ("4".equals(ptype)) {
             return;
@@ -922,7 +923,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mData.put("examid", num);
                 umsAgentDebug(examQuestionEventId, mData);
                 examQuestionPager = new ExamQuestionPager(activity, mLiveBll, QuestionBll.this, liveGetInfo.getStuId
-                        (), liveGetInfo.getUname(), liveid, num, nonce);
+                        (), liveGetInfo.getUname(), liveid, num, nonce,mAnswerRankBll.getIsShow());
                 rlQuestionContent.addView(examQuestionPager.getRootView());
                 mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
                 mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
@@ -949,6 +950,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
                 if(hasSubmit) {
                     getFullMarkList(XESCODE.EXAM_STOP, delayTime);
+                    hasExam=false;
                 }
             }
         });

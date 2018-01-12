@@ -58,8 +58,10 @@ public class ExamQuestionPager extends BasePager {
     private boolean isEnd = false;
     String jsExamSubmitAll = "javascript:examSubmitAll()";
     private LiveBll mLiveBll;
+    private String isShowRankList;
 
-    public ExamQuestionPager(Context context, LiveBll liveBll, QuestionBll questionBll, String stuId, String stuName, String liveid, String num, String nonce) {
+    public ExamQuestionPager(Context context, LiveBll liveBll, QuestionBll questionBll, String stuId
+            , String stuName, String liveid, String num, String nonce,String isShowRankList) {
         super(context);
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
@@ -71,6 +73,7 @@ public class ExamQuestionPager extends BasePager {
         this.num = num;
         this.nonce = nonce;
         logToFile.i("ExamQuestionPager:liveid=" + liveid + ",num=" + num);
+        this.isShowRankList=isShowRankList;
         initData();
     }
 
@@ -91,6 +94,10 @@ public class ExamQuestionPager extends BasePager {
 //                view.findViewById(R.id.rl_livevideo_subject_error).setVisibility(View.GONE);
 //                wvSubjectWeb.setVisibility(View.VISIBLE);
                 wvSubjectWeb.reload();
+                errorView.setVisibility(View.GONE);
+                mView.findViewById(R.id.rl_livevideo_subject_loading).setVisibility(View.VISIBLE);
+                ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
+                ((AnimationDrawable) ivLoading.getBackground()).start();
             }
         });
         return view;
@@ -123,6 +130,7 @@ public class ExamQuestionPager extends BasePager {
         if (!StringUtils.isEmpty(nonce)) {
             examUrl += "&nonce=" + nonce;
         }
+        examUrl+="isTowall="+isShowRankList;
         examUrl += "&isArts=" + (LiveVideoConfig.IS_SCIENCE ? "0" : "1");
         wvSubjectWeb.loadUrl(examUrl);
 //        wvSubjectWeb.loadUrl("http://7.xesweb.sinaapp.com/test/examPaper2.html");
@@ -205,8 +213,9 @@ public class ExamQuestionPager extends BasePager {
                 if (loadView != null) {
                     ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
                     ((AnimationDrawable) ivLoading.getBackground()).stop();
-                    ViewGroup group = (ViewGroup) loadView.getParent();
-                    group.removeView(loadView);
+                    /*ViewGroup group = (ViewGroup) loadView.getParent();
+                    group.removeView(loadView);*/
+                    loadView.setVisibility(View.GONE);
                 }
             }
         }
