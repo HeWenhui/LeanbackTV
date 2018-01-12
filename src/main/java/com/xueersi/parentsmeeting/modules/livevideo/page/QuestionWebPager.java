@@ -262,11 +262,6 @@ public class QuestionWebPager extends BasePager {
                     ((QuestionBll) questionBll).onSubmit(XESCODE.STOPQUESTION,url.contains("submitType=force"));
                 }
                 return false;
-            }else if(url.contains("live.xueersi.com/LiveExam/examResult")){
-                if(questionBll instanceof QuestionBll){
-                    ((QuestionBll) questionBll).onSubmit(XESCODE.EXAM_STOP,url.contains("submitType=force"));
-                }
-                return false;
             }
             if ("xueersi://livevideo/examPaper/close".equals(url) || "http://baidu.com/".equals(url)) {
                 ViewGroup group = (ViewGroup) mView.getParent();

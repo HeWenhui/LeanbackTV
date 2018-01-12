@@ -658,4 +658,76 @@ public class LiveHttpManager extends BaseHttpBusiness {
         String i = JSON.toJSON(params).toString();
         sendPost(LiveVideoConfig.LIVE_FULL_MARK_LIST_H5, params, callBack);
     }
+
+    /**
+     * 获取光荣榜
+     *
+     * @param classId         班级Id
+     * @param enstuId         学生Id加密串
+     * @param liveId          场次Id
+     * @param status          是否点赞标志位
+     * @param requestCallBack
+     */
+    public void getHonorList(String classId, String enstuId, String liveId , String status ,HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("enstuId", enstuId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("status",status);
+        setDefaultParameter(params);
+        sendPost(LiveVideoConfig.URL_LIVE_GET_HONOR_LIST, params, requestCallBack);
+    }
+
+    /**
+     * 获取点赞榜
+     *
+     * @param classId         班级Id
+     * @param stuId         学生Id加密串
+     * @param requestCallBack
+     */
+    public void getLikeList(String classId, String stuId,HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("stuId", stuId);
+        setDefaultParameter(params);
+        sendPost(LiveVideoConfig.URL_LIVE_GET_LIKE_LIST, params, requestCallBack);
+    }
+
+    /**
+     * 获取进步榜
+     *
+     * @param classId         班级Id
+     * @param enstuId         学生Id加密串
+     * @param liveId          场次Id
+     * @param status          是否点赞标志位
+     * @param requestCallBack
+     */
+    public void getProgressList(String classId, String enstuId, String liveId , String status ,HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("enstuId", enstuId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("status",status);
+        setDefaultParameter(params);
+        sendPost(LiveVideoConfig.URL_LIVE_GET_PRPGRESS_LIST, params, requestCallBack);
+    }
+
+    /**
+     * 获取点赞概率
+     *
+     * @param classId         班级Id
+     * @param enstuId         学生Id加密串
+     * @param requestCallBack
+     */
+    public void getLikeProbability(String classId, String enstuId ,HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("enstuId", enstuId);
+        setDefaultParameter(params);
+        sendPost(LiveVideoConfig.URL_LIVE_GET_LIKE_PROBABILITY, params, requestCallBack);
+    }
 }

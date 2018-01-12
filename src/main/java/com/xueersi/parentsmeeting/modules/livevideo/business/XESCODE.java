@@ -99,6 +99,16 @@ public interface XESCODE {
     /** 投票发送给老师答案 */
     int VOTE_SEND = 212;
     /** 上墙-学生发送消息 */
+
+    /** 学生私聊老师点赞 */
+    int XCR_ROOM_AGREE_SEND_S = 220;
+    /** 老师广播学生点赞 */
+    int XCR_ROOM_AGREE_SEND_T = 221;
+    /** 学生计算赞数后私发老师 */
+    int XCR_ROOM_AGREE_NUM_S = 222;
+    /** 开/关榜单 */
+    int XCR_ROOM_AGREE_OPEN = 224;
+
     int RANK_STU_MESSAGE = 225;
     /** 上墙-老师发送消息 */
     int RANK_TEA_MESSAGE = 226;

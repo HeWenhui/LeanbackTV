@@ -13,12 +13,13 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.logerhelper.LogerTag;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -265,6 +266,12 @@ public class ExamQuestionPager extends BasePager {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            if(url.contains("live.xueersi.com/LiveExam/examResult")){
+                if(questionBll instanceof QuestionBll){
+                    ((QuestionBll) questionBll).onSubmit(XESCODE.EXAM_STOP,url.contains("submitType=force"));
+                }
+                return false;
+            }
             logToFile.i("shouldOverrideUrlLoading:url=" + url);
             if ("xueersi://livevideo/examPaper/close".equals(url) || "http://baidu.com/".equals(url)) {
                 ViewGroup group = (ViewGroup) mView.getParent();

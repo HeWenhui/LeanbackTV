@@ -144,13 +144,13 @@ public class AnswerRankBll {
     public void showRankList(final List<RankUserEntity> lst) {
         mSoundPool=new SoundPool(10, AudioManager.STREAM_MUSIC,5);
         mSoundPool.load(mContext,R.raw.full_mark_list,1);
-        bottomContent.setClickable(true);
         if("0".equals(isShow)){
             return;
         }
         if (lst.size() != 0 && lst.size() <= mLst.size()) {
             return;
         }
+        bottomContent.setClickable(true);
         if (llRankList == null) {
             llRankList = new LinearLayout(mContext);
             llRankList.setClickable(true);

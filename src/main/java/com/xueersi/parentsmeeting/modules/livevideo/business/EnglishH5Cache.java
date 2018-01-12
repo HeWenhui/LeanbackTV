@@ -39,7 +39,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import okhttp3.Call;
-import ren.yale.android.cachewebviewlib.CacheInterceptor;
 import ren.yale.android.cachewebviewlib.CachePreLoadService;
 import ren.yale.android.cachewebviewlib.CacheWebView;
 import ren.yale.android.cachewebviewlib.WebViewCache;
@@ -370,7 +369,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     }
 
     private void loadUrl(final String url) {
-        final View view = LayoutInflater.from(context).inflate(R.layout.page_livevideo_h5_courseware_web, bottomContent, false);
+        final View view = LayoutInflater.from(context).inflate(R.layout.page_livevideo_h5_courseware_cacheweb, bottomContent, false);
         final CacheWebView cacheWebView = (CacheWebView) view.findViewById(R.id.wv_livevideo_subject_web);
         cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NORMAL);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);

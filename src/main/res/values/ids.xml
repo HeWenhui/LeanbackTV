@@ -254,9 +254,12 @@
     <item name="rl_livevideo_content_learnreport" type="id" />
     <item name="tv_livevideo_float_title" type="id" />
     <item name="im_livevideo_float_cancle" type="id" />
+    <!--直播-表扬榜根布局-->
+    <item name="rl_livevideo_content_praiselist" type="id" />
     <!--直播-专题问题-->
     <item name="bt_livevideo_subject_calljs" type="id" />
     <item name="bt_livevideo_subject_close" type="id" />
+    <item name="rl_livevideo_subject_web" type="id" />
     <item name="wv_livevideo_subject_web" type="id" />
     <item name="rl_livevideo_subject_loading" type="id" />
     <item name="rl_livevideo_subject_error" type="id" />
@@ -413,4 +416,6 @@
     <item name="tv_livelec_dialog_paiming_text" type="id" />
     <item name="tv_livelec_dialog_paiming_lable2" type="id" />
     <item name="tv_livelec_dialog_paiming_text2" type="id" />
+
+
 </resources>

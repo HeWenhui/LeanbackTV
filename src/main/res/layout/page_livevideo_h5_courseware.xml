@@ -3,10 +3,11 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
+        android:id="@id/rl_livevideo_subject_web"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ren.yale.android.cachewebviewlib.CacheWebView
+        <com.xueersi.xesalib.view.activity.browser.XESNoZoomWebView
             android:id="@id/wv_livevideo_subject_web"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
