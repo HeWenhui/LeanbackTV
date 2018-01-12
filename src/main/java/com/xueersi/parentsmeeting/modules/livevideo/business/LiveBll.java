@@ -77,7 +77,7 @@ import okhttp3.Response;
  *
  * @author linyuqiang
  */
-public class LiveBll extends BaseBll {
+public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private String TAG = "LiveBllLog";
     LiveLazyBllCreat liveLazyBllCreat;
     private QuestionAction mQuestionAction;
@@ -1419,7 +1419,7 @@ public class LiveBll extends BaseBll {
                                 mAnswerRankBll.showRankList(lst);
                             }
                         } catch (Exception e) {
-                            Loger.i("=====notice "+e.getMessage());
+                            Loger.i("=====notice " + e.getMessage());
                         }
                     default:
                         msg += "default";
@@ -2465,7 +2465,7 @@ public class LiveBll extends BaseBll {
         }
         try {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("type", code+"");
+            jsonObject.put("type", code + "");
             jsonObject.put("classId", mGetInfo.getStudentLiveInfo().getClassId());
             jsonObject.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
             mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
@@ -3193,6 +3193,7 @@ public class LiveBll extends BaseBll {
      * @param eventId
      * @param mData
      */
+    @Override
     public void umsAgentDebug(String eventId, final Map<String, String> mData) {
         mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getUname());
@@ -3217,6 +3218,7 @@ public class LiveBll extends BaseBll {
      * @param eventId
      * @param mData
      */
+    @Override
     public void umsAgentDebug2(String eventId, final Map<String, String> mData) {
         mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getStuName());
@@ -3241,6 +3243,7 @@ public class LiveBll extends BaseBll {
      * @param eventId
      * @param mData
      */
+    @Override
     public void umsAgentDebug3(String eventId, final Map<String, String> mData) {
         mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getStuName());

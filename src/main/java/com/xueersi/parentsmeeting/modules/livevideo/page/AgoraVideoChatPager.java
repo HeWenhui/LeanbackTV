@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
@@ -159,19 +160,7 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
         mWorkerThread.joinChannel(null, room, stuid, new WorkerThread.OnJoinChannel() {
             @Override
             public void onJoinChannel(int joinChannel) {
-                StableLogHashMap stableLogHashMap = new StableLogHashMap("joinChannelSuccess");
-                stableLogHashMap.put("channelname", room);
-                stableLogHashMap.put("status", (joinChannel == 0 ? "1" : "0"));
-                stableLogHashMap.put("ex", (joinChannel == 0 ? "Y" : "N"));
-                if (!StringUtils.isEmpty(nonce)) {
-                    stableLogHashMap.put("nonce", nonce);
-                    stableLogHashMap.put("sno", "4");
-                    stableLogHashMap.put("stable", "1");
-                }
-                if (joinChannel != 0) {
-                    stableLogHashMap.put("errcode", "" + joinChannel);
-                }
-                liveBll.umsAgentDebug3(eventId, stableLogHashMap.getData());
+                VideoChatLog.sno4(liveBll, nonce, room, joinChannel);
             }
         });
     }

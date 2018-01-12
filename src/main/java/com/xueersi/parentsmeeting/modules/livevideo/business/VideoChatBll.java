@@ -32,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.AgoraVideoChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VideoChatPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VP;
@@ -298,13 +299,7 @@ public class VideoChatBll implements VideoChatAction {
                         public void run() {
                             StableLogHashMap stableLogHashMap = new StableLogHashMap("raiseHand");
                             String nonce = StableLogHashMap.creatNonce();
-                            stableLogHashMap.put("clicktype", "clicked");
-                            stableLogHashMap.put("status", "1");
-                            stableLogHashMap.put("sno", "1");
-                            stableLogHashMap.put("expect", "1");
-                            stableLogHashMap.put("nonce", nonce);
-                            stableLogHashMap.put("stable", "1");
-                            liveBll.umsAgentDebug2(eventId, stableLogHashMap.getData());
+                            VideoChatLog.sno1(liveBll, nonce);
                             raisehand = true;
                             liveBll.requestMicro(nonce, from);
                             BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
