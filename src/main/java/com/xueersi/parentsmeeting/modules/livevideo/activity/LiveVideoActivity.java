@@ -1425,7 +1425,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             handler.removeMessages(1);
             englishSpeekBll.stop(onAudioRequest);
         } else {
-            onAudioRequest.requestSuccess();
+            if (onAudioRequest != null) {
+                onAudioRequest.requestSuccess();
+            }
         }
     }
 

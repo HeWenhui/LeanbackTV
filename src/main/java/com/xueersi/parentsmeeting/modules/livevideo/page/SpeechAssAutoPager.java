@@ -29,6 +29,7 @@ import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.TalSpeech;
+import com.umeng.analytics.MobclickAgent;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -586,7 +587,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         tvSpeectevalError.setText("录音上传中");
         speechSuccess = true;
         List<PhoneScore> lstPhonemeScore = resultEntity.getLstPhonemeScore();
-        wordChangeColor(score, lstPhonemeScore);
         String nbest = "";
         for (int i = 0; i < lstPhonemeScore.size(); i++) {
             PhoneScore phoneScore = lstPhonemeScore.get(i);
@@ -594,6 +594,11 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             if (i != lstPhonemeScore.size() - 1) {
                 nbest += ",";
             }
+        }
+        try {
+            wordChangeColor(score, lstPhonemeScore);
+        } catch (Exception e) {
+            MobclickAgent.reportError(mContext, new Error(content + "-" + nbest, e));
         }
         logToFile.d("onResult:score=" + score + ",haveAnswer=" + haveAnswer + ",nbest=" + nbest);
         if (haveAnswer) {
