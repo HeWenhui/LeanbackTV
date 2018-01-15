@@ -283,10 +283,13 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         if (type == LiveBll.LIVE_TYPE_LIVE && liveTopicJson.has("room_2")) {
             JSONObject status = liveTopicJson.getJSONObject("room_2");
             RoomStatusEntity coachStatusEntity = liveTopic.getCoachRoomstatus();
+            coachStatusEntity.setListStatus(status.optInt("listStatus"));
+            Loger.e(TAG, "parseLiveTopic:listStatus="+status.optInt("listStatus"));
+            Loger.e(TAG, "parseLiveTopic:listStatus="+liveTopic.getCoachRoomstatus().getListStatus());
             coachStatusEntity.setMode(status.getString("mode"));
             coachStatusEntity.setOpenchat(status.getBoolean("openchat"));
             coachStatusEntity.setCalling(status.getBoolean("isCalling"));
-            coachStatusEntity.setListStatus(status.optString("listStatus"));
+
             if (status.has("link_mic")) {
                 JSONObject link_mic = status.getJSONObject("link_mic");
                 coachStatusEntity.setOnmic(link_mic.optString("onmic", "off"));
@@ -446,6 +449,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } catch (JSONException e) {
             Loger.e(TAG, "parseLiveTopic", e);
         }
+        Loger.e(TAG, "parseLiveTopic:listStatus2="+liveTopic.getCoachRoomstatus().getListStatus());
         return liveTopic;
     }
 
@@ -746,7 +750,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         ProgressListEntity progressListEntity= new ProgressListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
-            progressListEntity.setPraiseStatus(data.getInt("praiseStatus"));
+            progressListEntity.setPraiseStatus(data.getInt("praise_status"));
             JSONArray array = data.getJSONArray("list");
 
             for (int i = 0; i < array.length(); i++) {
@@ -768,7 +772,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 
     /**
      * 解析点赞概率
-     *
+     *g
      * @param responseEntity
      * @return
      */

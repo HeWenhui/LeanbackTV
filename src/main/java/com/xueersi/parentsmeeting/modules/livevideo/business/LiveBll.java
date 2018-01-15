@@ -715,6 +715,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             try {
                 JSONObject jsonObject = new JSONObject(topicstr);
                 LiveTopic liveTopic = mHttpResponseParser.parseLiveTopic(mLiveTopic, jsonObject, mLiveType);
+                Loger.e(TAG, "parseLiveTopic:listStatus3="+liveTopic.getCoachRoomstatus().getListStatus());
 //                mLiveTopic.setMode(LiveTopic.MODE_CLASS);
                 mLogtf.d("onTopic:oldmode=" + mLiveTopic.getMode() + ",newmode=" + liveTopic.getMode() + ",topic=" +
                         liveTopic.getVideoQuestionLiveEntity());
@@ -855,19 +856,26 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     }
                     englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
                 }
+
                 if (mLecLearnReportAction != null) {
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
                     if (mainRoomstatus.isOpenFeedback()) {
                         mLecLearnReportAction.onLearnReport(mLiveId);
                     }
                 }
+                Loger.e(TAG, "parseLiveTopic:listStatus4="+liveTopic.getCoachRoomstatus().getListStatus());
                 if (mPraiseListAction != null) {
-                    LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
-                    if ("1".equals(mainRoomstatus.getListStatus())) {
+
+                    LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getCoachRoomstatus();
+                    Loger.e(TAG, "listStatus="+mainRoomstatus.getListStatus());
+                    if (mainRoomstatus.getListStatus()==1) {
                         getHonorList(2);
                     }
 
-                    else if("3".equals(mainRoomstatus.getListStatus())){
+                    else if(mainRoomstatus.getListStatus()==2){
+                        getProgressList(2);
+                    }
+                    else if(mainRoomstatus.getListStatus()==3){
                         getLikeList(2);
                     }
                 }
@@ -3489,7 +3497,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "" + XESCODE.XCR_ROOM_AGREE_SEND_S);
             jsonObject.put("agreeFrom", "" +mGetInfo.getStuName());
-            mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
+            mIRCMessage.sendNotice(mCounTeacherStr, jsonObject.toString());
         } catch (Exception e) {
             mLogtf.e("sendLike", e);
         }
@@ -3503,7 +3511,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "" + XESCODE.XCR_ROOM_AGREE_NUM_S);
             jsonObject.put("agreeNum", "agreeNum");
-            mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
+            mIRCMessage.sendNotice(mCounTeacherStr, jsonObject.toString());
         } catch (Exception e) {
             mLogtf.e("sendLikeNum", e);
         }
