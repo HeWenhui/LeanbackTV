@@ -65,7 +65,7 @@ public abstract class BaseWebviewPager extends BasePager {
     }
 
     @android.webkit.JavascriptInterface
-    private void addJavascriptInterface() {
+    protected void addJavascriptInterface() {
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setJavaScriptEnabled(true);
         webSetting.setDomStorageEnabled(true);

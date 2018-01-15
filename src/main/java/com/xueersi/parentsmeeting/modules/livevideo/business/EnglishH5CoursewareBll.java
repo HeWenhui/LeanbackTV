@@ -10,20 +10,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.alibaba.fastjson.JSON;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.http.HttpCallBack;
+import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
-import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.string.StringUtils;
@@ -35,8 +40,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE1;
@@ -75,6 +82,14 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     protected ShareDataManager mShareDataManager;
     private LiveBll mLiveBll;
     SpeechEvaluatorUtils mIse;
+    private AnswerRankBll mAnswerRankBll;
+    private boolean hasQuestion;
+    private long submitTime;
+    private boolean hasSubmit;
+
+    public void setAnswerRankBll(AnswerRankBll answerRankBll) {
+        mAnswerRankBll = answerRankBll;
+    }
 
     public EnglishH5CoursewareBll(Context context) {
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -207,6 +222,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             @Override
             public void run() {
                 if ("on".equals(status)) {
+                    if (!"1".equals(videoQuestionLiveEntity.getIsVoice()) || mErrorVoiceQue.contains(videoQuestionLiveEntity.url)) {
+                        hasQuestion = true;
+                        mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
+                        mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
+                    }
                     if (mH5AndBool.contains(videoQuestionLiveEntity.url)) {
                         logToFile.i("onH5Courseware:url.contains");
                         return;
@@ -252,6 +272,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 //                                ViewGroup.LayoutParams.MATCH_PARENT));
                         answerPager.examSubmitAll("onH5Courseware", videoQuestionLiveEntity.nonce);
                     }
+                    int delayTime = 0;
                     if (h5CoursewarePager != null) {
                         h5CoursewarePager.submitData();
                         logToFile.i("onH5Courseware:submitData");
@@ -262,20 +283,22 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                             WebViewRequest webViewRequest = (WebViewRequest) context;
                             webViewRequest.releaseWebView();
                         }
+                        delayTime = 3000;
                     }
+                    getFullMarkList(delayTime);
                 }
             }
         });
     }
 
     private void showH5Paper(final VideoQuestionLiveEntity videoQuestionH5Entity) {
+
         logToFile.i("onH5Courseware:url=" + videoQuestionH5Entity.url);
-        Map<String, String> mData = new HashMap<>();
-        mData.put("logtype", "receiveCourseware");
-        mData.put("coursewareid", videoQuestionH5Entity.id);
-        mData.put("coursewaretype", videoQuestionH5Entity.courseware_type);
-        mData.put("loadurl", videoQuestionH5Entity.url);
-        mLiveBll.umsAgentDebug2(eventId, mData);
+        StableLogHashMap logHashMap = new StableLogHashMap("receiveCourseware");
+        logHashMap.put("coursewareid", videoQuestionH5Entity.id);
+        logHashMap.put("coursewaretype", videoQuestionH5Entity.courseware_type);
+        logHashMap.put("loadurl", videoQuestionH5Entity.url);
+        mLiveBll.umsAgentDebug2(eventId, logHashMap.getData());
         h5CoursewarePager = new EnglishH5CoursewarePager(context, false, mVSectionID, videoQuestionH5Entity.url, videoQuestionH5Entity.id,
                 videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, new OnH5ResultClose() {
             @Override
@@ -299,7 +322,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     webViewRequest.releaseWebView();
                 }
             }
-        }, this);
+        }, this, "0");
+        h5CoursewarePager.setEnglishH5CoursewareBll(this);
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         bottomContent.addView(h5CoursewarePager.getRootView(), lp);
         if (context instanceof WebViewRequest) {
@@ -352,7 +376,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         logHashMap.put("testid", "" + videoQuestionLiveEntity.id);
         logHashMap.put("sourcetype", "h5ware");
         logHashMap.put("answertype", "voice");
-        logHashMap.addEx("Y").addSno("2").addNonce("" + videoQuestionLiveEntity.nonce);
+        logHashMap.addExY().addSno("2").addNonce("" + videoQuestionLiveEntity.nonce);
         logHashMap.addStable("1");
         umsAgentDebug3(voicequestionEventId, logHashMap.getData());
     }
@@ -438,7 +462,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                             StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
                             logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
                             logHashMap.put("sourcetype", "h5ware");
-                            logHashMap.addEx("Y").addExpect("0").addSno("5").addStable("1");
+                            logHashMap.addExY().addExpect("0").addSno("5").addStable("1");
                             umsAgentDebug3(voicequestionEventId, logHashMap.getData());
                         }
                     }
@@ -593,5 +617,97 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
     public interface OnH5ResultClose {
         void onH5ResultClose();
+    }
+
+    private void getFullMarkList(final int delayTime) {
+        if (hasQuestion) {
+            hasQuestion = false;
+        } else {
+            return;
+        }
+        //hasSubmit=false;
+        mAnswerRankBll.getFullMarkListH5(new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                /*long cur = System.currentTimeMillis();
+                long delay = 3000;
+                if (submitTime != 0 && cur - submitTime > 3000) {
+                    delay = 0;
+                } else if (submitTime != 0) {
+                    delay = 3000 - (cur - submitTime);
+                }
+                submitTime=0;*/
+                final List<FullMarkListEntity> lst = new ArrayList<>();
+                try {
+                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    List<FullMarkListEntity> tmplst = JSON.parseArray(jsonObject.optString("ranks"), FullMarkListEntity.class);
+                    if (tmplst != null) {
+                        lst.addAll(tmplst);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                }
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            if (h5CoursewarePager != null) {
+                                bottomContent.removeView(h5CoursewarePager.getRootView());
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        mAnswerRankBll.showFullMarkList(lst);
+                    }
+                }, delayTime);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            if (h5CoursewarePager != null) {
+                                bottomContent.removeView(h5CoursewarePager.getRootView());
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        mAnswerRankBll.showFullMarkList(new ArrayList<FullMarkListEntity>());
+                    }
+                }, delayTime);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            if (h5CoursewarePager != null) {
+                                bottomContent.removeView(h5CoursewarePager.getRootView());
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        mAnswerRankBll.showFullMarkList(new ArrayList<FullMarkListEntity>());
+                    }
+                }, delayTime);
+            }
+        });
+    }
+
+    public void onSubmit() {
+        submitTime = System.currentTimeMillis();
+        mLiveBll.sendRankMessage(XESCODE.RANK_STU_MESSAGE);
+        /*if(isShowFullMarkList){
+            getFullMarkList(3000);
+        }else{
+            hasSubmit=true;
+        }*/
     }
 }

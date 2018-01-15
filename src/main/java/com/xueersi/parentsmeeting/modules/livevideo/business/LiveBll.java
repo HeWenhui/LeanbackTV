@@ -8,12 +8,15 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseBll;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.http.CommonRequestCallBack;
+import com.xueersi.parentsmeeting.http.DownloadCallBack;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.HttpRequestParams;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
@@ -25,18 +28,24 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LikeListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LikeProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.StudentLiveInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.xesalib.umsagent.UmsAgent;
@@ -74,7 +83,7 @@ import okhttp3.Response;
  *
  * @author linyuqiang
  */
-public class LiveBll extends BaseBll {
+public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private String TAG = "LiveBllLog";
     LiveLazyBllCreat liveLazyBllCreat;
     private QuestionAction mQuestionAction;
@@ -84,12 +93,15 @@ public class LiveBll extends BaseBll {
     private VideoAction mVideoAction;
     private RoomAction mRoomAction;
     private LearnReportAction mLearnReportAction;
+    private LecLearnReportAction mLecLearnReportAction;
     private H5CoursewareAction h5CoursewareAction;
     private EnglishH5CoursewareAction englishH5CoursewareAction;
     private VideoChatAction videoChatAction;
     private StarInteractAction starAction;
     private EnglishSpeekAction englishSpeekAction;
     private LiveVoteAction liveVoteAction;
+    private PraiseListAction mPraiseListAction;
+    private SpeechFeedBackAction speechFeedBackAction;
     private LiveHttpManager mHttpManager;
     private LiveHttpResponseParser mHttpResponseParser;
     private IRCMessage mIRCMessage;
@@ -151,6 +163,7 @@ public class LiveBll extends BaseBll {
     long openStartTime;
     /** 区分文理appid */
     String appID = UmsConstants.LIVE_APP_ID;
+    private AnswerRankBll mAnswerRankBll;
 
     public LiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form) {
         super(context);
@@ -628,6 +641,10 @@ public class LiveBll extends BaseBll {
         this.mLearnReportAction = mLearnReportAction;
     }
 
+    public void setLecLearnReportAction(LecLearnReportAction mLearnReportAction) {
+        this.mLecLearnReportAction = mLearnReportAction;
+    }
+
     public void setH5CoursewareAction(H5CoursewareAction h5CoursewareAction) {
         this.h5CoursewareAction = h5CoursewareAction;
     }
@@ -654,6 +671,14 @@ public class LiveBll extends BaseBll {
 
     public void setLiveVoteAction(LiveVoteAction liveVoteAction) {
         this.liveVoteAction = liveVoteAction;
+    }
+
+    public void setPraiseListAction(PraiseListAction mPraiseListAction) {
+        this.mPraiseListAction = mPraiseListAction;
+    }
+
+    public void setSpeechFeedBackAction(SpeechFeedBackAction speechFeedBackAction) {
+        this.speechFeedBackAction = speechFeedBackAction;
     }
 
     private final IRCCallback mIRCcallback = new IRCCallback() {
@@ -717,6 +742,9 @@ public class LiveBll extends BaseBll {
                         if ("on".equals(mainRoomstatus.getExamStatus())) {
                             String num = mainRoomstatus.getExamNum();
                             mQuestionAction.onExamStart(mLiveId, num, "");
+                            if (mAnswerRankBll != null) {
+                                mAnswerRankBll.setTestId(num);
+                            }
                         } else {
                             mQuestionAction.onExamStop();
                         }
@@ -761,6 +789,15 @@ public class LiveBll extends BaseBll {
                             mRoomAction.videoStatus(voiceChatStatus);
                         }
                     }
+                    if (speechFeedBackAction != null) {
+                        String status = mainRoomstatus.getOnVideoChat();
+                        if ("on".equals(status)) {
+                            String roomId = mainRoomstatus.getAgoraVoiceChatRoom();
+                            speechFeedBackAction.start(roomId);
+                        } else {
+                            speechFeedBackAction.stop();
+                        }
+                    }
                 }
                 List<String> disableSpeaking = liveTopic.getDisableSpeaking();
                 boolean have = false;
@@ -774,6 +811,9 @@ public class LiveBll extends BaseBll {
                 if (liveTopic.getVideoQuestionLiveEntity() != null) {
                     if (mQuestionAction != null) {
                         mQuestionAction.showQuestion(liveTopic.getVideoQuestionLiveEntity());
+                        if (mAnswerRankBll != null) {
+                            mAnswerRankBll.setTestId(liveTopic.getVideoQuestionLiveEntity().getvQuestionID());
+                        }
                     }
                 } else {
                     if (mQuestionAction != null) {
@@ -829,6 +869,20 @@ public class LiveBll extends BaseBll {
                     }
                     englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
                 }
+                if (mLecLearnReportAction != null) {
+                    LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
+                    if (mainRoomstatus.isOpenFeedback()) {
+                        mLecLearnReportAction.onLearnReport(mLiveId);
+                    }
+                }
+                if (mPraiseListAction != null) {
+                    LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
+                    if ("1".equals(mainRoomstatus.getListStatus())) {
+                        getHonorList(2);
+                    } else if ("3".equals(mainRoomstatus.getListStatus())) {
+                        getLikeList(2);
+                    }
+                }
             } catch (JSONException e) {
                 mLogtf.e("onTopic", e);
                 MobAgent.httpResponseParserError(TAG, "onTopic", e.getMessage());
@@ -847,6 +901,7 @@ public class LiveBll extends BaseBll {
             try {
                 final JSONObject object = new JSONObject(notice);
                 int mtype = object.getInt("type");
+                Loger.i("===========notice type" + mtype);
                 msg += ",mtype=" + mtype + ",voiceChatStatu=" + voiceChatStatus + ",";
                 switch (mtype) {
                     case XESCODE.READPACAGE:
@@ -897,6 +952,9 @@ public class LiveBll extends BaseBll {
 //                            mGetInfo.getLiveTopic().setTopic(getTopicFromQuestion(videoQuestionLiveEntity));
                             mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(videoQuestionLiveEntity);
                             mQuestionAction.showQuestion(videoQuestionLiveEntity);
+                            if (mAnswerRankBll != null) {
+                                mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                            }
                         }
                         msg += "SENDQUESTION:id=" + videoQuestionLiveEntity.id + ",gold=" + videoQuestionLiveEntity.gold;
                     }
@@ -908,6 +966,7 @@ public class LiveBll extends BaseBll {
                         if (mQuestionAction != null) {
                             mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
                         }
+
 //                        getStuGoldCount();
                         break;
                     case XESCODE.CLASSBEGIN: {
@@ -996,7 +1055,7 @@ public class LiveBll extends BaseBll {
                         break;
                     case XESCODE.LEARNREPORT: {
                         msg += "LEARNREPORT";
-                        getLearnReport(2);
+                        getLearnReport(2, 1000);
                         break;
                     }
                     case XESCODE.ROLLCALL: {
@@ -1078,6 +1137,9 @@ public class LiveBll extends BaseBll {
                             String num = object.optString("num", "0");
                             String nonce = object.optString("nonce");
                             mQuestionAction.onExamStart(mLiveId, num, nonce);
+                            if (mAnswerRankBll != null) {
+                                mAnswerRankBll.setTestId(num);
+                            }
                         }
                     }
                     break;
@@ -1125,6 +1187,10 @@ public class LiveBll extends BaseBll {
                                 if ("1".equals(isVoice)) {
                                     videoQuestionLiveEntity.type = videoQuestionLiveEntity.questiontype = object.optString("questiontype");
                                     videoQuestionLiveEntity.assess_ref = object.optString("assess_ref");
+                                }
+                                if (mAnswerRankBll != null) {
+                                    mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                                    mAnswerRankBll.setType(videoQuestionLiveEntity.courseware_type);
                                 }
                             }
                             englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
@@ -1318,6 +1384,26 @@ public class LiveBll extends BaseBll {
                         }
                         break;
                     }
+                    case XESCODE.LEC_LEARNREPORT: {
+                        msg += ",LEC_LEARNREPORT";
+                        if (mLecLearnReportAction != null) {
+                            mLecLearnReportAction.onLearnReport(mLiveId);
+                        }
+                        break;
+                    }
+                    case XESCODE.SPEECH_FEEDBACK: {
+                        msg += ",SPEECH_FEEDBACK";
+                        if (speechFeedBackAction != null) {
+                            String status = object.getString("status");
+                            if ("on".equals(status)) {
+                                String roomId = object.getString("roomId");
+                                speechFeedBackAction.start(roomId);
+                            } else {
+                                speechFeedBackAction.stop();
+                            }
+                        }
+                        break;
+                    }
                     case XESCODE.VOTE_START: {
                         msg += ",VOTE_START";
                         String open = object.optString("open");
@@ -1372,9 +1458,70 @@ public class LiveBll extends BaseBll {
                         }
                         break;
                     }
+                    case XESCODE.RANK_TEA_MESSAGE:
+                        try {
+                            List<RankUserEntity> lst = JSON.parseArray(object.optString("stuInfo"), RankUserEntity.class);
+                            if (mAnswerRankBll != null) {
+                                mAnswerRankBll.showRankList(lst);
+                            }
+                        } catch (Exception e) {
+                            Loger.i("=====notice " + e.getMessage());
+                        }
                     default:
                         msg += "default";
                         break;
+                    case XESCODE.XCR_ROOM_AGREE_OPEN: {
+                        msg += ",XCR_ROOM_AGREE_OPEN";
+                        String open = object.optString("open");
+                        int zanType = object.optInt("zanType");
+                        if ("on".equals(open)) {
+                            switch (zanType) {
+                                case PraiseListPager.PRAISE_LIST_TYPE_HONOR:
+                                    getHonorList(2);
+                                    break;
+                                case PraiseListPager.PRAISE_LIST_TYPE_PROGRESS:
+                                    getProgressList(2);
+                                    break;
+                                case PraiseListPager.PRAISE_LIST_TYPE_LIKE:
+                                    getLikeList(2);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        } else if ("off".equals(open)) {
+                            if (mPraiseListAction != null) {
+                                mPraiseListAction.closePraiseList();
+                            }
+                        }
+                        break;
+                    }
+                    case XESCODE.XCR_ROOM_AGREE_SEND_T: {
+                        msg += ",XCR_ROOM_AGREE_SEND_T";
+                        if (mPraiseListAction != null && mPraiseListAction.getLikeProbability() == 0) {
+                            getLikeProbability(2);
+                        }
+                        JSONArray agreeForms = object.optJSONArray("agreeFroms");
+                        boolean isTeacher = object.optBoolean("isTeacher");
+                        Log.i(TAG, "agreeForms=" + agreeForms.toString());
+                        Log.i(TAG, "isTeacher=" + isTeacher);
+                        if (isTeacher) {
+                            if (mPraiseListAction != null && agreeForms.length() != 0) {
+                                mPraiseListAction.showPraiseScroll(mGetInfo.getStuName(), agreeForms.getString(0));
+                            }
+                        } else {
+                            ArrayList<String> list = new ArrayList<>();
+                            for (int i = 0; i < agreeForms.length(); i++) {
+                                String stuName = agreeForms.getString(i);
+                                Log.i(TAG, "stuName=" + stuName);
+                                list.add(stuName);
+                            }
+                            if (mPraiseListAction != null && list.size() != 0) {
+                                mPraiseListAction.receiveLikeMessage(list);
+                            }
+                        }
+
+                        break;
+                    }
                 }
                 mLogtf.i("onNotice:msg=" + msg);
                 // Loger.d(TAG, "onNotice:msg=" + msg);
@@ -1618,6 +1765,11 @@ public class LiveBll extends BaseBll {
             onLiveFailure("服务器异常", null);
             return;
         }
+        if (mAnswerRankBll != null && mGetInfo.getStudentLiveInfo() != null) {
+            mAnswerRankBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
+            mAnswerRankBll.setTeamId(mGetInfo.getStudentLiveInfo().getTeamId());
+            mAnswerRankBll.setIsShow(mGetInfo.getIs_show_ranks());
+        }
         if (mGetInfo.getIsArts() == 1) {
             appID = UmsConstants.ARTS_APP_ID;
             LiveVideoConfig.IS_SCIENCE = false;
@@ -1683,7 +1835,7 @@ public class LiveBll extends BaseBll {
         if (mGetInfo.getStudentLiveInfo() != null) {
             if (mGetInfo.getStudentLiveInfo().getEvaluateStatus() == 1) {
                 mLogtf.d("onGetInfoSuccess:getLearnReport");
-                getLearnReport(1);
+                getLearnReport(1, 1000);
             }
             mLogtf.d("onGetInfoSuccess:getSignStatus=" + mGetInfo.getStudentLiveInfo().getSignStatus());
             if (mGetInfo.getStudentLiveInfo().getSignStatus() != 0 && mGetInfo.getStudentLiveInfo().getSignStatus()
@@ -1749,20 +1901,22 @@ public class LiveBll extends BaseBll {
     /**
      * 获取学习报告
      */
-    private synchronized void getLearnReport(final int from) {
+    private synchronized void getLearnReport(final int from, final long delayTime) {
         XesMobAgent.liveLearnReport("request:" + from);
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mLogtf.d("getLearnReport:enstuId=" + enstuId + ",liveId=" + mLiveId);
-        mHttpManager.getLearnReport(enstuId, mLiveId, new HttpCallBack(false) {
+        mLogtf.d("getLearnReport:enstuId=" + enstuId + ",liveType=" + mLiveType + ",liveId=" + mLiveId + ",delayTime=" + delayTime);
+        mHttpManager.getLearnReport(enstuId, mLiveId, mLiveType, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 LearnReportEntity learnReportEntity = mHttpResponseParser.parseLearnReport(responseEntity);
-                if (mLearnReportAction != null && learnReportEntity != null) {
+                if (learnReportEntity != null) {
                     learnReportEntity.getStu().setStuName(mGetInfo.getStuName());
                     learnReportEntity.getStu().setTeacherName(mGetInfo.getTeacherName());
                     learnReportEntity.getStu().setTeacherIMG(mGetInfo.getTeacherIMG());
-                    mLearnReportAction.onLearnReport(learnReportEntity);
+                    if (mLearnReportAction != null) {
+                        mLearnReportAction.onLearnReport(learnReportEntity);
+                    }
                 }
                 XesMobAgent.liveLearnReport("request-ok:" + from);
                 mLogtf.d("getLearnReport:onPmSuccess:learnReportEntity=" + (learnReportEntity == null) + "," +
@@ -1772,13 +1926,62 @@ public class LiveBll extends BaseBll {
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 XesMobAgent.liveLearnReport("request-fail:" + from);
-                mLogtf.d("getLearnReport:onPmFailure=" + error + ",msg=" + msg);
+                mLogtf.d("getLearnReport:onPmFailure=" + error + ",msg=" + msg + ",delayTime=" + delayTime);
+                if (delayTime < 15000) {
+                    postDelayedIfNotFinish(new Runnable() {
+                        @Override
+                        public void run() {
+                            getLearnReport(3, delayTime + 5000);
+                        }
+                    }, delayTime);
+                }
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 XesMobAgent.liveLearnReport("request-error:" + from);
                 mLogtf.d("getLearnReport:onPmError=" + responseEntity.getErrorMsg());
+                showToast("" + responseEntity.getErrorMsg());
+            }
+        });
+    }
+
+    public void getLecLearnReport(final long delayTime, final AbstractBusinessDataCallBack callBack) {
+        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        mLogtf.d("getLecLearnReport:enstuId=" + enstuId + ",liveType=" + mLiveType + ",liveId=" + mLiveId + ",delayTime=" + delayTime);
+        mHttpManager.getLearnReport(enstuId, mLiveId, mLiveType, new HttpCallBack(false) {
+
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                LearnReportEntity learnReportEntity = mHttpResponseParser.parseLecLearnReport(responseEntity);
+                if (learnReportEntity != null) {
+                    learnReportEntity.getStu().setStuName(mGetInfo.getStuName());
+                    learnReportEntity.getStu().setTeacherName(mGetInfo.getTeacherName());
+                    learnReportEntity.getStu().setTeacherIMG(mGetInfo.getTeacherIMG());
+                    callBack.onDataSucess(learnReportEntity);
+                }
+                mLogtf.d("getLecLearnReport:onPmSuccess:learnReportEntity=" + (learnReportEntity == null) + "," +
+                        "JsonObject=" + responseEntity.getJsonObject());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                mLogtf.d("getLecLearnReport:onPmFailure=" + error + ",msg=" + msg + ",delayTime=" + delayTime);
+                if (delayTime < 15000) {
+                    postDelayedIfNotFinish(new Runnable() {
+                        @Override
+                        public void run() {
+                            getLecLearnReport(delayTime + 5000, callBack);
+                        }
+                    }, delayTime);
+                } else {
+                    callBack.onDataFail(0, msg);
+                }
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                mLogtf.d("getLecLearnReport:onPmError=" + responseEntity.getErrorMsg());
                 showToast("" + responseEntity.getErrorMsg());
             }
         });
@@ -2030,6 +2233,7 @@ public class LiveBll extends BaseBll {
             mIRCMessage.destory();
         }
         videoChatAction = null;
+        mPraiseListAction = null;
     }
 
     private void onLiveFailure(String msg, Runnable runnable) {
@@ -2353,6 +2557,22 @@ public class LiveBll extends BaseBll {
         }
     }
 
+    /** 发送上墙信号聊天消息 */
+    public void sendRankMessage(int code) {
+        if (mLiveTopic.isDisable()) {
+            return;
+        }
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type", code + "");
+            jsonObject.put("classId", mGetInfo.getStudentLiveInfo().getClassId());
+            jsonObject.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
+            mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /** 是否开启献花 */
     public boolean isOpenbarrage() {
         return mLiveTopic.getMainRoomstatus().isOpenbarrage();
@@ -2511,6 +2731,9 @@ public class LiveBll extends BaseBll {
         return mIRCMessage.getNickname();
     }
 
+    public String getStuName() {
+        return mGetInfo.getStuName();
+    }
 
     public void getSpeechEval(String id, final OnSpeechEval onSpeechEval) {
         String liveid = mGetInfo.getId();
@@ -2742,7 +2965,11 @@ public class LiveBll extends BaseBll {
     }
 
     public void getCourseWareUrl(HttpCallBack requestCallBack) {
-//        mHttpManager.getCourseWareUrl(requestCallBack);
+        mHttpManager.getCourseWareUrl(requestCallBack);
+    }
+
+    public Call download(final String url, final String saveDir, DownloadCallBack downloadCallBack) {
+        return mHttpManager.download(url, saveDir, downloadCallBack);
     }
 
     static HashMap<String, String> channelAndRoomid = new HashMap();
@@ -2993,6 +3220,11 @@ public class LiveBll extends BaseBll {
         }
     }
 
+    public void setAnswerRankBll(AnswerRankBll bll) {
+        mAnswerRankBll = bll;
+        mAnswerRankBll.setLiveHttpManager(mHttpManager);
+    }
+
     public void streamReport(MegId msgid, String channelname, long connsec) {
         if (mServer == null || playserverEntity == null) {
             return;
@@ -3063,6 +3295,7 @@ public class LiveBll extends BaseBll {
      * @param eventId
      * @param mData
      */
+    @Override
     public void umsAgentDebug(String eventId, final Map<String, String> mData) {
         mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getUname());
@@ -3087,6 +3320,7 @@ public class LiveBll extends BaseBll {
      * @param eventId
      * @param mData
      */
+    @Override
     public void umsAgentDebug2(String eventId, final Map<String, String> mData) {
         mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getStuName());
@@ -3111,6 +3345,7 @@ public class LiveBll extends BaseBll {
      * @param eventId
      * @param mData
      */
+    @Override
     public void umsAgentDebug3(String eventId, final Map<String, String> mData) {
         mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getStuName());
@@ -3127,5 +3362,173 @@ public class LiveBll extends BaseBll {
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
+    }
+
+    /**
+     * 获取光荣榜
+     */
+    public synchronized void getHonorList(final int from) {
+        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        mLogtf.d("getHonorList:enstuId=" + enstuId + ",liveId=" + mLiveId);
+        String classId = "";
+        if (mGetInfo.getStudentLiveInfo() != null) {
+            classId = mGetInfo.getStudentLiveInfo().getClassId();
+        }
+        mHttpManager.getHonorList(classId, enstuId, mLiveId, "0", new HttpCallBack(false) {
+
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                HonorListEntity honorListEntity = mHttpResponseParser.parseHonorList(responseEntity);
+                if (mPraiseListAction != null && honorListEntity != null) {
+                    mPraiseListAction.onHonerList(honorListEntity);
+                }
+                mLogtf.d("getHonorList:onPmSuccess:honorListEntity=" + (honorListEntity == null) + "," +
+                        "JsonObject=" + responseEntity.getJsonObject());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                mLogtf.d("getHonorList:onPmFailure=" + error + ",msg=" + msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                mLogtf.d("getHonorList:onPmError=" + responseEntity.getErrorMsg());
+                showToast("" + responseEntity.getErrorMsg());
+            }
+        });
+    }
+
+    /**
+     * 获取点赞榜
+     */
+    public synchronized void getLikeList(final int from) {
+        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        mLogtf.d("getLikeList:enstuId=" + enstuId + ",liveId=" + mLiveId);
+        String classId = "";
+        if (mGetInfo.getStudentLiveInfo() != null) {
+            classId = mGetInfo.getStudentLiveInfo().getClassId();
+        }
+        mHttpManager.getLikeList(classId, enstuId, new HttpCallBack(false) {
+
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                LikeListEntity likeListEntity = mHttpResponseParser.parseLikeList(responseEntity);
+                if (mPraiseListAction != null && likeListEntity != null) {
+                    mPraiseListAction.onLikeList(likeListEntity);
+                }
+                mLogtf.d("getLikeList:onPmSuccess:likeListEntity=" + (likeListEntity == null) + "," +
+                        "JsonObject=" + responseEntity.getJsonObject());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                mLogtf.d("getLikeList:onPmFailure=" + error + ",msg=" + msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                mLogtf.d("getLikeList:onPmError=" + responseEntity.getErrorMsg());
+                showToast("" + responseEntity.getErrorMsg());
+            }
+        });
+    }
+
+    /**
+     * 获取进步榜
+     */
+    public synchronized void getProgressList(final int from) {
+        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        mLogtf.d("getProgressList:enstuId=" + enstuId + ",liveId=" + mLiveId);
+        String classId = "";
+        if (mGetInfo.getStudentLiveInfo() != null) {
+            classId = mGetInfo.getStudentLiveInfo().getClassId();
+        }
+        mHttpManager.getProgressList(classId, enstuId, mLiveId, "0", new HttpCallBack(false) {
+
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                ProgressListEntity progressListEntity = mHttpResponseParser.parseProgressList(responseEntity);
+                if (mPraiseListAction != null && progressListEntity != null) {
+                    mPraiseListAction.onProgressList(progressListEntity);
+                }
+                mLogtf.d("getProgressList:onPmSuccess:progressListEntity=" + (progressListEntity == null) + "," +
+                        "JsonObject=" + responseEntity.getJsonObject());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                mLogtf.d("getProgressList:onPmFailure=" + error + ",msg=" + msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                mLogtf.d("getProgressList:onPmError=" + responseEntity.getErrorMsg());
+                showToast("" + responseEntity.getErrorMsg());
+            }
+        });
+    }
+
+    /**
+     * 获取点赞概率
+     */
+    public synchronized void getLikeProbability(final int from) {
+        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        mLogtf.d("getLikeProbability:enstuId=" + enstuId + ",liveId=" + mLiveId);
+        String classId = "";
+        if (mGetInfo.getStudentLiveInfo() != null) {
+            classId = mGetInfo.getStudentLiveInfo().getClassId();
+        }
+        mHttpManager.getLikeProbability(classId, enstuId, new HttpCallBack(false) {
+
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                LikeProbabilityEntity likeProbabilityEntity = mHttpResponseParser.parseLikeProbability(responseEntity);
+                if (mPraiseListAction != null && likeProbabilityEntity != null) {
+                    mPraiseListAction.setLikeProbability(likeProbabilityEntity);
+                }
+                mLogtf.d("getLikeProbability:onPmSuccess:likeProbabilityEntity=" + (likeProbabilityEntity == null) + "," +
+                        "JsonObject=" + responseEntity.getJsonObject());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                mLogtf.d("getLikeProbability:onPmFailure=" + error + ",msg=" + msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                mLogtf.d("getLikeProbability:onPmError=" + responseEntity.getErrorMsg());
+                showToast("" + responseEntity.getErrorMsg());
+            }
+        });
+    }
+
+    /**
+     * 学生私聊老师点赞
+     */
+    public void sendLike() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type", "" + XESCODE.XCR_ROOM_AGREE_SEND_S);
+            jsonObject.put("agreeFrom", "" + mGetInfo.getStuName());
+            mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
+        } catch (Exception e) {
+            mLogtf.e("sendLike", e);
+        }
+    }
+
+    /**
+     * 学生计算赞数后私发老师
+     */
+    public void sendLikeNum(int agreeNum) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type", "" + XESCODE.XCR_ROOM_AGREE_NUM_S);
+            jsonObject.put("agreeNum", "agreeNum");
+            mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
+        } catch (Exception e) {
+            mLogtf.e("sendLikeNum", e);
+        }
     }
 }

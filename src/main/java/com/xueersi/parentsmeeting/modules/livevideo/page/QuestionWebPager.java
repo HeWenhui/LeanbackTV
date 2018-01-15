@@ -13,11 +13,12 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.logerhelper.LogerTag;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
@@ -52,8 +53,9 @@ public class QuestionWebPager extends BasePager {
     private boolean isEnd = false;
     String testPaperUrl;
     String jsExamSubmitAll = "javascript:examSubmitAll()";
+    private String isShowRanks;
 
-    public QuestionWebPager(Context context, StopWebQuestion questionBll, String testPaperUrl, String stuId, String stuName, String liveid, String testId, String nonce) {
+    public QuestionWebPager(Context context, StopWebQuestion questionBll, String testPaperUrl, String stuId, String stuName, String liveid, String testId, String nonce, String isShowRanks) {
         super(context);
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
@@ -64,6 +66,7 @@ public class QuestionWebPager extends BasePager {
         this.testId = testId;
         this.testPaperUrl = testPaperUrl;
         this.nonce = nonce;
+        this.isShowRanks=isShowRanks;
         logToFile.i("ExamQuestionPager:liveid=" + liveid + ",testId=" + testId);
         initData();
     }
@@ -85,6 +88,10 @@ public class QuestionWebPager extends BasePager {
 //                view.findViewById(R.id.rl_livevideo_subject_error).setVisibility(View.GONE);
 //                wvSubjectWeb.setVisibility(View.VISIBLE);
                 wvSubjectWeb.reload();
+                errorView.setVisibility(View.GONE);
+                mView.findViewById(R.id.rl_livevideo_subject_loading).setVisibility(View.VISIBLE);
+                ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
+                ((AnimationDrawable) ivLoading.getBackground()).start();
             }
         });
         return view;
@@ -113,7 +120,7 @@ public class QuestionWebPager extends BasePager {
         ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
         ((AnimationDrawable) ivLoading.getBackground()).start();
         examUrl = testPaperUrl + "?liveId=" + liveid + "&testId=" + testId
-                + "&stuId=" + stuId + "&stuName=" + stuName;
+                + "&stuId=" + stuId + "&stuName=" + stuName+"&isTowall="+isShowRanks;
 //        String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
 //        examUrl = BrowserBll.getAutoLoginURL(mEnStuId, examUrl, "", 0, true);
         if (!StringUtils.isEmpty(nonce)) {
@@ -186,8 +193,9 @@ public class QuestionWebPager extends BasePager {
                 if (loadView != null) {
                     ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
                     ((AnimationDrawable) ivLoading.getBackground()).stop();
-                    ViewGroup group = (ViewGroup) loadView.getParent();
-                    group.removeView(loadView);
+                    /*ViewGroup group = (ViewGroup) loadView.getParent();
+                    group.removeView(loadView);*/
+                    loadView.setVisibility(View.GONE);
                 }
             }
         }
@@ -248,6 +256,13 @@ public class QuestionWebPager extends BasePager {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             logToFile.i("shouldOverrideUrlLoading:url=" + url);
+            if(url.contains("live.xueersi.com/Live/getMultiTestResult")
+                    ){
+                if(questionBll instanceof QuestionBll){
+                    ((QuestionBll) questionBll).onSubmit(XESCODE.STOPQUESTION,url.contains("submitType=force"));
+                }
+                return false;
+            }
             if ("xueersi://livevideo/examPaper/close".equals(url) || "http://baidu.com/".equals(url)) {
                 ViewGroup group = (ViewGroup) mView.getParent();
                 if (group != null) {

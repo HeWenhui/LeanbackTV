@@ -124,6 +124,9 @@ public class LiveTopic {
         private boolean isCalling;
         /** 当前的直播模式 */
         private String mode = MODE_TRANING;
+        /** 当前的表扬榜模式 */
+        private String listStatus;
+
         private boolean haveExam = false;
         private String examStatus = "";
         private String examNum = "";
@@ -135,6 +138,12 @@ public class LiveTopic {
         private boolean classmateChange = true;
         private boolean openDbEnergy;
         private LiveTopic.VoteEntity voteEntity;
+        /** 是否打开反馈 */
+        private boolean isOpenFeedback;
+        /** 是否打开语音反馈 */
+        private String agoraVoiceChatRoom = "";
+        /** 是否打开语音反馈 */
+        private String onVideoChat = "off";
 
         public RoomStatusEntity() {
             classbegin = false;
@@ -161,6 +170,9 @@ public class LiveTopic {
             for (ClassmateEntity entity : roomStatusEntity.classmateEntities) {
                 classmateEntities.add(entity);
             }
+            isOpenFeedback = roomStatusEntity.isOpenFeedback;
+            agoraVoiceChatRoom = roomStatusEntity.agoraVoiceChatRoom;
+            onVideoChat = roomStatusEntity.onVideoChat;
         }
 
         public void setClassbegin(boolean classbegin) {
@@ -293,6 +305,38 @@ public class LiveTopic {
 
         public void setVoteEntity(VoteEntity voteEntity) {
             this.voteEntity = voteEntity;
+        }
+
+        public boolean isOpenFeedback() {
+            return isOpenFeedback;
+        }
+
+        public void setOpenFeedback(boolean openFeedback) {
+            isOpenFeedback = openFeedback;
+        }
+
+        public String getListStatus() {
+            return listStatus;
+        }
+
+        public void setListStatus(String listStatus) {
+            this.listStatus = listStatus;
+        }
+
+        public String getAgoraVoiceChatRoom() {
+            return agoraVoiceChatRoom;
+        }
+
+        public void setAgoraVoiceChatRoom(String agoraVoiceChatRoom) {
+            this.agoraVoiceChatRoom = agoraVoiceChatRoom;
+        }
+
+        public String getOnVideoChat() {
+            return onVideoChat;
+        }
+
+        public void setOnVideoChat(String onVideoChat) {
+            this.onVideoChat = onVideoChat;
         }
     }
 

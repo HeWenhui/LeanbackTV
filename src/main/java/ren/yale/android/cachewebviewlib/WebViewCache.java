@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,6 +46,7 @@ public class WebViewCache {
     private long mCacheRamSize;
     private LruCache<String, RamObject> mLruCache;
     private BytesEncodingDetect mEncodingDetect;
+    private ArrayList<HttpURLConnection> httpURLConnections = new ArrayList<>();
 
     public WebViewCache() {
         mCacheExtensionConfig = new CacheExtensionConfig();
@@ -59,6 +61,20 @@ public class WebViewCache {
                 e.printStackTrace();
             }
         }
+        Loger.d(TAG, "release:httpURLConnections=" + httpURLConnections.size());
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    for (int i = 0; i < httpURLConnections.size(); i++) {
+                        HttpURLConnection connection = httpURLConnections.get(i);
+                        connection.disconnect();
+                    }
+                } catch (Exception e) {
+                    Loger.e(TAG, "release:disconnect");
+                }
+            }
+        }.start();
         mCacheExtensionConfig.clearAll();
         if (mLruCache != null) {
             mLruCache.evictAll();
@@ -185,16 +201,21 @@ public class WebViewCache {
         return null;
     }
 
-    public InputStream httpRequest(CacheWebViewClient client, String url) {
-
+    public InputStream httpRequest(CacheWebViewClient client, CacheStrategy cacheStrategy, String url) {
+        HttpURLConnection httpURLConnection = null;
         try {
             URL urlRequest = new URL(url);
-
-            HttpURLConnection httpURLConnection = (HttpURLConnection) urlRequest.openConnection();
+            httpURLConnection = (HttpURLConnection) urlRequest.openConnection();
             httpURLConnection.setRequestMethod("GET");
             httpURLConnection.setUseCaches(false);
-            httpURLConnection.setConnectTimeout(30000);
-            httpURLConnection.setReadTimeout(30000);
+            if (cacheStrategy == CacheStrategy.FORCE) {
+                httpURLConnection.setConnectTimeout(2000);
+                httpURLConnection.setReadTimeout(2000);
+                httpURLConnections.add(httpURLConnection);
+            } else {
+                httpURLConnection.setConnectTimeout(30000);
+                httpURLConnection.setReadTimeout(30000);
+            }
 
             Map<String, String> header = client.getHeader(url);
             if (header != null) {
@@ -221,7 +242,7 @@ public class WebViewCache {
 
             int responseCode = httpURLConnection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-
+                httpURLConnections.remove(httpURLConnection);
                 return new ResourseInputStream(url, httpURLConnection.getInputStream(),
                         getEditor(getKey(url)), remote, mLruCache, mCacheExtensionConfig);
             }
@@ -247,6 +268,10 @@ public class WebViewCache {
         } catch (Exception e) {
             CacheWebViewLog.d(e.toString() + " " + url);
             e.printStackTrace();
+        } finally {
+            if (httpURLConnection != null) {
+                httpURLConnections.remove(httpURLConnection);
+            }
         }
 
         return null;
@@ -428,6 +453,7 @@ public class WebViewCache {
         if (TextUtils.isEmpty(extension)) {
             return null;
         }
+        CacheWebViewLog.d("getWebResourceResponse:thread=" + Thread.currentThread().getName() + ",cache=" + url);
 
         if (mCacheExtensionConfig.isMedia(extension)) {
             return null;
@@ -435,7 +461,7 @@ public class WebViewCache {
         if (!mCacheExtensionConfig.canCache(extension)) {
             return null;
         }
-        CacheWebViewLog.d("getWebResourceResponse:cache=" + url);
+
         InputStream inputStream = null;
 
         if (mCacheExtensionConfig.isHtml(extension)) {
@@ -458,7 +484,7 @@ public class WebViewCache {
             inputStream = getCacheInputStream(url);
         }
         if (inputStream == null) {
-            inputStream = httpRequest(client, url);
+            inputStream = httpRequest(client, cacheStrategy, url);
         }
         String encode = "UTF-8";
         if (!TextUtils.isEmpty(encoding)) {
