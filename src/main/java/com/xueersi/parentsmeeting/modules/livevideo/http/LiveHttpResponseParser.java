@@ -336,26 +336,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             } else {
                 mainStatusEntity.setHaveExam(false);
             }
-//            if (status.has("vote")) {
-//                JSONObject vote = status.getJSONObject("vote");
-//                LiveTopic.VoteEntity voteEntity;
-//                try {
-//                    voteEntity = new LiveTopic.VoteEntity();
-//                    voteEntity.setChoiceId(vote.getString("choiceId"));
-//                    voteEntity.setChoiceType(vote.getInt("choiceType"));
-//                    voteEntity.setChoiceNum(vote.getInt("choiceNum"));
-//                    ArrayList<LiveTopic.VoteResult> voteResults = voteEntity.getVoteResults();
-//                    JSONArray result = vote.getJSONArray("result");
-//                    for (int i = 0; i < result.length(); i++) {
-//                        LiveTopic.VoteResult voteResult = new LiveTopic.VoteResult();
-//                        voteResult.setPople(result.getInt(i));
-//                        voteResults.add(voteResult);
-//                    }
-//                } catch (Exception e) {
-//                    voteEntity = null;
-//                }
-//                mainStatusEntity.setVoteEntity(voteEntity);
-//            }
+            if (status.has("voiceChat")) {
+                JSONObject jsonObject = status.getJSONObject("voiceChat");
+                mainStatusEntity.setAgoraVoiceChatRoom(jsonObject.optString("agoraVoiceChatRoom"));
+                mainStatusEntity.setOnVideoChat(jsonObject.optString("onVideoChat"));
+            }
             if (status.has("link_mic")) {
                 JSONObject link_mic = status.getJSONObject("link_mic");
                 mainStatusEntity.setOnmic(link_mic.optString("onmic", "off"));
@@ -682,8 +667,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @return
      */
     public HonorListEntity parseHonorList(ResponseEntity responseEntity) {
-        Log.i(TAG,"parseHonorList: "+responseEntity.getJsonObject());
-        HonorListEntity honorListEntity= new HonorListEntity();
+        Log.i(TAG, "parseHonorList: " + responseEntity.getJsonObject());
+        HonorListEntity honorListEntity = new HonorListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
             honorListEntity.setPraiseStatus(data.getInt("praiseStatus"));
@@ -713,8 +698,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      */
     public LikeListEntity parseLikeList(ResponseEntity responseEntity) {
 
-        Log.i(TAG,"parseLikeList: "+responseEntity.getJsonObject());
-        LikeListEntity likeListEntity= new LikeListEntity();
+        Log.i(TAG, "parseLikeList: " + responseEntity.getJsonObject());
+        LikeListEntity likeListEntity = new LikeListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
             JSONArray array = data.getJSONArray("list");
@@ -742,8 +727,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @return
      */
     public ProgressListEntity parseProgressList(ResponseEntity responseEntity) {
-        Log.i(TAG,"parseProgressList: "+responseEntity.getJsonObject());
-        ProgressListEntity progressListEntity= new ProgressListEntity();
+        Log.i(TAG, "parseProgressList: " + responseEntity.getJsonObject());
+        ProgressListEntity progressListEntity = new ProgressListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
             progressListEntity.setPraiseStatus(data.getInt("praiseStatus"));
@@ -773,8 +758,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @return
      */
     public LikeProbabilityEntity parseLikeProbability(ResponseEntity responseEntity) {
-        Log.i(TAG,"parseLikeProbability: "+responseEntity.getJsonObject());
-        LikeProbabilityEntity likeProbabilityEntity= new LikeProbabilityEntity();
+        Log.i(TAG, "parseLikeProbability: " + responseEntity.getJsonObject());
+        LikeProbabilityEntity likeProbabilityEntity = new LikeProbabilityEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
             likeProbabilityEntity.setStuId(data.getInt("stuId"));

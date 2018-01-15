@@ -101,6 +101,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private EnglishSpeekAction englishSpeekAction;
     private LiveVoteAction liveVoteAction;
     private PraiseListAction mPraiseListAction;
+    private SpeechFeedBackAction speechFeedBackAction;
     private LiveHttpManager mHttpManager;
     private LiveHttpResponseParser mHttpResponseParser;
     private IRCMessage mIRCMessage;
@@ -672,8 +673,12 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         this.liveVoteAction = liveVoteAction;
     }
 
-    public void setPraiseListAction(PraiseListAction mPraiseListAction){
+    public void setPraiseListAction(PraiseListAction mPraiseListAction) {
         this.mPraiseListAction = mPraiseListAction;
+    }
+
+    public void setSpeechFeedBackAction(SpeechFeedBackAction speechFeedBackAction) {
+        this.speechFeedBackAction = speechFeedBackAction;
     }
 
     private final IRCCallback mIRCcallback = new IRCCallback() {
@@ -784,6 +789,15 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             mRoomAction.videoStatus(voiceChatStatus);
                         }
                     }
+                    if (speechFeedBackAction != null) {
+                        String status = mainRoomstatus.getOnVideoChat();
+                        if ("on".equals(status)) {
+                            String roomId = mainRoomstatus.getAgoraVoiceChatRoom();
+                            speechFeedBackAction.start(roomId);
+                        } else {
+                            speechFeedBackAction.stop();
+                        }
+                    }
                 }
                 List<String> disableSpeaking = liveTopic.getDisableSpeaking();
                 boolean have = false;
@@ -865,9 +879,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
                     if ("1".equals(mainRoomstatus.getListStatus())) {
                         getHonorList(2);
-                    }
-
-                    else if("3".equals(mainRoomstatus.getListStatus())){
+                    } else if ("3".equals(mainRoomstatus.getListStatus())) {
                         getLikeList(2);
                     }
                 }
@@ -1379,6 +1391,19 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         }
                         break;
                     }
+                    case XESCODE.SPEECH_FEEDBACK: {
+                        msg += ",SPEECH_FEEDBACK";
+                        if (speechFeedBackAction != null) {
+                            String status = object.getString("status");
+                            if ("on".equals(status)) {
+                                String roomId = object.getString("roomId");
+                                speechFeedBackAction.start(roomId);
+                            } else {
+                                speechFeedBackAction.stop();
+                            }
+                        }
+                        break;
+                    }
                     case XESCODE.VOTE_START: {
                         msg += ",VOTE_START";
                         String open = object.optString("open");
@@ -1449,8 +1474,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         msg += ",XCR_ROOM_AGREE_OPEN";
                         String open = object.optString("open");
                         int zanType = object.optInt("zanType");
-                        if("on".equals(open)){
-                            switch (zanType){
+                        if ("on".equals(open)) {
+                            switch (zanType) {
                                 case PraiseListPager.PRAISE_LIST_TYPE_HONOR:
                                     getHonorList(2);
                                     break;
@@ -1463,9 +1488,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 default:
                                     break;
                             }
-                        }
-                        else if("off".equals(open)){
-                            if(mPraiseListAction!=null){
+                        } else if ("off".equals(open)) {
+                            if (mPraiseListAction != null) {
                                 mPraiseListAction.closePraiseList();
                             }
                         }
@@ -1473,26 +1497,25 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     }
                     case XESCODE.XCR_ROOM_AGREE_SEND_T: {
                         msg += ",XCR_ROOM_AGREE_SEND_T";
-                        if(mPraiseListAction!=null&&mPraiseListAction.getLikeProbability()==0){
+                        if (mPraiseListAction != null && mPraiseListAction.getLikeProbability() == 0) {
                             getLikeProbability(2);
                         }
                         JSONArray agreeForms = object.optJSONArray("agreeFroms");
                         boolean isTeacher = object.optBoolean("isTeacher");
-                        Log.i(TAG,"agreeForms="+agreeForms.toString());
-                        Log.i(TAG,"isTeacher="+isTeacher);
-                        if(isTeacher){
-                            if(mPraiseListAction!=null&&agreeForms.length()!=0){
-                                mPraiseListAction.showPraiseScroll(mGetInfo.getStuName(),agreeForms.getString(0));
+                        Log.i(TAG, "agreeForms=" + agreeForms.toString());
+                        Log.i(TAG, "isTeacher=" + isTeacher);
+                        if (isTeacher) {
+                            if (mPraiseListAction != null && agreeForms.length() != 0) {
+                                mPraiseListAction.showPraiseScroll(mGetInfo.getStuName(), agreeForms.getString(0));
                             }
-                        }
-                        else{
+                        } else {
                             ArrayList<String> list = new ArrayList<>();
                             for (int i = 0; i < agreeForms.length(); i++) {
-                                String stuName =agreeForms.getString(i);
-                                Log.i(TAG,"stuName="+stuName);
+                                String stuName = agreeForms.getString(i);
+                                Log.i(TAG, "stuName=" + stuName);
                                 list.add(stuName);
                             }
-                            if(mPraiseListAction!=null&&list.size()!=0){
+                            if (mPraiseListAction != null && list.size() != 0) {
                                 mPraiseListAction.receiveLikeMessage(list);
                             }
                         }
@@ -3484,11 +3507,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /**
      * 学生私聊老师点赞
      */
-    public void sendLike( ) {
+    public void sendLike() {
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "" + XESCODE.XCR_ROOM_AGREE_SEND_S);
-            jsonObject.put("agreeFrom", "" +mGetInfo.getStuName());
+            jsonObject.put("agreeFrom", "" + mGetInfo.getStuName());
             mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
         } catch (Exception e) {
             mLogtf.e("sendLike", e);

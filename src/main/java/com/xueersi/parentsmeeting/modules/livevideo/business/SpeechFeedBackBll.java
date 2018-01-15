@@ -5,14 +5,12 @@ import android.graphics.Rect;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
-import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.tal.speech.speechrecognizer.PCMFormat;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
@@ -20,9 +18,9 @@ import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import java.io.IOException;
 
 /**
- * Created by lyqai on 2018/1/11.
+ * Created by linyuqiang on 2018/1/11.
+ * 语音反馈
  */
-
 public class SpeechFeedBackBll implements SpeechFeedBackAction {
     boolean isStart = false;
     Activity activity;
@@ -72,7 +70,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
     }
 
     @Override
-    public void start() {
+    public void start(String roomId) {
         if (isStart) {
             return;
         }
