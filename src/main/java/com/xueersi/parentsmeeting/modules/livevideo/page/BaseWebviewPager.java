@@ -129,6 +129,12 @@ public abstract class BaseWebviewPager extends BasePager {
                     "&&," + consoleMessage.lineNumber() + "&&," + consoleMessage.message(), isRequst);
             return super.onConsoleMessage(consoleMessage);
         }
+
+        @Override
+        public void onReceivedTitle(WebView view, String title) {
+            super.onReceivedTitle(view, title);
+            BaseWebviewPager.this.onReceivedTitle(view, title);
+        }
     }
 
     public class MyWebViewClient extends WebViewClient {
@@ -166,6 +172,9 @@ public abstract class BaseWebviewPager extends BasePager {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             return BaseWebviewPager.this.shouldOverrideUrlLoading(view, url);
         }
+    }
+
+    public void onReceivedTitle(WebView view, String title) {
     }
 
     protected void onPageFinished(WebView view, String url) {

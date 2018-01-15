@@ -102,6 +102,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private LiveVoteAction liveVoteAction;
     private PraiseListAction mPraiseListAction;
     private SpeechFeedBackAction speechFeedBackAction;
+    private LecAdvertAction lecAdvertAction;
     private LiveHttpManager mHttpManager;
     private LiveHttpResponseParser mHttpResponseParser;
     private IRCMessage mIRCMessage;
@@ -679,6 +680,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
     public void setSpeechFeedBackAction(SpeechFeedBackAction speechFeedBackAction) {
         this.speechFeedBackAction = speechFeedBackAction;
+    }
+
+    public void setLecAdvertAction(LecAdvertAction lecAdvertAction) {
+        this.lecAdvertAction = lecAdvertAction;
     }
 
     private final IRCCallback mIRCcallback = new IRCCallback() {

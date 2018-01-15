@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.event.AppEvent;
@@ -28,7 +29,7 @@ import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.H5CoursewareBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecLearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
@@ -38,6 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
@@ -155,6 +157,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     RedPackageBll redPackageBll;
     LecLearnReportBll learnReportBll;
     H5CoursewareBll h5CoursewareBll;
+    LecAdvertBll lecAdvertAction;
 //    StarInteractBll starBll;
     /**
      * 视频宽度
@@ -190,6 +193,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         redPackageBll = new RedPackageBll(this);
         learnReportBll = new LecLearnReportBll(this);
         h5CoursewareBll = new H5CoursewareBll(this);
+        lecAdvertAction = new LecAdvertBll(this);
         questionBll.setShareDataManager(mShareDataManager);
         AppBll.getInstance().registerAppEvent(this);
         boolean init = initData();
@@ -243,6 +247,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         //学习报告
         learnReportBll.initView(questionContent);
         h5CoursewareBll.initView(questionContent);
+        lecAdvertAction.initView(questionContent, mIsLand);
         tvLoadingHint = (TextView) findViewById(R.id.tv_course_video_loading_content);
         // 预加载布局中退出事件
         findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
@@ -304,6 +309,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         mLiveBll.setVideoAction(this);
         mLiveBll.setRoomAction(liveMessageBll);
         mLiveBll.setH5CoursewareAction(h5CoursewareBll);
+        mLiveBll.setLecAdvertAction(lecAdvertAction);
         mLiveBll.getInfo();
         mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
         setMediaControllerBottomParam(videoView.getLayoutParams());
@@ -374,6 +380,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 //学习报告
                 learnReportBll.initView(questionContent);
                 h5CoursewareBll.initView(questionContent);
+                lecAdvertAction.initView(questionContent, mIsLand);
             }
             group.post(new Runnable() {
                 @Override
@@ -417,6 +424,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 //学习报告
                 learnReportBll.initView(questionContent);
                 h5CoursewareBll.initView(questionContent);
+                lecAdvertAction.initView(questionContent, mIsLand);
             }
             group.post(new Runnable() {
                 @Override
@@ -784,6 +792,10 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
 //            starBll.setLiveBll(mLiveBll);
 //            starBll.initView(questionContent);
 //            mLiveBll.setStarAction(starBll);
+//        }
+//        if (AppConfig.DEBUG) {
+//            LecAdvertEntity lecAdvertEntity = new LecAdvertEntity();
+//            lecAdvertAction.start(lecAdvertEntity);
 //        }
     }
 
