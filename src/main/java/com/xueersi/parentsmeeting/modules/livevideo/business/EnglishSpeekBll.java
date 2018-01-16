@@ -402,7 +402,9 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                                         double douduration = Double.parseDouble(duration);
                                         int location[] = new int[2];
                                         tv_livevideo_english_prog.getLocationInWindow(location);
-                                        totalEn_seg_len.append(en_seg_len).append(",");
+                                        if (!"".equals(en_seg_len)) {
+                                            totalEn_seg_len.append(en_seg_len).append(",");
+                                        }
                                         String speakingLen = totalEn_seg_len.toString();
                                         if (!StringUtils.isEmpty(totalOpeningLength.speakingLen)) {
                                             speakingLen = totalOpeningLength.speakingLen + "," + speakingLen;

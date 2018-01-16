@@ -1404,6 +1404,19 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         }
                         break;
                     }
+                    case XESCODE.SPEECH_FEEDBACK: {
+                        msg += ",SPEECH_FEEDBACK";
+                        if (speechFeedBackAction != null) {
+                            String status = object.getString("status");
+                            if ("on".equals(status)) {
+                                String roomId = object.getString("roomId");
+                                speechFeedBackAction.start(roomId);
+                            } else {
+                                speechFeedBackAction.stop();
+                            }
+                        }
+                        break;
+                    }
                     case XESCODE.VOTE_START: {
                         msg += ",VOTE_START";
                         String open = object.optString("open");
