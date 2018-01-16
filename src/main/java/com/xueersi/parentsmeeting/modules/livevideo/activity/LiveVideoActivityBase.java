@@ -461,11 +461,11 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 
             @Override
             public void onOrientationChanged(int orientation) {
-                if (!mIsAutoOrientation) {
-                    // 不自动旋转屏幕时退出
-                    return;
-                }
                 if (((orientation >= 0) && (orientation <= 30)) || ((orientation <= 360) && (orientation >= 330))) {
+                    if (!mIsAutoOrientation) {
+                        // 不自动旋转屏幕时退出
+                        return;
+                    }
                     if (mClick) {
                         if (mIsLand && !mClickLand) {
                             return;

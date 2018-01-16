@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -34,6 +35,7 @@ import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseBll;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.business.AppBll;
+import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.AnswerEntity;
 import com.xueersi.parentsmeeting.entity.AppInfoEntity;
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
@@ -45,7 +47,10 @@ import com.xueersi.parentsmeeting.event.AppEvent;
 import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertPagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.OnSpeechEval;
@@ -61,6 +66,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPag
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.ExamQuestionPlaybackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.H5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager;
@@ -71,6 +77,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPage
 import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
+import com.xueersi.parentsmeeting.modules.videoplayer.business.VideoBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VideoActivity;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
@@ -95,6 +102,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -109,7 +117,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 @SuppressLint("HandlerLeak")
 @SuppressWarnings("unchecked")
 public class LivePlayBackVideoActivity extends VideoActivity implements LivePlaybackMediaController.OnPointClick,
-        SpeechEvalAction, QuestionWebPager.StopWebQuestion, LiveAndBackDebug {
+        SpeechEvalAction, QuestionWebPager.StopWebQuestion, LiveAndBackDebug, ActivityChangeLand {
 
     String TAG = "LivePlayBackVideoActivityLog";
     /** 互动题的布局 */
@@ -157,6 +165,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     H5CoursewarePager h5CoursewarePager;
     EnglishH5CoursewarePager englishH5CoursewarePager;
     private SubjectResultPager subjectResultPager;
+    private LecAdvertPager lecAdvertPager;
     /** 红包id */
     private String mRedPacketId;
     /** 播放路径名 */
@@ -203,6 +212,15 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlQuestionContent.getLayoutParams();
+        if (mIsLand) {
+            lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+            lp.addRule(0, R.id.rl_course_video_content);
+        } else {
+            lp.height = RelativeLayout.LayoutParams.MATCH_PARENT;
+            lp.addRule(RelativeLayout.BELOW, R.id.rl_course_video_content);
+        }
+        rlQuestionContent.setLayoutParams(lp);
     }
 
     /** 初始化互动题和竖屏时下方的列表布局 */
@@ -273,6 +291,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     /** 加载旋转屏时相关布局 */
     @Override
     protected void loadLandOrPortView() {
+        mPortVideoHeight = VideoBll.getVideoDefaultHeight(this);
         super.loadLandOrPortView();
     }
 
@@ -362,44 +381,13 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     return false;
                 }
             });
-//            List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
-//            final ArrayList<VideoQuestionEntity> lstH5VideoQuestion = new ArrayList<>();
-//            String ids = "";
-//            for (int i = 0; i < lstVideoQuestion.size(); i++) {
-//                final VideoQuestionEntity videoQuestionEntity = lstVideoQuestion.get(i);
-//                if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == videoQuestionEntity.getvCategory()) {
-//                    lstH5VideoQuestion.add(videoQuestionEntity);
-//                    ids += videoQuestionEntity.getvQuestionID() + ",";
-//                }
-//            }
-//            if (!lstH5VideoQuestion.isEmpty()) {
-//                lectureLivePlayBackBll.getVoiceWareTestInfo(mVideoEntity.getLiveId(), ids, new AbstractBusinessDataCallBack() {
-//                    @Override
-//                    public void onDataSucess(Object... objData) {
-//                        JSONObject jsonObject = (JSONObject) objData[0];
-//                        try {
-//                            JSONArray infoArray = jsonObject.getJSONArray("info");
-//                            for (int i = 0; i < infoArray.length(); i++) {
-//                                JSONObject queObj = infoArray.getJSONObject(i);
-//                                for (int j = 0; j < lstH5VideoQuestion.size(); j++) {
-//                                    VideoQuestionEntity videoQuestionEntity = lstH5VideoQuestion.get(j);
-//                                    if (queObj.optString("id").equals(videoQuestionEntity.getvQuestionID())) {
-//                                        String isVoice = queObj.optString("isVoice", "0");
-//                                        if ("1".equals(isVoice)) {
-//                                            videoQuestionEntity.setIsVoice(isVoice);
-//                                            videoQuestionEntity.setVoiceQuestiontype(queObj.optString("type"));
-//                                            videoQuestionEntity.setAssess_ref(queObj.optString("assess_ref"));
-//                                        }
-//                                        lstH5VideoQuestion.remove(i);
-//                                        break;
-//                                    }
-//                                }
-//                            }
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                });
+//            if (AppConfig.DEBUG) {
+//                List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
+//                VideoQuestionEntity videoQuestionEntity = new VideoQuestionEntity();
+//                videoQuestionEntity.setvCategory(LocalCourseConfig.CATEGORY_LEC_ADVERT);
+//                videoQuestionEntity.setvQuestionInsretTime(2000);
+//                videoQuestionEntity.setvEndTime(10000);
+//                lstVideoQuestion.add(videoQuestionEntity);
 //            }
             //测试红包自动关闭
 //            rlFirstBackgroundView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener
@@ -559,7 +547,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     /** 扫描是否有需要弹出的互动题 */
     public void scanQuestion(long position) {
 
-        if (!mIsLand || vPlayer == null || !vPlayer.isPlaying()) {
+        if (!mIsLand || vPlayer == null || !vPlayer.isPlaying() || lecAdvertPager != null) {
             // 如果不为横屏，没有正在播放，或正在显示互动题都退出扫描
             return;
         }
@@ -754,6 +742,9 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 // 红包隐藏
                 redPacketHide();
                 showExam();
+            } else if (LocalCourseConfig.CATEGORY_LEC_ADVERT == mQuestionEntity.getvCategory()) {
+                mQuestionEntity.setAnswered(true);
+                showLecAdvertPager();
             }
             // 互动题结束
         }
@@ -971,6 +962,25 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             return englishH5CoursewarePager;
         }
         return null;
+    }
+
+    /** 讲座广告 */
+    private void showLecAdvertPager() {
+        lecAdvertPager = new LecAdvertPager(this, new LecAdvertPagerClose() {
+
+            @Override
+            public void close() {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                lecAdvertPager = null;
+            }
+        });
+        rlQuestionContent.removeAllViews();
+        rlQuestionContent.addView(lecAdvertPager.getRootView(), new LayoutParams
+                (LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        rlQuestionContent.setVisibility(View.VISIBLE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showLecAdvertPager");
+        mPlayVideoControlHandler.sendMessage(msg);
     }
 
     private void showVoiceAnswer(final VideoQuestionEntity videoQuestionLiveEntity) throws Exception {
@@ -2369,6 +2379,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
         UmsAgentManager.umsAgentOtherBusiness(this, appID, UmsConstants.uploadShow, mData);
+    }
+
+    @Override
+    public void setAutoOrientation(boolean isAutoOrientation) {
+        super.setAutoOrientation(isAutoOrientation);
     }
 
     class LivePlayBackAlertDialog extends VerifyCancelAlertDialog {
