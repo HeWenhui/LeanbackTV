@@ -7,19 +7,19 @@ import java.util.ArrayList;
  * 点赞榜
  */
 
-public class LikeListEntity {
+public class ThumbsUpListEntity {
 
-    ArrayList<LikeEntity> likeEntities = new ArrayList<>();
+    ArrayList<ThumbsUpEntity> thumbsUpEntities = new ArrayList<>();
 
-    public ArrayList<LikeEntity> getLikeEntities() {
-        return likeEntities;
+    public ArrayList<ThumbsUpEntity> getThumbsUpEntities() {
+        return thumbsUpEntities;
     }
 
-    public void setLikeEntities(ArrayList<LikeEntity> likeEntities) {
-        this.likeEntities = likeEntities;
+    public void setThumbsUpEntities(ArrayList<ThumbsUpEntity> thumbsUpEntities) {
+        this.thumbsUpEntities = thumbsUpEntities;
     }
 
-    public class LikeEntity{
+    public class ThumbsUpEntity{
 
         /** 用户按照获赞值从大到小的姓名排行 */
         private String stuName;

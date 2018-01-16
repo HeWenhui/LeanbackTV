@@ -12,8 +12,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LikeListEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LikeProbabilityEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.FollowTypeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
@@ -715,28 +715,28 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @param responseEntity
      * @return
      */
-    public LikeListEntity parseLikeList(ResponseEntity responseEntity) {
+    public ThumbsUpListEntity parseThumbsUpList(ResponseEntity responseEntity) {
 
-        Log.i(TAG,"parseLikeList: "+responseEntity.getJsonObject());
-        LikeListEntity likeListEntity= new LikeListEntity();
+        Log.i(TAG,"parseThumbsUpList: "+responseEntity.getJsonObject());
+        ThumbsUpListEntity thumbsUpListEntity= new ThumbsUpListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
             JSONArray array = data.getJSONArray("list");
 
             for (int i = 0; i < array.length(); i++) {
                 JSONObject jsonObject = array.getJSONObject(i);
-                LikeListEntity.LikeEntity likeEntity = likeListEntity.new LikeEntity();
+                ThumbsUpListEntity.ThumbsUpEntity likeEntity = thumbsUpListEntity.new ThumbsUpEntity();
                 likeEntity.setIsMy(jsonObject.getInt("isMy"));
                 likeEntity.setStuPraiseNum(jsonObject.getInt("stu_praise_num"));
                 likeEntity.setStuName(jsonObject.getString("stu_name"));
-                likeListEntity.getLikeEntities().add(likeEntity);
+                thumbsUpListEntity.getThumbsUpEntities().add(likeEntity);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            MobAgent.httpResponseParserError(TAG, "parseLikeList", e.getMessage());
+            MobAgent.httpResponseParserError(TAG, "parseThumbsUpList", e.getMessage());
         }
-        return likeListEntity;
+        return thumbsUpListEntity;
     }
 
     /**
@@ -750,7 +750,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         ProgressListEntity progressListEntity= new ProgressListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
-            progressListEntity.setPraiseStatus(data.getInt("praise_status"));
+            progressListEntity.setPraiseStatus(data.getInt("praiseStatus"));
             JSONArray array = data.getJSONArray("list");
 
             for (int i = 0; i < array.length(); i++) {
@@ -776,18 +776,18 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @param responseEntity
      * @return
      */
-    public LikeProbabilityEntity parseLikeProbability(ResponseEntity responseEntity) {
-        Log.i(TAG,"parseLikeProbability: "+responseEntity.getJsonObject());
-        LikeProbabilityEntity likeProbabilityEntity= new LikeProbabilityEntity();
+    public ThumbsUpProbabilityEntity parseThumbsUpProbability(ResponseEntity responseEntity) {
+        Log.i(TAG,"parseThumbsUpProbability: "+responseEntity.getJsonObject());
+        ThumbsUpProbabilityEntity thumbsUpProbabilityEntity= new ThumbsUpProbabilityEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
-            likeProbabilityEntity.setStuId(data.getInt("stuId"));
-            likeProbabilityEntity.setProbability(data.getInt("probability"));
+            thumbsUpProbabilityEntity.setStuId(data.getString("stuId"));
+            thumbsUpProbabilityEntity.setProbability(data.getInt("probability"));
 
         } catch (Exception e) {
             e.printStackTrace();
-            MobAgent.httpResponseParserError(TAG, "parseProgressList", e.getMessage());
+            MobAgent.httpResponseParserError(TAG, "parseThumbsUpProbability", e.getMessage());
         }
-        return likeProbabilityEntity;
+        return thumbsUpProbabilityEntity;
     }
 }

@@ -23,13 +23,13 @@
 
     <TextView
         android:id="@+id/tv_livevideo_praiselist_honor_counts"
-        style="@style/text_font16_666666_style"
-        android:layout_width="36dp"
+        android:layout_width="45dp"
         android:layout_height="32dp"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/tv_livevideo_praiselist_honor_name"
         android:layout_toRightOf="@+id/tv_livevideo_praiselist_honor_name"
-        android:gravity="top|right" />
+        android:gravity="top|right"
+        style="@style/text_font16_666666_style"/>
 
     <ImageView
         android:id="@+id/iv_livevideo_praiselist_honor_arrow"

@@ -686,13 +686,13 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param stuId         学生Id加密串
      * @param requestCallBack
      */
-    public void getLikeList(String classId, String stuId,HttpCallBack
+    public void getThumbsUpList(String classId, String stuId,HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("stuId", stuId);
         setDefaultParameter(params);
-        sendPost(LiveVideoConfig.URL_LIVE_GET_LIKE_LIST, params, requestCallBack);
+        sendPost(LiveVideoConfig.URL_LIVE_GET_THUMBS_UP_LIST, params, requestCallBack);
     }
 
     /**
@@ -716,18 +716,18 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
-     * 获取点赞概率
+     * 获取点赞概率标识
      *
      * @param classId         班级Id
      * @param enstuId         学生Id加密串
      * @param requestCallBack
      */
-    public void getLikeProbability(String classId, String enstuId ,HttpCallBack
+    public void getThumbsUpProbability(String classId, String enstuId ,HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("enstuId", enstuId);
         setDefaultParameter(params);
-        sendPost(LiveVideoConfig.URL_LIVE_GET_LIKE_PROBABILITY, params, requestCallBack);
+        sendPost(LiveVideoConfig.URL_LIVE_GET_THUMBS_UP_PROBABILITY, params, requestCallBack);
     }
 }
