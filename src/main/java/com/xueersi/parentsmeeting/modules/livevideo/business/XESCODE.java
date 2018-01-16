@@ -92,6 +92,8 @@ public interface XESCODE {
     int XCR_ROOM_DB_CLOSE = 194;
     /** 学习报告-讲座 */
     int LEC_LEARNREPORT = 199;
+    /** 语音反馈 */
+    int SPEECH_FEEDBACK = 200;
     /** 投票开始 */
     int VOTE_START = 210;
     /** 投票开始，学生重新进入 */

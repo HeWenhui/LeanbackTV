@@ -50,10 +50,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
@@ -305,8 +307,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         if (speechFeedBackAction != null) {
                             speechFeedBackAction.setVideoLayout(lp.width, lp.height);
                         }
-                        if(praiseListBll!=null){
-                            praiseListBll.setVideoLayout(lp.width,lp.height);
+                        if (praiseListBll != null) {
+                            praiseListBll.setVideoLayout(lp.width, lp.height);
                         }
                     }
                 });
@@ -857,10 +859,12 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             if (englishH5Cache != null) {
                 englishH5Cache.getCourseWareUrl();
             }
-//            SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(this, mLiveBll);
-//            speechFeedBackBll.setBottomContent(bottomContent);
-//            speechFeedBackAction = speechFeedBackBll;
-//            speechFeedBackBll.start();
+            if (LiveVideoConfig.IS_SCIENCE) {
+                SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(this, mLiveBll);
+                speechFeedBackBll.setBottomContent(bottomContent);
+                speechFeedBackAction = speechFeedBackBll;
+                mLiveBll.setSpeechFeedBackAction(speechFeedBackBll);
+            }
         }
         Loger.d(TAG, "onLiveInit:time=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();

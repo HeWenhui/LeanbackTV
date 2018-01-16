@@ -1,11 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 /**
- * Created by lyqai on 2018/1/11.
+ * Created by linyuqiang on 2018/1/11.
+ * 语音反馈
  */
-
 public interface SpeechFeedBackAction {
-    void start();
+    void start(String roomId);
 
     void stop();
 

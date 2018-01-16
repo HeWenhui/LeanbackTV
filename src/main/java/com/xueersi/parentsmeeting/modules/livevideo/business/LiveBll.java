@@ -101,6 +101,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private EnglishSpeekAction englishSpeekAction;
     private LiveVoteAction liveVoteAction;
     private PraiseListAction mPraiseListAction;
+    private SpeechFeedBackAction speechFeedBackAction;
     private LiveHttpManager mHttpManager;
     private LiveHttpResponseParser mHttpResponseParser;
     private IRCMessage mIRCMessage;
@@ -672,8 +673,12 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         this.liveVoteAction = liveVoteAction;
     }
 
-    public void setPraiseListAction(PraiseListAction mPraiseListAction){
+    public void setPraiseListAction(PraiseListAction mPraiseListAction) {
         this.mPraiseListAction = mPraiseListAction;
+    }
+
+    public void setSpeechFeedBackAction(SpeechFeedBackAction speechFeedBackAction) {
+        this.speechFeedBackAction = speechFeedBackAction;
     }
 
     private final IRCCallback mIRCcallback = new IRCCallback() {
@@ -715,7 +720,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             try {
                 JSONObject jsonObject = new JSONObject(topicstr);
                 LiveTopic liveTopic = mHttpResponseParser.parseLiveTopic(mLiveTopic, jsonObject, mLiveType);
-                Loger.e(TAG, "parseLiveTopic:listStatus3="+liveTopic.getCoachRoomstatus().getListStatus());
 //                mLiveTopic.setMode(LiveTopic.MODE_CLASS);
                 mLogtf.d("onTopic:oldmode=" + mLiveTopic.getMode() + ",newmode=" + liveTopic.getMode() + ",topic=" +
                         liveTopic.getVideoQuestionLiveEntity());
@@ -783,6 +787,15 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         }
                         if (mRoomAction != null && !oldVoiceChatStatus.equals(voiceChatStatus)) {
                             mRoomAction.videoStatus(voiceChatStatus);
+                        }
+                    }
+                    if (speechFeedBackAction != null) {
+                        String status = mainRoomstatus.getOnVideoChat();
+                        if ("on".equals(status)) {
+                            String roomId = mainRoomstatus.getAgoraVoiceChatRoom();
+                            speechFeedBackAction.start(roomId);
+                        } else {
+                            speechFeedBackAction.stop();
                         }
                     }
                 }
@@ -853,17 +866,20 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             videoQuestionLiveEntity.type = videoQuestionLiveEntity.questiontype = h5_Experiment.optString("questiontype");
                             videoQuestionLiveEntity.assess_ref = h5_Experiment.optString("assess_ref");
                         }
+                        if (mAnswerRankBll != null) {
+                            mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                            mAnswerRankBll.setType(videoQuestionLiveEntity.courseware_type);
+                        }
                     }
                     englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
-                }
 
+                }
                 if (mLecLearnReportAction != null) {
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
                     if (mainRoomstatus.isOpenFeedback()) {
                         mLecLearnReportAction.onLearnReport(mLiveId);
                     }
                 }
-                Loger.e(TAG, "parseLiveTopic:listStatus4="+liveTopic.getCoachRoomstatus().getListStatus());
                 if (mPraiseListAction != null) {
 
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getCoachRoomstatus();
@@ -892,7 +908,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target,
                              final String notice) {
             // Loger.d(TAG, "onNotice:target=" + target + ",notice=" + notice);
-            //mLogtf.i("onNotice:target=" + target + ",notice=" + notice);
+            // mLogtf.i("onNotice:target=" + target + ",notice=" + notice);
             String msg = "onNotice:target=" + target;
             try {
                 final JSONObject object = new JSONObject(notice);
@@ -1457,8 +1473,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         msg += ",XCR_ROOM_AGREE_OPEN";
                         String open = object.optString("open");
                         int zanType = object.optInt("zanType");
-                        if("on".equals(open)){
-                            switch (zanType){
+                        if ("on".equals(open)) {
+                            switch (zanType) {
                                 case PraiseListPager.PRAISE_LIST_TYPE_HONOR:
                                     getHonorList(0);
                                     break;
@@ -1471,9 +1487,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 default:
                                     break;
                             }
-                        }
-                        else if("off".equals(open)){
-                            if(mPraiseListAction!=null){
+                        } else if ("off".equals(open)) {
+                            if (mPraiseListAction != null) {
                                 mPraiseListAction.closePraiseList();
                             }
                         }
@@ -1481,26 +1496,25 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     }
                     case XESCODE.XCR_ROOM_AGREE_SEND_T: {
                         msg += ",XCR_ROOM_AGREE_SEND_T";
-                        if(mPraiseListAction!=null&&mPraiseListAction.getThumbsUpProbability()==0){
+                        if (mPraiseListAction != null && mPraiseListAction.getLikeProbability() == 0) {
                             getThumbsUpProbability();
                         }
                         JSONArray agreeForms = object.optJSONArray("agreeFroms");
                         boolean isTeacher = object.optBoolean("isTeacher");
-                        Log.i(TAG,"agreeForms="+agreeForms.toString());
-                        Log.i(TAG,"isTeacher="+isTeacher);
-                        if(isTeacher){
-                            if(mPraiseListAction!=null&&agreeForms.length()!=0){
-                                mPraiseListAction.showPraiseScroll(mGetInfo.getStuName(),agreeForms.getString(0));
+                        Log.i(TAG, "agreeForms=" + agreeForms.toString());
+                        Log.i(TAG, "isTeacher=" + isTeacher);
+                        if (isTeacher) {
+                            if (mPraiseListAction != null && agreeForms.length() != 0) {
+                                mPraiseListAction.showPraiseScroll(mGetInfo.getStuName(), agreeForms.getString(0));
                             }
-                        }
-                        else{
+                        } else {
                             ArrayList<String> list = new ArrayList<>();
                             for (int i = 0; i < agreeForms.length(); i++) {
-                                String stuName =agreeForms.getString(i);
-                                Log.i(TAG,"stuName="+stuName);
+                                String stuName = agreeForms.getString(i);
+                                Log.i(TAG, "stuName=" + stuName);
                                 list.add(stuName);
                             }
-                            if(mPraiseListAction!=null&&list.size()!=0){
+                            if (mPraiseListAction != null && list.size() != 0) {
                                 mPraiseListAction.receiveThumbsUpNotice(list);
                             }
                         }
@@ -3508,12 +3522,12 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /**
      * 学生私聊老师点赞
      */
-    public void sendThumbsUp( ) {
+    public void sendThumbsUp() {
         mLogtf.i("sendThumbsUp");
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "" + XESCODE.XCR_ROOM_AGREE_SEND_S);
-            jsonObject.put("agreeFrom", "" +mGetInfo.getStuName());
+            jsonObject.put("agreeFrom", "" + mGetInfo.getStuName());
             mIRCMessage.sendNotice(mCounTeacherStr, jsonObject.toString());
         } catch (Exception e) {
             mLogtf.e("sendThumbsUp", e);

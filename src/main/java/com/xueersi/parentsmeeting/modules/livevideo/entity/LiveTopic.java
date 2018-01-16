@@ -140,6 +140,10 @@ public class LiveTopic {
         private LiveTopic.VoteEntity voteEntity;
         /** 是否打开反馈 */
         private boolean isOpenFeedback;
+        /** 是否打开语音反馈 */
+        private String agoraVoiceChatRoom = "";
+        /** 是否打开语音反馈 */
+        private String onVideoChat = "off";
 
         public RoomStatusEntity() {
             classbegin = false;
@@ -167,6 +171,8 @@ public class LiveTopic {
                 classmateEntities.add(entity);
             }
             isOpenFeedback = roomStatusEntity.isOpenFeedback;
+            agoraVoiceChatRoom = roomStatusEntity.agoraVoiceChatRoom;
+            onVideoChat = roomStatusEntity.onVideoChat;
         }
 
         public void setClassbegin(boolean classbegin) {
@@ -315,6 +321,22 @@ public class LiveTopic {
 
         public void setListStatus(int listStatus) {
             this.listStatus = listStatus;
+        }
+
+        public String getAgoraVoiceChatRoom() {
+            return agoraVoiceChatRoom;
+        }
+
+        public void setAgoraVoiceChatRoom(String agoraVoiceChatRoom) {
+            this.agoraVoiceChatRoom = agoraVoiceChatRoom;
+        }
+
+        public String getOnVideoChat() {
+            return onVideoChat;
+        }
+
+        public void setOnVideoChat(String onVideoChat) {
+            this.onVideoChat = onVideoChat;
         }
     }
 

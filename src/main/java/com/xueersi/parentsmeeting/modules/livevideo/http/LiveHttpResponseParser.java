@@ -283,13 +283,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         if (type == LiveBll.LIVE_TYPE_LIVE && liveTopicJson.has("room_2")) {
             JSONObject status = liveTopicJson.getJSONObject("room_2");
             RoomStatusEntity coachStatusEntity = liveTopic.getCoachRoomstatus();
-            coachStatusEntity.setListStatus(status.optInt("listStatus"));
-            Loger.e(TAG, "parseLiveTopic:listStatus="+status.optInt("listStatus"));
-            Loger.e(TAG, "parseLiveTopic:listStatus="+liveTopic.getCoachRoomstatus().getListStatus());
             coachStatusEntity.setMode(status.getString("mode"));
             coachStatusEntity.setOpenchat(status.getBoolean("openchat"));
             coachStatusEntity.setCalling(status.getBoolean("isCalling"));
-
+            coachStatusEntity.setListStatus(status.optInt("listStatus"));
             if (status.has("link_mic")) {
                 JSONObject link_mic = status.getJSONObject("link_mic");
                 coachStatusEntity.setOnmic(link_mic.optString("onmic", "off"));
@@ -449,7 +446,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } catch (JSONException e) {
             Loger.e(TAG, "parseLiveTopic", e);
         }
-        Loger.e(TAG, "parseLiveTopic:listStatus2="+liveTopic.getCoachRoomstatus().getListStatus());
         return liveTopic;
     }
 
@@ -686,8 +682,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @return
      */
     public HonorListEntity parseHonorList(ResponseEntity responseEntity) {
-        Log.i(TAG,"parseHonorList: "+responseEntity.getJsonObject());
-        HonorListEntity honorListEntity= new HonorListEntity();
+        Log.i(TAG, "parseHonorList: " + responseEntity.getJsonObject());
+        HonorListEntity honorListEntity = new HonorListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
             honorListEntity.setPraiseStatus(data.getInt("praiseStatus"));
@@ -717,8 +713,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      */
     public ThumbsUpListEntity parseThumbsUpList(ResponseEntity responseEntity) {
 
-        Log.i(TAG,"parseThumbsUpList: "+responseEntity.getJsonObject());
-        ThumbsUpListEntity thumbsUpListEntity= new ThumbsUpListEntity();
+        Log.i(TAG, "parseThumbsUpList: " + responseEntity.getJsonObject());
+        ThumbsUpListEntity thumbsUpListEntity = new ThumbsUpListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
             JSONArray array = data.getJSONArray("list");
@@ -746,8 +742,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @return
      */
     public ProgressListEntity parseProgressList(ResponseEntity responseEntity) {
-        Log.i(TAG,"parseProgressList: "+responseEntity.getJsonObject());
-        ProgressListEntity progressListEntity= new ProgressListEntity();
+        Log.i(TAG, "parseProgressList: " + responseEntity.getJsonObject());
+        ProgressListEntity progressListEntity = new ProgressListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
             progressListEntity.setPraiseStatus(data.getInt("praiseStatus"));
@@ -772,13 +768,13 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 
     /**
      * 解析点赞概率
-     *g
+     *
      * @param responseEntity
      * @return
      */
     public ThumbsUpProbabilityEntity parseThumbsUpProbability(ResponseEntity responseEntity) {
-        Log.i(TAG,"parseThumbsUpProbability: "+responseEntity.getJsonObject());
-        ThumbsUpProbabilityEntity thumbsUpProbabilityEntity= new ThumbsUpProbabilityEntity();
+        Log.i(TAG, "parseThumbsUpProbability: " + responseEntity.getJsonObject());
+        ThumbsUpProbabilityEntity thumbsUpProbabilityEntity = new ThumbsUpProbabilityEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
             thumbsUpProbabilityEntity.setStuId(data.getString("stuId"));

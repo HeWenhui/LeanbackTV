@@ -127,6 +127,10 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 if (responseEntity.getJsonObject() instanceof JSONArray) {
+                    if (context instanceof WebViewRequest) {
+                        WebViewRequest webViewRequest = (WebViewRequest) context;
+                        webViewRequest.onWebViewEnd();
+                    }
                     return;
                 }
                 if (!isStart) {
