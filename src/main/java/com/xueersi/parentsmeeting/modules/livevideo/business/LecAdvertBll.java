@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -31,6 +32,12 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
             if (!isLand) {
                 ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 bottomContent.addView(lecAdvertager.getRootView(), lp);
+            } else {
+                int step = lecAdvertager.getStep();
+                if (step == 1) {
+                    ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    bottomContent.addView(lecAdvertager.getRootView(), lp);
+                }
             }
         }
     }
@@ -52,6 +59,10 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
         if (lecAdvertager != null) {
             bottomContent.removeView(lecAdvertager.getRootView());
             lecAdvertager = null;
+            if (context instanceof ActivityChangeLand) {
+                ActivityChangeLand activityChangeLand = (ActivityChangeLand) context;
+                activityChangeLand.setAutoOrientation(true);
+            }
         }
     }
 }

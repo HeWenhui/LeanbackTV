@@ -1,12 +1,18 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/COLOR_FFFFFF"
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@id/rl_livelec_advert_step2_web"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/COLOR_FFFFFF">
 
         <TextView
             android:id="@id/tv_livelec_advert_step2_title"
@@ -25,9 +31,4 @@
             android:src="@drawable/cy_main_guanbi_icon_normal" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@id/rl_livelec_advert_step2_web"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-</LinearLayout>
+</RelativeLayout>

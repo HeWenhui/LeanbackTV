@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.event.AppEvent;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.H5CoursewareBll;
@@ -72,7 +73,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  *
  * @author linyuqiang
  */
-public class LectureLiveVideoActivity extends LiveVideoActivityBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick {
+public class LectureLiveVideoActivity extends LiveVideoActivityBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, ActivityChangeLand {
 
     private String TAG = "LecLiveVideoActivityLog";
     /**

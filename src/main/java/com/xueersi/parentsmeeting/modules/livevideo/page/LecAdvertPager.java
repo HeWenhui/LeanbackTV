@@ -1,29 +1,31 @@
 package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertPagerClose;
 
 /**
- * Created by lyqai on 2018/1/15.
+ * Created by linyuqiang on 2018/1/15.
+ * 广告
  */
 public class LecAdvertPager extends BasePager {
-    View step1;
-    View step2;
-    View step3;
-    LayoutInflater inflater;
-    LecAdvertPagerClose lecAdvertBll;
-    ViewGroup group;
-    LecAdvertPayPager lecAdvertPayPager;
+    private View step1;
+    private View step2;
+    private View step3;
+    private LayoutInflater inflater;
+    private LecAdvertPagerClose lecAdvertBll;
+    private ViewGroup group;
+    private LecAdvertPayPager lecAdvertPayPager;
+    private int step = 1;
 
     public LecAdvertPager(Context context, LecAdvertPagerClose lecAdvertBll) {
         super(context);
@@ -52,6 +54,12 @@ public class LecAdvertPager extends BasePager {
         step1.findViewById(R.id.tv_livelec_advert_step1_enroll).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mContext instanceof ActivityChangeLand) {
+                    ActivityChangeLand activityChangeLand = (ActivityChangeLand) mContext;
+                    activityChangeLand.setAutoOrientation(false);
+                    activityChangeLand.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                }
+                step = 2;
                 step2 = inflater.inflate(R.layout.page_leclive_advert_step2, group, false);
                 ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 group.addView(step2, lp);
@@ -72,5 +80,9 @@ public class LecAdvertPager extends BasePager {
                 lecAdvertBll.close();
             }
         });
+    }
+
+    public int getStep() {
+        return step;
     }
 }
