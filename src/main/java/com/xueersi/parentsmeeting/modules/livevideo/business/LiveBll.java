@@ -789,15 +789,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             mRoomAction.videoStatus(voiceChatStatus);
                         }
                     }
-                    if (speechFeedBackAction != null) {
-                        String status = mainRoomstatus.getOnVideoChat();
-                        if ("on".equals(status)) {
-                            String roomId = mainRoomstatus.getAgoraVoiceChatRoom();
-                            speechFeedBackAction.start(roomId);
-                        } else {
-                            speechFeedBackAction.stop();
-                        }
-                    }
                 }
                 List<String> disableSpeaking = liveTopic.getDisableSpeaking();
                 boolean have = false;
@@ -886,6 +877,16 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         getHonorList(2);
                     } else if ("3".equals(mainRoomstatus.getListStatus())) {
                         getLikeList(2);
+                    }
+                }
+                if (speechFeedBackAction != null) {
+                    LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
+                    String status = mainRoomstatus.getOnVideoChat();
+                    if ("on".equals(status)) {
+                        String roomId = mainRoomstatus.getAgoraVoiceChatRoom();
+                        speechFeedBackAction.start(roomId);
+                    } else {
+                        speechFeedBackAction.stop();
                     }
                 }
             } catch (JSONException e) {

@@ -13,6 +13,7 @@ import com.tal.speech.speechrecognizer.PCMFormat;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 import java.io.IOException;
@@ -22,6 +23,7 @@ import java.io.IOException;
  * 语音反馈
  */
 public class SpeechFeedBackBll implements SpeechFeedBackAction {
+    String TAG = "SpeechFeedBackBll";
     boolean isStart = false;
     Activity activity;
     RelativeLayout bottomContent;
@@ -74,6 +76,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         if (isStart) {
             return;
         }
+        Loger.d(TAG, "start:roomId=" + roomId);
         isStart = true;
         new Thread() {
             @Override
@@ -92,6 +95,8 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                             bottomContent.addView(speechFeedBackPager.getRootView(), params);
                         }
                     });
+                    Loger.d(TAG, "start:startRecording");
+                    long time = System.currentTimeMillis();
                     mAudioRecord.startRecording();
                     while (isStart) {
                         if (mAudioRecord != null) {
@@ -101,8 +106,9 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                             }
                         }
                     }
+                    Loger.d(TAG, "start:startRecording:end;time=" + (System.currentTimeMillis() - time));
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Loger.e(TAG, "initAudioRecorder", e);
                 }
             }
         }.start();
@@ -113,6 +119,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         if (!isStart) {
             return;
         }
+        Loger.d(TAG, "stop");
         isStart = false;
         if (mAudioRecord != null) {
             mAudioRecord.release();

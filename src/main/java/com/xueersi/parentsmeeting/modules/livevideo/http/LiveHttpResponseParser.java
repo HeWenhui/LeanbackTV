@@ -336,10 +336,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             } else {
                 mainStatusEntity.setHaveExam(false);
             }
-            if (status.has("voiceChat")) {
-                JSONObject jsonObject = status.getJSONObject("voiceChat");
-                mainStatusEntity.setAgoraVoiceChatRoom(jsonObject.optString("agoraVoiceChatRoom"));
-                mainStatusEntity.setOnVideoChat(jsonObject.optString("onVideoChat"));
+            if (status.has("vioceChat")) {
+                JSONObject jsonObject = status.getJSONObject("vioceChat");
+                mainStatusEntity.setAgoraVoiceChatRoom(jsonObject.optString("agoraVioceChatRoom"));
+                mainStatusEntity.setOnVideoChat(jsonObject.optString("onVioceChat"));
             }
             if (status.has("link_mic")) {
                 JSONObject link_mic = status.getJSONObject("link_mic");
