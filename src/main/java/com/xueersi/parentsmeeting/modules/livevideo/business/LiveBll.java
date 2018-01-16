@@ -866,8 +866,13 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             videoQuestionLiveEntity.type = videoQuestionLiveEntity.questiontype = h5_Experiment.optString("questiontype");
                             videoQuestionLiveEntity.assess_ref = h5_Experiment.optString("assess_ref");
                         }
+                        if (mAnswerRankBll != null) {
+                            mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                            mAnswerRankBll.setType(videoQuestionLiveEntity.courseware_type);
+                        }
                     }
                     englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
+
                 }
                 if (mLecLearnReportAction != null) {
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
