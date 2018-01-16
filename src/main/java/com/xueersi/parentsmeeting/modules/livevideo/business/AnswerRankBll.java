@@ -6,6 +6,9 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Handler;
+import android.support.constraint.solver.widgets.ConstraintHorizontalLayout;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -27,6 +30,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SlowHorizontalScrollView;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
+import com.xueersi.xesalib.adapter.RCommonAdapter;
+import com.xueersi.xesalib.adapter.RItemViewInterface;
+import com.xueersi.xesalib.adapter.ViewHolder;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
@@ -58,6 +64,7 @@ public class AnswerRankBll {
     private String isShow;
     private SoundPool mSoundPool;
     private TextView tvStatus;
+    private RCommonAdapter mAdapter;
 
     public String getIsShow() {
         return isShow;
@@ -142,12 +149,14 @@ public class AnswerRankBll {
      * @param lst
      */
     public void showRankList(final List<RankUserEntity> lst) {
-        mSoundPool=new SoundPool(10, AudioManager.STREAM_MUSIC,5);
-        mSoundPool.load(mContext,R.raw.full_mark_list,1);
+        if(mSoundPool==null) {
+            mSoundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 5);
+            mSoundPool.load(mContext, R.raw.sound_full_mark_list, 1);
+        }
         if("0".equals(isShow)){
             return;
         }
-        if (lst.size() != 0 && lst.size() <= mLst.size()) {
+        if (lst.size() < mLst.size()) {
             return;
         }
         bottomContent.setClickable(true);
@@ -174,13 +183,14 @@ public class AnswerRankBll {
             tvStatus.setTextSize(13);
             tvStatus.setPadding(0, SizeUtils.Dp2Px(mContext, 3), 0, SizeUtils.Dp2Px(mContext, 3));
             llRankList.addView(tvStatus);
+            llRankList.addView(getRecyclerView());
             bottomContent.addView(llRankList,1, params);
         }
         ((Activity)mContext).runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 for (int i = mLst.size(); i < lst.size(); i++) {
-                    if (i % 2 == 0) {
+                    /*if (i % 2 == 0) {
                         LinearLayout linearLayout = new LinearLayout(mContext);
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                         params.setMargins(0, SizeUtils.Dp2Px(mContext, 7), 0, 0);
@@ -190,24 +200,12 @@ public class AnswerRankBll {
                         llRankList.addView(linearLayout);
                         llCurRow = linearLayout;
                     }
-                    llCurRow.addView(getRankListItemView(lst.get(i), i));
+                    llCurRow.addView(getRankListItemView(lst.get(i), i));*/
+                    mLst.add(lst.get(i));
                 }
-                mLst = lst;
+                mAdapter.notifyDataSetChanged();
             }
         });
-        /*for (int i = mLst.size(); i < lst.size(); i++) {
-            if (i % 2 == 0) {
-                LinearLayout linearLayout = new LinearLayout(mContext);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(0, SizeUtils.Dp2Px(mContext, 7), 0, 0);
-                linearLayout.setPadding(0, 0, SizeUtils.Dp2Px(mContext, 5), 0);
-                linearLayout.setLayoutParams(params);
-                linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-                llRankList.addView(linearLayout);
-                llCurRow = linearLayout;
-            }
-            llCurRow.addView(getRankListItemView(lst.get(i), i));
-        }*/
 
     }
 
@@ -217,8 +215,10 @@ public class AnswerRankBll {
     public void hideRankList() {
         if (bottomContent != null && llRankList != null) {
             try {
+                llRankList.removeAllViews();
                 bottomContent.removeView(llRankList);
                 llRankList=null;
+                mAdapter=null;
                 bottomContent.setClickable(false);
                 mLst.clear();
             } catch (Exception e) {
@@ -226,7 +226,66 @@ public class AnswerRankBll {
             }
         }
     }
+    private View getRecyclerView(){
+        RecyclerView recyclerView=new RecyclerView(mContext);
+        LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        recyclerView.setLayoutParams(params);
+        recyclerView.setLayoutManager(new GridLayoutManager(mContext,2));
+        mAdapter=new RCommonAdapter<>(mContext,mLst);
+        mAdapter.addItemViewDelegate(new RankItem());
+        recyclerView.setAdapter(mAdapter);
+        return recyclerView;
+    }
+    private class RankItem implements RItemViewInterface<RankUserEntity>{
+        ImageView ivCrown;
+        TextView tvName;
+        ImageView ivHead;
+        @Override
+        public int getItemLayoutId() {
+            return R.layout.item_live_rank_list;
+        }
 
+        @Override
+        public boolean isShowView(RankUserEntity item, int position) {
+            return true;
+        }
+
+        @Override
+        public void initView(ViewHolder holder, int position) {
+            ivCrown = (ImageView) holder.getView(R.id.iv_live_rank_list_crown);
+            tvName=(TextView)holder.getView(R.id.tv_live_rank_list_name);
+            ivHead=(ImageView)holder.getView(R.id.iv_live_rank_list_head);
+        }
+
+        @Override
+        public void convert(ViewHolder holder, RankUserEntity entity, int position) {
+            switch (position) {
+                case 0:
+                    ivCrown.setVisibility(View.VISIBLE);
+                    ivCrown.setImageResource(R.drawable.livevideo_ic_first_normal);
+                    break;
+                case 1:
+                    ivCrown.setVisibility(View.VISIBLE);
+                    ivCrown.setImageResource(R.drawable.livevideo_ic_second_normal);
+                    break;
+                case 2:
+                    ivCrown.setVisibility(View.VISIBLE);
+                    ivCrown.setImageResource(R.drawable.livevideo_ic_third_normal);
+                    break;
+                default:
+                    ivCrown.setVisibility(View.GONE);
+                    break;
+            }
+            if (entity.getId().equals(UserBll.getInstance().getMyUserInfoEntity().getStuId())) {
+                ivHead.setImageResource(R.drawable.livevideo_ic_hands_me);
+                tvName.setTextColor(Color.parseColor("#ffedce"));
+            } else {
+                ivHead.setImageResource(R.drawable.livevideo_ic_hands_normal);
+                tvName.setTextColor(Color.parseColor("#ffffff"));
+            }
+            tvName.setText(entity.getName());
+        }
+    }
     /**
      * 显示满分榜视图
      * @param lst
@@ -362,57 +421,7 @@ public class AnswerRankBll {
         return tv;
     }
 
-    /**
-     * 上墙列表item视图
-     * @param entity
-     * @param i
-     * @return
-     */
-    private View getRankListItemView(RankUserEntity entity, int i) {
-        View root = View.inflate(mContext, R.layout.item_live_rank_list, null);
-        ImageView ivCrown = (ImageView) root.findViewById(R.id.iv_live_rank_list_crown);
-        switch (i) {
-            case 0:
-                ivCrown.setVisibility(View.VISIBLE);
-                ivCrown.setImageResource(R.drawable.livevideo_ic_first_normal);
-                break;
-            case 1:
-                ivCrown.setVisibility(View.VISIBLE);
-                ivCrown.setImageResource(R.drawable.livevideo_ic_second_normal);
-                break;
-            case 2:
-                ivCrown.setVisibility(View.VISIBLE);
-                ivCrown.setImageResource(R.drawable.livevideo_ic_third_normal);
-                break;
-            default:
-                ivCrown.setVisibility(View.GONE);
-                break;
-        }
-        TextView textView = (TextView) root.findViewById(R.id.tv_live_rank_list_name);
-        textView.setText(entity.getName());
-        ImageView ivHead = (ImageView) root.findViewById(R.id.iv_live_rank_list_head);
-        if (entity.getId().equals(UserBll.getInstance().getMyUserInfoEntity().getStuId())) {
-            ivHead.setImageResource(R.drawable.livevideo_ic_hands_me);
-            textView.setTextColor(Color.parseColor("#ffedce"));
-        } else {
-            ivHead.setImageResource(R.drawable.livevideo_ic_hands_normal);
-            textView.setTextColor(Color.parseColor("#ffffff"));
-        }
 
-
-        int wradio = 0, topMargin = 0;
-        int width = displayWidth == 0 ? ScreenUtils.getScreenWidth() : displayWidth;
-        if (width > 0) {
-            wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
-            wradio += (ScreenUtils.getScreenWidth() - width) / 2;
-        }
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                (wradio - SizeUtils.Dp2Px(mContext, 5)) / 2
-                , ViewGroup.LayoutParams.WRAP_CONTENT);
-        //params.weight=1;
-        root.setLayoutParams(params);
-        return root;
-    }
 
     /**
      * 播放器区域变化时更新视图
@@ -480,9 +489,9 @@ public class AnswerRankBll {
         TextView tvNo1 = (TextView) rlFullMarkList.findViewById(R.id.tv_full_mark_list_no1);
         TextView tvNo2 = (TextView) rlFullMarkList.findViewById(R.id.tv_full_mark_list_no2);
         TextView tvNo3 = (TextView) rlFullMarkList.findViewById(R.id.tv_full_mark_list_no3);
-        tvNo1.setTextSize(11);
-        tvNo2.setTextSize(11);
-        tvNo3.setTextSize(11);
+        tvNo1.setTextSize(10);
+        tvNo2.setTextSize(10);
+        tvNo3.setTextSize(10);
         tvNo1.setMaxLines(2);
         tvNo2.setMaxLines(2);
         tvNo3.setMaxLines(2);
