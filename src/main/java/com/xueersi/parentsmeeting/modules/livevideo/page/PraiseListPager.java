@@ -344,7 +344,6 @@ public class PraiseListPager extends BasePager {
         }
         //计算点赞总数，发送至教师端
         liveBll.sendThumbsUpNum(totalNums);
-        startTimer();
         if(isOnList){
             startTimer();
         }

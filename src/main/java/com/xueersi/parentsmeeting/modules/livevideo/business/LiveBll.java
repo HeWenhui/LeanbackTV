@@ -1497,7 +1497,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     }
                     case XESCODE.XCR_ROOM_AGREE_SEND_T: {
                         msg += ",XCR_ROOM_AGREE_SEND_T";
-                        if (mPraiseListAction != null && mPraiseListAction.getLikeProbability() == 0) {
+                        if (mPraiseListAction != null && mPraiseListAction.getThumbsUpProbability() == 0) {
                             getThumbsUpProbability();
                         }
                         JSONArray agreeForms = object.optJSONArray("agreeFroms");
