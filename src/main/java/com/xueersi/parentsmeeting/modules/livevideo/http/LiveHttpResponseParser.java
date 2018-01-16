@@ -336,26 +336,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             } else {
                 mainStatusEntity.setHaveExam(false);
             }
-//            if (status.has("vote")) {
-//                JSONObject vote = status.getJSONObject("vote");
-//                LiveTopic.VoteEntity voteEntity;
-//                try {
-//                    voteEntity = new LiveTopic.VoteEntity();
-//                    voteEntity.setChoiceId(vote.getString("choiceId"));
-//                    voteEntity.setChoiceType(vote.getInt("choiceType"));
-//                    voteEntity.setChoiceNum(vote.getInt("choiceNum"));
-//                    ArrayList<LiveTopic.VoteResult> voteResults = voteEntity.getVoteResults();
-//                    JSONArray result = vote.getJSONArray("result");
-//                    for (int i = 0; i < result.length(); i++) {
-//                        LiveTopic.VoteResult voteResult = new LiveTopic.VoteResult();
-//                        voteResult.setPople(result.getInt(i));
-//                        voteResults.add(voteResult);
-//                    }
-//                } catch (Exception e) {
-//                    voteEntity = null;
-//                }
-//                mainStatusEntity.setVoteEntity(voteEntity);
-//            }
+            if (status.has("vioceChat")) {
+                JSONObject jsonObject = status.getJSONObject("vioceChat");
+                mainStatusEntity.setAgoraVoiceChatRoom(jsonObject.optString("agoraVioceChatRoom"));
+                mainStatusEntity.setOnVideoChat(jsonObject.optString("onVioceChat"));
+            }
             if (status.has("link_mic")) {
                 JSONObject link_mic = status.getJSONObject("link_mic");
                 mainStatusEntity.setOnmic(link_mic.optString("onmic", "off"));
