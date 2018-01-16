@@ -30,8 +30,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LikeListEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LikeProbabilityEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.StudentLiveInfoEntity;
@@ -794,15 +794,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             mRoomAction.videoStatus(voiceChatStatus);
                         }
                     }
-                    if (speechFeedBackAction != null) {
-                        String status = mainRoomstatus.getOnVideoChat();
-                        if ("on".equals(status)) {
-                            String roomId = mainRoomstatus.getAgoraVoiceChatRoom();
-                            speechFeedBackAction.start(roomId);
-                        } else {
-                            speechFeedBackAction.stop();
-                        }
-                    }
                 }
                 List<String> disableSpeaking = liveTopic.getDisableSpeaking();
                 boolean have = false;
@@ -871,8 +862,13 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             videoQuestionLiveEntity.type = videoQuestionLiveEntity.questiontype = h5_Experiment.optString("questiontype");
                             videoQuestionLiveEntity.assess_ref = h5_Experiment.optString("assess_ref");
                         }
+                        if (mAnswerRankBll != null) {
+                            mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                            mAnswerRankBll.setType(videoQuestionLiveEntity.courseware_type);
+                        }
                     }
                     englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
+
                 }
                 if (mLecLearnReportAction != null) {
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
@@ -881,11 +877,28 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     }
                 }
                 if (mPraiseListAction != null) {
+
+                    LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getCoachRoomstatus();
+                    Loger.e(TAG, "listStatus="+mainRoomstatus.getListStatus());
+                    if (mainRoomstatus.getListStatus()==1) {
+                        getHonorList(0);
+                    }
+
+                    else if(mainRoomstatus.getListStatus()==2){
+                        getProgressList(0);
+                    }
+                    else if(mainRoomstatus.getListStatus()==3){
+                        getThumbsUpList();
+                    }
+                }
+                if (speechFeedBackAction != null) {
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
-                    if ("1".equals(mainRoomstatus.getListStatus())) {
-                        getHonorList(2);
-                    } else if ("3".equals(mainRoomstatus.getListStatus())) {
-                        getLikeList(2);
+                    String status = mainRoomstatus.getOnVideoChat();
+                    if ("on".equals(status)) {
+                        String roomId = mainRoomstatus.getAgoraVoiceChatRoom();
+                        speechFeedBackAction.start(roomId);
+                    } else {
+                        speechFeedBackAction.stop();
                     }
                 }
             } catch (JSONException e) {
@@ -1396,19 +1409,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         }
                         break;
                     }
-                    case XESCODE.SPEECH_FEEDBACK: {
-                        msg += ",SPEECH_FEEDBACK";
-                        if (speechFeedBackAction != null) {
-                            String status = object.getString("status");
-                            if ("on".equals(status)) {
-                                String roomId = object.getString("roomId");
-                                speechFeedBackAction.start(roomId);
-                            } else {
-                                speechFeedBackAction.stop();
-                            }
-                        }
-                        break;
-                    }
                     case XESCODE.VOTE_START: {
                         msg += ",VOTE_START";
                         String open = object.optString("open");
@@ -1482,13 +1482,13 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         if ("on".equals(open)) {
                             switch (zanType) {
                                 case PraiseListPager.PRAISE_LIST_TYPE_HONOR:
-                                    getHonorList(2);
+                                    getHonorList(0);
                                     break;
                                 case PraiseListPager.PRAISE_LIST_TYPE_PROGRESS:
-                                    getProgressList(2);
+                                    getProgressList(0);
                                     break;
-                                case PraiseListPager.PRAISE_LIST_TYPE_LIKE:
-                                    getLikeList(2);
+                                case PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP:
+                                    getThumbsUpList();
                                     break;
                                 default:
                                     break;
@@ -1502,8 +1502,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     }
                     case XESCODE.XCR_ROOM_AGREE_SEND_T: {
                         msg += ",XCR_ROOM_AGREE_SEND_T";
-                        if (mPraiseListAction != null && mPraiseListAction.getLikeProbability() == 0) {
-                            getLikeProbability(2);
+                        if (mPraiseListAction != null && mPraiseListAction.getThumbsUpProbability() == 0) {
+                            getThumbsUpProbability();
                         }
                         JSONArray agreeForms = object.optJSONArray("agreeFroms");
                         boolean isTeacher = object.optBoolean("isTeacher");
@@ -1521,7 +1521,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 list.add(stuName);
                             }
                             if (mPraiseListAction != null && list.size() != 0) {
-                                mPraiseListAction.receiveLikeMessage(list);
+                                mPraiseListAction.receiveThumbsUpNotice(list);
                             }
                         }
 
@@ -3372,20 +3372,28 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /**
      * 获取光荣榜
      */
-    public synchronized void getHonorList(final int from) {
+    public synchronized void getHonorList(final int status) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("getHonorList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
         if (mGetInfo.getStudentLiveInfo() != null) {
             classId = mGetInfo.getStudentLiveInfo().getClassId();
         }
-        mHttpManager.getHonorList(classId, enstuId, mLiveId, "0", new HttpCallBack(false) {
+        mHttpManager.getHonorList(classId, enstuId, mLiveId, status+"", new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 HonorListEntity honorListEntity = mHttpResponseParser.parseHonorList(responseEntity);
                 if (mPraiseListAction != null && honorListEntity != null) {
-                    mPraiseListAction.onHonerList(honorListEntity);
+                    if(status == 0){
+
+                        mPraiseListAction.onHonerList(honorListEntity);
+                    }
+                    else if(status == 1){
+                        if(honorListEntity.getPraiseStatus()==1)
+                            mPraiseListAction.showThumbsUpToast();
+                    }
+
                 }
                 mLogtf.d("getHonorList:onPmSuccess:honorListEntity=" + (honorListEntity == null) + "," +
                         "JsonObject=" + responseEntity.getJsonObject());
@@ -3407,33 +3415,33 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /**
      * 获取点赞榜
      */
-    public synchronized void getLikeList(final int from) {
+    public synchronized void getThumbsUpList() {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mLogtf.d("getLikeList:enstuId=" + enstuId + ",liveId=" + mLiveId);
+        mLogtf.d("getThumbsUpList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
         if (mGetInfo.getStudentLiveInfo() != null) {
             classId = mGetInfo.getStudentLiveInfo().getClassId();
         }
-        mHttpManager.getLikeList(classId, enstuId, new HttpCallBack(false) {
+        mHttpManager.getThumbsUpList(classId, enstuId, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
-                LikeListEntity likeListEntity = mHttpResponseParser.parseLikeList(responseEntity);
-                if (mPraiseListAction != null && likeListEntity != null) {
-                    mPraiseListAction.onLikeList(likeListEntity);
+                ThumbsUpListEntity thumbsUpListEntity = mHttpResponseParser.parseThumbsUpList(responseEntity);
+                if (mPraiseListAction != null && thumbsUpListEntity != null) {
+                    mPraiseListAction.onThumbsUpList(thumbsUpListEntity);
                 }
-                mLogtf.d("getLikeList:onPmSuccess:likeListEntity=" + (likeListEntity == null) + "," +
+                mLogtf.d("getThumbsUpList:onPmSuccess:thumbsUpListEntity=" + (thumbsUpListEntity == null) + "," +
                         "JsonObject=" + responseEntity.getJsonObject());
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                mLogtf.d("getLikeList:onPmFailure=" + error + ",msg=" + msg);
+                mLogtf.d("getThumbsUpList:onPmFailure=" + error + ",msg=" + msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                mLogtf.d("getLikeList:onPmError=" + responseEntity.getErrorMsg());
+                mLogtf.d("getThumbsUpList:onPmError=" + responseEntity.getErrorMsg());
                 showToast("" + responseEntity.getErrorMsg());
             }
         });
@@ -3442,20 +3450,28 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /**
      * 获取进步榜
      */
-    public synchronized void getProgressList(final int from) {
+    public synchronized void getProgressList(final int status) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("getProgressList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
         if (mGetInfo.getStudentLiveInfo() != null) {
             classId = mGetInfo.getStudentLiveInfo().getClassId();
         }
-        mHttpManager.getProgressList(classId, enstuId, mLiveId, "0", new HttpCallBack(false) {
+        mHttpManager.getProgressList(classId, enstuId, mLiveId, status+"", new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 ProgressListEntity progressListEntity = mHttpResponseParser.parseProgressList(responseEntity);
                 if (mPraiseListAction != null && progressListEntity != null) {
-                    mPraiseListAction.onProgressList(progressListEntity);
+                    if(status == 0){
+
+                        mPraiseListAction.onProgressList(progressListEntity);
+                    }
+                    else if(status == 1){
+                        if(progressListEntity.getPraiseStatus()==1)
+                            mPraiseListAction.showThumbsUpToast();
+                    }
+
                 }
                 mLogtf.d("getProgressList:onPmSuccess:progressListEntity=" + (progressListEntity == null) + "," +
                         "JsonObject=" + responseEntity.getJsonObject());
@@ -3475,35 +3491,35 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     }
 
     /**
-     * 获取点赞概率
+     * 获取点赞概率标识
      */
-    public synchronized void getLikeProbability(final int from) {
+    public synchronized void getThumbsUpProbability() {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mLogtf.d("getLikeProbability:enstuId=" + enstuId + ",liveId=" + mLiveId);
+        mLogtf.d("getThumbsUpProbability:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
         if (mGetInfo.getStudentLiveInfo() != null) {
             classId = mGetInfo.getStudentLiveInfo().getClassId();
         }
-        mHttpManager.getLikeProbability(classId, enstuId, new HttpCallBack(false) {
+        mHttpManager.getThumbsUpProbability(classId, enstuId, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
-                LikeProbabilityEntity likeProbabilityEntity = mHttpResponseParser.parseLikeProbability(responseEntity);
-                if (mPraiseListAction != null && likeProbabilityEntity != null) {
-                    mPraiseListAction.setLikeProbability(likeProbabilityEntity);
+                ThumbsUpProbabilityEntity thumbsUpProbabilityEntity = mHttpResponseParser.parseThumbsUpProbability(responseEntity);
+                if (mPraiseListAction != null && thumbsUpProbabilityEntity != null) {
+                    mPraiseListAction.setThumbsUpProbability(thumbsUpProbabilityEntity);
                 }
-                mLogtf.d("getLikeProbability:onPmSuccess:likeProbabilityEntity=" + (likeProbabilityEntity == null) + "," +
+                mLogtf.d("getThumbsUpProbability:onPmSuccess:thumbsUpProbabilityEntity=" + (thumbsUpProbabilityEntity == null) + "," +
                         "JsonObject=" + responseEntity.getJsonObject());
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                mLogtf.d("getLikeProbability:onPmFailure=" + error + ",msg=" + msg);
+                mLogtf.d("getThumbsUpProbability:onPmFailure=" + error + ",msg=" + msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                mLogtf.d("getLikeProbability:onPmError=" + responseEntity.getErrorMsg());
+                mLogtf.d("getThumbsUpProbability:onPmError=" + responseEntity.getErrorMsg());
                 showToast("" + responseEntity.getErrorMsg());
             }
         });
@@ -3512,28 +3528,30 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /**
      * 学生私聊老师点赞
      */
-    public void sendLike() {
+    public void sendThumbsUp() {
+        mLogtf.i("sendThumbsUp");
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "" + XESCODE.XCR_ROOM_AGREE_SEND_S);
             jsonObject.put("agreeFrom", "" + mGetInfo.getStuName());
-            mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
+            mIRCMessage.sendNotice(mCounTeacherStr, jsonObject.toString());
         } catch (Exception e) {
-            mLogtf.e("sendLike", e);
+            mLogtf.e("sendThumbsUp", e);
         }
     }
 
     /**
      * 学生计算赞数后私发老师
      */
-    public void sendLikeNum(int agreeNum) {
+    public void sendThumbsUpNum(int agreeNum) {
+        mLogtf.i("sendThumbsUp");
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "" + XESCODE.XCR_ROOM_AGREE_NUM_S);
-            jsonObject.put("agreeNum", "agreeNum");
-            mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
+            jsonObject.put("agreeNum", agreeNum);
+            mIRCMessage.sendNotice(mCounTeacherStr, jsonObject.toString());
         } catch (Exception e) {
-            mLogtf.e("sendLikeNum", e);
+            mLogtf.e("sendThumbsUpNum", e);
         }
     }
 }

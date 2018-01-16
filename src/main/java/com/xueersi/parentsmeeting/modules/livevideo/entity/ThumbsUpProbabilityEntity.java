@@ -4,27 +4,17 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
  * Created by Zhang Yuansun on 2018/1/9.
  */
 
-public class LikeProbabilityEntity {
-    /** 结果状态标识；0：表示失败；1：表示成功 */
-    private int stat;
+public class ThumbsUpProbabilityEntity {
     /** stuId */
-    private int stuId;
+    private String stuId;
     /** 1：表示概率不加倍；2：表示概率加倍 */
     private int probability;
 
-    public int getStat() {
-        return stat;
-    }
-
-    public void setStat(int stat) {
-        this.stat = stat;
-    }
-
-    public int getStuId() {
+    public String getStuId() {
         return stuId;
     }
 
-    public void setStuId(int stuId) {
+    public void setStuId(String stuId) {
         this.stuId = stuId;
     }
 

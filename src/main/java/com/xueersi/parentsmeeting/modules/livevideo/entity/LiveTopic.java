@@ -125,7 +125,7 @@ public class LiveTopic {
         /** 当前的直播模式 */
         private String mode = MODE_TRANING;
         /** 当前的表扬榜模式 */
-        private String listStatus;
+        private int listStatus;
 
         private boolean haveExam = false;
         private String examStatus = "";
@@ -315,11 +315,11 @@ public class LiveTopic {
             isOpenFeedback = openFeedback;
         }
 
-        public String getListStatus() {
+        public int getListStatus() {
             return listStatus;
         }
 
-        public void setListStatus(String listStatus) {
+        public void setListStatus(int listStatus) {
             this.listStatus = listStatus;
         }
 

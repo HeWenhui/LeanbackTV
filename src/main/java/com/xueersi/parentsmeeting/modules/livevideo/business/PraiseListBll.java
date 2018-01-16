@@ -11,8 +11,8 @@ import android.widget.RelativeLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LikeListEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LikeProbabilityEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.page.PraiseListPager;
@@ -36,19 +36,14 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     private LiveHttpResponseParser liveHttpResponseParser;
     private int displayWidth, displayHeight, videoWidth;
 
-    /** 点赞概率 */
-    private int likeProbability = 0;
-
-    public int getDisplayHeight(){
-        return this.displayHeight;
-    }
-
+    /** 直播底部布局*/
     private RelativeLayout rBottomContent;
-    /** 表扬榜的布局 */
+    /** 表扬榜根布局 */
     private RelativeLayout rPraiseListContent;
-    /** 表扬榜 */
+    /** 表扬榜页面 */
     private PraiseListPager mPraiseList;
-
+    /** 点赞概率标识 */
+    private int thumbsUpProbability = 0;
 
     public PraiseListBll(Activity activity) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -91,6 +86,11 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         }
     }
 
+    /**
+     * 显示优秀榜
+     *
+     * @param honorListEntity
+     */
     @Override
     public void onHonerList(final HonorListEntity honorListEntity) {
         mLogtf.d("onHonerList");
@@ -105,17 +105,21 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
                 activity.getWindow().getDecorView().invalidate();
             }
         });
-    }
-
+}
+    /**
+     * 显示点赞榜
+     *
+     * @param thumbsUpListEntity
+     */
     @Override
-    public void onLikeList(final LikeListEntity likeListEntity) {
-        mLogtf.d("onLikeList");
+    public void onThumbsUpList(final ThumbsUpListEntity thumbsUpListEntity) {
+        mLogtf.d("onThumbsUpList");
         Drawable d=rBottomContent.getBackground();
 
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
-                mPraiseList = new PraiseListPager(activity, likeListEntity, mLiveBll,PraiseListBll.this, mVPlayVideoControlHandler);
+                mPraiseList = new PraiseListPager(activity, thumbsUpListEntity, mLiveBll,PraiseListBll.this, mVPlayVideoControlHandler);
                 rPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rPraiseListContent.addView(mPraiseList.getRootView(), params);
@@ -125,6 +129,11 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         });
     }
 
+    /**
+     * 显示进步榜
+     *
+     * @param progressListEntity
+     */
     @Override
     public void onProgressList(final ProgressListEntity progressListEntity) {
         mLogtf.d("onProgressList");
@@ -141,41 +150,87 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         });
     }
 
+    /**
+     * 显示老师表扬横幅
+     *
+     * @param stuName
+     * @param tecName
+     */
     @Override
-    public void closePraiseList() {
-        mLogtf.d("onClosePraiseList");
-        //停止控制轮播消息的线程
-        mPraiseList.setRunning(false);
-        //rBottomContent.setClickable(false);
-        rPraiseListContent.removeAllViews();
-
-    }
-
-    @Override
-    public void setLikeProbability(LikeProbabilityEntity likeProbabilityEntity) {
-        mLogtf.d("setLikeProbability");
-        likeProbability = likeProbabilityEntity.getProbability();
-
-    }
-
-    @Override
-    public int getLikeProbability() {
-        mLogtf.d("getLikeProbability");
-        return  likeProbability;
-    }
-
-    @Override
-    public void showPraiseScroll(String stuName,String tecName) {
+    public void showPraiseScroll(final String stuName, final String tecName) {
         mLogtf.d("showPraiseScroll");
         if(mPraiseList!=null)
-            mPraiseList.startScrollAnimation(stuName,tecName);
+            mVPlayVideoControlHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mPraiseList.startScrollAnimation(stuName,tecName);
+                }
+            });
     }
 
+    /**
+     * 收到给我点赞的消息
+     *
+     * @param stuNames
+     */
     @Override
-    public void receiveLikeMessage(ArrayList<String> stuNames) {
-        mLogtf.d("receiveLikeMessage");
+    public void receiveThumbsUpNotice(ArrayList<String> stuNames) {
+        mLogtf.d("receiveThumbsUpNotice");
         if(mPraiseList!=null)
-            mPraiseList.receiveLikeMessage(stuNames);
+            mPraiseList.receiveThumbsUpNotice(stuNames);
+    }
+
+    /**
+     * 显示感谢点赞的Toast
+     *
+     */
+    @Override
+    public void showThumbsUpToast() {
+        mLogtf.d("showThumbsUpToast");
+        if(mPraiseList!=null)
+            mPraiseList.showThumbsUpToast();
+    }
+
+    /**
+     * 关闭榜单
+     */
+    @Override
+    public void closePraiseList() {
+        mLogtf.d("closePraiseList");
+        //停止点赞弹幕线程
+        if(mPraiseList!=null)
+            mPraiseList.setDanmakuStop(true);
+        //rBottomContent.setClickable(false);
+        mVPlayVideoControlHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                rPraiseListContent.removeAllViews();
+            }
+        });
+    }
+
+    /**
+     * 设置点赞概率标识
+     *
+     * @param thumbsUpProbabilityEntity
+     */
+    @Override
+    public void setThumbsUpProbability(ThumbsUpProbabilityEntity thumbsUpProbabilityEntity) {
+        mLogtf.d("setThumbsUpProbability");
+        thumbsUpProbability = thumbsUpProbabilityEntity.getProbability();
+    }
+
+    /**
+     * 获取点赞概率标识
+     */
+    @Override
+    public int getThumbsUpProbability( ) {
+        mLogtf.d("getThumbsUpProbability");
+        return thumbsUpProbability;
+    }
+
+    public int getDisplayHeight() {
+        return displayHeight;
     }
 
 
@@ -205,6 +260,5 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
             params.width=videoWidth;
             rPraiseListContent.setLayoutParams(params);
         }
-
     }
 }

@@ -164,7 +164,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
             return false;
         }
         talAsrJni.LangIDReset(0);
-        Loger.d(TAG, "initView:time1="+(System.currentTimeMillis()-before));
+        Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
         this.bottomContent = bottomContent;
         myView = (ViewGroup) activity.findViewById(R.id.rl_livevideo_english_content);
         myView.setVisibility(View.VISIBLE);
@@ -291,124 +291,128 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                 @Override
                 public void onProcessData(final String out) {
                     tv_livevideo_english_time.post(new Runnable() {
+                        String lastduration;
+
                         @Override
                         public void run() {
                             try {
                                 JSONObject jsonObject = new JSONObject("{" + out + "}");
                                 String time_len = jsonObject.getString("time_len");
                                 int en_seg_num = jsonObject.getInt("en_seg_num");
-                                if (en_seg_num > 0) {
-                                    totalEn_seg_num += en_seg_num;
-                                    String en_seg_len = jsonObject.getString("en_seg_len");
-                                    String duration = getDuration(time_len);
+                                totalEn_seg_num += en_seg_num;
+                                String duration = getDuration(time_len);
+                                if (duration == null || duration.equals(lastduration)) {
+                                    return;
+                                }
+                                String en_seg_len = jsonObject.optString("en_seg_len");
+                                lastduration = duration;
 //                            Loger.d(TAG, "onProcessData:en_seg_num=" + en_seg_num + ",duration=" + duration);
-                                    String[] split = duration.split("\\.");
-                                    if (split.length == 2) {
-                                        int totalSecond = Integer.parseInt(split[0]);
-                                        if (dbStart) {
-                                            dbDuration = totalSecond - dbSecond;
-                                            long nowTime = System.currentTimeMillis();
-                                            if (nowTime - lastDBTime >= 3000) {
-                                                sendDbDuration = dbDuration;
-                                                liveBll.sendDBStudent(dbDuration);
-                                                lastDBTime = nowTime;
-                                                Loger.d(TAG, "onProcessData(sendDBStudent):dbDuration=" + dbDuration);
-                                            }
+                                String[] split = duration.split("\\.");
+                                if (split.length == 2) {
+                                    int totalSecond = Integer.parseInt(split[0]);
+                                    if (dbStart) {
+                                        dbDuration = totalSecond - dbSecond;
+                                        long nowTime = System.currentTimeMillis();
+                                        if (nowTime - lastDBTime >= 3000) {
+                                            sendDbDuration = dbDuration;
+                                            liveBll.sendDBStudent(dbDuration);
+                                            lastDBTime = nowTime;
+                                            Loger.d(TAG, "onProcessData(sendDBStudent):dbDuration=" + dbDuration);
                                         }
-                                        if (totalOpeningLength.duration == 0) {
-                                            setEnglishTime(totalSecond / 60, totalSecond % 60);
-                                        } else {
-                                            int d = (int) totalOpeningLength.duration;
-                                            setEnglishTime((totalSecond + d) / 60, (totalSecond + d) % 60);
-                                        }
+                                    }
+                                    if (totalOpeningLength.duration == 0) {
+                                        setEnglishTime(totalSecond / 60, totalSecond % 60);
+                                    } else {
+                                        int d = (int) totalOpeningLength.duration;
+                                        setEnglishTime((totalSecond + d) / 60, (totalSecond + d) % 60);
+                                    }
 //                                        Loger.d(TAG, "onProcessData:totalSecond=" + totalSecond);
-                                        second15 += totalSecond - lastSecond;
-                                        int oldProgress = tv_livevideo_english_prog.getProgress();
-                                        if (second15 * 3 != oldProgress) {
-                                            int second = MAX_SECOND - second15;
-                                            final float startProgress = oldProgress;
-                                            float newProgress;
-                                            if (second < 0) {
+                                    second15 += totalSecond - lastSecond;
+                                    int oldProgress = tv_livevideo_english_prog.getProgress();
+                                    if (second15 * 3 != oldProgress) {
+                                        int second = MAX_SECOND - second15;
+                                        final float startProgress = oldProgress;
+                                        float newProgress;
+                                        if (second < 0) {
 //                                                newProgress = (second15 - 15) * 3;
 //                                                setTime(2 * MAX_SECOND - second15);
-                                                newProgress = (second15 % MAX_SECOND) * 3;
-                                                setTime(MAX_SECOND - second15 % MAX_SECOND);
+                                            newProgress = (second15 % MAX_SECOND) * 3;
+                                            setTime(MAX_SECOND - second15 % MAX_SECOND);
 //                                                        Loger.d(TAG, "onProcessData(<0):oldProgress=" + oldProgress + ",second15=" + second15);
+                                        } else {
+                                            newProgress = second15 * 3;
+                                            if (second15 != 15) {
+                                                setTime(MAX_SECOND - second15);
                                             } else {
-                                                newProgress = second15 * 3;
-                                                if (second15 != 15) {
-                                                    setTime(MAX_SECOND - second15);
-                                                } else {
-                                                    setTime(MAX_SECOND);
-                                                }
+                                                setTime(MAX_SECOND);
                                             }
-                                            Loger.d(TAG, "onProcessData:second=" + second + ",oldProgress=" + oldProgress + ",newProgress=" + newProgress);
-                                            if (newProgress != 45) {
-                                                final ValueAnimator valueAnimator = ValueAnimator.ofFloat(startProgress, newProgress);
-                                                final float finalNewProgress = newProgress;
-                                                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                                                    @Override
-                                                    public void onAnimationUpdate(ValueAnimator animation) {
-                                                        float fraction = animation.getAnimatedFraction();
-                                                        float oldProgress = startProgress + (finalNewProgress - startProgress) * fraction;
-                                                        tv_livevideo_english_prog.setProgress((int) oldProgress);
-                                                    }
-                                                });
-                                                valueAnimator.addListener(new Animator.AnimatorListener() {
-                                                    @Override
-                                                    public void onAnimationStart(Animator animation) {
+                                        }
+                                        Loger.d(TAG, "onProcessData:second=" + second + ",oldProgress=" + oldProgress + ",newProgress=" + newProgress);
+                                        if (newProgress != 45) {
+                                            final ValueAnimator valueAnimator = ValueAnimator.ofFloat(startProgress, newProgress);
+                                            final float finalNewProgress = newProgress;
+                                            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                                @Override
+                                                public void onAnimationUpdate(ValueAnimator animation) {
+                                                    float fraction = animation.getAnimatedFraction();
+                                                    float oldProgress = startProgress + (finalNewProgress - startProgress) * fraction;
+                                                    tv_livevideo_english_prog.setProgress((int) oldProgress);
+                                                }
+                                            });
+                                            valueAnimator.addListener(new Animator.AnimatorListener() {
+                                                @Override
+                                                public void onAnimationStart(Animator animation) {
 
-                                                    }
+                                                }
 
-                                                    @Override
-                                                    public void onAnimationEnd(Animator animation) {
+                                                @Override
+                                                public void onAnimationEnd(Animator animation) {
 //                                                        Loger.i(TAG, "onAnimationEnd:equal=" + (lastValueAnimator == valueAnimator));
-                                                        if (lastValueAnimator == valueAnimator) {
-                                                            lastValueAnimator = null;
-                                                        }
+                                                    if (lastValueAnimator == valueAnimator) {
+                                                        lastValueAnimator = null;
                                                     }
-
-                                                    @Override
-                                                    public void onAnimationCancel(Animator animation) {
-                                                        Loger.i(TAG, "onAnimationCancel:equal=" + (lastValueAnimator == valueAnimator));
-                                                    }
-
-                                                    @Override
-                                                    public void onAnimationRepeat(Animator animation) {
-
-                                                    }
-                                                });
-                                                valueAnimator.setDuration(80);
-                                                if (lastValueAnimator != null) {
-                                                    lastValueAnimator.cancel();
                                                 }
-                                                valueAnimator.start();
-                                                lastValueAnimator = valueAnimator;
-                                            } else {
-                                                if (lastValueAnimator != null) {
-                                                    lastValueAnimator.cancel();
-                                                    lastValueAnimator = null;
+
+                                                @Override
+                                                public void onAnimationCancel(Animator animation) {
+                                                    Loger.i(TAG, "onAnimationCancel:equal=" + (lastValueAnimator == valueAnimator));
                                                 }
-                                                tv_livevideo_english_prog.setProgress(0);
+
+                                                @Override
+                                                public void onAnimationRepeat(Animator animation) {
+
+                                                }
+                                            });
+                                            valueAnimator.setDuration(80);
+                                            if (lastValueAnimator != null) {
+                                                lastValueAnimator.cancel();
                                             }
-                                        }
-                                        if (second15 >= 15) {
-                                            second15 = second15 % MAX_SECOND;
-                                            double douduration = Double.parseDouble(duration);
-                                            int location[] = new int[2];
-                                            tv_livevideo_english_prog.getLocationInWindow(location);
-                                            totalEn_seg_len.append(en_seg_len).append(",");
-                                            String speakingLen = totalEn_seg_len.toString();
-                                            if (!StringUtils.isEmpty(totalOpeningLength.speakingLen)) {
-                                                speakingLen = totalOpeningLength.speakingLen + "," + speakingLen;
+                                            valueAnimator.start();
+                                            lastValueAnimator = valueAnimator;
+                                        } else {
+                                            if (lastValueAnimator != null) {
+                                                lastValueAnimator.cancel();
+                                                lastValueAnimator = null;
                                             }
-                                            liveBll.setTotalOpeningLength(1000, "" + (douduration + totalOpeningLength.duration),
-                                                    "" + (totalEn_seg_num + totalOpeningLength.speakingNum), speakingLen,
-                                                    location[0] + tv_livevideo_english_prog.getWidth(), location[1]);
+                                            tv_livevideo_english_prog.setProgress(0);
                                         }
-                                        lastSecond = totalSecond;
-                                        lastEnSegNum = totalEn_seg_num;
                                     }
+                                    if (second15 >= 15) {
+                                        second15 = second15 % MAX_SECOND;
+                                        double douduration = Double.parseDouble(duration);
+                                        int location[] = new int[2];
+                                        tv_livevideo_english_prog.getLocationInWindow(location);
+                                        totalEn_seg_len.append(en_seg_len).append(",");
+                                        String speakingLen = totalEn_seg_len.toString();
+                                        if (!StringUtils.isEmpty(totalOpeningLength.speakingLen)) {
+                                            speakingLen = totalOpeningLength.speakingLen + "," + speakingLen;
+                                        }
+                                        liveBll.setTotalOpeningLength(1000, "" + (douduration + totalOpeningLength.duration),
+                                                "" + (totalEn_seg_num + totalOpeningLength.speakingNum), speakingLen,
+                                                location[0] + tv_livevideo_english_prog.getWidth(), location[1]);
+                                    }
+                                    lastSecond = totalSecond;
+                                    lastEnSegNum = totalEn_seg_num;
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();

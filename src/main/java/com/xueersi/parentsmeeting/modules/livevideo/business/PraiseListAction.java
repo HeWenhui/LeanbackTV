@@ -1,8 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LikeListEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LikeProbabilityEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
 
 import java.util.ArrayList;
@@ -14,42 +14,25 @@ import java.util.ArrayList;
 
 public interface PraiseListAction {
     /**
-     * 显示光荣榜
+     * 显示优秀榜
      *
-     * @param honorListEntitie
+     * @param honorListEntity
      */
-    void onHonerList(HonorListEntity honorListEntitie);
+    void onHonerList(HonorListEntity honorListEntity);
 
     /**
      * 显示点赞榜
      *
-     * @param likeListEntitie
+     * @param thumbsUpListEntity
      */
-    void onLikeList(LikeListEntity likeListEntitie);
+    void onThumbsUpList(ThumbsUpListEntity thumbsUpListEntity);
 
     /**
      * 显示进步榜
      *
-     * @param progressListEntitie
+     * @param progressListEntity
      */
-    void onProgressList(ProgressListEntity progressListEntitie);
-
-    /**
-     * 关闭榜单
-     */
-    void closePraiseList();
-
-    /**
-     * 设置点赞概率
-     *
-     * @param likeProbabilityEntity
-     */
-    void setLikeProbability(LikeProbabilityEntity likeProbabilityEntity);
-
-    /**
-     * 获取点赞概率
-     */
-    int getLikeProbability();
+    void onProgressList(ProgressListEntity progressListEntity);
 
     /**
      * 显示老师表扬横幅
@@ -64,6 +47,33 @@ public interface PraiseListAction {
      *
      * @param stuNames
      */
-    void receiveLikeMessage(ArrayList<String> stuNames);
+    void receiveThumbsUpNotice(ArrayList<String> stuNames);
+
+    /**
+     * 显示感谢点赞的提示
+     *
+     */
+    void showThumbsUpToast();
+
+    /**
+     * 关闭榜单
+     */
+    void closePraiseList();
+
+    /**
+     * 设置点赞概率标识
+     *
+     * @param thumbsUpProbabilityEntity
+     */
+    void setThumbsUpProbability(ThumbsUpProbabilityEntity thumbsUpProbabilityEntity);
+
+    /**
+     * 获取点赞概率标识
+     */
+    int getThumbsUpProbability();
+
+
+
+
 
 }
