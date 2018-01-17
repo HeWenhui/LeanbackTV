@@ -855,7 +855,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 if (speechFeedBackAction != null) {
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
                     String status = mainRoomstatus.getOnVideoChat();
-                    if ("on".equals(status)) {
+                    if ("on".equals(status) && LiveTopic.MODE_CLASS.equals(getMode())) {
                         String roomId = mainRoomstatus.getAgoraVoiceChatRoom();
                         speechFeedBackAction.start(roomId);
                     } else {
@@ -1374,7 +1374,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         msg += ",SPEECH_FEEDBACK";
                         if (speechFeedBackAction != null) {
                             String status = object.getString("status");
-                            if ("on".equals(status)) {
+                            if ("on".equals(status) && LiveTopic.MODE_CLASS.equals(getMode())) {
                                 String roomId = object.getString("roomId");
                                 speechFeedBackAction.start(roomId);
                             } else {
