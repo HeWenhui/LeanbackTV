@@ -37,6 +37,7 @@ public class LearnReportEntity {
         private int rank;
         private String rankStr;
         private int lastRank;
+        private String lastRankStr;
         private int time;
         private String stuName;
         private String teacherName;
@@ -128,6 +129,14 @@ public class LearnReportEntity {
 
         public void setRankStr(String rankStr) {
             this.rankStr = rankStr;
+        }
+
+        public String getLastRankStr() {
+            return lastRankStr;
+        }
+
+        public void setLastRankStr(String lastRankStr) {
+            this.lastRankStr = lastRankStr;
         }
     }
 }

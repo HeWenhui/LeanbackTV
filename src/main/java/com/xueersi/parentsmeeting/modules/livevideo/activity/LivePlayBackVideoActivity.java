@@ -335,13 +335,13 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mVideoType = MobEnumUtil.VIDEO_LIVEPLAYBACK;
         where = getIntent().getStringExtra("where");
         isArts = getIntent().getIntExtra("isArts", 0);
-//        if (isArts == 1) {
-//            appID = UmsConstants.ARTS_APP_ID;
-//            LiveVideoConfig.IS_SCIENCE = false;
-//        } else {
-//            LiveVideoConfig.IS_SCIENCE = true;
-//            appID = UmsConstants.LIVE_APP_ID;
-//        }
+        if (isArts == 1) {
+            appID = UmsConstants.ARTS_APP_ID_BACK;
+            LiveVideoConfig.IS_SCIENCE = false;
+        } else {
+            LiveVideoConfig.IS_SCIENCE = true;
+            appID = UmsConstants.LIVE_APP_ID_BACK;
+        }
         // 如果加载不出来
         if (tvLoadingContent != null) {
             tvLoadingContent.setText("正在获取视频资源，请稍候");

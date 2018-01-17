@@ -151,6 +151,9 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
         setEnglishTime(d / 60, d % 60);
         tv_livevideo_english_prog.setProgress(second15 * 3);
         setTime(MAX_SECOND - second15);
+        if (!StringUtils.isEmpty(totalOpeningLength.speakingLen)) {
+            totalEn_seg_len.append(totalOpeningLength.speakingLen);
+        }
 //        lastSecond = (int) totalOpeningLength.duration;
     }
 
@@ -300,6 +303,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                                 String time_len = jsonObject.getString("time_len");
                                 int en_seg_num = jsonObject.getInt("en_seg_num");
                                 totalEn_seg_num += en_seg_num;
+//                                Loger.d(TAG, "onProcessData:out=" + out);
                                 String duration = getDuration(time_len);
                                 if (duration == null || duration.equals(lastduration)) {
                                     return;
@@ -397,18 +401,15 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                                             tv_livevideo_english_prog.setProgress(0);
                                         }
                                     }
+                                    if (!"".equals(en_seg_len)) {
+                                        totalEn_seg_len.append(en_seg_len).append(",");
+                                    }
                                     if (second15 >= 15) {
                                         second15 = second15 % MAX_SECOND;
                                         double douduration = Double.parseDouble(duration);
                                         int location[] = new int[2];
                                         tv_livevideo_english_prog.getLocationInWindow(location);
-                                        if (!"".equals(en_seg_len)) {
-                                            totalEn_seg_len.append(en_seg_len).append(",");
-                                        }
                                         String speakingLen = totalEn_seg_len.toString();
-                                        if (!StringUtils.isEmpty(totalOpeningLength.speakingLen)) {
-                                            speakingLen = totalOpeningLength.speakingLen + "," + speakingLen;
-                                        }
                                         liveBll.setTotalOpeningLength(1000, "" + (douduration + totalOpeningLength.duration),
                                                 "" + (totalEn_seg_num + totalOpeningLength.speakingNum), speakingLen,
                                                 location[0] + tv_livevideo_english_prog.getWidth(), location[1]);
