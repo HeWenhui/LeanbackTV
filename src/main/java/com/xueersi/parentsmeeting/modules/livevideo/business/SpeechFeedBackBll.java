@@ -154,7 +154,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
             volume = (volume * 30 / 10000);
             volume = (volume > 30 ? 30 : volume);
             if (speechFeedBackPager != null) {
-                speechFeedBackPager.setVolume(volume);
+                speechFeedBackPager.setVolume(volume * 3);
             }
         }
     }
