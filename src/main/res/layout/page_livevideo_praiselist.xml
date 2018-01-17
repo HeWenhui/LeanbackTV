@@ -93,7 +93,6 @@
 
     </RelativeLayout>
 
-
     <ImageView
         android:id="@+id/iv_livevideo_praiselist_light"
         android:layout_width="wrap_content"
@@ -110,6 +109,13 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/rl_livevideo_praiselist_scroll_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_livevideo_praiselist_bg"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/rl_livevideo_praiselist_scroll"
