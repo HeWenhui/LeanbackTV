@@ -728,7 +728,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         videoCachedDuration = vPlayer.getVideoCachedDuration();
                         questionBll.setVideoCachedDuration(videoCachedDuration);
                         mHandler.postDelayed(getVideoCachedDurationRun, 30000);
-                        mLiveBll.getOnloadLogs("videoCachedDuration=" + videoCachedDuration);
+                        mLiveBll.getOnloadLogs(TAG, "videoCachedDuration=" + videoCachedDuration);
                         if (videoCachedDuration > 10000) {
                             mLiveBll.streamReport(LiveBll.MegId.MEGID_12130, mGetInfo.getChannelname(), -1);
                             if (lastPlayserverEntity != null) {
