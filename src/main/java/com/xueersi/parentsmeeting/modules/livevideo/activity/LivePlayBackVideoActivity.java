@@ -184,7 +184,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     String where;
     int isArts;
     /** 区分文理appid */
-    String appID = UmsConstants.LIVE_APP_ID;
+    String appID = UmsConstants.LIVE_APP_ID_BACK;
     /** 本地视频 */
     boolean islocal;
     static int times = -1;
@@ -335,13 +335,13 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mVideoType = MobEnumUtil.VIDEO_LIVEPLAYBACK;
         where = getIntent().getStringExtra("where");
         isArts = getIntent().getIntExtra("isArts", 0);
-        if (isArts == 1) {
-            appID = UmsConstants.ARTS_APP_ID;
-            LiveVideoConfig.IS_SCIENCE = false;
-        } else {
-            LiveVideoConfig.IS_SCIENCE = true;
-            appID = UmsConstants.LIVE_APP_ID;
-        }
+//        if (isArts == 1) {
+//            appID = UmsConstants.ARTS_APP_ID;
+//            LiveVideoConfig.IS_SCIENCE = false;
+//        } else {
+//            LiveVideoConfig.IS_SCIENCE = true;
+//            appID = UmsConstants.LIVE_APP_ID;
+//        }
         // 如果加载不出来
         if (tvLoadingContent != null) {
             tvLoadingContent.setText("正在获取视频资源，请稍候");
@@ -2351,7 +2351,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
-        mData.put("livetype", "" + 3);
+        if ("PublicLiveDetailActivity".equals(where)) {
+            mData.put("livetype", "" + 2);
+        } else {
+            mData.put("livetype", "" + 3);
+        }
         mData.put("clits", "" + System.currentTimeMillis());
 //        Loger.d(mContext, eventId, mData, true);
         UmsAgentManager.umsAgentDebug(this, appID, eventId, mData);
@@ -2363,7 +2367,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
-        mData.put("livetype", "" + 3);
+        if ("PublicLiveDetailActivity".equals(where)) {
+            mData.put("livetype", "" + 2);
+        } else {
+            mData.put("livetype", "" + 3);
+        }
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
         UmsAgentManager.umsAgentOtherBusiness(this, appID, UmsConstants.uploadBehavior, mData);
@@ -2375,7 +2383,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
-        mData.put("livetype", "" + 3);
+        if ("PublicLiveDetailActivity".equals(where)) {
+            mData.put("livetype", "" + 2);
+        } else {
+            mData.put("livetype", "" + 3);
+        }
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
         UmsAgentManager.umsAgentOtherBusiness(this, appID, UmsConstants.uploadShow, mData);

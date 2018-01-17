@@ -85,6 +85,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private Activity activity;
     private LiveBll mLiveBll;
     private LiveTopic mLiveTopic;
+    private BasePager curQuestionView;
     /**
      * 直播id
      */
@@ -472,11 +473,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 .getTestPaperUrl(), liveGetInfo.getStuId(), liveGetInfo.getUname(),
                                 liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(), videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks());
                         rlQuestionContent.addView(questionWebPager.getRootView());
-                        /*mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
-                        mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
-                        hasQuestion = true;*/
                         setHaveWebQuestion(true);
-
                     }
                 });
                 return;
@@ -756,6 +753,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         int delayTime = 0;
         if (questionWebPager != null) {
+            curQuestionView=questionWebPager;
             mLogtf.d("onStopQuestion:questionWebPager");
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override
@@ -911,10 +909,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (mExamAndBool.contains(num)) {
+                if (examQuestionPager != null && num.equals(examQuestionPager.getNum())) {
                     return;
                 }
-                if (examQuestionPager != null && num.equals(examQuestionPager.getNum())) {
+                hasExam = true;
+                mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
+                mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
+                if (mExamAndBool.contains(num)) {
                     return;
                 }
                 Map<String, String> mData = new HashMap<>();
@@ -924,10 +925,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 examQuestionPager = new ExamQuestionPager(activity, mLiveBll, QuestionBll.this, liveGetInfo.getStuId
                         (), liveGetInfo.getUname(), liveid, num, nonce,mAnswerRankBll.getIsShow());
                 rlQuestionContent.addView(examQuestionPager.getRootView());
-                mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
-                mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                 setHaveExam(true);
-                hasExam = true;
                 activity.getWindow().getDecorView().requestLayout();
                 activity.getWindow().getDecorView().invalidate();
             }
@@ -941,6 +939,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             public void run() {
                 int delayTime = 0;
                 if (examQuestionPager != null) {
+                    curQuestionView=examQuestionPager;
                     examQuestionPager.examSubmitAll();
                     delayTime = 3000;
                 } else if (hasExam && !hasSubmit) {
@@ -1700,14 +1699,26 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     switch (type) {
                         case XESCODE.STOPQUESTION:
                             if (questionWebPager != null) {
-                                rlQuestionContent.removeView(questionWebPager.getRootView());
-                                questionWebPager = null;
+                                if(curQuestionView==questionWebPager) {
+                                    rlQuestionContent.removeView(questionWebPager.getRootView());
+                                    questionWebPager = null;
+                                    curQuestionView=null;
+                                }else if(curQuestionView!=null){
+                                    rlQuestionContent.removeView(curQuestionView.getRootView());
+                                    curQuestionView=null;
+                                }
                             }
                             break;
                         case XESCODE.EXAM_STOP:
                             if (examQuestionPager != null) {
-                                rlQuestionContent.removeView(examQuestionPager.getRootView());
-                                examQuestionPager = null;
+                                if(curQuestionView==questionWebPager) {
+                                    rlQuestionContent.removeView(examQuestionPager.getRootView());
+                                    examQuestionPager = null;
+                                    curQuestionView=null;
+                                }else if(curQuestionView!=null){
+                                    rlQuestionContent.removeView(curQuestionView.getRootView());
+                                    curQuestionView=null;
+                                }
                             }
                             break;
 

@@ -82,6 +82,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
             @Override
             public void run() {
                 try {
+                    Loger.d(TAG, "start:startRecording:mAudioRecord=" + (mAudioRecord == null));
                     initAudioRecorder();
                     bottomContent.post(new Runnable() {
                         @Override
@@ -95,7 +96,6 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                             bottomContent.addView(speechFeedBackPager.getRootView(), params);
                         }
                     });
-                    Loger.d(TAG, "start:startRecording");
                     long time = System.currentTimeMillis();
                     mAudioRecord.startRecording();
                     while (isStart) {
@@ -119,10 +119,11 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         if (!isStart) {
             return;
         }
-        Loger.d(TAG, "stop");
+        Loger.d(TAG, "stop:mAudioRecord=" + (mAudioRecord == null));
         isStart = false;
         if (mAudioRecord != null) {
             mAudioRecord.release();
+            mAudioRecord = null;
         }
         if (speechFeedBackPager != null) {
             bottomContent.post(new Runnable() {
@@ -153,7 +154,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
             volume = (volume * 30 / 10000);
             volume = (volume > 30 ? 30 : volume);
             if (speechFeedBackPager != null) {
-                speechFeedBackPager.setVolume(volume);
+                speechFeedBackPager.setVolume(volume * 3);
             }
         }
     }
