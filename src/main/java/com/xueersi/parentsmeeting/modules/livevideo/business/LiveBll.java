@@ -288,6 +288,20 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mData.put("str", "" + str);
         mData.put("tag", "" + TAG);
         mData.put("isAudit", "0");
+
+        mData.put("uname", mGetInfo.getUname());
+        StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+        if (studentLiveInfo != null) {
+            mData.put("classid", studentLiveInfo.getClassId());
+            mData.put("teamid", studentLiveInfo.getTeamId());
+        }
+        mData.put("courseid", courseId);
+        mData.put("teacherid", mGetInfo.getMainTeacherId());
+        mData.put("coachid", mGetInfo.getTeacherId());
+        mData.put("liveid", mLiveId);
+        mData.put("livetype", "" + mLiveType);
+        mData.put("clits", "" + System.currentTimeMillis());
+
         Loger.d(mContext, LiveVideoConfig.LIVE_DEBUG_LOG, mData, true);
     }
 
