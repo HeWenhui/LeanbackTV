@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 
 import com.alibaba.fastjson.JSON;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
@@ -54,7 +55,7 @@ import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.utils.string.StringUtils;
-import com.xueersi.xesalib.view.alertdialog.BaseAlertDialog;
+import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -3379,6 +3380,16 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 mLogtf.d("getHonorList:onPmFailure=" + error + ",msg=" + msg);
+                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, true,
+                        VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+                vcDialog.initInfo("当前网络不佳，请刷新获取榜单！");
+                vcDialog.showDialog();
+                vcDialog.setVerifyBtnListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getHonorList(0);
+                    }
+                });
             }
 
             @Override
@@ -3414,6 +3425,16 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 mLogtf.d("getThumbsUpList:onPmFailure=" + error + ",msg=" + msg);
+                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, true,
+                        VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+                vcDialog.initInfo("当前网络不佳，请刷新获取榜单！");
+                vcDialog.showDialog();
+                vcDialog.setVerifyBtnListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getThumbsUpList();
+                    }
+                });
             }
 
             @Override
@@ -3456,6 +3477,16 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 mLogtf.d("getProgressList:onPmFailure=" + error + ",msg=" + msg);
+                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, true,
+                        VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+                vcDialog.initInfo("当前网络不佳，请刷新获取榜单！");
+                vcDialog.showDialog();
+                vcDialog.setVerifyBtnListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getProgressList(0);
+                    }
+                });
             }
 
             @Override

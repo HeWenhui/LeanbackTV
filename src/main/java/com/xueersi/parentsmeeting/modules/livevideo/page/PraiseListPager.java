@@ -35,7 +35,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTextView;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
-import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -77,6 +76,9 @@ public class PraiseListPager extends BasePager {
     private ImageView ivScrollLight;
     /** 条幅内容 */
     private TextView tvScroll;
+    /** 条幅背景虚化图片 */
+    private ImageView ivScrollBackground;
+
     private RelativeLayout rlMessage;
     private RelativeLayout rlLight;
     private RelativeLayout rlScroll;
@@ -170,6 +172,7 @@ public class PraiseListPager extends BasePager {
         rlMessage = (RelativeLayout) mView.findViewById(R.id.rv_livevideo_praiselist_message);
         rlScroll = (RelativeLayout) mView.findViewById(R.id.rl_livevideo_praiselist_scroll);
         tvScroll = (TextView) mView.findViewById(R.id.tv_livevideo_praiselist_scroll);
+        ivScrollBackground =(ImageView) mView.findViewById(R.id.rl_livevideo_praiselist_scroll_bg);
 
         tv1=(TextView) mView.findViewById(R.id.text_1);
         tv2=(TextView) mView.findViewById(R.id.text_2);
@@ -289,6 +292,11 @@ public class PraiseListPager extends BasePager {
             @Override
             public void onClick(View view) {
                 mPraiseListBll.showPraiseScroll("测试","测试");
+              /*  ArrayList<String> arrayList = new ArrayList<>();
+                arrayList.add("测试1");
+                arrayList.add("测试2");
+                arrayList.add("测试3");
+                mPraiseListBll.receiveThumbsUpNotice(arrayList);*/
             }
         });
         tv5.setOnClickListener(new View.OnClickListener() {
@@ -304,10 +312,7 @@ public class PraiseListPager extends BasePager {
         tv6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, true,
-                        VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
-                vcDialog.initInfo("当前网络不佳，请稍后重试");
-                vcDialog.showDialog();
+
             }
         });
     }
@@ -352,6 +357,8 @@ public class PraiseListPager extends BasePager {
     public void receiveThumbsUpNotice(ArrayList<String> stuNames){
         if(!isOnList)
             return;
+        if(number > this.stuNames.size())
+            number = this.stuNames.size();
         int totalNums = 0;
         for(int i=0;i<stuNames.size();i++){
             int thumbsUpNum = calculateThumbsUpNum();
@@ -364,7 +371,6 @@ public class PraiseListPager extends BasePager {
         }
         //计算点赞总数，发送至教师端
         liveBll.sendThumbsUpNum(totalNums);
-        number = stuNames.size();
         startTimer();
     }
 
@@ -442,12 +448,23 @@ public class PraiseListPager extends BasePager {
         Log.i(TAG,"startScrollAnimation");
 
         rlScroll.setVisibility(View.VISIBLE);
-        ivLight.setVisibility(View.INVISIBLE);
+        ivScrollBackground.setVisibility(View.VISIBLE);
+        //ivLight.setVisibility(View.INVISIBLE);
 
         //Html设置字体加粗效果
         tvScroll.setText(
                 Html.fromHtml(
                         "<b><tt>"+stuName+"同学</tt></b> 获得 <b><tt>"+tecName+"老师</tt></b> 的重点表扬<br />要努力继续上榜哦!"));
+
+        //渐现
+        ObjectAnimator fadeInBackground = ObjectAnimator.ofFloat(ivScrollBackground, "alpha", 0f, 0.8f);
+        fadeInBackground.setDuration(1000);
+        fadeInBackground.start();
+        //渐隐
+        ObjectAnimator fadeOutBackground = ObjectAnimator.ofFloat(ivScrollBackground, "alpha", 0.8f, 0f);
+        fadeOutBackground.setDuration(1000);
+        fadeOutBackground.setStartDelay(4000);
+        fadeOutBackground.start();
 
         //渐现
         ObjectAnimator fadeInTitle = ObjectAnimator.ofFloat(rlScroll, "alpha", 0f, 1f);
@@ -487,7 +504,8 @@ public class PraiseListPager extends BasePager {
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 rlScroll.setVisibility(View.GONE);
-                ivLight.setVisibility(View.VISIBLE);
+                ivScrollBackground.setVisibility(View.GONE);
+                //ivLight.setVisibility(View.VISIBLE);
 
             }
         });
