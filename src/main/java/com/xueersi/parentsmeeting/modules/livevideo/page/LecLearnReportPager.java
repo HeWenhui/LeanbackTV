@@ -97,7 +97,7 @@ public class LecLearnReportPager extends BasePager {
         tv_livelec_dialog_zhengquelv_text.setText(stu.getRate());
         tv_livelec_dialog_zhengquelv_text2.setText(stu.getAverageRate());
         tv_livelec_dialog_paiming_text.setText(stu.getRankStr());
-        tv_livelec_dialog_paiming_text2.setText("-");
+        tv_livelec_dialog_paiming_text2.setText(stu.getLastRankStr());
 //        int lastRank = stu.getLastRank();
 //        if (lastRank == 0) {
 //            tv_livelec_dialog_paiming_text2.setVisibility(View.INVISIBLE);

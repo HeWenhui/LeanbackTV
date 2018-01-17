@@ -227,7 +227,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         mData.put("str", "" + str);
         mData.put("tag", "" + TAG);
         mData.put("isAudit", "1");
-        umsAgentDebug(LiveVideoConfig.LIVE_DEBUG_LOG, mData);
+        Loger.d(mContext, LiveVideoConfig.LIVE_DEBUG_LOG, mData, true);
     }
 
     /**

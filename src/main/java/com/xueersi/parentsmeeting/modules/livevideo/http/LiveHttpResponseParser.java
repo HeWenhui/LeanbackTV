@@ -523,7 +523,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             stu.setRate(dataObject.getString("rate"));
             stu.setAverageRate(dataObject.getString("averageRate"));
             stu.setRankStr(dataObject.optString("rank"));
-            stu.setLastRank(dataObject.optInt("last_rank", 0));
+            stu.setLastRankStr(dataObject.optString("lastRank"));
             stu.setTime(dataObject.optInt("time"));
             //stu.setStuName(stuObject.getString("stuName"));
             return learnReportEntity;
