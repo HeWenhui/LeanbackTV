@@ -200,6 +200,8 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         //停止点赞弹幕线程
         if(mPraiseList!=null)
             mPraiseList.setDanmakuStop(true);
+        if(mPraiseList!=null)
+            mPraiseList.releaseSoundPool();
         //rBottomContent.setClickable(false);
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
@@ -260,5 +262,12 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
             params.width=videoWidth;
             rPraiseListContent.setLayoutParams(params);
         }
+    }
+
+    public void destory(){
+        if(mPraiseList!=null)
+            mPraiseList.setDanmakuStop(true);
+        if(mPraiseList!=null)
+            mPraiseList.releaseSoundPool();
     }
 }
