@@ -78,6 +78,7 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
                 dayObj = jsonObject.getJSONObject(dayStr);
                 if (dayObj.has(liveId)) {
                     isGetReport = true;
+                    mLogtf.d("setmShareDataManager:isGetReport=true");
                 }
             }
         } catch (JSONException e) {
@@ -153,6 +154,7 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
                     jsonObject = new JSONObject();
                     jsonObject.put(dayStr, dayObj);
                     mShareDataManager.put(lecLearnReport, jsonObject.toString(), ShareDataManager.SHAREDATA_NOT_CLEAR);
+                    mLogtf.d("getLecLearnReport:onDataSucess");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -167,7 +169,6 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
                 activity.findViewById(R.id.rl_livevideo_content_readpackage).setVisibility(View.INVISIBLE);
 //                rlQuestionContent.setVisibility(View.INVISIBLE);
 //                rlRedpacketContent.setVisibility(View.INVISIBLE);
-                mLogtf.d("onLearnReport");
                 activity.getWindow().getDecorView().requestLayout();
                 activity.getWindow().getDecorView().invalidate();
                 mVPlayVideoControlHandler.sendEmptyMessage(SHOW_LEARNREPORT);
@@ -176,6 +177,7 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
             @Override
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
+                mLogtf.d("getLecLearnReport:onDataFail");
                 isGetReport = false;
             }
         });

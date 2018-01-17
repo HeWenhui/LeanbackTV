@@ -94,9 +94,9 @@ public class LecLearnReportPager extends BasePager {
         } else {
             tv_livelec_dialog_xxsc_text.setText(hour + "小时" + time % 60 + "分钟");
         }
-        tv_livelec_dialog_zhengquelv_text.setText(stu.getRate() + "%");
-        tv_livelec_dialog_zhengquelv_text2.setText(stu.getAverageRate() + "%");
-        tv_livelec_dialog_paiming_text.setText("第" + stu.getRank() + "名");
+        tv_livelec_dialog_zhengquelv_text.setText(stu.getRate());
+        tv_livelec_dialog_zhengquelv_text2.setText(stu.getAverageRate());
+        tv_livelec_dialog_paiming_text.setText(stu.getRankStr());
         tv_livelec_dialog_paiming_text2.setText("-");
 //        int lastRank = stu.getLastRank();
 //        if (lastRank == 0) {
