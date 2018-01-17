@@ -164,7 +164,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     protected PlayerService vPlayer;
 
     /** 是否可以自动横竖屏转换 */
-    private boolean mIsAutoOrientation = true;
+    protected boolean mIsAutoOrientation = true;
 
     /** 是否可以播放视频 */
     protected boolean mIsPlayerEnable = true;
@@ -483,6 +483,10 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                         }
                     }
                 } else if (((orientation >= 230) && (orientation <= 310))) {
+                    if (!mIsAutoOrientation && mDirection == DIRECTION_UP) {
+                        // 不自动旋转屏幕,竖屏不能转横屏，但是横屏左右可切换
+                        return;
+                    }
                     if (mClick) {
                         if (!mIsLand && !mClickPort) {
                             return;
@@ -500,6 +504,10 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                         }
                     }
                 } else if (((orientation >= 50) && (orientation <= 130))) {
+                    if (!mIsAutoOrientation && mDirection == DIRECTION_UP) {
+                        // 不自动旋转屏幕,竖屏不能转横屏，但是横屏左右可切换
+                        return;
+                    }
                     if (mClick) {
                         if (!mIsLand && !mClickPort) {
                             return;

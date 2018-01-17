@@ -787,13 +787,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         liveMessageBll.setLiveGetInfo(getInfo);
         rollCallBll.onLiveInit(getInfo);
         questionBll.setUserName(getInfo);
-//        if (1 == getInfo.getIsArts()) {
-//            starBll = new StarInteractBll(this, liveType, getInfo.getStarCount(), mIsLand);
-//            starBll.onConfigurationChanged(mIsLand);
-//            starBll.setLiveBll(mLiveBll);
-//            starBll.initView(questionContent);
-//            mLiveBll.setStarAction(starBll);
-//        }
 //        if (AppConfig.DEBUG) {
 //            LecAdvertEntity lecAdvertEntity = new LecAdvertEntity();
 //            lecAdvertAction.start(lecAdvertEntity);
@@ -864,6 +857,13 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             }
         });
 
+    }
+
+    @Override
+    public void changeLOrP() {
+        if (mIsAutoOrientation) {
+            super.changeLOrP();
+        }
     }
 
     @Override
