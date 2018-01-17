@@ -54,6 +54,7 @@ import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.utils.string.StringUtils;
+import com.xueersi.xesalib.view.alertdialog.BaseAlertDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
