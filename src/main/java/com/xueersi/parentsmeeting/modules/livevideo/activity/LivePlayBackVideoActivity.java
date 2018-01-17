@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseBll;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.business.AppBll;
+import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.AnswerEntity;
 import com.xueersi.parentsmeeting.entity.AppInfoEntity;
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
@@ -175,7 +176,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     String where;
     int isArts;
     /** 区分文理appid */
-    String appID = UmsConstants.LIVE_APP_ID;
+    String appID = UmsConstants.LIVE_APP_ID_BACK;
     /** 本地视频 */
     boolean islocal;
     static int times = -1;
@@ -185,6 +186,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     protected void onVideoCreate(Bundle savedInstanceState) {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onVideoCreate(savedInstanceState);
+        if (AppConfig.DEBUG) {
+            UmsConstants.mAppKeyData.put(UmsConstants.LIVE_APP_ID_BACK, "cea2729baa8bea0791846300989459aa");
+        } else {
+            UmsConstants.mAppKeyData.put(UmsConstants.LIVE_APP_ID_BACK, "0ce62906d89f19d7ec2b1cae9a2fed43");
+        }
         times++;
         createTime = System.currentTimeMillis();
         AppBll.getInstance().registerAppEvent(this);
@@ -2341,7 +2347,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
-        mData.put("livetype", "" + 3);
+        if ("PublicLiveDetailActivity".equals(where)) {
+            mData.put("livetype", "" + 2);
+        } else {
+            mData.put("livetype", "" + 3);
+        }
         mData.put("clits", "" + System.currentTimeMillis());
 //        Loger.d(mContext, eventId, mData, true);
         UmsAgentManager.umsAgentDebug(this, appID, eventId, mData);
@@ -2353,7 +2363,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
-        mData.put("livetype", "" + 3);
+        if ("PublicLiveDetailActivity".equals(where)) {
+            mData.put("livetype", "" + 2);
+        } else {
+            mData.put("livetype", "" + 3);
+        }
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
         UmsAgentManager.umsAgentOtherBusiness(this, appID, UmsConstants.uploadBehavior, mData);
@@ -2365,7 +2379,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
-        mData.put("livetype", "" + 3);
+        if ("PublicLiveDetailActivity".equals(where)) {
+            mData.put("livetype", "" + 2);
+        } else {
+            mData.put("livetype", "" + 3);
+        }
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
         UmsAgentManager.umsAgentOtherBusiness(this, appID, UmsConstants.uploadShow, mData);
