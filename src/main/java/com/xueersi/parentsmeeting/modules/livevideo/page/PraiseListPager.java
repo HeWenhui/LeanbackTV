@@ -98,7 +98,7 @@ public class PraiseListPager extends BasePager {
     /** 我的姓名*/
     private String stuName;
     /** 我是否在榜上*/
-    private boolean isOnList = true;
+    private boolean isOnList = false;
     /** 给我点赞同学姓名*/
     private ArrayList<String> stuNames = new ArrayList<>();
     /** 给我点赞数量*/
@@ -111,7 +111,7 @@ public class PraiseListPager extends BasePager {
     /** 点赞弹幕定时任务*/
     private TimerTask mTimerTask = null;
     /** 点赞弹幕计数*/
-    private int number =0;
+    private int number = 0;
     /** 点赞弹幕线程是否停止*/
     private boolean isStop = true;
 
