@@ -1,8 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -276,51 +274,20 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /**
      * 播放器异常日志
      *
+     * @param TAG
      * @param str
      */
-    public void getOnloadLogs(final String str) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        String bz = UserBll.getInstance().getMyUserInfoEntity().getUserType() == 1 ? "student" : "teacher";
-        PackageManager packageManager = mContext.getPackageManager();
-        PackageInfo packInfo = null;
-        String filenam = "f";
-        try {
-            packInfo = packageManager.getPackageInfo(mContext.getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (packInfo != null) {//else不会发生
-            filenam = packInfo.versionCode + "";
-        }
-        filenam = Build.VERSION.SDK_INT + "&" + filenam;
+    public void getOnloadLogs(String TAG, final String str) {
         if (mGetInfo == null) {
             UmsAgent.onEvent(mContext, LogerTag.DEBUG_VIDEO_LIVEMSG, LogerTag.DEBUG_VIDEO_LIVEMSG, 0, str);
             return;
         }
-        mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mLiveId, mGetInfo.getUname(), enstuId,
-                mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, new Callback.CommonCallback<File>() {
-
-                    @Override
-                    public void onSuccess(File o) {
-                        //Loger.i(TAG, "getOnloadLogs:onSuccess");
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable, boolean b) {
-                        //Loger.i(TAG, "getOnloadLogs:onError", throwable);
-                    }
-
-                    @Override
-                    public void onCancelled(CancelledException e) {
-                        //Loger.i(TAG, "getOnloadLogs:onCancelled");
-                    }
-
-                    @Override
-                    public void onFinished() {
-                        //Loger.i(TAG, "getOnloadLogs:onFinished");
-                    }
-
-                });
+        Map<String, String> mData = new HashMap<>();
+        mData.put("sdkint", "" + Build.VERSION.SDK_INT);
+        mData.put("str", "" + str);
+        mData.put("tag", "" + TAG);
+        mData.put("isAudit", "0");
+        umsAgentDebug(LiveVideoConfig.LIVE_DEBUG_LOG, mData);
     }
 
     /**
@@ -875,15 +842,12 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 if (mPraiseListAction != null) {
 
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getCoachRoomstatus();
-                    Loger.e(TAG, "listStatus="+mainRoomstatus.getListStatus());
-                    if (mainRoomstatus.getListStatus()==1) {
+                    Loger.e(TAG, "listStatus=" + mainRoomstatus.getListStatus());
+                    if (mainRoomstatus.getListStatus() == 1) {
                         getHonorList(0);
-                    }
-
-                    else if(mainRoomstatus.getListStatus()==2){
+                    } else if (mainRoomstatus.getListStatus() == 2) {
                         getProgressList(0);
-                    }
-                    else if(mainRoomstatus.getListStatus()==3){
+                    } else if (mainRoomstatus.getListStatus() == 3) {
                         getThumbsUpList();
                     }
                 }
@@ -1402,6 +1366,19 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         msg += ",LEC_LEARNREPORT";
                         if (mLecLearnReportAction != null) {
                             mLecLearnReportAction.onLearnReport(mLiveId);
+                        }
+                        break;
+                    }
+                    case XESCODE.SPEECH_FEEDBACK: {
+                        msg += ",SPEECH_FEEDBACK";
+                        if (speechFeedBackAction != null) {
+                            String status = object.getString("status");
+                            if ("on".equals(status)) {
+                                String roomId = object.getString("roomId");
+                                speechFeedBackAction.start(roomId);
+                            } else {
+                                speechFeedBackAction.stop();
+                            }
                         }
                         break;
                     }
@@ -3375,18 +3352,17 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         if (mGetInfo.getStudentLiveInfo() != null) {
             classId = mGetInfo.getStudentLiveInfo().getClassId();
         }
-        mHttpManager.getHonorList(classId, enstuId, mLiveId, status+"", new HttpCallBack(false) {
+        mHttpManager.getHonorList(classId, enstuId, mLiveId, status + "", new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 HonorListEntity honorListEntity = mHttpResponseParser.parseHonorList(responseEntity);
                 if (mPraiseListAction != null && honorListEntity != null) {
-                    if(status == 0){
+                    if (status == 0) {
 
                         mPraiseListAction.onHonerList(honorListEntity);
-                    }
-                    else if(status == 1){
-                        if(honorListEntity.getPraiseStatus()==1)
+                    } else if (status == 1) {
+                        if (honorListEntity.getPraiseStatus() == 1)
                             mPraiseListAction.showThumbsUpToast();
                     }
 
@@ -3453,18 +3429,17 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         if (mGetInfo.getStudentLiveInfo() != null) {
             classId = mGetInfo.getStudentLiveInfo().getClassId();
         }
-        mHttpManager.getProgressList(classId, enstuId, mLiveId, status+"", new HttpCallBack(false) {
+        mHttpManager.getProgressList(classId, enstuId, mLiveId, status + "", new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 ProgressListEntity progressListEntity = mHttpResponseParser.parseProgressList(responseEntity);
                 if (mPraiseListAction != null && progressListEntity != null) {
-                    if(status == 0){
+                    if (status == 0) {
 
                         mPraiseListAction.onProgressList(progressListEntity);
-                    }
-                    else if(status == 1){
-                        if(progressListEntity.getPraiseStatus()==1)
+                    } else if (status == 1) {
+                        if (progressListEntity.getPraiseStatus() == 1)
                             mPraiseListAction.showThumbsUpToast();
                     }
 

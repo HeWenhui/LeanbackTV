@@ -120,6 +120,8 @@ public class LiveVideoConfig {
     /** 直播回放倍速 */
     public static String LIVE_VIDEO_PLAYBACK_SPEED = "live_video_playback_speed";
 
+    /** 直播-调试日志 */
+    public static String LIVE_DEBUG_LOG = "live_debug_log";
 
     /** 直播-互动题 */
     public static String LIVE_PUBLISH_TEST = "live_publish_test";
