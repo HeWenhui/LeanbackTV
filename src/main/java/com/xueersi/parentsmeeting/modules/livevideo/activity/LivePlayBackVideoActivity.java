@@ -284,17 +284,20 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             }
         }
         if (rlQuestionContent != null) {
-            if (subjectResultPager != null) {
-                for (int i = 0; i < rlQuestionContent.getChildCount(); i++) {
-                    View child = rlQuestionContent.getChildAt(0);
-                    if (child != subjectResultPager.getRootView()) {
-                        rlQuestionContent.removeViewAt(i);
-                        i--;
-                    }
-                }
-            } else {
-                rlQuestionContent.removeAllViews();
+            if (lecAdvertPager == null) {
+                rlQuestionContent.setVisibility(View.GONE);
             }
+//            if (subjectResultPager != null) {
+//                for (int i = 0; i < rlQuestionContent.getChildCount(); i++) {
+//                    View child = rlQuestionContent.getChildAt(0);
+//                    if (child != subjectResultPager.getRootView()) {
+//                        rlQuestionContent.removeViewAt(i);
+//                        i--;
+//                    }
+//                }
+//            } else {
+//                rlQuestionContent.removeAllViews();
+//            }
         }
     }
 
@@ -988,11 +991,10 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         rlQuestionContent.addView(lecAdvertPager.getRootView(), new LayoutParams
                 (LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         rlQuestionContent.setVisibility(View.VISIBLE);
-        Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showLecAdvertPager");
-        mPlayVideoControlHandler.sendMessage(msg);
+//        Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showLecAdvertPager");
+//        mPlayVideoControlHandler.sendMessage(msg);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        mDirection = DIRECTION_UP;
     }
 
     private void showVoiceAnswer(final VideoQuestionEntity videoQuestionLiveEntity) throws Exception {
@@ -2154,10 +2156,18 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     protected void onRefresh() {
         resultFailed = false;
         if (AppBll.getInstance(this).isNetWorkAlert()) {
-            loadView(mLayoutVideo);
-            initView();
-            initData();
+            videoBackgroundRefresh.setVisibility(View.GONE);
+            Loger.d(TAG, "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
+            if (rlQuestionContent.getChildCount() > 0) {
+                rlQuestionContent.setVisibility(View.VISIBLE);
+            }
+            playNewVideo(Uri.parse(mWebPath), mSectionName);
         }
+//        if (AppBll.getInstance(this).isNetWorkAlert()) {
+//            loadView(mLayoutVideo);
+//            initView();
+//            initData();
+//        }
         AppBll.getInstance(mBaseApplication);
     }
 
