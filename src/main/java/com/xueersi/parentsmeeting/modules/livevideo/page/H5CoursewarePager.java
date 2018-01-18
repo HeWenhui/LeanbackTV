@@ -7,7 +7,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 /**
  * Created by linyuqiang on 2017/3/25.
- * h5 课件
+ * h5 课件nb实验
  */
 public class H5CoursewarePager extends BaseWebviewPager {
     String url;

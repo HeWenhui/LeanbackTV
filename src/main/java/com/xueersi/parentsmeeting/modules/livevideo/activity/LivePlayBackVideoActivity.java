@@ -158,14 +158,26 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
     /** 互动题 */
     private VideoQuestionEntity mQuestionEntity;
+    /** 各种互动题的页面 */
+    /** 语音答题的页面 */
     private VoiceAnswerPager voiceAnswerPager;
-    QuestionWebPager questionWebPager;
-    ExamQuestionPlaybackPager examQuestionPlaybackPager;
-    BaseSpeechAssessmentPager speechQuestionPlaybackPager;
-    H5CoursewarePager h5CoursewarePager;
-    EnglishH5CoursewarePager englishH5CoursewarePager;
+    /** 普通互动题，h5显示页面 */
+    private QuestionWebPager questionWebPager;
+    /** 课前测的页面 */
+    private ExamQuestionPlaybackPager examQuestionPlaybackPager;
+    /** 语音评测，role play的页面 */
+    private BaseSpeechAssessmentPager speechQuestionPlaybackPager;
+    /** nb实验的页面 */
+    private H5CoursewarePager h5CoursewarePager;
+    /** 英语课件的页面 */
+    private EnglishH5CoursewarePager englishH5CoursewarePager;
+    /** 文科主观题结果的页面 */
     private SubjectResultPager subjectResultPager;
+    /** 讲座购课广告的页面 */
     private LecAdvertPager lecAdvertPager;
+    /** 填空题布局 */
+    QuestionFillInBlankLivePager mVideoCourseQuestionPager;
+
     /** 红包id */
     private String mRedPacketId;
     /** 播放路径名 */
@@ -178,8 +190,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     private static final int NO_QUESTION = 1;
     /** 加载视频提示 */
     private TextView tvLoadingContent;
-    /** 填空题布局 */
-    QuestionFillInBlankLivePager mVideoCourseQuestionPager;
     /** 从哪个页面跳转 */
     String where;
     int isArts;
@@ -385,8 +395,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 //                List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
 //                VideoQuestionEntity videoQuestionEntity = new VideoQuestionEntity();
 //                videoQuestionEntity.setvCategory(LocalCourseConfig.CATEGORY_LEC_ADVERT);
-//                videoQuestionEntity.setvQuestionInsretTime(2000);
-//                videoQuestionEntity.setvEndTime(10000);
+//                videoQuestionEntity.setvQuestionInsretTime(600);
+//                videoQuestionEntity.setvEndTime(1600);
 //                lstVideoQuestion.add(videoQuestionEntity);
 //            }
             //测试红包自动关闭
@@ -978,9 +988,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         rlQuestionContent.addView(lecAdvertPager.getRootView(), new LayoutParams
                 (LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         rlQuestionContent.setVisibility(View.VISIBLE);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showLecAdvertPager");
         mPlayVideoControlHandler.sendMessage(msg);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        mDirection = DIRECTION_UP;
     }
 
     private void showVoiceAnswer(final VideoQuestionEntity videoQuestionLiveEntity) throws Exception {
@@ -2101,8 +2113,10 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
     @Override
     protected void resultComplete() {
-        // 播放完毕直接退出
-        onUserBackPressed();
+        // 没有广告，播放完毕直接退出
+        if (lecAdvertPager == null) {
+            onUserBackPressed();
+        }
     }
 
     private Handler mPlayVideoControlHandler = new Handler() {
