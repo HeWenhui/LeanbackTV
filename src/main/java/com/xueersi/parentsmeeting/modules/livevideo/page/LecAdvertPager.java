@@ -5,12 +5,12 @@ import android.content.pm.ActivityInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertPagerClose;
 
 /**
@@ -21,6 +21,7 @@ public class LecAdvertPager extends BasePager {
     private View step1;
     private View step2;
     private View step3;
+    TextView tv_livelec_advert_step2_title;
     private LayoutInflater inflater;
     private LecAdvertPagerClose lecAdvertBll;
     private ViewGroup group;
@@ -69,8 +70,19 @@ public class LecAdvertPager extends BasePager {
     }
 
     private void initViewStep2() {
-        TextView tv_livelec_advert_step2_title = (TextView) step2.findViewById(R.id.tv_livelec_advert_step2_title);
-        lecAdvertPayPager = new LecAdvertPayPager(mContext, "http://www.xueersi.com/", tv_livelec_advert_step2_title);
+        tv_livelec_advert_step2_title = (TextView) step2.findViewById(R.id.tv_livelec_advert_step2_title);
+        lecAdvertPayPager = new LecAdvertPayPager(mContext, "http://www.xueersi.com/", tv_livelec_advert_step2_title, new LecAdvertPayPager.OnPaySuccess() {
+            @Override
+            public void onPaySuccess() {
+                tv_livelec_advert_step2_title.setText("购买成功");
+                RelativeLayout relativeLayout = (RelativeLayout) step2.findViewById(R.id.rl_livelec_advert_step3_title);
+                step3 = inflater.inflate(R.layout.page_leclive_advert_step3, relativeLayout, false);
+                ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                relativeLayout.addView(step3, lp);
+                TextView tv_livelec_advert_step3_tip2 = (TextView) step3.findViewById(R.id.tv_livelec_advert_step3_tip2);
+                tv_livelec_advert_step3_tip2.setText("稍后辅导老师会通过电话联系你\n请耐心等待");
+            }
+        });
         ViewGroup group = (ViewGroup) step2.findViewById(R.id.rl_livelec_advert_step2_web);
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         group.addView(lecAdvertPayPager.getRootView(), lp);

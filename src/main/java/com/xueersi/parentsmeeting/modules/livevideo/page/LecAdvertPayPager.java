@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
-import android.os.Environment;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -11,14 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.string.StringUtils;
-
-import java.io.File;
 
 /**
  * Created by linyuqiang on 2018/1/15.
@@ -29,11 +21,13 @@ public class LecAdvertPayPager extends BaseWebviewPager {
     RelativeLayout rl_livevideo_subject_web;
     TextView tv_livelec_advert_step2_title;
     String url;
+    OnPaySuccess onPaySuccess;
 
-    public LecAdvertPayPager(Context context, String url, TextView tv_livelec_advert_step2_title) {
+    public LecAdvertPayPager(Context context, String url, TextView tv_livelec_advert_step2_title, OnPaySuccess onPaySuccess) {
         super(context);
         this.url = url;
         this.tv_livelec_advert_step2_title = tv_livelec_advert_step2_title;
+        this.onPaySuccess = onPaySuccess;
         initWebView();
         setErrorTip("支付加载失败，请重试");
         setLoadTip("支付正在加载，请稍候");
@@ -90,6 +84,10 @@ public class LecAdvertPayPager extends BaseWebviewPager {
 //        if (url.contains("https://submit.com")) {
 //
 //        }
+        if (onPaySuccess != null) {
+            onPaySuccess.onPaySuccess();
+            return true;
+        }
         return super.shouldOverrideUrlLoading(view, url);
     }
 
@@ -151,5 +149,9 @@ public class LecAdvertPayPager extends BaseWebviewPager {
     public void onReceivedTitle(WebView view, String title) {
         super.onReceivedTitle(view, title);
         tv_livelec_advert_step2_title.setText(title);
+    }
+
+    public interface OnPaySuccess {
+        void onPaySuccess();
     }
 }

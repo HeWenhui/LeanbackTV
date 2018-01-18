@@ -10,6 +10,7 @@
         android:layout_height="match_parent" />
 
     <RelativeLayout
+        android:id="@id/rl_livelec_advert_step2_title"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/COLOR_FFFFFF">
@@ -31,4 +32,11 @@
             android:src="@drawable/cy_main_guanbi_icon_normal" />
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@id/rl_livelec_advert_step3_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_livelec_advert_step2_title">
+
+    </RelativeLayout>
 </RelativeLayout>
