@@ -665,6 +665,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         this.speechFeedBackAction = speechFeedBackAction;
     }
 
+    public void setLecAdvertAction(LecAdvertAction lecAdvertAction) {
+        this.lecAdvertAction = lecAdvertAction;
+    }
+
     private final IRCCallback mIRCcallback = new IRCCallback() {
 
         String lastTopicstr = "";
@@ -692,8 +696,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
         @Override
         public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed) {
-            //liveLazyBllCreat.createPraiseListAction();
-            //getProgressList(0);
             if (lastTopicstr.equals(topicstr)) {
                 mLogtf.i("onTopic(equals):topicstr=" + topicstr);
                 return;
@@ -964,9 +966,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         if (mQuestionAction != null) {
                             mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
                         }
-                        if(mAnswerRankBll!=null){
-                            mAnswerRankBll.setNonce(object.optString("nonce"));
-                        }
 
 //                        getStuGoldCount();
                         break;
@@ -1034,9 +1033,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             if (videoChatAction != null) {
                                 videoChatAction.quit("off", "", "change");
                             }
-                            //模式切换为主讲，关闭表扬榜
-                            if (mPraiseListAction != null && mode.equals(LiveTopic.MODE_CLASS))
-                                mPraiseListAction.closePraiseList();
                             liveGetPlayServer();
                         }
                     }
@@ -1152,9 +1148,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         if (mQuestionAction != null) {
                             mQuestionAction.onExamStop();
                         }
-                        if(mAnswerRankBll!=null){
-                            mAnswerRankBll.setNonce(object.optString("nonce"));
-                        }
                     }
                     break;
                     case XESCODE.SPEECH_RESULT: {
@@ -1198,10 +1191,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 if (mAnswerRankBll != null) {
                                     mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                                     mAnswerRankBll.setType(videoQuestionLiveEntity.courseware_type);
-                                }
-                            }else{
-                                if(mAnswerRankBll!=null){
-                                    mAnswerRankBll.setNonce(object.optString("nonce"));
                                 }
                             }
                             englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
@@ -1483,65 +1472,54 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         break;
                     case XESCODE.XCR_ROOM_AGREE_OPEN: {
                         msg += ",XCR_ROOM_AGREE_OPEN";
-                        if (mPraiseListAction == null && liveLazyBllCreat != null) {
-                            liveLazyBllCreat.createPraiseListAction();
-                        }
-                        if (mPraiseListAction != null){
-                            String open = object.optString("open");
-                            int zanType = object.optInt("zanType");
-                            String nonce = object.optString("nonce");
-                            if ("on".equals(open)) {
-                                mPraiseListAction.onReceivePraiseList(zanType, nonce);
-                                switch (zanType) {
-                                    case PraiseListPager.PRAISE_LIST_TYPE_HONOR:
-                                        getHonorList(0);
-                                        break;
-                                    case PraiseListPager.PRAISE_LIST_TYPE_PROGRESS:
-                                        getProgressList(0);
-                                        break;
-                                    case PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP:
-                                        getThumbsUpList();
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            } else if ("off".equals(open)) {
-                                if (mPraiseListAction != null) {
-                                    mPraiseListAction.closePraiseList();
-                                }
+                        String open = object.optString("open");
+                        int zanType = object.optInt("zanType");
+                        if ("on".equals(open)) {
+                            switch (zanType) {
+                                case PraiseListPager.PRAISE_LIST_TYPE_HONOR:
+                                    getHonorList(0);
+                                    break;
+                                case PraiseListPager.PRAISE_LIST_TYPE_PROGRESS:
+                                    getProgressList(0);
+                                    break;
+                                case PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP:
+                                    getThumbsUpList();
+                                    break;
+                                default:
+                                    break;
+                            }
+                        } else if ("off".equals(open)) {
+                            if (mPraiseListAction != null) {
+                                mPraiseListAction.closePraiseList();
                             }
                         }
                         break;
                     }
                     case XESCODE.XCR_ROOM_AGREE_SEND_T: {
                         msg += ",XCR_ROOM_AGREE_SEND_T";
-                        if (mPraiseListAction == null && liveLazyBllCreat != null) {
-                            liveLazyBllCreat.createPraiseListAction();
+                        if (mPraiseListAction != null && mPraiseListAction.getThumbsUpProbability() == 0) {
+                            getThumbsUpProbability();
                         }
-                        if (mPraiseListAction != null){
-                            if (mPraiseListAction.getThumbsUpProbability() == 0) {
-                                getThumbsUpProbability();
+                        JSONArray agreeForms = object.optJSONArray("agreeFroms");
+                        boolean isTeacher = object.optBoolean("isTeacher");
+                        Log.i(TAG, "agreeForms=" + agreeForms.toString());
+                        Log.i(TAG, "isTeacher=" + isTeacher);
+                        if (isTeacher) {
+                            if (mPraiseListAction != null && agreeForms.length() != 0) {
+                                mPraiseListAction.showPraiseScroll(mGetInfo.getStuName(), agreeForms.getString(0));
                             }
-                            JSONArray agreeForms = object.optJSONArray("agreeFroms");
-                            boolean isTeacher = object.optBoolean("isTeacher");
-                            Log.i(TAG, "agreeForms=" + agreeForms.toString());
-                            Log.i(TAG, "isTeacher=" + isTeacher);
-                            if (isTeacher) {
-                                if (mPraiseListAction != null && agreeForms.length() != 0) {
-                                    mPraiseListAction.showPraiseScroll(mGetInfo.getStuName(), agreeForms.getString(0));
-                                }
-                            } else {
-                                ArrayList<String> list = new ArrayList<>();
-                                for (int i = 0; i < agreeForms.length(); i++) {
-                                    String stuName = agreeForms.getString(i);
-                                    Log.i(TAG, "stuName=" + stuName);
-                                    list.add(stuName);
-                                }
-                                if (mPraiseListAction != null && list.size() != 0) {
-                                    mPraiseListAction.receiveThumbsUpNotice(list);
-                                }
+                        } else {
+                            ArrayList<String> list = new ArrayList<>();
+                            for (int i = 0; i < agreeForms.length(); i++) {
+                                String stuName = agreeForms.getString(i);
+                                Log.i(TAG, "stuName=" + stuName);
+                                list.add(stuName);
+                            }
+                            if (mPraiseListAction != null && list.size() != 0) {
+                                mPraiseListAction.receiveThumbsUpNotice(list);
                             }
                         }
+
                         break;
                     }
                 }
@@ -1776,10 +1754,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         return isPresent;
     }
 
-    public AnswerRankBll getAnswerRankBll() {
-        return mAnswerRankBll;
-    }
-
     /**
      * 请求房间状态成功
      *
@@ -1791,16 +1765,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             onLiveFailure("服务器异常", null);
             return;
         }
-        if (mGetInfo.getStudentLiveInfo() != null
-                && mGetInfo.getIs_show_ranks().equals("1")) {
-            mAnswerRankBll = liveLazyBllCreat.createAnswerRankBll();
-            mAnswerRankBll.setLiveHttpManager(mHttpManager);
-            if(mQuestionAction instanceof QuestionBll) {
-                ((QuestionBll) mQuestionAction).setAnswerRankBll(mAnswerRankBll);
-            }
-            if(englishH5CoursewareAction instanceof EnglishH5CoursewareBll) {
-                ((EnglishH5CoursewareBll) englishH5CoursewareAction).setAnswerRankBll(mAnswerRankBll);
-            }
+        if (mAnswerRankBll != null && mGetInfo.getStudentLiveInfo() != null) {
             mAnswerRankBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
             mAnswerRankBll.setTeamId(mGetInfo.getStudentLiveInfo().getTeamId());
             mAnswerRankBll.setIsShow(mGetInfo.getIs_show_ranks());
@@ -3400,35 +3365,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     }
 
     /**
-     * 附带主辅态的交互日志
-     *
-     * @param eventId
-     * @param data
-     */
-    public void umsAgentDebug2WithTeacherRole(String eventId, Map<String, String> data) {
-        data.put("teacherrole", getMode());
-        umsAgentDebug2(eventId, data);
-    }
-
-    /**
-     * 附带主辅态的展现日志
-     *
-     * @param eventId
-     * @param data
-     */
-    public void umsAgentShowWithTeacherRole(String eventId, Map<String, String> data) {
-        data.put("teacherrole", getMode().equals(LiveTopic.MODE_CLASS) ? "1" : "4");
-        umsAgentDebug3(eventId, data);
-    }
-
-    /**
      * 获取光荣榜
      */
     public synchronized void getHonorList(final int status) {
-        if(mPraiseListAction != null && status == 0
-                && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_HONOR)
-            //如果表扬榜单正在显示，并且当前榜单类型和新开启榜单类型相同，则退出。
-            return;
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("getHonorList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
@@ -3447,8 +3386,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     } else if (status == 1) {
                         if (honorListEntity.getPraiseStatus() == 1)
                             mPraiseListAction.showThumbsUpToast();
-                        else
-                            mPraiseListAction.setThumbsUpBtnEnabled(true);
                     }
 
                 }
@@ -3490,10 +3427,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 获取点赞榜
      */
     public synchronized void getThumbsUpList() {
-        if(mPraiseListAction != null
-                && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP)
-            //如果表扬榜单正在显示，并且当前榜单类型和新开启榜单类型相同，则退出。
-            return;
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("getThumbsUpList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
@@ -3539,10 +3472,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 获取进步榜
      */
     public synchronized void getProgressList(final int status) {
-        if(mPraiseListAction != null && status == 0
-                && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_PROGRESS)
-            //如果表扬榜单正在显示，并且当前榜单类型和新开启榜单类型相同，则退出
-            return;
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("getProgressList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
@@ -3561,8 +3490,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     } else if (status == 1) {
                         if (progressListEntity.getPraiseStatus() == 1)
                             mPraiseListAction.showThumbsUpToast();
-                        else
-                            mPraiseListAction.setThumbsUpBtnEnabled(true);
                     }
 
                 }

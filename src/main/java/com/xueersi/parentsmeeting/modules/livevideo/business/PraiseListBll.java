@@ -153,7 +153,6 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
                 activity.getWindow().getDecorView().invalidate();
             }
         });
-        umsAgentDebug3(PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP, "Y");
     }
 
     /**
