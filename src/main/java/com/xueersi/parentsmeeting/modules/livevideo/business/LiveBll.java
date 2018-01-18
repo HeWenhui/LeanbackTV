@@ -966,9 +966,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         if (mQuestionAction != null) {
                             mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
                         }
-                        if (mAnswerRankBll != null) {
-                            mAnswerRankBll.setNonce(object.optString("nonce"));
-                        }
 
 //                        getStuGoldCount();
                         break;
@@ -1036,9 +1033,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             if (videoChatAction != null) {
                                 videoChatAction.quit("off", "", "change");
                             }
-                            //模式切换为主讲，关闭表扬榜
-                            if (mPraiseListAction != null && mode.equals(LiveTopic.MODE_CLASS))
-                                mPraiseListAction.closePraiseList();
                             liveGetPlayServer();
                         }
                     }
@@ -1154,9 +1148,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         if (mQuestionAction != null) {
                             mQuestionAction.onExamStop();
                         }
-                        if (mAnswerRankBll != null) {
-                            mAnswerRankBll.setNonce(object.optString("nonce"));
-                        }
                     }
                     break;
                     case XESCODE.SPEECH_RESULT: {
@@ -1200,10 +1191,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 if (mAnswerRankBll != null) {
                                     mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                                     mAnswerRankBll.setType(videoQuestionLiveEntity.courseware_type);
-                                }
-                            } else {
-                                if (mAnswerRankBll != null) {
-                                    mAnswerRankBll.setNonce(object.optString("nonce"));
                                 }
                             }
                             englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
@@ -1487,11 +1474,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         msg += ",XCR_ROOM_AGREE_OPEN";
                         String open = object.optString("open");
                         int zanType = object.optInt("zanType");
-                        String nonce = object.optString("nonce");
                         if ("on".equals(open)) {
-                            if (mPraiseListAction != null) {
-                                mPraiseListAction.onReceivePraiseList(zanType, nonce);
-                            }
                             switch (zanType) {
                                 case PraiseListPager.PRAISE_LIST_TYPE_HONOR:
                                     getHonorList(0);
@@ -3388,28 +3371,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
-    }
-
-    /**
-     * 附带主辅态的交互日志
-     *
-     * @param eventId
-     * @param data
-     */
-    public void umsAgentDebug2WithTeacherRole(String eventId, Map<String, String> data) {
-        data.put("teacherrole", getMode());
-        umsAgentDebug2(eventId, data);
-    }
-
-    /**
-     * 附带主辅态的展现日志
-     *
-     * @param eventId
-     * @param data
-     */
-    public void umsAgentShowWithTeacherRole(String eventId, Map<String, String> data) {
-        data.put("teacherrole", getMode().equals(LiveTopic.MODE_CLASS) ? "1" : "4");
-        umsAgentDebug3(eventId, data);
     }
 
     /**
