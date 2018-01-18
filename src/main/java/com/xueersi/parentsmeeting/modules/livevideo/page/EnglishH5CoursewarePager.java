@@ -201,7 +201,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         mView.findViewById(R.id.btn_error_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                errorView.setVisibility(View.GONE);
+                errorView.setVisibility(View.GONE);
 //                wvSubjectWeb.setVisibility(View.VISIBLE);
 
                 newWebView();
