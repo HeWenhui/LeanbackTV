@@ -3393,23 +3393,31 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
+                if (status == 0){
+                    VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, true,
+                            VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+                    vcDialog.initInfo("当前网络不佳，请刷新获取榜单！");
+                    vcDialog.showDialog();
+                    vcDialog.setVerifyBtnListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            getHonorList(0);
+                        }
+                    });
+                }
+                else if(status == 1){
+                    mPraiseListAction.setThumbsUpBtnEnabled(true);
+                }
                 mLogtf.d("getHonorList:onPmFailure=" + error + ",msg=" + msg);
-                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, true,
-                        VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
-                vcDialog.initInfo("当前网络不佳，请刷新获取榜单！");
-                vcDialog.showDialog();
-                vcDialog.setVerifyBtnListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        getHonorList(0);
-                    }
-                });
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 mLogtf.d("getHonorList:onPmError=" + responseEntity.getErrorMsg());
                 showToast("" + responseEntity.getErrorMsg());
+                if(status == 1){
+                    mPraiseListAction.setThumbsUpBtnEnabled(true);
+                }
             }
         });
     }
@@ -3490,24 +3498,33 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
+                if (status == 0) {
+                    VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, true,
+                            VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+                    vcDialog.initInfo("当前网络不佳，请刷新获取榜单！");
+                    vcDialog.showDialog();
+                    vcDialog.setVerifyBtnListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            getProgressList(0);
+                        }
+                    });
+                }
+                else if(status == 1){
+                    mPraiseListAction.setThumbsUpBtnEnabled(true);
+                }
                 mLogtf.d("getProgressList:onPmFailure=" + error + ",msg=" + msg);
-                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, true,
-                        VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
-                vcDialog.initInfo("当前网络不佳，请刷新获取榜单！");
-                vcDialog.showDialog();
-                vcDialog.setVerifyBtnListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        getProgressList(0);
-                    }
-                });
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 mLogtf.d("getProgressList:onPmError=" + responseEntity.getErrorMsg());
                 showToast("" + responseEntity.getErrorMsg());
+                if(status == 1){
+                    mPraiseListAction.setThumbsUpBtnEnabled(true);
+                }
             }
+
         });
     }
 

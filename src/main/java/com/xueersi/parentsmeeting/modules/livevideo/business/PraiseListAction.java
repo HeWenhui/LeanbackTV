@@ -72,8 +72,11 @@ public interface PraiseListAction {
      */
     int getThumbsUpProbability();
 
-
-
-
+    /**
+     * 设置点赞按钮是否可点击
+     *
+     * @param enabled
+     */
+    void setThumbsUpBtnEnabled(boolean enabled);
 
 }
