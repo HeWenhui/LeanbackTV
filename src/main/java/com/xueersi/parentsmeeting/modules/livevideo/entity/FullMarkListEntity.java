@@ -58,6 +58,9 @@ public class FullMarkListEntity {
         if(TextUtils.isEmpty(stuName)){
             stuName="网校学员";
         }
+        if(stuName.length()>4){
+            stuName=stuName.substring(0,3)+"...";
+        }
         return stuName;
     }
 

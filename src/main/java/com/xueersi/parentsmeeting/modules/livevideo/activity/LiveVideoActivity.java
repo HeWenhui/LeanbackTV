@@ -314,22 +314,23 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 });
             }
         }, 10);
-        answerRankBll = new AnswerRankBll(mContext, bottomContent);
+        answerRankBll = new AnswerRankBll(mContext, bottomContent,mLiveBll);
         mLiveBll.setAnswerRankBll(answerRankBll);
         questionBll.setAnswerRankBll(answerRankBll);
         englishH5CoursewareBll.setAnswerRankBll(answerRankBll);
         /*final ArrayList<FullMarkListEntity> lst=new ArrayList<>();
-        for(int i=0;i<25;i++){
+        for(int i=0;i<16;i++){
             FullMarkListEntity entity=new FullMarkListEntity();
-            entity.setAnswer_time(""+i);
+            entity.setAnswer_time(""+(60+i));
             entity.setStuName("李亚龙啊"+i);
-            entity.setId("abc");
+            entity.setId(UserBll.getInstance().getMyUserInfoEntity().getStuId()+(i==5?"":"abc"));
             lst.add(entity);
         }
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 answerRankBll.showFullMarkList(lst);
+                answerRankBll.showRankList(new ArrayList<RankUserEntity>());
             }
         },3000);*/
     }
