@@ -101,6 +101,8 @@ public class PraiseListPager extends BasePager {
     private String stuName;
     /** 我是否在榜上*/
     private boolean isOnList = false;
+    /** 我在榜上的位置索引*/
+    private int onListIndex =0;
     /** 给我点赞同学姓名*/
     private ArrayList<String> stuNames = new ArrayList<>();
     /** 给我点赞数量*/
@@ -150,6 +152,20 @@ public class PraiseListPager extends BasePager {
         mPraiseListType = PRAISE_LIST_TYPE_PROGRESS;
         videoActivity = (LiveVideoActivity) context;
         this.progressListEntity = progressListEntity;
+
+/*        ProgressListEntity testEntity = new ProgressListEntity();
+        testEntity.setPraiseStatus(0);
+        for(int i=0;i<30;i++){
+            ProgressListEntity.ProgressEntity test = testEntity.new ProgressEntity();
+            test.setStuName("张远荪"+i);
+            test.setProgressScore(i+"");
+            if(i==16)
+                test.setIsMy(1);
+            testEntity.getProgressEntities().add(test);
+
+        }
+        this.progressListEntity = testEntity;*/
+
         this.liveBll = liveBll;
         this.mPraiseListBll = mPraiseListBll;
         this.weakHandler = mVPlayVideoControlHandler;
@@ -186,6 +202,9 @@ public class PraiseListPager extends BasePager {
     @Override
     public void initData() {
         stuName = liveBll.getStuName();
+        if(stuName!=null && stuName.length()>4){
+            stuName=stuName.substring(0,3)+"...";
+        }
         thumbsUpCopywriting = new String[]{
                 " 为你点赞，" + stuName + "学神~下次榜单再相见！",
                 " 为你点赞，再接再厉哦，小学霸~",
@@ -196,11 +215,6 @@ public class PraiseListPager extends BasePager {
                 " 为你点赞，" + stuName + "学神请接收我的膜拜",
                 " 为你点赞，运气不错，额外获得1颗赞哦~",
                 " 为你点赞，运气爆棚，额外获得2颗赞哦!"};
-
-        //设置表扬榜榜头的上边距，使其居中显示
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivTitle.getLayoutParams();
-        int top = (int )(mPraiseListBll.getDisplayHeight()/2-SizeUtils.Dp2Px(videoActivity,89.5f));
-        lp.setMargins(0, top,0, 0);
 
         //开始表扬榜榜头动画
         startTitleAnimation();
@@ -226,9 +240,12 @@ public class PraiseListPager extends BasePager {
                 for(int i=0;i<honorListEntity.getHonorEntities().size();i++){
                     if(honorListEntity.getHonorEntities().get(i).getIsMy()==1){
                         isOnList=true;
+                        onListIndex = i;
                         break;
                     }
                 }
+                if(isOnList)
+                    gvPraiseList.setSelection(onListIndex);
                 break;
             case PRAISE_LIST_TYPE_THUMBS_UP:
                 myAdapter = new ThumbsUpAdapter(videoActivity,thumbsUpListEntity.getThumbsUpEntities());
@@ -236,7 +253,20 @@ public class PraiseListPager extends BasePager {
                 gvPraiseList.setNumColumns(3);
                 tvTips.setVisibility(View.GONE);
                 rlMessage.setVisibility(View.GONE);
-
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) gvPraiseList.getLayoutParams();
+                lp.setMargins(SizeUtils.Dp2Px(videoActivity,20),
+                        SizeUtils.Dp2Px(videoActivity,53),
+                        SizeUtils.Dp2Px(videoActivity,20),
+                        SizeUtils.Dp2Px(videoActivity,24));
+                for(int i=0;i<thumbsUpListEntity.getThumbsUpEntities().size();i++){
+                    if(thumbsUpListEntity.getThumbsUpEntities().get(i).getIsMy()==1){
+                        isOnList=true;
+                        onListIndex = i;
+                        break;
+                    }
+                }
+                if(isOnList)
+                    gvPraiseList.setSelection(onListIndex);
                 break;
             case PRAISE_LIST_TYPE_PROGRESS:
                 tvTips.setText("连续两次作业分数(百分制)有进步可以上榜哦~");
@@ -248,10 +278,12 @@ public class PraiseListPager extends BasePager {
                 for(int i=0;i<progressListEntity.getProgressEntities().size();i++){
                     if(progressListEntity.getProgressEntities().get(i).getIsMy()==1){
                         isOnList=true;
+                        onListIndex = i;
                         break;
                     }
-
                 }
+                if(isOnList)
+                    gvPraiseList.setSelection(onListIndex);
                 break;
             default:
                 break;
@@ -267,6 +299,7 @@ public class PraiseListPager extends BasePager {
                     liveBll.getHonorList(1);
                 if(mPraiseListType==PRAISE_LIST_TYPE_PROGRESS)
                     liveBll.getProgressList(1);
+                btnThumbsUp.setEnabled(false);
             }
         });
 
@@ -293,9 +326,9 @@ public class PraiseListPager extends BasePager {
             public void onClick(View view) {
                 mPraiseListBll.showPraiseScroll("测试","测试");
               /*  ArrayList<String> arrayList = new ArrayList<>();
-                arrayList.add("测试1");
-                arrayList.add("测试2");
-                arrayList.add("测试3");
+                arrayList.add("测试4");
+                arrayList.add("测试5");
+                arrayList.add("测试6");
                 mPraiseListBll.receiveThumbsUpNotice(arrayList);*/
             }
         });
@@ -303,9 +336,9 @@ public class PraiseListPager extends BasePager {
             @Override
             public void onClick(View view) {
                 ArrayList<String> arrayList = new ArrayList<>();
-                arrayList.add("测试一");
-                arrayList.add("测试二");
-                arrayList.add("测试三");
+                arrayList.add("测试1111");
+                arrayList.add("测试222");
+                arrayList.add("测试33");
                 mPraiseListBll.receiveThumbsUpNotice(arrayList);
             }
         });
@@ -364,18 +397,30 @@ public class PraiseListPager extends BasePager {
             int thumbsUpNum = calculateThumbsUpNum();
             if(!stuNames.get(i).equals(stuName)){
                 //过滤掉自己和同名
-                this.stuNames.add(stuNames.get(i));
+                if(stuNames.get(i).length()>4){
+                    this.stuNames.add(stuNames.get(i).substring(0,3)+"...");
+                }
+                else{
+                    this.stuNames.add(stuNames.get(i));
+                }
                 this.thumbsUpNums.add(thumbsUpNum);
             }
             totalNums+=thumbsUpNum;
         }
         //计算点赞总数，发送至教师端
         liveBll.sendThumbsUpNum(totalNums);
-        startTimer();
+        if(this.stuNames.size()!=0)
+            startTimer();
     }
 
     /** 开始榜单头部动画 */
     public void startTitleAnimation() {
+
+        //设置表扬榜榜头的上边距，使其居中显示
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivTitle.getLayoutParams();
+        int top = (int )(mPraiseListBll.getDisplayHeight()/2-SizeUtils.Dp2Px(videoActivity,89.5f));
+        lp.setMargins(0, top,0, 0);
+
         ivTitle.setVisibility(View.VISIBLE);
         ivLight.setVisibility(View.VISIBLE);
 
@@ -447,6 +492,14 @@ public class PraiseListPager extends BasePager {
             return;
         Log.i(TAG,"startScrollAnimation");
 
+        if(stuName!=null && stuName.length()>4){
+            stuName=stuName.substring(0,3)+"...";
+        }
+
+        if(tecName!=null && tecName.length()>4){
+            tecName=tecName.substring(0,3)+"...";
+        }
+
         rlScroll.setVisibility(View.VISIBLE);
         ivScrollBackground.setVisibility(View.VISIBLE);
         //ivLight.setVisibility(View.INVISIBLE);
@@ -496,9 +549,7 @@ public class PraiseListPager extends BasePager {
         ObjectAnimator rotateLight = ObjectAnimator.ofFloat(ivScrollLight, "rotation", 0f, 300f);
         rotateLight.setDuration(5000);
 
-        AnimatorSet animSetLight = new AnimatorSet();
-        animSetLight.play(rotateLight);
-        animSetLight.start();
+        rotateLight.start();
         rotateLight.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -582,6 +633,10 @@ public class PraiseListPager extends BasePager {
         });
         liveBll.sendThumbsUp();
 
+    }
+
+    public void setThumbsUpBtnEnabled(boolean enabled){
+        btnThumbsUp.setEnabled(enabled);
     }
 
     /** 优秀榜适配器 */
@@ -786,6 +841,7 @@ public class PraiseListPager extends BasePager {
     }
 
     public void releaseSoundPool(){
+        if(soundPool!=null)
         soundPool.release();
     }
 }

@@ -94,6 +94,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     @Override
     public void onHonerList(final HonorListEntity honorListEntity) {
         mLogtf.d("onHonerList");
+        rBottomContent.setClickable(true);
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -114,8 +115,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     @Override
     public void onThumbsUpList(final ThumbsUpListEntity thumbsUpListEntity) {
         mLogtf.d("onThumbsUpList");
-        Drawable d=rBottomContent.getBackground();
-
+        rBottomContent.setClickable(true);
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -137,6 +137,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     @Override
     public void onProgressList(final ProgressListEntity progressListEntity) {
         mLogtf.d("onProgressList");
+        rBottomContent.setClickable(true);
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -202,11 +203,12 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
             mPraiseList.setDanmakuStop(true);
         if(mPraiseList!=null)
             mPraiseList.releaseSoundPool();
-        //rBottomContent.setClickable(false);
+        rBottomContent.setClickable(false);
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
-                rPraiseListContent.removeAllViews();
+                if(rPraiseListContent!=null)
+                    rPraiseListContent.removeAllViews();
             }
         });
     }
@@ -229,6 +231,18 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     public int getThumbsUpProbability( ) {
         mLogtf.d("getThumbsUpProbability");
         return thumbsUpProbability;
+    }
+
+    /**
+     * 设置点赞按钮是否可点击
+     *
+     * @param enabled
+     */
+    @Override
+    public void setThumbsUpBtnEnabled(boolean enabled) {
+        mLogtf.d("setThumbsUpBtnEnabled");
+        if(mPraiseList!=null)
+            mPraiseList.setThumbsUpBtnEnabled(enabled);
     }
 
     public int getDisplayHeight() {
