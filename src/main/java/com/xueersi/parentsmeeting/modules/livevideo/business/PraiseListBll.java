@@ -9,16 +9,17 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.page.PraiseListPager;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Zhang Yuansun on 2018/1/2.
@@ -32,8 +33,11 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     private LogToFile mLogtf;
     private Activity activity;
     private LiveBll mLiveBll;
-    private LiveHttpResponseParser liveHttpResponseParser;
     private int displayWidth, displayHeight, videoWidth;
+
+    public int getDisplayHeight() {
+        return displayHeight;
+    }
 
     /** 直播底部布局*/
     private RelativeLayout rBottomContent;
@@ -43,13 +47,13 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     private PraiseListPager mPraiseList;
     /** 点赞概率标识 */
     private int thumbsUpProbability = 0;
+    private String nonce = "";
 
     public PraiseListBll(Activity activity) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
         this.activity = activity;
-        liveHttpResponseParser = new LiveHttpResponseParser(activity);
         setVideoLayout(ScreenUtils.getScreenWidth(), ScreenUtils.getScreenHeight());
     }
 
@@ -86,6 +90,18 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     }
 
     /**
+     * 收到显示榜单的消息
+     *
+     * @param listType
+     * @param nonce
+     */
+    @Override
+    public void onReceivePraiseList(int listType, String nonce) {
+        this.nonce = nonce;
+        umsAgentDebug2(listType);
+    }
+
+    /**
      * 显示优秀榜
      *
      * @param honorListEntity
@@ -105,7 +121,8 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
                 activity.getWindow().getDecorView().invalidate();
             }
         });
-}
+        umsAgentDebug3(PraiseListPager.PRAISE_LIST_TYPE_HONOR, "Y");
+    }
     /**
      * 显示点赞榜
      *
@@ -126,6 +143,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
                 activity.getWindow().getDecorView().invalidate();
             }
         });
+        umsAgentDebug3(PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP, "Y");
     }
 
     /**
@@ -148,6 +166,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
                 activity.getWindow().getDecorView().invalidate();
             }
         });
+        umsAgentDebug3(PraiseListPager.PRAISE_LIST_TYPE_PROGRESS, "Y");
     }
 
     /**
@@ -244,11 +263,6 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
             mPraiseList.setThumbsUpBtnEnabled(enabled);
     }
 
-    public int getDisplayHeight() {
-        return displayHeight;
-    }
-
-
     /**
      * 播放器区域变化时更新视图
      * @param width
@@ -282,5 +296,26 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
             mPraiseList.setDanmakuStop(true);
         if(mPraiseList!=null)
             mPraiseList.releaseSoundPool();
+    }
+
+    private void umsAgentDebug2(int listtype){
+        HashMap<String,String> map=new HashMap<>();
+        map.put("logtype","receivePraiseList");
+        map.put("listtype",listtype+"");
+        map.put("sno","3");
+        map.put("stable","2");
+        map.put("ex","Y");
+        mLiveBll.umsAgentShowWithTeacherRole(LiveVideoConfig.LIVE_PRAISE_LIST,map);
+    }
+
+    private void umsAgentDebug3(int listtype, String ex){
+        HashMap<String,String> map=new HashMap<>();
+        map.put("logtype","showPraiseList");
+        map.put("listtype",listtype+"");
+        map.put("sno","4");
+        map.put("stable","1");
+        map.put("nonce",nonce);
+        map.put("ex",ex);
+        mLiveBll.umsAgentShowWithTeacherRole(LiveVideoConfig.LIVE_PRAISE_LIST,map);
     }
 }

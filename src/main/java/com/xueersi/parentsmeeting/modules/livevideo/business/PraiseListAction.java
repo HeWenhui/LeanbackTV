@@ -13,6 +13,15 @@ import java.util.ArrayList;
  */
 
 public interface PraiseListAction {
+
+    /**
+     * 收到显示榜单的消息
+     *
+     * @param listType
+     * @param nonce
+     */
+    void onReceivePraiseList(int listType, String nonce);
+
     /**
      * 显示优秀榜
      *

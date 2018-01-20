@@ -1482,7 +1482,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         msg += ",XCR_ROOM_AGREE_OPEN";
                         String open = object.optString("open");
                         int zanType = object.optInt("zanType");
+                        String nonce = object.optString("nonce");
                         if ("on".equals(open)) {
+                            if (mPraiseListAction != null) {
+                                mPraiseListAction.onReceivePraiseList(zanType,nonce);
+                            }
                             switch (zanType) {
                                 case PraiseListPager.PRAISE_LIST_TYPE_HONOR:
                                     getHonorList(0);
@@ -3425,7 +3429,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         }
                     });
                 }
-                else if(status == 1){
+                else if(status == 1 && mPraiseListAction!=null){
                     mPraiseListAction.setThumbsUpBtnEnabled(true);
                 }
                 mLogtf.d("getHonorList:onPmFailure=" + error + ",msg=" + msg);
@@ -3433,11 +3437,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                mLogtf.d("getHonorList:onPmError=" + responseEntity.getErrorMsg());
                 showToast("" + responseEntity.getErrorMsg());
-                if(status == 1){
+                if(status == 1 && mPraiseListAction!=null){
                     mPraiseListAction.setThumbsUpBtnEnabled(true);
                 }
+                mLogtf.d("getHonorList:onPmError=" + responseEntity.getErrorMsg());
             }
         });
     }
@@ -3530,7 +3534,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         }
                     });
                 }
-                else if(status == 1){
+                else if(status == 1 && mPraiseListAction!=null){
                     mPraiseListAction.setThumbsUpBtnEnabled(true);
                 }
                 mLogtf.d("getProgressList:onPmFailure=" + error + ",msg=" + msg);
@@ -3538,11 +3542,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                mLogtf.d("getProgressList:onPmError=" + responseEntity.getErrorMsg());
                 showToast("" + responseEntity.getErrorMsg());
-                if(status == 1){
+                if(status == 1 && mPraiseListAction!=null){
                     mPraiseListAction.setThumbsUpBtnEnabled(true);
                 }
+                mLogtf.d("getProgressList:onPmError=" + responseEntity.getErrorMsg());
             }
 
         });
