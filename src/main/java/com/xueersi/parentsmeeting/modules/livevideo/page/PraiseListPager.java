@@ -92,7 +92,7 @@ public class PraiseListPager extends BasePager {
     private TextView tv6;
 
     /** 当前表扬榜类型*/
-    public final int mPraiseListType;
+    private final int mPraiseListType;
     public final static int PRAISE_LIST_TYPE_HONOR = 1;
     public final static int PRAISE_LIST_TYPE_THUMBS_UP = 3;
     public final static int PRAISE_LIST_TYPE_PROGRESS = 2;
