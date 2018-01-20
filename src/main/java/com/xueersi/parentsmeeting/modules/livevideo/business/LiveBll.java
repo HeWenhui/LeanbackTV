@@ -665,10 +665,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         this.speechFeedBackAction = speechFeedBackAction;
     }
 
-    public void setLecAdvertAction(LecAdvertAction lecAdvertAction) {
-        this.lecAdvertAction = lecAdvertAction;
-    }
-
     private final IRCCallback mIRCcallback = new IRCCallback() {
 
         String lastTopicstr = "";
@@ -723,9 +719,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         if (videoChatAction != null) {
                             videoChatAction.quit("off", "", "change");
                         }
-                        //模式切换为主讲，关闭表扬榜
-                        if (mPraiseListAction != null && liveTopic.getMode().equals(LiveTopic.MODE_CLASS))
-                            mPraiseListAction.closePraiseList();
                         liveGetPlayServer();
                     }
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
@@ -862,7 +855,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         mLecLearnReportAction.onLearnReport(mLiveId);
                     }
                 }
-                if (mPraiseListAction != null && liveTopic.getMode().equals(LiveTopic.MODE_TRANING)) {
+                if (mPraiseListAction != null) {
+
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getCoachRoomstatus();
                     Loger.e(TAG, "listStatus=" + mainRoomstatus.getListStatus());
                     if (mainRoomstatus.getListStatus() == 1) {
@@ -3424,7 +3418,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                if (status == 0) {
+                if (status == 0){
                     VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, true,
                             VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                     vcDialog.initInfo("当前网络不佳，请刷新获取榜单！");
@@ -3435,7 +3429,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             getHonorList(0);
                         }
                     });
-                } else if (status == 1 && mPraiseListAction != null) {
+                }
+                else if(status == 1){
                     mPraiseListAction.setThumbsUpBtnEnabled(true);
                 }
                 mLogtf.d("getHonorList:onPmFailure=" + error + ",msg=" + msg);
@@ -3443,11 +3438,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
+                mLogtf.d("getHonorList:onPmError=" + responseEntity.getErrorMsg());
                 showToast("" + responseEntity.getErrorMsg());
-                if (status == 1 && mPraiseListAction != null) {
+                if(status == 1){
                     mPraiseListAction.setThumbsUpBtnEnabled(true);
                 }
-                mLogtf.d("getHonorList:onPmError=" + responseEntity.getErrorMsg());
             }
         });
     }
