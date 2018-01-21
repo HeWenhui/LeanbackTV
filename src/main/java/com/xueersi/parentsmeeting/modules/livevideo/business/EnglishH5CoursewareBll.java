@@ -665,7 +665,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                handler.postDelayed(new Runnable() {
+                /*handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -677,7 +677,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         }
                         mAnswerRankBll.showFullMarkList(new ArrayList<FullMarkListEntity>());
                     }
-                }, delayTime);
+                }, delayTime);*/
+                mAnswerRankBll.hideRankList();
             }
 
             @Override

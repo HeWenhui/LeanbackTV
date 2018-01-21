@@ -227,13 +227,14 @@ public class AnswerRankBll {
                 llRankList.removeAllViews();
                 bottomContent.removeView(llRankList);
                 llRankList=null;
-                mAdapter=null;
-                bottomContent.setClickable(false);
-                mLst.clear();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        mAdapter=null;
+        bottomContent.setClickable(false);
+        mLst.clear();
     }
     private View getRecyclerView(){
         RecyclerView recyclerView=new RecyclerView(mContext);
@@ -383,11 +384,11 @@ public class AnswerRankBll {
             try{
                 bottomContent.removeView(rlFullMarkList);
                 rlFullMarkList =null;
-                hideRankList();
             }catch (Exception e){
                 e.printStackTrace();
             }
         }
+        hideRankList();
     }
 
     /**
@@ -548,6 +549,6 @@ public class AnswerRankBll {
         map.put("nonce",nonce);
         map.put("ex","Y");
         map.put("stable","1");
-        mLiveBll.umsAgentShowWithTeacherRole("medalsPodium",map);
+        mLiveBll.umsAgentShowWithTeacherRole("live_medal_podium",map);
     }
 }
