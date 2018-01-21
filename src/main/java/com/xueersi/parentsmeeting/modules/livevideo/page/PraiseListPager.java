@@ -58,7 +58,6 @@ public class PraiseListPager extends BasePager {
     private PraiseListBll mPraiseListBll;
     private WeakHandler weakHandler;
     private BaseAdapter myAdapter;
-    private SoundPool soundPool;
 
     /** 表扬榜单 */
     private GridView gvPraiseList;
@@ -118,6 +117,13 @@ public class PraiseListPager extends BasePager {
     private int number = 0;
     /** 点赞弹幕线程是否停止*/
     private boolean isStop = true;
+
+    /** 声音池*/
+    private SoundPool soundPool;
+    /** 榜单弹出声音*/
+    private int soundPraiselistIn = 0;
+    /** 点赞声音*/
+    private int soundThumbsUp = 0;
 
     private LogToFile logToFile;
 
@@ -220,14 +226,21 @@ public class PraiseListPager extends BasePager {
         startTitleAnimation();
 
         //播放声音
-        soundPool= new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-        soundPool.load(videoActivity,R.raw.praise_list,1);
-        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                // TODO Auto-generated method stub
-                soundPool.play(1,1, 1, 0, 0, 1);
-            }
-        });
+        if(soundPool==null)
+            soundPool= new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        if(soundPraiselistIn==0){
+            soundPraiselistIn=soundPool.load(videoActivity,R.raw.praise_list,1);
+            soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+                public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                    // TODO Auto-generated method stub
+                    soundPool.play(soundPraiselistIn,1, 1, 0, 0, 1);
+                }
+            });
+        }
+        else{
+            soundPool.play(soundPraiselistIn,1, 1, 0, 0, 1);
+        }
+
 
         switch (mPraiseListType){
             case PRAISE_LIST_TYPE_HONOR:
@@ -295,6 +308,18 @@ public class PraiseListPager extends BasePager {
         btnThumbsUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(soundThumbsUp==0){
+                    soundThumbsUp=soundPool.load(videoActivity,R.raw.thumbs_up,1);
+                    soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+                        public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                            // TODO Auto-generated method stub
+                            soundPool.play(soundThumbsUp,1, 1, 0, 0, 1);
+                        }
+                    });
+                }
+                else{
+                    soundPool.play(soundThumbsUp,1, 1, 0, 0, 1);
+                }
                 if(mPraiseListType==PRAISE_LIST_TYPE_HONOR)
                     liveBll.getHonorList(1);
                 if(mPraiseListType==PRAISE_LIST_TYPE_PROGRESS)
@@ -624,15 +649,7 @@ public class PraiseListPager extends BasePager {
     public void showThumbsUpToast(){
         btnThumbsUp.setVisibility(View.GONE);
         Toast.makeText(videoActivity,"你真棒！谢谢你的点赞",Toast.LENGTH_SHORT).show();
-        soundPool.load(videoActivity,R.raw.thumbs_up,1);
-        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                // TODO Auto-generated method stub
-                soundPool.play(2,1, 1, 0, 0, 1);
-            }
-        });
         liveBll.sendThumbsUp();
-
     }
 
     public void setThumbsUpBtnEnabled(boolean enabled){
@@ -685,10 +702,12 @@ public class PraiseListPager extends BasePager {
                 if(honorEntity.getIsMy()== 1) {
                     holder.ivCrown.setImageResource(R.drawable.ic_livevideo_praiselist_crown);
                     holder.tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
+                    holder.tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
                 }
                 else if(honorEntity.getIsMy()== 0){
                     holder.ivCrown.setImageResource(0);
                     holder.tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
+                    holder.tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
                 }
                 holder.tvName.setText(honorEntity.getStuName());
                 holder.tvCounts.setText("×"+honorEntity.getExcellentNum());
@@ -749,10 +768,12 @@ public class PraiseListPager extends BasePager {
                 if(thumbsUpEntity.getIsMy()== 1) {
                     holder.ivCrown.setImageResource(R.drawable.ic_livevideo_praiselist_crown);
                     holder.tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
+                    holder.tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
                 }
                 else if(thumbsUpEntity.getIsMy()== 0){
                     holder.ivCrown.setImageResource(0);
                     holder.tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
+                    holder.tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
                 }
 
                 holder.tvName.setText(thumbsUpEntity.getStuName());
@@ -815,10 +836,12 @@ public class PraiseListPager extends BasePager {
                 if(progressEntity.getIsMy()== 1) {
                     holder.ivCrown.setImageResource(R.drawable.ic_livevideo_praiselist_crown);
                     holder.tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
+                    holder.tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
                 }
                 else if(progressEntity.getIsMy()== 0){
                     holder.ivCrown.setImageResource(0);
                     holder.tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
+                    holder.tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
                 }
 
                 holder.tvName.setText(progressEntity.getStuName());
