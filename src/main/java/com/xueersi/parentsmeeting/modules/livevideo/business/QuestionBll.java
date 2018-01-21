@@ -417,7 +417,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 .getvQuestionID())) {
                             return;
                         }
-                        if(mAnswerRankBll!=null) {
+                        if (mAnswerRankBll != null) {
                             mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
                             mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                         }
@@ -531,9 +531,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     if (speechAssessmentPager != null) {
                         mLogtf.d("showQuestion:examSubmitAll:id=" + speechAssessmentPager.getId());
                         speechAssessmentPager.examSubmitAll();
-                        if (speechAssessmentPager != null) {
-                            rlQuestionContent.removeView(speechAssessmentPager.getRootView());
-                        }
+                        rlQuestionContent.removeView(speechAssessmentPager.getRootView());
                     }
                     if (activity instanceof AudioRequest) {
                         AudioRequest audioRequest = (AudioRequest) activity;
@@ -758,7 +756,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         int delayTime = 0;
         if (questionWebPager != null) {
-            curQuestionView = questionWebPager;
+            curQuestionView=questionWebPager;
             mLogtf.d("onStopQuestion:questionWebPager");
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override
@@ -775,7 +773,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         if (hasSubmit) {
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
-            hasQuestion = false;
+            hasQuestion=false;
         }
         if ("4".equals(ptype)) {
             return;
@@ -1205,14 +1203,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
             });
         }
-        StableLogHashMap logHashMap = new StableLogHashMap("showAnswerDialog");
-        logHashMap.put("testtype", "" + videoQuestionLiveEntity.type);
-        logHashMap.put("testid", "" + videoQuestionLiveEntity.id);
-        logHashMap.put("sourcetype", "h5test");
-        logHashMap.put("answertype", "voice");
-        logHashMap.addExY().addSno("2").addNonce("" + videoQuestionLiveEntity.nonce);
-        logHashMap.addStable("1");
-        umsAgentDebug3(voicequestionEventId, logHashMap.getData());
+        VoiceAnswerLog.sno2H5test(mLiveBll, videoQuestionLiveEntity.type, videoQuestionLiveEntity.id, videoQuestionLiveEntity.nonce);
     }
 
     QuestionSwitch questionSwitch = new QuestionSwitch() {
@@ -1672,32 +1663,19 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                //showFullMarkList(type, new ArrayList<FullMarkListEntity>(), delayTime);
-                mAnswerRankBll.hideRankList();
-                if (mAnswerRankBll != null) {
-                    mAnswerRankBll.hideRankList();
-                }
+                showFullMarkList(type, new ArrayList<FullMarkListEntity>(), delayTime);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
                 showFullMarkList(type, new ArrayList<FullMarkListEntity>(), delayTime);
-                if (mAnswerRankBll != null) {
-                    mAnswerRankBll.hideRankList();
-                }
             }
         };
         if (type == XESCODE.STOPQUESTION) {
             mAnswerRankBll.getFullMarkListQuestion(callBack);
         } else if (type == XESCODE.EXAM_STOP) {
             mAnswerRankBll.getFullMarkListTest(callBack);
-        if (mAnswerRankBll != null) {
-            if (type == XESCODE.STOPQUESTION) {
-                mAnswerRankBll.getFullMarkListQuestion(callBack);
-            } else if (type == XESCODE.EXAM_STOP) {
-                mAnswerRankBll.getFullMarkListTest(callBack);
-            }
         }
     }
 
@@ -1749,7 +1727,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                mAnswerRankBll.showFullMarkList(lst,type);
+                mAnswerRankBll.showFullMarkList(lst);
 
             }
         }, delayTime);
