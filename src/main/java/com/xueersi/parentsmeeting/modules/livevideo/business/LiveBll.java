@@ -1036,6 +1036,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             if (videoChatAction != null) {
                                 videoChatAction.quit("off", "", "change");
                             }
+                            //模式切换为主讲，关闭表扬榜
+                            if (mPraiseListAction != null && mode.equals(LiveTopic.MODE_CLASS))
+                                mPraiseListAction.closePraiseList();
                             liveGetPlayServer();
                         }
                     }
@@ -3372,6 +3375,16 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
+    }
+
+    /**
+     * 附带主辅态的交互日志
+     * @param eventId
+     * @param data
+     */
+    public void umsAgentDebug2WithTeacherRole(String eventId,Map<String,String> data){
+        data.put("teacherrole",mGetInfo.getMode());
+        umsAgentDebug2(eventId,data);
     }
 
     /**

@@ -229,21 +229,14 @@ public class PraiseListPager extends BasePager {
         startTitleAnimation();
 
         //播放声音
-        if(soundPool==null)
-            soundPool= new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-        if(soundPraiselistIn==0){
-            soundPraiselistIn=soundPool.load(videoActivity,R.raw.praise_list,1);
-            soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-                public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                    // TODO Auto-generated method stub
-                    soundPool.play(soundPraiselistIn,1, 1, 0, 0, 1);
-                }
-            });
-        }
-        else{
-            soundPool.play(soundPraiselistIn,1, 1, 0, 0, 1);
-        }
-
+        soundPool= new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        soundPool.load(videoActivity,R.raw.praise_list,1);
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                // TODO Auto-generated method stub
+                soundPool.play(1,1, 1, 0, 0, 1);
+            }
+        });
 
         switch (mPraiseListType){
             case PRAISE_LIST_TYPE_HONOR:
