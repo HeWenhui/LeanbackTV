@@ -1665,7 +1665,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                showFullMarkList(type, new ArrayList<FullMarkListEntity>(), delayTime);
+                //showFullMarkList(type, new ArrayList<FullMarkListEntity>(), delayTime);
+                mAnswerRankBll.hideRankList();
             }
 
             @Override
