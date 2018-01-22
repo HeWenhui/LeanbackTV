@@ -287,20 +287,17 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             }
         }
         if (rlQuestionContent != null) {
-            if (lecAdvertPager == null) {
-                rlQuestionContent.setVisibility(View.GONE);
+            if (subjectResultPager != null) {
+                for (int i = 0; i < rlQuestionContent.getChildCount(); i++) {
+                    View child = rlQuestionContent.getChildAt(0);
+                    if (child != subjectResultPager.getRootView()) {
+                        rlQuestionContent.removeViewAt(i);
+                        i--;
+                    }
+                }
+            } else {
+                rlQuestionContent.removeAllViews();
             }
-//            if (subjectResultPager != null) {
-//                for (int i = 0; i < rlQuestionContent.getChildCount(); i++) {
-//                    View child = rlQuestionContent.getChildAt(0);
-//                    if (child != subjectResultPager.getRootView()) {
-//                        rlQuestionContent.removeViewAt(i);
-//                        i--;
-//                    }
-//                }
-//            } else {
-//                rlQuestionContent.removeAllViews();
-//            }
         }
     }
 
@@ -1106,6 +1103,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 ViewGroup.LayoutParams.MATCH_PARENT);
         rlQuestionContent.addView(voiceAnswerPager.getRootView(), params);
         voiceAnswerPager.setAudioRequest();
+        VoiceAnswerLog.sno2(this, videoQuestionLiveEntity );
     }
 
     QuestionSwitch questionSwitch = new QuestionSwitch() {
