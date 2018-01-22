@@ -54,5 +54,8 @@ public class LiveLazyBllCreat {
         }
         return praiseOrEncourageBll;
     }
+    AnswerRankBll createAnswerRankBll(){
+        return new AnswerRankBll(liveVideoActivity,bottomContent,liveBll);
+    }
 
 }

@@ -223,8 +223,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 if ("on".equals(status)) {
                     if (!"1".equals(videoQuestionLiveEntity.getIsVoice()) || mErrorVoiceQue.contains(videoQuestionLiveEntity.url)) {
                         hasQuestion = true;
-                        mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
-                        mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
+                        if(mAnswerRankBll!=null) {
+                            mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
+                            mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
+                        }
                     }
                     if (mH5AndBool.contains(videoQuestionLiveEntity.url)) {
                         logToFile.i("onH5Courseware:url.contains");
@@ -619,6 +621,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     }
 
     private void getFullMarkList(final int delayTime) {
+        if(mAnswerRankBll==null) {
+            return;
+        }
         if (hasQuestion) {
             hasQuestion = false;
         } else {
@@ -678,11 +683,16 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         mAnswerRankBll.showFullMarkList(new ArrayList<FullMarkListEntity>());
                     }
                 }, delayTime);*/
-                mAnswerRankBll.hideRankList();
+                if(mAnswerRankBll!=null) {
+                    mAnswerRankBll.hideRankList();
+                }
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
+                /*if(mAnswerRankBll==null) {
+                    return;
+                }
                 super.onPmError(responseEntity);
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -696,12 +706,18 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         }
                         mAnswerRankBll.showFullMarkList(new ArrayList<FullMarkListEntity>());
                     }
-                }, delayTime);
+                }, delayTime);*/
+                if(mAnswerRankBll!=null) {
+                    mAnswerRankBll.hideRankList();
+                }
             }
         });
     }
 
     public void onSubmit() {
+        if(mAnswerRankBll==null){
+            return;
+        }
         submitTime = System.currentTimeMillis();
         mLiveBll.sendRankMessage(XESCODE.RANK_STU_MESSAGE);
         /*if(isShowFullMarkList){
