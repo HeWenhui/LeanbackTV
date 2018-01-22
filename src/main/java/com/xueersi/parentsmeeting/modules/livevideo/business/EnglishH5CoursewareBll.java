@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
@@ -372,14 +373,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 }
             });
         }
-        StableLogHashMap logHashMap = new StableLogHashMap("showAnswerDialog");
-        logHashMap.put("testtype", "" + videoQuestionLiveEntity.type);
-        logHashMap.put("testid", "" + videoQuestionLiveEntity.id);
-        logHashMap.put("sourcetype", "h5ware");
-        logHashMap.put("answertype", "voice");
-        logHashMap.addExY().addSno("2").addNonce("" + videoQuestionLiveEntity.nonce);
-        logHashMap.addStable("1");
-        umsAgentDebug3(voicequestionEventId, logHashMap.getData());
+        VoiceAnswerLog.sno2H5Ware(mLiveBll, videoQuestionLiveEntity.type, videoQuestionLiveEntity.id, videoQuestionLiveEntity.nonce);
     }
 
     QuestionSwitch questionSwitch = new QuestionSwitch() {

@@ -42,6 +42,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
@@ -416,7 +417,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 .getvQuestionID())) {
                             return;
                         }
-                        if(mAnswerRankBll!=null) {
+                        if (mAnswerRankBll != null) {
                             mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
                             mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                         }
@@ -755,7 +756,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         int delayTime = 0;
         if (questionWebPager != null) {
-            curQuestionView=questionWebPager;
+            curQuestionView = questionWebPager;
             mLogtf.d("onStopQuestion:questionWebPager");
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override
@@ -772,7 +773,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         if (hasSubmit) {
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
-            hasQuestion=false;
+            hasQuestion = false;
         }
         if ("4".equals(ptype)) {
             return;
@@ -915,7 +916,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     return;
                 }
                 hasExam = true;
-                if(mAnswerRankBll!=null) {
+                if (mAnswerRankBll != null) {
                     mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
                     mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                 }
@@ -927,7 +928,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mData.put("examid", num);
                 umsAgentDebug(examQuestionEventId, mData);
                 examQuestionPager = new ExamQuestionPager(activity, mLiveBll, QuestionBll.this, liveGetInfo.getStuId
-                        (), liveGetInfo.getUname(), liveid, num, nonce,mAnswerRankBll==null?"0":mAnswerRankBll.getIsShow());
+                        (), liveGetInfo.getUname(), liveid, num, nonce, mAnswerRankBll == null ? "0" : mAnswerRankBll.getIsShow());
                 rlQuestionContent.addView(examQuestionPager.getRootView());
                 setHaveExam(true);
                 activity.getWindow().getDecorView().requestLayout();
@@ -943,7 +944,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             public void run() {
                 int delayTime = 0;
                 if (examQuestionPager != null) {
-                    curQuestionView=examQuestionPager;
+                    curQuestionView = examQuestionPager;
                     examQuestionPager.examSubmitAll();
                     delayTime = 3000;
                 } else if (hasExam && !hasSubmit) {
@@ -952,7 +953,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
                 if (hasSubmit) {
                     getFullMarkList(XESCODE.EXAM_STOP, delayTime);
-                    hasExam=false;
+                    hasExam = false;
                 }
             }
         });
@@ -1202,14 +1203,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
             });
         }
-        StableLogHashMap logHashMap = new StableLogHashMap("showAnswerDialog");
-        logHashMap.put("testtype", "" + videoQuestionLiveEntity.type);
-        logHashMap.put("testid", "" + videoQuestionLiveEntity.id);
-        logHashMap.put("sourcetype", "h5test");
-        logHashMap.put("answertype", "voice");
-        logHashMap.addExY().addSno("2").addNonce("" + videoQuestionLiveEntity.nonce);
-        logHashMap.addStable("1");
-        umsAgentDebug3(voicequestionEventId, logHashMap.getData());
+        VoiceAnswerLog.sno2H5test(mLiveBll, videoQuestionLiveEntity.type, videoQuestionLiveEntity.id, videoQuestionLiveEntity.nonce);
     }
 
     QuestionSwitch questionSwitch = new QuestionSwitch() {
@@ -1670,7 +1664,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
                 //showFullMarkList(type, new ArrayList<FullMarkListEntity>(), delayTime);
-                if(mAnswerRankBll!=null) {
+                if (mAnswerRankBll != null) {
                     mAnswerRankBll.hideRankList();
                 }
             }
@@ -1678,12 +1672,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                if(mAnswerRankBll!=null) {
+                if (mAnswerRankBll != null) {
                     mAnswerRankBll.hideRankList();
                 }
             }
         };
-        if(mAnswerRankBll!=null) {
+        if (mAnswerRankBll != null) {
             if (type == XESCODE.STOPQUESTION) {
                 mAnswerRankBll.getFullMarkListQuestion(callBack);
             } else if (type == XESCODE.EXAM_STOP) {
@@ -1703,7 +1697,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     }
 
     private void showFullMarkList(final int type, final List<FullMarkListEntity> lst, int delayTime) {
-        if(mAnswerRankBll==null) {
+        if (mAnswerRankBll == null) {
             return;
         }
         mVPlayVideoControlHandler.postDelayed(new Runnable() {
@@ -1713,25 +1707,25 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     switch (type) {
                         case XESCODE.STOPQUESTION:
                             if (questionWebPager != null) {
-                                if(curQuestionView==questionWebPager) {
+                                if (curQuestionView == questionWebPager) {
                                     rlQuestionContent.removeView(questionWebPager.getRootView());
                                     questionWebPager = null;
-                                    curQuestionView=null;
-                                }else if(curQuestionView!=null){
+                                    curQuestionView = null;
+                                } else if (curQuestionView != null) {
                                     rlQuestionContent.removeView(curQuestionView.getRootView());
-                                    curQuestionView=null;
+                                    curQuestionView = null;
                                 }
                             }
                             break;
                         case XESCODE.EXAM_STOP:
                             if (examQuestionPager != null) {
-                                if(curQuestionView==questionWebPager) {
+                                if (curQuestionView == questionWebPager) {
                                     rlQuestionContent.removeView(examQuestionPager.getRootView());
                                     examQuestionPager = null;
-                                    curQuestionView=null;
-                                }else if(curQuestionView!=null){
+                                    curQuestionView = null;
+                                } else if (curQuestionView != null) {
                                     rlQuestionContent.removeView(curQuestionView.getRootView());
-                                    curQuestionView=null;
+                                    curQuestionView = null;
                                 }
                             }
                             break;

@@ -153,6 +153,13 @@ public class VoiceAnswerPager extends BasePager {
         tvVoiceansSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
+                StableLogHashMap logHashMap = new StableLogHashMap("changAnswerType");
+                logHashMap.put("testtype", "" + type);
+                logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
+                logHashMap.put("sourcetype", sourcetype);
+                logHashMap.addExY().addExpect("1").addSno("6").addStable("2");
+                liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
                 switchQuestion();
             }
         });
