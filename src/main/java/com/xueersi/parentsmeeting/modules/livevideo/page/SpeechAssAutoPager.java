@@ -254,6 +254,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         animSpeechEncourage.setInterpolator(new OvershootInterpolator());
 //        tvSpeectevalContent.setText(Html.fromHtml(content));
         tvSpeectevalContent.setText(content);
+        content = content.replace("\n", " ");
         String[] split = content.split(" ");
         if (split.length == 1) {
             spStarResult.setIsWord();
@@ -998,6 +999,9 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             for (int i = 0; i < lstPhonemeScore.size(); i++) {
                 String word = lstPhonemeScore.get(i).getWord();
                 int index = subtemText.indexOf(word);
+                if (index == -1) {
+                    continue;
+                }
                 int left = index + lastSub;
                 int right = left + word.length();
                 subtemText = subtemText.substring(index);
