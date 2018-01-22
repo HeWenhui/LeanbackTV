@@ -531,7 +531,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     if (speechAssessmentPager != null) {
                         mLogtf.d("showQuestion:examSubmitAll:id=" + speechAssessmentPager.getId());
                         speechAssessmentPager.examSubmitAll();
-                        rlQuestionContent.removeView(speechAssessmentPager.getRootView());
+                        if (speechAssessmentPager != null) {
+                            rlQuestionContent.removeView(speechAssessmentPager.getRootView());
+                        }
                     }
                     if (activity instanceof AudioRequest) {
                         AudioRequest audioRequest = (AudioRequest) activity;
