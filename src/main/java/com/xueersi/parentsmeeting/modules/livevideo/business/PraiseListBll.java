@@ -109,12 +109,13 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     @Override
     public void onHonerList(final HonorListEntity honorListEntity) {
         mLogtf.d("onHonerList");
+        closePraiseList();
         rBottomContent.setClickable(true);
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
                 mPraiseList = new PraiseListPager(activity, honorListEntity, mLiveBll,PraiseListBll.this, mVPlayVideoControlHandler);
-                rPraiseListContent.removeAllViews();
+                //rPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rPraiseListContent.addView(mPraiseList.getRootView(), params);
                 activity.getWindow().getDecorView().requestLayout();
@@ -131,12 +132,13 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     @Override
     public void onThumbsUpList(final ThumbsUpListEntity thumbsUpListEntity) {
         mLogtf.d("onThumbsUpList");
+        closePraiseList();
         rBottomContent.setClickable(true);
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
                 mPraiseList = new PraiseListPager(activity, thumbsUpListEntity, mLiveBll,PraiseListBll.this, mVPlayVideoControlHandler);
-                rPraiseListContent.removeAllViews();
+                //rPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rPraiseListContent.addView(mPraiseList.getRootView(), params);
                 activity.getWindow().getDecorView().requestLayout();
@@ -154,12 +156,13 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     @Override
     public void onProgressList(final ProgressListEntity progressListEntity) {
         mLogtf.d("onProgressList");
+        closePraiseList();
         rBottomContent.setClickable(true);
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
                 mPraiseList = new PraiseListPager(activity, progressListEntity, mLiveBll,PraiseListBll.this, mVPlayVideoControlHandler);
-                rPraiseListContent.removeAllViews();
+                //rPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rPraiseListContent.addView(mPraiseList.getRootView(), params);
                 activity.getWindow().getDecorView().requestLayout();
@@ -305,7 +308,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         map.put("sno","3");
         map.put("stable","2");
         map.put("ex","Y");
-        mLiveBll.umsAgentShowWithTeacherRole(LiveVideoConfig.LIVE_PRAISE_LIST,map);
+        mLiveBll.umsAgentDebug2WithTeacherRole(LiveVideoConfig.LIVE_PRAISE_LIST,map);
     }
 
     private void umsAgentDebug3(int listtype, String ex){

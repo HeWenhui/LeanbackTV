@@ -718,6 +718,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         if (videoChatAction != null) {
                             videoChatAction.quit("off", "", "change");
                         }
+                        //模式切换为主讲，关闭表扬榜
+                        if (mPraiseListAction != null && liveTopic.getMode().equals(LiveTopic.MODE_CLASS))
+                            mPraiseListAction.closePraiseList();
                         liveGetPlayServer();
                     }
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
@@ -854,8 +857,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         mLecLearnReportAction.onLearnReport(mLiveId);
                     }
                 }
-                if (mPraiseListAction != null) {
-
+                if (mPraiseListAction != null && liveTopic.getMode().equals(LiveTopic.MODE_TRANING)) {
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getCoachRoomstatus();
                     Loger.e(TAG, "listStatus=" + mainRoomstatus.getListStatus());
                     if (mainRoomstatus.getListStatus() == 1) {
@@ -1029,6 +1031,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             if (videoChatAction != null) {
                                 videoChatAction.quit("off", "", "change");
                             }
+                            //模式切换为主讲，关闭表扬榜
+                            if (mPraiseListAction != null && mode.equals(LiveTopic.MODE_CLASS))
+                                mPraiseListAction.closePraiseList();
                             liveGetPlayServer();
                         }
                     }
@@ -3386,6 +3391,16 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
+    }
+
+    /**
+     * 附带主辅态的交互日志
+     * @param eventId
+     * @param data
+     */
+    public void umsAgentDebug2WithTeacherRole(String eventId,Map<String,String> data){
+        data.put("teacherrole",mGetInfo.getMode());
+        umsAgentDebug2(eventId,data);
     }
 
     /**
