@@ -615,6 +615,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     }
 
     private void getFullMarkList(final int delayTime) {
+        if(mAnswerRankBll==null) {
+            return;
+        }
         if (hasQuestion) {
             hasQuestion = false;
         } else {
