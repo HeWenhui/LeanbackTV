@@ -1771,6 +1771,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         return isPresent;
     }
 
+    public AnswerRankBll getAnswerRankBll() {
+        return mAnswerRankBll;
+    }
+
     /**
      * 请求房间状态成功
      *
@@ -1782,10 +1786,23 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             onLiveFailure("服务器异常", null);
             return;
         }
-        if (mAnswerRankBll != null && mGetInfo.getStudentLiveInfo() != null) {
+        if (mGetInfo.getStudentLiveInfo() != null
+                &&mGetInfo.getIs_show_ranks().equals("1")) {
+            mAnswerRankBll=liveLazyBllCreat.createAnswerRankBll();
+            mAnswerRankBll.setLiveHttpManager(mHttpManager);
+            ((QuestionBll)mQuestionAction).setAnswerRankBll(mAnswerRankBll);
+            ((EnglishH5CoursewareBll)englishH5CoursewareAction).setAnswerRankBll(mAnswerRankBll);
             mAnswerRankBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
             mAnswerRankBll.setTeamId(mGetInfo.getStudentLiveInfo().getTeamId());
             mAnswerRankBll.setIsShow(mGetInfo.getIs_show_ranks());
+        }else{
+            mAnswerRankBll=null;
+            if(mQuestionAction!=null) {
+                ((QuestionBll) mQuestionAction).setAnswerRankBll(null);
+            }
+            if(englishH5CoursewareAction!=null) {
+                ((EnglishH5CoursewareBll) englishH5CoursewareAction).setAnswerRankBll(null);
+            }
         }
         if (mGetInfo.getIsArts() == 1) {
             appID = UmsConstants.ARTS_APP_ID;
@@ -3397,7 +3414,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * @param data
      */
     public void umsAgentShowWithTeacherRole(String eventId,Map<String,String> data){
-        data.put("teacherrole",mGetInfo.getMode());
+        data.put("teacherrole",mGetInfo.getMode().equals("in-class")?"1":"4");
         umsAgentDebug3(eventId,data);
     }
 

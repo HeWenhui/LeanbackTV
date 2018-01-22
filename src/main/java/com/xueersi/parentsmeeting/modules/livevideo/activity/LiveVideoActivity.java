@@ -301,8 +301,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         if (englishH5CoursewareBll != null) {
                             englishH5CoursewareBll.setVideoLayout(lp.width, lp.height);
                         }
-                        if (answerRankBll != null) {
-                            answerRankBll.setVideoLayout(lp.width, lp.height);
+                        if(mLiveBll!=null&&mLiveBll.getAnswerRankBll()!=null){
+                            mLiveBll.getAnswerRankBll().setVideoLayout(lp.width, lp.height);
                         }
                         if (speechFeedBackAction != null) {
                             speechFeedBackAction.setVideoLayout(lp.width, lp.height);
@@ -314,11 +314,11 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 });
             }
         }, 10);
-        answerRankBll = new AnswerRankBll(mContext, bottomContent,mLiveBll);
+        /*answerRankBll = new AnswerRankBll(mContext, bottomContent,mLiveBll);
         mLiveBll.setAnswerRankBll(answerRankBll);
         questionBll.setAnswerRankBll(answerRankBll);
         englishH5CoursewareBll.setAnswerRankBll(answerRankBll);
-        /*final ArrayList<FullMarkListEntity> lst=new ArrayList<>();
+        final ArrayList<FullMarkListEntity> lst=new ArrayList<>();
         for(int i=0;i<16;i++){
             FullMarkListEntity entity=new FullMarkListEntity();
             entity.setAnswer_time(""+(60+i));
