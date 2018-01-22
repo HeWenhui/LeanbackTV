@@ -684,7 +684,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 params.width = wradio;
 //                rlInfo.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-                params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
+            }
+            params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
+            if (params.rightMargin != wradio) {
                 params.rightMargin = wradio;
 //                cbMessageClock.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
