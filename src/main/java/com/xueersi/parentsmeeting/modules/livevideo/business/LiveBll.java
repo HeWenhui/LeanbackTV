@@ -1786,8 +1786,12 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 && mGetInfo.getIs_show_ranks().equals("1")) {
             mAnswerRankBll = liveLazyBllCreat.createAnswerRankBll();
             mAnswerRankBll.setLiveHttpManager(mHttpManager);
-            ((QuestionBll) mQuestionAction).setAnswerRankBll(mAnswerRankBll);
-            ((EnglishH5CoursewareBll) englishH5CoursewareAction).setAnswerRankBll(mAnswerRankBll);
+            if(mQuestionAction instanceof QuestionBll) {
+                ((QuestionBll) mQuestionAction).setAnswerRankBll(mAnswerRankBll);
+            }
+            if(englishH5CoursewareAction instanceof EnglishH5CoursewareBll) {
+                ((EnglishH5CoursewareBll) englishH5CoursewareAction).setAnswerRankBll(mAnswerRankBll);
+            }
             mAnswerRankBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
             mAnswerRankBll.setTeamId(mGetInfo.getStudentLiveInfo().getTeamId());
             mAnswerRankBll.setIsShow(mGetInfo.getIs_show_ranks());
