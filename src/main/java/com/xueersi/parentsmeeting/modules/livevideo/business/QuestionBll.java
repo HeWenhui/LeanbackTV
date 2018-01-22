@@ -417,10 +417,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 .getvQuestionID())) {
                             return;
                         }
-                        if (mAnswerRankBll != null) {
-                            mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
-                            mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
-                        }
+                        mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
+                        mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                         hasQuestion = true;
                     }
                 });
@@ -1203,7 +1201,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
             });
         }
-        VoiceAnswerLog.sno2H5test(mLiveBll, videoQuestionLiveEntity.type, videoQuestionLiveEntity.id, videoQuestionLiveEntity.nonce);
+        StableLogHashMap logHashMap = new StableLogHashMap("showAnswerDialog");
+        logHashMap.put("testtype", "" + videoQuestionLiveEntity.type);
+        logHashMap.put("testid", "" + videoQuestionLiveEntity.id);
+        logHashMap.put("sourcetype", "h5test");
+        logHashMap.put("answertype", "voice");
+        logHashMap.addExY().addSno("2").addNonce("" + videoQuestionLiveEntity.nonce);
+        logHashMap.addStable("1");
+        umsAgentDebug3(voicequestionEventId, logHashMap.getData());
     }
 
     QuestionSwitch questionSwitch = new QuestionSwitch() {
@@ -1664,25 +1669,19 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
                 //showFullMarkList(type, new ArrayList<FullMarkListEntity>(), delayTime);
-                if (mAnswerRankBll != null) {
-                    mAnswerRankBll.hideRankList();
-                }
+                mAnswerRankBll.hideRankList();
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                if (mAnswerRankBll != null) {
-                    mAnswerRankBll.hideRankList();
-                }
+                showFullMarkList(type, new ArrayList<FullMarkListEntity>(), delayTime);
             }
         };
-        if (mAnswerRankBll != null) {
-            if (type == XESCODE.STOPQUESTION) {
-                mAnswerRankBll.getFullMarkListQuestion(callBack);
-            } else if (type == XESCODE.EXAM_STOP) {
-                mAnswerRankBll.getFullMarkListTest(callBack);
-            }
+        if (type == XESCODE.STOPQUESTION) {
+            mAnswerRankBll.getFullMarkListQuestion(callBack);
+        } else if (type == XESCODE.EXAM_STOP) {
+            mAnswerRankBll.getFullMarkListTest(callBack);
         }
     }
 
