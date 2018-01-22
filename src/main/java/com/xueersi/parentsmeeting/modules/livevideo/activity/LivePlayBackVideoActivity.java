@@ -60,6 +60,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.RedPacketAlertDialog;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
@@ -199,6 +200,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     boolean islocal;
     static int times = -1;
     long createTime;
+    String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
 
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
@@ -1076,6 +1078,19 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 ViewGroup.LayoutParams.MATCH_PARENT);
         rlQuestionContent.addView(voiceAnswerPager.getRootView(), params);
         voiceAnswerPager.setAudioRequest();
+        StableLogHashMap logHashMap = new StableLogHashMap("showAnswerDialog");
+        logHashMap.put("testid", "" + videoQuestionLiveEntity.getvQuestionID());
+        if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == mQuestionEntity.getvCategory()) {
+            logHashMap.put("sourcetype", "h5ware");
+            logHashMap.put("testtype", "" + videoQuestionLiveEntity.getVoiceQuestiontype());
+        } else {
+            logHashMap.put("sourcetype", "h5test");
+            logHashMap.put("testtype", "" + videoQuestionLiveEntity.getvQuestionType());
+        }
+        logHashMap.put("answertype", "voice");
+        logHashMap.addExY().addSno("2");
+        logHashMap.addStable("1");
+        umsAgentDebug3(voicequestionEventId, logHashMap.getData());
     }
 
     QuestionSwitch questionSwitch = new QuestionSwitch() {
@@ -2181,16 +2196,24 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (entity.getResultType() == VideoResultEntity.QUE_RES_TYPE1 || entity.getResultType() == VideoResultEntity.QUE_RES_TYPE4) {
             if (isVoice) {
                 String type;
+                String sourcetype;
                 if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == questionEntity.getvCategory()) {
                     type = questionEntity.getVoiceQuestiontype();
+                    sourcetype = "h5ware";
                 } else {
                     type = questionEntity.getvQuestionType();
+                    sourcetype = "h5test";
                 }
                 if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
                     initSelectAnswerRightResultVoice(entity);
                 } else {
                     initFillinAnswerRightResultVoice(entity);
                 }
+                StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
+                logHashMap.put("testid", "" + questionEntity.getvQuestionID());
+                logHashMap.put("sourcetype", sourcetype);
+                logHashMap.addExY().addExpect("0").addSno("5").addStable("1");
+                umsAgentDebug3(voicequestionEventId, logHashMap.getData());
             } else {
                 initAnswerRightResult(entity.getGoldNum());
             }

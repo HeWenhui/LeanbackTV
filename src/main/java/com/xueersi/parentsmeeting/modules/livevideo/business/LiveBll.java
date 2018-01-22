@@ -966,7 +966,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         if (mQuestionAction != null) {
                             mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
                         }
-                        if(mAnswerRankBll!=null){
+                        if (mAnswerRankBll != null) {
                             mAnswerRankBll.setNonce(object.optString("nonce"));
                         }
 
@@ -1154,7 +1154,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         if (mQuestionAction != null) {
                             mQuestionAction.onExamStop();
                         }
-                        if(mAnswerRankBll!=null){
+                        if (mAnswerRankBll != null) {
                             mAnswerRankBll.setNonce(object.optString("nonce"));
                         }
                     }
@@ -1201,8 +1201,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                     mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                                     mAnswerRankBll.setType(videoQuestionLiveEntity.courseware_type);
                                 }
-                            }else{
-                                if(mAnswerRankBll!=null){
+                            } else {
+                                if (mAnswerRankBll != null) {
                                     mAnswerRankBll.setNonce(object.optString("nonce"));
                                 }
                             }
@@ -1490,7 +1490,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         String nonce = object.optString("nonce");
                         if ("on".equals(open)) {
                             if (mPraiseListAction != null) {
-                                mPraiseListAction.onReceivePraiseList(zanType,nonce);
+                                mPraiseListAction.onReceivePraiseList(zanType, nonce);
                             }
                             switch (zanType) {
                                 case PraiseListPager.PRAISE_LIST_TYPE_HONOR:
@@ -1787,22 +1787,14 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             return;
         }
         if (mGetInfo.getStudentLiveInfo() != null
-                &&mGetInfo.getIs_show_ranks().equals("1")) {
-            mAnswerRankBll=liveLazyBllCreat.createAnswerRankBll();
+                && mGetInfo.getIs_show_ranks().equals("1")) {
+            mAnswerRankBll = liveLazyBllCreat.createAnswerRankBll();
             mAnswerRankBll.setLiveHttpManager(mHttpManager);
-            ((QuestionBll)mQuestionAction).setAnswerRankBll(mAnswerRankBll);
-            ((EnglishH5CoursewareBll)englishH5CoursewareAction).setAnswerRankBll(mAnswerRankBll);
+            ((QuestionBll) mQuestionAction).setAnswerRankBll(mAnswerRankBll);
+            ((EnglishH5CoursewareBll) englishH5CoursewareAction).setAnswerRankBll(mAnswerRankBll);
             mAnswerRankBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
             mAnswerRankBll.setTeamId(mGetInfo.getStudentLiveInfo().getTeamId());
             mAnswerRankBll.setIsShow(mGetInfo.getIs_show_ranks());
-        }else{
-            mAnswerRankBll=null;
-            if(mQuestionAction!=null) {
-                ((QuestionBll) mQuestionAction).setAnswerRankBll(null);
-            }
-            if(englishH5CoursewareAction!=null) {
-                ((EnglishH5CoursewareBll) englishH5CoursewareAction).setAnswerRankBll(null);
-            }
         }
         if (mGetInfo.getIsArts() == 1) {
             appID = UmsConstants.ARTS_APP_ID;
@@ -3400,22 +3392,24 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
     /**
      * 附带主辅态的交互日志
+     *
      * @param eventId
      * @param data
      */
-    public void umsAgentDebug2WithTeacherRole(String eventId,Map<String,String> data){
-        data.put("teacherrole",mGetInfo.getMode());
-        umsAgentDebug2(eventId,data);
+    public void umsAgentDebug2WithTeacherRole(String eventId, Map<String, String> data) {
+        data.put("teacherrole", getMode());
+        umsAgentDebug2(eventId, data);
     }
 
     /**
      * 附带主辅态的展现日志
+     *
      * @param eventId
      * @param data
      */
-    public void umsAgentShowWithTeacherRole(String eventId,Map<String,String> data){
-        data.put("teacherrole",mGetInfo.getMode().equals("in-class")?"1":"4");
-        umsAgentDebug3(eventId,data);
+    public void umsAgentShowWithTeacherRole(String eventId, Map<String, String> data) {
+        data.put("teacherrole", getMode().equals(LiveTopic.MODE_CLASS) ? "1" : "4");
+        umsAgentDebug3(eventId, data);
     }
 
     /**
@@ -3449,7 +3443,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                if (status == 0){
+                if (status == 0) {
                     VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, true,
                             VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                     vcDialog.initInfo("当前网络不佳，请刷新获取榜单！");
@@ -3460,8 +3454,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             getHonorList(0);
                         }
                     });
-                }
-                else if(status == 1 && mPraiseListAction!=null){
+                } else if (status == 1 && mPraiseListAction != null) {
                     mPraiseListAction.setThumbsUpBtnEnabled(true);
                 }
                 mLogtf.d("getHonorList:onPmFailure=" + error + ",msg=" + msg);
@@ -3470,7 +3463,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 showToast("" + responseEntity.getErrorMsg());
-                if(status == 1 && mPraiseListAction!=null){
+                if (status == 1 && mPraiseListAction != null) {
                     mPraiseListAction.setThumbsUpBtnEnabled(true);
                 }
                 mLogtf.d("getHonorList:onPmError=" + responseEntity.getErrorMsg());
@@ -3565,8 +3558,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             getProgressList(0);
                         }
                     });
-                }
-                else if(status == 1 && mPraiseListAction!=null){
+                } else if (status == 1 && mPraiseListAction != null) {
                     mPraiseListAction.setThumbsUpBtnEnabled(true);
                 }
                 mLogtf.d("getProgressList:onPmFailure=" + error + ",msg=" + msg);
@@ -3575,7 +3567,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 showToast("" + responseEntity.getErrorMsg());
-                if(status == 1 && mPraiseListAction!=null){
+                if (status == 1 && mPraiseListAction != null) {
                     mPraiseListAction.setThumbsUpBtnEnabled(true);
                 }
                 mLogtf.d("getProgressList:onPmError=" + responseEntity.getErrorMsg());
