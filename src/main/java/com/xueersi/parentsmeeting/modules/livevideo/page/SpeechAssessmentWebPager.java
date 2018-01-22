@@ -526,10 +526,10 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
         }
         boolean isEnglish = !mSpeechType.equals(SPEECH_FOLLOW);
         if (isEnglish) {
-            if (speechEvaluatorInter instanceof TalSpeech) {
-                //强制2秒内必须回结果
-                mHandler.sendEmptyMessageDelayed(RECORD_WITE, 2000);
-            }
+            //if (speechEvaluatorInter instanceof TalSpeech) {
+            //强制2秒内必须回结果
+            mHandler.sendEmptyMessageDelayed(RECORD_WITE, speechEvaluatorInter instanceof TalSpeech ? 2000 : 100);
+            //}
         } else {
             //强制2秒内必须回结果
             mHandler.sendEmptyMessageDelayed(RECORD_WITE, 2000);
@@ -542,7 +542,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
             super.handleMessage(msg);
             if (msg.what == RECORD_WITE) {
                 Loger.d(TAG, "handleMessage:jsStartAnotherReading");
-                if (!mIsFinishCurrentSpeech && mIsStopCommand) {
+                if (!mIsFinishCurrentSpeech) {
                     mIsFinishCurrentSpeech = true;
                     if (mSpeechType.equals(SPEECH_ROLEPLAY)) {
                         jsStartAnotherReading();
