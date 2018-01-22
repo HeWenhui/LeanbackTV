@@ -18,10 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
-import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
@@ -35,12 +32,9 @@ import com.xueersi.xesalib.adapter.ViewHolder;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import okhttp3.Call;
 
 /**
  * Created by Tang on 2018/1/3.
@@ -55,7 +49,6 @@ public class AnswerRankBll {
     private List<RankUserEntity> mLst;
     private int displayWidth, displayHeight, videoWidth;
     private View rlFullMarkList;
-    private HttpCallBack fullMarkListCallBack;
     private LiveHttpManager mLiveHttpManager;
     private String classId;
     private String teamId;
@@ -122,33 +115,6 @@ public class AnswerRankBll {
         this.bottomContent = bottomContent;
         mLst = new ArrayList<>();
         setVideoLayout(ScreenUtils.getScreenWidth(), ScreenUtils.getScreenHeight());
-        fullMarkListCallBack=new HttpCallBack() {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                List<FullMarkListEntity> lst=null;
-                try {
-                    JSONObject jsonObject=(JSONObject) responseEntity.getJsonObject();
-                    JSONObject data=JSON.parseObject(jsonObject.getString("ranks"));
-                    lst = JSON.parseArray(data.getString("ranks"), FullMarkListEntity.class);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                if(lst==null){
-                    lst=new ArrayList<>();
-                }
-                showFullMarkList(lst);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                super.onPmError(responseEntity);
-            }
-
-            @Override
-            public void onFailure(Call call, IOException e) {
-                super.onFailure(call, e);
-            }
-        };
     }
 
     /**
@@ -300,7 +266,7 @@ public class AnswerRankBll {
      * 显示满分榜视图
      * @param lst
      */
-    public void showFullMarkList(List<FullMarkListEntity> lst) {
+    public void showFullMarkList(List<FullMarkListEntity> lst,int type) {
         if(rlFullMarkList!=null){
             return;
         }
@@ -364,7 +330,7 @@ public class AnswerRankBll {
         }
 
         bottomContent.addView(rlFullMarkList);
-        umsAgentbll();
+        umsAgentbll(type);
         if(tvStatus!=null){
             tvStatus.setText("答题结束");
         }
@@ -541,14 +507,29 @@ public class AnswerRankBll {
             mSoundPool.play(1, 1, 1, 10, 0, 1);
         }
     }
-    private void umsAgentbll(){
+    private void umsAgentbll(int type){
         HashMap<String,String> map=new HashMap<>();
         map.put("logtype","showMedalsPodium");
         map.put("testid",testId);
-        map.put("sno",7+"");
+        map.put("sno","6");
         map.put("nonce",nonce);
         map.put("ex","Y");
         map.put("stable","1");
-        mLiveBll.umsAgentShowWithTeacherRole("live_medal_podium",map);
+        String eventId;
+        switch (type){
+            case XESCODE.STOPQUESTION:
+                eventId="live_h5test";
+                break;
+            case XESCODE.EXAM_STOP:
+                eventId="live_exam";
+                break;
+            case XESCODE.ENGLISH_H5_COURSEWARE:
+                eventId="live_h5waretest";
+                break;
+            default:
+                eventId="";
+                break;
+        }
+        mLiveBll.umsAgentShowWithTeacherRole(eventId,map);
     }
 }
