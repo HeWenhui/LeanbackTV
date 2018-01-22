@@ -307,7 +307,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     /** 加载旋转屏时相关布局 */
     @Override
     protected void loadLandOrPortView() {
-        mPortVideoHeight = VideoBll.getVideoDefaultHeight(this);
         super.loadLandOrPortView();
     }
 
@@ -397,13 +396,44 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     return false;
                 }
             });
-//            if (AppConfig.DEBUG) {
-//                List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
-//                VideoQuestionEntity videoQuestionEntity = new VideoQuestionEntity();
-//                videoQuestionEntity.setvCategory(LocalCourseConfig.CATEGORY_LEC_ADVERT);
-//                videoQuestionEntity.setvQuestionInsretTime(600);
-//                videoQuestionEntity.setvEndTime(1600);
-//                lstVideoQuestion.add(videoQuestionEntity);
+//            List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
+//            final ArrayList<VideoQuestionEntity> lstH5VideoQuestion = new ArrayList<>();
+//            String ids = "";
+//            for (int i = 0; i < lstVideoQuestion.size(); i++) {
+//                final VideoQuestionEntity videoQuestionEntity = lstVideoQuestion.get(i);
+//                if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == videoQuestionEntity.getvCategory()) {
+//                    lstH5VideoQuestion.add(videoQuestionEntity);
+//                    ids += videoQuestionEntity.getvQuestionID() + ",";
+//                }
+//            }
+//            if (!lstH5VideoQuestion.isEmpty()) {
+//                lectureLivePlayBackBll.getVoiceWareTestInfo(mVideoEntity.getLiveId(), ids, new AbstractBusinessDataCallBack() {
+//                    @Override
+//                    public void onDataSucess(Object... objData) {
+//                        JSONObject jsonObject = (JSONObject) objData[0];
+//                        try {
+//                            JSONArray infoArray = jsonObject.getJSONArray("info");
+//                            for (int i = 0; i < infoArray.length(); i++) {
+//                                JSONObject queObj = infoArray.getJSONObject(i);
+//                                for (int j = 0; j < lstH5VideoQuestion.size(); j++) {
+//                                    VideoQuestionEntity videoQuestionEntity = lstH5VideoQuestion.get(j);
+//                                    if (queObj.optString("id").equals(videoQuestionEntity.getvQuestionID())) {
+//                                        String isVoice = queObj.optString("isVoice", "0");
+//                                        if ("1".equals(isVoice)) {
+//                                            videoQuestionEntity.setIsVoice(isVoice);
+//                                            videoQuestionEntity.setVoiceQuestiontype(queObj.optString("type"));
+//                                            videoQuestionEntity.setAssess_ref(queObj.optString("assess_ref"));
+//                                        }
+//                                        lstH5VideoQuestion.remove(i);
+//                                        break;
+//                                    }
+//                                }
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                });
 //            }
             //测试红包自动关闭
 //            rlFirstBackgroundView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener
@@ -2427,11 +2457,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
         UmsAgentManager.umsAgentOtherBusiness(this, appID, UmsConstants.uploadShow, mData);
-    }
-
-    @Override
-    public void setAutoOrientation(boolean isAutoOrientation) {
-        super.setAutoOrientation(isAutoOrientation);
     }
 
     class LivePlayBackAlertDialog extends VerifyCancelAlertDialog {

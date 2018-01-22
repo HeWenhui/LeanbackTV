@@ -1483,7 +1483,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         msg += ",XCR_ROOM_AGREE_OPEN";
                         String open = object.optString("open");
                         int zanType = object.optInt("zanType");
+                        String nonce = object.optString("nonce");
                         if ("on".equals(open)) {
+                            if (mPraiseListAction != null) {
+                                mPraiseListAction.onReceivePraiseList(zanType,nonce);
+                            }
                             switch (zanType) {
                                 case PraiseListPager.PRAISE_LIST_TYPE_HONOR:
                                     getHonorList(0);
@@ -3398,7 +3402,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * @param data
      */
     public void umsAgentShowWithTeacherRole(String eventId,Map<String,String> data){
-        data.put("teacherrole",mGetInfo.getMode());
+        data.put("teacherrole",mGetInfo.getMode().equals("in-class")?"1":"4");
         umsAgentDebug3(eventId,data);
     }
 
