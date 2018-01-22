@@ -656,7 +656,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        mAnswerRankBll.showFullMarkList(lst);
+                        mAnswerRankBll.showFullMarkList(lst,XESCODE.ENGLISH_H5_COURSEWARE);
                     }
                 }, delayTime);
             }
