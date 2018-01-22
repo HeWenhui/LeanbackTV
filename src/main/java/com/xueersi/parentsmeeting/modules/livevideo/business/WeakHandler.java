@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 
 import java.lang.ref.WeakReference;
@@ -14,6 +15,11 @@ public class WeakHandler extends Handler {
 
     public WeakHandler(Handler.Callback callback) {
         reference = new WeakReference<Callback>(callback);
+    }
+
+    public WeakHandler(Looper looper, Callback callback) {
+        super(looper, callback);
+        this.reference = new WeakReference<Callback>(callback);
     }
 
     @Override

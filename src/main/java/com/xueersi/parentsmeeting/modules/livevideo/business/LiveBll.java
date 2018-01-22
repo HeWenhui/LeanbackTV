@@ -754,6 +754,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             englishSpeekAction.onDBStop();
                         }
                     }
+                    LiveTopic.RoomStatusEntity coachRoomstatus = liveTopic.getCoachRoomstatus();
                     if (mVideoAction != null) {
                         if (LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode())) {
                             if (mGetInfo.getStudentLiveInfo().isExpe()) {
@@ -767,12 +768,26 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             voiceChatStatus = mainRoomstatus.getOpenhands();
                             videoChatAction.onJoin(mainRoomstatus.getOnmic(), mainRoomstatus.getOpenhands(), mainRoomstatus.getRoom(), mainRoomstatus.isClassmateChange(), mainRoomstatus.getClassmateEntities(), "t");
                         } else {
-                            LiveTopic.RoomStatusEntity coachRoomstatus = liveTopic.getCoachRoomstatus();
+                            coachRoomstatus = liveTopic.getCoachRoomstatus();
                             voiceChatStatus = coachRoomstatus.getOpenhands();
                             videoChatAction.onJoin(coachRoomstatus.getOnmic(), coachRoomstatus.getOpenhands(), coachRoomstatus.getRoom(), coachRoomstatus.isClassmateChange(), coachRoomstatus.getClassmateEntities(), "f");
                         }
                         if (mRoomAction != null && !oldVoiceChatStatus.equals(voiceChatStatus)) {
                             mRoomAction.videoStatus(voiceChatStatus);
+                        }
+                    }
+                    if(coachRoomstatus.getListStatus() != 0 && LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode())) {
+                        if (mPraiseListAction == null && liveLazyBllCreat != null) {
+                            liveLazyBllCreat.createPraiseListAction();
+                        }
+                        if (mPraiseListAction != null  ) {
+                            if (coachRoomstatus.getListStatus() == PraiseListPager.PRAISE_LIST_TYPE_HONOR) {
+                                getHonorList(0);
+                            } else if (coachRoomstatus.getListStatus() == PraiseListPager.PRAISE_LIST_TYPE_PROGRESS) {
+                                getProgressList(0);
+                            } else if (coachRoomstatus.getListStatus() == PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP) {
+                                getThumbsUpList();
+                            }
                         }
                     }
                 }
@@ -857,17 +872,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         mLecLearnReportAction.onLearnReport(mLiveId);
                     }
                 }
-                if (mPraiseListAction != null && liveTopic.getMode().equals(LiveTopic.MODE_TRANING)) {
-                    LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getCoachRoomstatus();
-                    Loger.e(TAG, "listStatus=" + mainRoomstatus.getListStatus());
-                    if (mainRoomstatus.getListStatus() == 1) {
-                        getHonorList(0);
-                    } else if (mainRoomstatus.getListStatus() == 2) {
-                        getProgressList(0);
-                    } else if (mainRoomstatus.getListStatus() == 3) {
-                        getThumbsUpList();
-                    }
-                }
                 if (speechFeedBackAction != null) {
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
                     String status = mainRoomstatus.getOnVideoChat();
@@ -882,6 +886,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 mLogtf.e("onTopic", e);
                 MobAgent.httpResponseParserError(TAG, "onTopic", e.getMessage());
             }
+
         }
 
         String lastNotice = "";
@@ -1480,58 +1485,65 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         break;
                     case XESCODE.XCR_ROOM_AGREE_OPEN: {
                         msg += ",XCR_ROOM_AGREE_OPEN";
-                        String open = object.optString("open");
-                        int zanType = object.optInt("zanType");
-                        String nonce = object.optString("nonce");
-                        if ("on".equals(open)) {
-                            if (mPraiseListAction != null) {
+                        if (mPraiseListAction == null && liveLazyBllCreat != null) {
+                            liveLazyBllCreat.createPraiseListAction();
+                        }
+                        if (mPraiseListAction != null){
+                            String open = object.optString("open");
+                            int zanType = object.optInt("zanType");
+                            String nonce = object.optString("nonce");
+                            if ("on".equals(open)) {
                                 mPraiseListAction.onReceivePraiseList(zanType, nonce);
-                            }
-                            switch (zanType) {
-                                case PraiseListPager.PRAISE_LIST_TYPE_HONOR:
-                                    getHonorList(0);
-                                    break;
-                                case PraiseListPager.PRAISE_LIST_TYPE_PROGRESS:
-                                    getProgressList(0);
-                                    break;
-                                case PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP:
-                                    getThumbsUpList();
-                                    break;
-                                default:
-                                    break;
-                            }
-                        } else if ("off".equals(open)) {
-                            if (mPraiseListAction != null) {
-                                mPraiseListAction.closePraiseList();
+                                switch (zanType) {
+                                    case PraiseListPager.PRAISE_LIST_TYPE_HONOR:
+                                        getHonorList(0);
+                                        break;
+                                    case PraiseListPager.PRAISE_LIST_TYPE_PROGRESS:
+                                        getProgressList(0);
+                                        break;
+                                    case PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP:
+                                        getThumbsUpList();
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            } else if ("off".equals(open)) {
+                                if (mPraiseListAction != null) {
+                                    mPraiseListAction.closePraiseList();
+                                }
                             }
                         }
                         break;
                     }
                     case XESCODE.XCR_ROOM_AGREE_SEND_T: {
                         msg += ",XCR_ROOM_AGREE_SEND_T";
-                        if (mPraiseListAction != null && mPraiseListAction.getThumbsUpProbability() == 0) {
-                            getThumbsUpProbability();
+                        if (mPraiseListAction == null && liveLazyBllCreat != null) {
+                            liveLazyBllCreat.createPraiseListAction();
                         }
-                        JSONArray agreeForms = object.optJSONArray("agreeFroms");
-                        boolean isTeacher = object.optBoolean("isTeacher");
-                        Log.i(TAG, "agreeForms=" + agreeForms.toString());
-                        Log.i(TAG, "isTeacher=" + isTeacher);
-                        if (isTeacher) {
-                            if (mPraiseListAction != null && agreeForms.length() != 0) {
-                                mPraiseListAction.showPraiseScroll(mGetInfo.getStuName(), agreeForms.getString(0));
+                        if (mPraiseListAction != null){
+                            if (mPraiseListAction.getThumbsUpProbability() == 0) {
+                                getThumbsUpProbability();
                             }
-                        } else {
-                            ArrayList<String> list = new ArrayList<>();
-                            for (int i = 0; i < agreeForms.length(); i++) {
-                                String stuName = agreeForms.getString(i);
-                                Log.i(TAG, "stuName=" + stuName);
-                                list.add(stuName);
-                            }
-                            if (mPraiseListAction != null && list.size() != 0) {
-                                mPraiseListAction.receiveThumbsUpNotice(list);
+                            JSONArray agreeForms = object.optJSONArray("agreeFroms");
+                            boolean isTeacher = object.optBoolean("isTeacher");
+                            Log.i(TAG, "agreeForms=" + agreeForms.toString());
+                            Log.i(TAG, "isTeacher=" + isTeacher);
+                            if (isTeacher) {
+                                if (mPraiseListAction != null && agreeForms.length() != 0) {
+                                    mPraiseListAction.showPraiseScroll(mGetInfo.getStuName(), agreeForms.getString(0));
+                                }
+                            } else {
+                                ArrayList<String> list = new ArrayList<>();
+                                for (int i = 0; i < agreeForms.length(); i++) {
+                                    String stuName = agreeForms.getString(i);
+                                    Log.i(TAG, "stuName=" + stuName);
+                                    list.add(stuName);
+                                }
+                                if (mPraiseListAction != null && list.size() != 0) {
+                                    mPraiseListAction.receiveThumbsUpNotice(list);
+                                }
                             }
                         }
-
                         break;
                     }
                 }
@@ -1770,6 +1782,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         return mAnswerRankBll;
     }
 
+    public PraiseListAction getPraiseListAction() {
+        return mPraiseListAction;
+    }
+
     /**
      * 请求房间状态成功
      *
@@ -1777,6 +1793,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      */
     private void onGetInfoSuccess(JSONObject object) {
         mGetInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, mLiveType, form);
+        //liveLazyBllCreat.createPraiseListAction();
+        //getProgressList(0);
         if (mGetInfo == null) {
             onLiveFailure("服务器异常", null);
             return;
@@ -2245,6 +2263,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mLearnReportAction = null;
         h5CoursewareAction = null;
         englishH5CoursewareAction = null;
+        videoChatAction = null;
+        mPraiseListAction = null;
         if (mCataDataCancle != null) {
             mCataDataCancle.cancel();
             mCataDataCancle = null;
@@ -2257,8 +2277,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             mIRCMessage.setCallback(null);
             mIRCMessage.destory();
         }
-        videoChatAction = null;
-        mPraiseListAction = null;
+        if (mPraiseListAction != null) {
+            mPraiseListAction.destory();
+        }
     }
 
     private void onLiveFailure(String msg, Runnable runnable) {
@@ -3390,13 +3411,24 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     }
 
     /**
+     * 附带主辅态的系统日志
+     *
+     * @param eventId
+     * @param data
+     */
+    public void umsAgentSystemWithTeacherRole(String eventId,Map<String,String> data){
+        data.put("teacherrole",getMode().equals(LiveTopic.MODE_CLASS) ? "1" : "4");
+        umsAgentDebug(eventId, data);
+    }
+
+    /**
      * 附带主辅态的交互日志
      *
      * @param eventId
      * @param data
      */
-    public void umsAgentDebug2WithTeacherRole(String eventId, Map<String, String> data) {
-        data.put("teacherrole", getMode());
+    public void umsAgentInteractionWithTeacherRole(String eventId,Map<String,String> data) {
+        data.put("teacherrole", getMode().equals(LiveTopic.MODE_CLASS) ? "1" : "4");
         umsAgentDebug2(eventId, data);
     }
 
@@ -3433,6 +3465,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     } else if (status == 1) {
                         if (honorListEntity.getPraiseStatus() == 1)
                             mPraiseListAction.showThumbsUpToast();
+                        else
+                            mPraiseListAction.setThumbsUpBtnEnabled(true);
                     }
 
                 }
@@ -3537,6 +3571,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     } else if (status == 1) {
                         if (progressListEntity.getPraiseStatus() == 1)
                             mPraiseListAction.showThumbsUpToast();
+                        else
+                            mPraiseListAction.setThumbsUpBtnEnabled(true);
                     }
 
                 }
@@ -3629,7 +3665,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 学生计算赞数后私发老师
      */
     public void sendThumbsUpNum(int agreeNum) {
-        mLogtf.i("sendThumbsUp");
+        mLogtf.i("sendThumbsUpNum:agreeNum="+agreeNum);
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "" + XESCODE.XCR_ROOM_AGREE_NUM_S);
