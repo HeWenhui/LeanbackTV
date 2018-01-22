@@ -44,7 +44,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLazyBllCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideo.business.PraiseListBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
@@ -116,6 +115,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     /** 老师不在直播间 */
     private ImageView ivTeacherNotpresent;
     RelativeLayout bottomContent;
+    RelativeLayout praiselistContent;
     /** 缓冲提示 */
     private TextView tvLoadingHint;
     private LiveGetInfo mGetInfo;
@@ -165,7 +165,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     SpeechEvaluatorUtils mIse;
     RankBll rankBll;
     EnglishH5CacheAction englishH5Cache;
-    PraiseListBll praiseListBll;
     /** 视频宽度 */
     public static final float VIDEO_WIDTH = 1280f;
     /** 视频高度 */
@@ -230,6 +229,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
         bottomContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
+        praiselistContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_praiselist_content);
+        praiselistContent.setVisibility(View.VISIBLE);
         tvLoadingHint = (TextView) findViewById(R.id.tv_course_video_loading_content);
         // 预加载布局中退出事件
         findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
@@ -237,6 +238,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         //聊天
         long before = System.currentTimeMillis();
         liveLazyBllCreat.setBottomContent(bottomContent);
+        liveLazyBllCreat.setPraiselistContent(praiselistContent);
         liveMessageBll.initViewLive(bottomContent);
         Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
@@ -261,7 +263,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         learnReportBll.initView(bottomContent);
         h5CoursewareBll.initView(bottomContent);
         englishH5CoursewareBll.initView(bottomContent);
-        praiseListBll.initView(bottomContent);
 
         setFirstParam(lp);
         liveMessageBll.setVideoLayout(lp.width, lp.height);
@@ -301,14 +302,14 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         if (englishH5CoursewareBll != null) {
                             englishH5CoursewareBll.setVideoLayout(lp.width, lp.height);
                         }
-                        if(mLiveBll!=null&&mLiveBll.getAnswerRankBll()!=null){
+                        if (mLiveBll!=null&&mLiveBll.getAnswerRankBll()!=null){
                             mLiveBll.getAnswerRankBll().setVideoLayout(lp.width, lp.height);
                         }
                         if (speechFeedBackAction != null) {
                             speechFeedBackAction.setVideoLayout(lp.width, lp.height);
                         }
-                        if (praiseListBll != null) {
-                            praiseListBll.setVideoLayout(lp.width, lp.height);
+                        if (mLiveBll != null && mLiveBll.getPraiseListAction() != null){
+                            mLiveBll.getPraiseListAction().setVideoLayout(lp.width, lp.height);
                         }
                     }
                 });
@@ -374,7 +375,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         h5CoursewareBll = new H5CoursewareBll(this);
         englishH5CoursewareBll = new EnglishH5CoursewareBll(this);
         questionBll.setShareDataManager(mShareDataManager);
-        praiseListBll = new PraiseListBll(this);
 
         LogToFile.liveBll = mLiveBll;
         mPlayStatistics = mLiveBll.getVideoListener();
@@ -387,7 +387,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         mLiveBll.setH5CoursewareAction(h5CoursewareBll);
         mLiveBll.setEnglishH5CoursewareAction(englishH5CoursewareBll);
         mLiveBll.setVideoChatAction(videoChatBll);
-        mLiveBll.setPraiseListAction(praiseListBll);
         videoChatBll.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
         mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
         setMediaControllerBottomParam(videoView.getLayoutParams());
@@ -406,7 +405,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         englishH5CoursewareBll.setVSectionID(mVSectionID);
         englishH5CoursewareBll.setLiveBll(mLiveBll);
         englishH5CoursewareBll.initData();
-        praiseListBll.setLiveBll(mLiveBll);
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
             rankBll = new RankBll(this);
             rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
@@ -1390,9 +1388,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         }
         if (speechFeedBackAction != null) {
             speechFeedBackAction.stop();
-        }
-        if (praiseListBll != null) {
-            praiseListBll.destory();
         }
         super.onDestroy();
     }

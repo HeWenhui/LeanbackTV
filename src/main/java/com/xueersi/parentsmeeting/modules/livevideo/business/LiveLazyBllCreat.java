@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.util.Log;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
@@ -12,10 +13,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 public class LiveLazyBllCreat {
     LiveVideoActivity liveVideoActivity;
     RelativeLayout bottomContent;
+    RelativeLayout praiselistContent;
     LiveBll liveBll;
     private LiveVoteBll liveVoteBll;
     private PraiseOrEncourageBll praiseOrEncourageBll;
     private LiveGetInfo liveGetInfo;
+    private PraiseListBll praiseListBll;
 
     public LiveLazyBllCreat(LiveVideoActivity liveVideoActivity, LiveBll liveBll) {
         this.liveVideoActivity = liveVideoActivity;
@@ -24,6 +27,10 @@ public class LiveLazyBllCreat {
 
     public void setBottomContent(RelativeLayout bottomContent) {
         this.bottomContent = bottomContent;
+    }
+
+    public void setPraiselistContent(RelativeLayout praiselistContent) {
+        this.praiselistContent = praiselistContent;
     }
 
     public void setGetInfo(LiveGetInfo getInfo) {
@@ -54,8 +61,25 @@ public class LiveLazyBllCreat {
         }
         return praiseOrEncourageBll;
     }
+
     AnswerRankBll createAnswerRankBll(){
         return new AnswerRankBll(liveVideoActivity,bottomContent,liveBll);
     }
 
+    PraiseListAction createPraiseListAction() {
+
+        if (praiseListBll == null) {
+            praiseListBll = new PraiseListBll(liveVideoActivity);
+            praiselistContent.post(new Runnable() {
+                @Override
+                public void run() {
+                    praiseListBll.initView(bottomContent);
+
+                }
+            });
+            praiseListBll.setLiveBll(liveBll);
+            liveBll.setPraiseListAction(praiseListBll);
+        }
+        return praiseListBll;
+    }
 }

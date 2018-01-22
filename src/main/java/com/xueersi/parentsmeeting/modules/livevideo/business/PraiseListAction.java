@@ -88,4 +88,18 @@ public interface PraiseListAction {
      */
     void setThumbsUpBtnEnabled(boolean enabled);
 
+
+    /**
+     * 播放器区域变化时更新视图
+     *
+     * @param width
+     * @param height
+     */
+     void setVideoLayout(int width, int height);
+
+    /**
+     * Activity退出
+     *
+     */
+     void destory();
 }

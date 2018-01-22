@@ -101,7 +101,7 @@ public class PraiseListPager extends BasePager {
     /** 我是否在榜上*/
     private boolean isOnList = false;
     /** 我在榜上的位置索引*/
-    private int onListIndex =0;
+    private int onListIndex = 0;
     /** 给我点赞同学姓名*/
     private ArrayList<String> stuNames = new ArrayList<>();
     /** 给我点赞数量*/
@@ -207,18 +207,21 @@ public class PraiseListPager extends BasePager {
 
     @Override
     public void initData() {
+        //名字
         stuName = liveBll.getStuName();
-        if(stuName!=null && stuName.length()>4){
-            stuName=stuName.substring(0,3)+"...";
+        //名字缩写
+        String abbStuName = stuName;
+        if(stuName != null && stuName.length()>4){
+            abbStuName = stuName.substring(0,3)+"...";
         }
         thumbsUpCopywriting = new String[]{
-                " 为你点赞，" + stuName + "学神~下次榜单再相见！",
+                " 为你点赞，" + abbStuName + "学神~下次榜单再相见！",
                 " 为你点赞，再接再厉哦，小学霸~",
-                " 为你点赞，" + stuName + "好厉害，向你学习！",
+                " 为你点赞，" + abbStuName + "好厉害，向你学习！",
                 " 为你点赞，一起学习，一起进步",
                 " 为你点赞，下次一定赶超你~",
                 " 为你点赞，好羡慕能上榜~",
-                " 为你点赞，" + stuName + "学神请接收我的膜拜",
+                " 为你点赞，" + abbStuName + "学神请接收我的膜拜",
                 " 为你点赞，运气不错，额外获得1颗赞哦~",
                 " 为你点赞，运气爆棚，额外获得2颗赞哦!"};
 
@@ -585,6 +588,7 @@ public class PraiseListPager extends BasePager {
 
             }
         });
+        liveBll.sendThumbsUpNum(1);
     }
 
     private void startTimer(){
@@ -650,6 +654,7 @@ public class PraiseListPager extends BasePager {
         btnThumbsUp.setVisibility(View.GONE);
         Toast.makeText(videoActivity,"你真棒！谢谢你的点赞",Toast.LENGTH_SHORT).show();
         liveBll.sendThumbsUp();
+        mPraiseListBll.umsAgentDebug2(mPraiseListType);
     }
 
     public void setThumbsUpBtnEnabled(boolean enabled){
