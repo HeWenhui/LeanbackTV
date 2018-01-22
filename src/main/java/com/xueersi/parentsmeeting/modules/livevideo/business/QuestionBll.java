@@ -1736,7 +1736,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                mAnswerRankBll.showFullMarkList(lst);
+                mAnswerRankBll.showFullMarkList(lst,type);
 
             }
         }, delayTime);
