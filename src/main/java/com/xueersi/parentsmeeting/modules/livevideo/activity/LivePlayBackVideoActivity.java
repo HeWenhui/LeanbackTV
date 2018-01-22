@@ -72,6 +72,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VideoActivity;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
@@ -1055,19 +1056,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 ViewGroup.LayoutParams.MATCH_PARENT);
         rlQuestionContent.addView(voiceAnswerPager.getRootView(), params);
         voiceAnswerPager.setAudioRequest();
-        StableLogHashMap logHashMap = new StableLogHashMap("showAnswerDialog");
-        logHashMap.put("testid", "" + videoQuestionLiveEntity.getvQuestionID());
-        if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == mQuestionEntity.getvCategory()) {
-            logHashMap.put("sourcetype", "h5ware");
-            logHashMap.put("testtype", "" + videoQuestionLiveEntity.getVoiceQuestiontype());
-        } else {
-            logHashMap.put("sourcetype", "h5test");
-            logHashMap.put("testtype", "" + videoQuestionLiveEntity.getvQuestionType());
-        }
-        logHashMap.put("answertype", "voice");
-        logHashMap.addExY().addSno("2");
-        logHashMap.addStable("1");
-        umsAgentDebug3(voicequestionEventId, logHashMap.getData());
+        VoiceAnswerLog.sno2(this, videoQuestionLiveEntity );
     }
 
     QuestionSwitch questionSwitch = new QuestionSwitch() {
