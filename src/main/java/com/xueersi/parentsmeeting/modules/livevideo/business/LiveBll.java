@@ -1487,7 +1487,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         msg += ",XCR_ROOM_AGREE_OPEN";
                         String open = object.optString("open");
                         int zanType = object.optInt("zanType");
+                        String nonce = object.optString("nonce");
                         if ("on".equals(open)) {
+                            if (mPraiseListAction != null) {
+                                mPraiseListAction.onReceivePraiseList(zanType,nonce);
+                            }
                             switch (zanType) {
                                 case PraiseListPager.PRAISE_LIST_TYPE_HONOR:
                                     getHonorList(0);
@@ -3445,7 +3449,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                if (status == 0) {
+                if (status == 0){
                     VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, true,
                             VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                     vcDialog.initInfo("当前网络不佳，请刷新获取榜单！");
@@ -3456,7 +3460,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             getHonorList(0);
                         }
                     });
-                } else if (status == 1 && mPraiseListAction != null) {
+                }
+                else if(status == 1 && mPraiseListAction!=null){
                     mPraiseListAction.setThumbsUpBtnEnabled(true);
                 }
                 mLogtf.d("getHonorList:onPmFailure=" + error + ",msg=" + msg);
@@ -3465,7 +3470,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 showToast("" + responseEntity.getErrorMsg());
-                if (status == 1 && mPraiseListAction != null) {
+                if(status == 1 && mPraiseListAction!=null){
                     mPraiseListAction.setThumbsUpBtnEnabled(true);
                 }
                 mLogtf.d("getHonorList:onPmError=" + responseEntity.getErrorMsg());

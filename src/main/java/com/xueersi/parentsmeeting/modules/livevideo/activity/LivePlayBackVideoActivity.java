@@ -593,7 +593,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     /** 扫描是否有需要弹出的互动题 */
     public void scanQuestion(long position) {
 
-        if (!mIsLand || vPlayer == null || !vPlayer.isPlaying() || lecAdvertPager != null) {
+        if (!mIsLand || vPlayer == null || !vPlayer.isPlaying()) {
             // 如果不为横屏，没有正在播放，或正在显示互动题都退出扫描
             return;
         }
@@ -788,9 +788,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 // 红包隐藏
                 redPacketHide();
                 showExam();
-            } else if (LocalCourseConfig.CATEGORY_LEC_ADVERT == mQuestionEntity.getvCategory()) {
-                mQuestionEntity.setAnswered(true);
-                showLecAdvertPager();
             }
             // 互动题结束
         }
@@ -1109,7 +1106,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 ViewGroup.LayoutParams.MATCH_PARENT);
         rlQuestionContent.addView(voiceAnswerPager.getRootView(), params);
         voiceAnswerPager.setAudioRequest();
-        VoiceAnswerLog.sno2(this, videoQuestionLiveEntity );
     }
 
     QuestionSwitch questionSwitch = new QuestionSwitch() {
@@ -2149,10 +2145,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
     @Override
     protected void resultComplete() {
-        // 没有广告，播放完毕直接退出
-        if (lecAdvertPager == null) {
-            onUserBackPressed();
-        }
+        // 播放完毕直接退出
+        onUserBackPressed();
     }
 
     private Handler mPlayVideoControlHandler = new Handler() {
