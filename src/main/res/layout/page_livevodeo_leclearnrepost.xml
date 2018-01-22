@@ -187,17 +187,19 @@
         <Button
             android:id="@id/bt_livelec_learnfeedback_close"
             style="@style/text_font16_ffffff_style"
-            android:layout_width="75dp"
-            android:layout_height="25dp"
+            android:layout_width="120dp"
+            android:layout_height="38dp"
             android:layout_below="@id/ll_livelec_learnfeedback_mid"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:background="@drawable/shape_livelec_learn_close"
+            android:gravity="center"
+            android:includeFontPadding="false"
             android:text="关闭" />
 
         <View
             android:layout_width="1px"
-            android:layout_height="10dp"
+            android:layout_height="17dp"
             android:layout_below="@id/bt_livelec_learnfeedback_close" />
     </RelativeLayout>
 
