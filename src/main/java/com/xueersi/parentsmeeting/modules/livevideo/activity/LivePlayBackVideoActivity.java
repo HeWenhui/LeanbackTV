@@ -95,7 +95,10 @@ import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.utils.time.TimeUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
+import com.xueersi.xesalib.view.layout.dataload.DataErrorManager;
 import com.xueersi.xesalib.view.layout.dataload.DataLoadEntity;
+import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
+import com.xueersi.xesalib.view.layout.dataload.PageDataLoadManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -288,23 +291,27 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             }
         }
         if (rlQuestionContent != null) {
-            if (subjectResultPager != null) {
-                for (int i = 0; i < rlQuestionContent.getChildCount(); i++) {
-                    View child = rlQuestionContent.getChildAt(0);
-                    if (child != subjectResultPager.getRootView()) {
-                        rlQuestionContent.removeViewAt(i);
-                        i--;
-                    }
-                }
-            } else {
-                rlQuestionContent.removeAllViews();
+            if (lecAdvertPager == null) {
+                rlQuestionContent.setVisibility(View.GONE);
             }
+//            if (subjectResultPager != null) {
+//                for (int i = 0; i < rlQuestionContent.getChildCount(); i++) {
+//                    View child = rlQuestionContent.getChildAt(0);
+//                    if (child != subjectResultPager.getRootView()) {
+//                        rlQuestionContent.removeViewAt(i);
+//                        i--;
+//                    }
+//                }
+//            } else {
+//                rlQuestionContent.removeAllViews();
+//            }
         }
     }
 
     /** 加载旋转屏时相关布局 */
     @Override
     protected void loadLandOrPortView() {
+        mPortVideoHeight = VideoBll.getVideoDefaultHeight(this);
         super.loadLandOrPortView();
     }
 
@@ -394,44 +401,13 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     return false;
                 }
             });
-//            List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
-//            final ArrayList<VideoQuestionEntity> lstH5VideoQuestion = new ArrayList<>();
-//            String ids = "";
-//            for (int i = 0; i < lstVideoQuestion.size(); i++) {
-//                final VideoQuestionEntity videoQuestionEntity = lstVideoQuestion.get(i);
-//                if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == videoQuestionEntity.getvCategory()) {
-//                    lstH5VideoQuestion.add(videoQuestionEntity);
-//                    ids += videoQuestionEntity.getvQuestionID() + ",";
-//                }
-//            }
-//            if (!lstH5VideoQuestion.isEmpty()) {
-//                lectureLivePlayBackBll.getVoiceWareTestInfo(mVideoEntity.getLiveId(), ids, new AbstractBusinessDataCallBack() {
-//                    @Override
-//                    public void onDataSucess(Object... objData) {
-//                        JSONObject jsonObject = (JSONObject) objData[0];
-//                        try {
-//                            JSONArray infoArray = jsonObject.getJSONArray("info");
-//                            for (int i = 0; i < infoArray.length(); i++) {
-//                                JSONObject queObj = infoArray.getJSONObject(i);
-//                                for (int j = 0; j < lstH5VideoQuestion.size(); j++) {
-//                                    VideoQuestionEntity videoQuestionEntity = lstH5VideoQuestion.get(j);
-//                                    if (queObj.optString("id").equals(videoQuestionEntity.getvQuestionID())) {
-//                                        String isVoice = queObj.optString("isVoice", "0");
-//                                        if ("1".equals(isVoice)) {
-//                                            videoQuestionEntity.setIsVoice(isVoice);
-//                                            videoQuestionEntity.setVoiceQuestiontype(queObj.optString("type"));
-//                                            videoQuestionEntity.setAssess_ref(queObj.optString("assess_ref"));
-//                                        }
-//                                        lstH5VideoQuestion.remove(i);
-//                                        break;
-//                                    }
-//                                }
-//                            }
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                });
+//            if (AppConfig.DEBUG) {
+//                List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
+//                VideoQuestionEntity videoQuestionEntity = new VideoQuestionEntity();
+//                videoQuestionEntity.setvCategory(LocalCourseConfig.CATEGORY_LEC_ADVERT);
+//                videoQuestionEntity.setvQuestionInsretTime(600);
+//                videoQuestionEntity.setvEndTime(1600);
+//                lstVideoQuestion.add(videoQuestionEntity);
 //            }
             //测试红包自动关闭
 //            rlFirstBackgroundView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener
@@ -591,7 +567,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     /** 扫描是否有需要弹出的互动题 */
     public void scanQuestion(long position) {
 
-        if (!mIsLand || vPlayer == null || !vPlayer.isPlaying()) {
+        if (!mIsLand || vPlayer == null || !vPlayer.isPlaying() || lecAdvertPager != null) {
             // 如果不为横屏，没有正在播放，或正在显示互动题都退出扫描
             return;
         }
@@ -786,6 +762,9 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 // 红包隐藏
                 redPacketHide();
                 showExam();
+            } else if (LocalCourseConfig.CATEGORY_LEC_ADVERT == mQuestionEntity.getvCategory()) {
+                mQuestionEntity.setAnswered(true);
+                showLecAdvertPager(mQuestionEntity);
             }
             // 互动题结束
         }
@@ -1006,24 +985,36 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     }
 
     /** 讲座广告 */
-    private void showLecAdvertPager() {
-        LecAdvertEntity lecAdvertEntity = new LecAdvertEntity();
-        lecAdvertPager = new LecAdvertPager(this,lecAdvertEntity, new LecAdvertPagerClose() {
-
+    private void showLecAdvertPager(final VideoQuestionEntity questionEntity) {
+        final LecAdvertEntity lecAdvertEntity = new LecAdvertEntity();
+        lecAdvertEntity.course_id = questionEntity.getvQuestionID();
+        PageDataLoadEntity mPageDataLoadEntity = new PageDataLoadEntity(rlQuestionContent, R.id.fl_livelec_advert_content, DataErrorManager.IMG_TIP_BUTTON);
+        PageDataLoadManager.newInstance().loadDataStyle(mPageDataLoadEntity.beginLoading());
+        lectureLivePlayBackBll.getAdOnLL(mVideoEntity.getLiveId(), lecAdvertEntity, mPageDataLoadEntity, new AbstractBusinessDataCallBack() {
             @Override
-            public void close() {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                lecAdvertPager = null;
-            }
-        });
-        rlQuestionContent.removeAllViews();
-        rlQuestionContent.addView(lecAdvertPager.getRootView(), new LayoutParams
-                (LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        rlQuestionContent.setVisibility(View.VISIBLE);
+            public void onDataSucess(Object... objData) {
+                if (mQuestionEntity != questionEntity) {
+                    return;
+                }
+                lecAdvertPager = new LecAdvertPager(LivePlayBackVideoActivity.this, lecAdvertEntity, new LecAdvertPagerClose() {
+
+                    @Override
+                    public void close() {
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                        lecAdvertPager = null;
+                    }
+                });
+                rlQuestionContent.removeAllViews();
+                rlQuestionContent.addView(lecAdvertPager.getRootView(), new LayoutParams
+                        (LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+                rlQuestionContent.setVisibility(View.VISIBLE);
+                lecAdvertPager.initStep1();
 //        Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showLecAdvertPager");
 //        mPlayVideoControlHandler.sendMessage(msg);
 
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
+        });
     }
 
     private void showVoiceAnswer(final VideoQuestionEntity videoQuestionLiveEntity) throws Exception {
@@ -2145,8 +2136,10 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
     @Override
     protected void resultComplete() {
-        // 播放完毕直接退出
-        onUserBackPressed();
+        // 没有广告，播放完毕直接退出
+        if (lecAdvertPager == null) {
+            onUserBackPressed();
+        }
     }
 
     private Handler mPlayVideoControlHandler = new Handler() {
@@ -2451,6 +2444,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
         UmsAgentManager.umsAgentOtherBusiness(this, appID, UmsConstants.uploadShow, mData);
+    }
+
+    @Override
+    public void setAutoOrientation(boolean isAutoOrientation) {
+        super.setAutoOrientation(isAutoOrientation);
     }
 
     class LivePlayBackAlertDialog extends VerifyCancelAlertDialog {

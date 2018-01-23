@@ -632,13 +632,12 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /** 获得广告信息 */
     public void getAdOnLL(String courseId, final HttpCallBack requestCallBack) {
-        final HttpRequestParams params = new HttpRequestParams();
+        HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
         params.addBodyParam("courseId", courseId);
         requestCallBack.url = LiveVideoConfig.URL_LIVE_GET_LEC_AD;
         sendPost(LiveVideoConfig.URL_LIVE_GET_LEC_AD, params, requestCallBack);
     }
-
 
     public void getFullMarkListQuestion(String testId, String classId, String teamId, HttpCallBack callBack) {
         HttpRequestParams params = new HttpRequestParams();

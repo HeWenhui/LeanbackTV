@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.base.BaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
@@ -25,6 +26,7 @@ import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.view.layout.dataload.DataLoadEntity;
+import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -594,6 +596,16 @@ public class LectureLivePlayBackBll extends BaseBll {
             @Override
             public void onFailure(Call call, IOException e) {
                 Loger.i(TAG, "getVoiceWareTestInfo:onFailure", e);
+            }
+        });
+    }
+
+    public void getAdOnLL(String liveId, final LecAdvertEntity lecAdvertEntity, final PageDataLoadEntity pageDataLoadEntity, final AbstractBusinessDataCallBack callBack) {
+        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        mCourseHttpManager.getAdOnLL(liveId, enstuId, lecAdvertEntity.course_id, new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                callBack.onDataSucess();
             }
         });
     }
