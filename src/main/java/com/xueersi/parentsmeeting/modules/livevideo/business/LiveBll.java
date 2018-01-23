@@ -671,6 +671,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         this.speechFeedBackAction = speechFeedBackAction;
     }
 
+    public void setLecAdvertAction(LecAdvertAction lecAdvertAction) {
+        this.lecAdvertAction = lecAdvertAction;
+    }
+
     private final IRCCallback mIRCcallback = new IRCCallback() {
 
         String lastTopicstr = "";
@@ -1792,6 +1796,14 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             }
         }
         return isPresent;
+    }
+
+    public AnswerRankBll getAnswerRankBll() {
+        return mAnswerRankBll;
+    }
+
+    public PraiseListAction getPraiseListAction() {
+        return mPraiseListAction;
     }
 
     /**
