@@ -73,7 +73,7 @@ public class LiveLazyBllCreat {
             praiselistContent.post(new Runnable() {
                 @Override
                 public void run() {
-                    praiseListBll.initView(bottomContent);
+                    praiseListBll.initView(praiselistContent);
 
                 }
             });
