@@ -229,14 +229,21 @@ public class PraiseListPager extends BasePager {
         startTitleAnimation();
 
         //播放声音
-        soundPool= new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-        soundPool.load(videoActivity,R.raw.praise_list,1);
-        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                // TODO Auto-generated method stub
-                soundPool.play(1,1, 1, 0, 0, 1);
-            }
-        });
+        if(soundPool==null)
+            soundPool= new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        if(soundPraiselistIn==0){
+            soundPraiselistIn=soundPool.load(videoActivity,R.raw.praise_list,1);
+            soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+                public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                    // TODO Auto-generated method stub
+                    soundPool.play(soundPraiselistIn,1, 1, 0, 0, 1);
+                }
+            });
+        }
+        else{
+            soundPool.play(soundPraiselistIn,1, 1, 0, 0, 1);
+        }
+
 
         switch (mPraiseListType){
             case PRAISE_LIST_TYPE_HONOR:
@@ -572,7 +579,9 @@ public class PraiseListPager extends BasePager {
         ObjectAnimator rotateLight = ObjectAnimator.ofFloat(ivScrollLight, "rotation", 0f, 300f);
         rotateLight.setDuration(5000);
 
-        rotateLight.start();
+        AnimatorSet animSetLight = new AnimatorSet();
+        animSetLight.play(rotateLight);
+        animSetLight.start();
         rotateLight.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -649,10 +658,6 @@ public class PraiseListPager extends BasePager {
         Toast.makeText(videoActivity,"你真棒！谢谢你的点赞",Toast.LENGTH_SHORT).show();
         liveBll.sendThumbsUp();
         mPraiseListBll.umsAgentDebug2(mPraiseListType);
-    }
-
-    public void setThumbsUpBtnEnabled(boolean enabled){
-        btnThumbsUp.setEnabled(enabled);
     }
 
     public void setThumbsUpBtnEnabled(boolean enabled){

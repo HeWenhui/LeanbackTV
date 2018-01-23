@@ -417,10 +417,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 .getvQuestionID())) {
                             return;
                         }
-                        if(mAnswerRankBll!=null) {
-                            mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
-                            mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
-                        }
+                        mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
+                        mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                         hasQuestion = true;
                     }
                 });
@@ -531,9 +529,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     if (speechAssessmentPager != null) {
                         mLogtf.d("showQuestion:examSubmitAll:id=" + speechAssessmentPager.getId());
                         speechAssessmentPager.examSubmitAll();
-                        if (speechAssessmentPager != null) {
-                            rlQuestionContent.removeView(speechAssessmentPager.getRootView());
-                        }
+                        rlQuestionContent.removeView(speechAssessmentPager.getRootView());
                     }
                     if (activity instanceof AudioRequest) {
                         AudioRequest audioRequest = (AudioRequest) activity;
@@ -1666,7 +1662,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
                 //showFullMarkList(type, new ArrayList<FullMarkListEntity>(), delayTime);
-                if(mAnswerRankBll!=null) {
+                if (mAnswerRankBll != null) {
                     mAnswerRankBll.hideRankList();
                 }
             }
@@ -1674,12 +1670,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                if(mAnswerRankBll!=null) {
+                if (mAnswerRankBll != null) {
                     mAnswerRankBll.hideRankList();
                 }
             }
         };
-        if(mAnswerRankBll!=null) {
+        if (mAnswerRankBll != null) {
             if (type == XESCODE.STOPQUESTION) {
                 mAnswerRankBll.getFullMarkListQuestion(callBack);
             } else if (type == XESCODE.EXAM_STOP) {
@@ -1699,7 +1695,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     }
 
     private void showFullMarkList(final int type, final List<FullMarkListEntity> lst, int delayTime) {
-        if(mAnswerRankBll==null) {
+        if (mAnswerRankBll == null) {
             return;
         }
         mVPlayVideoControlHandler.postDelayed(new Runnable() {
@@ -1736,7 +1732,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                mAnswerRankBll.showFullMarkList(lst);
+                mAnswerRankBll.showFullMarkList(lst,type);
 
             }
         }, delayTime);

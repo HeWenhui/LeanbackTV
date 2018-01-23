@@ -197,7 +197,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         this.mLiveType = type;
         this.form = form;
         mHttpManager = new LiveHttpManager(mContext);
-        mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
@@ -270,8 +269,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 onLiveError(responseEntity);
             }
         };
-        mHttpManager.addBodyParam("enstuId", enstuId);
         if (mLiveType == LIVE_TYPE_LIVE) {// 直播
+            mHttpManager.addBodyParam("enstuId", enstuId);
             mHttpManager.liveGetInfo(enstuId, courseId, mLiveId, 0, callBack);
         } else if (mLiveType == LIVE_TYPE_TUTORIAL) {// 辅导
             mHttpManager.liveTutorialGetInfo(enstuId, mLiveId, callBack);
@@ -672,10 +671,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         this.speechFeedBackAction = speechFeedBackAction;
     }
 
-    public void setLecAdvertAction(LecAdvertAction lecAdvertAction) {
-        this.lecAdvertAction = lecAdvertAction;
-    }
-
     private final IRCCallback mIRCcallback = new IRCCallback() {
 
         String lastTopicstr = "";
@@ -766,7 +761,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             englishSpeekAction.onDBStop();
                         }
                     }
-                    LiveTopic.RoomStatusEntity coachRoomstatus = liveTopic.getCoachRoomstatus();
                     if (mVideoAction != null) {
                         if (LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode())) {
                             if (mGetInfo.getStudentLiveInfo().isExpe()) {
@@ -780,7 +774,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             voiceChatStatus = mainRoomstatus.getOpenhands();
                             videoChatAction.onJoin(mainRoomstatus.getOnmic(), mainRoomstatus.getOpenhands(), mainRoomstatus.getRoom(), mainRoomstatus.isClassmateChange(), mainRoomstatus.getClassmateEntities(), "t");
                         } else {
-                            coachRoomstatus = liveTopic.getCoachRoomstatus();
+                            LiveTopic.RoomStatusEntity coachRoomstatus = liveTopic.getCoachRoomstatus();
                             voiceChatStatus = coachRoomstatus.getOpenhands();
                             videoChatAction.onJoin(coachRoomstatus.getOnmic(), coachRoomstatus.getOpenhands(), coachRoomstatus.getRoom(), coachRoomstatus.isClassmateChange(), coachRoomstatus.getClassmateEntities(), "f");
                         }
@@ -884,6 +878,18 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         mLecLearnReportAction.onLearnReport(mLiveId);
                     }
                 }
+                if (mPraiseListAction != null) {
+
+                    LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getCoachRoomstatus();
+                    Loger.e(TAG, "listStatus=" + mainRoomstatus.getListStatus());
+                    if (mainRoomstatus.getListStatus() == 1) {
+                        getHonorList(0);
+                    } else if (mainRoomstatus.getListStatus() == 2) {
+                        getProgressList(0);
+                    } else if (mainRoomstatus.getListStatus() == 3) {
+                        getThumbsUpList();
+                    }
+                }
                 if (speechFeedBackAction != null) {
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
                     String status = mainRoomstatus.getOnVideoChat();
@@ -898,7 +904,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 mLogtf.e("onTopic", e);
                 MobAgent.httpResponseParserError(TAG, "onTopic", e.getMessage());
             }
-
         }
 
         String lastNotice = "";
@@ -978,9 +983,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         if (mQuestionAction != null) {
                             mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
                         }
-                        if (mAnswerRankBll != null) {
-                            mAnswerRankBll.setNonce(object.optString("nonce"));
-                        }
 
 //                        getStuGoldCount();
                         break;
@@ -1048,9 +1050,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             if (videoChatAction != null) {
                                 videoChatAction.quit("off", "", "change");
                             }
-                            //模式切换为主讲，关闭表扬榜
-                            if (mPraiseListAction != null && mode.equals(LiveTopic.MODE_CLASS))
-                                mPraiseListAction.closePraiseList();
                             liveGetPlayServer();
                         }
                     }
@@ -1166,9 +1165,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         if (mQuestionAction != null) {
                             mQuestionAction.onExamStop();
                         }
-                        if (mAnswerRankBll != null) {
-                            mAnswerRankBll.setNonce(object.optString("nonce"));
-                        }
                     }
                     break;
                     case XESCODE.SPEECH_RESULT: {
@@ -1212,10 +1208,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 if (mAnswerRankBll != null) {
                                     mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                                     mAnswerRankBll.setType(videoQuestionLiveEntity.courseware_type);
-                                }
-                            } else {
-                                if (mAnswerRankBll != null) {
-                                    mAnswerRankBll.setNonce(object.optString("nonce"));
                                 }
                             }
                             englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
@@ -1801,14 +1793,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         return isPresent;
     }
 
-    public AnswerRankBll getAnswerRankBll() {
-        return mAnswerRankBll;
-    }
-
-    public PraiseListAction getPraiseListAction() {
-        return mPraiseListAction;
-    }
-
     /**
      * 请求房间状态成功
      *
@@ -2284,8 +2268,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mLearnReportAction = null;
         h5CoursewareAction = null;
         englishH5CoursewareAction = null;
-        videoChatAction = null;
-        mPraiseListAction = null;
         if (mCataDataCancle != null) {
             mCataDataCancle.cancel();
             mCataDataCancle = null;
@@ -2298,9 +2280,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             mIRCMessage.setCallback(null);
             mIRCMessage.destory();
         }
-        if (mPraiseListAction != null) {
-            mPraiseListAction.destory();
-        }
+        videoChatAction = null;
+        mPraiseListAction = null;
     }
 
     private void onLiveFailure(String msg, Runnable runnable) {
@@ -3035,40 +3016,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mHttpManager.getCourseWareUrl(requestCallBack);
     }
 
-    public void getAdOnLL(final LecAdvertEntity lecAdvertEntity, final PageDataLoadEntity pageDataLoadEntity, final AbstractBusinessDataCallBack callBack) {
-        mHttpManager.getAdOnLL(lecAdvertEntity.course_id, new HttpCallBack(pageDataLoadEntity) {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Loger.d(TAG, "getAdOnLL:onPmSuccess=" + responseEntity.getJsonObject());
-                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                lecAdvertEntity.limit = jsonObject.optString("limit");
-                lecAdvertEntity.signUpUrl = jsonObject.optString("signUpUrl");
-                lecAdvertEntity.saleName = jsonObject.optString("saleName");
-                callBack.onDataSucess();
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                super.onPmError(responseEntity);
-                Loger.d(TAG, "getAdOnLL:onPmError=" + responseEntity.getErrorMsg());
-//                if(AppConfig.DEBUG){
-//                    callBack.onDataSucess();
-//                }
-                PageDataLoadManager.newInstance().loadDataStyle(pageDataLoadEntity.webDataError(responseEntity.getErrorMsg()));
-            }
-
-            @Override
-            public void onFailure(Call call, IOException e) {
-                super.onFailure(call, e);
-                Loger.d(TAG, "getAdOnLL:onFailure", e);
-//                if(AppConfig.DEBUG){
-//                    callBack.onDataSucess();
-//                }
-                PageDataLoadManager.newInstance().loadDataStyle(pageDataLoadEntity.webDataError());
-            }
-        });
-    }
-
     public Call download(final String url, final String saveDir, DownloadCallBack downloadCallBack) {
         return mHttpManager.download(url, saveDir, downloadCallBack);
     }
@@ -3502,7 +3449,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 获取光荣榜
      */
     public synchronized void getHonorList(final int status) {
-        if (mPraiseListAction != null && status == 0
+        if(mPraiseListAction != null && status == 0
                 && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_HONOR)
             //如果表扬榜单正在显示，并且当前榜单类型和新开启榜单类型相同，则退出。
             return;
