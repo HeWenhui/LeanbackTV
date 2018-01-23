@@ -404,6 +404,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 //            if (AppConfig.DEBUG) {
 //                List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
 //                VideoQuestionEntity videoQuestionEntity = new VideoQuestionEntity();
+//                videoQuestionEntity.setvQuestionID("39804");
 //                videoQuestionEntity.setvCategory(LocalCourseConfig.CATEGORY_LEC_ADVERT);
 //                videoQuestionEntity.setvQuestionInsretTime(600);
 //                videoQuestionEntity.setvEndTime(1600);
@@ -762,6 +763,9 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 // 红包隐藏
                 redPacketHide();
                 showExam();
+            } else if (LocalCourseConfig.CATEGORY_LEC_ADVERT == mQuestionEntity.getvCategory()) {
+                mQuestionEntity.setAnswered(true);
+                showLecAdvertPager(mQuestionEntity);
             }
             // 互动题结束
         }
@@ -981,6 +985,39 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         return null;
     }
 
+    /** 讲座广告 */
+    private void showLecAdvertPager(final VideoQuestionEntity questionEntity) {
+        final LecAdvertEntity lecAdvertEntity = new LecAdvertEntity();
+        lecAdvertEntity.course_id = questionEntity.getvQuestionID();
+//        PageDataLoadEntity mPageDataLoadEntity = new PageDataLoadEntity(rlQuestionContent, R.id.fl_livelec_advert_content, DataErrorManager.IMG_TIP_BUTTON);
+//        PageDataLoadManager.newInstance().loadDataStyle(mPageDataLoadEntity.beginLoading());
+        lectureLivePlayBackBll.getAdOnLL(mVideoEntity.getLiveId(), lecAdvertEntity, new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objData) {
+                if (mQuestionEntity != questionEntity) {
+                    return;
+                }
+                lecAdvertPager = new LecAdvertPager(LivePlayBackVideoActivity.this, lecAdvertEntity, new LecAdvertPagerClose() {
+
+                    @Override
+                    public void close() {
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                        lecAdvertPager = null;
+                    }
+                });
+                rlQuestionContent.removeAllViews();
+                rlQuestionContent.addView(lecAdvertPager.getRootView(), new LayoutParams
+                        (LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+                rlQuestionContent.setVisibility(View.VISIBLE);
+                lecAdvertPager.initStep1();
+//        Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showLecAdvertPager");
+//        mPlayVideoControlHandler.sendMessage(msg);
+
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
+        });
+    }
+
     private void showVoiceAnswer(final VideoQuestionEntity videoQuestionLiveEntity) throws Exception {
         if (voiceAnswerPager != null) {
             if (voiceAnswerPager.getBaseVideoQuestionEntity().getvQuestionID().equals(videoQuestionLiveEntity.getvQuestionID())) {
@@ -1060,6 +1097,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 ViewGroup.LayoutParams.MATCH_PARENT);
         rlQuestionContent.addView(voiceAnswerPager.getRootView(), params);
         voiceAnswerPager.setAudioRequest();
+        VoiceAnswerLog.sno2(this, videoQuestionLiveEntity);
     }
 
     QuestionSwitch questionSwitch = new QuestionSwitch() {
@@ -2099,8 +2137,10 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
     @Override
     protected void resultComplete() {
-        // 播放完毕直接退出
-        onUserBackPressed();
+        // 没有广告，播放完毕直接退出
+        if (lecAdvertPager == null) {
+            onUserBackPressed();
+        }
     }
 
     private Handler mPlayVideoControlHandler = new Handler() {
@@ -2138,10 +2178,18 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     protected void onRefresh() {
         resultFailed = false;
         if (AppBll.getInstance(this).isNetWorkAlert()) {
-            loadView(mLayoutVideo);
-            initView();
-            initData();
+            videoBackgroundRefresh.setVisibility(View.GONE);
+            Loger.d(TAG, "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
+            if (rlQuestionContent.getChildCount() > 0) {
+                rlQuestionContent.setVisibility(View.VISIBLE);
+            }
+            playNewVideo(Uri.parse(mWebPath), mSectionName);
         }
+//        if (AppBll.getInstance(this).isNetWorkAlert()) {
+//            loadView(mLayoutVideo);
+//            initView();
+//            initData();
+//        }
         AppBll.getInstance(mBaseApplication);
     }
 

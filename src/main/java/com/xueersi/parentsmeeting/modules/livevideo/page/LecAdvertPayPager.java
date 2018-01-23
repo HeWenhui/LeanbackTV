@@ -20,12 +20,14 @@ public class LecAdvertPayPager extends BaseWebviewPager {
     String reloadurl;
     RelativeLayout rl_livevideo_subject_web;
     TextView tv_livelec_advert_step2_title;
+    ImageView iv_livelec_advert_step2_back;
     String url;
     OnPaySuccess onPaySuccess;
 
-    public LecAdvertPayPager(Context context, String url, TextView tv_livelec_advert_step2_title, OnPaySuccess onPaySuccess) {
+    public LecAdvertPayPager(Context context, String url, ImageView iv_livelec_advert_step2_back, TextView tv_livelec_advert_step2_title, OnPaySuccess onPaySuccess) {
         super(context);
         this.url = url;
+        this.iv_livelec_advert_step2_back = iv_livelec_advert_step2_back;
         this.tv_livelec_advert_step2_title = tv_livelec_advert_step2_title;
         this.onPaySuccess = onPaySuccess;
         initWebView();
@@ -84,10 +86,14 @@ public class LecAdvertPayPager extends BaseWebviewPager {
 //        if (url.contains("https://submit.com")) {
 //
 //        }
-//        if (onPaySuccess != null) {
-//            onPaySuccess.onPaySuccess();
-//            return true;
-//        }
+        if (reloadurl.contains("xueersi.com/ShoppingCart/complete")) {
+            if (onPaySuccess != null) {
+                tv_livelec_advert_step2_title.setText("购买成功");
+                onPaySuccess.onPaySuccess();
+                return true;
+            }
+        }
+
         return super.shouldOverrideUrlLoading(view, url);
     }
 
@@ -114,6 +120,12 @@ public class LecAdvertPayPager extends BaseWebviewPager {
                 ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
                 ((AnimationDrawable) ivLoading.getBackground()).start();
                 loadUrl(reloadurl);
+            }
+        });
+        iv_livelec_advert_step2_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Loger.d(TAG, "initData:onClick:GoBack=" + wvSubjectWeb.canGoBack());
             }
         });
     }

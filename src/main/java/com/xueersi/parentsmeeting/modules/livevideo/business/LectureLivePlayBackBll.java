@@ -600,11 +600,15 @@ public class LectureLivePlayBackBll extends BaseBll {
         });
     }
 
-    public void getAdOnLL(String liveId, final LecAdvertEntity lecAdvertEntity, final PageDataLoadEntity pageDataLoadEntity, final AbstractBusinessDataCallBack callBack) {
+    public void getAdOnLL(String liveId, final LecAdvertEntity lecAdvertEntity, final AbstractBusinessDataCallBack callBack) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mCourseHttpManager.getAdOnLL(liveId, enstuId, lecAdvertEntity.course_id, new HttpCallBack() {
+        mCourseHttpManager.getAdOnLL(enstuId, liveId, lecAdvertEntity.course_id, new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
+                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                lecAdvertEntity.limit = jsonObject.optString("limit");
+                lecAdvertEntity.signUpUrl = jsonObject.optString("signUpUrl");
+                lecAdvertEntity.saleName = jsonObject.optString("saleName");
                 callBack.onDataSucess();
             }
         });

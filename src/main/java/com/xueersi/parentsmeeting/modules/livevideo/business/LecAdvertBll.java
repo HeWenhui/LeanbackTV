@@ -59,14 +59,17 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                 if (lecAdvertager != null) {
                     return;
                 }
-                lecAdvertager = new LecAdvertPager(context, lecAdvertEntity, LecAdvertBll.this);
-                ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                bottomContent.addView(lecAdvertager.getRootView(), lp);
-                PageDataLoadEntity mPageDataLoadEntity = new PageDataLoadEntity(lecAdvertager.getRootView(), R.id.fl_livelec_advert_content, DataErrorManager.IMG_TIP_BUTTON);
-                PageDataLoadManager.newInstance().loadDataStyle(mPageDataLoadEntity.beginLoading());
-                liveBll.getAdOnLL(lecAdvertEntity, mPageDataLoadEntity, new AbstractBusinessDataCallBack() {
+//                PageDataLoadEntity mPageDataLoadEntity = new PageDataLoadEntity(lecAdvertager.getRootView(), R.id.fl_livelec_advert_content, DataErrorManager.IMG_TIP_BUTTON);
+//                PageDataLoadManager.newInstance().loadDataStyle(mPageDataLoadEntity.beginLoading());
+                liveBll.getAdOnLL(lecAdvertEntity, new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
+                        if (lecAdvertager != null) {
+                            return;
+                        }
+                        lecAdvertager = new LecAdvertPager(context, lecAdvertEntity, LecAdvertBll.this);
+                        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                        bottomContent.addView(lecAdvertager.getRootView(), lp);
                         lecAdvertager.initStep1();
                     }
                 });
