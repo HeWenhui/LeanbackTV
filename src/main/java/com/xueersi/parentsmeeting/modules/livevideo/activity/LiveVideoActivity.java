@@ -62,6 +62,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.VPlayerListener;
@@ -148,6 +149,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     /** video缓存时间 */
     private long videoCachedDuration;
     LiveLazyBllCreat liveLazyBllCreat;
+    BaseLiveMediaControllerTop baseLiveMediaControllerTop;
     LiveMediaControllerBottom liveMediaControllerBottom;
     ExpeBll expeBll;
     LiveMessageBll liveMessageBll;
@@ -235,6 +237,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         // 预加载布局中退出事件
         findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
         tvLoadingHint.setText("获取课程信息");
+        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         bottomContent.addView(liveMediaControllerBottom);
         //聊天
         long before = System.currentTimeMillis();
@@ -390,6 +393,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         mLiveBll.setVideoChatAction(videoChatBll);
         videoChatBll.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
         mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), false);
+        baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
+        mMediaController.setControllerTop(baseLiveMediaControllerTop);
         setMediaControllerBottomParam(videoView.getLayoutParams());
 
         liveMessageBll.setLiveBll(mLiveBll);
