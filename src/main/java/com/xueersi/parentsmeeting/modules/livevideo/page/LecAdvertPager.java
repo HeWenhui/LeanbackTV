@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -88,7 +89,8 @@ public class LecAdvertPager extends BasePager {
         String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
         String mAppChannel = AppBll.getInstance().getAppInfoEntity().getAppChannel(); // APP渠道
         String url = BrowserBll.getAutoLoginURL(mEnStuId, lecAdvertEntity.signUpUrl, mAppChannel, 0, false);
-        lecAdvertPayPager = new LecAdvertPayPager(mContext, url, tv_livelec_advert_step2_title, new LecAdvertPayPager.OnPaySuccess() {
+        ImageView iv_livelec_advert_step2_back = (ImageView) step2.findViewById(R.id.iv_livelec_advert_step2_back);
+        lecAdvertPayPager = new LecAdvertPayPager(mContext, url, iv_livelec_advert_step2_back, tv_livelec_advert_step2_title, new LecAdvertPayPager.OnPaySuccess() {
             @Override
             public void onPaySuccess() {
                 tv_livelec_advert_step2_title.setText("购买成功");

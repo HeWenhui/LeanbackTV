@@ -428,6 +428,7 @@
     <item name="tv_livelec_advert_step1_enroll" type="id" />
     <item name="rl_livelec_advert_step2_title" type="id" />
     <item name="tv_livelec_advert_step2_title" type="id" />
+    <item name="iv_livelec_advert_step2_back" type="id" />
     <item name="iv_livelec_advert_step2_close" type="id" />
     <item name="rl_livelec_advert_step2_web" type="id" />
     <item name="rl_livelec_advert_step3_title" type="id" />

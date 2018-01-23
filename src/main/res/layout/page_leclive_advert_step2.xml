@@ -7,12 +7,23 @@
     <RelativeLayout
         android:id="@id/rl_livelec_advert_step2_web"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_livelec_advert_step2_title" />
 
     <RelativeLayout
         android:id="@id/rl_livelec_advert_step2_title"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:background="@color/COLOR_FFFFFF"
+        android:clickable="true">
+
+        <ImageView
+            android:id="@id/iv_livelec_advert_step2_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/cy_bars_bock_icon_normal" />
 
         <TextView
             android:id="@id/tv_livelec_advert_step2_title"
