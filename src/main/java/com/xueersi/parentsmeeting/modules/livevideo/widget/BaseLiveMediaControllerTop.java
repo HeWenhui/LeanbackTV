@@ -5,6 +5,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.widget;
  */
 
 import android.content.Context;
+import android.graphics.RectF;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.ControllerTopInter;
+import com.xueersi.parentsmeeting.modules.videoplayer.media.FractionalTouchDelegate;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 
 /**
@@ -64,7 +66,7 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                mMediaController.hideMediaController(); // 隐藏控制栏
+                mMediaController.hiderl_video_mediacontroller(); // 隐藏控制栏
                 mMediaController.showButtons(false); // 隐藏系统按钮
                 mMediaController.removeMessages(mMediaController.MSG_HIDE_SYSTEM_UI);
                 mMediaController.sendEmptyMessage(mMediaController.MSG_HIDE_SYSTEM_UI); // 隐藏状态栏
@@ -87,9 +89,9 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
         tvFileName = (TextView) findViewById(R.id.tv_video_mediacontroller_filename); // 当前视频的名称
         mBack = (ImageView) findViewById(R.id.iv_video_mediacontroller_back);
         mAllView = (ImageView) findViewById(R.id.iv_video_mediacontroller_controls_allview);
-//        mBack.setOnClickListener(mBackClickListener);
-//        mAllView.setOnClickListener(mAllViewClickListener);
-//        FractionalTouchDelegate.setupDelegate(mSystemInfoLayout, mBack, new RectF(1.0f, 1f, 1.2f, 1.2f));
+        mBack.setOnClickListener(mBackClickListener);
+        mAllView.setOnClickListener(mAllViewClickListener);
+        FractionalTouchDelegate.setupDelegate(mSystemInfoLayout, mBack, new RectF(1.0f, 1f, 1.2f, 1.2f));
     }
 
     /** 回退监听 */

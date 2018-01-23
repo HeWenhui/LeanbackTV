@@ -47,6 +47,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusE
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
@@ -358,6 +359,9 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                         ViewGroup.LayoutParams.MATCH_PARENT);
                 controllerContent.addView(mMediaController, params);
                 mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), true);
+                BaseLiveMediaControllerTop baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
+                mMediaController.setControllerTop(baseLiveMediaControllerTop);
+                controllerContent.addView(baseLiveMediaControllerTop);
                 mMediaController.setAutoOrientation(true);
                 liveMessageBll.getLiveMediaControllerBottom().setController(mMediaController);
                 if (mGetInfo != null) {
@@ -402,6 +406,9 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                         ViewGroup.LayoutParams.MATCH_PARENT);
                 controllerContent.addView(mMediaController, params);
                 mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), true);
+                BaseLiveMediaControllerTop baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
+                mMediaController.setControllerTop(baseLiveMediaControllerTop);
+                controllerContent.addView(baseLiveMediaControllerTop);
                 mMediaController.setAutoOrientation(true);
                 liveMessageBll.getLiveMediaControllerBottom().setController(mMediaController);
                 if (mGetInfo != null) {
