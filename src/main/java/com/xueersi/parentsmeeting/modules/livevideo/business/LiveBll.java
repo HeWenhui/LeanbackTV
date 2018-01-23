@@ -761,6 +761,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             englishSpeekAction.onDBStop();
                         }
                     }
+                    LiveTopic.RoomStatusEntity coachRoomstatus = liveTopic.getCoachRoomstatus();
                     if (mVideoAction != null) {
                         if (LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode())) {
                             if (mGetInfo.getStudentLiveInfo().isExpe()) {
@@ -774,7 +775,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             voiceChatStatus = mainRoomstatus.getOpenhands();
                             videoChatAction.onJoin(mainRoomstatus.getOnmic(), mainRoomstatus.getOpenhands(), mainRoomstatus.getRoom(), mainRoomstatus.isClassmateChange(), mainRoomstatus.getClassmateEntities(), "t");
                         } else {
-                            LiveTopic.RoomStatusEntity coachRoomstatus = liveTopic.getCoachRoomstatus();
+                            coachRoomstatus = liveTopic.getCoachRoomstatus();
                             voiceChatStatus = coachRoomstatus.getOpenhands();
                             videoChatAction.onJoin(coachRoomstatus.getOnmic(), coachRoomstatus.getOpenhands(), coachRoomstatus.getRoom(), coachRoomstatus.isClassmateChange(), coachRoomstatus.getClassmateEntities(), "f");
                         }

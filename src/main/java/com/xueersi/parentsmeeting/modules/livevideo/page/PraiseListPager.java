@@ -579,9 +579,7 @@ public class PraiseListPager extends BasePager {
         ObjectAnimator rotateLight = ObjectAnimator.ofFloat(ivScrollLight, "rotation", 0f, 300f);
         rotateLight.setDuration(5000);
 
-        AnimatorSet animSetLight = new AnimatorSet();
-        animSetLight.play(rotateLight);
-        animSetLight.start();
+        rotateLight.start();
         rotateLight.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -873,6 +871,6 @@ public class PraiseListPager extends BasePager {
 
     public void releaseSoundPool(){
         if(soundPool!=null)
-        soundPool.release();
+            soundPool.release();
     }
 }
