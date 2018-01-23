@@ -653,7 +653,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         }
                         StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
                         logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
-                        logHashMap.put("sourcetype", "h5test");
+                        logHashMap.put("sourcetype", "h5test").addNonce(baseVideoQuestionEntity.nonce);
                         logHashMap.addExY().addExpect("0").addSno("5").addStable("1");
                         umsAgentDebug3(voicequestionEventId, logHashMap.getData());
                     } else {
@@ -1736,7 +1736,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                mAnswerRankBll.showFullMarkList(lst,type);
+                mAnswerRankBll.showFullMarkList(lst, type);
 
             }
         }, delayTime);

@@ -224,7 +224,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 if ("on".equals(status)) {
                     if (!"1".equals(videoQuestionLiveEntity.getIsVoice()) || mErrorVoiceQue.contains(videoQuestionLiveEntity.url)) {
                         hasQuestion = true;
-                        if(mAnswerRankBll!=null) {
+                        if (mAnswerRankBll != null) {
                             mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
                             mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                         }
@@ -456,7 +456,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                             }
                             StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
                             logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
-                            logHashMap.put("sourcetype", "h5ware");
+                            logHashMap.put("sourcetype", "h5ware").addNonce(baseVideoQuestionEntity.nonce);
                             logHashMap.addExY().addExpect("0").addSno("5").addStable("1");
                             umsAgentDebug3(voicequestionEventId, logHashMap.getData());
                         }
@@ -615,7 +615,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     }
 
     private void getFullMarkList(final int delayTime) {
-        if(mAnswerRankBll==null) {
+        if (mAnswerRankBll == null) {
             return;
         }
         if (hasQuestion) {
@@ -656,7 +656,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        mAnswerRankBll.showFullMarkList(lst,XESCODE.ENGLISH_H5_COURSEWARE);
+                        mAnswerRankBll.showFullMarkList(lst, XESCODE.ENGLISH_H5_COURSEWARE);
                     }
                 }, delayTime);
             }
@@ -677,7 +677,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         mAnswerRankBll.showFullMarkList(new ArrayList<FullMarkListEntity>());
                     }
                 }, delayTime);*/
-                if(mAnswerRankBll!=null) {
+                if (mAnswerRankBll != null) {
                     mAnswerRankBll.hideRankList();
                 }
             }
@@ -701,7 +701,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         mAnswerRankBll.showFullMarkList(new ArrayList<FullMarkListEntity>());
                     }
                 }, delayTime);*/
-                if(mAnswerRankBll!=null) {
+                if (mAnswerRankBll != null) {
                     mAnswerRankBll.hideRankList();
                 }
             }
@@ -709,7 +709,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     }
 
     public void onSubmit() {
-        if(mAnswerRankBll==null){
+        if (mAnswerRankBll == null) {
             return;
         }
         submitTime = System.currentTimeMillis();

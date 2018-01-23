@@ -77,7 +77,7 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
             if (jsonObject.has(dayStr)) {
                 dayObj = jsonObject.getJSONObject(dayStr);
                 if (dayObj.has(liveId)) {
-                    isGetReport = true;
+//                    isGetReport = true;
                     mLogtf.d("setmShareDataManager:isGetReport=true");
                 }
             }

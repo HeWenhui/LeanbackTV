@@ -1056,7 +1056,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 ViewGroup.LayoutParams.MATCH_PARENT);
         rlQuestionContent.addView(voiceAnswerPager.getRootView(), params);
         voiceAnswerPager.setAudioRequest();
-        VoiceAnswerLog.sno2(this, videoQuestionLiveEntity );
+        VoiceAnswerLog.sno2(this, videoQuestionLiveEntity);
     }
 
     QuestionSwitch questionSwitch = new QuestionSwitch() {
@@ -2167,7 +2167,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 }
                 StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
                 logHashMap.put("testid", "" + questionEntity.getvQuestionID());
-                logHashMap.put("sourcetype", sourcetype);
+                logHashMap.put("sourcetype", sourcetype).addNonce(questionEntity.nonce);
                 logHashMap.addExY().addExpect("0").addSno("5").addStable("1");
                 umsAgentDebug3(voicequestionEventId, logHashMap.getData());
             } else {
