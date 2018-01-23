@@ -304,7 +304,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         mLiveBll.setRoomAction(liveMessageBll);
         mLiveBll.setH5CoursewareAction(h5CoursewareBll);
         mLiveBll.getInfo();
-        mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
+        mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), true);
         setMediaControllerBottomParam(videoView.getLayoutParams());
         return true;
     }
@@ -349,7 +349,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
                 controllerContent.addView(mMediaController, params);
-                mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
+                mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), true);
                 mMediaController.setAutoOrientation(true);
                 liveMessageBll.getLiveMediaControllerBottom().setController(mMediaController);
                 if (mGetInfo != null) {
@@ -392,7 +392,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
                 controllerContent.addView(mMediaController, params);
-                mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
+                mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), true);
                 mMediaController.setAutoOrientation(true);
                 liveMessageBll.getLiveMediaControllerBottom().setController(mMediaController);
                 if (mGetInfo != null) {

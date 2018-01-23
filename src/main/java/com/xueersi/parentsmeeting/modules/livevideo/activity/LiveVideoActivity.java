@@ -235,6 +235,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         // 预加载布局中退出事件
         findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
         tvLoadingHint.setText("获取课程信息");
+        bottomContent.addView(liveMediaControllerBottom);
         //聊天
         long before = System.currentTimeMillis();
         liveLazyBllCreat.setBottomContent(bottomContent);
@@ -302,13 +303,13 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         if (englishH5CoursewareBll != null) {
                             englishH5CoursewareBll.setVideoLayout(lp.width, lp.height);
                         }
-                        if (mLiveBll!=null&&mLiveBll.getAnswerRankBll()!=null){
+                        if (mLiveBll != null && mLiveBll.getAnswerRankBll() != null) {
                             mLiveBll.getAnswerRankBll().setVideoLayout(lp.width, lp.height);
                         }
                         if (speechFeedBackAction != null) {
                             speechFeedBackAction.setVideoLayout(lp.width, lp.height);
                         }
-                        if (mLiveBll != null && mLiveBll.getPraiseListAction() != null){
+                        if (mLiveBll != null && mLiveBll.getPraiseListAction() != null) {
                             mLiveBll.getPraiseListAction().setVideoLayout(lp.width, lp.height);
                         }
                     }
@@ -388,7 +389,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         mLiveBll.setEnglishH5CoursewareAction(englishH5CoursewareBll);
         mLiveBll.setVideoChatAction(videoChatBll);
         videoChatBll.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
-        mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
+        mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), false);
         setMediaControllerBottomParam(videoView.getLayoutParams());
 
         liveMessageBll.setLiveBll(mLiveBll);
@@ -459,7 +460,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (mIsLand) {
-            mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
+            mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), false);
             setMediaControllerBottomParam(videoView.getLayoutParams());
         }
     }
