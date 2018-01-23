@@ -60,6 +60,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.RedPacketAlertDialog;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
@@ -1006,7 +1007,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
     /** 讲座广告 */
     private void showLecAdvertPager() {
-        lecAdvertPager = new LecAdvertPager(this, new LecAdvertPagerClose() {
+        LecAdvertEntity lecAdvertEntity = new LecAdvertEntity();
+        lecAdvertPager = new LecAdvertPager(this,lecAdvertEntity, new LecAdvertPagerClose() {
 
             @Override
             public void close() {
@@ -1103,7 +1105,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 ViewGroup.LayoutParams.MATCH_PARENT);
         rlQuestionContent.addView(voiceAnswerPager.getRootView(), params);
         voiceAnswerPager.setAudioRequest();
-        VoiceAnswerLog.sno2(this, videoQuestionLiveEntity );
+        VoiceAnswerLog.sno2(this, videoQuestionLiveEntity);
     }
 
     QuestionSwitch questionSwitch = new QuestionSwitch() {

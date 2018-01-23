@@ -9,9 +9,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.base.BasePager;
+import com.xueersi.parentsmeeting.browser.business.BrowserBll;
+import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertPagerClose;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
+import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 
 /**
  * Created by linyuqiang on 2018/1/15.
@@ -27,10 +31,12 @@ public class LecAdvertPager extends BasePager {
     private ViewGroup group;
     private LecAdvertPayPager lecAdvertPayPager;
     private int step = 1;
+    LecAdvertEntity lecAdvertEntity;
 
-    public LecAdvertPager(Context context, LecAdvertPagerClose lecAdvertBll) {
+    public LecAdvertPager(Context context, LecAdvertEntity lecAdvertEntity, LecAdvertPagerClose lecAdvertBll) {
         super(context);
         this.lecAdvertBll = lecAdvertBll;
+        this.lecAdvertEntity = lecAdvertEntity;
         initData();
     }
 
@@ -38,20 +44,23 @@ public class LecAdvertPager extends BasePager {
     public View initView() {
         inflater = LayoutInflater.from(mContext);
         group = (ViewGroup) View.inflate(mContext, R.layout.page_leclive_advert, null);
-        step1 = inflater.inflate(R.layout.page_leclive_advert_step1, group, false);
-        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        group.addView(step1, lp);
         return group;
     }
 
-    @Override
-    public void initData() {
+    public void initStep1() {
+        step1 = inflater.inflate(R.layout.page_leclive_advert_step1, group, false);
+        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        group.addView(step1, lp);
         step1.findViewById(R.id.iv_livelec_advert_step1_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 lecAdvertBll.close();
             }
         });
+        TextView tv_livelec_advert_step1_name = (TextView) step1.findViewById(R.id.tv_livelec_advert_step1_name);
+        TextView tv_livelec_advert_step1_remainder = (TextView) step1.findViewById(R.id.tv_livelec_advert_step1_remainder);
+        tv_livelec_advert_step1_name.setText(lecAdvertEntity.saleName);
+        tv_livelec_advert_step1_remainder.setText(lecAdvertEntity.limit);
         step1.findViewById(R.id.tv_livelec_advert_step1_enroll).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,9 +78,17 @@ public class LecAdvertPager extends BasePager {
         });
     }
 
+    @Override
+    public void initData() {
+
+    }
+
     private void initViewStep2() {
         tv_livelec_advert_step2_title = (TextView) step2.findViewById(R.id.tv_livelec_advert_step2_title);
-        lecAdvertPayPager = new LecAdvertPayPager(mContext, "http://www.xueersi.com/", tv_livelec_advert_step2_title, new LecAdvertPayPager.OnPaySuccess() {
+        String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
+        String mAppChannel = AppBll.getInstance().getAppInfoEntity().getAppChannel(); // APP渠道
+        String url = BrowserBll.getAutoLoginURL(mEnStuId, lecAdvertEntity.signUpUrl, mAppChannel, 0, false);
+        lecAdvertPayPager = new LecAdvertPayPager(mContext, url, tv_livelec_advert_step2_title, new LecAdvertPayPager.OnPaySuccess() {
             @Override
             public void onPaySuccess() {
                 tv_livelec_advert_step2_title.setText("购买成功");

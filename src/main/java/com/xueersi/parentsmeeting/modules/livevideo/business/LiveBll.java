@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSON;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseBll;
+import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.http.CommonRequestCallBack;
 import com.xueersi.parentsmeeting.http.DownloadCallBack;
@@ -29,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -56,6 +58,10 @@ import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
+import com.xueersi.xesalib.view.layout.dataload.DataErrorManager;
+import com.xueersi.xesalib.view.layout.dataload.DataLoadEntity;
+import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
+import com.xueersi.xesalib.view.layout.dataload.PageDataLoadManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -191,6 +197,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         this.mLiveType = type;
         this.form = form;
         mHttpManager = new LiveHttpManager(mContext);
+        mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
@@ -263,8 +270,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 onLiveError(responseEntity);
             }
         };
+        mHttpManager.addBodyParam("enstuId", enstuId);
         if (mLiveType == LIVE_TYPE_LIVE) {// 直播
-            mHttpManager.addBodyParam("enstuId", enstuId);
             mHttpManager.liveGetInfo(enstuId, courseId, mLiveId, 0, callBack);
         } else if (mLiveType == LIVE_TYPE_TUTORIAL) {// 辅导
             mHttpManager.liveTutorialGetInfo(enstuId, mLiveId, callBack);
@@ -1537,6 +1544,16 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             }
                         }
 
+                        break;
+                    }
+                    case XESCODE.LEC_ADVERT: {
+                        if (lecAdvertAction != null) {
+                            LecAdvertEntity entity = new LecAdvertEntity();
+                            entity.course_id = object.optString("course_id");
+                            entity.id = object.optString("id");
+                            entity.nonce = object.optString("nonce");
+                            lecAdvertAction.start(entity);
+                        }
                         break;
                     }
                 }
@@ -3000,6 +3017,40 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
     public void getCourseWareUrl(HttpCallBack requestCallBack) {
         mHttpManager.getCourseWareUrl(requestCallBack);
+    }
+
+    public void getAdOnLL(final LecAdvertEntity lecAdvertEntity, final PageDataLoadEntity pageDataLoadEntity, final AbstractBusinessDataCallBack callBack) {
+        mHttpManager.getAdOnLL(lecAdvertEntity.course_id, new HttpCallBack(pageDataLoadEntity) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                Loger.d(TAG, "getAdOnLL:onPmSuccess=" + responseEntity.getJsonObject());
+                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                lecAdvertEntity.limit = jsonObject.optString("limit");
+                lecAdvertEntity.signUpUrl = jsonObject.optString("signUpUrl");
+                lecAdvertEntity.saleName = jsonObject.optString("saleName");
+                callBack.onDataSucess();
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                Loger.d(TAG, "getAdOnLL:onPmError=" + responseEntity.getErrorMsg());
+//                if(AppConfig.DEBUG){
+//                    callBack.onDataSucess();
+//                }
+                PageDataLoadManager.newInstance().loadDataStyle(pageDataLoadEntity.webDataError(responseEntity.getErrorMsg()));
+            }
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                super.onFailure(call, e);
+                Loger.d(TAG, "getAdOnLL:onFailure", e);
+//                if(AppConfig.DEBUG){
+//                    callBack.onDataSucess();
+//                }
+                PageDataLoadManager.newInstance().loadDataStyle(pageDataLoadEntity.webDataError());
+            }
+        });
     }
 
     public Call download(final String url, final String saveDir, DownloadCallBack downloadCallBack) {

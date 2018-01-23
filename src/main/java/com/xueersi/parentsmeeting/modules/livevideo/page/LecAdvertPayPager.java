@@ -84,10 +84,10 @@ public class LecAdvertPayPager extends BaseWebviewPager {
 //        if (url.contains("https://submit.com")) {
 //
 //        }
-        if (onPaySuccess != null) {
-            onPaySuccess.onPaySuccess();
-            return true;
-        }
+//        if (onPaySuccess != null) {
+//            onPaySuccess.onPaySuccess();
+//            return true;
+//        }
         return super.shouldOverrideUrlLoading(view, url);
     }
 
@@ -101,24 +101,10 @@ public class LecAdvertPayPager extends BaseWebviewPager {
         Loger.i(TAG, "initData:url=" + url);
         loadUrl(url);
         reloadurl = url;
-        mView.findViewById(R.id.iv_livevideo_subject_refresh).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-//                newWebView();
-                loadUrl(reloadurl);
-                v.setVisibility(View.GONE);
-                v.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        v.setVisibility(View.VISIBLE);
-                    }
-                }, 2000);
-            }
-        });
         mView.findViewById(R.id.btn_error_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                errorView.setVisibility(View.GONE);
+                errorView.setVisibility(View.GONE);
 //                wvSubjectWeb.setVisibility(View.VISIBLE);
 
                 newWebView();

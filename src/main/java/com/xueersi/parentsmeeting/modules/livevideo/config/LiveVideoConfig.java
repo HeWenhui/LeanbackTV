@@ -105,6 +105,8 @@ public class LiveVideoConfig {
     public final static String URL_LIVE_GET_QUESTION = AppConfig.HTTP_HOST + "/LiveCourse/getQuestion";
     /** 得到h5课件 */
     public final static String URL_LIVE_GET_WARE_URL = AppConfig.HTTP_HOST + "/LiveCourse/getCourseWareUrl";
+    /** 得到广告信息 */
+    public final static String URL_LIVE_GET_LEC_AD = AppConfig.HTTP_HOST + "/LiveLecture/getAdOnLL";
     /** 互动题满分榜接口 */
     public static String LIVE_FULL_MARK_LIST_QUESTION = AppConfig.HTTP_HOST + "/LiveCourse/teamTestFullScoreRank";
     /** 互动课件满分榜接口 */

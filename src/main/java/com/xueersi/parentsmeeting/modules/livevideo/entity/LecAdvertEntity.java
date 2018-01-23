@@ -5,4 +5,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
  */
 
 public class LecAdvertEntity {
+    public String course_id;
+    public String id;
+    public String nonce;
+    public String saleName;
+    public String limit;
+    public String signUpUrl;
 }

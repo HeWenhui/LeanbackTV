@@ -116,4 +116,7 @@ public interface XESCODE {
     int RANK_TEA_MESSAGE = 226;
     /** 上墙-学生重连发送消息 */
     int RANK_STU_RECONNECT_MESSAGE = 227;
+
+    /** 讲座购课广告 */
+    int LEC_ADVERT = 2000;
 }

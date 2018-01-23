@@ -210,6 +210,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         learnReportBll.setLiveBll(mLiveBll);
         learnReportBll.setmShareDataManager(mShareDataManager);
         questionBll.setLiveBll(mLiveBll);
+        lecAdvertAction.setLiveBll(mLiveBll);
         questionBll.setVSectionID(mVSectionID);
         redPackageBll.setVSectionID(mVSectionID);
         questionBll.setLiveType(liveType);

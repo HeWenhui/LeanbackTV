@@ -1,12 +1,16 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
+import com.xueersi.xesalib.view.layout.dataload.DataErrorManager;
+import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
+import com.xueersi.xesalib.view.layout.dataload.PageDataLoadManager;
 
 /**
  * Created by lyqai on 2018/1/15.
@@ -17,9 +21,14 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
     Context context;
     RelativeLayout bottomContent;
     LecAdvertPager lecAdvertager;
+    LiveBll liveBll;
 
     public LecAdvertBll(Context context) {
         this.context = context;
+    }
+
+    public void setLiveBll(LiveBll liveBll) {
+        this.liveBll = liveBll;
     }
 
     public void initView(RelativeLayout bottomContent, boolean isLand) {
@@ -43,13 +52,24 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
     }
 
     @Override
-    public void start(LecAdvertEntity lecAdvertEntity) {
+    public void start(final LecAdvertEntity lecAdvertEntity) {
         bottomContent.post(new Runnable() {
             @Override
             public void run() {
-                lecAdvertager = new LecAdvertPager(context, LecAdvertBll.this);
+                if (lecAdvertager != null) {
+                    return;
+                }
+                lecAdvertager = new LecAdvertPager(context, lecAdvertEntity, LecAdvertBll.this);
                 ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 bottomContent.addView(lecAdvertager.getRootView(), lp);
+                PageDataLoadEntity mPageDataLoadEntity = new PageDataLoadEntity(lecAdvertager.getRootView(), R.id.fl_livelec_advert_content, DataErrorManager.IMG_TIP_BUTTON);
+                PageDataLoadManager.newInstance().loadDataStyle(mPageDataLoadEntity.beginLoading());
+                liveBll.getAdOnLL(lecAdvertEntity, mPageDataLoadEntity, new AbstractBusinessDataCallBack() {
+                    @Override
+                    public void onDataSucess(Object... objData) {
+                        lecAdvertager.initStep1();
+                    }
+                });
             }
         });
     }
@@ -65,4 +85,5 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
             }
         }
     }
+
 }
