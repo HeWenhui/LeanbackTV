@@ -659,10 +659,6 @@ public class PraiseListPager extends BasePager {
         btnThumbsUp.setEnabled(enabled);
     }
 
-    public void setThumbsUpBtnEnabled(boolean enabled){
-        btnThumbsUp.setEnabled(enabled);
-    }
-
     /** 优秀榜适配器 */
     private class HonorAdapter extends BaseAdapter{
 
