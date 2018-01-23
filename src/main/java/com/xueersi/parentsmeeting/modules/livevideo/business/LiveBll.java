@@ -692,6 +692,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
         @Override
         public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed) {
+            //liveLazyBllCreat.createPraiseListAction();
+            //getProgressList(0);
             if (lastTopicstr.equals(topicstr)) {
                 mLogtf.i("onTopic(equals):topicstr=" + topicstr);
                 return;
@@ -3423,6 +3425,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 获取光荣榜
      */
     public synchronized void getHonorList(final int status) {
+        if(mPraiseListAction != null && status == 0
+                && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_HONOR)
+            //如果表扬榜单正在显示，并且当前榜单类型和新开启榜单类型相同，则退出。
+            return;
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("getHonorList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
@@ -3484,6 +3490,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 获取点赞榜
      */
     public synchronized void getThumbsUpList() {
+        if(mPraiseListAction != null
+                && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP)
+            //如果表扬榜单正在显示，并且当前榜单类型和新开启榜单类型相同，则退出。
+            return;
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("getThumbsUpList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
@@ -3529,6 +3539,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 获取进步榜
      */
     public synchronized void getProgressList(final int status) {
+        if(mPraiseListAction != null && status == 0
+                && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_PROGRESS)
+            //如果表扬榜单正在显示，并且当前榜单类型和新开启榜单类型相同，则退出
+            return;
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("getProgressList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";

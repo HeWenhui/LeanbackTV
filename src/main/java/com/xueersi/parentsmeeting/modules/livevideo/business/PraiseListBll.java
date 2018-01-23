@@ -49,6 +49,10 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     /** 点赞概率标识 */
     private int thumbsUpProbability = 0;
     private String nonce = "";
+    /** 表扬榜是否正在展示 */
+    private boolean isShowing = false;
+    /** 当前榜单类型 */
+    private int mPraiseListType = 0;
 
     public PraiseListBll(Activity activity) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -98,6 +102,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
      */
     @Override
     public void onReceivePraiseList(int listType, String nonce) {
+        mPraiseListType = listType;
         this.nonce = nonce;
         umsAgentDebug(listType);
     }
@@ -111,6 +116,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     public void onHonerList(final HonorListEntity honorListEntity) {
         mLogtf.d("onHonerList");
         closePraiseList();
+        isShowing = true;
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -134,6 +140,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     public void onThumbsUpList(final ThumbsUpListEntity thumbsUpListEntity) {
         mLogtf.d("onThumbsUpList");
         closePraiseList();
+        isShowing = true;
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -158,6 +165,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     public void onProgressList(final ProgressListEntity progressListEntity) {
         mLogtf.d("onProgressList");
         closePraiseList();
+        isShowing = true;
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -221,6 +229,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     public void closePraiseList() {
         mLogtf.d("closePraiseList");
         //停止点赞弹幕线程
+        isShowing = false;
         if(mPraiseList!=null)
             mPraiseList.setDanmakuStop(true);
         if(mPraiseList!=null)
@@ -297,12 +306,34 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         }
     }
 
+    /**
+     * Activity退出
+     *
+     */
     @Override
     public void destory(){
         if(mPraiseList!=null)
             mPraiseList.setDanmakuStop(true);
         if(mPraiseList!=null)
             mPraiseList.releaseSoundPool();
+    }
+
+    /**
+     * 判断榜单是否正在显示中
+     *
+     */
+    @Override
+    public boolean isShowing() {
+        return isShowing;
+    }
+
+    /**
+     * 获取当前榜单类型
+     *
+     */
+    @Override
+    public int getCurrentListType() {
+        return mPraiseListType;
     }
 
     /**

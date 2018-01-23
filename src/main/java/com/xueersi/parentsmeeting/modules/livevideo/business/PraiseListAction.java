@@ -95,11 +95,23 @@ public interface PraiseListAction {
      * @param width
      * @param height
      */
-     void setVideoLayout(int width, int height);
+    void setVideoLayout(int width, int height);
 
     /**
      * Activity退出
      *
      */
-     void destory();
+    void destory();
+
+    /**
+     * 判断榜单是否正在显示中
+     *
+     */
+    boolean isShowing();
+
+    /**
+     * 获取当前榜单类型
+     *
+     */
+    int getCurrentListType();
 }

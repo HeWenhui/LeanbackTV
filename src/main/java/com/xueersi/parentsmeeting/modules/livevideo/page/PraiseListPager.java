@@ -520,6 +520,8 @@ public class PraiseListPager extends BasePager {
             return;
         Log.i(TAG,"startScrollAnimation");
 
+        liveBll.sendThumbsUpNum(1);
+
         if(stuName!=null && stuName.length()>4){
             stuName=stuName.substring(0,3)+"...";
         }
@@ -588,7 +590,6 @@ public class PraiseListPager extends BasePager {
 
             }
         });
-        liveBll.sendThumbsUpNum(1);
     }
 
     private void startTimer(){
