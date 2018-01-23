@@ -51,6 +51,8 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
         findViewItems();
         mAnimSlideInTop = AnimationUtils.loadAnimation(mContext, R.anim.anim_mediactrl_slide_in_top);
         mAnimSlideOutTop = AnimationUtils.loadAnimation(mContext, R.anim.anim_mediactrl_slide_out_top);
+        mAnimSlideInTop.setFillAfter(true);
+        mAnimSlideOutTop.setFillAfter(true);
     }
 
     /** 播放器的布局界面 */
