@@ -3017,6 +3017,40 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mHttpManager.getCourseWareUrl(requestCallBack);
     }
 
+    public void getAdOnLL(final LecAdvertEntity lecAdvertEntity, final PageDataLoadEntity pageDataLoadEntity, final AbstractBusinessDataCallBack callBack) {
+        mHttpManager.getAdOnLL(lecAdvertEntity.course_id, new HttpCallBack(pageDataLoadEntity) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                Loger.d(TAG, "getAdOnLL:onPmSuccess=" + responseEntity.getJsonObject());
+                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                lecAdvertEntity.limit = jsonObject.optString("limit");
+                lecAdvertEntity.signUpUrl = jsonObject.optString("signUpUrl");
+                lecAdvertEntity.saleName = jsonObject.optString("saleName");
+                callBack.onDataSucess();
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                Loger.d(TAG, "getAdOnLL:onPmError=" + responseEntity.getErrorMsg());
+//                if(AppConfig.DEBUG){
+//                    callBack.onDataSucess();
+//                }
+                PageDataLoadManager.newInstance().loadDataStyle(pageDataLoadEntity.webDataError(responseEntity.getErrorMsg()));
+            }
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                super.onFailure(call, e);
+                Loger.d(TAG, "getAdOnLL:onFailure", e);
+//                if(AppConfig.DEBUG){
+//                    callBack.onDataSucess();
+//                }
+                PageDataLoadManager.newInstance().loadDataStyle(pageDataLoadEntity.webDataError());
+            }
+        });
+    }
+
     public Call download(final String url, final String saveDir, DownloadCallBack downloadCallBack) {
         return mHttpManager.download(url, saveDir, downloadCallBack);
     }
