@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.VolumeWaveView;
+import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 
 /**
  * Created by lyqai on 2018/1/11.
