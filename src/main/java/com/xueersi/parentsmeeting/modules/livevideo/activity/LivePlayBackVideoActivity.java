@@ -1767,6 +1767,14 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     hasQuestionShow = true;
                     break;
                 }
+            } else if (LocalCourseConfig.CATEGORY_LEC_ADVERT == videoQuestionEntity.getvCategory()) {
+                // 在开始时间和结束时间之间
+                if (startTime == playPosition) {
+//                if (startTime == playPosition) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    break;
+                }
             }
         }
 //        Loger.i(TAG, "getPlayQuetion:playPosition=" + playPosition + ",hasQuestionShow=" + hasQuestionShow + ",
