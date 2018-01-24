@@ -224,9 +224,10 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlQuestionContent.getLayoutParams();
+        Loger.d(TAG, "onConfigurationChanged:mIsLand=" + mIsLand);
         if (mIsLand) {
             lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
-            lp.addRule(0, R.id.rl_course_video_content);
+            lp.addRule(RelativeLayout.BELOW, 0);
         } else {
             lp.height = RelativeLayout.LayoutParams.MATCH_PARENT;
             lp.addRule(RelativeLayout.BELOW, R.id.rl_course_video_content);
@@ -992,6 +993,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         lectureLivePlayBackBll.getAdOnLL(mVideoEntity.getLiveId(), lecAdvertEntity, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
+                Loger.d(TAG, "showLecAdvertPager:mQuestionEntity=" + (mQuestionEntity == null));
                 if (mQuestionEntity != questionEntity) {
                     return;
                 }
@@ -1002,8 +1004,13 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
                     @Override
                     public void close() {
-                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                        if (lecAdvertPager != null) {
+                            rlQuestionContent.removeView(lecAdvertPager.getRootView());
+                        }
+                        Loger.d(TAG, "showLecAdvertPager:close=" + (mQuestionEntity == null));
+                        mQuestionEntity = null;
                         lecAdvertPager = null;
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                     }
 
                     @Override
@@ -1016,9 +1023,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                         (LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 rlQuestionContent.setVisibility(View.VISIBLE);
                 lecAdvertPager.initStep1();
-//        Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showLecAdvertPager");
-//        mPlayVideoControlHandler.sendMessage(msg);
-
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             }
         });
