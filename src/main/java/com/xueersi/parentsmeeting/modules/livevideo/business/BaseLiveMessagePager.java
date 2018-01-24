@@ -397,7 +397,16 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
         }
     };
 
-    public void addDanmaKuFlowers(int ftype, String name) {
+    public void addDanmaKuFlowers(final int ftype, final String name) {
+        if (mDanmakuContext == null) {
+            mView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    addDanmaKuFlowers(ftype, name);
+                }
+            }, 20);
+            return;
+        }
         BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
         if (danmaku == null || dvMessageDanmaku == null) {
             return;
