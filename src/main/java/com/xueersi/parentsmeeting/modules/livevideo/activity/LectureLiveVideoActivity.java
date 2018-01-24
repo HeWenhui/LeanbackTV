@@ -710,7 +710,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 reportPlayStarTime = System.currentTimeMillis();
             }
             mLiveBll.repair(true);
-            mLiveBll.liveGetPlayServer();
+            mLiveBll.liveGetPlayServer(false);
         }
     };
 
@@ -738,7 +738,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             long openTimeOut = System.currentTimeMillis() - openStartTime;
             mLogtf.d("openTimeOut:progress=" + vPlayer.getBufferProgress() + ",openTimeOut=" + openTimeOut);
             mLiveBll.repair(false);
-            mLiveBll.liveGetPlayServer();
+            mLiveBll.liveGetPlayServer(false);
         }
     };
 
@@ -794,22 +794,14 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     }
 
     @Override
-    public void onLiveStart(PlayServerEntity server, LiveTopic cacheData) {
+    public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         mServer = server;
-        final AtomicBoolean change = new AtomicBoolean(false);// 直播状态是不是变化
-        if (mLiveTopic != null) {
-            change.set(!mLiveTopic.getMode().equals(cacheData.getMode()));
-        }
-        mLogtf.d("onLiveStart:change=" + change.get());
         mLiveTopic = cacheData;
         questionBll.setLiveTopic(cacheData);
         mHandler.post(new Runnable() {
 
             @Override
             public void run() {
-                if (change.get()) {
-                    setFirstBackgroundVisible(View.VISIBLE);
-                }
                 if (tvLoadingHint != null) {
                     if (liveType != LiveBll.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic()
                             .getMode())) {
@@ -1107,7 +1099,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 }
             }
         });
-        mLiveBll.liveGetPlayServer();
+        mLiveBll.liveGetPlayServer(false);
     }
 
     public void postDelayedIfNotFinish(Runnable r, long delayMillis) {

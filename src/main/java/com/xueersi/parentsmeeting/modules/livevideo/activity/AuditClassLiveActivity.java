@@ -722,7 +722,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             }
             mLogtf.d("bufferTimeOut:progress=" + vPlayer.getBufferProgress());
             mLiveBll.repair(true);
-            mLiveBll.liveGetPlayServer();
+            mLiveBll.liveGetPlayServer(false);
         }
     };
 
@@ -736,7 +736,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             long openTimeOut = System.currentTimeMillis() - openStartTime;
             mLogtf.d("openTimeOut:progress=" + vPlayer.getBufferProgress() + ",openTimeOut=" + openTimeOut);
             mLiveBll.repair(false);
-            mLiveBll.liveGetPlayServer();
+            mLiveBll.liveGetPlayServer(false);
         }
     };
 
@@ -794,12 +794,9 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     }
 
     @Override
-    public void onLiveStart(PlayServerEntity server, LiveTopic cacheData) {
+    public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         mServer = server;
-        final AtomicBoolean change = new AtomicBoolean(false);// 直播状态是不是变化
-        if (mLiveTopic != null) {
-            change.set(!mLiveTopic.getMode().equals(cacheData.getMode()));
-        }
+        final AtomicBoolean change = new AtomicBoolean(modechange);// 直播状态是不是变化
         mLogtf.d("onLiveStart:change=" + change.get());
         mLiveTopic = cacheData;
         mHandler.post(new Runnable() {
@@ -1197,7 +1194,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 }
             }
         });
-        mLiveBll.liveGetPlayServer();
+        mLiveBll.liveGetPlayServer(false);
     }
 
     public void postDelayedIfNotFinish(Runnable r, long delayMillis) {
