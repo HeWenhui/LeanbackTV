@@ -104,7 +104,7 @@ public interface PraiseListAction {
     void destory();
 
     /**
-     * 判断榜单是否正在显示中
+     * 判断榜单是否正在显示
      *
      */
     boolean isShowing();

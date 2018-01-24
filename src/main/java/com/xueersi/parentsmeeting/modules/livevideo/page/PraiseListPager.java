@@ -222,8 +222,8 @@ public class PraiseListPager extends BasePager {
                 " 为你点赞，下次一定赶超你~",
                 " 为你点赞，好羡慕能上榜~",
                 " 为你点赞，" + abbStuName + "学神请接收我的膜拜",
-                " 为你点赞，运气不错，额外获得1颗赞哦~",
-                " 为你点赞，运气爆棚，额外获得2颗赞哦!"};
+                " 为你点赞，运气不错，额外获得<font color='#F13232'>1</font>颗赞哦~",
+                " 为你点赞，运气爆棚，额外获得<font color='#F13232'>2</font>颗赞哦!"};
 
         //开始表扬榜榜头动画
         startTitleAnimation();
@@ -353,27 +353,22 @@ public class PraiseListPager extends BasePager {
             @Override
             public void onClick(View view) {
                 mPraiseListBll.showPraiseScroll("测试","测试");
-              /*  ArrayList<String> arrayList = new ArrayList<>();
-                arrayList.add("测试4");
-                arrayList.add("测试5");
-                arrayList.add("测试6");
-                mPraiseListBll.receiveThumbsUpNotice(arrayList);*/
             }
         });
         tv5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ArrayList<String> arrayList = new ArrayList<>();
-                arrayList.add("测试1111");
-                arrayList.add("测试222");
-                arrayList.add("测试33");
+                arrayList.add("测试1");
+                arrayList.add("测试22");
+                arrayList.add("测试333");
                 mPraiseListBll.receiveThumbsUpNotice(arrayList);
             }
         });
         tv6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                mPraiseListBll.closePraiseList();
             }
         });
     }
@@ -520,8 +515,6 @@ public class PraiseListPager extends BasePager {
             return;
         Log.i(TAG,"startScrollAnimation");
 
-        liveBll.sendThumbsUpNum(1);
-
         if(stuName!=null && stuName.length()>4){
             stuName=stuName.substring(0,3)+"...";
         }
@@ -590,6 +583,7 @@ public class PraiseListPager extends BasePager {
 
             }
         });
+        liveBll.sendThumbsUpNum(1);
     }
 
     private void startTimer(){

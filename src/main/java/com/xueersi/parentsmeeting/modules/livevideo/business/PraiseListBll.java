@@ -117,6 +117,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         mLogtf.d("onHonerList");
         closePraiseList();
         isShowing = true;
+        mPraiseListType = PraiseListPager.PRAISE_LIST_TYPE_HONOR;
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -141,6 +142,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         mLogtf.d("onThumbsUpList");
         closePraiseList();
         isShowing = true;
+        mPraiseListType = PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP;
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -166,6 +168,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         mLogtf.d("onProgressList");
         closePraiseList();
         isShowing = true;
+        mPraiseListType = PraiseListPager.PRAISE_LIST_TYPE_PROGRESS;
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -205,10 +208,15 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
      * @param stuNames
      */
     @Override
-    public void receiveThumbsUpNotice(ArrayList<String> stuNames) {
+    public void receiveThumbsUpNotice(final ArrayList<String> stuNames) {
         mLogtf.d("receiveThumbsUpNotice");
         if(mPraiseList!=null)
-            mPraiseList.receiveThumbsUpNotice(stuNames);
+            mVPlayVideoControlHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mPraiseList.receiveThumbsUpNotice(stuNames);
+                }
+            });
     }
 
     /**
@@ -219,7 +227,12 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     public void showThumbsUpToast() {
         mLogtf.d("showThumbsUpToast");
         if(mPraiseList!=null)
-            mPraiseList.showThumbsUpToast();
+            mVPlayVideoControlHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mPraiseList.showThumbsUpToast();
+                }
+            });
     }
 
     /**
@@ -270,10 +283,15 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
      * @param enabled
      */
     @Override
-    public void setThumbsUpBtnEnabled(boolean enabled) {
+    public void setThumbsUpBtnEnabled(final boolean enabled) {
         mLogtf.d("setThumbsUpBtnEnabled");
         if(mPraiseList!=null)
-            mPraiseList.setThumbsUpBtnEnabled(enabled);
+            mVPlayVideoControlHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mPraiseList.setThumbsUpBtnEnabled(enabled);
+                }
+            });
     }
 
     /**

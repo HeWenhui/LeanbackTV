@@ -691,8 +691,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
         @Override
         public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed) {
-            //liveLazyBllCreat.createPraiseListAction();
-            //getProgressList(0);
             if (lastTopicstr.equals(topicstr)) {
                 mLogtf.i("onTopic(equals):topicstr=" + topicstr);
                 return;
@@ -1795,8 +1793,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      */
     private void onGetInfoSuccess(JSONObject object) {
         mGetInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, mLiveType, form);
-        //liveLazyBllCreat.createPraiseListAction();
-        //getProgressList(0);
         if (mGetInfo == null) {
             onLiveFailure("服务器异常", null);
             return;
@@ -3449,8 +3445,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 获取光荣榜
      */
     public synchronized void getHonorList(final int status) {
-        if(mPraiseListAction != null && status == 0
-                && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_HONOR)
+        if(mPraiseListAction != null && status == 0 && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_HONOR)
             //如果表扬榜单正在显示，并且当前榜单类型和新开启榜单类型相同，则退出。
             return;
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
@@ -3502,9 +3497,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 showToast("" + responseEntity.getErrorMsg());
-                if (status == 1 && mPraiseListAction != null) {
-                    mPraiseListAction.setThumbsUpBtnEnabled(true);
-                }
                 mLogtf.d("getHonorList:onPmError=" + responseEntity.getErrorMsg());
             }
         });
@@ -3514,8 +3506,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 获取点赞榜
      */
     public synchronized void getThumbsUpList() {
-        if(mPraiseListAction != null
-                && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP)
+        if(mPraiseListAction != null && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP)
             //如果表扬榜单正在显示，并且当前榜单类型和新开启榜单类型相同，则退出。
             return;
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
@@ -3563,8 +3554,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 获取进步榜
      */
     public synchronized void getProgressList(final int status) {
-        if(mPraiseListAction != null && status == 0
-                && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_PROGRESS)
+        if(mPraiseListAction != null && status == 0 && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_PROGRESS)
             //如果表扬榜单正在显示，并且当前榜单类型和新开启榜单类型相同，则退出
             return;
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
@@ -3616,9 +3606,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 showToast("" + responseEntity.getErrorMsg());
-                if (status == 1 && mPraiseListAction != null) {
-                    mPraiseListAction.setThumbsUpBtnEnabled(true);
-                }
                 mLogtf.d("getProgressList:onPmError=" + responseEntity.getErrorMsg());
             }
 
@@ -3679,7 +3666,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 学生计算赞数后私发老师
      */
     public void sendThumbsUpNum(int agreeNum) {
-        mLogtf.i("sendThumbsUpNum:agreeNum="+agreeNum);
+        mLogtf.i("sendThumbsUpNum:agreeNum="+agreeNum+",mCounTeacherStr="+mCounTeacherStr);
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "" + XESCODE.XCR_ROOM_AGREE_NUM_S);
