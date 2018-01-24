@@ -68,6 +68,9 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                         if (lecAdvertager != null) {
                             return;
                         }
+                        if (lecAdvertEntity.isLearn == 1) {
+                            return;
+                        }
                         lecAdvertager = new LecAdvertPager(context, lecAdvertEntity, LecAdvertBll.this);
                         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                         bottomContent.addView(lecAdvertager.getRootView(), lp);

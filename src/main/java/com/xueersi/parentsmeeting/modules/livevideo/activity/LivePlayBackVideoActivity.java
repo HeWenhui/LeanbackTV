@@ -1000,6 +1000,9 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 if (mQuestionEntity != questionEntity) {
                     return;
                 }
+                if (lecAdvertEntity.isLearn == 1) {
+                    return;
+                }
                 lecAdvertPager = new LecAdvertPager(LivePlayBackVideoActivity.this, lecAdvertEntity, new LecAdvertPagerClose() {
 
                     @Override

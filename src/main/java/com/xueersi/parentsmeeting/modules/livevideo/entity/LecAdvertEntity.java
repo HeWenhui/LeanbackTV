@@ -5,6 +5,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
  */
 
 public class LecAdvertEntity {
+    public int isLearn;
     public String course_id;
     public String id;
     public String nonce;
