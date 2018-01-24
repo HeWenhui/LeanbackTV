@@ -404,7 +404,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 //            if (AppConfig.DEBUG) {
 //                List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
 //                VideoQuestionEntity videoQuestionEntity = new VideoQuestionEntity();
-//                videoQuestionEntity.setvQuestionID("39804");
+//                videoQuestionEntity.setvQuestionType("39804");
 //                videoQuestionEntity.setvCategory(LocalCourseConfig.CATEGORY_LEC_ADVERT);
 //                videoQuestionEntity.setvQuestionInsretTime(600);
 //                videoQuestionEntity.setvEndTime(1600);
@@ -991,7 +991,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     /** 讲座广告 */
     private void showLecAdvertPager(final VideoQuestionEntity questionEntity) {
         final LecAdvertEntity lecAdvertEntity = new LecAdvertEntity();
-        lecAdvertEntity.course_id = questionEntity.getvQuestionID();
+        lecAdvertEntity.course_id = questionEntity.getvQuestionType();
 //        PageDataLoadEntity mPageDataLoadEntity = new PageDataLoadEntity(rlQuestionContent, R.id.fl_livelec_advert_content, DataErrorManager.IMG_TIP_BUTTON);
 //        PageDataLoadManager.newInstance().loadDataStyle(mPageDataLoadEntity.beginLoading());
         lectureLivePlayBackBll.getAdOnLL(mVideoEntity.getLiveId(), lecAdvertEntity, new AbstractBusinessDataCallBack() {
