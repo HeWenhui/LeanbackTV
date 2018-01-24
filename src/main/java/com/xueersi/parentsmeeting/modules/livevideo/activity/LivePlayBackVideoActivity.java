@@ -986,6 +986,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     private void showLecAdvertPager(final VideoQuestionEntity questionEntity) {
         final LecAdvertEntity lecAdvertEntity = new LecAdvertEntity();
         lecAdvertEntity.course_id = questionEntity.getvQuestionType();
+        lecAdvertEntity.id = questionEntity.getvQuestionID();
 //        PageDataLoadEntity mPageDataLoadEntity = new PageDataLoadEntity(rlQuestionContent, R.id.fl_livelec_advert_content, DataErrorManager.IMG_TIP_BUTTON);
 //        PageDataLoadManager.newInstance().loadDataStyle(mPageDataLoadEntity.beginLoading());
         lectureLivePlayBackBll.getAdOnLL(mVideoEntity.getLiveId(), lecAdvertEntity, new AbstractBusinessDataCallBack() {
