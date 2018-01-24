@@ -697,9 +697,12 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-//                            if (vPlayer != null) {
-//                                vPlayer.start();
-//                            }
+                            if (mQuestionEntity == null) {
+                                if (vPlayer != null) {
+                                    vPlayer.start();
+                                }
+                                return;
+                            }
                             if ("1".equals(mQuestionEntity.getIsVoice())) {
                                 try {
                                     showVoiceAnswer(mQuestionEntity);
