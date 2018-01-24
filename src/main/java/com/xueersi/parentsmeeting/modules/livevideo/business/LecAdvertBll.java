@@ -8,6 +8,7 @@ import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
+import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.view.layout.dataload.DataErrorManager;
 import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
 import com.xueersi.xesalib.view.layout.dataload.PageDataLoadManager;
@@ -89,4 +90,8 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
         }
     }
 
+    @Override
+    public void onPaySuccess(LecAdvertEntity lecAdvertEntity) {
+        Loger.d(TAG, "onPaySuccess:lecAdvertEntity=" + lecAdvertEntity.course_id);
+    }
 }

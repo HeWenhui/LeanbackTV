@@ -1004,6 +1004,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                         lecAdvertPager = null;
                     }
+
+                    @Override
+                    public void onPaySuccess(LecAdvertEntity lecAdvertEntity) {
+
+                    }
                 });
                 rlQuestionContent.removeAllViews();
                 rlQuestionContent.addView(lecAdvertPager.getRootView(), new LayoutParams

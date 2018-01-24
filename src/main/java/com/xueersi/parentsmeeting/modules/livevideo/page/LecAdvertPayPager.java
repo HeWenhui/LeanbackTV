@@ -20,14 +20,13 @@ public class LecAdvertPayPager extends BaseWebviewPager {
     String reloadurl;
     RelativeLayout rl_livevideo_subject_web;
     TextView tv_livelec_advert_step2_title;
-    ImageView iv_livelec_advert_step2_back;
     String url;
     OnPaySuccess onPaySuccess;
+    boolean paySuccess = false;
 
-    public LecAdvertPayPager(Context context, String url, ImageView iv_livelec_advert_step2_back, TextView tv_livelec_advert_step2_title, OnPaySuccess onPaySuccess) {
+    public LecAdvertPayPager(Context context, String url, TextView tv_livelec_advert_step2_title, OnPaySuccess onPaySuccess) {
         super(context);
         this.url = url;
-        this.iv_livelec_advert_step2_back = iv_livelec_advert_step2_back;
         this.tv_livelec_advert_step2_title = tv_livelec_advert_step2_title;
         this.onPaySuccess = onPaySuccess;
         initWebView();
@@ -88,7 +87,7 @@ public class LecAdvertPayPager extends BaseWebviewPager {
 //        }
         if (reloadurl.contains("xueersi.com/ShoppingCart/complete")) {
             if (onPaySuccess != null) {
-                tv_livelec_advert_step2_title.setText("购买成功");
+                paySuccess = true;
                 onPaySuccess.onPaySuccess();
                 return true;
             }
@@ -122,12 +121,6 @@ public class LecAdvertPayPager extends BaseWebviewPager {
                 loadUrl(reloadurl);
             }
         });
-        iv_livelec_advert_step2_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Loger.d(TAG, "initData:onClick:GoBack=" + wvSubjectWeb.canGoBack());
-            }
-        });
     }
 
     private void newWebView() {
@@ -146,7 +139,11 @@ public class LecAdvertPayPager extends BaseWebviewPager {
     @Override
     public void onReceivedTitle(WebView view, String title) {
         super.onReceivedTitle(view, title);
-        tv_livelec_advert_step2_title.setText(title);
+        Loger.d(TAG, "onReceivedTitle:paySuccess=" + paySuccess + ",title=" + title);
+        if (paySuccess) {
+            return;
+        }
+//        tv_livelec_advert_step2_title.setText(title);
     }
 
     public interface OnPaySuccess {

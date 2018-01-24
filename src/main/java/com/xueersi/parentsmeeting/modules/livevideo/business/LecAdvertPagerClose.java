@@ -7,4 +7,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
  */
 public interface LecAdvertPagerClose {
     void close();
+
+    void onPaySuccess(LecAdvertEntity lecAdvertEntity);
 }

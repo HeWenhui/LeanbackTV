@@ -89,10 +89,10 @@ public class LecAdvertPager extends BasePager {
         String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
         String mAppChannel = AppBll.getInstance().getAppInfoEntity().getAppChannel(); // APP渠道
         String url = BrowserBll.getAutoLoginURL(mEnStuId, lecAdvertEntity.signUpUrl, mAppChannel, 0, false);
-        ImageView iv_livelec_advert_step2_back = (ImageView) step2.findViewById(R.id.iv_livelec_advert_step2_back);
-        lecAdvertPayPager = new LecAdvertPayPager(mContext, url, iv_livelec_advert_step2_back, tv_livelec_advert_step2_title, new LecAdvertPayPager.OnPaySuccess() {
+        lecAdvertPayPager = new LecAdvertPayPager(mContext, url, tv_livelec_advert_step2_title, new LecAdvertPayPager.OnPaySuccess() {
             @Override
             public void onPaySuccess() {
+                step2.findViewById(R.id.rl_livelec_advert_step2_title).setBackgroundColor(mContext.getResources().getColor(R.color.COLOR_FFFFFF));
                 tv_livelec_advert_step2_title.setText("购买成功");
                 RelativeLayout relativeLayout = (RelativeLayout) step2.findViewById(R.id.rl_livelec_advert_step3_title);
                 step3 = inflater.inflate(R.layout.page_leclive_advert_step3, relativeLayout, false);
@@ -100,6 +100,7 @@ public class LecAdvertPager extends BasePager {
                 relativeLayout.addView(step3, lp);
                 TextView tv_livelec_advert_step3_tip2 = (TextView) step3.findViewById(R.id.tv_livelec_advert_step3_tip2);
                 tv_livelec_advert_step3_tip2.setText("稍后辅导老师会通过电话联系你\n请耐心等待");
+                lecAdvertBll.onPaySuccess(lecAdvertEntity);
             }
         });
         ViewGroup group = (ViewGroup) step2.findViewById(R.id.rl_livelec_advert_step2_web);
