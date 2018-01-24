@@ -3452,6 +3452,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         if (mPraiseListAction != null && status == 0 && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_HONOR)
             //如果表扬榜单正在显示，并且当前榜单类型和新开启榜单类型相同，则退出。
             return;
+        if (mPraiseListAction != null && status == 0)
+            //设置当前榜单类型
+            mPraiseListAction.setCurrentListType(PraiseListPager.PRAISE_LIST_TYPE_HONOR);
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("getHonorList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
@@ -3492,6 +3495,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             getHonorList(0);
                         }
                     });
+                    if (mPraiseListAction != null)
+                        mPraiseListAction.setCurrentListType(0);
                 } else if (status == 1 && mPraiseListAction != null) {
                     mPraiseListAction.setThumbsUpBtnEnabled(true);
                 }
@@ -3513,6 +3518,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         if (mPraiseListAction != null && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP)
             //如果表扬榜单正在显示，并且当前榜单类型和新开启榜单类型相同，则退出。
             return;
+        if (mPraiseListAction != null)
+            //设置当前榜单类型
+            mPraiseListAction.setCurrentListType(PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP);
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("getThumbsUpList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
@@ -3544,6 +3552,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         getThumbsUpList();
                     }
                 });
+                if (mPraiseListAction != null)
+                    mPraiseListAction.setCurrentListType(0);
             }
 
             @Override
@@ -3561,6 +3571,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         if (mPraiseListAction != null && status == 0 && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_PROGRESS)
             //如果表扬榜单正在显示，并且当前榜单类型和新开启榜单类型相同，则退出
             return;
+        if (mPraiseListAction != null)
+            //设置当前榜单类型
+            mPraiseListAction.setCurrentListType(PraiseListPager.PRAISE_LIST_TYPE_PROGRESS);
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("getProgressList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
@@ -3601,6 +3614,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             getProgressList(0);
                         }
                     });
+                    if (mPraiseListAction != null)
+                        mPraiseListAction.setCurrentListType(0);
                 } else if (status == 1 && mPraiseListAction != null) {
                     mPraiseListAction.setThumbsUpBtnEnabled(true);
                 }

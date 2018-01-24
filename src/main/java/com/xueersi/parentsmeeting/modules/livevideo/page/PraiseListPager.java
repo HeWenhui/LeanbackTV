@@ -411,6 +411,7 @@ public class PraiseListPager extends BasePager {
 
     /** 收到给我点赞的消息 */
     public void receiveThumbsUpNotice(ArrayList<String> stuNames){
+        int stuNamesSize = this.stuNames.size();
         if(!isOnList)
             return;
         if(number > this.stuNames.size())
@@ -432,7 +433,8 @@ public class PraiseListPager extends BasePager {
         }
         //计算点赞总数，发送至教师端
         liveBll.sendThumbsUpNum(totalNums);
-        if(this.stuNames.size()!=0)
+        if(this.stuNames.size()!=0 && this.stuNames.size()>stuNamesSize)
+            //如果给我点赞的同学的集合不为空，且数量增加，开启弹幕滚动
             startTimer();
     }
 

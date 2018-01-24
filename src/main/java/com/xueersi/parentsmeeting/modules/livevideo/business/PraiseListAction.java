@@ -110,6 +110,13 @@ public interface PraiseListAction {
     boolean isShowing();
 
     /**
+     * 设置当前榜单类型
+     *
+     * @param listType
+     */
+    void setCurrentListType(int listType);
+
+    /**
      * 获取当前榜单类型
      *
      */

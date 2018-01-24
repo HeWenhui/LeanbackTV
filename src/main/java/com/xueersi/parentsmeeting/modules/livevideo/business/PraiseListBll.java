@@ -117,7 +117,6 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         mLogtf.d("onHonerList");
         closePraiseList();
         isShowing = true;
-        mPraiseListType = PraiseListPager.PRAISE_LIST_TYPE_HONOR;
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -142,7 +141,6 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         mLogtf.d("onThumbsUpList");
         closePraiseList();
         isShowing = true;
-        mPraiseListType = PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP;
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -168,7 +166,6 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         mLogtf.d("onProgressList");
         closePraiseList();
         isShowing = true;
-        mPraiseListType = PraiseListPager.PRAISE_LIST_TYPE_PROGRESS;
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -343,6 +340,16 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     @Override
     public boolean isShowing() {
         return isShowing;
+    }
+
+    /**
+     * 设置当前榜单类型
+     *
+     * @param listType
+     */
+    @Override
+    public void setCurrentListType(int listType) {
+        mPraiseListType = listType;
     }
 
     /**
