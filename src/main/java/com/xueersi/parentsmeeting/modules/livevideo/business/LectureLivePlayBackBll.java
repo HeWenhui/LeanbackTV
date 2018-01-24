@@ -606,9 +606,13 @@ public class LectureLivePlayBackBll extends BaseBll {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                lecAdvertEntity.limit = jsonObject.optString("limit");
-                lecAdvertEntity.signUpUrl = jsonObject.optString("signUpUrl");
-                lecAdvertEntity.saleName = jsonObject.optString("saleName");
+                int isLearn = jsonObject.optInt("isLearn", 0);
+                lecAdvertEntity.isLearn = isLearn;
+                if (isLearn == 0) {
+                    lecAdvertEntity.limit = jsonObject.optString("limit");
+                    lecAdvertEntity.signUpUrl = jsonObject.optString("signUpUrl");
+                    lecAdvertEntity.saleName = jsonObject.optString("saleName");
+                }
                 callBack.onDataSucess();
             }
         });

@@ -35,7 +35,6 @@ import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseBll;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.business.AppBll;
-import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.AnswerEntity;
 import com.xueersi.parentsmeeting.entity.AppInfoEntity;
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
@@ -49,7 +48,6 @@ import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertPagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
@@ -95,10 +93,7 @@ import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.utils.time.TimeUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
-import com.xueersi.xesalib.view.layout.dataload.DataErrorManager;
 import com.xueersi.xesalib.view.layout.dataload.DataLoadEntity;
-import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
-import com.xueersi.xesalib.view.layout.dataload.PageDataLoadManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -108,7 +103,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -1015,7 +1009,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     public void onPaySuccess(LecAdvertEntity lecAdvertEntity) {
 
                     }
-                });
+                }, mVideoEntity.getLiveId());
                 rlQuestionContent.removeAllViews();
                 rlQuestionContent.addView(lecAdvertPager.getRootView(), new LayoutParams
                         (LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));

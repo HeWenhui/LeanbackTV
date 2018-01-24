@@ -149,4 +149,5 @@ public class LecAdvertPayPager extends BaseWebviewPager {
     public interface OnPaySuccess {
         void onPaySuccess();
     }
+
 }

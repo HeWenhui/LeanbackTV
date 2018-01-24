@@ -2,10 +2,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.webkit.CookieManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -33,11 +34,13 @@ public class LecAdvertPager extends BasePager {
     private LecAdvertPayPager lecAdvertPayPager;
     private int step = 1;
     LecAdvertEntity lecAdvertEntity;
+    String liveid;
 
-    public LecAdvertPager(Context context, LecAdvertEntity lecAdvertEntity, LecAdvertPagerClose lecAdvertBll) {
+    public LecAdvertPager(Context context, LecAdvertEntity lecAdvertEntity, LecAdvertPagerClose lecAdvertBll, String liveid) {
         super(context);
         this.lecAdvertBll = lecAdvertBll;
         this.lecAdvertEntity = lecAdvertEntity;
+        this.liveid = liveid;
         initData();
     }
 
@@ -81,7 +84,7 @@ public class LecAdvertPager extends BasePager {
 
     @Override
     public void initData() {
-
+        setCookie();
     }
 
     private void initViewStep2() {
@@ -92,6 +95,7 @@ public class LecAdvertPager extends BasePager {
         lecAdvertPayPager = new LecAdvertPayPager(mContext, url, tv_livelec_advert_step2_title, new LecAdvertPayPager.OnPaySuccess() {
             @Override
             public void onPaySuccess() {
+                clearCookie();
                 step2.findViewById(R.id.rl_livelec_advert_step2_title).setBackgroundColor(mContext.getResources().getColor(R.color.COLOR_FFFFFF));
                 tv_livelec_advert_step2_title.setText("购买成功");
                 RelativeLayout relativeLayout = (RelativeLayout) step2.findViewById(R.id.rl_livelec_advert_step3_title);
@@ -109,6 +113,7 @@ public class LecAdvertPager extends BasePager {
         step2.findViewById(R.id.iv_livelec_advert_step2_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                clearCookie();
                 lecAdvertBll.close();
             }
         });
@@ -116,5 +121,21 @@ public class LecAdvertPager extends BasePager {
 
     public int getStep() {
         return step;
+    }
+
+    private void setCookie() {
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.setAcceptCookie(true);
+//        广告id & 直播id & 直播类型 & 端类型  base64编码
+        String cookie = lecAdvertEntity.id + "&" + liveid + "&2&3";
+        byte[] buffer = cookie.getBytes();
+        String value = Base64.encodeToString(buffer, 0, buffer.length, 0);
+        cookieManager.setCookie(".xueersi.com", "lecture_ads=" + value);
+    }
+
+    private void clearCookie() {
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.setAcceptCookie(true);
+        cookieManager.setCookie(".xueersi.com", "lecture_ads=");
     }
 }

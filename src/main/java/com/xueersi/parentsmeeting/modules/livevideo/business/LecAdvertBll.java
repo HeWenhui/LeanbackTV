@@ -5,13 +5,9 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
 import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.view.layout.dataload.DataErrorManager;
-import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
-import com.xueersi.xesalib.view.layout.dataload.PageDataLoadManager;
 
 /**
  * Created by lyqai on 2018/1/15.
@@ -23,6 +19,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
     RelativeLayout bottomContent;
     LecAdvertPager lecAdvertager;
     LiveBll liveBll;
+    String liveid;
 
     public LecAdvertBll(Context context) {
         this.context = context;
@@ -30,6 +27,10 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
 
     public void setLiveBll(LiveBll liveBll) {
         this.liveBll = liveBll;
+    }
+
+    public void setLiveid(String liveid) {
+        this.liveid = liveid;
     }
 
     public void initView(RelativeLayout bottomContent, boolean isLand) {
@@ -71,7 +72,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                         if (lecAdvertEntity.isLearn == 1) {
                             return;
                         }
-                        lecAdvertager = new LecAdvertPager(context, lecAdvertEntity, LecAdvertBll.this);
+                        lecAdvertager = new LecAdvertPager(context, lecAdvertEntity, LecAdvertBll.this, liveid);
                         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                         bottomContent.addView(lecAdvertager.getRootView(), lp);
                         lecAdvertager.initStep1();
