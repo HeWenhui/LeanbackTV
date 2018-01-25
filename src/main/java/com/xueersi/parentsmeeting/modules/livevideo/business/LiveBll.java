@@ -2266,7 +2266,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         h5CoursewareAction = null;
         englishH5CoursewareAction = null;
         videoChatAction = null;
-        mPraiseListAction = null;
         if (mCataDataCancle != null) {
             mCataDataCancle.cancel();
             mCataDataCancle = null;
@@ -2281,6 +2280,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
         if (mPraiseListAction != null) {
             mPraiseListAction.destory();
+            mPraiseListAction = null;
         }
     }
 
