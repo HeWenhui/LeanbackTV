@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Handler;
@@ -135,7 +136,7 @@ public class AnswerRankBll {
         //bottomContent.setClickable(true);
         if (llRankList == null) {
             llRankList = new LinearLayout(mContext);
-            llRankList.setClickable(true);
+            //llRankList.setClickable(true);
             llRankList.setOrientation(LinearLayout.VERTICAL);
             int topMargin = (int) ((LiveVideoActivity.VIDEO_HEIGHT - LiveVideoActivity.VIDEO_HEAD_HEIGHT) * displayHeight /
                     LiveVideoActivity.VIDEO_HEIGHT);
@@ -319,6 +320,9 @@ public class AnswerRankBll {
         //设置主视图参数
         RelativeLayout.LayoutParams mainParam=new RelativeLayout.LayoutParams(videoWidth, displayHeight);
         mainParam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        if(llRankList!=null) {
+            mainParam.addRule(RelativeLayout.LEFT_OF, llRankList.getId());
+        }
         rlFullMarkList.setLayoutParams(mainParam);
         if(lst.size()>14){
             new Handler().postDelayed(new Runnable() {
@@ -329,7 +333,7 @@ public class AnswerRankBll {
             },2000);
         }
 
-        bottomContent.addView(rlFullMarkList);
+        bottomContent.addView(rlFullMarkList,mainParam);
         umsAgentbll(type);
         if(tvStatus!=null){
             tvStatus.setText("答题结束");
@@ -392,13 +396,13 @@ public class AnswerRankBll {
      * @param height
      */
     public void setVideoLayout(int width, int height) {
-        if (displayWidth == width && displayHeight == height) {
+        int screenWidth = getScreenParam();
+        if (displayWidth == screenWidth && displayHeight == height) {
             return;
         }
         displayHeight = height;
-        displayWidth = width;
 
-        int screenWidth = ScreenUtils.getScreenWidth();
+        displayWidth = screenWidth;
         int screenHeight = ScreenUtils.getScreenHeight();
         int wradio = 0, topMargin = 0, bottomMargin = 0;
         if (width > 0) {
@@ -409,6 +413,9 @@ public class AnswerRankBll {
         if(rlFullMarkList !=null){
             RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(videoWidth,displayHeight);
             params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            if(llRankList!=null) {
+                params.addRule(RelativeLayout.LEFT_OF, llRankList.getId());
+            }
             rlFullMarkList.setLayoutParams(params);
             setLinearParam();
             rlFullMarkList.postDelayed(new Runnable() {
@@ -540,5 +547,12 @@ public class AnswerRankBll {
                 break;
         }
         mLiveBll.umsAgentShowWithTeacherRole(eventId,map);
+    }
+    private int getScreenParam(){
+        final View contentView = ((Activity)mContext).findViewById(android.R.id.content);
+        final View actionBarOverlayLayout = (View) contentView.getParent();
+        Rect r = new Rect();
+        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
+        return (r.right - r.left);
     }
 }

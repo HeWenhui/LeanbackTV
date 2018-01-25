@@ -342,10 +342,16 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                answerRankBll.showFullMarkList(lst,1);
                 answerRankBll.showRankList(lst1);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        answerRankBll.showFullMarkList(lst,1);
+
+                    }
+                },1000);
             }
-        },3000);*/
+        },1000);*/
     }
 
     protected boolean initData() {
