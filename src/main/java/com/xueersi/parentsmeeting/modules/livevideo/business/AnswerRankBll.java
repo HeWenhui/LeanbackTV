@@ -340,7 +340,7 @@ public class AnswerRankBll {
             public void run() {
                 hideFullMarkList();
             }
-        },450000);
+        },4500);
     }
     /**
      * 隐藏满分榜视图
