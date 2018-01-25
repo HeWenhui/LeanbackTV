@@ -55,15 +55,18 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.VPlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VP;
@@ -327,15 +330,20 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         for(int i=0;i<16;i++){
             FullMarkListEntity entity=new FullMarkListEntity();
             entity.setAnswer_time(""+(60+i));
-            entity.setStuName("李亚龙啊"+i);
+            entity.setStuName("李亚龙啊");
             entity.setId(UserBll.getInstance().getMyUserInfoEntity().getStuId()+(i==5?"":"abc"));
             lst.add(entity);
         }
+        final ArrayList<RankUserEntity> lst1=new ArrayList<>();
+        RankUserEntity entity=new RankUserEntity();
+        entity.setName("李亚龙啊");
+        entity.setId("abc");
+        lst1.add(entity);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                answerRankBll.showFullMarkList(lst);
-                answerRankBll.showRankList(new ArrayList<RankUserEntity>());
+                answerRankBll.showFullMarkList(lst,1);
+                answerRankBll.showRankList(lst1);
             }
         },3000);*/
     }

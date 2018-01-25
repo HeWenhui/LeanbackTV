@@ -340,7 +340,7 @@ public class AnswerRankBll {
             public void run() {
                 hideFullMarkList();
             }
-        },4500);
+        },450000);
     }
     /**
      * 隐藏满分榜视图
@@ -411,6 +411,15 @@ public class AnswerRankBll {
             params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             rlFullMarkList.setLayoutParams(params);
             setLinearParam();
+            rlFullMarkList.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(rlFullMarkList.findViewById(R.id.sv_live_full_mark_list).getScrollX()>500) {
+                        rlFullMarkList.findViewById(R.id.sv_live_full_mark_list)
+                                .scrollTo(videoWidth, 0);
+                    }
+                }
+            },50);
         }
         if (height > 0) {
             topMargin = (int) ((LiveVideoActivity.VIDEO_HEIGHT - LiveVideoActivity.VIDEO_HEAD_HEIGHT) * height /
@@ -485,16 +494,16 @@ public class AnswerRankBll {
         tvNo1.setMaxLines(2);
         tvNo2.setMaxLines(2);
         tvNo3.setMaxLines(2);
-        RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams((int)(videoWidth*0.086f), ViewGroup.LayoutParams.WRAP_CONTENT);
-        params1.setMargins((int) (0.115f * videoWidth), 0, 0, (int) (0.148f * displayHeight));
+        RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams((int)(videoWidth*0.09f), ViewGroup.LayoutParams.WRAP_CONTENT);
+        params1.setMargins((int) (0.113f * videoWidth), 0, 0, (int) (0.148f * displayHeight));
         params1.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         params1.addRule(RelativeLayout.RIGHT_OF,R.id.tv_full_mark_list_no2);
-        RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams((int)(videoWidth*0.086f), ViewGroup.LayoutParams.WRAP_CONTENT);
-        params2.setMargins((int) (0.255f * videoWidth), 0, 0, (int) (0.12f * displayHeight));
+        RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams((int)(videoWidth*0.09f), ViewGroup.LayoutParams.WRAP_CONTENT);
+        params2.setMargins((int) (0.251f * videoWidth), 0, 0, (int) (0.12f * displayHeight));
         params2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         params2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        RelativeLayout.LayoutParams params3 = new RelativeLayout.LayoutParams((int)(videoWidth*0.086f), ViewGroup.LayoutParams.WRAP_CONTENT);
-        params3.setMargins((int) (0.124f * videoWidth), 0, 0, (int) (0.101f * displayHeight));
+        RelativeLayout.LayoutParams params3 = new RelativeLayout.LayoutParams((int)(videoWidth*0.09f), ViewGroup.LayoutParams.WRAP_CONTENT);
+        params3.setMargins((int) (0.118f * videoWidth), 0, 0, (int) (0.101f * displayHeight));
         params3.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         params3.addRule(RelativeLayout.RIGHT_OF,R.id.tv_full_mark_list_no1);
         tvNo1.setLayoutParams(params1);
