@@ -104,10 +104,17 @@ public interface PraiseListAction {
     void destory();
 
     /**
-     * 判断榜单是否正在显示中
+     * 判断榜单是否正在显示
      *
      */
     boolean isShowing();
+
+    /**
+     * 设置当前榜单类型
+     *
+     * @param listType
+     */
+    void setCurrentListType(int listType);
 
     /**
      * 获取当前榜单类型

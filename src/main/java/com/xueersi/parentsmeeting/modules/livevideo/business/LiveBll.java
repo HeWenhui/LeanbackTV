@@ -733,7 +733,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         //模式切换为主讲，关闭表扬榜
                         if (mPraiseListAction != null && liveTopic.getMode().equals(LiveTopic.MODE_CLASS))
                             mPraiseListAction.closePraiseList();
-                        liveGetPlayServer();
+                        liveGetPlayServer(true);
                     }
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
                     if (mainRoomstatus.isHaveExam() && mQuestionAction != null) {
@@ -1056,7 +1056,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             if (videoChatAction != null) {
                                 videoChatAction.quit("off", "", "change");
                             }
-                            liveGetPlayServer();
+                            //模式切换为主讲，关闭表扬榜
+                            if (mPraiseListAction != null && mode.equals(LiveTopic.MODE_CLASS))
+                                mPraiseListAction.closePraiseList();
+                            liveGetPlayServer(true);
                         }
                     }
                     break;
@@ -2108,11 +2111,15 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
     /** 第一次调度，不判断老师状态 */
     public void liveGetPlayServerFirst() {
-        liveGetPlayServer(mLiveTopic.getMode());
+        liveGetPlayServer(mLiveTopic.getMode(), false);
     }
 
-    /** 调度，使用LiveTopic的mode */
-    public void liveGetPlayServer() {
+    /**
+     * 调度，使用LiveTopic的mode
+     *
+     * @param modechange
+     */
+    public void liveGetPlayServer(boolean modechange) {
         new Thread() {
             @Override
             public void run() {
@@ -2123,12 +2130,12 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 }
             }
         }.start();
-        liveGetPlayServer(mLiveTopic.getMode());
+        liveGetPlayServer(mLiveTopic.getMode(), modechange);
     }
 
     private long lastGetPlayServer;
 
-    private void liveGetPlayServer(final String mode) {
+    private void liveGetPlayServer(final String mode, final boolean modechange) {
         if (mLiveType == LIVE_TYPE_LIVE) {
             if (mGetInfo.getStudentLiveInfo().isExpe() && LiveTopic.MODE_TRANING.equals(mode)) {
                 mLogtf.d("liveGetPlayServer:isExpe");
@@ -2177,7 +2184,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
                         if (time < 15000) {
                             if (mVideoAction != null && mLiveTopic != null) {
-                                mVideoAction.onLiveStart(null, mLiveTopic);
+                                mVideoAction.onLiveStart(null, mLiveTopic, modechange);
                             }
                             mHandler.removeCallbacks(mStatisticsRun);
                             postDelayedIfNotFinish(mStatisticsRun, 300000);
@@ -2193,7 +2200,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         @Override
                         public void run() {
                             mLogtf.d("liveGetPlayServer:onError retry1");
-                            liveGetPlayServer();
+                            liveGetPlayServer(modechange);
                         }
                     }, 1000);
                 } else {
@@ -2202,7 +2209,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         @Override
                         public void run() {
                             mLogtf.d("liveGetPlayServer:onError retry2");
-                            liveGetPlayServer();
+                            liveGetPlayServer(modechange);
                         }
                     });
                 }
@@ -2224,7 +2231,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         }
                         mServer = server;
                         if (mVideoAction != null && mLiveTopic != null) {
-                            mVideoAction.onLiveStart(server, mLiveTopic);
+                            mVideoAction.onLiveStart(server, mLiveTopic, modechange);
                         }
                         mHandler.removeCallbacks(mStatisticsRun);
                         postDelayedIfNotFinish(mStatisticsRun, 5 * 60 * 1000);
@@ -2234,7 +2241,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
                             @Override
                             public void run() {
-                                liveGetPlayServer();
+                                liveGetPlayServer(modechange);
                             }
                         });
                     }
@@ -2247,7 +2254,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
                         @Override
                         public void run() {
-                            liveGetPlayServer();
+                            liveGetPlayServer(modechange);
                         }
                     });
                 }
@@ -2283,7 +2290,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         h5CoursewareAction = null;
         englishH5CoursewareAction = null;
         videoChatAction = null;
-        mPraiseListAction = null;
         if (mCataDataCancle != null) {
             mCataDataCancle.cancel();
             mCataDataCancle = null;
@@ -2298,6 +2304,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
         if (mPraiseListAction != null) {
             mPraiseListAction.destory();
+            mPraiseListAction = null;
         }
     }
 
@@ -3181,7 +3188,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             Loger.i(TAG, "onNetWorkChange:liveGetPlayServerError=" + liveGetPlayServerError);
             if (liveGetPlayServerError) {
                 liveGetPlayServerError = false;
-                liveGetPlayServer(mLiveTopic.getMode());
+                liveGetPlayServer(mLiveTopic.getMode(), false);
             }
         }
         if (englishH5CoursewareAction != null) {
@@ -3500,10 +3507,12 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 获取光荣榜
      */
     public synchronized void getHonorList(final int status) {
-        if (mPraiseListAction != null && status == 0
-                && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_HONOR)
+        if (mPraiseListAction != null && status == 0 && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_HONOR)
             //如果表扬榜单正在显示，并且当前榜单类型和新开启榜单类型相同，则退出。
             return;
+        if (mPraiseListAction != null && status == 0)
+            //设置当前榜单类型
+            mPraiseListAction.setCurrentListType(PraiseListPager.PRAISE_LIST_TYPE_HONOR);
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("getHonorList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
@@ -3544,6 +3553,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             getHonorList(0);
                         }
                     });
+                    if (mPraiseListAction != null)
+                        mPraiseListAction.setCurrentListType(0);
                 } else if (status == 1 && mPraiseListAction != null) {
                     mPraiseListAction.setThumbsUpBtnEnabled(true);
                 }
@@ -3553,9 +3564,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 showToast("" + responseEntity.getErrorMsg());
-                if (status == 1 && mPraiseListAction != null) {
-                    mPraiseListAction.setThumbsUpBtnEnabled(true);
-                }
                 mLogtf.d("getHonorList:onPmError=" + responseEntity.getErrorMsg());
             }
         });
@@ -3565,10 +3573,12 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 获取点赞榜
      */
     public synchronized void getThumbsUpList() {
-        if (mPraiseListAction != null
-                && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP)
+        if (mPraiseListAction != null && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP)
             //如果表扬榜单正在显示，并且当前榜单类型和新开启榜单类型相同，则退出。
             return;
+        if (mPraiseListAction != null)
+            //设置当前榜单类型
+            mPraiseListAction.setCurrentListType(PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP);
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("getThumbsUpList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
@@ -3600,6 +3610,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         getThumbsUpList();
                     }
                 });
+                if (mPraiseListAction != null)
+                    mPraiseListAction.setCurrentListType(0);
             }
 
             @Override
@@ -3614,10 +3626,12 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 获取进步榜
      */
     public synchronized void getProgressList(final int status) {
-        if (mPraiseListAction != null && status == 0
-                && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_PROGRESS)
+        if (mPraiseListAction != null && status == 0 && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_PROGRESS)
             //如果表扬榜单正在显示，并且当前榜单类型和新开启榜单类型相同，则退出
             return;
+        if (mPraiseListAction != null)
+            //设置当前榜单类型
+            mPraiseListAction.setCurrentListType(PraiseListPager.PRAISE_LIST_TYPE_PROGRESS);
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("getProgressList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
@@ -3658,6 +3672,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             getProgressList(0);
                         }
                     });
+                    if (mPraiseListAction != null)
+                        mPraiseListAction.setCurrentListType(0);
                 } else if (status == 1 && mPraiseListAction != null) {
                     mPraiseListAction.setThumbsUpBtnEnabled(true);
                 }
@@ -3667,9 +3683,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 showToast("" + responseEntity.getErrorMsg());
-                if (status == 1 && mPraiseListAction != null) {
-                    mPraiseListAction.setThumbsUpBtnEnabled(true);
-                }
                 mLogtf.d("getProgressList:onPmError=" + responseEntity.getErrorMsg());
             }
 
@@ -3730,7 +3743,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 学生计算赞数后私发老师
      */
     public void sendThumbsUpNum(int agreeNum) {
-        mLogtf.i("sendThumbsUpNum:agreeNum=" + agreeNum);
+        mLogtf.i("sendThumbsUpNum:agreeNum=" + agreeNum + ",mCounTeacherStr=" + mCounTeacherStr);
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "" + XESCODE.XCR_ROOM_AGREE_NUM_S);

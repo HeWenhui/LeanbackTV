@@ -30,8 +30,6 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     private final List<AnswerEntity> mAnswerEntityLst = new ArrayList<>();
     /** 互动题是不是用h5 */
     public boolean isTestUseH5;
-    /** 教师端生成随机标识，用于统计 */
-    public String nonce;
     /** 语音评测二期-是不是用 */
     public String isAllow42;
     /** 语音评测二期-评测内容 */

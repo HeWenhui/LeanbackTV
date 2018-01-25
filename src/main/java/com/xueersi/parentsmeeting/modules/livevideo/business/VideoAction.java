@@ -30,7 +30,7 @@ public interface VideoAction {
     /**
      * 直播开始
      */
-    void onLiveStart(PlayServerEntity server, LiveTopic cacheData);
+    void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange);
 
     /**
      * 课程规定结束时间半小时之后

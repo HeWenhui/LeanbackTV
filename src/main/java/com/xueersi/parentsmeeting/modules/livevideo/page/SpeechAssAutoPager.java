@@ -147,7 +147,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         this.nonce = nonce;
         this.speechEvalAction = speechEvalAction;
         logToFile.i("SpeechAssessmentPager:id=" + id);
-        entranceTime = System.currentTimeMillis();
         startProgColor = context.getResources().getColor(R.color.COLOR_6462A2);
         progColor = 0;
         this.haveAnswer = haveAnswer;
@@ -177,7 +176,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         this.nonce = nonce;
         this.speechEvalAction = speechEvalAction;
         logToFile.i("SpeechAssessmentPager:id=" + id);
-        entranceTime = System.currentTimeMillis();
         startProgColor = context.getResources().getColor(R.color.COLOR_6462A2);
         progColor = 0;
 //        content = "You are very good,You are very good";

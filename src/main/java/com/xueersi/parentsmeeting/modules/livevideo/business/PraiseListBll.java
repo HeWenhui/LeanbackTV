@@ -205,10 +205,15 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
      * @param stuNames
      */
     @Override
-    public void receiveThumbsUpNotice(ArrayList<String> stuNames) {
+    public void receiveThumbsUpNotice(final ArrayList<String> stuNames) {
         mLogtf.d("receiveThumbsUpNotice");
         if(mPraiseList!=null)
-            mPraiseList.receiveThumbsUpNotice(stuNames);
+            mVPlayVideoControlHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mPraiseList.receiveThumbsUpNotice(stuNames);
+                }
+            });
     }
 
     /**
@@ -219,7 +224,12 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     public void showThumbsUpToast() {
         mLogtf.d("showThumbsUpToast");
         if(mPraiseList!=null)
-            mPraiseList.showThumbsUpToast();
+            mVPlayVideoControlHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mPraiseList.showThumbsUpToast();
+                }
+            });
     }
 
     /**
@@ -270,10 +280,15 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
      * @param enabled
      */
     @Override
-    public void setThumbsUpBtnEnabled(boolean enabled) {
+    public void setThumbsUpBtnEnabled(final boolean enabled) {
         mLogtf.d("setThumbsUpBtnEnabled");
         if(mPraiseList!=null)
-            mPraiseList.setThumbsUpBtnEnabled(enabled);
+            mVPlayVideoControlHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mPraiseList.setThumbsUpBtnEnabled(enabled);
+                }
+            });
     }
 
     /**
@@ -325,6 +340,16 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     @Override
     public boolean isShowing() {
         return isShowing;
+    }
+
+    /**
+     * 设置当前榜单类型
+     *
+     * @param listType
+     */
+    @Override
+    public void setCurrentListType(int listType) {
+        mPraiseListType = listType;
     }
 
     /**

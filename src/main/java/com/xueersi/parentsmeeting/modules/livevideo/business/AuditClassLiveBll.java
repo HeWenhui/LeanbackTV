@@ -812,7 +812,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                                 mVideoAction.onModeChange(mode, true);
                             }
                             mLiveTopic.setMode(mode);
-                            liveGetPlayServer();
+                            liveGetPlayServer(true);
                         }
                         if (!StringUtils.isEmpty(playUrl)) {
                             if (mVideoAction != null) {
@@ -839,7 +839,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                                 mVideoAction.onModeChange(mode, true);
                             }
                             mLiveTopic.setMode(mode);
-                            liveGetPlayServer();
+                            liveGetPlayServer(true);
                         }
                     }
                     break;
@@ -1198,7 +1198,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                         mVideoAction.onModeChange(mode, true);
                     }
                     mLiveTopic.setMode(mode);
-                    liveGetPlayServer();
+                    liveGetPlayServer(true);
                 }
             }
 
@@ -1216,11 +1216,15 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
 
     /** 第一次调度，不判断老师状态 */
     public void liveGetPlayServerFirst() {
-        liveGetPlayServer(mLiveTopic.getMode());
+        liveGetPlayServer(mLiveTopic.getMode(), false);
     }
 
-    /** 调度，使用LiveTopic的mode */
-    public void liveGetPlayServer() {
+    /**
+     * 调度，使用LiveTopic的mode
+     *
+     * @param modechange
+     */
+    public void liveGetPlayServer(boolean modechange) {
         new Thread() {
             @Override
             public void run() {
@@ -1231,12 +1235,12 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                 }
             }
         }.start();
-        liveGetPlayServer(mLiveTopic.getMode());
+        liveGetPlayServer(mLiveTopic.getMode(), modechange);
     }
 
     private long lastGetPlayServer;
 
-    private void liveGetPlayServer(final String mode) {
+    private void liveGetPlayServer(final String mode, final boolean modechange) {
         if (mLiveType == LIVE_TYPE_LIVE) {
             if (mGetInfo.getStudentLiveInfo().isExpe() && LiveTopic.MODE_TRANING.equals(mode)) {
                 mLogtf.d("liveGetPlayServer:isExpe");
@@ -1285,7 +1289,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                         mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
                         if (time < 15000) {
                             if (mVideoAction != null && mLiveTopic != null) {
-                                mVideoAction.onLiveStart(null, mLiveTopic);
+                                mVideoAction.onLiveStart(null, mLiveTopic, modechange);
                             }
                             mHandler.removeCallbacks(mStatisticsRun);
                             postDelayedIfNotFinish(mStatisticsRun, 300000);
@@ -1301,7 +1305,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                         @Override
                         public void run() {
                             mLogtf.d("liveGetPlayServer:onError retry1");
-                            liveGetPlayServer();
+                            liveGetPlayServer(modechange);
                         }
                     }, 1000);
                 } else {
@@ -1310,7 +1314,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                         @Override
                         public void run() {
                             mLogtf.d("liveGetPlayServer:onError retry2");
-                            liveGetPlayServer();
+                            liveGetPlayServer(modechange);
                         }
                     });
                 }
@@ -1332,7 +1336,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                         }
                         mServer = server;
                         if (mVideoAction != null && mLiveTopic != null) {
-                            mVideoAction.onLiveStart(server, mLiveTopic);
+                            mVideoAction.onLiveStart(server, mLiveTopic, modechange);
                         }
                         mHandler.removeCallbacks(mStatisticsRun);
                         postDelayedIfNotFinish(mStatisticsRun, 5 * 60 * 1000);
@@ -1342,7 +1346,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
 
                             @Override
                             public void run() {
-                                liveGetPlayServer();
+                                liveGetPlayServer(modechange);
                             }
                         });
                     }
@@ -1355,7 +1359,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
 
                         @Override
                         public void run() {
-                            liveGetPlayServer();
+                            liveGetPlayServer(modechange);
                         }
                     });
                 }
@@ -1837,7 +1841,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             Loger.i(TAG, "onNetWorkChange:liveGetPlayServerError=" + liveGetPlayServerError);
             if (liveGetPlayServerError) {
                 liveGetPlayServerError = false;
-                liveGetPlayServer(mLiveTopic.getMode());
+                liveGetPlayServer(mLiveTopic.getMode(), false);
             }
             if (liveGetStudyPlayServerError) {
                 liveGetStudyPlayServerError = true;

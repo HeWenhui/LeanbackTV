@@ -58,6 +58,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -97,6 +98,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     private LiveGetInfo mGetInfo;
     /** 直播服务器 */
     private PlayServerEntity mServer;
+    private ArrayList<PlayserverEntity> failPlayserverEntity = new ArrayList<>();
+    private ArrayList<PlayserverEntity> failFlvPlayserverEntity = new ArrayList<>();
     /** 直播服务器-学生 */
     private PlayServerEntity mStudentServer;
     /** 直播服务器选择 */
@@ -495,7 +498,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                rePlay();
+                                rePlay(false);
                             }
                         });
                     }
@@ -722,7 +725,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             }
             mLogtf.d("bufferTimeOut:progress=" + vPlayer.getBufferProgress());
             mLiveBll.repair(true);
-            mLiveBll.liveGetPlayServer();
+            mLiveBll.liveGetPlayServer(false);
         }
     };
 
@@ -736,7 +739,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             long openTimeOut = System.currentTimeMillis() - openStartTime;
             mLogtf.d("openTimeOut:progress=" + vPlayer.getBufferProgress() + ",openTimeOut=" + openTimeOut);
             mLiveBll.repair(false);
-            mLiveBll.liveGetPlayServer();
+            mLiveBll.liveGetPlayServer(false);
         }
     };
 
@@ -794,12 +797,9 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     }
 
     @Override
-    public void onLiveStart(PlayServerEntity server, LiveTopic cacheData) {
+    public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         mServer = server;
-        final AtomicBoolean change = new AtomicBoolean(false);// 直播状态是不是变化
-        if (mLiveTopic != null) {
-            change.set(!mLiveTopic.getMode().equals(cacheData.getMode()));
-        }
+        final AtomicBoolean change = new AtomicBoolean(modechange);// 直播状态是不是变化
         mLogtf.d("onLiveStart:change=" + change.get());
         mLiveTopic = cacheData;
         mHandler.post(new Runnable() {
@@ -818,7 +818,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 }
             }
         });
-        rePlay();
+        rePlay(change.get());
     }
 
     @Override
@@ -973,8 +973,10 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     /**
      * 第一次播放，或者播放失败，重新播放
+     *
+     * @param modechange
      */
-    public void rePlay() {
+    public void rePlay(boolean modechange) {
         if (mGetInfo == null) {//上次初始化尚未完成
             return;
         }
@@ -1027,27 +1029,94 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             mLiveBll.setPlayserverEntity(null);
         } else {
             List<PlayserverEntity> playservers = mServer.getPlayserver();
+            msg += "playservers=" + playservers.size();
             PlayserverEntity entity = null;
+            boolean useFlv = false;
             if (lastPlayserverEntity == null) {
                 msg += ",lastPlayserverEntity=null";
                 entity = playservers.get(0);
             } else {
-                for (int i = 0; i < playservers.size(); i++) {
-                    PlayserverEntity playserverEntity = playservers.get(i);
-                    if (lastPlayserverEntity.getAddress().equals(playserverEntity.getAddress())) {
-                        entity = playservers.get((i + 1) % playservers.size());
-                        msg += ",equals";
-                        break;
+                msg += ",failPlayserverEntity=" + failPlayserverEntity.size();
+                if (!failPlayserverEntity.isEmpty()) {
+                    boolean allRtmpFail = true;
+                    boolean allFlvFail = true;
+                    List<PlayserverEntity> flvPlayservers = new ArrayList<>();
+                    for (int i = 0; i < playservers.size(); i++) {
+                        PlayserverEntity playserverEntity = playservers.get(i);
+                        if (!StringUtils.isEmpty(playserverEntity.getFlvpostfix())) {
+                            flvPlayservers.add(playserverEntity);
+                            if (!failFlvPlayserverEntity.contains(playserverEntity)) {
+                                allFlvFail = false;
+                            }
+                        }
+                        if (!failPlayserverEntity.contains(playserverEntity)) {
+                            allRtmpFail = false;
+                        }
+                    }
+                    if (allFlvFail) {
+                        msg += ",allFlvFail";
+                        failPlayserverEntity.clear();
+                        failFlvPlayserverEntity.clear();
+                    } else {
+                        if (allRtmpFail) {
+                            if (flvPlayservers.isEmpty()) {
+                                failPlayserverEntity.clear();
+                            } else {
+                                if (!lastPlayserverEntity.isUseFlv()) {
+                                    entity = flvPlayservers.get(0);
+                                    entity.setUseFlv(true);
+                                    useFlv = true;
+                                    msg += ",setUseFlv1";
+                                } else {
+                                    for (int i = 0; i < flvPlayservers.size(); i++) {
+                                        PlayserverEntity playserverEntity = flvPlayservers.get(i);
+                                        if (lastPlayserverEntity.getAddress().equals(playserverEntity.getAddress())) {
+                                            if (modechange) {
+                                                entity = flvPlayservers.get(i % flvPlayservers.size());
+                                            } else {
+                                                entity = flvPlayservers.get((i + 1) % flvPlayservers.size());
+                                            }
+                                            entity.setUseFlv(true);
+                                            useFlv = true;
+                                            msg += ",setUseFlv2,modechange=" + modechange;
+                                            break;
+                                        }
+                                    }
+                                    if (entity == null) {
+                                        msg += ",entity=null1";
+                                        entity = flvPlayservers.get(0);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
                 if (entity == null) {
-                    msg += ",entity=null";
+                    for (int i = 0; i < playservers.size(); i++) {
+                        PlayserverEntity playserverEntity = playservers.get(i);
+                        if (lastPlayserverEntity.equals(playserverEntity)) {
+                            if (modechange) {
+                                entity = playservers.get(i % playservers.size());
+                            } else {
+                                entity = playservers.get((i + 1) % playservers.size());
+                            }
+                            msg += ",entity=null2,modechange=" + modechange;
+                            break;
+                        }
+                    }
+                }
+                if (entity == null) {
+                    msg += ",entity=null3";
                     entity = playservers.get(0);
                 }
             }
             lastPlayserverEntity = entity;
             mLiveBll.setPlayserverEntity(entity);
-            url = "rtmp://" + entity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+            if (useFlv) {
+                url = "http://" + entity.getAddress() + ":" + entity.getHttpport() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname() + entity.getFlvpostfix();
+            } else {
+                url = "rtmp://" + entity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+            }
             msg += ",entity=" + entity.getIcode();
         }
         if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
@@ -1161,6 +1230,17 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
      * 播放失败，或者完成时调用
      */
     private void onFail(int arg1, final int arg2) {
+        if (lastPlayserverEntity != null) {
+            if (lastPlayserverEntity.isUseFlv()) {
+                if (!failFlvPlayserverEntity.contains(lastPlayserverEntity)) {
+                    failFlvPlayserverEntity.add(lastPlayserverEntity);
+                }
+            } else {
+                if (!failPlayserverEntity.contains(lastPlayserverEntity)) {
+                    failPlayserverEntity.add(lastPlayserverEntity);
+                }
+            }
+        }
         mHandler.post(new Runnable() {
 
             @Override
@@ -1197,7 +1277,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 }
             }
         });
-        mLiveBll.liveGetPlayServer();
+        mLiveBll.liveGetPlayServer(false);
     }
 
     public void postDelayedIfNotFinish(Runnable r, long delayMillis) {

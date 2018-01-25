@@ -24,13 +24,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
-import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.agora.rtc.Constants;
@@ -188,7 +185,7 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
         mWorkerThread = null;
         if (startRemote.get()) {
             startRemote.set(false);
-            activity.rePlay();
+            activity.rePlay(false);
         }
         ViewGroup group = (ViewGroup) activity.findViewById(R.id.rl_course_video_live_agora_content);
         group.removeAllViews();

@@ -75,7 +75,7 @@ public class LiveAchievementBll implements StarInteractAction {
     /**
      * 星星互动开始
      */
-    private boolean statInteractStart = true;
+    private boolean statInteractStart = false;
     /**
      * 是不是像老师发送过，目前没用
      */

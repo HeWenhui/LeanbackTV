@@ -80,6 +80,7 @@ public class VoiceAnswerPager extends BasePager {
     String type;
     ScoreAndIndex lastMaxScoreAndIndex = null;
     int netWorkType = NetWorkHelper.WIFI_STATE;
+    private long entranceTime;
 
     public VoiceAnswerPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch, LiveAndBackDebug liveAndBackDebug) {
         super(context);
@@ -157,7 +158,7 @@ public class VoiceAnswerPager extends BasePager {
                 StableLogHashMap logHashMap = new StableLogHashMap("changAnswerType");
                 logHashMap.put("testtype", "" + type);
                 logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
-                logHashMap.put("sourcetype", sourcetype);
+                logHashMap.put("sourcetype", sourcetype).put("clicktime", "" + (System.currentTimeMillis() - entranceTime) / 1000);
                 logHashMap.addExY().addExpect("1").addSno("6").addStable("2");
                 liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
                 switchQuestion();
@@ -191,6 +192,7 @@ public class VoiceAnswerPager extends BasePager {
 
     @Override
     public void initData() {
+        entranceTime = System.currentTimeMillis();
         String questionID = baseVideoQuestionEntity.getvQuestionID();
         Loger.d(TAG, "initData:questionID=" + questionID);
         mView.postDelayed(new Runnable() {
@@ -443,13 +445,15 @@ public class VoiceAnswerPager extends BasePager {
                         boolean isRight = option.equalsIgnoreCase(answer);
 
                         String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
+                        String nonce = StableLogHashMap.creatNonce();
                         StableLogHashMap logHashMap = new StableLogHashMap("submitAnswerResult");
                         logHashMap.put("testtype", "" + type);
                         logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
                         logHashMap.put("submittype", isEnd ? "force" : "active");
                         logHashMap.put("sourcetype", sourcetype).put("stuanswer", isRight ? "Y" : "N");
-                        logHashMap.addExY().addExpect("1").addSno("4").addNonce("" + endnonce).addStable("1");
+                        logHashMap.addExY().addExpect("1").addSno("4").addNonce("" + nonce).addStable("1");
                         liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
+                        baseVideoQuestionEntity.nonce = nonce;
                         questionSwitch.onPutQuestionResult(baseVideoQuestionEntity, answer, option, 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
                             @Override
                             public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
@@ -539,12 +543,14 @@ public class VoiceAnswerPager extends BasePager {
                     return;
                 }
                 String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
+                String nonce = StableLogHashMap.creatNonce();
                 StableLogHashMap logHashMap = new StableLogHashMap("submitAnswerResult");
                 logHashMap.put("testtype", "" + type);
                 logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
                 logHashMap.put("submittype", isEnd ? "force" : "active").put("sourcetype", sourcetype);
                 logHashMap.put("stuanswer", isRight ? "Y" : "N");
-                logHashMap.addExY().addExpect("1").addSno("4").addNonce("" + endnonce).addStable("1");
+                logHashMap.addExY().addExpect("1").addSno("4").addNonce("" + nonce).addStable("1");
+                baseVideoQuestionEntity.nonce = nonce;
                 liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
                 try {
                     JSONArray options = assess_ref.getJSONArray("options");
