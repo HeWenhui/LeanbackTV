@@ -124,7 +124,7 @@ public class AnswerRankBll {
     public void showRankList(final List<RankUserEntity> lst) {
         if(mSoundPool==null) {
             mSoundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 5);
-            mSoundPool.load(mContext, R.raw.sound_full_mark_list, 1);
+            mSoundPool.load(mContext, R.raw.sound_full_mark_list, 3);
         }
         if("0".equals(isShow)){
             return;
@@ -132,7 +132,7 @@ public class AnswerRankBll {
         if (lst.size() < mLst.size()) {
             return;
         }
-        bottomContent.setClickable(true);
+        //bottomContent.setClickable(true);
         if (llRankList == null) {
             llRankList = new LinearLayout(mContext);
             llRankList.setClickable(true);
@@ -158,7 +158,7 @@ public class AnswerRankBll {
             tvStatus.setPadding(0, SizeUtils.Dp2Px(mContext, 3), 0, SizeUtils.Dp2Px(mContext, 3));
             llRankList.addView(tvStatus);
             llRankList.addView(getRecyclerView());
-            bottomContent.addView(llRankList,1, params);
+            bottomContent.addView(llRankList, 3,params);
         }
         ((Activity)mContext).runOnUiThread(new Runnable() {
             @Override
@@ -199,7 +199,7 @@ public class AnswerRankBll {
             }
         }
         mAdapter=null;
-        bottomContent.setClickable(false);
+        //bottomContent.setClickable(false);
         mLst.clear();
     }
     private View getRecyclerView(){
