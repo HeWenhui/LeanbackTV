@@ -3449,8 +3449,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 获取光荣榜
      */
     public synchronized void getHonorList(final int status) {
-        if (mPraiseListAction != null && status == 0 && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_HONOR)
-            //如果表扬榜单正在显示，并且当前榜单类型和新开启榜单类型相同，则退出。
+        if (mPraiseListAction != null && status == 0 && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_HONOR)
+            //如果当前榜单类型和新开启榜单类型相同，则退出。
             return;
         if (mPraiseListAction != null && status == 0)
             //设置当前榜单类型
@@ -3515,8 +3515,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 获取点赞榜
      */
     public synchronized void getThumbsUpList() {
-        if (mPraiseListAction != null && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP)
-            //如果表扬榜单正在显示，并且当前榜单类型和新开启榜单类型相同，则退出。
+        if (mPraiseListAction != null  && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP)
+            //如果当前榜单类型和新开启榜单类型相同，则退出。
             return;
         if (mPraiseListAction != null)
             //设置当前榜单类型
@@ -3568,8 +3568,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 获取进步榜
      */
     public synchronized void getProgressList(final int status) {
-        if (mPraiseListAction != null && status == 0 && mPraiseListAction.isShowing() && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_PROGRESS)
-            //如果表扬榜单正在显示，并且当前榜单类型和新开启榜单类型相同，则退出
+        if (mPraiseListAction != null && status == 0 && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_PROGRESS)
+            //如果当前榜单类型和新开启榜单类型相同，则退出
             return;
         if (mPraiseListAction != null)
             //设置当前榜单类型

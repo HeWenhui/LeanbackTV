@@ -240,6 +240,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         mLogtf.d("closePraiseList");
         //停止点赞弹幕线程
         isShowing = false;
+        mPraiseListType = 0;
         if(mPraiseList!=null)
             mPraiseList.setDanmakuStop(true);
         if(mPraiseList!=null)
