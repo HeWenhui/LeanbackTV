@@ -61,6 +61,7 @@ public class AnswerRankBll {
     private RCommonAdapter mAdapter;
     private LiveBll mLiveBll;
     private String nonce;
+    int wradio = 0;
 
     public void setNonce(String nonce) {
         this.nonce = nonce;
@@ -115,7 +116,7 @@ public class AnswerRankBll {
         mLiveBll=liveBll;
         this.bottomContent = bottomContent;
         mLst = new ArrayList<>();
-        setVideoLayout(ScreenUtils.getScreenWidth(), ScreenUtils.getScreenHeight());
+        setVideoLayout(getScreenParam(), ScreenUtils.getScreenHeight());
     }
 
     /**
@@ -142,7 +143,7 @@ public class AnswerRankBll {
                     LiveVideoActivity.VIDEO_HEIGHT);
             topMargin = displayHeight - topMargin + (ScreenUtils.getScreenHeight() - displayHeight) / 2;
             topMargin = ScreenUtils.getScreenHeight() - topMargin;
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(displayWidth-videoWidth, topMargin);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(wradio, topMargin);
             params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             params.setMargins(0,0,0,(ScreenUtils.getScreenHeight()-displayHeight)/2);
@@ -397,18 +398,18 @@ public class AnswerRankBll {
      */
     public void setVideoLayout(int width, int height) {
         int screenWidth = getScreenParam();
-        if (displayWidth == screenWidth && displayHeight == height) {
-            return;
-        }
         displayHeight = height;
-
         displayWidth = screenWidth;
         int screenHeight = ScreenUtils.getScreenHeight();
-        int wradio = 0, topMargin = 0, bottomMargin = 0;
+        int topMargin = 0, bottomMargin = 0;
         if (width > 0) {
             wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
             wradio += (screenWidth - width) / 2;
-            videoWidth = displayWidth - wradio;
+            if(displayWidth-wradio==videoWidth){
+                return;
+            }else {
+                videoWidth = displayWidth - wradio;
+            }
         }
         if(rlFullMarkList !=null){
             RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(videoWidth,displayHeight);
