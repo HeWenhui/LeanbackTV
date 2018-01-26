@@ -108,6 +108,7 @@ public class PraiseListPager extends BasePager {
     private ArrayList<Integer> thumbsUpNums = new ArrayList<>();
     /** 点赞文案*/
     public String[] thumbsUpCopywriting;
+    private ArrayList<Integer> thumbsUpCopywritingIndex = new ArrayList<>();
 
     /** 点赞弹幕定时器*/
     private Timer mTimer = null;
@@ -409,35 +410,6 @@ public class PraiseListPager extends BasePager {
         return thumbsUpNum;
     }
 
-    /** 收到给我点赞的消息 */
-    public void receiveThumbsUpNotice(ArrayList<String> stuNames){
-        int stuNamesSize = this.stuNames.size();
-        if(!isOnList)
-            return;
-        if(number > this.stuNames.size())
-            number = this.stuNames.size();
-        int totalNums = 0;
-        for(int i=0;i<stuNames.size();i++){
-            int thumbsUpNum = calculateThumbsUpNum();
-            if(!stuNames.get(i).equals(stuName)){
-                //过滤掉自己和同名
-                if(stuNames.get(i).length()>4){
-                    this.stuNames.add(stuNames.get(i).substring(0,3)+"...");
-                }
-                else{
-                    this.stuNames.add(stuNames.get(i));
-                }
-                this.thumbsUpNums.add(thumbsUpNum);
-            }
-            totalNums+=thumbsUpNum;
-        }
-        //计算点赞总数，发送至教师端
-        liveBll.sendThumbsUpNum(totalNums);
-        if(this.stuNames.size()!=0 && this.stuNames.size()>stuNamesSize)
-            //如果给我点赞的同学的集合不为空，且数量增加，开启弹幕滚动
-            startTimer();
-    }
-
     /** 开始榜单头部动画 */
     public void startTitleAnimation() {
 
@@ -588,6 +560,44 @@ public class PraiseListPager extends BasePager {
         liveBll.sendThumbsUpNum(1);
     }
 
+    /** 收到给我点赞的消息 */
+    public void receiveThumbsUpNotice(ArrayList<String> stuNames){
+        int stuNamesSize = this.stuNames.size();
+        int random;
+        if(!isOnList)
+            return;
+        if(number > this.stuNames.size())
+            number = this.stuNames.size();
+        int totalNums = 0;
+        for(int i=0;i<stuNames.size();i++){
+            int thumbsUpNum = calculateThumbsUpNum();
+            if(!stuNames.get(i).equals(stuName)){
+                //过滤掉自己和同名
+                if(stuNames.get(i).length()>4){
+                    this.stuNames.add(stuNames.get(i).substring(0,3)+"...");
+                }
+                else{
+                    this.stuNames.add(stuNames.get(i));
+                }
+                if(thumbsUpNum == 1){
+                    random = new Random().nextInt(6);
+                    this.thumbsUpCopywritingIndex.add(random);
+                }else if(thumbsUpNum == 2){
+                    this.thumbsUpCopywritingIndex.add(7);
+                }else if(thumbsUpNum == 3){
+                    this.thumbsUpCopywritingIndex.add(8);
+                }
+                this.thumbsUpNums.add(thumbsUpNum);
+            }
+            totalNums+=thumbsUpNum;
+        }
+        //计算点赞总数，发送至教师端
+        liveBll.sendThumbsUpNum(totalNums);
+        if(this.stuNames.size()!=0 && this.stuNames.size()>stuNamesSize)
+            //如果给我点赞的同学的集合不为空，且数量增加，开启弹幕滚动
+            startTimer();
+    }
+
     private void startTimer(){
         if (mTimer == null) {
             mTimer = new Timer();
@@ -604,20 +614,10 @@ public class PraiseListPager extends BasePager {
                             @Override
                             public void run() {
                                 tvDanmaku.next();
-                                if(thumbsUpNums.get(number%thumbsUpNums.size())==1){
-                                    int random = new Random().nextInt(6);
-                                    tvDanmaku.setText(Html.fromHtml(
-                                            "<font color='#F13232'>"+stuNames.get(number%stuNames.size())+"</font>"+thumbsUpCopywriting[random]
-                                    ));
-                                }
-                                else if(thumbsUpNums.get(number%thumbsUpNums.size())==2)
-                                    tvDanmaku.setText(Html.fromHtml(
-                                            "<font color='#F13232'>"+stuNames.get(number%stuNames.size())+"</font>"+thumbsUpCopywriting[7]
-                                    ));
-                                else if(thumbsUpNums.get(number%thumbsUpNums.size())==3)
-                                    tvDanmaku.setText(Html.fromHtml(
-                                            "<font color='#F13232'>"+stuNames.get(number%stuNames.size())+"</font>"+thumbsUpCopywriting[8]
-                                    ));
+                                tvDanmaku.setText(Html.fromHtml(
+                                            "<font color='#F13232'>"+stuNames.get(number%stuNames.size())+"</font>"
+                                                    +thumbsUpCopywriting[thumbsUpCopywritingIndex.get(number%stuNames.size())]
+                                ));
                                 number++;
                             }
                         });

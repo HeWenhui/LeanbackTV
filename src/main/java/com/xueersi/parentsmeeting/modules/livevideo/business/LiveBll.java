@@ -3456,8 +3456,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             //设置当前榜单类型
             mPraiseListAction.setCurrentListType(PraiseListPager.PRAISE_LIST_TYPE_HONOR);
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mLogtf.d("getHonorList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
+        mLogtf.d("getHonorList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         if (mGetInfo.getStudentLiveInfo() != null) {
             classId = mGetInfo.getStudentLiveInfo().getClassId();
         }
@@ -3522,8 +3522,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             //设置当前榜单类型
             mPraiseListAction.setCurrentListType(PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP);
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mLogtf.d("getThumbsUpList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
+        mLogtf.d("getThumbsUpList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         if (mGetInfo.getStudentLiveInfo() != null) {
             classId = mGetInfo.getStudentLiveInfo().getClassId();
         }
@@ -3575,8 +3575,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             //设置当前榜单类型
             mPraiseListAction.setCurrentListType(PraiseListPager.PRAISE_LIST_TYPE_PROGRESS);
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mLogtf.d("getProgressList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
+        mLogtf.d("getProgressList:enstuId=" + enstuId + ",liveId=" + mLiveId);
         if (mGetInfo.getStudentLiveInfo() != null) {
             classId = mGetInfo.getStudentLiveInfo().getClassId();
         }
