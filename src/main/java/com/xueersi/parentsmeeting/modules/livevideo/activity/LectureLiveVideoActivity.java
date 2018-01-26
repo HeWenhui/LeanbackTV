@@ -450,7 +450,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             params.bottomMargin = params.topMargin = topMargin;
             rlFirstBackgroundView.setLayoutParams(params);
             ivTeacherNotpresent.setLayoutParams(params);
-            ivTeacherNotpresent.setBackgroundResource(R.drawable.bg_course_video_teacher_notpresent_land2);
+            ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdai_bg_normal);
         }
         //Loger.e(TAG, "setFirstParamLand:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
     }
@@ -760,7 +760,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
 //                }
                 ivTeacherNotpresent.setVisibility(View.VISIBLE);
                 if (isLandSpace()) {
-                    ivTeacherNotpresent.setBackgroundResource(R.drawable.bg_course_video_teacher_notpresent_land2);
+                    ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdai_bg_normal);
                 } else {
                     ivTeacherNotpresent.setBackgroundResource(R.drawable.bg_course_video_teacher_notpresent_port);
                 }
