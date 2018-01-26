@@ -504,7 +504,9 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                                             }
                                         }
                                     }
-                                    addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
+                                    addFlowers(liveBll.getNickname(), "我", LiveMessageEntity
+                                            .MESSAGE_FLOWERS, entity.getFtype());
+//                                    addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
                                     mView.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
