@@ -1017,7 +1017,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     public void onPaySuccess(LecAdvertEntity lecAdvertEntity) {
 
                     }
-                }, mVideoEntity.getLiveId());
+                }, mVideoEntity.getLiveId(), LivePlayBackVideoActivity.this);
                 rlQuestionContent.removeAllViews();
                 rlQuestionContent.addView(lecAdvertPager.getRootView(), new LayoutParams
                         (LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));

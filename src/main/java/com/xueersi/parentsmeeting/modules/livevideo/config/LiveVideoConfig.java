@@ -161,6 +161,8 @@ public class LiveVideoConfig {
     public static String LIVE_LISTEN = "live_listen";
     /** 直播-表扬榜 */
     public static String LIVE_PRAISE_LIST = "live_praise_list";
+    /** 直播讲座-（互动广告）https://wiki.xesv5.com/pages/viewpage.action?pageId=10684534 */
+    public static String LEC_ADS = "lecture_ads";
 
     /** 直播时间-当天据算，live_expe_time按单个场次计算 */
     public static String LIVE_EXPE_TIME = "live_expe_time_all";

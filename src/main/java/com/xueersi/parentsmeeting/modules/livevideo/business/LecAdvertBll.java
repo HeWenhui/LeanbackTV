@@ -5,8 +5,11 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.LecAdvertLog;
 import com.xueersi.xesalib.utils.log.Loger;
 
 /**
@@ -15,6 +18,7 @@ import com.xueersi.xesalib.utils.log.Loger;
 
 public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
     String TAG = "LecAdvertBll";
+    String eventid = LiveVideoConfig.LEC_ADS;
     Context context;
     RelativeLayout bottomContent;
     LecAdvertPager lecAdvertager;
@@ -55,6 +59,11 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
 
     @Override
     public void start(final LecAdvertEntity lecAdvertEntity) {
+        StableLogHashMap logHashMap = new StableLogHashMap("publishAdsMsgReceived");
+        logHashMap.put("adsid", "" + lecAdvertEntity.id);
+        logHashMap.addSno("3").addStable("2");
+        logHashMap.addNonce("" + lecAdvertEntity.nonce);
+        liveBll.umsAgentDebug(eventid, logHashMap.getData());
         bottomContent.post(new Runnable() {
             @Override
             public void run() {
@@ -72,10 +81,11 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                         if (lecAdvertEntity.isLearn == 1) {
                             return;
                         }
-                        lecAdvertager = new LecAdvertPager(context, lecAdvertEntity, LecAdvertBll.this, liveid);
+                        lecAdvertager = new LecAdvertPager(context, lecAdvertEntity, LecAdvertBll.this, liveid, liveBll);
                         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                         bottomContent.addView(lecAdvertager.getRootView(), lp);
                         lecAdvertager.initStep1();
+                        LecAdvertLog.sno4(lecAdvertEntity, liveBll);
                     }
                 });
             }

@@ -16,7 +16,9 @@ import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertPagerClose;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.LecAdvertLog;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 
 /**
@@ -35,12 +37,14 @@ public class LecAdvertPager extends BasePager {
     private int step = 1;
     LecAdvertEntity lecAdvertEntity;
     String liveid;
+    LiveAndBackDebug liveAndBackDebug;
 
-    public LecAdvertPager(Context context, LecAdvertEntity lecAdvertEntity, LecAdvertPagerClose lecAdvertBll, String liveid) {
+    public LecAdvertPager(Context context, LecAdvertEntity lecAdvertEntity, LecAdvertPagerClose lecAdvertBll, String liveid, LiveAndBackDebug liveAndBackDebug) {
         super(context);
         this.lecAdvertBll = lecAdvertBll;
         this.lecAdvertEntity = lecAdvertEntity;
         this.liveid = liveid;
+        this.liveAndBackDebug = liveAndBackDebug;
         initData();
     }
 
@@ -78,6 +82,7 @@ public class LecAdvertPager extends BasePager {
                 ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 group.addView(step2, lp);
                 initViewStep2();
+                LecAdvertLog.sno5(lecAdvertEntity, liveAndBackDebug);
             }
         });
     }
