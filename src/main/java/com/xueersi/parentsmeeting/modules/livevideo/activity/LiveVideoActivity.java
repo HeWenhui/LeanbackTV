@@ -842,7 +842,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                     }
                 }
                 ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                ivTeacherNotpresent.setBackgroundResource(R.drawable.bg_course_video_teacher_notpresent_land2);
+                ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdai_bg_normal);
                 findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
             }
         });
