@@ -731,6 +731,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void onStopQuestion(String ptype, final String nonce) {
+        Loger.i("=====questionbll  question stop");
         isAnaswer = false;
         if (voiceAnswerPager != null) {
             mVPlayVideoControlHandler.post(new Runnable() {
@@ -941,6 +942,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void onExamStop() {
+        Loger.i("====questionbll  exam stop");
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -1693,6 +1695,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         mLiveBll.sendRankMessage(XESCODE.RANK_STU_MESSAGE);
         if (isShowFullMarkList) {
             getFullMarkList(type, 3000);
+            switch (type){
+                case XESCODE.STOPQUESTION:
+                    hasQuestion=false;
+                    break;
+                case XESCODE.EXAM_STOP:
+                    hasExam=false;
+                    break;
+            }
         } else {
             hasSubmit = true;
         }
@@ -1710,10 +1720,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         case XESCODE.STOPQUESTION:
                             if (questionWebPager != null) {
                                 if (curQuestionView == questionWebPager) {
+                                    Loger.i("======questionbll  cur==ques");
                                     rlQuestionContent.removeView(questionWebPager.getRootView());
                                     questionWebPager = null;
                                     curQuestionView = null;
+                                    setHaveWebQuestion(false);
                                 } else if (curQuestionView != null) {
+                                    Loger.i("======questionbll  cur="+curQuestionView.toString()+"   que="+questionWebPager.toString());
                                     rlQuestionContent.removeView(curQuestionView.getRootView());
                                     curQuestionView = null;
                                 }
@@ -1721,11 +1734,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             break;
                         case XESCODE.EXAM_STOP:
                             if (examQuestionPager != null) {
-                                if (curQuestionView == questionWebPager) {
+                                if (curQuestionView == examQuestionPager) {
+                                    Loger.i("======questionbll  cur==exa");
                                     rlQuestionContent.removeView(examQuestionPager.getRootView());
                                     examQuestionPager = null;
                                     curQuestionView = null;
+                                    setHaveExam(false);
                                 } else if (curQuestionView != null) {
+                                    Loger.i("======questionbll  cur="+curQuestionView.toString()+"   que="+examQuestionPager.toString());
                                     rlQuestionContent.removeView(curQuestionView.getRootView());
                                     curQuestionView = null;
                                 }

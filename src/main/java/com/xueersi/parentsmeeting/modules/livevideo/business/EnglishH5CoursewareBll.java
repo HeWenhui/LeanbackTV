@@ -63,6 +63,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     /** 互动题作答成功的布局 */
     private RelativeLayout rlQuestionResContent;
     EnglishH5CoursewarePager h5CoursewarePager;
+    private EnglishH5CoursewarePager curPager;
     private VoiceAnswerPager voiceAnswerPager;
     private LogToFile logToFile;
     RelativeLayout bottomContent;
@@ -276,6 +277,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     }
                     int delayTime = 0;
                     if (h5CoursewarePager != null) {
+                        curPager=h5CoursewarePager;
                         h5CoursewarePager.submitData();
                         logToFile.i("onH5Courseware:submitData");
 //                        liveVideoActivityBase.setAutoOrientation(true);
@@ -305,6 +307,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, new OnH5ResultClose() {
             @Override
             public void onH5ResultClose() {
+                if(h5CoursewarePager==null){
+                    return;
+                }
                 mH5AndBool.add(h5CoursewarePager.getUrl());
                 try {
                     JSONObject object = new JSONObject();
@@ -651,7 +656,14 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     public void run() {
                         try {
                             if (h5CoursewarePager != null) {
-                                bottomContent.removeView(h5CoursewarePager.getRootView());
+                                if(h5CoursewarePager==curPager) {
+                                    bottomContent.removeView(h5CoursewarePager.getRootView());
+                                    h5CoursewarePager=null;
+                                    curPager=null;
+                                }else if(curPager!=null){
+                                    bottomContent.removeView(curPager.getRootView());
+                                    curPager=null;
+                                }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
