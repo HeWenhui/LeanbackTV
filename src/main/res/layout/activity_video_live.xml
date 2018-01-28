@@ -93,6 +93,7 @@
                 android:paddingTop="10dp">
 
                 <ImageView
+                    android:id="@+id/iv_course_video_loading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -160,8 +161,10 @@
         <RelativeLayout
             android:id="@id/rl_course_video_live_praiselist_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </RelativeLayout>
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"></RelativeLayout>
 
         <!-- 直播回放 互动题显示的界面位置 -->
         <RelativeLayout
