@@ -179,7 +179,9 @@ public class AnswerRankBll {
                     llCurRow.addView(getRankListItemView(lst.get(i), i));*/
                     mLst.add(lst.get(i));
                 }
-                mAdapter.notifyDataSetChanged();
+                if(mAdapter!=null) {
+                    mAdapter.notifyDataSetChanged();
+                }
             }
         });
 
@@ -195,12 +197,12 @@ public class AnswerRankBll {
                 llRankList.removeAllViews();
                 bottomContent.removeView(llRankList);
                 llRankList=null;
-
+                mAdapter=null;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        mAdapter=null;
+
         //bottomContent.setClickable(false);
         mLst.clear();
     }
