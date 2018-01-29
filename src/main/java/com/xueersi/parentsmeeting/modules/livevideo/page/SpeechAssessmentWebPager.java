@@ -445,7 +445,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
                                     }
                                     if (resultEntity.getStatus() == ResultEntity.SUCCESS || resultEntity.getStatus() == ResultEntity.ERROR) {
                                         mHandler.removeMessages(RECORD_WITE);
-                                        if (!mIsFinishCurrentSpeech && mIsStopCommand) {
+                                        if (!mIsFinishCurrentSpeech) {
                                             mIsFinishCurrentSpeech = true;
                                             if (mSpeechType.equals(SPEECH_ROLEPLAY)) {
                                                 jsStartAnotherReading();
@@ -485,7 +485,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
                                     }
                                     if (resultEntity.getStatus() == ResultEntity.SUCCESS || resultEntity.getStatus() == ResultEntity.ERROR) {
                                         mHandler.removeMessages(RECORD_WITE);
-                                        if (!mIsFinishCurrentSpeech && mIsStopCommand) {
+                                        if (!mIsFinishCurrentSpeech ) {
                                             mIsFinishCurrentSpeech = true;
                                             if (mSpeechType.equals(SPEECH_ROLEPLAY)) {
                                                 jsStartAnotherReading();
@@ -528,7 +528,9 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
         if (isEnglish) {
             //if (speechEvaluatorInter instanceof TalSpeech) {
             //强制2秒内必须回结果
-            mHandler.sendEmptyMessageDelayed(RECORD_WITE, speechEvaluatorInter instanceof TalSpeech ? 2000 : 100);
+            if(speechEvaluatorInter instanceof TalSpeech) {
+                mHandler.sendEmptyMessageDelayed(RECORD_WITE, 2000);
+            }
             //}
         } else {
             //强制2秒内必须回结果
