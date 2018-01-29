@@ -413,6 +413,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
             String assessRef = mParam.get("assessRef");
             String liveId = mParam.get("liveId");
             String language = mParam.get("language");
+            mStopPrefix = mParam.get("isLast");
             if (checkParam(recordFileName, assessRef, liveId, language)) {
                 saveVideoFile = new File(dir, recordFileName + ".mp3");
                 boolean isEnglish = !mSpeechType.equals(SPEECH_FOLLOW);
@@ -485,7 +486,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
                                     }
                                     if (resultEntity.getStatus() == ResultEntity.SUCCESS || resultEntity.getStatus() == ResultEntity.ERROR) {
                                         mHandler.removeMessages(RECORD_WITE);
-                                        if (!mIsFinishCurrentSpeech ) {
+                                        if (!mIsFinishCurrentSpeech) {
                                             mIsFinishCurrentSpeech = true;
                                             if (mSpeechType.equals(SPEECH_ROLEPLAY)) {
                                                 jsStartAnotherReading();
@@ -528,7 +529,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
         if (isEnglish) {
             //if (speechEvaluatorInter instanceof TalSpeech) {
             //强制2秒内必须回结果
-            if(speechEvaluatorInter instanceof TalSpeech) {
+            if (speechEvaluatorInter instanceof TalSpeech) {
                 mHandler.sendEmptyMessageDelayed(RECORD_WITE, 2000);
             }
             //}
