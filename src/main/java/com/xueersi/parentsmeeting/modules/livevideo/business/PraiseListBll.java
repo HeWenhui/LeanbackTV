@@ -1,10 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
+import android.graphics.Rect;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -35,6 +37,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     private Activity activity;
     private LiveBll mLiveBll;
     private int displayWidth, displayHeight, videoWidth;
+    int wradio = 0;
 
     public int getDisplayHeight() {
         return displayHeight;
@@ -59,7 +62,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
                 + ".txt"));
         mLogtf.clear();
         this.activity = activity;
-        setVideoLayout(ScreenUtils.getScreenWidth(), ScreenUtils.getScreenHeight());
+        setVideoLayout(getScreenParam(), ScreenUtils.getScreenHeight());
     }
 
     @Override
@@ -102,7 +105,6 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
      */
     @Override
     public void onReceivePraiseList(int listType, String nonce) {
-        mPraiseListType = listType;
         this.nonce = nonce;
         umsAgentDebug(listType);
     }
@@ -115,14 +117,14 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     @Override
     public void onHonerList(final HonorListEntity honorListEntity) {
         mLogtf.d("onHonerList");
-        closePraiseList();
+        //closePraiseList();
         isShowing = true;
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
                 //rBottomContent.setClickable(true);
                 mPraiseList = new PraiseListPager(activity, honorListEntity, mLiveBll,PraiseListBll.this, mVPlayVideoControlHandler);
-                //rPraiseListContent.removeAllViews();
+                rPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rPraiseListContent.addView(mPraiseList.getRootView(), params);
                 activity.getWindow().getDecorView().requestLayout();
@@ -139,14 +141,14 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     @Override
     public void onThumbsUpList(final ThumbsUpListEntity thumbsUpListEntity) {
         mLogtf.d("onThumbsUpList");
-        closePraiseList();
+        //closePraiseList();
         isShowing = true;
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
                 //rBottomContent.setClickable(true);
                 mPraiseList = new PraiseListPager(activity, thumbsUpListEntity, mLiveBll,PraiseListBll.this, mVPlayVideoControlHandler);
-                //rPraiseListContent.removeAllViews();
+                rPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rPraiseListContent.addView(mPraiseList.getRootView(), params);
                 activity.getWindow().getDecorView().requestLayout();
@@ -164,14 +166,14 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     @Override
     public void onProgressList(final ProgressListEntity progressListEntity) {
         mLogtf.d("onProgressList");
-        closePraiseList();
+        //closePraiseList();
         isShowing = true;
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
                 //rBottomContent.setClickable(true);
                 mPraiseList = new PraiseListPager(activity, progressListEntity, mLiveBll,PraiseListBll.this, mVPlayVideoControlHandler);
-                //rPraiseListContent.removeAllViews();
+                rPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rPraiseListContent.addView(mPraiseList.getRootView(), params);
                 activity.getWindow().getDecorView().requestLayout();
@@ -240,6 +242,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         mLogtf.d("closePraiseList");
         //停止点赞弹幕线程
         isShowing = false;
+        mPraiseListType = 0;
         if(mPraiseList!=null)
             mPraiseList.setDanmakuStop(true);
         if(mPraiseList!=null)
@@ -299,19 +302,19 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
      */
     @Override
     public void setVideoLayout(int width, int height) {
-        if (displayWidth == width && displayHeight == height) {
-            return;
-        }
-        displayHeight = height;
-        displayWidth = width;
-
-        int screenWidth = ScreenUtils.getScreenWidth();
+        int screenWidth = getScreenParam();
         int screenHeight = ScreenUtils.getScreenHeight();
-        int wradio = 0, topMargin = 0, bottomMargin = 0;
+        displayHeight = height;
+        displayWidth = screenWidth;
+
         if (width > 0) {
             wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
             wradio += (screenWidth - width) / 2;
-            videoWidth = displayWidth - wradio;
+            if (displayWidth-wradio==videoWidth){
+                return;
+            } else {
+                videoWidth = displayWidth - wradio;
+            }
         }
         if(rPraiseListContent!=null){
             RelativeLayout.LayoutParams params=(RelativeLayout.LayoutParams) rPraiseListContent.getLayoutParams();
@@ -319,6 +322,14 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
             params.width=videoWidth;
             rPraiseListContent.setLayoutParams(params);
         }
+    }
+
+    private int getScreenParam(){
+        final View contentView = activity.findViewById(android.R.id.content);
+        final View actionBarOverlayLayout = (View) contentView.getParent();
+        Rect r = new Rect();
+        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
+        return (r.right - r.left);
     }
 
     /**
