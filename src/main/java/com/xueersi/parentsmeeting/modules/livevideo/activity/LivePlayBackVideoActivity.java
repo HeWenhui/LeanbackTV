@@ -16,6 +16,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,6 +39,7 @@ import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.entity.AnswerEntity;
 import com.xueersi.parentsmeeting.entity.AppInfoEntity;
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
+import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
 import com.xueersi.parentsmeeting.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.entity.VideoQuestionEntity;
@@ -92,6 +94,7 @@ import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.utils.time.TimeUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 import com.xueersi.xesalib.view.layout.dataload.DataLoadEntity;
 
@@ -189,6 +192,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     /** 没有互动题 */
     private static final int NO_QUESTION = 1;
     /** 加载视频提示 */
+    private ImageView ivLoading;
     private TextView tvLoadingContent;
     /** 从哪个页面跳转 */
     String where;
@@ -314,6 +318,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         // 预加载布局
         rlFirstBackgroundView = (RelativeLayout) findViewById(R.id.rl_course_video_first_backgroud);
 
+        ivLoading = (ImageView) findViewById(R.id.iv_course_video_loading_bg);
+        updateLoadingImage();
         tvLoadingContent = (TextView) findViewById(R.id.tv_course_video_loading_content);
         // 预加载布局中退出事件
         ImageView ivBack = (ImageView) findViewById(R.id.iv_course_video_back);
@@ -2512,5 +2518,23 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         intent.putExtras(bundle);
         intent.putExtra("where", where);
         context.startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    protected void updateIcon() {
+        Log.d("zhang",TAG+":updateIcon()");
+        updateLoadingImage();
+        updateRefreshImage();
+
+    }
+
+    protected void updateLoadingImage() {
+        Log.d("zhang",TAG+":updateLoadingImage()");
+        FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
+        if (footerIconEntity != null ){
+            String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
+            if( loadingNoClickUrl!=null )
+                ImageLoader.with(this).load(loadingNoClickUrl).into(ivLoading);
+        }
     }
 }

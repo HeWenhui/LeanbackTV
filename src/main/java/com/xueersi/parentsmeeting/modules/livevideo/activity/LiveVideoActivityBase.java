@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -29,10 +30,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.umeng.analytics.MobclickAgent;
+import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.XesActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.event.AppEvent;
 import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
@@ -49,6 +52,7 @@ import com.xueersi.xesalib.utils.app.AppUtils;
 import com.xueersi.xesalib.utils.audio.AudioPlayer;
 import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.FileLogger;
+import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.view.layout.dataload.DataLoadManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -782,6 +786,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     /** 加载视频异常时出现可重新刷新的背景界面 */
     protected void showRefresyLayout(int arg1, int arg2) {
         videoBackgroundRefresh.setVisibility(View.VISIBLE);
+        updateRefreshImage();
         TextView errorInfo = (TextView) videoBackgroundRefresh.findViewById(R.id.tv_course_video_errorinfo);
         AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
         if (error != null) {
@@ -1461,6 +1466,17 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     public void onDataLoadEvent(AppEvent.OnDataLoadingEvent event) {
         if (event.dataLoadEntity != null) {
             DataLoadManager.newInstance().loadDataStyle(this, event.dataLoadEntity);
+        }
+    }
+
+    protected void updateRefreshImage() {
+        Log.d("zhang",TAG+":updateRefreshImage");
+        FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
+        ImageView ivRefresh = (ImageView) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.base.R.id.iv_course_video_resfresh_bg);
+        if (footerIconEntity != null ){
+            String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
+            if( loadingNoClickUrl!=null )
+                ImageLoader.with(this).load(loadingNoClickUrl).into(ivRefresh);
         }
     }
 }

@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.xueersi.parentsmeeting.base.BaseCacheData;
 import com.xueersi.parentsmeeting.business.AppBll;
+import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.event.AppEvent;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
@@ -47,11 +49,13 @@ import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.VPlaye
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.XESVideoView;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.xesalib.umsagent.UmsAgentManager;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -94,6 +98,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     /** 老师不在直播间 */
     private ImageView ivTeacherNotpresent;
     /** 缓冲提示 */
+    private ImageView ivLoading;
     private TextView tvLoadingHint;
     private LiveGetInfo mGetInfo;
     /** 直播服务器 */
@@ -373,6 +378,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         //聊天
         //if (liveType != LiveBll.LIVE_TYPE_LECTURE) {
         //}
+        ivLoading = (ImageView) findViewById(R.id.iv_course_video_loading_bg);
+        updateLoadingImage();
         tvLoadingHint = (TextView) findViewById(R.id.tv_course_video_loading_content);
         // 预加载布局中退出事件
         findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
@@ -1393,5 +1400,21 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         intent.putExtra("vSectionID", liveId);
         intent.putExtra("type", LiveBll.LIVE_TYPE_LIVE);
         context.startActivity(intent);
+    }
+
+    @Override
+    protected void updateIcon() {
+        updateLoadingImage();
+        updateRefreshImage();
+    }
+
+    protected void updateLoadingImage() {
+        Log.d("zhang",TAG+":updateLoadingImage()");
+        FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
+        if (footerIconEntity != null ){
+            String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
+            if( loadingNoClickUrl!=null )
+                ImageLoader.with(this).load(loadingNoClickUrl).into(ivLoading);
+        }
     }
 }

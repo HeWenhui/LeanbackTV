@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -240,7 +241,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         bottomContent.setVisibility(View.VISIBLE);
         praiselistContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_praiselist_content);
         praiselistContent.setVisibility(View.VISIBLE);
-        ivLoading = (ImageView) findViewById(R.id.iv_course_video_loading);
+        ivLoading = (ImageView) findViewById(R.id.iv_course_video_loading_bg);
+        updateLoadingImage();
         tvLoadingHint = (TextView) findViewById(R.id.tv_course_video_loading_content);
         // 预加载布局中退出事件
         findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
@@ -351,7 +353,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 answerRankBll.showRankList(lst1);
             }
         },3000);*/
-        updateIcon();
     }
 
     protected boolean initData() {
@@ -1501,9 +1502,15 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
 
     @Override
     protected void updateIcon() {
+        updateLoadingImage();
+        updateRefreshImage();
+    }
+
+    protected void updateLoadingImage() {
+        Log.d("zhang",TAG+":updateLoadingImage()");
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
         if (footerIconEntity != null ){
-            String chatNoClickUrl = footerIconEntity.getNoClickUrlByKey("zhibo");
+            String chatNoClickUrl = footerIconEntity.getNoClickUrlById("6");
             ImageLoader.with(this).load(chatNoClickUrl).into(ivLoading);
         }
     }
