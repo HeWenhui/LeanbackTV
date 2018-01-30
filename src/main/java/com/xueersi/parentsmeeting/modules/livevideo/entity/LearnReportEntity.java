@@ -7,7 +7,7 @@ import java.util.HashMap;
  * Created by Administrator on 2016/4/14.
  */
 public class LearnReportEntity {
-   /**
+    /**
      * stuId : 5002351
      * gold : 5
      * rate : 100%
@@ -35,7 +35,9 @@ public class LearnReportEntity {
         private String rate;
         private String averageRate;
         private int rank;
+        private String rankStr;
         private int lastRank;
+        private String lastRankStr;
         private int time;
         private String stuName;
         private String teacherName;
@@ -72,9 +74,11 @@ public class LearnReportEntity {
         public void setStuName(String stuName) {
             this.stuName = stuName;
         }
+
         public void setTeacherName(String teacherName) {
             this.teacherName = teacherName;
         }
+
         public int getStuId() {
             return stuId;
         }
@@ -106,6 +110,7 @@ public class LearnReportEntity {
         public String getStuName() {
             return stuName;
         }
+
         public String getTeacherName() {
             return teacherName;
         }
@@ -116,6 +121,22 @@ public class LearnReportEntity {
 
         public void setTeacherIMG(String teacherIMG) {
             this.teacherIMG = teacherIMG;
+        }
+
+        public String getRankStr() {
+            return rankStr;
+        }
+
+        public void setRankStr(String rankStr) {
+            this.rankStr = rankStr;
+        }
+
+        public String getLastRankStr() {
+            return lastRankStr;
+        }
+
+        public void setLastRankStr(String lastRankStr) {
+            this.lastRankStr = lastRankStr;
         }
     }
 }

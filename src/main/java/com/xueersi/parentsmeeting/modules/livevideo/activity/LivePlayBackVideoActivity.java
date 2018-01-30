@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseBll;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.business.AppBll;
+import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.AnswerEntity;
 import com.xueersi.parentsmeeting.entity.AppInfoEntity;
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
@@ -55,6 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.RedPacketAlertDialog;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
@@ -70,6 +72,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VideoActivity;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
@@ -175,11 +178,12 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     String where;
     int isArts;
     /** 区分文理appid */
-    String appID = UmsConstants.LIVE_APP_ID;
+    String appID = UmsConstants.LIVE_APP_ID_BACK;
     /** 本地视频 */
     boolean islocal;
     static int times = -1;
     long createTime;
+    String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
 
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
@@ -317,11 +321,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         where = getIntent().getStringExtra("where");
         isArts = getIntent().getIntExtra("isArts", 0);
         if (isArts == 1) {
-            appID = UmsConstants.ARTS_APP_ID;
+            appID = UmsConstants.ARTS_APP_ID_BACK;
             LiveVideoConfig.IS_SCIENCE = false;
         } else {
             LiveVideoConfig.IS_SCIENCE = true;
-            appID = UmsConstants.LIVE_APP_ID;
+            appID = UmsConstants.LIVE_APP_ID_BACK;
         }
         // 如果加载不出来
         if (tvLoadingContent != null) {
@@ -693,9 +697,12 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-//                            if (vPlayer != null) {
-//                                vPlayer.start();
-//                            }
+                            if (mQuestionEntity == null) {
+                                if (vPlayer != null) {
+                                    vPlayer.start();
+                                }
+                                return;
+                            }
                             if ("1".equals(mQuestionEntity.getIsVoice())) {
                                 try {
                                     showVoiceAnswer(mQuestionEntity);
@@ -795,7 +802,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                                         LivePlayBackVideoActivity.this, "http://live.xueersi" +
                                         ".com/Live/getMultiTestPaper",
                                         userInfoEntity.getStuId(), mAppInfoEntity.getLoginUserName(), mQuestionEntity
-                                        .getvSectionID(), mQuestionEntity.getvQuestionID(), "");
+                                        .getvSectionID(), mQuestionEntity.getvQuestionID(), "", "0");
                                 rlQuestionContent.removeAllViews();
                                 rlQuestionContent.addView(questionWebPager.getRootView(), new LayoutParams
                                         (LayoutParams.MATCH_PARENT,
@@ -962,7 +969,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                             stopEnglishH5Exam();
                         }
 
-                    }, this);
+                    }, this, "0");
             rlQuestionContent.removeAllViews();
             rlQuestionContent.addView(englishH5CoursewarePager.getRootView(), new LayoutParams(LayoutParams
                     .MATCH_PARENT,
@@ -1052,6 +1059,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 ViewGroup.LayoutParams.MATCH_PARENT);
         rlQuestionContent.addView(voiceAnswerPager.getRootView(), params);
         voiceAnswerPager.setAudioRequest();
+        VoiceAnswerLog.sno2(this, videoQuestionLiveEntity);
     }
 
     QuestionSwitch questionSwitch = new QuestionSwitch() {
@@ -2147,16 +2155,24 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (entity.getResultType() == VideoResultEntity.QUE_RES_TYPE1 || entity.getResultType() == VideoResultEntity.QUE_RES_TYPE4) {
             if (isVoice) {
                 String type;
+                String sourcetype;
                 if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == questionEntity.getvCategory()) {
                     type = questionEntity.getVoiceQuestiontype();
+                    sourcetype = "h5ware";
                 } else {
                     type = questionEntity.getvQuestionType();
+                    sourcetype = "h5test";
                 }
                 if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
                     initSelectAnswerRightResultVoice(entity);
                 } else {
                     initFillinAnswerRightResultVoice(entity);
                 }
+                StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
+                logHashMap.put("testid", "" + questionEntity.getvQuestionID());
+                logHashMap.put("sourcetype", sourcetype).addNonce(questionEntity.nonce);
+                logHashMap.addExY().addExpect("0").addSno("5").addStable("1");
+                umsAgentDebug3(voicequestionEventId, logHashMap.getData());
             } else {
                 initAnswerRightResult(entity.getGoldNum());
             }
@@ -2341,7 +2357,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
-        mData.put("livetype", "" + 3);
+        if ("PublicLiveDetailActivity".equals(where)) {
+            mData.put("livetype", "" + 2);
+        } else {
+            mData.put("livetype", "" + 3);
+        }
         mData.put("clits", "" + System.currentTimeMillis());
 //        Loger.d(mContext, eventId, mData, true);
         UmsAgentManager.umsAgentDebug(this, appID, eventId, mData);
@@ -2353,7 +2373,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
-        mData.put("livetype", "" + 3);
+        if ("PublicLiveDetailActivity".equals(where)) {
+            mData.put("livetype", "" + 2);
+        } else {
+            mData.put("livetype", "" + 3);
+        }
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
         UmsAgentManager.umsAgentOtherBusiness(this, appID, UmsConstants.uploadBehavior, mData);
@@ -2365,7 +2389,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
-        mData.put("livetype", "" + 3);
+        if ("PublicLiveDetailActivity".equals(where)) {
+            mData.put("livetype", "" + 2);
+        } else {
+            mData.put("livetype", "" + 3);
+        }
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
         UmsAgentManager.umsAgentOtherBusiness(this, appID, UmsConstants.uploadShow, mData);

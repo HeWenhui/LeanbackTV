@@ -413,6 +413,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
             String assessRef = mParam.get("assessRef");
             String liveId = mParam.get("liveId");
             String language = mParam.get("language");
+            mStopPrefix = mParam.get("isLast");
             if (checkParam(recordFileName, assessRef, liveId, language)) {
                 saveVideoFile = new File(dir, recordFileName + ".mp3");
                 boolean isEnglish = !mSpeechType.equals(SPEECH_FOLLOW);
@@ -445,7 +446,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
                                     }
                                     if (resultEntity.getStatus() == ResultEntity.SUCCESS || resultEntity.getStatus() == ResultEntity.ERROR) {
                                         mHandler.removeMessages(RECORD_WITE);
-                                        if (!mIsFinishCurrentSpeech && mIsStopCommand) {
+                                        if (!mIsFinishCurrentSpeech) {
                                             mIsFinishCurrentSpeech = true;
                                             if (mSpeechType.equals(SPEECH_ROLEPLAY)) {
                                                 jsStartAnotherReading();
@@ -485,7 +486,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
                                     }
                                     if (resultEntity.getStatus() == ResultEntity.SUCCESS || resultEntity.getStatus() == ResultEntity.ERROR) {
                                         mHandler.removeMessages(RECORD_WITE);
-                                        if (!mIsFinishCurrentSpeech && mIsStopCommand) {
+                                        if (!mIsFinishCurrentSpeech) {
                                             mIsFinishCurrentSpeech = true;
                                             if (mSpeechType.equals(SPEECH_ROLEPLAY)) {
                                                 jsStartAnotherReading();
@@ -526,10 +527,12 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
         }
         boolean isEnglish = !mSpeechType.equals(SPEECH_FOLLOW);
         if (isEnglish) {
+            //if (speechEvaluatorInter instanceof TalSpeech) {
+            //强制2秒内必须回结果
             if (speechEvaluatorInter instanceof TalSpeech) {
-                //强制2秒内必须回结果
                 mHandler.sendEmptyMessageDelayed(RECORD_WITE, 2000);
             }
+            //}
         } else {
             //强制2秒内必须回结果
             mHandler.sendEmptyMessageDelayed(RECORD_WITE, 2000);
@@ -542,7 +545,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
             super.handleMessage(msg);
             if (msg.what == RECORD_WITE) {
                 Loger.d(TAG, "handleMessage:jsStartAnotherReading");
-                if (!mIsFinishCurrentSpeech && mIsStopCommand) {
+                if (!mIsFinishCurrentSpeech) {
                     mIsFinishCurrentSpeech = true;
                     if (mSpeechType.equals(SPEECH_ROLEPLAY)) {
                         jsStartAnotherReading();

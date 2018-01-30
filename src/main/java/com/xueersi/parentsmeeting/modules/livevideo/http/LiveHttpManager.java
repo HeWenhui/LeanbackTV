@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.alibaba.fastjson.JSON;
 import com.xueersi.parentsmeeting.base.BaseHttpBusiness;
 import com.xueersi.parentsmeeting.http.CommonRequestCallBack;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
@@ -391,15 +392,22 @@ public class LiveHttpManager extends BaseHttpBusiness {
      *
      * @param enstuId         用户加密ID
      * @param liveId          直播ID
+     * @param livetype
      * @param requestCallBack
      */
-    public void getLearnReport(String enstuId, String liveId, HttpCallBack
+    public void getLearnReport(String enstuId, String liveId, int livetype, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
 //        params.addBodyParam("enstuId", enstuId);
         setDefaultParameter(params);
-        sendPost(LiveVideoConfig.URL_LIVE_GET_LEARNING_STAT, params, requestCallBack);
+        String url;
+        if (livetype == LiveBll.LIVE_TYPE_LIVE) {
+            url = LiveVideoConfig.URL_LIVE_GET_LEARNING_STAT;
+        } else {
+            url = LiveVideoConfig.URL_LIVE_GET_FEED_BACK;
+        }
+        sendPost(url, params, requestCallBack);
     }
 
     /**
@@ -619,5 +627,107 @@ public class LiveHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         requestCallBack.url = LiveVideoConfig.URL_LIVE_GET_WARE_URL;
         sendPost(LiveVideoConfig.URL_LIVE_GET_WARE_URL, params, requestCallBack);
+    }
+
+    public void getFullMarkListQuestion(String testId, String classId, String teamId, HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        params.addBodyParam("testId", testId);
+        String i = JSON.toJSON(params).toString();
+        sendPost(LiveVideoConfig.LIVE_FULL_MARK_LIST_QUESTION, params, callBack);
+    }
+
+    public void getFullMarkListTest(String classId, String teamId, String testPlan, HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        params.addBodyParam("testPlan", testPlan);
+        sendPost(LiveVideoConfig.LIVE_FULL_MARK_LIST_TEST, params, callBack);
+    }
+
+    public void getFullMarkListH5(String classId, String teamId, String testId, String type, HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        params.addBodyParam("testId", testId);
+        params.addBodyParam("type", type);
+        String i = JSON.toJSON(params).toString();
+        sendPost(LiveVideoConfig.LIVE_FULL_MARK_LIST_H5, params, callBack);
+    }
+
+    /**
+     * 获取光荣榜
+     *
+     * @param classId         班级Id
+     * @param enstuId         学生Id加密串
+     * @param liveId          场次Id
+     * @param status          是否点赞标志位
+     * @param requestCallBack
+     */
+    public void getHonorList(String classId, String enstuId, String liveId , String status ,HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("enstuId", enstuId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("status",status);
+        setDefaultParameter(params);
+        sendPost(LiveVideoConfig.URL_LIVE_GET_HONOR_LIST, params, requestCallBack);
+    }
+
+    /**
+     * 获取点赞榜
+     *
+     * @param classId         班级Id
+     * @param stuId         学生Id加密串
+     * @param requestCallBack
+     */
+    public void getThumbsUpList(String classId, String stuId,HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("stuId", stuId);
+        setDefaultParameter(params);
+        sendPost(LiveVideoConfig.URL_LIVE_GET_THUMBS_UP_LIST, params, requestCallBack);
+    }
+
+    /**
+     * 获取进步榜
+     *
+     * @param classId         班级Id
+     * @param enstuId         学生Id加密串
+     * @param liveId          场次Id
+     * @param status          是否点赞标志位
+     * @param requestCallBack
+     */
+    public void getProgressList(String classId, String enstuId, String liveId , String status ,HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("enstuId", enstuId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("status",status);
+        setDefaultParameter(params);
+        sendPost(LiveVideoConfig.URL_LIVE_GET_PRPGRESS_LIST, params, requestCallBack);
+    }
+
+    /**
+     * 获取点赞概率标识
+     *
+     * @param classId         班级Id
+     * @param enstuId         学生Id加密串
+     * @param requestCallBack
+     */
+    public void getThumbsUpProbability(String classId, String enstuId ,HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("enstuId", enstuId);
+        setDefaultParameter(params);
+        sendPost(LiveVideoConfig.URL_LIVE_GET_THUMBS_UP_PROBABILITY, params, requestCallBack);
     }
 }

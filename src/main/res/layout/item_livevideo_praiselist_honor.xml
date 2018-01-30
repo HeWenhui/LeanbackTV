@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:gravity="center_horizontal">
+
+    <ImageView
+        android:id="@+id/iv_livevideo_praiselist_honor_crown"
+        android:layout_marginTop="7dp"
+        android:layout_width="13dp"
+        android:layout_height="11dp" />
+
+    <TextView
+        android:id="@+id/tv_livevideo_praiselist_honor_name"
+        android:layout_width="64dp"
+        android:layout_height="32dp"
+        android:layout_toRightOf="@+id/iv_livevideo_praiselist_honor_crown"
+        android:layout_marginLeft="5dp"
+        android:gravity="top"
+        android:ellipsize="end"
+        android:singleLine="true"
+        style="@style/text_font16_666666_style" />
+
+    <TextView
+        android:id="@+id/tv_livevideo_praiselist_honor_counts"
+        android:layout_width="40dp"
+        android:layout_height="32dp"
+        android:layout_toRightOf="@+id/tv_livevideo_praiselist_honor_name"
+        android:layout_marginLeft="4dp"
+        android:gravity="top|left"
+        style="@style/text_font16_666666_style"/>
+
+
+</RelativeLayout>

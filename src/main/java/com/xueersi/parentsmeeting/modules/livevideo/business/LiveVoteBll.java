@@ -144,7 +144,7 @@ public class LiveVoteBll implements LiveVoteAction {
         StableLogHashMap logHashMap = new StableLogHashMap("showVoteResult");
         logHashMap.put("voteid", "" + voteEntity.getChoiceId());
         logHashMap.addSno("8").addNonce("" + voteEntity.getNonce());
-        logHashMap.addEx("Y").addStable("1");
+        logHashMap.addExY().addStable("1");
         umsAgentDebug3(eventId, logHashMap.getData());
     }
 
@@ -250,7 +250,7 @@ public class LiveVoteBll implements LiveVoteAction {
                     });
                     StableLogHashMap logHashMap = new StableLogHashMap("showVote");
                     logHashMap.put("voteid", "" + voteEntity.getChoiceId());
-                    logHashMap.addSno("4").addEx("Y").addNonce("" + voteEntity.getNonce()).addStable("1");
+                    logHashMap.addSno("4").addExY().addNonce("" + voteEntity.getNonce()).addStable("1");
                     umsAgentDebug3(eventId, logHashMap.getData());
                 }
             }

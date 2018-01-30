@@ -1,8 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -216,51 +214,34 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     /**
      * 播放器异常日志
      *
+     * @param TAG
      * @param str
      */
-    public void getOnloadLogs(final String str) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        String bz = UserBll.getInstance().getMyUserInfoEntity().getUserType() == 1 ? "student" : "teacher";
-        PackageManager packageManager = mContext.getPackageManager();
-        PackageInfo packInfo = null;
-        String filenam = "f";
-        try {
-            packInfo = packageManager.getPackageInfo(mContext.getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (packInfo != null) {//else不会发生
-            filenam = packInfo.versionCode + "";
-        }
-        filenam = Build.VERSION.SDK_INT + "&" + filenam;
+    public void getOnloadLogs(String TAG, final String str) {
         if (mGetInfo == null) {
             UmsAgent.onEvent(mContext, LogerTag.DEBUG_VIDEO_LIVEMSG, LogerTag.DEBUG_VIDEO_LIVEMSG, 0, str);
             return;
         }
-        mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mLiveId, mGetInfo.getUname(), enstuId,
-                mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, new Callback.CommonCallback<File>() {
+        Map<String, String> mData = new HashMap<>();
+        mData.put("sdkint", "" + Build.VERSION.SDK_INT);
+        mData.put("str", "" + str);
+        mData.put("tag", "" + TAG);
+        mData.put("isAudit", "1");
 
-                    @Override
-                    public void onSuccess(File o) {
-                        //Loger.i(TAG, "getOnloadLogs:onSuccess");
-                    }
+        mData.put("uname", mGetInfo.getUname());
+        StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+        if (studentLiveInfo != null) {
+            mData.put("classid", studentLiveInfo.getClassId());
+            mData.put("teamid", studentLiveInfo.getTeamId());
+        }
+        mData.put("courseid", courseId);
+        mData.put("teacherid", mGetInfo.getMainTeacherId());
+        mData.put("coachid", mGetInfo.getTeacherId());
+        mData.put("liveid", mLiveId);
+        mData.put("livetype", "" + mLiveType);
+        mData.put("clits", "" + System.currentTimeMillis());
 
-                    @Override
-                    public void onError(Throwable throwable, boolean b) {
-                        //Loger.i(TAG, "getOnloadLogs:onError", throwable);
-                    }
-
-                    @Override
-                    public void onCancelled(CancelledException e) {
-                        //Loger.i(TAG, "getOnloadLogs:onCancelled");
-                    }
-
-                    @Override
-                    public void onFinished() {
-                        //Loger.i(TAG, "getOnloadLogs:onFinished");
-                    }
-
-                });
+        Loger.d(mContext, LiveVideoConfig.LIVE_DEBUG_LOG, mData, true);
     }
 
     /**
@@ -831,7 +812,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                                 mVideoAction.onModeChange(mode, true);
                             }
                             mLiveTopic.setMode(mode);
-                            liveGetPlayServer();
+                            liveGetPlayServer(true);
                         }
                         if (!StringUtils.isEmpty(playUrl)) {
                             if (mVideoAction != null) {
@@ -843,12 +824,12 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                         mLogtf.d("onStudentPrivateMessage:playUrl=" + playUrl);
 
                         //旁听日志
-                        StableLogHashMap stableLogHashMap = new StableLogHashMap("startPlay");
-                        stableLogHashMap.put("nickname", sender);
-                        stableLogHashMap.put("playurl", playUrl);
+                        StableLogHashMap logHashMap = new StableLogHashMap("startPlay");
+                        logHashMap.put("nickname", sender);
+                        logHashMap.put("playurl", playUrl);
                         String nonce = jsonObject.optString("nonce");
-                        stableLogHashMap.addSno("4").addNonce(nonce).addEx("Y").addStable("1");
-                        umsAgentDebug(liveListenEventid, stableLogHashMap.getData());
+                        logHashMap.addSno("4").addNonce(nonce).addExY().addStable("1");
+                        umsAgentDebug(liveListenEventid, logHashMap.getData());
                     }
                     break;
                     case XESCODE.STUDENT_MODECHANGE: {
@@ -858,7 +839,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                                 mVideoAction.onModeChange(mode, true);
                             }
                             mLiveTopic.setMode(mode);
-                            liveGetPlayServer();
+                            liveGetPlayServer(true);
                         }
                     }
                     break;
@@ -1166,7 +1147,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         XesMobAgent.liveLearnReport("request:" + from);
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("getLearnReport:enstuId=" + enstuId + ",liveId=" + mLiveId);
-        mHttpManager.getLearnReport(enstuId, mLiveId, new HttpCallBack(false) {
+        mHttpManager.getLearnReport(enstuId, mLiveId, mLiveType, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -1217,7 +1198,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                         mVideoAction.onModeChange(mode, true);
                     }
                     mLiveTopic.setMode(mode);
-                    liveGetPlayServer();
+                    liveGetPlayServer(true);
                 }
             }
 
@@ -1235,11 +1216,15 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
 
     /** 第一次调度，不判断老师状态 */
     public void liveGetPlayServerFirst() {
-        liveGetPlayServer(mLiveTopic.getMode());
+        liveGetPlayServer(mLiveTopic.getMode(), false);
     }
 
-    /** 调度，使用LiveTopic的mode */
-    public void liveGetPlayServer() {
+    /**
+     * 调度，使用LiveTopic的mode
+     *
+     * @param modechange
+     */
+    public void liveGetPlayServer(boolean modechange) {
         new Thread() {
             @Override
             public void run() {
@@ -1250,12 +1235,12 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                 }
             }
         }.start();
-        liveGetPlayServer(mLiveTopic.getMode());
+        liveGetPlayServer(mLiveTopic.getMode(), modechange);
     }
 
     private long lastGetPlayServer;
 
-    private void liveGetPlayServer(final String mode) {
+    private void liveGetPlayServer(final String mode, final boolean modechange) {
         if (mLiveType == LIVE_TYPE_LIVE) {
             if (mGetInfo.getStudentLiveInfo().isExpe() && LiveTopic.MODE_TRANING.equals(mode)) {
                 mLogtf.d("liveGetPlayServer:isExpe");
@@ -1304,7 +1289,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                         mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
                         if (time < 15000) {
                             if (mVideoAction != null && mLiveTopic != null) {
-                                mVideoAction.onLiveStart(null, mLiveTopic);
+                                mVideoAction.onLiveStart(null, mLiveTopic, modechange);
                             }
                             mHandler.removeCallbacks(mStatisticsRun);
                             postDelayedIfNotFinish(mStatisticsRun, 300000);
@@ -1320,7 +1305,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                         @Override
                         public void run() {
                             mLogtf.d("liveGetPlayServer:onError retry1");
-                            liveGetPlayServer();
+                            liveGetPlayServer(modechange);
                         }
                     }, 1000);
                 } else {
@@ -1329,7 +1314,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                         @Override
                         public void run() {
                             mLogtf.d("liveGetPlayServer:onError retry2");
-                            liveGetPlayServer();
+                            liveGetPlayServer(modechange);
                         }
                     });
                 }
@@ -1351,7 +1336,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                         }
                         mServer = server;
                         if (mVideoAction != null && mLiveTopic != null) {
-                            mVideoAction.onLiveStart(server, mLiveTopic);
+                            mVideoAction.onLiveStart(server, mLiveTopic, modechange);
                         }
                         mHandler.removeCallbacks(mStatisticsRun);
                         postDelayedIfNotFinish(mStatisticsRun, 5 * 60 * 1000);
@@ -1361,7 +1346,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
 
                             @Override
                             public void run() {
-                                liveGetPlayServer();
+                                liveGetPlayServer(modechange);
                             }
                         });
                     }
@@ -1374,7 +1359,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
 
                         @Override
                         public void run() {
-                            liveGetPlayServer();
+                            liveGetPlayServer(modechange);
                         }
                     });
                 }
@@ -1856,7 +1841,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             Loger.i(TAG, "onNetWorkChange:liveGetPlayServerError=" + liveGetPlayServerError);
             if (liveGetPlayServerError) {
                 liveGetPlayServerError = false;
-                liveGetPlayServer(mLiveTopic.getMode());
+                liveGetPlayServer(mLiveTopic.getMode(), false);
             }
             if (liveGetStudyPlayServerError) {
                 liveGetStudyPlayServerError = true;

@@ -29,9 +29,11 @@ import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.business.AnswerRankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
+import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CacheAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishSpeekBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ExpeBll;
@@ -46,18 +48,25 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.VPlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VP;
@@ -110,6 +119,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     /** 老师不在直播间 */
     private ImageView ivTeacherNotpresent;
     RelativeLayout bottomContent;
+    RelativeLayout praiselistContent;
     /** 缓冲提示 */
     private TextView tvLoadingHint;
     private LiveGetInfo mGetInfo;
@@ -142,6 +152,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     /** video缓存时间 */
     private long videoCachedDuration;
     LiveLazyBllCreat liveLazyBllCreat;
+    BaseLiveMediaControllerTop baseLiveMediaControllerTop;
     LiveMediaControllerBottom liveMediaControllerBottom;
     ExpeBll expeBll;
     LiveMessageBll liveMessageBll;
@@ -154,10 +165,11 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     EnglishH5CoursewareBll englishH5CoursewareBll;
     LiveAchievementBll starBll;
     EnglishSpeekBll englishSpeekBll;
+    SpeechFeedBackAction speechFeedBackAction;
     boolean audioRequest = false;
     SpeechEvaluatorUtils mIse;
     RankBll rankBll;
-    EnglishH5Cache englishH5Cache;
+    EnglishH5CacheAction englishH5Cache;
     /** 视频宽度 */
     public static final float VIDEO_WIDTH = 1280f;
     /** 视频高度 */
@@ -175,6 +187,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     long startTime = System.currentTimeMillis();
     /** onPause状态不暂停视频 */
     boolean onPauseNotStopVideo = false;
+    /** 领奖台业务 */
+    private AnswerRankBll answerRankBll;
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         long before = System.currentTimeMillis();
@@ -220,13 +234,18 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
         bottomContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
+        praiselistContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_praiselist_content);
+        praiselistContent.setVisibility(View.VISIBLE);
         tvLoadingHint = (TextView) findViewById(R.id.tv_course_video_loading_content);
         // 预加载布局中退出事件
         findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
         tvLoadingHint.setText("获取课程信息");
+        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        bottomContent.addView(liveMediaControllerBottom);
         //聊天
         long before = System.currentTimeMillis();
         liveLazyBllCreat.setBottomContent(bottomContent);
+        liveLazyBllCreat.setPraiselistContent(praiselistContent);
         liveMessageBll.initViewLive(bottomContent);
         Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
@@ -290,10 +309,49 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         if (englishH5CoursewareBll != null) {
                             englishH5CoursewareBll.setVideoLayout(lp.width, lp.height);
                         }
+                        if (mLiveBll != null && mLiveBll.getAnswerRankBll() != null) {
+                            mLiveBll.getAnswerRankBll().setVideoLayout(lp.width, lp.height);
+                        }
+                        if (speechFeedBackAction != null) {
+                            speechFeedBackAction.setVideoLayout(lp.width, lp.height);
+                        }
+                        if (mLiveBll != null && mLiveBll.getPraiseListAction() != null) {
+                            mLiveBll.getPraiseListAction().setVideoLayout(lp.width, lp.height);
+                        }
                     }
                 });
             }
         }, 10);
+        /*answerRankBll = new AnswerRankBll(mContext, bottomContent,mLiveBll);
+        mLiveBll.setAnswerRankBll(answerRankBll);
+        questionBll.setAnswerRankBll(answerRankBll);
+        englishH5CoursewareBll.setAnswerRankBll(answerRankBll);
+        final ArrayList<FullMarkListEntity> lst=new ArrayList<>();
+        for(int i=0;i<16;i++){
+            FullMarkListEntity entity=new FullMarkListEntity();
+            entity.setAnswer_time(""+(60+i));
+            entity.setStuName("李亚龙啊");
+            entity.setId(UserBll.getInstance().getMyUserInfoEntity().getStuId()+(i==5?"":"abc"));
+            lst.add(entity);
+        }
+        final ArrayList<RankUserEntity> lst1=new ArrayList<>();
+        RankUserEntity entity=new RankUserEntity();
+        entity.setName("李亚龙啊");
+        entity.setId("abc");
+        lst1.add(entity);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                answerRankBll.showRankList(lst1);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        answerRankBll.showFullMarkList(lst,1);
+
+                    }
+                },1000);
+            }
+        },1000);*/
     }
 
     protected boolean initData() {
@@ -348,7 +406,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         mLiveBll.setEnglishH5CoursewareAction(englishH5CoursewareBll);
         mLiveBll.setVideoChatAction(videoChatBll);
         videoChatBll.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
-        mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
+        mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), false);
+        baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
+        mMediaController.setControllerTop(baseLiveMediaControllerTop);
         setMediaControllerBottomParam(videoView.getLayoutParams());
 
         liveMessageBll.setLiveBll(mLiveBll);
@@ -369,13 +429,13 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             rankBll = new RankBll(this);
             rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
             rankBll.setLiveBll(mLiveBll);
-//            englishH5Cache = new EnglishH5Cache(this, mLiveBll, mVSectionID);
+            englishH5Cache = new EnglishH5Cache(this, mLiveBll, mVSectionID);
+//            englishH5Cache = new EnglishH5CacheZip(this, mLiveBll, mVSectionID);
         }
         videoChatBll.setLiveBll(mLiveBll);
 
         liveLazyBllCreat = new LiveLazyBllCreat(this, mLiveBll);
         mLiveBll.setLiveLazyBllCreat(liveLazyBllCreat);
-
     }
 
     /**
@@ -419,7 +479,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (mIsLand) {
-            mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
+            mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), false);
             setMediaControllerBottomParam(videoView.getLayoutParams());
         }
     }
@@ -465,7 +525,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    rePlay();
+                                    rePlay(false);
                                 }
                             });
                         }
@@ -687,7 +747,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         videoCachedDuration = vPlayer.getVideoCachedDuration();
                         questionBll.setVideoCachedDuration(videoCachedDuration);
                         mHandler.postDelayed(getVideoCachedDurationRun, 30000);
-                        mLiveBll.getOnloadLogs("videoCachedDuration=" + videoCachedDuration);
+                        mLiveBll.getOnloadLogs(TAG, "videoCachedDuration=" + videoCachedDuration);
                         if (videoCachedDuration > 10000) {
                             mLiveBll.streamReport(LiveBll.MegId.MEGID_12130, mGetInfo.getChannelname(), -1);
                             if (lastPlayserverEntity != null) {
@@ -721,7 +781,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 reportPlayStarTime = System.currentTimeMillis();
             }
             mLiveBll.repair(true);
-            mLiveBll.liveGetPlayServer();
+            mLiveBll.liveGetPlayServer(false);
         }
     };
 
@@ -752,7 +812,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             long openTimeOut = System.currentTimeMillis() - openStartTime;
             mLogtf.d("openTimeOut:progress=" + vPlayer.getBufferProgress() + ",openTimeOut=" + openTimeOut);
             mLiveBll.repair(false);
-            mLiveBll.liveGetPlayServer();
+            mLiveBll.liveGetPlayServer(false);
         }
     };
 
@@ -782,7 +842,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                     }
                 }
                 ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                ivTeacherNotpresent.setBackgroundResource(R.drawable.bg_course_video_teacher_notpresent_land2);
+                ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdai_bg_normal);
                 findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
             }
         });
@@ -817,6 +877,12 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             }
             if (englishH5Cache != null) {
                 englishH5Cache.getCourseWareUrl();
+            }
+            if (LiveVideoConfig.IS_SCIENCE) {
+                SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(this, mLiveBll);
+                speechFeedBackBll.setBottomContent(bottomContent);
+                speechFeedBackAction = speechFeedBackBll;
+                mLiveBll.setSpeechFeedBackAction(speechFeedBackBll);
             }
         }
         Loger.d(TAG, "onLiveInit:time=" + (System.currentTimeMillis() - before));
@@ -859,12 +925,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     }
 
     @Override
-    public void onLiveStart(PlayServerEntity server, LiveTopic cacheData) {
+    public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         mServer = server;
-        final AtomicBoolean change = new AtomicBoolean(false);// 直播状态是不是变化
-        if (mLiveTopic != null) {
-            change.set(!mLiveTopic.getMode().equals(cacheData.getMode()));
-        }
+        final AtomicBoolean change = new AtomicBoolean(modechange);// 直播状态是不是变化
         mLogtf.d("onLiveStart:change=" + change.get());
         mLiveTopic = cacheData;
         questionBll.setLiveTopic(cacheData);
@@ -884,7 +947,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 }
             }
         });
-        rePlay();
+        rePlay(change.get());
     }
 
     @Override
@@ -978,8 +1041,10 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
 
     /**
      * 第一次播放，或者播放失败，重新播放
+     *
+     * @param modechange
      */
-    public void rePlay() {
+    public void rePlay(boolean modechange) {
         if (mGetInfo == null) {//上次初始化尚未完成
             return;
         }
@@ -1074,10 +1139,14 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                                     for (int i = 0; i < flvPlayservers.size(); i++) {
                                         PlayserverEntity playserverEntity = flvPlayservers.get(i);
                                         if (lastPlayserverEntity.getAddress().equals(playserverEntity.getAddress())) {
-                                            entity = flvPlayservers.get((i + 1) % flvPlayservers.size());
+                                            if (modechange) {
+                                                entity = flvPlayservers.get(i % flvPlayservers.size());
+                                            } else {
+                                                entity = flvPlayservers.get((i + 1) % flvPlayservers.size());
+                                            }
                                             entity.setUseFlv(true);
                                             useFlv = true;
-                                            msg += ",setUseFlv2";
+                                            msg += ",setUseFlv2,modechange=" + modechange;
                                             break;
                                         }
                                     }
@@ -1094,8 +1163,12 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                     for (int i = 0; i < playservers.size(); i++) {
                         PlayserverEntity playserverEntity = playservers.get(i);
                         if (lastPlayserverEntity.equals(playserverEntity)) {
-                            entity = playservers.get((i + 1) % playservers.size());
-                            msg += ",entity=null2";
+                            if (modechange) {
+                                entity = playservers.get(i % playservers.size());
+                            } else {
+                                entity = playservers.get((i + 1) % playservers.size());
+                            }
+                            msg += ",entity=null2,modechange=" + modechange;
                             break;
                         }
                     }
@@ -1204,7 +1277,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 }
             }
         });
-        mLiveBll.liveGetPlayServer();
+        mLiveBll.liveGetPlayServer(false);
     }
 
     public void postDelayedIfNotFinish(Runnable r, long delayMillis) {
@@ -1339,6 +1412,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         }
         if (englishH5Cache != null) {
             englishH5Cache.stop();
+        }
+        if (speechFeedBackAction != null) {
+            speechFeedBackAction.stop();
         }
         super.onDestroy();
     }

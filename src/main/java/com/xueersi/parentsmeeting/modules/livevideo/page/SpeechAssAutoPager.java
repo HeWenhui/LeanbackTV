@@ -117,6 +117,8 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     private boolean isLive;
     /** 评测内容 */
     private String content;
+    /** 评测内容-换行后 */
+    private String content2;
     private String nonce;
     /** 评测进度条颜色 */
     int startProgColor;
@@ -147,7 +149,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         this.nonce = nonce;
         this.speechEvalAction = speechEvalAction;
         logToFile.i("SpeechAssessmentPager:id=" + id);
-        entranceTime = System.currentTimeMillis();
         startProgColor = context.getResources().getColor(R.color.COLOR_6462A2);
         progColor = 0;
         this.haveAnswer = haveAnswer;
@@ -177,7 +178,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         this.nonce = nonce;
         this.speechEvalAction = speechEvalAction;
         logToFile.i("SpeechAssessmentPager:id=" + id);
-        entranceTime = System.currentTimeMillis();
         startProgColor = context.getResources().getColor(R.color.COLOR_6462A2);
         progColor = 0;
 //        content = "You are very good,You are very good";
@@ -254,6 +254,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         animSpeechEncourage.setInterpolator(new OvershootInterpolator());
 //        tvSpeectevalContent.setText(Html.fromHtml(content));
         tvSpeectevalContent.setText(content);
+        content2 = content.replace("\n", " ");
         String[] split = content.split(" ");
         if (split.length == 1) {
             spStarResult.setIsWord();
@@ -373,7 +374,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mData.put("testid", id);
         mData.put("islive", "" + isLive);
         speechEvalAction.umsAgentDebug2(eventId, mData);
-        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, new EvaluatorListener() {
+        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, new EvaluatorListener() {
             int lastVolume = 0;
 
             @Override
@@ -563,7 +564,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     @Override
                     public void run() {
                         errorSetGone();
-                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
+                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, evaluatorListener);
                     }
                 }, 500);
                 return;
@@ -574,7 +575,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     @Override
                     public void run() {
                         errorSetGone();
-                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
+                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, evaluatorListener);
                     }
                 }, 500);
                 return;
@@ -596,11 +597,14 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             }
         }
         try {
-            wordChangeColor(score, lstPhonemeScore);
+            int wordChangeColor = wordChangeColor(score, lstPhonemeScore);
+            if (wordChangeColor != 0) {
+                logToFile.d("onEvaluatorSuccess:sid=" + resultEntity.getSid() + ",error=" + content + "-" + nbest);
+            }
         } catch (Exception e) {
             MobclickAgent.reportError(mContext, new Error(content + "-" + nbest, e));
         }
-        logToFile.d("onResult:score=" + score + ",haveAnswer=" + haveAnswer + ",nbest=" + nbest);
+        logToFile.d("onEvaluatorSuccess:content=" + content + ",sid=" + resultEntity.getSid() + ",score=" + score + ",haveAnswer=" + haveAnswer + ",nbest=" + nbest);
         if (haveAnswer) {
             onSpeechEvalSuccess(resultEntity, 0);
         } else {
@@ -753,7 +757,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     @Override
                     public void run() {
                         errorSetGone();
-                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
+                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, evaluatorListener);
                     }
                 }, 1000);
                 return;
@@ -772,7 +776,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                                 @Override
                                 public void run() {
                                     errorSetGone();
-                                    speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
+                                    speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, evaluatorListener);
                                 }
                             }, 1000);
                             return;
@@ -791,7 +795,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                                 @Override
                                 public void run() {
                                     errorSetGone();
-                                    speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content, saveVideoFile.getPath(), false, evaluatorListener);
+                                    speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, evaluatorListener);
                                 }
                             }, 1000);
                             return;
@@ -977,7 +981,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         }
     }
 
-    private void wordChangeColor(int score, List<PhoneScore> lstPhonemeScore) {
+    private int wordChangeColor(int score, List<PhoneScore> lstPhonemeScore) {
         int COLOR_FF0000 = mContext.getResources().getColor(R.color.COLOR_FF4343);
         int COLOR_333333 = mContext.getResources().getColor(R.color.COLOR_333333);
         int COLOR_32B16C = 0xff2A9933;
@@ -989,15 +993,21 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             } else {
                 tvSpeectevalContent.setTextColor(COLOR_333333);
             }
+            return 1;
         } else {
             String stemText = content;
             String bigStemText = stemText.toUpperCase();
             String subtemText = bigStemText;
             int lastSub = 0;
             SpannableStringBuilder spannable = new SpannableStringBuilder(stemText);
+            boolean fail = false;
             for (int i = 0; i < lstPhonemeScore.size(); i++) {
                 String word = lstPhonemeScore.get(i).getWord();
                 int index = subtemText.indexOf(word);
+                if (index == -1) {
+                    fail = true;
+                    continue;
+                }
                 int left = index + lastSub;
                 int right = left + word.length();
                 subtemText = subtemText.substring(index);
@@ -1014,7 +1024,11 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }
             }
             tvSpeectevalContent.setText(spannable);
+            if (fail) {
+                return 2;
+            }
         }
+        return 0;
     }
 
     int count = 3;

@@ -24,7 +24,7 @@ public class LogToFile {
     }
 
     public LogToFile(String tag, String path) {
-        this.TAG = "LogToFile:" + tag;
+        this.TAG = "L:" + tag;
         this.path = path;
         File parent = new File(path).getParentFile();
         if (!parent.exists()) {
@@ -50,10 +50,10 @@ public class LogToFile {
     public void i(String message) {
         Loger.i(TAG, message);
         if (liveBll != null) {
-            liveBll.getOnloadLogs(TAG + "**" + message);
+            liveBll.getOnloadLogs(TAG, message);
         } else {
             if (auditClassLiveBll != null) {
-                auditClassLiveBll.getOnloadLogs(TAG + "**" + message);
+                auditClassLiveBll.getOnloadLogs(TAG, message);
             }
         }
 //        if (BuildConfig.DEBUG) {
@@ -64,10 +64,10 @@ public class LogToFile {
     public void d(String message) {
         Loger.i(TAG, message);
         if (liveBll != null) {
-            liveBll.getOnloadLogs(TAG + "**" + message);
+            liveBll.getOnloadLogs(TAG, message);
         } else {
             if (auditClassLiveBll != null) {
-                auditClassLiveBll.getOnloadLogs(TAG + "**" + message);
+                auditClassLiveBll.getOnloadLogs(TAG, message);
             }
         }
 //        if (BuildConfig.DEBUG) {
@@ -78,10 +78,10 @@ public class LogToFile {
     public void e(String message, Throwable e) {
         Loger.i(TAG, message, e);
         if (liveBll != null) {
-            liveBll.getOnloadLogs(TAG + "**" + message + "$$" + e);
+            liveBll.getOnloadLogs(TAG, message);
         } else {
             if (auditClassLiveBll != null) {
-                auditClassLiveBll.getOnloadLogs(TAG + "**" + message);
+                auditClassLiveBll.getOnloadLogs(TAG, message);
             }
         }
 //        new Thread(new WriteThread(message, e)).start();

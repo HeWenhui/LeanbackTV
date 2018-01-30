@@ -28,7 +28,7 @@ import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.H5CoursewareBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LecLearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -43,6 +43,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusE
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
@@ -152,7 +153,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     QuestionBll questionBll;
     RollCallBll rollCallBll;
     RedPackageBll redPackageBll;
-    LearnReportBll learnReportBll;
+    LecLearnReportBll learnReportBll;
     H5CoursewareBll h5CoursewareBll;
 //    StarInteractBll starBll;
     /**
@@ -187,7 +188,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         liveMessageBll.setQuestionBll(questionBll);
         rollCallBll = new RollCallBll(this);
         redPackageBll = new RedPackageBll(this);
-        learnReportBll = new LearnReportBll(this);
+        learnReportBll = new LecLearnReportBll(this);
         h5CoursewareBll = new H5CoursewareBll(this);
         questionBll.setShareDataManager(mShareDataManager);
         AppBll.getInstance().registerAppEvent(this);
@@ -199,7 +200,9 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         liveMessageBll.setLiveBll(mLiveBll);
         rollCallBll.setLiveBll(mLiveBll);
         redPackageBll.setLiveBll(mLiveBll);
+        learnReportBll.setLiveId(mVSectionID);
         learnReportBll.setLiveBll(mLiveBll);
+        learnReportBll.setmShareDataManager(mShareDataManager);
         questionBll.setLiveBll(mLiveBll);
         questionBll.setVSectionID(mVSectionID);
         redPackageBll.setVSectionID(mVSectionID);
@@ -297,12 +300,12 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         mLiveBll.setQuestionAction(questionBll);
         mLiveBll.setRollCallAction(rollCallBll);
         mLiveBll.setReadPackageBll(redPackageBll);
-        mLiveBll.setLearnReportAction(learnReportBll);
+        mLiveBll.setLecLearnReportAction(learnReportBll);
         mLiveBll.setVideoAction(this);
         mLiveBll.setRoomAction(liveMessageBll);
         mLiveBll.setH5CoursewareAction(h5CoursewareBll);
         mLiveBll.getInfo();
-        mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
+        mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), true);
         setMediaControllerBottomParam(videoView.getLayoutParams());
         return true;
     }
@@ -347,7 +350,10 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
                 controllerContent.addView(mMediaController, params);
-                mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
+                mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), true);
+                BaseLiveMediaControllerTop baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
+                mMediaController.setControllerTop(baseLiveMediaControllerTop);
+                controllerContent.addView(baseLiveMediaControllerTop);
                 mMediaController.setAutoOrientation(true);
                 liveMessageBll.getLiveMediaControllerBottom().setController(mMediaController);
                 if (mGetInfo != null) {
@@ -390,7 +396,10 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
                 controllerContent.addView(mMediaController, params);
-                mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
+                mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), true);
+                BaseLiveMediaControllerTop baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
+                mMediaController.setControllerTop(baseLiveMediaControllerTop);
+                controllerContent.addView(baseLiveMediaControllerTop);
                 mMediaController.setAutoOrientation(true);
                 liveMessageBll.getLiveMediaControllerBottom().setController(mMediaController);
                 if (mGetInfo != null) {
@@ -441,7 +450,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             params.bottomMargin = params.topMargin = topMargin;
             rlFirstBackgroundView.setLayoutParams(params);
             ivTeacherNotpresent.setLayoutParams(params);
-            ivTeacherNotpresent.setBackgroundResource(R.drawable.bg_course_video_teacher_notpresent_land2);
+            ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdai_bg_normal);
         }
         //Loger.e(TAG, "setFirstParamLand:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
     }
@@ -667,7 +676,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                         videoCachedDuration = vPlayer.getVideoCachedDuration();
                         questionBll.setVideoCachedDuration(videoCachedDuration);
                         mHandler.postDelayed(getVideoCachedDurationRun, 30000);
-                        mLiveBll.getOnloadLogs("videoCachedDuration=" + videoCachedDuration);
+                        mLiveBll.getOnloadLogs(TAG, "videoCachedDuration=" + videoCachedDuration);
                         if (videoCachedDuration > 10000) {
                             mLiveBll.streamReport(LiveBll.MegId.MEGID_12130, mGetInfo.getChannelname(), -1);
                             if (lastPlayserverEntity != null) {
@@ -701,7 +710,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 reportPlayStarTime = System.currentTimeMillis();
             }
             mLiveBll.repair(true);
-            mLiveBll.liveGetPlayServer();
+            mLiveBll.liveGetPlayServer(false);
         }
     };
 
@@ -729,7 +738,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             long openTimeOut = System.currentTimeMillis() - openStartTime;
             mLogtf.d("openTimeOut:progress=" + vPlayer.getBufferProgress() + ",openTimeOut=" + openTimeOut);
             mLiveBll.repair(false);
-            mLiveBll.liveGetPlayServer();
+            mLiveBll.liveGetPlayServer(false);
         }
     };
 
@@ -751,7 +760,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
 //                }
                 ivTeacherNotpresent.setVisibility(View.VISIBLE);
                 if (isLandSpace()) {
-                    ivTeacherNotpresent.setBackgroundResource(R.drawable.bg_course_video_teacher_notpresent_land2);
+                    ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdai_bg_normal);
                 } else {
                     ivTeacherNotpresent.setBackgroundResource(R.drawable.bg_course_video_teacher_notpresent_port);
                 }
@@ -785,22 +794,14 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     }
 
     @Override
-    public void onLiveStart(PlayServerEntity server, LiveTopic cacheData) {
+    public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         mServer = server;
-        final AtomicBoolean change = new AtomicBoolean(false);// 直播状态是不是变化
-        if (mLiveTopic != null) {
-            change.set(!mLiveTopic.getMode().equals(cacheData.getMode()));
-        }
-        mLogtf.d("onLiveStart:change=" + change.get());
         mLiveTopic = cacheData;
         questionBll.setLiveTopic(cacheData);
         mHandler.post(new Runnable() {
 
             @Override
             public void run() {
-                if (change.get()) {
-                    setFirstBackgroundVisible(View.VISIBLE);
-                }
                 if (tvLoadingHint != null) {
                     if (liveType != LiveBll.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic()
                             .getMode())) {
@@ -1098,7 +1099,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 }
             }
         });
-        mLiveBll.liveGetPlayServer();
+        mLiveBll.liveGetPlayServer(false);
     }
 
     public void postDelayedIfNotFinish(Runnable r, long delayMillis) {
