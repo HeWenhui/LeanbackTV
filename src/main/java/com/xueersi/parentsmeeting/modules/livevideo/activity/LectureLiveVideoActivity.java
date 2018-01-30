@@ -363,6 +363,9 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 //设置控制
                 ViewGroup controllerContent = (ViewGroup) findViewById(R.id.rl_course_video_live_controller_content);
                 controllerContent.removeAllViews();
+                if (mMediaController != null) {
+                    mMediaController.setControllerBottom(null, false);
+                }
                 mMediaController = new LiveMediaController(LectureLiveVideoActivity.this, LectureLiveVideoActivity
                         .this);
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -396,6 +399,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 learnReportBll.initView(questionContent);
                 h5CoursewareBll.initView(questionContent);
                 lecAdvertAction.initView(questionContent, mIsLand);
+                mMediaController.show();
             }
             group.post(new Runnable() {
                 @Override
@@ -410,6 +414,9 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 //设置控制
                 ViewGroup controllerContent = (ViewGroup) findViewById(R.id.rl_course_video_live_controller_content);
                 controllerContent.removeAllViews();
+                if (mMediaController != null) {
+                    mMediaController.setControllerBottom(null, false);
+                }
                 mMediaController = new LiveMediaController(LectureLiveVideoActivity.this, LectureLiveVideoActivity
                         .this);
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -443,6 +450,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 learnReportBll.initView(questionContent);
                 h5CoursewareBll.initView(questionContent);
                 lecAdvertAction.initView(questionContent, mIsLand);
+                mMediaController.show();
             }
             group.post(new Runnable() {
                 @Override
@@ -1262,11 +1270,11 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     }
 
     protected void updateLoadingImage() {
-        Log.d("zhang",TAG+":updateLoadingImage()");
+        Log.d("zhang", TAG + ":updateLoadingImage()");
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
-        if (footerIconEntity != null ){
+        if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
-            if( loadingNoClickUrl!=null )
+            if (loadingNoClickUrl != null)
                 ImageLoader.with(this).load(loadingNoClickUrl).into(ivLoading);
         }
     }
