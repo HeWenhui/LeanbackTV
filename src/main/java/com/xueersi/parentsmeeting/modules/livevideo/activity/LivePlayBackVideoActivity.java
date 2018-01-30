@@ -2533,7 +2533,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
         if (footerIconEntity != null ){
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
-            if( loadingNoClickUrl!=null )
+            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
                 ImageLoader.with(this).load(loadingNoClickUrl).into(ivLoading);
         }
     }
