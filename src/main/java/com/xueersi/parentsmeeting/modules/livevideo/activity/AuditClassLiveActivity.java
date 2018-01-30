@@ -42,6 +42,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
@@ -149,6 +150,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     /** 接麦已经连接老师 */
     private AtomicBoolean startRemote = new AtomicBoolean(false);
     int from = 0;
+    BaseLiveMediaControllerTop baseLiveMediaControllerTop;
     RelativeLayout rlLivevideoStudentVideo;
     XESVideoView xv_livevideo_student;
     String playUrl;
@@ -375,6 +377,9 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 (TextView) findViewById(R.id.tv_livevideo_student_camera);
         RelativeLayout bottomContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
+        baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
+        mMediaController.setControllerTop(baseLiveMediaControllerTop);
+        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         //聊天
         //if (liveType != LiveBll.LIVE_TYPE_LECTURE) {
         //}
@@ -1409,11 +1414,11 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     }
 
     protected void updateLoadingImage() {
-        Log.d("zhang",TAG+":updateLoadingImage()");
+        Log.d("zhang", TAG + ":updateLoadingImage()");
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
-        if (footerIconEntity != null ){
+        if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
-            if( loadingNoClickUrl!=null )
+            if (loadingNoClickUrl != null)
                 ImageLoader.with(this).load(loadingNoClickUrl).into(ivLoading);
         }
     }
