@@ -97,6 +97,7 @@ public class LecAdvertPager extends BasePager {
         String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
         String mAppChannel = AppBll.getInstance().getAppInfoEntity().getAppChannel(); // APP渠道
         String url = BrowserBll.getAutoLoginURL(mEnStuId, lecAdvertEntity.signUpUrl, mAppChannel, 0, false);
+//        url = lecAdvertEntity.signUpUrl;
         lecAdvertPayPager = new LecAdvertPayPager(mContext, url, tv_livelec_advert_step2_title, new LecAdvertPayPager.OnPaySuccess() {
             @Override
             public void onPaySuccess() {

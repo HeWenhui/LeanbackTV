@@ -12,6 +12,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.LecAdvertLog;
 import com.xueersi.xesalib.utils.log.Loger;
 
+import java.util.ArrayList;
+
 /**
  * Created by lyqai on 2018/1/15.
  */
@@ -22,6 +24,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
     Context context;
     RelativeLayout bottomContent;
     LecAdvertPager lecAdvertager;
+    ArrayList<LecAdvertEntity> entities = new ArrayList<>();
     LiveBll liveBll;
     String liveid;
 
@@ -68,6 +71,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
             @Override
             public void run() {
                 if (lecAdvertager != null) {
+                    entities.add(lecAdvertEntity);
                     return;
                 }
 //                PageDataLoadEntity mPageDataLoadEntity = new PageDataLoadEntity(lecAdvertager.getRootView(), R.id.fl_livelec_advert_content, DataErrorManager.IMG_TIP_BUTTON);
@@ -97,10 +101,14 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
         if (lecAdvertager != null) {
             bottomContent.removeView(lecAdvertager.getRootView());
             lecAdvertager = null;
-            if (context instanceof ActivityChangeLand) {
+            if (context instanceof ActivityChangeLand && entities.isEmpty()) {
                 ActivityChangeLand activityChangeLand = (ActivityChangeLand) context;
                 activityChangeLand.setAutoOrientation(true);
             }
+        }
+        if (!entities.isEmpty()) {
+            LecAdvertEntity lecAdvertEntity = entities.remove(0);
+            start(lecAdvertEntity);
         }
     }
 
