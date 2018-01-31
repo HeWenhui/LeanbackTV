@@ -195,6 +195,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         AtomicBoolean mIsLand = new AtomicBoolean(false);
         xv_livevideo_student.setIsLand(mIsLand);
         xv_livevideo_student.onCreate();
+        xv_livevideo_student.setZOrderOnTop(true);
         xv_livevideo_student.setVPlayerListener(new VPlayerListener() {
 
             @Override
