@@ -154,7 +154,7 @@
                 android:paddingTop="10dp">
 
                 <ImageView
-                    android:id="@+id/iv_course_video_loading_bg"
+                    android:id="@id/iv_course_video_loading_bg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"

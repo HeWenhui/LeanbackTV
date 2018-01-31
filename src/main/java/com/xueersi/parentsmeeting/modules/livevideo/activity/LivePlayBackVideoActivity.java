@@ -569,7 +569,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     /** 扫描是否有需要弹出的互动题 */
     public void scanQuestion(long position) {
 
-        if (!mIsLand || vPlayer == null || !vPlayer.isPlaying() || lecAdvertPager != null) {
+        if (!mIsLand || vPlayer == null || !vPlayer.isPlaying()) {
             // 如果不为横屏，没有正在播放，或正在显示互动题都退出扫描
             return;
         }
@@ -768,8 +768,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 redPacketHide();
                 showExam();
             } else if (LocalCourseConfig.CATEGORY_LEC_ADVERT == mQuestionEntity.getvCategory()) {
-                mQuestionEntity.setAnswered(true);
-                showLecAdvertPager(mQuestionEntity);
+//                mQuestionEntity.setAnswered(true);
+//                showLecAdvertPager(mQuestionEntity);
             }
             // 互动题结束
         }
@@ -2533,7 +2533,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
         if (footerIconEntity != null ){
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
-            if( loadingNoClickUrl!=null )
+            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
                 ImageLoader.with(this).load(loadingNoClickUrl).into(ivLoading);
         }
     }
