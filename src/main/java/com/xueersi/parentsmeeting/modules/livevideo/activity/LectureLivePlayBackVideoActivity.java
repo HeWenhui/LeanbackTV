@@ -1707,13 +1707,10 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
         context.startActivityForResult(intent, requestCode);
     }
 
-
     @Override
     protected void updateIcon() {
-        Log.d("zhang",TAG+":updateIcon()");
         updateLoadingImage();
         updateRefreshImage();
-
     }
 
     protected void updateLoadingImage() {

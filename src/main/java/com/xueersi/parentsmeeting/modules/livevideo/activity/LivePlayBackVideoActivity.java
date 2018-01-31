@@ -2415,7 +2415,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         }
     }
 
-
     private void stopVoiceAnswerPager() {
         voiceAnswerPager.stopPlayer();
         rlQuestionContent.removeView(voiceAnswerPager.getRootView());
