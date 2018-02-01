@@ -122,6 +122,11 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
             logHashMap.put("err", "" + err);
             liveBll.umsAgentDebug(eventId, logHashMap.getData());
         }
+
+        @Override
+        public void onVolume(int volume) {
+
+        }
     };
 
     private void doRenderRemoteUi(final int uid) {

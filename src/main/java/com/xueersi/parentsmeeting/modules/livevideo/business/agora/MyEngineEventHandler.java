@@ -1,12 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.agora;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.xueersi.xesalib.utils.log.Loger;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,6 +44,11 @@ public class MyEngineEventHandler {
 //                Loger.d(TAG, "onAudioVolumeIndication:info=" + info.uid + "," + info.volume);
 //            }
 //            Loger.d(TAG, "onAudioVolumeIndication:totalVolume=" + totalVolume);
+            Iterator<AGEventHandler> it = mEventHandlerList.keySet().iterator();
+            while (it.hasNext()) {
+                AGEventHandler handler = it.next();
+                handler.onVolume(totalVolume);
+            }
         }
 
         @Override

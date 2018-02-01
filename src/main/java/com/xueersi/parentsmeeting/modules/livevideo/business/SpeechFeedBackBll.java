@@ -11,12 +11,17 @@ import android.widget.RelativeLayout;
 
 import com.tal.speech.speechrecognizer.PCMFormat;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.agora.AGEventHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 import java.io.IOException;
+
+import io.agora.rtc.Constants;
 
 /**
  * Created by linyuqiang on 2018/1/11.
@@ -45,6 +50,8 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
     private AudioRecord mAudioRecord = null;
     /** 原始录音数据 */
     private short[] mPCMBuffer;
+    private WorkerThread mWorkerThread;
+    private String roomId;
 
     private void initAudioRecorder() throws IOException {
         mBufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLING_RATE,
@@ -72,10 +79,11 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
     }
 
     @Override
-    public void start(String roomId) {
+    public void start(final String roomId) {
         if (isStart) {
             return;
         }
+        this.roomId=roomId;
         Loger.d(TAG, "start:roomId=" + roomId);
         isStart = true;
         new Thread() {
@@ -83,31 +91,70 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
             public void run() {
                 try {
                     Loger.d(TAG, "start:startRecording:mAudioRecord=" + (mAudioRecord == null));
-                    initAudioRecorder();
-                    bottomContent.post(new Runnable() {
+                    //initAudioRecorder();
+                    int stuid=Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                    long time = System.currentTimeMillis();
+                    mWorkerThread=new WorkerThread(activity, stuid);
+                    mWorkerThread.eventHandler().addEventHandler(new AGEventHandler() {
                         @Override
-                        public void run() {
-                            speechFeedBackPager = new SpeechFeedBackPager(activity);
-                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT);
-                            int screenWidth = ScreenUtils.getScreenWidth();
-                            int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
-                            params.rightMargin = wradio;
-                            bottomContent.addView(speechFeedBackPager.getRootView(), params);
+                        public void onFirstRemoteVideoDecoded(int uid, int width, int height, int elapsed) {
+                        }
+
+                        @Override
+                        public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
+                            Loger.i(TAG,"joinchannelsuccess");
+                            bottomContent.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    speechFeedBackPager = new SpeechFeedBackPager(activity);
+                                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                            ViewGroup.LayoutParams.WRAP_CONTENT);
+                                    int screenWidth = ScreenUtils.getScreenWidth();
+                                    int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
+                                    params.rightMargin = wradio;
+                                    Loger.i(TAG,"add view");
+                                    bottomContent.addView(speechFeedBackPager.getRootView(), params);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onUserOffline(int uid, int reason) {
+                            Loger.i(TAG,"useroffline");
+                        }
+
+                        @Override
+                        public void onError(int err) {
+                            Loger.i(TAG,"error"+err);
+                            //SpeechFeedBackBll.this.stop();
+                        }
+
+                        @Override
+                        public void onVolume(int volume) {
+                            speechFeedBackPager.setVolume(volume);
                         }
                     });
-                    long time = System.currentTimeMillis();
-                    mAudioRecord.startRecording();
-                    while (isStart) {
+                    mWorkerThread.start();
+                    mWorkerThread.waitForReady();
+                    int vProfile = Constants.VIDEO_PROFILE_120P;
+                    mWorkerThread.configEngine(Constants.CLIENT_ROLE_BROADCASTER, vProfile);
+                    mWorkerThread.joinChannel(null, roomId, stuid, new WorkerThread.OnJoinChannel() {
+                        @Override
+                        public void onJoinChannel(int joinChannel) {
+                            //VideoChatLog.sno4(liveBll, nonce, room, joinChannel);
+                        }
+                    });
+                    //mAudioRecord.startRecording();
+                    /*while (isStart) {
                         if (mAudioRecord != null) {
                             int readSize = mAudioRecord.read(mPCMBuffer, 0, mBufferSize);
                             if (readSize > 0) {
                                 calculateRealVolume(mPCMBuffer, readSize);
                             }
                         }
-                    }
+                    }*/
                     Loger.d(TAG, "start:startRecording:end;time=" + (System.currentTimeMillis() - time));
-                } catch (IOException e) {
+                } catch (Exception e) {
                     Loger.e(TAG, "initAudioRecorder", e);
                 }
             }
@@ -120,6 +167,12 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
             return;
         }
         Loger.d(TAG, "stop:mAudioRecord=" + (mAudioRecord == null));
+        mWorkerThread.leaveChannel(roomId, new WorkerThread.OnLevelChannel() {
+            @Override
+            public void onLevelChannel(int leaveChannel) {
+
+            }
+        });
         isStart = false;
         if (mAudioRecord != null) {
             mAudioRecord.release();
@@ -129,6 +182,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
             bottomContent.post(new Runnable() {
                 @Override
                 public void run() {
+                    Loger.i(TAG,"remove view");
                     bottomContent.removeView(speechFeedBackPager.getRootView());
                     speechFeedBackPager = null;
                 }
