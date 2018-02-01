@@ -1276,7 +1276,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             voiceChatStatus = status;
                             if (videoChatAction != null) {
                                 msg += "RAISE_HAND:status=" + status;
-                                videoChatAction.raisehand(status, from);
+                                videoChatAction.raisehand(status, from, object.optString("nonce"));
                             }
                             if (mRoomAction != null) {
                                 mRoomAction.videoStatus(status);
@@ -1289,7 +1289,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         msg += ",REQUEST_ACCEPT:from=" + from + ",mode=" + getMode();
                         if ("t".equals(from) && LiveTopic.MODE_CLASS.equals(getMode()) || "f".equals(from) && LiveTopic.MODE_TRANING.equals(getMode())) {
                             if (videoChatAction != null) {
-                                videoChatAction.requestAccept(from);
+                                videoChatAction.requestAccept(from, object.optString("nonce"));
                             }
                         }
                     }
@@ -3434,6 +3434,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mData.put("liveid", mLiveId);
         mData.put("livetype", "" + mLiveType);
         mData.put("clits", "" + System.currentTimeMillis());
+        mData.put("teacherrole", getMode().equals(LiveTopic.MODE_CLASS) ? "1" : "4");
 //        Loger.d(mContext, eventId, mData, true);
         UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
     }
@@ -3460,6 +3461,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mData.put("livetype", "" + mLiveType);
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
+        mData.put("teacherrole", getMode().equals(LiveTopic.MODE_CLASS) ? "1" : "4");
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData);
     }
 
@@ -3485,6 +3487,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mData.put("livetype", "" + mLiveType);
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
+        mData.put("teacherrole", getMode().equals(LiveTopic.MODE_CLASS) ? "1" : "4");
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
     }
 
@@ -3591,7 +3594,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 获取点赞榜
      */
     public synchronized void getThumbsUpList() {
-        if (mPraiseListAction != null  && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP)
+        if (mPraiseListAction != null && mPraiseListAction.getCurrentListType() == PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP)
             //如果当前榜单类型和新开启榜单类型相同，则退出。
             return;
         if (mPraiseListAction != null)
