@@ -16,7 +16,9 @@ public class VideoChatLog {
     public static void sno2(LiveAndBackDebug liveAndBackDebug, String teacher_type, String nonce) {
         StableLogHashMap logHashMap = new StableLogHashMap("getStartLinkMic");
         logHashMap.put("teacher_type", teacher_type);
-        logHashMap.addSno("2").addExY().addNonce(nonce).addStable("1");
+        if (LiveVideoConfig.IS_SCIENCE) {
+            logHashMap.addSno("2").addExY().addNonce(nonce).addStable("1");
+        }
         liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
     }
 
