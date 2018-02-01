@@ -98,6 +98,8 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     protected static final int DIRECTION_LEFT = 1;
     /** 当前界面方向-手机右侧抬起 */
     protected static final int DIRECTION_RIGHT = 2;
+    /** 当前界面方向-下方-暂时没有 */
+    protected static final int DIRECTION_DOWN = 3;
     /** 当前界面方向 */
     protected int mDirection = DIRECTION_UP;
     /** 是否显示控制栏 */
@@ -541,6 +543,19 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         mCreated = true; // 界面onCreate完毕
         if (onVideoCreate(savedInstanceState)) {
             createPlayer();
+        }
+    }
+
+    public void setRequestedOrientation(int requestedOrientation) {
+        super.setRequestedOrientation(requestedOrientation);
+        if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            mDirection = DIRECTION_UP;
+        } else if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            mDirection = DIRECTION_RIGHT;
+        } else if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
+            mDirection = DIRECTION_LEFT;
+        } else if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
+            mDirection = DIRECTION_DOWN;
         }
     }
 
@@ -1470,10 +1485,10 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     }
 
     protected void updateRefreshImage() {
-        Log.d("zhang",TAG+":updateRefreshImage");
+        Log.d("zhang", TAG + ":updateRefreshImage");
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
         ImageView ivRefresh = (ImageView) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.base.R.id.iv_course_video_refresh_bg);
-        if (footerIconEntity != null){
+        if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
             if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
                 ImageLoader.with(this).load(loadingNoClickUrl).into(ivRefresh);

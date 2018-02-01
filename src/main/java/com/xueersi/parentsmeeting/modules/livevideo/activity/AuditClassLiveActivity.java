@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -179,6 +180,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         liveType = getIntent().getIntExtra("type", 0);
         // 设置不可自动横竖屏
         setAutoOrientation(false);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         AppBll.getInstance().registerAppEvent(this);
         boolean init = initData();
         if (!init) {
