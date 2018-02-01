@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -13,7 +15,6 @@ import com.alibaba.fastjson.JSON;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseBll;
-import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.http.CommonRequestCallBack;
 import com.xueersi.parentsmeeting.http.DownloadCallBack;
@@ -58,10 +59,6 @@ import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
-import com.xueersi.xesalib.view.layout.dataload.DataErrorManager;
-import com.xueersi.xesalib.view.layout.dataload.DataLoadEntity;
-import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
-import com.xueersi.xesalib.view.layout.dataload.PageDataLoadManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -283,34 +280,51 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /**
      * 播放器异常日志
      *
-     * @param TAG
      * @param str
      */
     public void getOnloadLogs(String TAG, final String str) {
+        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String bz = UserBll.getInstance().getMyUserInfoEntity().getUserType() == 1 ? "student" : "teacher";
+        PackageManager packageManager = mContext.getPackageManager();
+        PackageInfo packInfo = null;
+        String filenam = "f";
+        try {
+            packInfo = packageManager.getPackageInfo(mContext.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (packInfo != null) {//else不会发生
+            filenam = packInfo.versionCode + "";
+        }
+        filenam = Build.VERSION.SDK_INT + "&" + filenam;
         if (mGetInfo == null) {
             UmsAgent.onEvent(mContext, LogerTag.DEBUG_VIDEO_LIVEMSG, LogerTag.DEBUG_VIDEO_LIVEMSG, 0, str);
             return;
         }
-        Map<String, String> mData = new HashMap<>();
-        mData.put("sdkint", "" + Build.VERSION.SDK_INT);
-        mData.put("str", "" + str);
-        mData.put("tag", "" + TAG);
-        mData.put("isAudit", "0");
+        mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mLiveId, mGetInfo.getUname(), enstuId,
+                mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, new Callback.CommonCallback<File>() {
 
-        mData.put("uname", mGetInfo.getUname());
-        StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
-        if (studentLiveInfo != null) {
-            mData.put("classid", studentLiveInfo.getClassId());
-            mData.put("teamid", studentLiveInfo.getTeamId());
-        }
-        mData.put("courseid", courseId);
-        mData.put("teacherid", mGetInfo.getMainTeacherId());
-        mData.put("coachid", mGetInfo.getTeacherId());
-        mData.put("liveid", mLiveId);
-        mData.put("livetype", "" + mLiveType);
-        mData.put("clits", "" + System.currentTimeMillis());
+                    @Override
+                    public void onSuccess(File o) {
+                        //Loger.i(TAG, "getOnloadLogs:onSuccess");
+                    }
 
-        Loger.d(mContext, LiveVideoConfig.LIVE_DEBUG_LOG, mData, true);
+                    @Override
+                    public void onError(Throwable throwable, boolean b) {
+                        //Loger.i(TAG, "getOnloadLogs:onError", throwable);
+                    }
+
+                    @Override
+                    public void onCancelled(CancelledException e) {
+                        //Loger.i(TAG, "getOnloadLogs:onCancelled");
+                    }
+
+                    @Override
+                    public void onFinished() {
+                        //Loger.i(TAG, "getOnloadLogs:onFinished");
+                    }
+
+                });
     }
 
     /**
