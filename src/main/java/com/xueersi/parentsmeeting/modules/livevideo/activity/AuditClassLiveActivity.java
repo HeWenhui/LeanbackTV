@@ -191,7 +191,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             public void onClick(View v) {
                 UmsAgentManager.umsAgentStatistics(mContext, LiveVideoConfig.LIVE_VIDEO_AUDIO_LIVE,
                         "times=" + times + ",mVSectionID=" + mVSectionID + ",roomClick");
-                OtherModulesEnter.intentToAuditClassActivity(AuditClassLiveActivity.this, mVSectionID);
+                OtherModulesEnter.intentToAuditClassActivity(AuditClassLiveActivity.this, mVSectionID,stuCouId);
             }
         });
         AtomicBoolean mIsLand = new AtomicBoolean(false);

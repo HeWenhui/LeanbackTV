@@ -181,7 +181,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         this.form = form;
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("courseId", courseId);
-        mHttpManager.addBodyParam("stuCouID", vStuCourseID);
+        mHttpManager.addBodyParam("stuCouId", vStuCourseID);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG

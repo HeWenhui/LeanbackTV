@@ -17,9 +17,9 @@ public class OtherModulesEnter {
                 "intentTo", new Class[]{Context.class, String.class, String.class, String.class}, new Object[]{mContext, courseId, groupId, classId, url});
     }
 
-    public static void intentToAuditClassActivity(AuditClassLiveActivity auditClassLiveActivity, String mVSectionID) {
+    public static void intentToAuditClassActivity(AuditClassLiveActivity auditClassLiveActivity, String mVSectionID, String stuCouId) {
         ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.chat.ChatEnter",
-                "intentToAuditClassActivity", new Class[]{Activity.class, String.class}, new Object[]{auditClassLiveActivity, mVSectionID});
+                "intentToAuditClassActivity", new Class[]{Activity.class, String.class, String.class}, new Object[]{auditClassLiveActivity, mVSectionID, stuCouId});
     }
 
     public static void intentToGradeActivityLive(Activity activity, String selectGrade) {
