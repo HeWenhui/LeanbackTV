@@ -26,11 +26,11 @@ public class VideoChatLog {
         logHashMap.put("clicktype", "clicked");
         logHashMap.put("status", "1");
         if (LiveVideoConfig.IS_SCIENCE) {
-            logHashMap.addSno("4");
+            logHashMap.addSno("4").addStable("2");
         } else {
-            logHashMap.addSno("1");
+            logHashMap.addSno("1").addStable("1");
         }
-        logHashMap.addExpect("1").addExY().addNonce(nonce).addStable("2");
+        logHashMap.addExpect("1").addExY().addNonce(nonce);
         liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
     }
 
