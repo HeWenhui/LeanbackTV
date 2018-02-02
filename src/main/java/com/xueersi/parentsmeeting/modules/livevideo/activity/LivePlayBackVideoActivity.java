@@ -2533,7 +2533,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (footerIconEntity != null ){
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
             if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
-                ImageLoader.with(this).load(loadingNoClickUrl).into(ivLoading);
+                ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
         }
     }
 }

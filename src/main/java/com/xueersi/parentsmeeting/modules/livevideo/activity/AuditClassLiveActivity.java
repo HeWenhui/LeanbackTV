@@ -1419,10 +1419,10 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     protected void updateLoadingImage() {
         Log.d("zhang", TAG + ":updateLoadingImage()");
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
-        if (footerIconEntity != null) {
+        if (footerIconEntity != null ){
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
             if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
-                ImageLoader.with(this).load(loadingNoClickUrl).into(ivLoading);
+                ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
         }
     }
 }

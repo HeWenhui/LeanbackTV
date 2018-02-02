@@ -1491,7 +1491,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
             if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
-                ImageLoader.with(this).load(loadingNoClickUrl).into(ivRefresh);
+                ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivRefresh);
         }
     }
 }
