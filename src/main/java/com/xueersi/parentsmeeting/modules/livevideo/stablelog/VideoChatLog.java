@@ -37,19 +37,19 @@ public class VideoChatLog {
     }
 
     /** 接麦第六步，学生收到上麦指令 */
-    public static void sno6(LiveAndBackDebug liveAndBackDebug, String teacher_type, String is_selected, String nonce) {
+    public static void sno7(LiveAndBackDebug liveAndBackDebug, String teacher_type, String is_selected, String nonce) {
         StableLogHashMap logHashMap = new StableLogHashMap("getReadyLinkMic");
         logHashMap.put("teacher_type", teacher_type);
         logHashMap.put("is_selected", is_selected);
         if (LiveVideoConfig.IS_SCIENCE) {
-            logHashMap.addSno("6").addStable("1");
+            logHashMap.addSno("7").addStable("1");
         }
         logHashMap.addExY().addNonce(nonce);
         liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
     }
 
     /** 接麦第七步，加入房间 */
-    public static void sno7(LiveAndBackDebug liveAndBackDebug, String nonce, String room, int joinChannel) {
+    public static void sno8(LiveAndBackDebug liveAndBackDebug, String nonce, String room, int joinChannel) {
         StableLogHashMap logHashMap = new StableLogHashMap("joinChannelSuccess");
         logHashMap.put("channelname", room);
         logHashMap.put("status", (joinChannel == 0 ? "1" : "0"));
@@ -57,7 +57,7 @@ public class VideoChatLog {
         if (!StringUtils.isEmpty(nonce)) {
             logHashMap.addNonce(nonce);
             if (LiveVideoConfig.IS_SCIENCE) {
-                logHashMap.addSno("7");
+                logHashMap.addSno("8");
                 logHashMap.addStable("2");
             } else {
                 logHashMap.addSno("4");

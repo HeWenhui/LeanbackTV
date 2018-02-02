@@ -647,7 +647,7 @@ public class VideoChatBll implements VideoChatAction {
             public void run() {
                 onmicStatus = status;
                 if ("on".equals(status)) {
-                    VideoChatLog.sno6(liveBll, from, contain ? "1" : "0", nonce);
+                    VideoChatLog.sno7(liveBll, from, contain ? "1" : "0", nonce);
                     if (contain) {
                         if (raiseHandDialog != null) {
                             raiseHandDialog.cancelDialog();
