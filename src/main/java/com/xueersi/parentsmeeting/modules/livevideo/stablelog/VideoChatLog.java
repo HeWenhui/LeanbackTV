@@ -15,7 +15,7 @@ public class VideoChatLog {
     /** 接麦第2步，收到举手 */
     public static void sno2(LiveAndBackDebug liveAndBackDebug, String teacher_type, String nonce) {
         StableLogHashMap logHashMap = new StableLogHashMap("getStartLinkMic");
-        logHashMap.put("teacher_type", teacher_type);
+        logHashMap.put("teachertype", teacher_type);
         if (LiveVideoConfig.IS_SCIENCE) {
             logHashMap.addSno("2").addExY().addNonce(nonce).addStable("1");
         }
@@ -39,8 +39,8 @@ public class VideoChatLog {
     /** 接麦第六步，学生收到上麦指令 */
     public static void sno7(LiveAndBackDebug liveAndBackDebug, String teacher_type, String is_selected, String nonce) {
         StableLogHashMap logHashMap = new StableLogHashMap("getReadyLinkMic");
-        logHashMap.put("teacher_type", teacher_type);
-        logHashMap.put("is_selected", is_selected);
+        logHashMap.put("teachertype", teacher_type);
+        logHashMap.put("isselected", is_selected);
         if (LiveVideoConfig.IS_SCIENCE) {
             logHashMap.addSno("7").addStable("1");
         }

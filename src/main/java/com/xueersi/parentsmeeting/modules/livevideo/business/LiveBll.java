@@ -3434,7 +3434,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mData.put("liveid", mLiveId);
         mData.put("livetype", "" + mLiveType);
         mData.put("clits", "" + System.currentTimeMillis());
-        mData.put("teacherrole", getMode().equals(LiveTopic.MODE_CLASS) ? "1" : "4");
+        mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
 //        Loger.d(mContext, eventId, mData, true);
         UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
     }
@@ -3461,7 +3461,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mData.put("livetype", "" + mLiveType);
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
-        mData.put("teacherrole", getMode().equals(LiveTopic.MODE_CLASS) ? "1" : "4");
+        mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData);
     }
 
@@ -3487,7 +3487,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mData.put("livetype", "" + mLiveType);
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
-        mData.put("teacherrole", getMode().equals(LiveTopic.MODE_CLASS) ? "1" : "4");
+        mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
     }
 
