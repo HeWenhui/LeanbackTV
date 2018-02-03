@@ -1714,7 +1714,6 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
     }
 
     protected void updateLoadingImage() {
-        Log.d("zhang",TAG+":updateLoadingImage()");
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
         if (footerIconEntity != null ){
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");

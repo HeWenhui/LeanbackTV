@@ -1485,7 +1485,6 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     }
 
     protected void updateRefreshImage() {
-        Log.d("zhang", TAG + ":updateRefreshImage");
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
         ImageView ivRefresh = (ImageView) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.base.R.id.iv_course_video_refresh_bg);
         if (footerIconEntity != null) {
