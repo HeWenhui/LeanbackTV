@@ -214,6 +214,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         AppBll.getInstance().registerAppEvent(this);
         // 设置不可自动横竖屏
         setAutoOrientation(false);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         Intent intent = getIntent();
         mVideoEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoliveplayback");
         islocal = intent.getBooleanExtra("islocal", false);
@@ -2368,12 +2369,15 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     }
 
     public void stopExam() {
-        Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 10, 10, mQuestionEntity);
-        mPlayVideoControlHandler.sendMessage(msg);
-        examQuestionPlaybackPager = null;
-        if (mQuestionEntity != null && mIsShowQuestion) {
-            seekTo(mQuestionEntity.getvEndTime() * 1000);
-            start();
+        if (examQuestionPlaybackPager != null) {
+            examQuestionPlaybackPager.onDestroy();
+            Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 10, 10, mQuestionEntity);
+            mPlayVideoControlHandler.sendMessage(msg);
+            examQuestionPlaybackPager = null;
+            if (mQuestionEntity != null && mIsShowQuestion) {
+                seekTo(mQuestionEntity.getvEndTime() * 1000);
+                start();
+            }
         }
     }
 

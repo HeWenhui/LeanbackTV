@@ -241,4 +241,11 @@ public class ExamQuestionPlaybackPager extends BasePager {
             return true;
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        wvSubjectWeb.stopLoading();
+        wvSubjectWeb.destroy();
+    }
 }
