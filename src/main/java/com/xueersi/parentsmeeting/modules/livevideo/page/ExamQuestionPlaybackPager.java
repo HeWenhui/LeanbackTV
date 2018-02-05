@@ -228,7 +228,9 @@ public class ExamQuestionPlaybackPager extends BasePager {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             if ("xueersi://livevideo/examPaper/close".equals(url) || "http://baidu.com/".equals(url)) {
                 ViewGroup group = (ViewGroup) mView.getParent();
-                group.removeView(mView);
+                if (group != null) {
+                    group.removeView(mView);
+                }
                 videoActivity.stopExam();
                 Loger.i(TAG, "shouldOverrideUrlLoading:stopExam");
             } else {

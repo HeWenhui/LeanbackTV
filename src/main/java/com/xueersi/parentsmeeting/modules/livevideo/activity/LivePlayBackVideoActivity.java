@@ -659,6 +659,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 //                            mQuestionEntity.setAnswered(false);
                             Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 3, 3, mQuestionEntity);
                             mPlayVideoControlHandler.sendMessage(msg);
+                            // TODO mQuestionEntity==null
                             seekTo(mQuestionEntity.getvEndTime() * 1000);
                             start();
                         }
@@ -1130,6 +1131,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
         @Override
         public BasePager questionSwitch(BaseVideoQuestionEntity baseQuestionEntity) {
+            // TODO mQuestionEntity==null
             VideoQuestionEntity videoQuestionLiveEntity1 = (VideoQuestionEntity) baseQuestionEntity;
             if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == videoQuestionLiveEntity1.getvCategory()) {
                 if (voiceAnswerPager != null) {
@@ -2528,7 +2530,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
     protected void updateLoadingImage() {
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
-        if (footerIconEntity != null ){
+        if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
             if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
                 ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
