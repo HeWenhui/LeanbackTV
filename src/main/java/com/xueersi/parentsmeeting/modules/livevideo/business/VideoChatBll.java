@@ -457,6 +457,9 @@ public class VideoChatBll implements VideoChatAction {
                         }
                     }
                     if ("on".equals(openhands)) {
+                        if (!openhands.equals(oldOpenhandsStatus)) {
+                            VideoChatLog.sno3(liveBll, from, "", isHasPermission);
+                        }
                         if (!isHasPermission) {
                             if (!permissionPrompt) {
                                 permissionPrompt = true;
@@ -541,6 +544,7 @@ public class VideoChatBll implements VideoChatAction {
                 if ("on".equals(status)) {
                     VideoChatLog.sno2(liveBll, from, nonce);
                     activity.showLongMediaController();
+                    VideoChatLog.sno3(liveBll, from, nonce, isHasPermission);
                     if (!isHasPermission) {
                         if (!permissionPrompt) {
                             permissionPrompt = true;

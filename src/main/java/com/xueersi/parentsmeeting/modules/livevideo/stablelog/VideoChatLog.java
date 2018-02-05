@@ -22,6 +22,17 @@ public class VideoChatLog {
         liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
     }
 
+    /** 接麦第3步，学生检查麦克风 */
+    public static void sno3(LiveAndBackDebug liveAndBackDebug, String teacher_type, String nonce, boolean microphoneable) {
+        StableLogHashMap logHashMap = new StableLogHashMap("MicrophoneCheck");
+        logHashMap.put("teachertype", teacher_type);
+        logHashMap.put("microphoneable", microphoneable ? "true" : "false");
+        if (LiveVideoConfig.IS_SCIENCE) {
+            logHashMap.addSno("3").addExY().addNonce(nonce).addStable("2");
+        }
+        liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
+    }
+
     /** 接麦第四步，举手 */
     public static void sno4(LiveAndBackDebug liveAndBackDebug, String nonce) {
         StableLogHashMap logHashMap = new StableLogHashMap("raiseHand");
