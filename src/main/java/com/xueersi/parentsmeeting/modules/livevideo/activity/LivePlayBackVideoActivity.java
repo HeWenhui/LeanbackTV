@@ -1130,14 +1130,14 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
         @Override
         public BasePager questionSwitch(BaseVideoQuestionEntity baseQuestionEntity) {
-            if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == mQuestionEntity.getvCategory()) {
+            VideoQuestionEntity videoQuestionLiveEntity1 = (VideoQuestionEntity) baseQuestionEntity;
+            if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == videoQuestionLiveEntity1.getvCategory()) {
                 if (voiceAnswerPager != null) {
                     stopVoiceAnswerPager();
                 }
                 BasePager basePager = showEnglishH5CoursewarePager();
                 return basePager;
             } else {
-                VideoQuestionEntity videoQuestionLiveEntity1 = (VideoQuestionEntity) baseQuestionEntity;
                 if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity1.getvQuestionType())) {
                     if ("1".equals(videoQuestionLiveEntity1.getChoiceType())) {
                         BaseLiveQuestionPager baseQuestionPager = showSelectQuestion(videoQuestionLiveEntity1);
