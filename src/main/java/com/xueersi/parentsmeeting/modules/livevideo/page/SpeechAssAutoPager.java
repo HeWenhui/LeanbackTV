@@ -599,7 +599,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         try {
             int wordChangeColor = wordChangeColor(score, lstPhonemeScore);
             if (wordChangeColor != 0) {
-                logToFile.d("onEvaluatorSuccess:sid=" + resultEntity.getSid() + ",error=" + content + "-" + nbest);
+                logToFile.d("onEvaluatorSuccess:mIse=" + mIse.getClass().getSimpleName() + ",sid=" + resultEntity.getSid() + ",score=" + score + ",error=" + content + "-" + nbest);
             }
         } catch (Exception e) {
             MobclickAgent.reportError(mContext, new Error(content + "-" + nbest, e));
