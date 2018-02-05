@@ -230,8 +230,8 @@ public class ExamQuestionPlaybackPager extends BasePager {
                 ViewGroup group = (ViewGroup) mView.getParent();
                 if (group != null) {
                     group.removeView(mView);
+                    videoActivity.stopExam();
                 }
-                videoActivity.stopExam();
                 Loger.i(TAG, "shouldOverrideUrlLoading:stopExam");
             } else {
                 if (url.contains("xueersi.com")) {
