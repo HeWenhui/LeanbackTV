@@ -16,9 +16,9 @@ public class VideoChatLog {
     public static void sno2(LiveAndBackDebug liveAndBackDebug, String teacher_type, String nonce) {
         StableLogHashMap logHashMap = new StableLogHashMap("getStartLinkMic");
         logHashMap.put("teachertype", teacher_type);
-        if (LiveVideoConfig.IS_SCIENCE) {
+//        if (LiveVideoConfig.IS_SCIENCE) {
             logHashMap.addSno("2").addExY().addNonce(nonce).addStable("1");
-        }
+//        }
         liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
     }
 
@@ -27,9 +27,9 @@ public class VideoChatLog {
         StableLogHashMap logHashMap = new StableLogHashMap("MicrophoneCheck");
         logHashMap.put("teachertype", teacher_type);
         logHashMap.put("microphoneable", microphoneable ? "true" : "false");
-        if (LiveVideoConfig.IS_SCIENCE) {
+//        if (LiveVideoConfig.IS_SCIENCE) {
             logHashMap.addSno("3").addExY().addNonce(nonce).addStable("2");
-        }
+//        }
         liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
     }
 
@@ -38,11 +38,11 @@ public class VideoChatLog {
         StableLogHashMap logHashMap = new StableLogHashMap("raiseHand");
         logHashMap.put("clicktype", "clicked");
         logHashMap.put("status", "1");
-        if (LiveVideoConfig.IS_SCIENCE) {
+//        if (LiveVideoConfig.IS_SCIENCE) {
             logHashMap.addSno("4").addStable("2");
-        } else {
-            logHashMap.addSno("1").addStable("1");
-        }
+//        } else {
+//            logHashMap.addSno("1").addStable("1");
+//        }
         logHashMap.addExpect("1").addExY().addNonce(nonce);
         liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
     }
@@ -52,9 +52,9 @@ public class VideoChatLog {
         StableLogHashMap logHashMap = new StableLogHashMap("getReadyLinkMic");
         logHashMap.put("teachertype", teacher_type);
         logHashMap.put("isselected", is_selected);
-        if (LiveVideoConfig.IS_SCIENCE) {
+//        if (LiveVideoConfig.IS_SCIENCE) {
             logHashMap.addSno("7").addStable("1");
-        }
+//        }
         logHashMap.addExY().addNonce(nonce);
         liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
     }
@@ -67,13 +67,13 @@ public class VideoChatLog {
         logHashMap.addEx((joinChannel == 0 ? "Y" : "N"));
         if (!StringUtils.isEmpty(nonce)) {
             logHashMap.addNonce(nonce);
-            if (LiveVideoConfig.IS_SCIENCE) {
+//            if (LiveVideoConfig.IS_SCIENCE) {
                 logHashMap.addSno("8");
                 logHashMap.addStable("2");
-            } else {
-                logHashMap.addSno("4");
-                logHashMap.addStable("1");
-            }
+//            } else {
+//                logHashMap.addSno("4");
+//                logHashMap.addStable("1");
+//            }
         }
         if (joinChannel != 0) {
             logHashMap.put("errcode", "" + joinChannel);
