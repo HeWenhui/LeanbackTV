@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Rect;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -16,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
+import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
@@ -83,6 +85,23 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         if (isStart) {
             return;
         }
+        bottomContent.post(new Runnable() {
+            @Override
+            public void run() {
+                speechFeedBackPager = new SpeechFeedBackPager(activity);
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                int screenWidth = ScreenUtils.getScreenWidth();
+                int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
+                params.rightMargin = wradio;
+                Loger.i(TAG,"add view");
+                bottomContent.addView(speechFeedBackPager.getRootView(), params);
+            }
+        });
+        if(!isHasPermission(activity)){
+            XESToastUtils.showToast(activity,"请检查是否获取录音权限");
+            return;
+        }
         this.roomId=roomId;
         Loger.d(TAG, "start:roomId=" + roomId);
         isStart = true;
@@ -103,19 +122,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                         @Override
                         public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
                             Loger.i(TAG,"joinchannelsuccess");
-                            bottomContent.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    speechFeedBackPager = new SpeechFeedBackPager(activity);
-                                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                            ViewGroup.LayoutParams.WRAP_CONTENT);
-                                    int screenWidth = ScreenUtils.getScreenWidth();
-                                    int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
-                                    params.rightMargin = wradio;
-                                    Loger.i(TAG,"add view");
-                                    bottomContent.addView(speechFeedBackPager.getRootView(), params);
-                                }
-                            });
+
                         }
 
                         @Override
@@ -125,13 +132,16 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
 
                         @Override
                         public void onError(int err) {
+                            if(err==1108){
+                                XESToastUtils.showToast(activity,"请检查是否获取麦克风权限");
+                            }
                             Loger.i(TAG,"error"+err);
                             //SpeechFeedBackBll.this.stop();
                         }
 
                         @Override
                         public void onVolume(int volume) {
-                            speechFeedBackPager.setVolume(volume);
+                            speechFeedBackPager.setVolume(volume/4);
                         }
                     });
                     mWorkerThread.start();
@@ -234,4 +244,40 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         }
     }
 
+    /**
+     * 判断是是否有录音权限
+     */
+    public static boolean isHasPermission(final Context context){
+         int audioSource = MediaRecorder.AudioSource.MIC;
+        // 设置音频采样率，44100是目前的标准，但是某些设备仍然支持22050，16000，11025
+         int sampleRateInHz = 44100;
+        // 设置音频的录制的声道CHANNEL_IN_STEREO为双声道，CHANNEL_CONFIGURATION_MONO为单声道
+         int channelConfig = AudioFormat.CHANNEL_IN_STEREO;
+        // 音频数据格式:PCM 16位每个样本。保证设备支持。PCM 8位每个样本。不一定能得到设备支持。
+         int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
+        // 缓冲区字节大小
+         int bufferSizeInBytes = 0;
+        bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRateInHz,
+                channelConfig, audioFormat);
+        AudioRecord audioRecord =  new AudioRecord(audioSource, sampleRateInHz,
+                channelConfig, audioFormat, bufferSizeInBytes);
+        //开始录制音频
+        try{
+            // 防止某些手机崩溃，例如联想
+            audioRecord.startRecording();
+        }catch (IllegalStateException e){
+            e.printStackTrace();
+        }
+        /**
+         * 根据开始录音判断是否有录音权限
+         */
+        if (audioRecord.getRecordingState() != AudioRecord.RECORDSTATE_RECORDING) {
+            return false;
+        }
+        audioRecord.stop();
+        audioRecord.release();
+        audioRecord = null;
+
+        return true;
+    }
 }

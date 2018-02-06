@@ -39,15 +39,13 @@ public class MyEngineEventHandler {
 
         @Override
         public void onAudioVolumeIndication(AudioVolumeInfo[] speakers, int totalVolume) {
-//            for (int i = 0; i < speakers.length; i++) {
-//                AudioVolumeInfo info = speakers[i];
-//                Loger.d(TAG, "onAudioVolumeIndication:info=" + info.uid + "," + info.volume);
-//            }
-//            Loger.d(TAG, "onAudioVolumeIndication:totalVolume=" + totalVolume);
-            Iterator<AGEventHandler> it = mEventHandlerList.keySet().iterator();
-            while (it.hasNext()) {
-                AGEventHandler handler = it.next();
-                handler.onVolume(totalVolume);
+            for (AudioVolumeInfo info:speakers) {
+                if(info.uid==0){
+                    for(AGEventHandler handler:mEventHandlerList.keySet()){
+                        handler.onVolume(info.volume);
+                    }
+                }
+                Loger.d(TAG, "onAudioVolumeIndication:info=" + info.uid + "," + info.volume);
             }
         }
 

@@ -221,7 +221,7 @@ public class WorkerThread extends Thread {
         mRtcEngine.setVideoProfile(mEngineConfig.mVideoProfile, true);
 
         mRtcEngine.setClientRole(cRole, "");
-//        mRtcEngine.enableAudioVolumeIndication(5000, 3);
+        mRtcEngine.enableAudioVolumeIndication(500, 3);
         Loger.d(TAG, "configEngine " + cRole + " " + mEngineConfig.mVideoProfile);
     }
 
