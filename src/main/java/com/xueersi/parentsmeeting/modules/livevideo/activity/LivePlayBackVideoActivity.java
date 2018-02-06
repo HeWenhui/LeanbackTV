@@ -214,7 +214,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         AppBll.getInstance().registerAppEvent(this);
         // 设置不可自动横竖屏
         setAutoOrientation(false);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         Intent intent = getIntent();
         mVideoEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoliveplayback");
         islocal = intent.getBooleanExtra("islocal", false);

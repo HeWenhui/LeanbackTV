@@ -206,7 +206,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         liveType = getIntent().getIntExtra("type", 0);
         // 设置不可自动横竖屏
         setAutoOrientation(false);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         AppBll.getInstance().registerAppEvent(this);
         boolean init = initData();
         if (!init) {

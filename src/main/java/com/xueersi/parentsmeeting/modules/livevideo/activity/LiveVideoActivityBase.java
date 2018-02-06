@@ -432,6 +432,9 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         EventBus.getDefault().register(this);
         sendPlayVideoHandler.sendEmptyMessageDelayed(1, 1000);
         mIsLand = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+        if (mIsLand) {
+            mDirection = DIRECTION_RIGHT;
+        }
         mClick = false;
         mPortVideoHeight = VideoBll.getVideoDefaultHeight(this);
         BaseApplication baseApplication = (BaseApplication) getApplication();
