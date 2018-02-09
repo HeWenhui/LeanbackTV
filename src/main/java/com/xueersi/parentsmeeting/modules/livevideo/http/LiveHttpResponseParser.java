@@ -430,6 +430,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             liveTopic.setDisableSpeaking(disableSpeaking);
         } catch (JSONException e) {
+            MobAgent.httpResponseParserError(TAG, "parseLiveTopic", e.getMessage());
             Loger.e(TAG, "parseLiveTopic", e);
         }
         return liveTopic;
@@ -548,6 +549,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             speechEvalEntity.setAnswered(data.getInt("answered"));
             speechEvalEntity.setTesttype(data.getString("testtype"));
         } catch (JSONException e) {
+            MobAgent.httpResponseParserError(TAG, "parseSpeechEval", e.getMessage());
             return null;
         }
         return speechEvalEntity;
@@ -642,6 +644,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 }
             }
         } catch (JSONException e) {
+            MobAgent.httpResponseParserError(TAG, "parseAllRank", e.getMessage());
             e.printStackTrace();
         }
         return allRankEntity;
@@ -656,6 +659,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             JSONObject goldObj = jsonObject.getJSONObject("gold");
             starAndGoldEntity.setGoldCount(goldObj.optInt("goldAmount", 0));
         } catch (JSONException e) {
+            MobAgent.httpResponseParserError(TAG, "parseStuGoldCount", e.getMessage());
             e.printStackTrace();
         }
         return starAndGoldEntity;

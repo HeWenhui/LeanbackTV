@@ -30,7 +30,7 @@ import java.util.Map;
 
 /**
  * Created by linyuqiang on 2017/8/23.
- * 互动题页面
+ * 普通互动题，h5显示页面
  */
 public class QuestionWebPager extends BasePager {
     String questionEventId = LiveVideoConfig.LIVE_PUBLISH_TEST;

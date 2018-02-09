@@ -188,4 +188,14 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testId", id);
         sendPost(LiveVideoConfig.URL_LIVE_LECTURE_VOICE_WARE, params, requestCallBack);
     }
+
+    /** 获得广告信息 */
+    public void getAdOnLL(String enstuId, String liveId,String courseId, final HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("enstuId", enstuId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId", courseId);
+        requestCallBack.url = LiveVideoConfig.URL_LIVE_GET_LEC_AD;
+        sendPost(LiveVideoConfig.URL_LIVE_GET_LEC_AD, params, requestCallBack);
+    }
 }

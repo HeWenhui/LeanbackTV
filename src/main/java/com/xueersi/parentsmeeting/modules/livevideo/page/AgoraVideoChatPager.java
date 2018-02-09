@@ -162,7 +162,7 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
         mWorkerThread.joinChannel(null, room, stuid, new WorkerThread.OnJoinChannel() {
             @Override
             public void onJoinChannel(int joinChannel) {
-                VideoChatLog.sno4(liveBll, nonce, room, joinChannel);
+                VideoChatLog.sno8(liveBll, nonce, room, joinChannel);
             }
         });
     }

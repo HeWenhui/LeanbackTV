@@ -17,7 +17,7 @@
             android:layout_marginTop="10dp"
             android:text="请说出正确答案" />
 
-        <com.xueersi.parentsmeeting.modules.livevideo.widget.VolumeWaveView
+        <com.xueersi.parentsmeeting.widget.VolumeWaveView
             android:id="@id/vwv_livevideo_speecteval_wave"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

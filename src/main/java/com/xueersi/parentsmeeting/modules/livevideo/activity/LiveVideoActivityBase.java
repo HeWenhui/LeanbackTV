@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -29,10 +30,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.umeng.analytics.MobclickAgent;
+import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.XesActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.event.AppEvent;
 import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
@@ -49,6 +52,7 @@ import com.xueersi.xesalib.utils.app.AppUtils;
 import com.xueersi.xesalib.utils.audio.AudioPlayer;
 import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.FileLogger;
+import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.view.layout.dataload.DataLoadManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -94,6 +98,8 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     protected static final int DIRECTION_LEFT = 1;
     /** 当前界面方向-手机右侧抬起 */
     protected static final int DIRECTION_RIGHT = 2;
+    /** 当前界面方向-下方-暂时没有 */
+    protected static final int DIRECTION_DOWN = 3;
     /** 当前界面方向 */
     protected int mDirection = DIRECTION_UP;
     /** 是否显示控制栏 */
@@ -164,7 +170,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     protected PlayerService vPlayer;
 
     /** 是否可以自动横竖屏转换 */
-    private boolean mIsAutoOrientation = true;
+    protected boolean mIsAutoOrientation = true;
 
     /** 是否可以播放视频 */
     protected boolean mIsPlayerEnable = true;
@@ -426,6 +432,9 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         EventBus.getDefault().register(this);
         sendPlayVideoHandler.sendEmptyMessageDelayed(1, 1000);
         mIsLand = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+        if (mIsLand) {
+            mDirection = DIRECTION_RIGHT;
+        }
         mClick = false;
         mPortVideoHeight = VideoBll.getVideoDefaultHeight(this);
         BaseApplication baseApplication = (BaseApplication) getApplication();
@@ -483,6 +492,10 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                         }
                     }
                 } else if (((orientation >= 230) && (orientation <= 310))) {
+                    if (!mIsAutoOrientation && mDirection == DIRECTION_UP) {
+                        // 不自动旋转屏幕,竖屏不能转横屏，但是横屏左右可切换
+                        return;
+                    }
                     if (mClick) {
                         if (!mIsLand && !mClickPort) {
                             return;
@@ -500,6 +513,10 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                         }
                     }
                 } else if (((orientation >= 50) && (orientation <= 130))) {
+                    if (!mIsAutoOrientation && mDirection == DIRECTION_UP) {
+                        // 不自动旋转屏幕,竖屏不能转横屏，但是横屏左右可切换
+                        return;
+                    }
                     if (mClick) {
                         if (!mIsLand && !mClickPort) {
                             return;
@@ -529,6 +546,19 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         mCreated = true; // 界面onCreate完毕
         if (onVideoCreate(savedInstanceState)) {
             createPlayer();
+        }
+    }
+
+    public void setRequestedOrientation(int requestedOrientation) {
+        super.setRequestedOrientation(requestedOrientation);
+        if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            mDirection = DIRECTION_UP;
+        } else if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            mDirection = DIRECTION_RIGHT;
+        } else if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
+            mDirection = DIRECTION_LEFT;
+        } else if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
+            mDirection = DIRECTION_DOWN;
         }
     }
 
@@ -774,6 +804,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     /** 加载视频异常时出现可重新刷新的背景界面 */
     protected void showRefresyLayout(int arg1, int arg2) {
         videoBackgroundRefresh.setVisibility(View.VISIBLE);
+        updateRefreshImage();
         TextView errorInfo = (TextView) videoBackgroundRefresh.findViewById(R.id.tv_course_video_errorinfo);
         AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
         if (error != null) {
@@ -1453,6 +1484,16 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     public void onDataLoadEvent(AppEvent.OnDataLoadingEvent event) {
         if (event.dataLoadEntity != null) {
             DataLoadManager.newInstance().loadDataStyle(this, event.dataLoadEntity);
+        }
+    }
+
+    protected void updateRefreshImage() {
+        FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
+        ImageView ivRefresh = (ImageView) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.base.R.id.iv_course_video_refresh_bg);
+        if (footerIconEntity != null) {
+            String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
+            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
+                ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivRefresh);
         }
     }
 }

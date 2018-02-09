@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +24,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.xueersi.parentsmeeting.business.AppBll;
+import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.event.AppEvent;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
@@ -68,11 +72,13 @@ import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.Simple
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.VPlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -118,6 +124,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     RelativeLayout bottomContent;
     RelativeLayout praiselistContent;
     /** 缓冲提示 */
+    private ImageView ivLoading;
     private TextView tvLoadingHint;
     private LiveGetInfo mGetInfo;
     /** 直播服务器 */
@@ -233,6 +240,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         bottomContent.setVisibility(View.VISIBLE);
         praiselistContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_praiselist_content);
         praiselistContent.setVisibility(View.VISIBLE);
+        ivLoading = (ImageView) findViewById(R.id.iv_course_video_loading_bg);
+        updateLoadingImage();
         tvLoadingHint = (TextView) findViewById(R.id.tv_course_video_loading_content);
         // 预加载布局中退出事件
         findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
@@ -339,16 +348,10 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                answerRankBll.showFullMarkList(lst,1);
                 answerRankBll.showRankList(lst1);
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        answerRankBll.showFullMarkList(lst,1);
-
-                    }
-                },1000);
             }
-        },1000);*/
+        },3000);*/
     }
 
     protected boolean initData() {
@@ -1497,5 +1500,20 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     @Override
     public void onWebViewEnd() {
         englishH5Cache = null;
+    }
+
+    @Override
+    protected void updateIcon() {
+        updateLoadingImage();
+        updateRefreshImage();
+    }
+
+    protected void updateLoadingImage() {
+        FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
+        if (footerIconEntity != null ){
+            String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
+            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
+                ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
+        }
     }
 }

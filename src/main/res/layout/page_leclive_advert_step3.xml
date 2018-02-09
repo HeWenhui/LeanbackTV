@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@id/iv_livelec_advert_step3_success"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:src="@drawable/ic_xesmall_orderpay_sucess" />
+
+    <TextView
+        android:id="@id/tv_livelec_advert_step3_tip1"
+        style="@style/text_font22_333333_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_livelec_advert_step3_success"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="购买成功" />
+
+    <TextView
+        android:id="@id/tv_livelec_advert_step3_tip2"
+        style="@style/text_font14_999999_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_livelec_advert_step3_tip1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="稍后辅导老师会通过电话联系你" />
+</RelativeLayout>

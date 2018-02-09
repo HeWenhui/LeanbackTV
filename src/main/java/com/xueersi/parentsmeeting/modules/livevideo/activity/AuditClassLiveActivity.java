@@ -2,12 +2,14 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 
 import com.xueersi.parentsmeeting.base.BaseCacheData;
 import com.xueersi.parentsmeeting.business.AppBll;
+import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.event.AppEvent;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
@@ -40,6 +43,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
@@ -47,11 +51,13 @@ import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.VPlaye
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.XESVideoView;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.xesalib.umsagent.UmsAgentManager;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -94,6 +100,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     /** 老师不在直播间 */
     private ImageView ivTeacherNotpresent;
     /** 缓冲提示 */
+    private ImageView ivLoading;
     private TextView tvLoadingHint;
     private LiveGetInfo mGetInfo;
     /** 直播服务器 */
@@ -144,6 +151,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     /** 接麦已经连接老师 */
     private AtomicBoolean startRemote = new AtomicBoolean(false);
     int from = 0;
+    BaseLiveMediaControllerTop baseLiveMediaControllerTop;
     RelativeLayout rlLivevideoStudentVideo;
     XESVideoView xv_livevideo_student;
     String playUrl;
@@ -172,6 +180,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         liveType = getIntent().getIntExtra("type", 0);
         // 设置不可自动横竖屏
         setAutoOrientation(false);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         AppBll.getInstance().registerAppEvent(this);
         boolean init = initData();
         if (!init) {
@@ -184,7 +193,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             public void onClick(View v) {
                 UmsAgentManager.umsAgentStatistics(mContext, LiveVideoConfig.LIVE_VIDEO_AUDIO_LIVE,
                         "times=" + times + ",mVSectionID=" + mVSectionID + ",roomClick");
-                OtherModulesEnter.intentToAuditClassActivity(AuditClassLiveActivity.this, mVSectionID);
+                OtherModulesEnter.intentToAuditClassActivity(AuditClassLiveActivity.this, mVSectionID,stuCouId);
             }
         });
         AtomicBoolean mIsLand = new AtomicBoolean(false);
@@ -371,9 +380,14 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 (TextView) findViewById(R.id.tv_livevideo_student_camera);
         RelativeLayout bottomContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
+        baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
+        mMediaController.setControllerTop(baseLiveMediaControllerTop);
+        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         //聊天
         //if (liveType != LiveBll.LIVE_TYPE_LECTURE) {
         //}
+        ivLoading = (ImageView) findViewById(R.id.iv_course_video_loading_bg);
+        updateLoadingImage();
         tvLoadingHint = (TextView) findViewById(R.id.tv_course_video_loading_content);
         // 预加载布局中退出事件
         findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
@@ -1394,5 +1408,20 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         intent.putExtra("vSectionID", liveId);
         intent.putExtra("type", LiveBll.LIVE_TYPE_LIVE);
         context.startActivity(intent);
+    }
+
+    @Override
+    protected void updateIcon() {
+        updateLoadingImage();
+        updateRefreshImage();
+    }
+
+    protected void updateLoadingImage() {
+        FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
+        if (footerIconEntity != null ){
+            String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
+            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
+                ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
+        }
     }
 }

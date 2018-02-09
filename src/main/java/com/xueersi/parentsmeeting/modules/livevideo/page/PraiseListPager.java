@@ -867,6 +867,6 @@ public class PraiseListPager extends BasePager {
 
     public void releaseSoundPool(){
         if(soundPool!=null)
-        soundPool.release();
+            soundPool.release();
     }
 }

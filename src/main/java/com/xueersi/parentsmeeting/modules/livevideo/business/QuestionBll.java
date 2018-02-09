@@ -417,10 +417,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 .getvQuestionID())) {
                             return;
                         }
-                        if (mAnswerRankBll != null) {
-                            mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
-                            mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
-                        }
+                        mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
+                        mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                         hasQuestion = true;
                     }
                 });
@@ -531,9 +529,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     if (speechAssessmentPager != null) {
                         mLogtf.d("showQuestion:examSubmitAll:id=" + speechAssessmentPager.getId());
                         speechAssessmentPager.examSubmitAll();
-                        if (speechAssessmentPager != null) {
-                            rlQuestionContent.removeView(speechAssessmentPager.getRootView());
-                        }
+                        rlQuestionContent.removeView(speechAssessmentPager.getRootView());
                     }
                     if (activity instanceof AudioRequest) {
                         AudioRequest audioRequest = (AudioRequest) activity;
@@ -759,7 +755,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         int delayTime = 0;
         if (questionWebPager != null) {
-            curQuestionView = questionWebPager;
+            curQuestionView=questionWebPager;
             mLogtf.d("onStopQuestion:questionWebPager");
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override
@@ -776,7 +772,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         if (hasSubmit) {
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
-            hasQuestion = false;
+            hasQuestion=false;
         }
         if ("4".equals(ptype)) {
             return;

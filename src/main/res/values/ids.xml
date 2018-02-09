@@ -416,6 +416,23 @@
     <item name="tv_livelec_dialog_paiming_text" type="id" />
     <item name="tv_livelec_dialog_paiming_lable2" type="id" />
     <item name="tv_livelec_dialog_paiming_text2" type="id" />
-
-
+    <!--讲座广告-->
+    <item name="fl_livelec_advert_content" type="id" />
+    <item name="rl_livelec_advert_step1" type="id" />
+    <item name="rl_livelec_advert_step2" type="id" />
+    <item name="iv_livelec_advert_step1_top" type="id" />
+    <item name="iv_livelec_advert_step1_close" type="id" />
+    <item name="tv_livelec_advert_step1_name" type="id" />
+    <item name="tv_livelec_advert_step1_remainder" type="id" />
+    <item name="tv_livelec_advert_step1_remainder2" type="id" />
+    <item name="tv_livelec_advert_step1_enroll" type="id" />
+    <item name="rl_livelec_advert_step2_title" type="id" />
+    <item name="tv_livelec_advert_step2_title" type="id" />
+    <item name="iv_livelec_advert_step2_back" type="id" />
+    <item name="iv_livelec_advert_step2_close" type="id" />
+    <item name="rl_livelec_advert_step2_web" type="id" />
+    <item name="rl_livelec_advert_step3_title" type="id" />
+    <item name="iv_livelec_advert_step3_success" type="id" />
+    <item name="tv_livelec_advert_step3_tip1" type="id" />
+    <item name="tv_livelec_advert_step3_tip2" type="id" />
 </resources>

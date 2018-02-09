@@ -40,7 +40,7 @@
 
         </RelativeLayout>
 
-        <com.xueersi.parentsmeeting.modules.livevideo.widget.VolumeWaveView
+        <com.xueersi.parentsmeeting.widget.VolumeWaveView
             android:id="@id/vwv_livevideo_speecteval_wave"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

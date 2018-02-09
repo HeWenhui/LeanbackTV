@@ -234,7 +234,7 @@ public class RankBll {
     }
 
     public boolean onBack() {
-        if (relativeLayout.getVisibility() == View.VISIBLE) {
+        if (relativeLayout != null && relativeLayout.getVisibility() == View.VISIBLE) {
             relativeLayout.startAnimation(mAnimSlideOut);
             return true;
         }
@@ -242,7 +242,7 @@ public class RankBll {
     }
 
     public void onTitleShow(boolean show) {
-        if (relativeLayout.getVisibility() == View.VISIBLE) {
+        if (relativeLayout != null && relativeLayout.getVisibility() == View.VISIBLE) {
             relativeLayout.startAnimation(mAnimSlideOut);
         }
     }

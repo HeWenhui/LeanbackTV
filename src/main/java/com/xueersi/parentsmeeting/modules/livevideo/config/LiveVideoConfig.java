@@ -105,6 +105,8 @@ public class LiveVideoConfig {
     public final static String URL_LIVE_GET_QUESTION = AppConfig.HTTP_HOST + "/LiveCourse/getQuestion";
     /** 得到h5课件 */
     public final static String URL_LIVE_GET_WARE_URL = AppConfig.HTTP_HOST + "/LiveCourse/getCourseWareUrl";
+    /** 得到广告信息 */
+    public final static String URL_LIVE_GET_LEC_AD = AppConfig.HTTP_HOST + "/LiveLecture/getAdOnLL";
     /** 互动题满分榜接口 */
     public static String LIVE_FULL_MARK_LIST_QUESTION = AppConfig.HTTP_HOST + "/LiveCourse/teamTestFullScoreRank";
     /** 互动课件满分榜接口 */
@@ -159,6 +161,8 @@ public class LiveVideoConfig {
     public static String LIVE_LISTEN = "live_listen";
     /** 直播-表扬榜 */
     public static String LIVE_PRAISE_LIST = "live_praise_list";
+    /** 直播讲座-（互动广告）https://wiki.xesv5.com/pages/viewpage.action?pageId=10684534 */
+    public static String LEC_ADS = "lecture_ads";
 
     /** 直播时间-当天据算，live_expe_time按单个场次计算 */
     public static String LIVE_EXPE_TIME = "live_expe_time_all";

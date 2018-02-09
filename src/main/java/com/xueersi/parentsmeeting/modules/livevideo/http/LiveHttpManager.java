@@ -622,11 +622,21 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(LiveVideoConfig.URL_LIVE_GET_QUESTION, params, requestCallBack);
     }
 
+    /** 获得预加载课件地址 */
     public void getCourseWareUrl(HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
         requestCallBack.url = LiveVideoConfig.URL_LIVE_GET_WARE_URL;
         sendPost(LiveVideoConfig.URL_LIVE_GET_WARE_URL, params, requestCallBack);
+    }
+
+    /** 获得广告信息 */
+    public void getAdOnLL(String courseId, final HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("courseId", courseId);
+        requestCallBack.url = LiveVideoConfig.URL_LIVE_GET_LEC_AD;
+        sendPost(LiveVideoConfig.URL_LIVE_GET_LEC_AD, params, requestCallBack);
     }
 
     public void getFullMarkListQuestion(String testId, String classId, String teamId, HttpCallBack callBack) {
@@ -668,13 +678,13 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param status          是否点赞标志位
      * @param requestCallBack
      */
-    public void getHonorList(String classId, String enstuId, String liveId , String status ,HttpCallBack
+    public void getHonorList(String classId, String enstuId, String liveId, String status, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);
-        params.addBodyParam("status",status);
+        params.addBodyParam("status", status);
         setDefaultParameter(params);
         sendPost(LiveVideoConfig.URL_LIVE_GET_HONOR_LIST, params, requestCallBack);
     }
@@ -683,10 +693,10 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * 获取点赞榜
      *
      * @param classId         班级Id
-     * @param stuId         学生Id加密串
+     * @param stuId           学生Id加密串
      * @param requestCallBack
      */
-    public void getThumbsUpList(String classId, String stuId,HttpCallBack
+    public void getThumbsUpList(String classId, String stuId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
@@ -704,13 +714,13 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param status          是否点赞标志位
      * @param requestCallBack
      */
-    public void getProgressList(String classId, String enstuId, String liveId , String status ,HttpCallBack
+    public void getProgressList(String classId, String enstuId, String liveId, String status, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);
-        params.addBodyParam("status",status);
+        params.addBodyParam("status", status);
         setDefaultParameter(params);
         sendPost(LiveVideoConfig.URL_LIVE_GET_PRPGRESS_LIST, params, requestCallBack);
     }
@@ -722,7 +732,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param enstuId         学生Id加密串
      * @param requestCallBack
      */
-    public void getThumbsUpProbability(String classId, String enstuId ,HttpCallBack
+    public void getThumbsUpProbability(String classId, String enstuId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);

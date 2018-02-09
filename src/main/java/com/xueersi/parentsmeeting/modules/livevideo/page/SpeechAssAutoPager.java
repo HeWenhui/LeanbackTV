@@ -37,7 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StartProgress;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.VolumeWaveView;
+import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -599,7 +599,11 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         try {
             int wordChangeColor = wordChangeColor(score, lstPhonemeScore);
             if (wordChangeColor != 0) {
-                logToFile.d("onEvaluatorSuccess:sid=" + resultEntity.getSid() + ",error=" + content + "-" + nbest);
+                if (speechEvaluatorInter == null) {
+                    logToFile.d("onEvaluatorSuccess:Inter=null,sid=" + resultEntity.getSid() + ",score=" + score + ",error=" + content + "-" + nbest);
+                } else {
+                    logToFile.d("onEvaluatorSuccess:Inter=" + speechEvaluatorInter.getClass().getSimpleName() + ",sid=" + resultEntity.getSid() + ",score=" + score + ",error=" + content + "-" + nbest);
+                }
             }
         } catch (Exception e) {
             MobclickAgent.reportError(mContext, new Error(content + "-" + nbest, e));

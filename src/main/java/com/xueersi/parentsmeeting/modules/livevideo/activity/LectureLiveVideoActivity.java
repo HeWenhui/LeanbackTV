@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,15 +20,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.xueersi.parentsmeeting.config.AppConfig;
+import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.event.AppEvent;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.H5CoursewareBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecLearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
@@ -37,6 +42,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
@@ -49,10 +55,13 @@ import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.VPlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -70,7 +79,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  *
  * @author linyuqiang
  */
-public class LectureLiveVideoActivity extends LiveVideoActivityBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick {
+public class LectureLiveVideoActivity extends LiveVideoActivityBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, ActivityChangeLand {
 
     private String TAG = "LecLiveVideoActivityLog";
     /**
@@ -100,6 +109,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     /**
      * 缓冲提示
      */
+    private ImageView ivLoading;
     private TextView tvLoadingHint;
     private LiveGetInfo mGetInfo;
     /** 直播服务器 */
@@ -155,6 +165,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     RedPackageBll redPackageBll;
     LecLearnReportBll learnReportBll;
     H5CoursewareBll h5CoursewareBll;
+    LecAdvertBll lecAdvertAction;
 //    StarInteractBll starBll;
     /**
      * 视频宽度
@@ -190,6 +201,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         redPackageBll = new RedPackageBll(this);
         learnReportBll = new LecLearnReportBll(this);
         h5CoursewareBll = new H5CoursewareBll(this);
+        lecAdvertAction = new LecAdvertBll(this);
         questionBll.setShareDataManager(mShareDataManager);
         AppBll.getInstance().registerAppEvent(this);
         boolean init = initData();
@@ -204,6 +216,8 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         learnReportBll.setLiveBll(mLiveBll);
         learnReportBll.setmShareDataManager(mShareDataManager);
         questionBll.setLiveBll(mLiveBll);
+        lecAdvertAction.setLiveBll(mLiveBll);
+        lecAdvertAction.setLiveid(mVSectionID);
         questionBll.setVSectionID(mVSectionID);
         redPackageBll.setVSectionID(mVSectionID);
         questionBll.setLiveType(liveType);
@@ -243,6 +257,9 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         //学习报告
         learnReportBll.initView(questionContent);
         h5CoursewareBll.initView(questionContent);
+        lecAdvertAction.initView(questionContent, mIsLand);
+        ivLoading = (ImageView) findViewById(R.id.iv_course_video_loading_bg);
+        updateLoadingImage();
         tvLoadingHint = (TextView) findViewById(R.id.tv_course_video_loading_content);
         // 预加载布局中退出事件
         findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
@@ -304,6 +321,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         mLiveBll.setVideoAction(this);
         mLiveBll.setRoomAction(liveMessageBll);
         mLiveBll.setH5CoursewareAction(h5CoursewareBll);
+        mLiveBll.setLecAdvertAction(lecAdvertAction);
         mLiveBll.getInfo();
         mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), true);
         setMediaControllerBottomParam(videoView.getLayoutParams());
@@ -345,6 +363,9 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 //设置控制
                 ViewGroup controllerContent = (ViewGroup) findViewById(R.id.rl_course_video_live_controller_content);
                 controllerContent.removeAllViews();
+                if (mMediaController != null) {
+                    mMediaController.setControllerBottom(null, false);
+                }
                 mMediaController = new LiveMediaController(LectureLiveVideoActivity.this, LectureLiveVideoActivity
                         .this);
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -377,6 +398,8 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 //学习报告
                 learnReportBll.initView(questionContent);
                 h5CoursewareBll.initView(questionContent);
+                lecAdvertAction.initView(questionContent, mIsLand);
+                mMediaController.show();
             }
             group.post(new Runnable() {
                 @Override
@@ -391,6 +414,9 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 //设置控制
                 ViewGroup controllerContent = (ViewGroup) findViewById(R.id.rl_course_video_live_controller_content);
                 controllerContent.removeAllViews();
+                if (mMediaController != null) {
+                    mMediaController.setControllerBottom(null, false);
+                }
                 mMediaController = new LiveMediaController(LectureLiveVideoActivity.this, LectureLiveVideoActivity
                         .this);
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -423,6 +449,8 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 //学习报告
                 learnReportBll.initView(questionContent);
                 h5CoursewareBll.initView(questionContent);
+                lecAdvertAction.initView(questionContent, mIsLand);
+                mMediaController.show();
             }
             group.post(new Runnable() {
                 @Override
@@ -784,12 +812,9 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         liveMessageBll.setLiveGetInfo(getInfo);
         rollCallBll.onLiveInit(getInfo);
         questionBll.setUserName(getInfo);
-//        if (1 == getInfo.getIsArts()) {
-//            starBll = new StarInteractBll(this, liveType, getInfo.getStarCount(), mIsLand);
-//            starBll.onConfigurationChanged(mIsLand);
-//            starBll.setLiveBll(mLiveBll);
-//            starBll.initView(questionContent);
-//            mLiveBll.setStarAction(starBll);
+//        if (AppConfig.DEBUG) {
+//            LecAdvertEntity lecAdvertEntity = new LecAdvertEntity();
+//            lecAdvertAction.start(lecAdvertEntity);
 //        }
     }
 
@@ -849,6 +874,13 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             }
         });
 
+    }
+
+    @Override
+    public void changeLOrP() {
+        if (mIsAutoOrientation) {
+            super.changeLOrP();
+        }
     }
 
     @Override
@@ -1229,5 +1261,20 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     @Override
     public void onMsgUrlClick(String url) {
 //        onPauseNotStopVideo = true;
+    }
+
+    @Override
+    protected void updateIcon() {
+        updateLoadingImage();
+        updateRefreshImage();
+    }
+
+    protected void updateLoadingImage() {
+        FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
+        if (footerIconEntity != null ){
+            String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
+            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
+                ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
+        }
     }
 }

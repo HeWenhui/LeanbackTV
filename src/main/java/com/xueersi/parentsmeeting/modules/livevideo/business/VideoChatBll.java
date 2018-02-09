@@ -10,9 +10,6 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -20,9 +17,9 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.umeng.analytics.MobclickAgent;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.MicTipDialog;
@@ -44,9 +41,6 @@ import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 import static com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE;
 
@@ -298,7 +292,7 @@ public class VideoChatBll implements VideoChatAction {
                         @Override
                         public void run() {
                             String nonce = StableLogHashMap.creatNonce();
-                            VideoChatLog.sno1(liveBll, nonce);
+                            VideoChatLog.sno4(liveBll, nonce);
                             raisehand = true;
                             liveBll.requestMicro(nonce, from);
                             BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
@@ -463,6 +457,9 @@ public class VideoChatBll implements VideoChatAction {
                         }
                     }
                     if ("on".equals(openhands)) {
+                        if (!openhands.equals(oldOpenhandsStatus)) {
+                            VideoChatLog.sno3(liveBll, from, "", isHasPermission);
+                        }
                         if (!isHasPermission) {
                             if (!permissionPrompt) {
                                 permissionPrompt = true;
@@ -536,7 +533,7 @@ public class VideoChatBll implements VideoChatAction {
     }
 
     @Override
-    public void raisehand(final String status, final String from) {
+    public void raisehand(final String status, final String from, final String nonce) {
         mLogtf.d("raisehand:status=" + status);
         containMe = false;
         isFail = false;
@@ -545,10 +542,9 @@ public class VideoChatBll implements VideoChatAction {
             public void run() {
                 openhandsStatus = status;
                 if ("on".equals(status)) {
-                    StableLogHashMap logHashMap = new StableLogHashMap("getStartLinkMic");
-                    logHashMap.put("teacher_type", from);
-                    liveBll.umsAgentDebug3(eventId, logHashMap.getData());
+                    VideoChatLog.sno2(liveBll, from, nonce);
                     activity.showLongMediaController();
+                    VideoChatLog.sno3(liveBll, from, nonce, isHasPermission);
                     if (!isHasPermission) {
                         if (!permissionPrompt) {
                             permissionPrompt = true;
@@ -610,7 +606,7 @@ public class VideoChatBll implements VideoChatAction {
     }
 
     @Override
-    public void requestAccept(String from) {
+    public void requestAccept(String from, String nonce) {
         onMic = "on";
         isFail = false;
         containMe = true;
@@ -655,10 +651,7 @@ public class VideoChatBll implements VideoChatAction {
             public void run() {
                 onmicStatus = status;
                 if ("on".equals(status)) {
-                    StableLogHashMap logHashMap = new StableLogHashMap("getStartLinkMic");
-                    logHashMap.put("teacher_type", from);
-                    logHashMap.put("is_selected", contain ? "1" : "0");
-                    liveBll.umsAgentDebug(eventId, logHashMap.getData());
+                    VideoChatLog.sno7(liveBll, from, contain ? "1" : "0", nonce);
                     if (contain) {
                         if (raiseHandDialog != null) {
                             raiseHandDialog.cancelDialog();

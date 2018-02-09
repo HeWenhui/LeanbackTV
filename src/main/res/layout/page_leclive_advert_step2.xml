@@ -1,0 +1,41 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/COLOR_FFFFFF"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@id/rl_livelec_advert_step2_web"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:id="@id/rl_livelec_advert_step2_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:id="@id/tv_livelec_advert_step2_title"
+            style="@style/main_title_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <ImageView
+            android:id="@id/iv_livelec_advert_step2_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/cy_main_guanbi_icon_normal" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@id/rl_livelec_advert_step3_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_livelec_advert_step2_title">
+
+    </RelativeLayout>
+</RelativeLayout>

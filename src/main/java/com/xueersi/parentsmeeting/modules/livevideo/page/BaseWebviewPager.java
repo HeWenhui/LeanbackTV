@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
+import android.webkit.JsResult;
 import android.webkit.PermissionRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -15,10 +16,12 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.logerhelper.LogerTag;
 import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 
 /**
  * Created by linyuqiang on 2017/3/25
@@ -109,6 +112,29 @@ public abstract class BaseWebviewPager extends BasePager {
         }
 
         @Override
+        public boolean onJsConfirm(WebView view, String url, String message,
+                                   final JsResult result) {
+            VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(mContext, (BaseApplication)
+                    BaseApplication.getContext(), false,
+                    VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+            cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    result.confirm();
+                }
+            });
+            cancelDialog.setCancelBtnListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    result.cancel();
+                }
+            });
+            cancelDialog.setCancelShowText("取消").setVerifyShowText("确定").initInfo(message,
+                    VerifyCancelAlertDialog.CANCEL_SELECTED).showDialog();
+            return true;
+        }
+
+        @Override
         public void onPermissionRequest(PermissionRequest request) {
 //            super.onPermissionRequest(request);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -128,6 +154,12 @@ public abstract class BaseWebviewPager extends BasePager {
             Loger.d(mContext, LogerTag.DEBUG_WEBVIEW_CONSOLE, TAG + ",Level=" + mLevel + "&&," + consoleMessage.sourceId() +
                     "&&," + consoleMessage.lineNumber() + "&&," + consoleMessage.message(), isRequst);
             return super.onConsoleMessage(consoleMessage);
+        }
+
+        @Override
+        public void onReceivedTitle(WebView view, String title) {
+            super.onReceivedTitle(view, title);
+            BaseWebviewPager.this.onReceivedTitle(view, title);
         }
     }
 
@@ -166,6 +198,9 @@ public abstract class BaseWebviewPager extends BasePager {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             return BaseWebviewPager.this.shouldOverrideUrlLoading(view, url);
         }
+    }
+
+    public void onReceivedTitle(WebView view, String title) {
     }
 
     protected void onPageFinished(WebView view, String url) {
