@@ -417,8 +417,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 .getvQuestionID())) {
                             return;
                         }
-                        mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
-                        mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
+                        if (mAnswerRankBll != null) {
+                            mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
+                            mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
+                        }
                         hasQuestion = true;
                     }
                 });
@@ -529,7 +531,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     if (speechAssessmentPager != null) {
                         mLogtf.d("showQuestion:examSubmitAll:id=" + speechAssessmentPager.getId());
                         speechAssessmentPager.examSubmitAll();
-                        rlQuestionContent.removeView(speechAssessmentPager.getRootView());
+                        if (speechAssessmentPager != null) {
+                            rlQuestionContent.removeView(speechAssessmentPager.getRootView());
+                        }
                     }
                     if (activity instanceof AudioRequest) {
                         AudioRequest audioRequest = (AudioRequest) activity;
