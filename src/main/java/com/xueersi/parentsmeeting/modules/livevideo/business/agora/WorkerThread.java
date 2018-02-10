@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.view.SurfaceView;
 
 import com.xueersi.parentsmeeting.config.AppConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.BuildConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.xesalib.utils.log.Loger;
 
@@ -169,7 +168,6 @@ public class WorkerThread extends Thread {
         int joinChannel = mRtcEngine.joinChannel(null, channel, "OpenLive", uid);
         onJoinChannel.onJoinChannel(joinChannel);
         Loger.d(TAG, "joinChannel:channelKey=" + channelKey + ",channel=" + channel + ",uid=" + uid + ",joinChannel=" + joinChannel);
-
         mEngineConfig.mChannel = channel;
 
         enablePreProcessor();
@@ -223,7 +221,7 @@ public class WorkerThread extends Thread {
         mRtcEngine.setVideoProfile(mEngineConfig.mVideoProfile, true);
 
         mRtcEngine.setClientRole(cRole, "");
-//        mRtcEngine.enableAudioVolumeIndication(5000, 3);
+        mRtcEngine.enableAudioVolumeIndication(500, 3);
         Loger.d(TAG, "configEngine " + cRole + " " + mEngineConfig.mVideoProfile);
     }
 

@@ -8,4 +8,5 @@ public interface AGEventHandler {
     void onUserOffline(int uid, int reason);
 
     void onError(int err);
+    void onVolume(int volume);
 }

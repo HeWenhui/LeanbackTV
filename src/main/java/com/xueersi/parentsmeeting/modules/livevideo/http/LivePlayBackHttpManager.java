@@ -57,7 +57,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("classId", classId);
         params.addBodyParam("liveId", classId);
         params.addBodyParam("testDay", testDay);
-        params.addBodyParam("enstuId", enStuId);
+//        params.addBodyParam("enstuId", enStuId);
         params.addBodyParam("testId", testId);
         if(voice){
             params.addBodyParam("answer", testResult);
@@ -81,7 +81,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("classId", classId);
         params.addBodyParam("liveId", classId);
         params.addBodyParam("testDay", testDay);
-        params.addBodyParam("enstuId", enStuId);
+//        params.addBodyParam("enstuId", enStuId);
         params.addBodyParam("testId", testId);
         params.addBodyParam("testAnswer", testResult);
         params.addBodyParam("type", type);
@@ -105,7 +105,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
      */
     public void getRedPacket(String enStuId, String operateId, String classId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("enstuId", enStuId);
+//        params.addBodyParam("enstuId", enStuId);
         params.addBodyParam("operateId", operateId);
         params.addBodyParam("classId", classId);
         params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
@@ -122,7 +122,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     public void getLivePlayRedPacket(String enStuId, String operateId, String liveId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("enstuId", enStuId);
+//        params.addBodyParam("enstuId", enStuId);
         params.addBodyParam("operateId", operateId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
@@ -132,7 +132,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     public void getLiveLectureMsgs(String enstuId, String keyName, int count, String start, int sort,
                                    HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("enstuId", enstuId);
+//        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("keyName", keyName);
         params.addBodyParam("count", "" + count);
         params.addBodyParam("start", start);
@@ -142,7 +142,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
 
     public void getSpeechEval(String enstuId, String liveId, String id, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("enstuId", enstuId);
+//        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", id);
         sendPost(LiveVideoConfig.URL_LIVE_GET_SPEECHEVAL, params, requestCallBack);
@@ -151,7 +151,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     public void sendSpeechEvalResult(String enstuId, String liveId, String id, String stuAnswer, String times, int
             entranceTime, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("enstuId", enstuId);
+//        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", id);
         params.addBodyParam("stuAnswer", "" + stuAnswer);
@@ -163,7 +163,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
 
     public void sendSpeechEvalResult2(String enstuId, String liveId, String id, String stuAnswer, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("enstuId", enstuId);
+//        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", id);
         params.addBodyParam("isRejected", "1");
@@ -174,7 +174,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
 
     public void speechEval42IsAnswered(String enstuId, String liveId, String id, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("enstuId", enstuId);
+//        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", id);
         params.addBodyParam("type", "1");
@@ -183,7 +183,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
 
     public void getVoiceWareTestInfo(String enstuId, String liveId, String id, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("enstuId", enstuId);
+//        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", id);
         sendPost(LiveVideoConfig.URL_LIVE_LECTURE_VOICE_WARE, params, requestCallBack);
