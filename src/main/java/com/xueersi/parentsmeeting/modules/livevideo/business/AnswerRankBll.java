@@ -421,12 +421,12 @@ public class AnswerRankBll {
             }
             rlFullMarkList.setLayoutParams(params);
             setLinearParam();
+            final SlowHorizontalScrollView sv=(SlowHorizontalScrollView) rlFullMarkList.findViewById(R.id.sv_live_full_mark_list);
             rlFullMarkList.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if(rlFullMarkList.findViewById(R.id.sv_live_full_mark_list).getScrollX()>500) {
-                        rlFullMarkList.findViewById(R.id.sv_live_full_mark_list)
-                                .scrollTo(videoWidth, 0);
+                    if(sv!=null&&sv.getScrollX()>500) {
+                        sv.scrollTo(videoWidth, 0);
                     }
                 }
             },50);
