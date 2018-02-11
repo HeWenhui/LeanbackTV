@@ -223,6 +223,7 @@ public class WorkerThread extends Thread {
         mRtcEngine.setClientRole(cRole, "");
         if (feadback) {
             mRtcEngine.enableAudioVolumeIndication(500, 3);
+            mRtcEngine.muteAllRemoteAudioStreams(true);
         }
         Loger.d(TAG, "configEngine " + cRole + " " + mEngineConfig.mVideoProfile);
     }

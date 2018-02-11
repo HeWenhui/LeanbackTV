@@ -132,12 +132,12 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
 
                         @Override
                         public void onUserJoined(int uid, int elapsed) {
-                            String mainTeacherId = mGetInfo.getMainTeacherId();
-                            Loger.i(TAG, "onUserJoined:uid=" + uid + ",mainTeacherId=" + mainTeacherId);
-                            if (!("" + uid).equals(mainTeacherId)) {
-                                int mute = mWorkerThread.getRtcEngine().muteRemoteAudioStream(uid, true);
-                                Loger.i(TAG, "onUserJoined:uid=" + uid + ",mute=" + mute);
-                            }
+//                            String mainTeacherId = mGetInfo.getMainTeacherId();
+//                            Loger.i(TAG, "onUserJoined:uid=" + uid + ",mainTeacherId=" + mainTeacherId);
+//                            if (!("" + uid).equals(mainTeacherId)) {
+//                                int mute = mWorkerThread.getRtcEngine().muteRemoteAudioStream(uid, true);
+//                                Loger.i(TAG, "onUserJoined:uid=" + uid + ",mute=" + mute);
+//                            }
                         }
 
                         @Override
