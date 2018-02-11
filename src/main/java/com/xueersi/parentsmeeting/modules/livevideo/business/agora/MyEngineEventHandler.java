@@ -11,10 +11,12 @@ import io.agora.rtc.IRtcEngineEventHandler;
 
 public class MyEngineEventHandler {
     public static final String TAG = "MyEngineEventHandler";
+    boolean feadback;
 
-    public MyEngineEventHandler(Context ctx, EngineConfig config) {
+    public MyEngineEventHandler(Context ctx, EngineConfig config, boolean feadback) {
         this.mContext = ctx;
         this.mConfig = config;
+        this.feadback = feadback;
     }
 
     private final EngineConfig mConfig;
@@ -39,13 +41,15 @@ public class MyEngineEventHandler {
 
         @Override
         public void onAudioVolumeIndication(AudioVolumeInfo[] speakers, int totalVolume) {
-            for (AudioVolumeInfo info:speakers) {
-                if(info.uid==0){
-                    for(AGEventHandler handler:mEventHandlerList.keySet()){
-                        handler.onVolume(info.volume);
+            if (feadback) {
+                for (AudioVolumeInfo info : speakers) {
+                    if (info.uid == 0) {
+                        for (AGEventHandler handler : mEventHandlerList.keySet()) {
+                            handler.onVolume(info.volume);
+                        }
                     }
+                    Loger.d(TAG, "onAudioVolumeIndication:info=" + info.uid + "," + info.volume);
                 }
-                Loger.d(TAG, "onAudioVolumeIndication:info=" + info.uid + "," + info.volume);
             }
         }
 
@@ -68,6 +72,11 @@ public class MyEngineEventHandler {
         @Override
         public void onUserJoined(int uid, int elapsed) {
             Loger.d(TAG, "onUserJoined:uid=" + uid + ",elapsed=" + elapsed);
+            Iterator<AGEventHandler> it = mEventHandlerList.keySet().iterator();
+            while (it.hasNext()) {
+                AGEventHandler handler = it.next();
+                handler.onUserJoined(uid, elapsed);
+            }
         }
 
         @Override

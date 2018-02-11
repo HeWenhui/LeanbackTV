@@ -110,6 +110,11 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
         }
 
         @Override
+        public void onUserJoined(int uid, int elapsed) {
+
+        }
+
+        @Override
         public void onUserOffline(int uid, int reason) {
             mLogtf.d("onUserOffline:uid=" + uid + ",reason=" + reason);
         }
@@ -153,7 +158,7 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
     public void startRecord(String method, final String room, final String nonce) {
         int stuid = Integer.parseInt(getInfo.getStuId());
         this.room = room;
-        mWorkerThread = new WorkerThread(activity.getApplicationContext(), stuid);
+        mWorkerThread = new WorkerThread(activity.getApplicationContext(), stuid, false);
         mWorkerThread.eventHandler().addEventHandler(agEventHandler);
         mWorkerThread.start();
         mWorkerThread.waitForReady();

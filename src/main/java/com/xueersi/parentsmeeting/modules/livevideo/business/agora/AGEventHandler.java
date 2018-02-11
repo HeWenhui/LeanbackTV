@@ -5,8 +5,11 @@ public interface AGEventHandler {
 
     void onJoinChannelSuccess(String channel, int uid, int elapsed);
 
+    void onUserJoined(int uid, int elapsed);
+
     void onUserOffline(int uid, int reason);
 
     void onError(int err);
+
     void onVolume(int volume);
 }

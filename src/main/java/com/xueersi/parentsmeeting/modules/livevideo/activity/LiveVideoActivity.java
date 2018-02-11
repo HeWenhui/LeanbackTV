@@ -881,6 +881,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             if (LiveVideoConfig.IS_SCIENCE) {
                 SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(this, mLiveBll);
                 speechFeedBackBll.setBottomContent(bottomContent);
+                speechFeedBackBll.setGetInfo(getInfo);
                 speechFeedBackAction = speechFeedBackBll;
                 mLiveBll.setSpeechFeedBackAction(speechFeedBackBll);
             }
@@ -1416,7 +1417,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         if (speechFeedBackAction != null) {
             speechFeedBackAction.stop();
         }
-        if(speechFeedBackAction!=null){
+        if (speechFeedBackAction != null) {
             speechFeedBackAction.stop();
         }
         super.onDestroy();
@@ -1510,7 +1511,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
 
     protected void updateLoadingImage() {
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
-        if (footerIconEntity != null ){
+        if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
             if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
                 ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);

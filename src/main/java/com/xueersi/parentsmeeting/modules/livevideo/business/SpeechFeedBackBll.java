@@ -14,6 +14,7 @@ import com.tal.speech.speechrecognizer.PCMFormat;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.AGEventHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
@@ -35,6 +36,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
     Activity activity;
     RelativeLayout bottomContent;
     LiveBll liveBll;
+    LiveGetInfo mGetInfo;
     SpeechFeedBackPager speechFeedBackPager;
     /** 每次读取的字节大小 */
     private int mBufferSize;
@@ -76,6 +78,10 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         this.liveBll = liveBll;
     }
 
+    public void setGetInfo(LiveGetInfo mGetInfo) {
+        this.mGetInfo = mGetInfo;
+    }
+
     public void setBottomContent(RelativeLayout bottomContent) {
         this.bottomContent = bottomContent;
     }
@@ -94,15 +100,15 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                 int screenWidth = ScreenUtils.getScreenWidth();
                 int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
                 params.rightMargin = wradio;
-                Loger.i(TAG,"add view");
+                Loger.i(TAG, "add view");
                 bottomContent.addView(speechFeedBackPager.getRootView(), params);
             }
         });
-        if(!isHasPermission(activity)){
-            XESToastUtils.showToast(activity,"请检查是否获取录音权限");
+        if (!isHasPermission(activity)) {
+            XESToastUtils.showToast(activity, "请检查是否获取录音权限");
             return;
         }
-        this.roomId=roomId;
+        this.roomId = roomId;
         Loger.d(TAG, "start:roomId=" + roomId);
         isStart = true;
         new Thread() {
@@ -111,9 +117,9 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                 try {
                     Loger.d(TAG, "start:startRecording:mAudioRecord=" + (mAudioRecord == null));
                     //initAudioRecorder();
-                    int stuid=Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                    int stuid = Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getStuId());
                     long time = System.currentTimeMillis();
-                    mWorkerThread=new WorkerThread(activity, stuid);
+                    mWorkerThread = new WorkerThread(activity, stuid, true);
                     mWorkerThread.eventHandler().addEventHandler(new AGEventHandler() {
                         @Override
                         public void onFirstRemoteVideoDecoded(int uid, int width, int height, int elapsed) {
@@ -121,27 +127,36 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
 
                         @Override
                         public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
-                            Loger.i(TAG,"joinchannelsuccess");
+                            Loger.i(TAG, "joinchannelsuccess");
+                        }
 
+                        @Override
+                        public void onUserJoined(int uid, int elapsed) {
+                            String mainTeacherId = mGetInfo.getMainTeacherId();
+                            Loger.i(TAG, "onUserJoined:uid=" + uid + ",mainTeacherId=" + mainTeacherId);
+                            if (!("" + uid).equals(mainTeacherId)) {
+                                int mute = mWorkerThread.getRtcEngine().muteRemoteAudioStream(uid, true);
+                                Loger.i(TAG, "onUserJoined:uid=" + uid + ",mute=" + mute);
+                            }
                         }
 
                         @Override
                         public void onUserOffline(int uid, int reason) {
-                            Loger.i(TAG,"useroffline");
+                            Loger.i(TAG, "useroffline");
                         }
 
                         @Override
                         public void onError(int err) {
-                            if(err==1108){
-                                XESToastUtils.showToast(activity,"请检查是否获取麦克风权限");
+                            if (err == 1108) {
+                                XESToastUtils.showToast(activity, "请检查是否获取麦克风权限");
                             }
-                            Loger.i(TAG,"error"+err);
+                            Loger.i(TAG, "error" + err);
                             //SpeechFeedBackBll.this.stop();
                         }
 
                         @Override
                         public void onVolume(int volume) {
-                            speechFeedBackPager.setVolume(volume/4);
+                            speechFeedBackPager.setVolume(volume / 4);
                         }
                     });
                     mWorkerThread.start();
@@ -192,7 +207,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
             bottomContent.post(new Runnable() {
                 @Override
                 public void run() {
-                    Loger.i(TAG,"remove view");
+                    Loger.i(TAG, "remove view");
                     bottomContent.removeView(speechFeedBackPager.getRootView());
                     speechFeedBackPager = null;
                 }
@@ -247,25 +262,25 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
     /**
      * 判断是是否有录音权限
      */
-    public static boolean isHasPermission(final Context context){
-         int audioSource = MediaRecorder.AudioSource.MIC;
+    public static boolean isHasPermission(final Context context) {
+        int audioSource = MediaRecorder.AudioSource.MIC;
         // 设置音频采样率，44100是目前的标准，但是某些设备仍然支持22050，16000，11025
-         int sampleRateInHz = 44100;
+        int sampleRateInHz = 44100;
         // 设置音频的录制的声道CHANNEL_IN_STEREO为双声道，CHANNEL_CONFIGURATION_MONO为单声道
-         int channelConfig = AudioFormat.CHANNEL_IN_STEREO;
+        int channelConfig = AudioFormat.CHANNEL_IN_STEREO;
         // 音频数据格式:PCM 16位每个样本。保证设备支持。PCM 8位每个样本。不一定能得到设备支持。
-         int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
+        int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
         // 缓冲区字节大小
-         int bufferSizeInBytes = 0;
+        int bufferSizeInBytes = 0;
         bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRateInHz,
                 channelConfig, audioFormat);
-        AudioRecord audioRecord =  new AudioRecord(audioSource, sampleRateInHz,
+        AudioRecord audioRecord = new AudioRecord(audioSource, sampleRateInHz,
                 channelConfig, audioFormat, bufferSizeInBytes);
         //开始录制音频
-        try{
+        try {
             // 防止某些手机崩溃，例如联想
             audioRecord.startRecording();
-        }catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             e.printStackTrace();
         }
         /**

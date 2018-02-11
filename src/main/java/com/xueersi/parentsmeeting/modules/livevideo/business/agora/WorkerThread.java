@@ -23,7 +23,7 @@ public class WorkerThread extends Thread {
     private final static String TAG = "WorkerThread";
 
     private final Context mContext;
-
+    boolean feadback = false;
     private static final int ACTION_WORKER_THREAD_QUIT = 0X1010; // quit this thread
 
     private static final int ACTION_WORKER_JOIN_CHANNEL = 0X2010;
@@ -221,7 +221,9 @@ public class WorkerThread extends Thread {
         mRtcEngine.setVideoProfile(mEngineConfig.mVideoProfile, true);
 
         mRtcEngine.setClientRole(cRole, "");
-        mRtcEngine.enableAudioVolumeIndication(500, 3);
+        if (feadback) {
+            mRtcEngine.enableAudioVolumeIndication(500, 3);
+        }
         Loger.d(TAG, "configEngine " + cRole + " " + mEngineConfig.mVideoProfile);
     }
 
@@ -312,11 +314,11 @@ public class WorkerThread extends Thread {
         Loger.d(TAG, "exit() > end");
     }
 
-    public WorkerThread(Context context, int mUid) {
+    public WorkerThread(Context context, int mUid, boolean feadback) {
         this.mContext = context;
-
+        this.feadback = feadback;
         this.mEngineConfig = new EngineConfig();
         this.mEngineConfig.mUid = mUid;
-        this.mEngineEventHandler = new MyEngineEventHandler(mContext, this.mEngineConfig);
+        this.mEngineEventHandler = new MyEngineEventHandler(mContext, this.mEngineConfig, feadback);
     }
 }
