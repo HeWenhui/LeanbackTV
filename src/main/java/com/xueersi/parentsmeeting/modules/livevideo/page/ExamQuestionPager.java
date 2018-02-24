@@ -130,7 +130,7 @@ public class ExamQuestionPager extends BasePager {
         if (!StringUtils.isEmpty(nonce)) {
             examUrl += "&nonce=" + nonce;
         }
-        examUrl+="isTowall="+isShowRankList;
+        examUrl+="&isTowall="+isShowRankList;
         examUrl += "&isArts=" + (LiveVideoConfig.IS_SCIENCE ? "0" : "1");
         wvSubjectWeb.loadUrl(examUrl);
 //        wvSubjectWeb.loadUrl("http://7.xesweb.sinaapp.com/test/examPaper2.html");
