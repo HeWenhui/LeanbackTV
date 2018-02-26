@@ -16,7 +16,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -161,6 +160,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
     /** 互动题 */
     private VideoQuestionEntity mQuestionEntity;
+    /** 互动题为空的异常 */
+    private Exception questionEntityNullEx;
     /** 各种互动题的页面 */
     /** 语音答题的页面 */
     private VoiceAnswerPager voiceAnswerPager;
@@ -566,6 +567,13 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         showQuestion(oldQuestionEntity);
     }
 
+    public void setQuestionEntity(VideoQuestionEntity mQuestionEntity) {
+        this.mQuestionEntity = mQuestionEntity;
+        if (mQuestionEntity == null) {
+            questionEntityNullEx = new Exception();
+        }
+    }
+
     /** 扫描是否有需要弹出的互动题 */
     public void scanQuestion(long position) {
 
@@ -660,8 +668,12 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                             Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 3, 3, mQuestionEntity);
                             mPlayVideoControlHandler.sendMessage(msg);
                             // TODO mQuestionEntity==null
-                            seekTo(mQuestionEntity.getvEndTime() * 1000);
-                            start();
+                            if (mQuestionEntity != null) {
+                                seekTo(mQuestionEntity.getvEndTime() * 1000);
+                                start();
+                            } else {
+                                Loger.e(TAG, "seekTo", new Exception("seekTo", questionEntityNullEx));
+                            }
                         }
                     });
                     verifyCancelAlertDialog.showDialog();
@@ -1015,7 +1027,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                             rlQuestionContent.removeView(lecAdvertPager.getRootView());
                         }
                         Loger.d(TAG, "showLecAdvertPager:close=" + (mQuestionEntity == null));
-                        mQuestionEntity = null;
+                        setQuestionEntity(null);
                         lecAdvertPager = null;
                         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                     }
@@ -1650,15 +1662,19 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     /**
      * 红包布局隐藏
      */
-    private void redPacketViewGone() {
+    private void redPacketViewGone(final VideoQuestionEntity questionEntity) {
         new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                mQuestionEntity = null;
-                mIsShowRedpacket = false;
-                beforeAttach = "redPacketViewGone";
-                attachMediaController();
+                if (questionEntity == mQuestionEntity) {
+                    setQuestionEntity(null);
+                    mIsShowRedpacket = false;
+                    beforeAttach = "redPacketViewGone";
+                    attachMediaController();
+                } else {
+                    Loger.e(TAG, "redPacketViewGone:mQuestionEntity=" + (mQuestionEntity == null));
+                }
             }
         }.sendEmptyMessageDelayed(0, 1000); // 延迟1秒钟消失
     }
@@ -1694,7 +1710,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                                     .REDPACKET_GRAB,
                             XesMobAgent.XES_VIDEO_INTERACTIVE);
                 }
-                redPacketViewGone();
+                redPacketViewGone(mQuestionEntity);
             }
         }).showDialog();
     }
@@ -2191,7 +2207,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     }
                     Object obj = msg.obj;
                     Loger.d(TAG, "handleMessage:NO_QUESTION=" + msg.arg1 + "," + (obj == mQuestionEntity));
-                    mQuestionEntity = null;
+                    setQuestionEntity(null);
                     questionViewGone("NO_QUESTION");
                     if (mPopupWindow != null) {
                         mPopupWindow.dismiss();
