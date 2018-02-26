@@ -672,7 +672,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                                 seekTo(mQuestionEntity.getvEndTime() * 1000);
                                 start();
                             } else {
-                                Loger.e(TAG, "seekTo", new Exception("seekTo", questionEntityNullEx));
+                                Loger.e(LivePlayBackVideoActivity.this,TAG, "seekTo", new Exception("seekTo", questionEntityNullEx),true);
                             }
                         }
                     });
@@ -1667,13 +1667,13 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
+                mIsShowRedpacket = false;
                 if (questionEntity == mQuestionEntity) {
                     setQuestionEntity(null);
-                    mIsShowRedpacket = false;
                     beforeAttach = "redPacketViewGone";
                     attachMediaController();
                 } else {
-                    Loger.e(TAG, "redPacketViewGone:mQuestionEntity=" + (mQuestionEntity == null));
+                    Loger.d(TAG, "redPacketViewGone:mQuestionEntity=" + mQuestionEntity, true);
                 }
             }
         }.sendEmptyMessageDelayed(0, 1000); // 延迟1秒钟消失
