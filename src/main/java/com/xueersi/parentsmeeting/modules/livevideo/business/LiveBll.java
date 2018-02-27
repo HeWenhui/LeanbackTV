@@ -267,7 +267,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 onLiveError(responseEntity);
             }
         };
-        mHttpManager.addBodyParam("enstuId", enstuId);
+//        mHttpManager.addBodyParam("enstuId", enstuId);
         if (mLiveType == LIVE_TYPE_LIVE) {// 直播
             mHttpManager.liveGetInfo(enstuId, courseId, mLiveId, 0, callBack);
         } else if (mLiveType == LIVE_TYPE_TUTORIAL) {// 辅导
