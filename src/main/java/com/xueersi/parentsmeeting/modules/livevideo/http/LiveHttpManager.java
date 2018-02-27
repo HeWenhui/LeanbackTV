@@ -32,14 +32,14 @@ import java.util.HashMap;
 public class LiveHttpManager extends BaseHttpBusiness {
     String TAG = "LiveHttpManager";
     HashMap<String, String> defaultKey = new HashMap<>();
-    LiveVideoSAConfig liveVideoSAConfig;
+    LiveVideoSAConfig.Inner liveVideoSAConfig;
 
     public LiveHttpManager(Context context) {
         super(context);
     }
 
     public void setHostStr(String hostStr) {
-        liveVideoSAConfig = new LiveVideoSAConfig(hostStr);
+        liveVideoSAConfig = new LiveVideoSAConfig(hostStr).inner;
     }
 
     public void addBodyParam(String key, String value) {
@@ -572,7 +572,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
             return;
         } else if (type == LiveBll.LIVE_TYPE_LECTURE) {// 公开
             url = LiveVideoConfig.URL_LIVE_LEC_SETSTAR;
-            requestCallBack.url = LiveVideoConfig.URL_LIVE_LEC_SETSTAR;
+            requestCallBack.url = url;
             params.addBodyParam("liveId", liveId);
         } else {
             return;

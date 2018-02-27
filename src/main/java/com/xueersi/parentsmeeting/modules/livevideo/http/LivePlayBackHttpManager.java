@@ -16,11 +16,14 @@ import com.xueersi.xesalib.utils.string.StringUtils;
  * 直播回放网络访问类
  */
 public class LivePlayBackHttpManager extends BaseHttpBusiness {
-    LiveVideoSAConfig liveVideoSAConfig;
+    LiveVideoSAConfig.Inner liveVideoSAConfig;
 
     public LivePlayBackHttpManager(Context context) {
         super(context);
-        liveVideoSAConfig = new LiveVideoSAConfig("");
+    }
+
+    public void setHostStr(String hostStr) {
+        liveVideoSAConfig = new LiveVideoSAConfig(hostStr).inner;
     }
 
     /**
@@ -61,9 +64,9 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testDay", testDay);
 //        params.addBodyParam("enstuId", enStuId);
         params.addBodyParam("testId", testId);
-        if(voice){
+        if (voice) {
             params.addBodyParam("answer", testResult);
-        }else {
+        } else {
             params.addBodyParam("testAnswer", testResult);
         }
         params.addBodyParam("useVoice", voice ? "1" : "0");
@@ -184,7 +187,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     }
 
     /** 获得广告信息 */
-    public void getAdOnLL(String enstuId, String liveId,String courseId, final HttpCallBack requestCallBack) {
+    public void getAdOnLL(String enstuId, String liveId, String courseId, final HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);

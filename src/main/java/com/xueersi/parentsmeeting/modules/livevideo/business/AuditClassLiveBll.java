@@ -1094,7 +1094,11 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             LiveVideoConfig.IS_SCIENCE = true;
             appID = UmsConstants.LIVE_APP_ID;
         }
-        mHttpManager.setHostStr("");
+        if (LiveVideoConfig.IS_SCIENCE) {
+            mHttpManager.setHostStr("science");
+        } else {
+            mHttpManager.setHostStr("libarts");
+        }
         if (mGetInfo.getStat() == 1) {
             if (mVideoAction != null) {
                 mVideoAction.onTeacherNotPresent(true);

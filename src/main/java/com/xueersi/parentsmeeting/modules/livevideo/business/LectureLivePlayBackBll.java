@@ -59,6 +59,10 @@ public class LectureLivePlayBackBll extends BaseBll {
         mCourseHttpResponseParser = new LivePlayBackHttpResponseParser();
     }
 
+    public void setHostStr(String hostStr) {
+        mCourseHttpManager.setHostStr(hostStr);
+    }
+
     /**
      * 直播回放得到金币
      *

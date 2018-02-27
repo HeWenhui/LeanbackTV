@@ -1852,7 +1852,14 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             LiveVideoConfig.IS_SCIENCE = true;
             appID = UmsConstants.LIVE_APP_ID;
         }
-        mHttpManager.setHostStr("");
+        if (mLiveType == LIVE_TYPE_LIVE) {
+            if (LiveVideoConfig.IS_SCIENCE) {
+                mHttpManager.setHostStr("science");
+            } else {
+                mHttpManager.setHostStr("libarts");
+            }
+        }
+
         if (mGetInfo.getStudentLiveInfo() != null
                 && mGetInfo.getIs_show_ranks().equals("1")) {
             mAnswerRankBll = liveLazyBllCreat.createAnswerRankBll();
