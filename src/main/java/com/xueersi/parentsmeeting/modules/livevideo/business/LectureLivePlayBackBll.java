@@ -578,28 +578,6 @@ public class LectureLivePlayBackBll extends BaseBll {
                 });
     }
 
-    public void getVoiceWareTestInfo(String liveId, String id, final AbstractBusinessDataCallBack callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mCourseHttpManager.getVoiceWareTestInfo(enstuId, liveId, id, new HttpCallBack(false) {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                Loger.i(TAG, "getVoiceWareTestInfo:onPmSuccess=" + jsonObject);
-                callBack.onDataSucess(jsonObject);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                Loger.i(TAG, "getVoiceWareTestInfo:onPmError=" + responseEntity.getErrorMsg());
-            }
-
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Loger.i(TAG, "getVoiceWareTestInfo:onFailure", e);
-            }
-        });
-    }
-
     public void getAdOnLL(String liveId, final LecAdvertEntity lecAdvertEntity, final AbstractBusinessDataCallBack callBack) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mCourseHttpManager.getAdOnLL(enstuId, liveId, lecAdvertEntity.course_id, new HttpCallBack() {

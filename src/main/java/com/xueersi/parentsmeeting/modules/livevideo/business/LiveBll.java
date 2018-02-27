@@ -1845,6 +1845,14 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             onLiveFailure("服务器异常", null);
             return;
         }
+        if (mGetInfo.getIsArts() == 1) {
+            appID = UmsConstants.ARTS_APP_ID;
+            LiveVideoConfig.IS_SCIENCE = false;
+        } else {
+            LiveVideoConfig.IS_SCIENCE = true;
+            appID = UmsConstants.LIVE_APP_ID;
+        }
+        mHttpManager.setHostStr("");
         if (mGetInfo.getStudentLiveInfo() != null
                 && mGetInfo.getIs_show_ranks().equals("1")) {
             mAnswerRankBll = liveLazyBllCreat.createAnswerRankBll();
@@ -1858,13 +1866,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             mAnswerRankBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
             mAnswerRankBll.setTeamId(mGetInfo.getStudentLiveInfo().getTeamId());
             mAnswerRankBll.setIsShow(mGetInfo.getIs_show_ranks());
-        }
-        if (mGetInfo.getIsArts() == 1) {
-            appID = UmsConstants.ARTS_APP_ID;
-            LiveVideoConfig.IS_SCIENCE = false;
-        } else {
-            LiveVideoConfig.IS_SCIENCE = true;
-            appID = UmsConstants.LIVE_APP_ID;
         }
         mGetInfo.setMode(mLiveTopic.getMode());
         long enterTime = 0;

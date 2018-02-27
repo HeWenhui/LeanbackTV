@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.content.Context;
 
 import com.xueersi.parentsmeeting.base.BaseHttpBusiness;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.HttpRequestParams;
@@ -15,10 +16,11 @@ import com.xueersi.xesalib.utils.string.StringUtils;
  * 直播回放网络访问类
  */
 public class LivePlayBackHttpManager extends BaseHttpBusiness {
-
+    LiveVideoSAConfig liveVideoSAConfig;
 
     public LivePlayBackHttpManager(Context context) {
         super(context);
+        liveVideoSAConfig = new LiveVideoSAConfig("");
     }
 
     /**
@@ -45,9 +47,9 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
             liveUrl = LiveVideoConfig.URL_PUBLIC_LIVE_COURSE_SUBMIT_QUESTION;
         } else {
             if (voice) {
-                liveUrl = LiveVideoConfig.URL_LIVE_SUBMIT_TEST_ANSWER_VOICE;
+                liveUrl = liveVideoSAConfig.URL_LIVE_SUBMIT_TEST_ANSWER_VOICE;
             } else {
-                liveUrl = LiveVideoConfig.URL_STUDY_SAVE_ANSWER_FOR_PLAYBACK;
+                liveUrl = liveVideoSAConfig.URL_STUDY_SAVE_ANSWER_FOR_PLAYBACK;
             }
         }
         HttpRequestParams params = new HttpRequestParams();
@@ -73,7 +75,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     public void sumitCourseWareH5(String enStuId, String srcType, String testId, String testResult, String testDay,
                                   String classId, String isSubmit, String type,
                                   double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
-        String liveUrl = LiveVideoConfig.URL_LIVE_SUBMIT_TEST_H5_ANSWER;
+        String liveUrl = liveVideoSAConfig.URL_LIVE_SUBMIT_TEST_H5_ANSWER;
         HttpRequestParams params = new HttpRequestParams();
         if (!StringUtils.isSpace(srcType)) {
             params.addBodyParam("srcType", srcType);
@@ -126,7 +128,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("operateId", operateId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
-        sendPost(LiveVideoConfig.URL_STUDY_RECEIVE_LIVE_PLAY_RED_PACKET_GOLD, params, requestCallBack);
+        sendPost(liveVideoSAConfig.URL_STUDY_RECEIVE_LIVE_PLAY_RED_PACKET_GOLD, params, requestCallBack);
     }
 
     public void getLiveLectureMsgs(String enstuId, String keyName, int count, String start, int sort,
@@ -169,7 +171,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("isRejected", "1");
         params.addBodyParam("answers", "" + stuAnswer);
         params.addBodyParam("type", "2");
-        sendPost(LiveVideoConfig.URL_LIVE_SEND_SPEECHEVAL42, params, requestCallBack);
+        sendPost(liveVideoSAConfig.URL_LIVE_SEND_SPEECHEVAL42, params, requestCallBack);
     }
 
     public void speechEval42IsAnswered(String enstuId, String liveId, String id, HttpCallBack requestCallBack) {
@@ -178,15 +180,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", id);
         params.addBodyParam("type", "1");
-        sendPost(LiveVideoConfig.URL_LIVE_SEND_SPEECHEVAL42_ANSWER, params, requestCallBack);
-    }
-
-    public void getVoiceWareTestInfo(String enstuId, String liveId, String id, HttpCallBack requestCallBack) {
-        HttpRequestParams params = new HttpRequestParams();
-//        params.addBodyParam("enstuId", enstuId);
-        params.addBodyParam("liveId", liveId);
-        params.addBodyParam("testId", id);
-        sendPost(LiveVideoConfig.URL_LIVE_LECTURE_VOICE_WARE, params, requestCallBack);
+        sendPost(liveVideoSAConfig.URL_LIVE_SEND_SPEECHEVAL42_ANSWER, params, requestCallBack);
     }
 
     /** 获得广告信息 */
