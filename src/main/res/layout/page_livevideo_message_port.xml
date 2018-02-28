@@ -101,12 +101,12 @@
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@id/bt_livevideo_message_express"
             android:layout_toRightOf="@id/bt_livevideo_message_flowers"
-            android:background="@drawable/shape_livevideo_message_content"
+            android:background="@drawable/shape_corners_4dp_f1f1f1"
             android:gravity="center"
             android:maxLines="1"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:textColor="@color/grey"
+            android:textColor="@color/white"
             android:textSize="14sp"
             android:visibility="gone" />
     </RelativeLayout>
@@ -165,6 +165,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_below="@id/v_livevideo_message_gap"
+            android:background="@color/COLOR_F1F1F1"
             android:clipChildren="false"
             android:divider="@null"
             android:dividerHeight="15dp"
