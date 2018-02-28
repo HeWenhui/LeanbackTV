@@ -2931,7 +2931,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
     public void speechEval42IsAnswered(final String id, String num, final SpeechEvalAction.SpeechIsAnswered isAnswered) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mHttpManager.speechEval42IsAnswered(enstuId, id, num, new HttpCallBack() {
+        mHttpManager.speechEval42IsAnswered(enstuId, id, num, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(final ResponseEntity responseEntity) {
                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
@@ -2988,7 +2988,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         String liveid = mGetInfo.getId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String classId = mGetInfo.getStudentLiveInfo().getClassId();
-        mHttpManager.setTotalOpeningLength(enstuId, courseId, liveid, classId, duration, speakingNum, speakingLen, new HttpCallBack() {
+        mHttpManager.setTotalOpeningLength(enstuId, courseId, liveid, classId, duration, speakingNum, speakingLen, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 Loger.d(TAG, "setTotalOpeningLength:onPmSuccess" + responseEntity.getJsonObject());
@@ -3023,7 +3023,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
     public void setNotOpeningNum() {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mHttpManager.setNotOpeningNum(enstuId, mGetInfo.getId(), new HttpCallBack() {
+        mHttpManager.setNotOpeningNum(enstuId, mGetInfo.getId(), new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 Loger.d(TAG, "setNotOpeningNum:onPmSuccess" + responseEntity.getJsonObject());
