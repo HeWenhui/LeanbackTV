@@ -203,7 +203,7 @@ public class LiveVideoEnter {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Bundle bundle = new Bundle();
         bundle.putString("vSectionID", jsonObject.optString("vSectionId"));
-        bundle.putString("vStuCourseID", jsonObject.optString("vStuCourseID"));
+        bundle.putString("vStuCourseID", jsonObject.optString("stuCouId"));
         bundle.putString("courseId", jsonObject.optString("courseId"));
         bundle.putInt("type", LiveBll.LIVE_TYPE_LIVE);
         bundle.putInt(LiveVideoActivity.ENTER_ROOM_FROM, LiveVideoBusinessConfig.ENTER_FROM_5);
