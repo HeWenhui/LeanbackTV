@@ -19,8 +19,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
-import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -309,7 +307,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
     protected void initData() {
         BaseApplication baseApplication = (BaseApplication) getApplication();
         mRedPacketDialog = new RedPacketAlertDialog(this, baseApplication, false);
-        lectureLivePlayBackBll = new LectureLivePlayBackBll(LectureLivePlayBackVideoActivity.this);
+        lectureLivePlayBackBll = new LectureLivePlayBackBll(LectureLivePlayBackVideoActivity.this, "");
         mVideoType = MobEnumUtil.VIDEO_LIVEPLAYBACK;
         where = getIntent().getStringExtra("where");
         // 如果加载不出来
@@ -1715,7 +1713,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
 
     protected void updateLoadingImage() {
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
-        if (footerIconEntity != null ){
+        if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
             if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
                 ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);

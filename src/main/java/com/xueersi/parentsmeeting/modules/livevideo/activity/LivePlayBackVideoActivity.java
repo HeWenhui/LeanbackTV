@@ -198,6 +198,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     /** 从哪个页面跳转 */
     String where;
     int isArts;
+    String stuCourId;
     /** 区分文理appid */
     String appID = UmsConstants.LIVE_APP_ID_BACK;
     /** 本地视频 */
@@ -353,7 +354,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     protected void initData() {
         BaseApplication baseApplication = (BaseApplication) getApplication();
         mRedPacketDialog = new RedPacketAlertDialog(this, baseApplication, false);
-        lectureLivePlayBackBll = new LectureLivePlayBackBll(LivePlayBackVideoActivity.this);
+        stuCourId = mVideoEntity.getStuCourseId();
+        lectureLivePlayBackBll = new LectureLivePlayBackBll(LivePlayBackVideoActivity.this, stuCourId);
         mVideoType = MobEnumUtil.VIDEO_LIVEPLAYBACK;
         where = getIntent().getStringExtra("where");
         isArts = getIntent().getIntExtra("isArts", 0);

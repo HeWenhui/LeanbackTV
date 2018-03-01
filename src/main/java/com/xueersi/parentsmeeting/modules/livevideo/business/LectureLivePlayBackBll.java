@@ -26,7 +26,6 @@ import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.view.layout.dataload.DataLoadEntity;
-import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -34,11 +33,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.Call;
 
 
 /**
@@ -53,9 +49,10 @@ public class LectureLivePlayBackBll extends BaseBll {
 
     private List<VideoCourseEntity> mLstCourseEntity = new ArrayList<>();
 
-    public LectureLivePlayBackBll(Context context) {
+    public LectureLivePlayBackBll(Context context, String stuCourId) {
         super(context);
         mCourseHttpManager = new LivePlayBackHttpManager(mContext);
+        mCourseHttpManager.addBodyParam("stuCouId", stuCourId);
         mCourseHttpResponseParser = new LivePlayBackHttpResponseParser();
     }
 
