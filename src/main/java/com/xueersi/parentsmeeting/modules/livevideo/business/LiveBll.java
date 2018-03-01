@@ -50,6 +50,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
+import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.xesalib.umsagent.UmsAgent;
 import com.xueersi.xesalib.umsagent.UmsAgentManager;
 import com.xueersi.xesalib.umsagent.UmsConstants;
@@ -1854,9 +1855,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
         if (mLiveType == LIVE_TYPE_LIVE) {
             if (LiveVideoConfig.IS_SCIENCE) {
-                mHttpManager.setHostStr("science");
+                mHttpManager.setHostStr(ShareBusinessConfig.LIVE_science);
             } else {
-                mHttpManager.setHostStr("libarts");
+                mHttpManager.setHostStr(ShareBusinessConfig.LIVE_libarts);
             }
         }
 

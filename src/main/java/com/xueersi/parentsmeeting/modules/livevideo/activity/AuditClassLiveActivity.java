@@ -193,7 +193,9 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             public void onClick(View v) {
                 UmsAgentManager.umsAgentStatistics(mContext, LiveVideoConfig.LIVE_VIDEO_AUDIO_LIVE,
                         "times=" + times + ",mVSectionID=" + mVSectionID + ",roomClick");
-                OtherModulesEnter.intentToAuditClassActivity(AuditClassLiveActivity.this, mVSectionID,stuCouId);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("isArts", !LiveVideoConfig.IS_SCIENCE);
+                OtherModulesEnter.intentToAuditClassActivity(AuditClassLiveActivity.this, mVSectionID, stuCouId, bundle);
             }
         });
         AtomicBoolean mIsLand = new AtomicBoolean(false);
@@ -1418,7 +1420,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     protected void updateLoadingImage() {
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
-        if (footerIconEntity != null ){
+        if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
             if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
                 ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);

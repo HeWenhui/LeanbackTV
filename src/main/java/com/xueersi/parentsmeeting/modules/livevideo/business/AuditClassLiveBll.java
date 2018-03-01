@@ -35,6 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.sharebusiness.config.LiveVideoBusinessConfig;
+import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.xesalib.umsagent.UmsAgent;
 import com.xueersi.xesalib.umsagent.UmsAgentManager;
 import com.xueersi.xesalib.umsagent.UmsConstants;
@@ -1095,9 +1096,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             appID = UmsConstants.LIVE_APP_ID;
         }
         if (LiveVideoConfig.IS_SCIENCE) {
-            mHttpManager.setHostStr("science");
+            mHttpManager.setHostStr(ShareBusinessConfig.LIVE_science);
         } else {
-            mHttpManager.setHostStr("libarts");
+            mHttpManager.setHostStr(ShareBusinessConfig.LIVE_libarts);
         }
         if (mGetInfo.getStat() == 1) {
             if (mVideoAction != null) {

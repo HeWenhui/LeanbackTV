@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
@@ -17,9 +18,9 @@ public class OtherModulesEnter {
                 "intentTo", new Class[]{Context.class, String.class, String.class, String.class}, new Object[]{mContext, courseId, groupId, classId, url});
     }
 
-    public static void intentToAuditClassActivity(AuditClassLiveActivity auditClassLiveActivity, String mVSectionID, String stuCouId) {
+    public static void intentToAuditClassActivity(AuditClassLiveActivity auditClassLiveActivity, String mVSectionID, String stuCouId, Bundle bundle) {
         ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.chat.ChatEnter",
-                "intentToAuditClassActivity", new Class[]{Activity.class, String.class, String.class}, new Object[]{auditClassLiveActivity, mVSectionID, stuCouId});
+                "intentToAuditClassActivity", new Class[]{Activity.class, String.class, String.class, Bundle.class}, new Object[]{auditClassLiveActivity, mVSectionID, stuCouId, bundle});
     }
 
     public static void intentToGradeActivityLive(Activity activity, String selectGrade) {
