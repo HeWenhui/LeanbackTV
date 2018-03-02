@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -80,6 +81,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     private EnglishH5CoursewareAction englishH5CoursewareAction;
     private VideoChatAction videoChatAction;
     private LiveHttpManager mHttpManager;
+    private LiveVideoSAConfig liveVideoSAConfig;
     private LiveHttpResponseParser mHttpResponseParser;
     private AuditIRCMessage mIRCMessage;
     private String courseId;
@@ -1077,6 +1079,10 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         return isPresent;
     }
 
+    public LiveVideoSAConfig getLiveVideoSAConfig() {
+        return liveVideoSAConfig;
+    }
+
     /**
      * 请求房间状态成功
      *
@@ -1091,15 +1097,15 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         if (mGetInfo.getIsArts() == 1) {
             appID = UmsConstants.ARTS_APP_ID;
             LiveVideoConfig.IS_SCIENCE = false;
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_libarts);
+            liveVideoSAConfig.IS_SCIENCE = false;
         } else {
             LiveVideoConfig.IS_SCIENCE = true;
             appID = UmsConstants.LIVE_APP_ID;
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_science);
+            liveVideoSAConfig.IS_SCIENCE = true;
         }
-        if (LiveVideoConfig.IS_SCIENCE) {
-            mHttpManager.setHostStr(ShareBusinessConfig.LIVE_science);
-        } else {
-            mHttpManager.setHostStr(ShareBusinessConfig.LIVE_libarts);
-        }
+        mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         if (mGetInfo.getStat() == 1) {
             if (mVideoAction != null) {
                 mVideoAction.onTeacherNotPresent(true);

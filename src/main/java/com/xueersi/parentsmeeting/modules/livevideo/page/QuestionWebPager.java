@@ -54,9 +54,11 @@ public class QuestionWebPager extends BasePager {
     String testPaperUrl;
     String jsExamSubmitAll = "javascript:examSubmitAll()";
     private String isShowRanks;
+    boolean IS_SCIENCE;
 
-    public QuestionWebPager(Context context, StopWebQuestion questionBll, String testPaperUrl, String stuId, String stuName, String liveid, String testId, String nonce, String isShowRanks) {
+    public QuestionWebPager(Context context, StopWebQuestion questionBll, String testPaperUrl, String stuId, String stuName, String liveid, String testId, String nonce, String isShowRanks, boolean IS_SCIENCE) {
         super(context);
+        this.IS_SCIENCE = IS_SCIENCE;
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         this.questionBll = questionBll;
@@ -66,7 +68,7 @@ public class QuestionWebPager extends BasePager {
         this.testId = testId;
         this.testPaperUrl = testPaperUrl;
         this.nonce = nonce;
-        this.isShowRanks=isShowRanks;
+        this.isShowRanks = isShowRanks;
         logToFile.i("ExamQuestionPager:liveid=" + liveid + ",testId=" + testId);
         initData();
     }
@@ -120,13 +122,13 @@ public class QuestionWebPager extends BasePager {
         ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
         ((AnimationDrawable) ivLoading.getBackground()).start();
         examUrl = testPaperUrl + "?liveId=" + liveid + "&testId=" + testId
-                + "&stuId=" + stuId + "&stuName=" + stuName+"&isTowall="+isShowRanks;
+                + "&stuId=" + stuId + "&stuName=" + stuName + "&isTowall=" + isShowRanks;
 //        String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
 //        examUrl = BrowserBll.getAutoLoginURL(mEnStuId, examUrl, "", 0, true);
         if (!StringUtils.isEmpty(nonce)) {
             examUrl += "&nonce=" + nonce;
         }
-        examUrl += "&isArts=" + (LiveVideoConfig.IS_SCIENCE ? "0" : "1");
+        examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
         wvSubjectWeb.loadUrl(examUrl);
 //        wvSubjectWeb.loadUrl("http://7.xesweb.sinaapp.com/test/examPaper2.html");
     }
@@ -256,10 +258,10 @@ public class QuestionWebPager extends BasePager {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             logToFile.i("shouldOverrideUrlLoading:url=" + url);
-            if(url.contains("live.xueersi.com/Live/getMultiTestResult")
-                    ){
-                if(questionBll instanceof QuestionBll){
-                    ((QuestionBll) questionBll).onSubmit(XESCODE.STOPQUESTION,url.contains("submitType=force"));
+            if (url.contains("live.xueersi.com/Live/getMultiTestResult")
+                    ) {
+                if (questionBll instanceof QuestionBll) {
+                    ((QuestionBll) questionBll).onSubmit(XESCODE.STOPQUESTION, url.contains("submitType=force"));
                 }
                 //return false;
             }

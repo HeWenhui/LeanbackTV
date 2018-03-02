@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
@@ -108,6 +109,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private SpeechFeedBackAction speechFeedBackAction;
     private LecAdvertAction lecAdvertAction;
     private LiveHttpManager mHttpManager;
+    private LiveVideoSAConfig liveVideoSAConfig;
     private LiveHttpResponseParser mHttpResponseParser;
     private IRCMessage mIRCMessage;
     private String vStuCourseID;
@@ -1835,6 +1837,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         return mPraiseListAction;
     }
 
+    public LiveVideoSAConfig getLiveVideoSAConfig() {
+        return liveVideoSAConfig;
+    }
+
     /**
      * 请求房间状态成功
      *
@@ -1849,16 +1855,16 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         if (mGetInfo.getIsArts() == 1) {
             appID = UmsConstants.ARTS_APP_ID;
             LiveVideoConfig.IS_SCIENCE = false;
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_libarts);
+            liveVideoSAConfig.IS_SCIENCE = false;
         } else {
             LiveVideoConfig.IS_SCIENCE = true;
             appID = UmsConstants.LIVE_APP_ID;
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_science);
+            liveVideoSAConfig.IS_SCIENCE = true;
         }
         if (mLiveType == LIVE_TYPE_LIVE) {
-            if (LiveVideoConfig.IS_SCIENCE) {
-                mHttpManager.setHostStr(ShareBusinessConfig.LIVE_science);
-            } else {
-                mHttpManager.setHostStr(ShareBusinessConfig.LIVE_libarts);
-            }
+            mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         }
 
         if (mGetInfo.getStudentLiveInfo() != null

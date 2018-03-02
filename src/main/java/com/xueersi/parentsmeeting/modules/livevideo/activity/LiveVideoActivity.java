@@ -59,6 +59,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
@@ -143,7 +144,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     /** Activity在onResume */
     private boolean mIsResume = false;
     private LogToFile mLogtf;
-
+    private LiveVideoSAConfig liveVideoSAConfig;
     public static final String ENTER_ROOM_FROM = "from";
     /** 直播类型 */
     private int liveType;
@@ -858,6 +859,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     @Override
     public void onLiveInit(LiveGetInfo getInfo) {
         mGetInfo = getInfo;
+        liveVideoSAConfig = mLiveBll.getLiveVideoSAConfig();
+        questionBll.setLiveVideoSAConfig(liveVideoSAConfig);
         liveMediaControllerBottom.setVisibility(View.VISIBLE);
         long before = System.currentTimeMillis();
         if (liveLazyBllCreat != null) {

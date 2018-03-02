@@ -833,7 +833,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                                         LivePlayBackVideoActivity.this, "http://live.xueersi" +
                                         ".com/Live/getMultiTestPaper",
                                         userInfoEntity.getStuId(), mAppInfoEntity.getLoginUserName(), mQuestionEntity
-                                        .getvSectionID(), mQuestionEntity.getvQuestionID(), "", "0");
+                                        .getvSectionID(), mQuestionEntity.getvQuestionID(), "", "0", true);
                                 rlQuestionContent.removeAllViews();
                                 rlQuestionContent.addView(questionWebPager.getRootView(), new LayoutParams
                                         (LayoutParams.MATCH_PARENT,

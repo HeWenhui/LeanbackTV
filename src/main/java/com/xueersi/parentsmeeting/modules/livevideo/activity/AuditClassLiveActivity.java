@@ -38,6 +38,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
@@ -123,6 +124,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     private boolean mHaveStop = false;
     /** Activity在onResume */
     private boolean mIsResume = false;
+    private LiveVideoSAConfig liveVideoSAConfig;
     private long resumeTime;
     private LogToFile mLogtf;
 
@@ -804,6 +806,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     @Override
     public void onLiveInit(LiveGetInfo getInfo) {
         mGetInfo = getInfo;
+        liveVideoSAConfig = mLiveBll.getLiveVideoSAConfig();
         mMediaController.setFileName(getInfo.getName());
         mHandler.post(new Runnable() {
             @Override

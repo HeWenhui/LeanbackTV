@@ -16,6 +16,9 @@ public class LiveVideoSAConfig {
         inner = new Inner();
     }
 
+    /** 是不是文理 */
+    public boolean IS_SCIENCE = true;
+
     public class Inner {
         /** 提交教师评价 */
         public String URL_LIVE_SUBMIT_STU_EVALUATE = HTTP_HOST + "/LiveCourse/submitStuEvaluate";
@@ -24,7 +27,8 @@ public class LiveVideoSAConfig {
         /** 直播课的直播用户在线心跳 */
         public String URL_LIVE_USER_ONLINE = HTTP_HOST + "/LiveCourse/userOnline";
         /** 直播课的直播领取金币 */
-        public String URL_LIVE_RECEIVE_GOLD = HTTP_HOST + "/LiveCourse/receiveGold"; ;
+        public String URL_LIVE_RECEIVE_GOLD = HTTP_HOST + "/LiveCourse/receiveGold";
+        ;
         /** 直播课的直播提交测试题 */
         public String URL_LIVE_SUBMIT_TEST_ANSWER = HTTP_HOST + "/LiveCourse/submitTestAnswer";
         /** 直播课的直播提交测试题-语音答题 */
