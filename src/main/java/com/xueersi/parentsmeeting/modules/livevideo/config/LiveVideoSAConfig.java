@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
 import com.xueersi.parentsmeeting.config.AppConfig;
+import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
 
 /**
  * 直播模块配置
@@ -84,6 +85,9 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_GET_PRPGRESS_LIST = HTTP_HOST + "/LiveCourse/getStuIsOnProgressList";
         /** 获取点赞概率 */
         public String URL_LIVE_GET_THUMBS_UP_PROBABILITY = HTTP_HOST + "/LiveCourse/getStuOnList";
+
+        public String coursewareH5 = "https://live.xueersi.com/" +
+                (IS_SCIENCE ? ShareBusinessConfig.LIVE_science : ShareBusinessConfig.LIVE_libarts) + "/Live/coursewareH5/";
     }
 
 }
