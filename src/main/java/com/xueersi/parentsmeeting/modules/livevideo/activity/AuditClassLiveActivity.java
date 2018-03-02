@@ -191,6 +191,10 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         findViewById(R.id.rl_livevideo_student_liveinfo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mGetInfo == null) {
+                    XESToastUtils.showToast(AuditClassLiveActivity.this, "请稍等");
+                    return;
+                }
                 UmsAgentManager.umsAgentStatistics(mContext, LiveVideoConfig.LIVE_VIDEO_AUDIO_LIVE,
                         "times=" + times + ",mVSectionID=" + mVSectionID + ",roomClick");
                 Bundle bundle = new Bundle();

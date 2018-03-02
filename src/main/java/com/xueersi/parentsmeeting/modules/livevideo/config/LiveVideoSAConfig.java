@@ -12,7 +12,7 @@ public class LiveVideoSAConfig {
 
     public LiveVideoSAConfig(String hostStr) {
         HTTP_HOST = AppConfig.HTTP_HOST + "/" + hostStr;
-        HTTP_HOST = AppConfig.HTTP_HOST;
+//        HTTP_HOST = AppConfig.HTTP_HOST;
         inner = new Inner();
     }
 
