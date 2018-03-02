@@ -18,8 +18,6 @@ import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by linyuqiang on 2017/3/25.
@@ -42,12 +40,13 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
     private EnglishH5CoursewareBll mEnglishH5CoursewareBll;
     private String isShowRanks;
     RelativeLayout rl_livevideo_subject_web;
+    boolean IS_SCIENCE;
 
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
         mEnglishH5CoursewareBll = englishH5CoursewareBll;
     }
 
-    public EnglishH5CoursewarePager(Context context, boolean isPlayBack, String liveId, String url, String id, final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose, LiveAndBackDebug liveAndBackDebug, String isShowRanks) {
+    public EnglishH5CoursewarePager(Context context, boolean isPlayBack, String liveId, String url, String id, final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose, LiveAndBackDebug liveAndBackDebug, String isShowRanks, boolean IS_SCIENCE) {
         super(context);
         this.liveId = liveId;
         this.url = url;
@@ -58,6 +57,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         this.courseware_type = courseware_type;
         this.nonce = nonce;
         this.isShowRanks = isShowRanks;
+        this.IS_SCIENCE = IS_SCIENCE;
         initWebView();
         setErrorTip("H5课件加载失败，请重试");
         setLoadTip("H5课件正在加载，请稍候");
@@ -176,7 +176,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         if (isPlayBack) {
             loadUrl += "&isPlayBack=1";
         }
-        loadUrl += "&isArts=" + (LiveVideoConfig.IS_SCIENCE ? "0" : "1");
+        loadUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
         if (!StringUtils.isEmpty(nonce)) {
             loadUrl += "&nonce=" + nonce;
         }

@@ -145,6 +145,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     private boolean mIsResume = false;
     private LogToFile mLogtf;
     private LiveVideoSAConfig liveVideoSAConfig;
+    /** 是不是文理 */
+    public boolean IS_SCIENCE = true;
     public static final String ENTER_ROOM_FROM = "from";
     /** 直播类型 */
     private int liveType;
@@ -860,7 +862,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     public void onLiveInit(LiveGetInfo getInfo) {
         mGetInfo = getInfo;
         liveVideoSAConfig = mLiveBll.getLiveVideoSAConfig();
+        IS_SCIENCE = liveVideoSAConfig.IS_SCIENCE;
         questionBll.setLiveVideoSAConfig(liveVideoSAConfig);
+        englishH5CoursewareBll.setLiveVideoSAConfig(liveVideoSAConfig);
         liveMediaControllerBottom.setVisibility(View.VISIBLE);
         long before = System.currentTimeMillis();
         if (liveLazyBllCreat != null) {
@@ -881,7 +885,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             if (englishH5Cache != null) {
                 englishH5Cache.getCourseWareUrl();
             }
-            if (LiveVideoConfig.IS_SCIENCE) {
+            if (IS_SCIENCE) {
                 SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(this, mLiveBll);
                 speechFeedBackBll.setBottomContent(bottomContent);
                 speechFeedBackBll.setGetInfo(getInfo);

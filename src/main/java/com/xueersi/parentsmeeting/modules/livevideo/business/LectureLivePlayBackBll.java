@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.base.BaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
@@ -56,8 +57,8 @@ public class LectureLivePlayBackBll extends BaseBll {
         mCourseHttpResponseParser = new LivePlayBackHttpResponseParser();
     }
 
-    public void setHostStr(String hostStr) {
-        mCourseHttpManager.setHostStr(hostStr);
+    public void setLiveVideoSAConfig(LiveVideoSAConfig liveVideoSAConfig) {
+        mCourseHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
     }
 
     /**

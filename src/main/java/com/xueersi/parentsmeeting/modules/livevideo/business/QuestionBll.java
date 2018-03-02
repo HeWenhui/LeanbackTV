@@ -78,11 +78,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     String TAG = "QuestionBll";
     SpeechEvaluatorUtils mIse;
     private LiveVideoSAConfig liveVideoSAConfig;
+    boolean IS_SCIENCE = false;
     String examQuestionEventId = LiveVideoConfig.LIVE_H5_EXAM;
     String questionEventId = LiveVideoConfig.LIVE_PUBLISH_TEST;
     String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
     String understandEventId = LiveVideoConfig.LIVE_DOYOUSEE;
-    boolean IS_SCIENCE = false;
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     private VideoQuestionLiveEntity videoQuestionLiveEntity;
     private LogToFile mLogtf;
@@ -939,7 +939,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mData.put("examid", num);
                 umsAgentDebug(examQuestionEventId, mData);
                 examQuestionPager = new ExamQuestionPager(activity, mLiveBll, QuestionBll.this, liveGetInfo.getStuId
-                        (), liveGetInfo.getUname(), liveid, num, nonce, mAnswerRankBll == null ? "0" : mAnswerRankBll.getIsShow());
+                        (), liveGetInfo.getUname(), liveid, num, nonce, mAnswerRankBll == null ? "0" : mAnswerRankBll.getIsShow(), IS_SCIENCE);
                 rlQuestionContent.addView(examQuestionPager.getRootView());
                 setHaveExam(true);
                 activity.getWindow().getDecorView().requestLayout();

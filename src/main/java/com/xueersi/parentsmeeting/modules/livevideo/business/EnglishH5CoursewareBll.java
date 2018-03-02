@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -87,6 +88,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     private boolean hasQuestion;
     private long submitTime;
     private boolean hasSubmit;
+    private LiveVideoSAConfig liveVideoSAConfig;
+    boolean IS_SCIENCE = false;
 
     public void setAnswerRankBll(AnswerRankBll answerRankBll) {
         mAnswerRankBll = answerRankBll;
@@ -127,6 +130,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
     public void setIse(SpeechEvaluatorUtils ise) {
         this.mIse = ise;
+    }
+
+    public void setLiveVideoSAConfig(LiveVideoSAConfig liveVideoSAConfig) {
+        this.liveVideoSAConfig = liveVideoSAConfig;
+        IS_SCIENCE = liveVideoSAConfig.IS_SCIENCE;
     }
 
     public void initData() {
@@ -277,7 +285,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     }
                     int delayTime = 0;
                     if (h5CoursewarePager != null) {
-                        curPager=h5CoursewarePager;
+                        curPager = h5CoursewarePager;
                         h5CoursewarePager.submitData();
                         logToFile.i("onH5Courseware:submitData");
 //                        liveVideoActivityBase.setAutoOrientation(true);
@@ -307,7 +315,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, new OnH5ResultClose() {
             @Override
             public void onH5ResultClose() {
-                if(h5CoursewarePager==null){
+                if (h5CoursewarePager == null) {
                     return;
                 }
                 mH5AndBool.add(h5CoursewarePager.getUrl());
@@ -329,7 +337,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     webViewRequest.releaseWebView();
                 }
             }
-        }, this, mAnswerRankBll==null?"0":mAnswerRankBll.getIsShow());
+        }, this, mAnswerRankBll == null ? "0" : mAnswerRankBll.getIsShow(), IS_SCIENCE);
         h5CoursewarePager.setEnglishH5CoursewareBll(this);
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         bottomContent.addView(h5CoursewarePager.getRootView(), lp);
@@ -656,13 +664,13 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     public void run() {
                         try {
                             if (h5CoursewarePager != null) {
-                                if(h5CoursewarePager==curPager) {
+                                if (h5CoursewarePager == curPager) {
                                     bottomContent.removeView(h5CoursewarePager.getRootView());
-                                    h5CoursewarePager=null;
-                                    curPager=null;
-                                }else if(curPager!=null){
+                                    h5CoursewarePager = null;
+                                    curPager = null;
+                                } else if (curPager != null) {
                                     bottomContent.removeView(curPager.getRootView());
-                                    curPager=null;
+                                    curPager = null;
                                 }
                             }
                         } catch (Exception e) {

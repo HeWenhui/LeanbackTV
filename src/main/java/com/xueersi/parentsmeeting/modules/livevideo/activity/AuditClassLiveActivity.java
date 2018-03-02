@@ -125,6 +125,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     /** Activity在onResume */
     private boolean mIsResume = false;
     private LiveVideoSAConfig liveVideoSAConfig;
+    /** 是不是文理 */
+    public boolean IS_SCIENCE;
     private long resumeTime;
     private LogToFile mLogtf;
 
@@ -200,7 +202,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 UmsAgentManager.umsAgentStatistics(mContext, LiveVideoConfig.LIVE_VIDEO_AUDIO_LIVE,
                         "times=" + times + ",mVSectionID=" + mVSectionID + ",roomClick");
                 Bundle bundle = new Bundle();
-                bundle.putBoolean("isArts", !LiveVideoConfig.IS_SCIENCE);
+                bundle.putBoolean("isArts", !IS_SCIENCE);
                 OtherModulesEnter.intentToAuditClassActivity(AuditClassLiveActivity.this, mVSectionID, stuCouId, bundle);
             }
         });
@@ -807,6 +809,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     public void onLiveInit(LiveGetInfo getInfo) {
         mGetInfo = getInfo;
         liveVideoSAConfig = mLiveBll.getLiveVideoSAConfig();
+        IS_SCIENCE = liveVideoSAConfig.IS_SCIENCE;
         mMediaController.setFileName(getInfo.getName());
         mHandler.post(new Runnable() {
             @Override

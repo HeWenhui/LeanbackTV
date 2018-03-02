@@ -18,7 +18,7 @@ import java.util.HashMap;
  * 直播回放网络访问类
  */
 public class LivePlayBackHttpManager extends BaseHttpBusiness {
-    LiveVideoSAConfig.Inner liveVideoSAConfig;
+    LiveVideoSAConfig.Inner liveVideoSAConfigInner;
     HashMap<String, String> defaultKey = new HashMap<>();
 
     public LivePlayBackHttpManager(Context context) {
@@ -36,8 +36,8 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         }
     }
 
-    public void setHostStr(String hostStr) {
-        liveVideoSAConfig = new LiveVideoSAConfig(hostStr).inner;
+    public void setLiveVideoSAConfig(LiveVideoSAConfig liveVideoSAConfig) {
+        liveVideoSAConfigInner = liveVideoSAConfig.inner;
     }
 
     /**
@@ -64,9 +64,9 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
             liveUrl = LiveVideoConfig.URL_PUBLIC_LIVE_COURSE_SUBMIT_QUESTION;
         } else {
             if (voice) {
-                liveUrl = liveVideoSAConfig.URL_LIVE_SUBMIT_TEST_ANSWER_VOICE;
+                liveUrl = liveVideoSAConfigInner.URL_LIVE_SUBMIT_TEST_ANSWER_VOICE;
             } else {
-                liveUrl = liveVideoSAConfig.URL_STUDY_SAVE_ANSWER_FOR_PLAYBACK;
+                liveUrl = liveVideoSAConfigInner.URL_STUDY_SAVE_ANSWER_FOR_PLAYBACK;
             }
         }
         HttpRequestParams params = new HttpRequestParams();
@@ -93,7 +93,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     public void sumitCourseWareH5(String enStuId, String srcType, String testId, String testResult, String testDay,
                                   String classId, String isSubmit, String type,
                                   double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
-        String liveUrl = liveVideoSAConfig.URL_LIVE_SUBMIT_TEST_H5_ANSWER;
+        String liveUrl = liveVideoSAConfigInner.URL_LIVE_SUBMIT_TEST_H5_ANSWER;
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
         if (!StringUtils.isSpace(srcType)) {
@@ -149,7 +149,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("operateId", operateId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
-        sendPost(liveVideoSAConfig.URL_STUDY_RECEIVE_LIVE_PLAY_RED_PACKET_GOLD, params, requestCallBack);
+        sendPost(liveVideoSAConfigInner.URL_STUDY_RECEIVE_LIVE_PLAY_RED_PACKET_GOLD, params, requestCallBack);
     }
 
     public void getLiveLectureMsgs(String enstuId, String keyName, int count, String start, int sort,
@@ -196,7 +196,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("isRejected", "1");
         params.addBodyParam("answers", "" + stuAnswer);
         params.addBodyParam("type", "2");
-        sendPost(liveVideoSAConfig.URL_LIVE_SEND_SPEECHEVAL42, params, requestCallBack);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42, params, requestCallBack);
     }
 
     public void speechEval42IsAnswered(String enstuId, String liveId, String id, HttpCallBack requestCallBack) {
@@ -206,7 +206,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", id);
         params.addBodyParam("type", "1");
-        sendPost(liveVideoSAConfig.URL_LIVE_SEND_SPEECHEVAL42_ANSWER, params, requestCallBack);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42_ANSWER, params, requestCallBack);
     }
 
     /** 获得广告信息 */

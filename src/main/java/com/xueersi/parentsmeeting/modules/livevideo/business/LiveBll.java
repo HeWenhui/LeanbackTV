@@ -1863,10 +1863,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_science);
             liveVideoSAConfig.IS_SCIENCE = true;
         }
-        if (mLiveType == LIVE_TYPE_LIVE) {
-            mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
-        }
-
+        mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         if (mGetInfo.getStudentLiveInfo() != null
                 && mGetInfo.getIs_show_ranks().equals("1")) {
             mAnswerRankBll = liveLazyBllCreat.createAnswerRankBll();

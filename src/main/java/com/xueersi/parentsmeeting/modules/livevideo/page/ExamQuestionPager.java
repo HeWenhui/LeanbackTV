@@ -59,9 +59,10 @@ public class ExamQuestionPager extends BasePager {
     String jsExamSubmitAll = "javascript:examSubmitAll()";
     private LiveBll mLiveBll;
     private String isShowRankList;
+    boolean IS_SCIENCE;
 
     public ExamQuestionPager(Context context, LiveBll liveBll, QuestionBll questionBll, String stuId
-            , String stuName, String liveid, String num, String nonce,String isShowRankList) {
+            , String stuName, String liveid, String num, String nonce, String isShowRankList, boolean IS_SCIENCE) {
         super(context);
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
@@ -72,8 +73,9 @@ public class ExamQuestionPager extends BasePager {
         this.liveid = liveid;
         this.num = num;
         this.nonce = nonce;
+        this.IS_SCIENCE = IS_SCIENCE;
         logToFile.i("ExamQuestionPager:liveid=" + liveid + ",num=" + num);
-        this.isShowRankList=isShowRankList;
+        this.isShowRankList = isShowRankList;
         initData();
     }
 
@@ -130,8 +132,8 @@ public class ExamQuestionPager extends BasePager {
         if (!StringUtils.isEmpty(nonce)) {
             examUrl += "&nonce=" + nonce;
         }
-        examUrl+="&isTowall="+isShowRankList;
-        examUrl += "&isArts=" + (LiveVideoConfig.IS_SCIENCE ? "0" : "1");
+        examUrl += "&isTowall=" + isShowRankList;
+        examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
         wvSubjectWeb.loadUrl(examUrl);
 //        wvSubjectWeb.loadUrl("http://7.xesweb.sinaapp.com/test/examPaper2.html");
     }
@@ -275,9 +277,9 @@ public class ExamQuestionPager extends BasePager {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if(url.contains("live.xueersi.com/LiveExam/examResult")){
-                if(questionBll instanceof QuestionBll){
-                    ((QuestionBll) questionBll).onSubmit(XESCODE.EXAM_STOP,url.contains("submitType=force"));
+            if (url.contains("live.xueersi.com/LiveExam/examResult")) {
+                if (questionBll instanceof QuestionBll) {
+                    ((QuestionBll) questionBll).onSubmit(XESCODE.EXAM_STOP, url.contains("submitType=force"));
                 }
                 return false;
             }

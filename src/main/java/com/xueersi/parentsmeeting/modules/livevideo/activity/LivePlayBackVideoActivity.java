@@ -58,6 +58,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionResultView;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.RedPacketAlertDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -201,6 +202,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     String stuCourId;
     /** 区分文理appid */
     String appID = UmsConstants.LIVE_APP_ID_BACK;
+    private LiveVideoSAConfig liveVideoSAConfig;
+    boolean IS_SCIENCE;
     /** 本地视频 */
     boolean islocal;
     static int times = -1;
@@ -362,17 +365,17 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (isArts == 1) {
             appID = UmsConstants.ARTS_APP_ID_BACK;
             LiveVideoConfig.IS_SCIENCE = false;
+            IS_SCIENCE = false;
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_libarts);
+            liveVideoSAConfig.IS_SCIENCE = false;
         } else {
-            LiveVideoConfig.IS_SCIENCE = true;
             appID = UmsConstants.LIVE_APP_ID_BACK;
+            LiveVideoConfig.IS_SCIENCE = true;
+            IS_SCIENCE = true;
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_science);
+            liveVideoSAConfig.IS_SCIENCE = true;
         }
-        if (mVideoEntity.getvLivePlayBackType() == LocalCourseConfig.LIVE_PLAY_LIVE) {
-            if (LiveVideoConfig.IS_SCIENCE) {
-                lectureLivePlayBackBll.setHostStr("science");
-            } else {
-                lectureLivePlayBackBll.setHostStr("libarts");
-            }
-        }
+        lectureLivePlayBackBll.setLiveVideoSAConfig(liveVideoSAConfig);
         // 如果加载不出来
         if (tvLoadingContent != null) {
             tvLoadingContent.setText("正在获取视频资源，请稍候");
@@ -920,7 +923,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showExam");
                     mPlayVideoControlHandler.sendMessage(msg);
                     examQuestionPlaybackPager = new ExamQuestionPlaybackPager(LivePlayBackVideoActivity.this,
-                            mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID());
+                            mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), IS_SCIENCE);
                     rlQuestionContent.removeAllViews();
                     rlQuestionContent.addView(examQuestionPlaybackPager.getRootView(), new LayoutParams(LayoutParams
                             .MATCH_PARENT,
@@ -1000,7 +1003,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                             stopEnglishH5Exam();
                         }
 
-                    }, this, "0");
+                    }, this, "0", IS_SCIENCE);
             rlQuestionContent.removeAllViews();
             rlQuestionContent.addView(englishH5CoursewarePager.getRootView(), new LayoutParams(LayoutParams
                     .MATCH_PARENT,

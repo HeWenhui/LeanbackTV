@@ -54,11 +54,13 @@ public class ExamQuestionPlaybackPager extends BasePager {
     /** 是不是考试结束 */
     private boolean isEnd = false;
     String jsExamSubmitAll = "javascript:examSubmitAll()";
+    boolean IS_SCIENCE;
 
-    public ExamQuestionPlaybackPager(Context context, String liveid, String num) {
+    public ExamQuestionPlaybackPager(Context context, String liveid, String num, boolean IS_SCIENCE) {
         super(context);
         videoActivity = (LivePlayBackVideoActivity) context;
         this.liveid = liveid;
+        this.IS_SCIENCE = IS_SCIENCE;
         this.num = num;
         initData();
     }
@@ -116,7 +118,7 @@ public class ExamQuestionPlaybackPager extends BasePager {
         String EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_EXAM_URL, ShareBusinessConfig.EXAM_URL, ShareDataManager.SHAREDATA_USER);
         examUrl = EXAM_URL + "?liveId=" + liveid
                 + "&testPlan=" + num + "&isPlayBack=1&stuId=" + userInfoEntity.getStuId() + "&stuName=" + mAppInfoEntity.getLoginUserName();
-        examUrl += "&isArts=" + (LiveVideoConfig.IS_SCIENCE ? "0" : "1");
+        examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
         wvSubjectWeb.loadUrl(examUrl);
     }
 
