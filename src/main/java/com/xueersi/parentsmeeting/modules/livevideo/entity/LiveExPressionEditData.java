@@ -92,7 +92,6 @@ public class LiveExPressionEditData implements ExPressionEditDataInter {
         mEAllPtInfoEntity.setExpressionInfoMap(mExPressionMap);
         mExpressionAllInfoLists.add(mEAllPtInfoEntity);
         mExPressionAllMaps.put(bottomResourceIds[0], mEAllPtInfoEntity);
-
         mExpressionList = new ArrayList<ExpressionInfoEntity>();
         mExPressionMap = new HashMap<String, ExpressionInfoEntity>();
         //填充gif数据
@@ -123,6 +122,7 @@ public class LiveExPressionEditData implements ExPressionEditDataInter {
     public void setmExpressionAllInfoLists(List<ExpressionAllInfoEntity> mExpressionAllInfoLists) {
         this.mExpressionAllInfoLists = mExpressionAllInfoLists;
     }
+
 
 
     /**
