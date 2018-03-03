@@ -876,7 +876,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         id = h5_Experiment.getString("id");
                         courseware_type = h5_Experiment.getString("courseware_type");
                         play_url = liveVideoSAConfig.inner.coursewareH5 + mLiveId + "/" + id + "/" + courseware_type
-                                + "/" + mGetInfo.getStuId();
+                                + "/" + mGetInfo.getStuId() + "?stuCouId=" + vStuCourseID;
                         videoQuestionLiveEntity.id = id;
                         videoQuestionLiveEntity.courseware_type = courseware_type;
                         videoQuestionLiveEntity.url = play_url;
@@ -1226,7 +1226,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 id = object.getString("id");
                                 courseware_type = object.getString("courseware_type");
                                 play_url = liveVideoSAConfig.inner.coursewareH5 + mLiveId + "/" + id + "/" + courseware_type
-                                        + "/" + mGetInfo.getStuId();
+                                        + "/" + mGetInfo.getStuId() + "?stuCouId=" + vStuCourseID;
                                 videoQuestionLiveEntity.id = id;
                                 videoQuestionLiveEntity.courseware_type = courseware_type;
                                 videoQuestionLiveEntity.url = play_url;
