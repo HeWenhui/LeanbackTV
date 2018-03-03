@@ -364,13 +364,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         isArts = getIntent().getIntExtra("isArts", 0);
         if (isArts == 1) {
             appID = UmsConstants.ARTS_APP_ID_BACK;
-            LiveVideoConfig.IS_SCIENCE = false;
             IS_SCIENCE = false;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_libarts);
             liveVideoSAConfig.IS_SCIENCE = false;
         } else {
             appID = UmsConstants.LIVE_APP_ID_BACK;
-            LiveVideoConfig.IS_SCIENCE = true;
             IS_SCIENCE = true;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_science);
             liveVideoSAConfig.IS_SCIENCE = true;
@@ -836,7 +834,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                                         LivePlayBackVideoActivity.this, "http://live.xueersi" +
                                         ".com/Live/getMultiTestPaper",
                                         userInfoEntity.getStuId(), mAppInfoEntity.getLoginUserName(), mQuestionEntity
-                                        .getvSectionID(), mQuestionEntity.getvQuestionID(), "", "0", true);
+                                        .getvSectionID(), mQuestionEntity.getvQuestionID(), "", "0", IS_SCIENCE);
                                 rlQuestionContent.removeAllViews();
                                 rlQuestionContent.addView(questionWebPager.getRootView(), new LayoutParams
                                         (LayoutParams.MATCH_PARENT,
@@ -923,7 +921,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showExam");
                     mPlayVideoControlHandler.sendMessage(msg);
                     examQuestionPlaybackPager = new ExamQuestionPlaybackPager(LivePlayBackVideoActivity.this,
-                            mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), IS_SCIENCE);
+                            mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), IS_SCIENCE, stuCourId);
                     rlQuestionContent.removeAllViews();
                     rlQuestionContent.addView(examQuestionPlaybackPager.getRootView(), new LayoutParams(LayoutParams
                             .MATCH_PARENT,

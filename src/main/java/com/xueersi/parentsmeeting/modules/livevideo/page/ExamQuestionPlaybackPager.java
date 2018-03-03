@@ -16,7 +16,6 @@ import android.widget.ImageView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.base.BasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
@@ -55,13 +54,15 @@ public class ExamQuestionPlaybackPager extends BasePager {
     private boolean isEnd = false;
     String jsExamSubmitAll = "javascript:examSubmitAll()";
     boolean IS_SCIENCE;
+    String stuCouId;
 
-    public ExamQuestionPlaybackPager(Context context, String liveid, String num, boolean IS_SCIENCE) {
+    public ExamQuestionPlaybackPager(Context context, String liveid, String num, boolean IS_SCIENCE, String stuCouId) {
         super(context);
         videoActivity = (LivePlayBackVideoActivity) context;
         this.liveid = liveid;
         this.IS_SCIENCE = IS_SCIENCE;
         this.num = num;
+        this.stuCouId = stuCouId;
         initData();
     }
 
@@ -118,7 +119,7 @@ public class ExamQuestionPlaybackPager extends BasePager {
         String EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_EXAM_URL, ShareBusinessConfig.EXAM_URL, ShareDataManager.SHAREDATA_USER);
         examUrl = EXAM_URL + "?liveId=" + liveid
                 + "&testPlan=" + num + "&isPlayBack=1&stuId=" + userInfoEntity.getStuId() + "&stuName=" + mAppInfoEntity.getLoginUserName();
-        examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
+        examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1") + "&stuCouId=" + stuCouId;
         wvSubjectWeb.loadUrl(examUrl);
     }
 

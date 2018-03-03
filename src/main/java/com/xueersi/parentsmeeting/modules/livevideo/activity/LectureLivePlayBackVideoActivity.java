@@ -919,7 +919,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
             public void run() {
                 if (rlQuestionContent != null && mQuestionEntity != null) {
                     mPlayVideoControlHandler.sendEmptyMessage(SHOW_QUESTION);
-                    examQuestionPlaybackPager = new ExamQuestionPlaybackPager(LectureLivePlayBackVideoActivity.this, mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), false);
+                    examQuestionPlaybackPager = new ExamQuestionPlaybackPager(LectureLivePlayBackVideoActivity.this, mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), false, "");
                     rlQuestionContent.removeAllViews();
                     rlQuestionContent.addView(examQuestionPlaybackPager.getRootView(), new LayoutParams(LayoutParams.MATCH_PARENT,
                             LayoutParams.WRAP_CONTENT));

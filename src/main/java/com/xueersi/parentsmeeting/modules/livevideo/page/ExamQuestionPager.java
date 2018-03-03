@@ -60,9 +60,10 @@ public class ExamQuestionPager extends BasePager {
     private LiveBll mLiveBll;
     private String isShowRankList;
     boolean IS_SCIENCE;
+    String stuCouId;
 
     public ExamQuestionPager(Context context, LiveBll liveBll, QuestionBll questionBll, String stuId
-            , String stuName, String liveid, String num, String nonce, String isShowRankList, boolean IS_SCIENCE) {
+            , String stuName, String liveid, String num, String nonce, String isShowRankList, boolean IS_SCIENCE, String stuCouId) {
         super(context);
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
@@ -74,6 +75,7 @@ public class ExamQuestionPager extends BasePager {
         this.num = num;
         this.nonce = nonce;
         this.IS_SCIENCE = IS_SCIENCE;
+        this.stuCouId = stuCouId;
         logToFile.i("ExamQuestionPager:liveid=" + liveid + ",num=" + num);
         this.isShowRankList = isShowRankList;
         initData();
@@ -132,6 +134,7 @@ public class ExamQuestionPager extends BasePager {
         if (!StringUtils.isEmpty(nonce)) {
             examUrl += "&nonce=" + nonce;
         }
+        examUrl += "&stuCouId=" + stuCouId;
         examUrl += "&isTowall=" + isShowRankList;
         examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
         wvSubjectWeb.loadUrl(examUrl);

@@ -200,12 +200,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private boolean hasExam;
     private long submitTime;
     private boolean hasSubmit;
+    private String stuCouId;
 
-    public QuestionBll(Activity activity) {
+    public QuestionBll(Activity activity, String stuCouId) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
         this.activity = activity;
+        this.stuCouId = stuCouId;
     }
 
     public void setLiveVideoSAConfig(LiveVideoSAConfig liveVideoSAConfig) {
@@ -939,7 +941,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mData.put("examid", num);
                 umsAgentDebug(examQuestionEventId, mData);
                 examQuestionPager = new ExamQuestionPager(activity, mLiveBll, QuestionBll.this, liveGetInfo.getStuId
-                        (), liveGetInfo.getUname(), liveid, num, nonce, mAnswerRankBll == null ? "0" : mAnswerRankBll.getIsShow(), IS_SCIENCE);
+                        (), liveGetInfo.getUname(), liveid, num, nonce, mAnswerRankBll == null ? "0" : mAnswerRankBll.getIsShow(), IS_SCIENCE, stuCouId);
                 rlQuestionContent.addView(examQuestionPager.getRootView());
                 setHaveExam(true);
                 activity.getWindow().getDecorView().requestLayout();

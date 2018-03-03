@@ -60,9 +60,6 @@ public class LiveVideoConfig {
     /** 得到广告信息 */
     public final static String URL_LIVE_GET_LEC_AD = AppConfig.HTTP_HOST + "/LiveLecture/getAdOnLL";
 
-    /** 是不是文理 */
-    public static boolean IS_SCIENCE = true;
-
     /** 直播旁听统计 */
     public static String LIVE_VIDEO_AUDIO_LIVE = "live_video_audit_live";
     /** 直播回放倍速 */
