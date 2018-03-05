@@ -22,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
@@ -37,7 +38,7 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
  * 直播试卷答题页面
  */
 public class ExamQuestionPager extends BasePager {
-    public static String EXAM_URL = "http://live.xueersi.com/LiveExam/examPaper";
+    private String EXAM_URL = "http://live.xueersi.com/LiveExam/examPaper";
     String examQuestionEventId = LiveVideoConfig.LIVE_H5_EXAM;
     private Button btSubjectClose;
     Button bt_livevideo_subject_calljs;
@@ -129,6 +130,8 @@ public class ExamQuestionPager extends BasePager {
 //        wvSubjectWeb.loadUrl("file:///android_asset/testjs.html");
         ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
         ((AnimationDrawable) ivLoading.getBackground()).start();
+        String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_libarts : ShareBusinessConfig.LIVE_science;
+        EXAM_URL = "http://live.xueersi.com/" + host + "/LiveExam/examPaper";
         examUrl = EXAM_URL + "?liveId=" + liveid
                 + "&testPlan=" + num + "&isPlayBack=0&stuId=" + stuId + "&stuName=" + stuName;
         if (!StringUtils.isEmpty(nonce)) {
