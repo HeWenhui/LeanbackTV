@@ -25,7 +25,6 @@ import com.xueersi.parentsmeeting.logerhelper.LogerTag;
 import com.xueersi.parentsmeeting.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
@@ -1854,12 +1853,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
         if (mGetInfo.getIsArts() == 1) {
             appID = UmsConstants.ARTS_APP_ID;
-            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_libarts);
-            liveVideoSAConfig.IS_SCIENCE = false;
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_libarts, false);
         } else {
             appID = UmsConstants.LIVE_APP_ID;
-            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_science);
-            liveVideoSAConfig.IS_SCIENCE = true;
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_science, true);
         }
         mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         if (mGetInfo.getStudentLiveInfo() != null
