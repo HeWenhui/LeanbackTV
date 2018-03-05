@@ -585,7 +585,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     } else {
                         speechAssessmentPager = new SpeechAssessmentWebPager(activity,
                                 liveGetInfo.getId(), id, liveGetInfo.getStuId(),
-                                true, videoQuestionLiveEntity.nonce, QuestionBll.this);
+                                true, videoQuestionLiveEntity.nonce, QuestionBll.this, stuCouId, false);
                         speechAssessmentPager.setIse(mIse);
                         speechAssessmentPager.initData();
                     }

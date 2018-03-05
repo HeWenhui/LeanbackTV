@@ -955,7 +955,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     } else {
                         speechQuestionPlaybackPager = new SpeechAssessmentWebPager(LivePlayBackVideoActivity.this,
                                 mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), userInfoEntity.getStuId(),
-                                false, "", LivePlayBackVideoActivity.this);
+                                false, "", LivePlayBackVideoActivity.this, stuCourId, IS_SCIENCE);
                     }
                     speechQuestionPlaybackPager.initData();
                     rlQuestionContent.removeAllViews();

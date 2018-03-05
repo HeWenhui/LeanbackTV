@@ -172,7 +172,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
 
-        String loadUrl = url + "&t=" + System.currentTimeMillis();
+        String loadUrl = url + "?t=" + System.currentTimeMillis();
         if (isPlayBack) {
             loadUrl += "&isPlayBack=1";
         }

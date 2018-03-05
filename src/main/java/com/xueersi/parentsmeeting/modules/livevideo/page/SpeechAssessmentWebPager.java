@@ -22,13 +22,12 @@ import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.TalSpeech;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
+import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.xesalib.utils.app.AppUtils;
 import com.xueersi.xesalib.utils.app.ContextManager;
 import com.xueersi.xesalib.utils.audio.AudioPlayer;
 import com.xueersi.xesalib.utils.audio.AudioPlayerListening;
-import com.xueersi.xesalib.utils.audio.safeaudioplayer.AudioPlayerManager;
-import com.xueersi.xesalib.utils.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.utils.string.StringUtils;
@@ -105,12 +104,13 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
     private final static int WAIT_TIME = 100;
 
     private final int RECORD_WITE = 11000;
-
+    String stuCouId;
+    boolean IS_SCIENCE;
     // private AudioPlayerManager mAudioPlayerManager;
 
     public SpeechAssessmentWebPager(Context context, String liveid, String testId, String stuId, boolean isLive,
                                     String nonce,
-                                    SpeechEvalAction speechEvalAction) {
+                                    SpeechEvalAction speechEvalAction, String stuCouId, boolean IS_SCIENCE) {
         super(context);
         this.stuId = stuId;
         this.liveid = liveid;
@@ -118,6 +118,8 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
         this.nonce = nonce;
         this.isLive = isLive;
         this.speechEvalAction = speechEvalAction;
+        this.stuCouId = stuCouId;
+        this.IS_SCIENCE = IS_SCIENCE;
         dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/liveSpeech/");
         if (!dir.exists()) {
             dir.mkdirs();
@@ -159,11 +161,15 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
         ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
         ((AnimationDrawable) ivLoading.getBackground()).start();
         //       wvSubjectWeb.loadUrl("http://172.88.1.180:8084/");
-        String url = "http://live.xueersi.com/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
-                liveid + "/" + testId + "/" + stuId;
+        String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
+        String url = "http://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
+                liveid + "/" + stuCouId + "/" + testId + "/" + stuId;
 //        String url = "http://172.88.1.180:8082";
         if (!StringUtils.isEmpty(nonce)) {
             url += "?nonce=" + nonce;
+//            url += "&stuCouId=" + stuCouId;
+        } else {
+//            url += "?stuCouId=" + stuCouId;
         }
         wvSubjectWeb.loadUrl(url);
     }
