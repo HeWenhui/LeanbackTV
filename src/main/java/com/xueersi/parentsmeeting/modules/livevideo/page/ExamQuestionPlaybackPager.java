@@ -117,6 +117,11 @@ public class ExamQuestionPlaybackPager extends BasePager {
         MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         AppInfoEntity mAppInfoEntity = AppBll.getInstance().getAppInfoEntity();
         String EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_EXAM_URL, ShareBusinessConfig.EXAM_URL, ShareDataManager.SHAREDATA_USER);
+        if (IS_SCIENCE) {
+            EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_EXAM_URLScience, EXAM_URL, ShareDataManager.SHAREDATA_USER);
+        } else {
+            EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_EXAM_URLLibarts, EXAM_URL, ShareDataManager.SHAREDATA_USER);
+        }
         if (EXAM_URL.contains("xueersi.com/LiveExam")) {
             String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_libarts : ShareBusinessConfig.LIVE_science;
             EXAM_URL = EXAM_URL.replace("xueersi.com/LiveExam", "xueersi.com/" + host + "/LiveExam");
