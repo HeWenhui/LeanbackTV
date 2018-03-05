@@ -55,8 +55,9 @@ public class QuestionWebPager extends BasePager {
     String jsExamSubmitAll = "javascript:examSubmitAll()";
     private String isShowRanks;
     boolean IS_SCIENCE;
+    String stuCouId;
 
-    public QuestionWebPager(Context context, StopWebQuestion questionBll, String testPaperUrl, String stuId, String stuName, String liveid, String testId, String nonce, String isShowRanks, boolean IS_SCIENCE) {
+    public QuestionWebPager(Context context, StopWebQuestion questionBll, String testPaperUrl, String stuId, String stuName, String liveid, String testId, String nonce, String isShowRanks, boolean IS_SCIENCE, String stuCouId) {
         super(context);
         this.IS_SCIENCE = IS_SCIENCE;
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -69,6 +70,7 @@ public class QuestionWebPager extends BasePager {
         this.testPaperUrl = testPaperUrl;
         this.nonce = nonce;
         this.isShowRanks = isShowRanks;
+        this.stuCouId = stuCouId;
         logToFile.i("ExamQuestionPager:liveid=" + liveid + ",testId=" + testId);
         initData();
     }
@@ -128,6 +130,7 @@ public class QuestionWebPager extends BasePager {
         if (!StringUtils.isEmpty(nonce)) {
             examUrl += "&nonce=" + nonce;
         }
+        examUrl += "&stuCouId=" + stuCouId;
         examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
         wvSubjectWeb.loadUrl(examUrl);
 //        wvSubjectWeb.loadUrl("http://7.xesweb.sinaapp.com/test/examPaper2.html");
