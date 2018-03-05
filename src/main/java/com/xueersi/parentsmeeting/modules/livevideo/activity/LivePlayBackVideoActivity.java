@@ -199,7 +199,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     /** 从哪个页面跳转 */
     String where;
     int isArts;
-    String stuCourId;
     /** 区分文理appid */
     String appID = UmsConstants.LIVE_APP_ID_BACK;
     private LiveVideoSAConfig liveVideoSAConfig;
