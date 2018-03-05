@@ -130,7 +130,7 @@ public class ExamQuestionPager extends BasePager {
 //        wvSubjectWeb.loadUrl("file:///android_asset/testjs.html");
         ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
         ((AnimationDrawable) ivLoading.getBackground()).start();
-        String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_libarts : ShareBusinessConfig.LIVE_science;
+        String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
         EXAM_URL = "http://live.xueersi.com/" + host + "/LiveExam/examPaper";
         examUrl = EXAM_URL + "?liveId=" + liveid
                 + "&testPlan=" + num + "&isPlayBack=0&stuId=" + stuId + "&stuName=" + stuName;

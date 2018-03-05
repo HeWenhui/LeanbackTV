@@ -365,11 +365,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (isArts == 1) {
             appID = UmsConstants.ARTS_APP_ID_BACK;
             IS_SCIENCE = false;
-            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_libarts, false);
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
         } else {
             appID = UmsConstants.LIVE_APP_ID_BACK;
             IS_SCIENCE = true;
-            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_science, true);
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
         }
         lectureLivePlayBackBll.setLiveVideoSAConfig(liveVideoSAConfig);
         // 如果加载不出来

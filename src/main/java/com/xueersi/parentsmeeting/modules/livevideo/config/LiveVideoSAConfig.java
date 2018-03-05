@@ -88,7 +88,7 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_GET_THUMBS_UP_PROBABILITY = HTTP_HOST + "/LiveCourse/getStuOnList";
 
         public String coursewareH5 = "https://live.xueersi.com/" +
-                (IS_SCIENCE ? ShareBusinessConfig.LIVE_science : ShareBusinessConfig.LIVE_libarts) + "/Live/coursewareH5/";
+                (IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS) + "/Live/coursewareH5/";
     }
 
 }

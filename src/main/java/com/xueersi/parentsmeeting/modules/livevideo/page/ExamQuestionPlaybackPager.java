@@ -123,7 +123,7 @@ public class ExamQuestionPlaybackPager extends BasePager {
             EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL_LIBARTS, EXAM_URL, ShareDataManager.SHAREDATA_USER);
         }
         if (EXAM_URL.contains("xueersi.com/LiveExam")) {
-            String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_libarts : ShareBusinessConfig.LIVE_science;
+            String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
             EXAM_URL = EXAM_URL.replace("xueersi.com/LiveExam", "xueersi.com/" + host + "/LiveExam");
         }
         examUrl = EXAM_URL + "?liveId=" + liveid
