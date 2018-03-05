@@ -69,8 +69,8 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_NOT_OPEN = HTTP_HOST + "/LiveCourse/setNotOpeningNum";
         /** 得到试题 */
         public String URL_LIVE_GET_QUESTION = HTTP_HOST + "/LiveCourse/getQuestion";
-        /** 得到h5课件 */
-        public String URL_LIVE_GET_WARE_URL = HTTP_HOST + "/LiveCourse/getCourseWareUrl";
+        /** 得到h5课件-不区分文理 */
+        public String URL_LIVE_GET_WARE_URL = AppConfig.HTTP_HOST + "/LiveCourse/getCourseWareUrl";
         /** 互动题满分榜接口 */
         public String LIVE_FULL_MARK_LIST_QUESTION = HTTP_HOST + "/LiveCourse/teamTestFullScoreRank";
         /** 互动课件满分榜接口 */
