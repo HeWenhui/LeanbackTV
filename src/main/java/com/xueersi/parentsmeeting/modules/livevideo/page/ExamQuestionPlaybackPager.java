@@ -116,16 +116,15 @@ public class ExamQuestionPlaybackPager extends BasePager {
 //        wvSubjectWeb.loadUrl("file:///android_asset/testjs.html");
         MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         AppInfoEntity mAppInfoEntity = AppBll.getInstance().getAppInfoEntity();
-        String EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_EXAM_URL, ShareBusinessConfig.EXAM_URL, ShareDataManager.SHAREDATA_USER);
+        String EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL, ShareBusinessConfig.EXAM_URL, ShareDataManager.SHAREDATA_USER);
         if (IS_SCIENCE) {
-            EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_EXAM_URLScience, EXAM_URL, ShareDataManager.SHAREDATA_USER);
+            EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL_SCIENCE, EXAM_URL, ShareDataManager.SHAREDATA_USER);
         } else {
-            EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_EXAM_URLLibarts, EXAM_URL, ShareDataManager.SHAREDATA_USER);
+            EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL_LIBARTS, EXAM_URL, ShareDataManager.SHAREDATA_USER);
         }
         if (EXAM_URL.contains("xueersi.com/LiveExam")) {
             String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_libarts : ShareBusinessConfig.LIVE_science;
             EXAM_URL = EXAM_URL.replace("xueersi.com/LiveExam", "xueersi.com/" + host + "/LiveExam");
-//            mShareDataManager.put(ShareBusinessConfig.SP_EXAM_URL, EXAM_URL, ShareDataManager.SHAREDATA_USER);
         }
         examUrl = EXAM_URL + "?liveId=" + liveid
                 + "&testPlan=" + num + "&isPlayBack=1&stuId=" + userInfoEntity.getStuId() + "&stuName=" + mAppInfoEntity.getLoginUserName();
