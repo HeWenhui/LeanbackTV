@@ -261,12 +261,11 @@ public class QuestionWebPager extends BasePager {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             logToFile.i("shouldOverrideUrlLoading:url=" + url);
-            if (url.contains("live.xueersi.com/Live/getMultiTestResult")
-                    ) {
+            if (url.contains("/Live/getMultiTestResult")) {
                 if (questionBll instanceof QuestionBll) {
                     ((QuestionBll) questionBll).onSubmit(XESCODE.STOPQUESTION, url.contains("submitType=force"));
                 }
-                //return false;
+                return false;
             }
             if ("xueersi://livevideo/examPaper/close".equals(url) || "http://baidu.com/".equals(url)) {
                 ViewGroup group = (ViewGroup) mView.getParent();

@@ -283,7 +283,7 @@ public class ExamQuestionPager extends BasePager {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (url.contains("live.xueersi.com/LiveExam/examResult")) {
+            if (url.contains("/LiveExam/examResult")) {
                 if (questionBll instanceof QuestionBll) {
                     ((QuestionBll) questionBll).onSubmit(XESCODE.EXAM_STOP, url.contains("submitType=force"));
                 }
