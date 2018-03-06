@@ -46,8 +46,9 @@ public class SubjectResultPager extends BasePager {
     /** 试卷地址 */
     private String examUrl = "";
     String testPaperUrl;
+    String stuCouId;
 
-    public SubjectResultPager(Context context, QuestionWebPager.StopWebQuestion questionBll, String testPaperUrl, String stuId, String liveid, String testId) {
+    public SubjectResultPager(Context context, QuestionWebPager.StopWebQuestion questionBll, String testPaperUrl, String stuId, String liveid, String testId, String stuCouId) {
         super(context);
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
@@ -56,6 +57,7 @@ public class SubjectResultPager extends BasePager {
         this.liveid = liveid;
         this.testId = testId;
         this.testPaperUrl = testPaperUrl;
+        this.stuCouId = stuCouId;
         logToFile.i(TAG + ":liveid=" + liveid + ",testId=" + testId);
         initData();
     }
@@ -107,7 +109,7 @@ public class SubjectResultPager extends BasePager {
 //        examUrl = testPaperUrl + "?liveId=" + liveid + "&testId=" + testId
 //                + "&stuId=" + stuId + "&stuName=" + stuName;
         examUrl = testPaperUrl + "?testId=" + testId
-                + "&stuId=" + stuId + "&stuName=" + stuName;
+                + "&stuId=" + stuId + "&stuName=" + stuName + "&stuCouId=" + stuCouId;
 //        String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
 //        examUrl = BrowserBll.getAutoLoginURL(mEnStuId, examUrl, "", 0, true);
         Loger.d(TAG, "initData:examUrl=" + examUrl);

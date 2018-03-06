@@ -1359,9 +1359,10 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 rlQuestionContent.removeAllViews();
                 if (LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(questionEntity.getvQuestionType())) {
                     MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+                    String host = ShareBusinessConfig.LIVE_LIBARTS;
                     subjectResultPager = new SubjectResultPager(LivePlayBackVideoActivity.this, LivePlayBackVideoActivity.this,
-                            "https://live.xueersi.com/Live/subjectiveTestAnswerResult/" + mVideoEntity.getLiveId(),
-                            userInfoEntity.getStuId(), mVideoEntity.getLiveId(), questionEntity.getvQuestionID());
+                            "https://live.xueersi.com/" + host + "/Live/subjectiveTestAnswerResult/" + mVideoEntity.getLiveId(),
+                            userInfoEntity.getStuId(), mVideoEntity.getLiveId(), questionEntity.getvQuestionID(), stuCourId);
                     rlQuestionContent.addView(subjectResultPager.getRootView());
                     if (vPlayer != null) {
                         vPlayer.pause();

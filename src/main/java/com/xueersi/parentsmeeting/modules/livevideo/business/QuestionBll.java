@@ -635,7 +635,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 Loger.d(TAG, "showQuestion:url=" + url);
                 subjectResultPager = new SubjectResultPager(activity, this,
                         liveGetInfo.getSubjectiveTestAnswerResult(),
-                        liveGetInfo.getStuId(), liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID());
+                        liveGetInfo.getStuId(), liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(), stuCouId);
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
                 rlQuestionContent.addView(subjectResultPager.getRootView(), params);
