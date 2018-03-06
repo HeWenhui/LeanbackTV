@@ -87,8 +87,13 @@ public class LiveVideoSAConfig {
         /** 获取点赞概率 */
         public String URL_LIVE_GET_THUMBS_UP_PROBABILITY = HTTP_HOST + "/LiveCourse/getStuOnList";
 
+        /** h5课件地址 */
         public String coursewareH5 = "https://live.xueersi.com/" +
                 (IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS) + "/Live/coursewareH5/";
+
+        /** 语文主观题结果页地址 */
+        public String subjectiveTestAnswerResult = "https://live.xueersi.com/" + ShareBusinessConfig.LIVE_LIBARTS
+                + "/Live/subjectiveTestAnswerResult/";
     }
 
 }
