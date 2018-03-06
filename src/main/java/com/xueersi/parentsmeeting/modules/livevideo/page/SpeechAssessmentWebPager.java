@@ -162,14 +162,16 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
         ((AnimationDrawable) ivLoading.getBackground()).start();
         //       wvSubjectWeb.loadUrl("http://172.88.1.180:8084/");
         String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
+//        String url = "http://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
+//                liveid + "/" + stuCouId + "/" + testId + "/" + stuId;
         String url = "http://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
-                liveid + "/" + stuCouId + "/" + testId + "/" + stuId;
+                liveid + "/" + testId + "/" + stuId;
 //        String url = "http://172.88.1.180:8082";
         if (!StringUtils.isEmpty(nonce)) {
             url += "?nonce=" + nonce;
-//            url += "&stuCouId=" + stuCouId;
+            url += "&stuCouId=" + stuCouId;
         } else {
-//            url += "?stuCouId=" + stuCouId;
+            url += "?stuCouId=" + stuCouId;
         }
         wvSubjectWeb.loadUrl(url);
     }

@@ -390,7 +390,9 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 //        if (CourseInfoLiveActivity.isTest) {
 //            mWebPath = "http://r01.xesimg.com/stream/tmp/2016/11/30/1480481513276687694567.mp4";
 //        }
-//        mWebPath = "http://r01.xesimg.com/stream/tmp/2016/11/30/1480481513276687694567.mp4";
+//        if (AppConfig.DEBUG) {
+//            mWebPath = "http://r01.xesimg.com/stream/tmp/2016/11/30/1480481513276687694567.mp4";
+//        }
         if (islocal) {
             // 互动题播放地址
             playNewVideo(Uri.parse(mWebPath), mSectionName);
