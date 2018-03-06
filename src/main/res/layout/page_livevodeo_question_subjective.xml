@@ -49,6 +49,7 @@
                     app:cpb_cornerRadius="4dp"
                     app:cpb_iconComplete="@drawable/bg_action_accept"
                     app:cpb_iconError="@drawable/ic_action_cancel"
+                    app:cpb_selectorIdle="@color/selector_idle_state_cpb"
                     app:cpb_textIdle="提交"/>
 
                 <EditText
