@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLazyBllCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
@@ -190,8 +191,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     long startTime = System.currentTimeMillis();
     /** onPause状态不暂停视频 */
     boolean onPauseNotStopVideo = false;
-    /** 领奖台业务 */
-    private AnswerRankBll answerRankBll;
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         long before = System.currentTimeMillis();
@@ -316,6 +315,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         }
                         if (mLiveBll != null && mLiveBll.getAnswerRankBll() != null) {
                             mLiveBll.getAnswerRankBll().setVideoLayout(lp.width, lp.height);
+                        }
+                        if (mLiveBll != null && mLiveBll.getLiveAutoNoticeBll() != null) {
+                            mLiveBll.getLiveAutoNoticeBll().setLayout(lp.width, lp.height);
                         }
                         if (speechFeedBackAction != null) {
                             speechFeedBackAction.setVideoLayout(lp.width, lp.height);
@@ -487,6 +489,12 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     protected void onPlayOpenStart() {
         setFirstBackgroundVisible(View.VISIBLE);
         findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
+        LiveRemarkBll liveRemarkBll=new LiveRemarkBll(mContext,vPlayer.getPlayer());
+        if(mLiveBll!=null&&liveMediaControllerBottom!=null) {
+            liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+            liveRemarkBll.setVideoView(videoView);
+            mLiveBll.setLiveRemarkBll(liveRemarkBll);
+        }
     }
 
     @Override

@@ -435,4 +435,11 @@
     <item name="iv_livelec_advert_step3_success" type="id" />
     <item name="tv_livelec_advert_step3_tip1" type="id" />
     <item name="tv_livelec_advert_step3_tip2" type="id" />
+    <item name="ll_livevideo_bottom_controller" type="id" />
+    <item name="sv_live_auto_notice" type="id" />
+    <item name="v_live_auto_notice_left" type="id" />
+    <item name="v_live_auto_notice_right" type="id" />
+    <item name="iv_live_auto_notice_avatar" type="id" />
+    <item name="tv_live_auto_notice_content" type="id" />
+    <item name="bt_livevideo_mark" type="id" />
 </resources>

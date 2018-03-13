@@ -12,6 +12,7 @@ import com.xueersi.parentsmeeting.http.HttpRequestParams;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
 
@@ -747,5 +748,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("enstuId", enstuId);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_GET_THUMBS_UP_PROBABILITY, params, requestCallBack);
+    }
+    public void saveLiveMark(String time,String url,HttpCallBack callBack){
+        HttpRequestParams params=new HttpRequestParams();
+        String stuId= UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        params.addBodyParam("stuId",stuId);
+        params.addBodyParam("curTime",time);
+        params.addBodyParam("imageUrl",url);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_SAVE_MARK_POINT,params,callBack);
     }
 }

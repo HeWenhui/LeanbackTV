@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.animation.LinearInterpolator;
 import android.widget.HorizontalScrollView;
 import android.widget.Scroller;
 
@@ -15,17 +16,17 @@ public class SlowHorizontalScrollView extends HorizontalScrollView{
 
         public SlowHorizontalScrollView(Context context) {
             super(context);
-            mScroller = new Scroller(context);
+            mScroller = new Scroller(context,new LinearInterpolator());
         }
 
         public SlowHorizontalScrollView(Context context, AttributeSet attrs) {
             super(context, attrs);
-            mScroller = new Scroller(context);
+            mScroller = new Scroller(context,new LinearInterpolator());
         }
 
         public SlowHorizontalScrollView(Context context, AttributeSet attrs, int defStyle) {
             super(context, attrs, defStyle);
-            mScroller = new Scroller(context);
+            mScroller = new Scroller(context,new LinearInterpolator());
         }
 
         //调用此方法滚动到目标位置  duration滚动时间
@@ -64,6 +65,6 @@ public class SlowHorizontalScrollView extends HorizontalScrollView{
          */
         @Override
         public void fling(int velocityY) {
-            super.fling(velocityY / 4);
+            super.fling(velocityY);
         }
 }

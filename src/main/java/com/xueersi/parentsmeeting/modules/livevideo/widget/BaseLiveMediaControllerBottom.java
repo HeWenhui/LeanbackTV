@@ -37,6 +37,8 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     private Button btMessageFlowers;
     /** 聊天，默认打开 */
     private CheckBox cbMessageClock;
+    /**标记疑问点按钮*/
+    public Button btMark;
 
     public BaseLiveMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
         super(context);
@@ -67,6 +69,7 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
         btMessageFlowers = (Button) findViewById(R.id.bt_livevideo_message_flowers);
         cbMessageClock = (CheckBox) findViewById(R.id.cb_livevideo_message_clock);
         lvCommonWord = (ListView) findViewById(R.id.lv_livevideo_common_word);
+        btMark=(Button)findViewById(R.id.bt_livevideo_mark);
     }
 
     public Button getBtMesOpen() {
@@ -87,6 +90,9 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
 
     public CheckBox getCbMessageClock() {
         return cbMessageClock;
+    }
+    public Button getBtMark(){
+        return btMark;
     }
 
     @Override

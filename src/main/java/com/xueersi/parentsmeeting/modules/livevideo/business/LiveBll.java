@@ -166,10 +166,13 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /** 是不是有分组 */
     private boolean haveTeam = false;
     private int form;
+    private LiveAutoNoticeBll mLiveAutoNoticeBll;
     long openStartTime;
     /** 区分文理appid */
     String appID = UmsConstants.LIVE_APP_ID;
+    /**满分榜业务*/
     private AnswerRankBll mAnswerRankBll;
+    private LiveRemarkBll mLiveRemarkBll;
 
     public LiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form) {
         super(context);
@@ -1858,6 +1861,18 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             appID = UmsConstants.LIVE_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
         }
+        //判断是否有智能私信功能
+        //if(mGetInfo.getIsArts()!=1){
+            mLiveAutoNoticeBll=liveLazyBllCreat.createAutoNoticeBll();
+        /*mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mLiveAutoNoticeBll.showNotice("hello","");
+            }
+        },3000);*/
+        if(mLiveRemarkBll!=null){
+            mLiveRemarkBll.setSysTimeOffset(System.currentTimeMillis()-(long)mGetInfo.getNowTime());
+        }
         mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         if (mGetInfo.getStudentLiveInfo() != null
                 && mGetInfo.getIs_show_ranks().equals("1")) {
@@ -1948,6 +1963,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
         mLogtf.d("onGetInfoSuccess:mode=" + mLiveTopic.getMode());
         liveGetPlayServerFirst();
+    }
+
+    public LiveAutoNoticeBll getLiveAutoNoticeBll() {
+        return mLiveAutoNoticeBll;
     }
 
     /**
@@ -3790,5 +3809,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         } catch (Exception e) {
             mLogtf.e("sendThumbsUpNum", e);
         }
+    }
+
+    public void setLiveRemarkBll(LiveRemarkBll liveRemarkBll) {
+        mLiveRemarkBll = liveRemarkBll;
     }
 }

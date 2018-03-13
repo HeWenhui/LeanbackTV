@@ -685,7 +685,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 honorEntity.setIsMy(jsonObject.getInt("isMy"));
                 honorEntity.setExcellentNum(jsonObject.getString("excellent_num"));
                 honorEntity.setStuName(jsonObject.getString("stu_name"));
-                honorListEntity.getHonorEntities().add(honorEntity);
+                if(honorEntity.getIsMy()==1){
+                    honorListEntity.getHonorEntities().add(0,honorEntity);
+                }else {
+                    honorListEntity.getHonorEntities().add(honorEntity);
+                }
             }
 
         } catch (Exception e) {
@@ -715,7 +719,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 likeEntity.setIsMy(jsonObject.getInt("isMy"));
                 likeEntity.setStuPraiseNum(jsonObject.getInt("stu_praise_num"));
                 likeEntity.setStuName(jsonObject.getString("stu_name"));
-                thumbsUpListEntity.getThumbsUpEntities().add(likeEntity);
+                if(likeEntity.getIsMy()==1){
+                    thumbsUpListEntity.getThumbsUpEntities().add(0,likeEntity);
+                }else {
+                    thumbsUpListEntity.getThumbsUpEntities().add(likeEntity);
+                }
             }
 
         } catch (Exception e) {
@@ -746,7 +754,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 progressEntity.setStuName(jsonObject.getString("stu_name"));
                 progressEntity.setIsMy(jsonObject.getInt("isMy"));
                 progressEntity.setProgressScore(jsonObject.getString("progress_score"));
-                progressListEntity.getProgressEntities().add(progressEntity);
+                if(progressEntity.getIsMy()==1){
+                    progressListEntity.getProgressEntities().add(0,progressEntity);
+                }else {
+                    progressListEntity.getProgressEntities().add(progressEntity);
+                }
             }
 
         } catch (Exception e) {

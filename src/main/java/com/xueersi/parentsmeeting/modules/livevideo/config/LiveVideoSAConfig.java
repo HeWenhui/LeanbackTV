@@ -86,6 +86,12 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_GET_PRPGRESS_LIST = HTTP_HOST + "/LiveCourse/getStuIsOnProgressList";
         /** 获取点赞概率 */
         public String URL_LIVE_GET_THUMBS_UP_PROBABILITY = HTTP_HOST + "/LiveCourse/getStuOnList";
+        /**存标记点*/
+        public String URL_LIVE_SAVE_MARK_POINT=HTTP_HOST+"/Live/setMarkpoint";
+        /**获取标记点*/
+        public String URL_LIVE_GET_MARK_POINT=HTTP_HOST+"/Live/getMarkpoint";
+        /**删除标记点*/
+        public String URL_LIVE_DELETE_MARK_POINT=HTTP_HOST+"/Live/deleteMarkpoint";
 
         /** h5课件地址 */
         public String coursewareH5 = "https://live.xueersi.com/" +

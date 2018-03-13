@@ -10,9 +10,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Environment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -34,6 +35,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTextView;
+import com.xueersi.xesalib.adapter.RCommonAdapter;
+import com.xueersi.xesalib.adapter.RItemViewInterface;
+import com.xueersi.xesalib.adapter.ViewHolder;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
 import java.io.File;
@@ -57,10 +61,9 @@ public class PraiseListPager extends BasePager {
     private LiveBll liveBll;
     private PraiseListBll mPraiseListBll;
     private WeakHandler weakHandler;
-    private BaseAdapter myAdapter;
 
     /** 表扬榜单 */
-    private GridView gvPraiseList;
+    private RecyclerView rvPraiseList;
     /** 备注 */
     private TextView tvTips;
     /** 点赞弹幕 */
@@ -185,7 +188,7 @@ public class PraiseListPager extends BasePager {
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_praiselist, null);
         tvTips = (TextView) mView.findViewById(R.id.tv_livevideo_praiselist_tips);
-        gvPraiseList = (GridView) mView.findViewById(R.id.gv_livevideo_praiselist);
+        rvPraiseList = (RecyclerView) mView.findViewById(R.id.gv_livevideo_praiselist);
         tvDanmaku = (AutoVerticalScrollTextView) mView.findViewById(R.id.tv_livevideo_praiselist_danmaku);
         btnThumbsUp = (Button) mView.findViewById(R.id.btn_livevideo_praiselist_thumbs_up);
         ivTitle = (ImageView) mView.findViewById(R.id.iv_livevideo_praiselist_title);
@@ -245,13 +248,27 @@ public class PraiseListPager extends BasePager {
             soundPool.play(soundPraiselistIn,1, 1, 0, 0, 1);
         }
 
-
+        RCommonAdapter adapter=null;
+        GridLayoutManager layoutManager=null;
         switch (mPraiseListType){
             case PRAISE_LIST_TYPE_HONOR:
                 tvTips.setText("全对或者订正到全对的同学可以上榜哦~");
-                myAdapter = new HonorAdapter(videoActivity,honorListEntity.getHonorEntities());
-                gvPraiseList.setAdapter(myAdapter);
-                gvPraiseList.setNumColumns(3);
+                adapter=new RCommonAdapter(mContext,honorListEntity.getHonorEntities());
+                adapter.addItemViewDelegate(new HonorItem());
+                layoutManager=new GridLayoutManager(mContext,3);
+                layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                    @Override
+                    public int getSpanSize(int position) {
+                        if(position==0&&honorListEntity.getHonorEntities().get(0).getIsMy()==1){
+                            return 3;
+                        }else{
+                            return 1;
+                        }
+                    }
+                });
+                rvPraiseList.setLayoutManager(layoutManager);
+
+                rvPraiseList.setAdapter(adapter);
                 if(honorListEntity.getPraiseStatus()!=0)
                     btnThumbsUp.setVisibility(View.GONE);
                 for(int i=0;i<honorListEntity.getHonorEntities().size();i++){
@@ -261,16 +278,28 @@ public class PraiseListPager extends BasePager {
                         break;
                     }
                 }
-                if(isOnList)
-                    gvPraiseList.setSelection(onListIndex);
+//                if(isOnList)
+//                    rvPraiseList.setSelection(onListIndex);
                 break;
             case PRAISE_LIST_TYPE_THUMBS_UP:
-                myAdapter = new ThumbsUpAdapter(videoActivity,thumbsUpListEntity.getThumbsUpEntities());
-                gvPraiseList.setAdapter(myAdapter);
-                gvPraiseList.setNumColumns(3);
+                adapter=new RCommonAdapter(mContext,thumbsUpListEntity.getThumbsUpEntities());
+                adapter.addItemViewDelegate(new ThunbsUpItem());
+                layoutManager=new GridLayoutManager(mContext,3);
+                layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                    @Override
+                    public int getSpanSize(int position) {
+                        if(position==0&&thumbsUpListEntity.getThumbsUpEntities().get(0).getIsMy()==1){
+                            return 3;
+                        }else{
+                            return 1;
+                        }
+                    }
+                });
+                rvPraiseList.setLayoutManager(layoutManager);
+                rvPraiseList.setAdapter(adapter);
                 tvTips.setVisibility(View.GONE);
                 rlMessage.setVisibility(View.GONE);
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) gvPraiseList.getLayoutParams();
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rvPraiseList.getLayoutParams();
                 lp.setMargins(SizeUtils.Dp2Px(videoActivity,20),
                         SizeUtils.Dp2Px(videoActivity,53),
                         SizeUtils.Dp2Px(videoActivity,20),
@@ -282,14 +311,26 @@ public class PraiseListPager extends BasePager {
                         break;
                     }
                 }
-                if(isOnList)
-                    gvPraiseList.setSelection(onListIndex);
+//                if(isOnList)
+//                    rvPraiseList.setSelection(onListIndex);
                 break;
             case PRAISE_LIST_TYPE_PROGRESS:
                 tvTips.setText("连续两次作业分数(百分制)有进步可以上榜哦~");
-                myAdapter = new ProgressAdapter(videoActivity,progressListEntity.getProgressEntities());
-                gvPraiseList.setAdapter(myAdapter);
-                gvPraiseList.setNumColumns(2);
+                adapter=new RCommonAdapter(mContext,progressListEntity.getProgressEntities());
+                adapter.addItemViewDelegate(new ProgressItem());
+                layoutManager=new GridLayoutManager(mContext,2);
+                layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                    @Override
+                    public int getSpanSize(int position) {
+                        if(position==0&&progressListEntity.getProgressEntities().get(0).getIsMy()==1){
+                            return 2;
+                        }else{
+                            return 1;
+                        }
+                    }
+                });
+                rvPraiseList.setLayoutManager(layoutManager);
+                rvPraiseList.setAdapter(adapter);
                 if(progressListEntity.getPraiseStatus()!=0)
                     btnThumbsUp.setVisibility(View.GONE);
                 for(int i=0;i<progressListEntity.getProgressEntities().size();i++){
@@ -299,14 +340,14 @@ public class PraiseListPager extends BasePager {
                         break;
                     }
                 }
-                if(isOnList)
-                    gvPraiseList.setSelection(onListIndex);
+//                if(isOnList)
+//                    rvPraiseList.setSelection(onListIndex);
                 break;
             default:
                 break;
         }
         //屏蔽GridView的Item选中变色
-        gvPraiseList.setSelector(new ColorDrawable(Color.TRANSPARENT));
+        //rvPraiseList.setSelector(new ColorDrawable(Color.TRANSPARENT));
 
         //监听点赞按钮点击事件
         btnThumbsUp.setOnClickListener(new View.OnClickListener() {
@@ -658,206 +699,136 @@ public class PraiseListPager extends BasePager {
         btnThumbsUp.setEnabled(enabled);
     }
 
-    /** 优秀榜适配器 */
-    private class HonorAdapter extends BaseAdapter{
-
-        ArrayList<HonorListEntity.HonorEntity> honorEntities;
-        private LayoutInflater layoutInflater;
-
-        public HonorAdapter(Context context, ArrayList<HonorListEntity.HonorEntity> honorEntities) {
-            this.honorEntities = honorEntities;
-            layoutInflater = LayoutInflater.from(context);
+    /**
+     * 光荣榜item
+     */
+    private class HonorItem implements RItemViewInterface<HonorListEntity.HonorEntity>{
+        ImageView ivCrown;
+        TextView tvName;
+        TextView tvCounts;
+        @Override
+        public int getItemLayoutId() {
+            return R.layout.item_livevideo_praiselist_honor;
         }
 
         @Override
-        public int getCount() {
-            return honorEntities.size();
+        public void initView(ViewHolder viewHolder, int i) {
+            ivCrown=viewHolder.getView(R.id.iv_livevideo_praiselist_honor_crown);
+            tvName=viewHolder.getView(R.id.tv_livevideo_praiselist_honor_name);
+            tvCounts=viewHolder.getView(R.id.tv_livevideo_praiselist_honor_counts);
         }
 
         @Override
-        public Object getItem(int i) {
-            return honorEntities.get(i);
+        public boolean isShowView(HonorListEntity.HonorEntity honorEntity, int i) {
+            return true;
         }
 
         @Override
-        public long getItemId(int i) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int i, View convertView, ViewGroup viewGroup) {
-            ViewHolder holder = null;
-            if(convertView == null){
-                convertView = layoutInflater.inflate(R.layout.item_livevideo_praiselist_honor,null);
-                holder = new ViewHolder();
-                holder.ivCrown = (ImageView)convertView.findViewById(R.id.iv_livevideo_praiselist_honor_crown);
-                holder.tvName = (TextView)convertView.findViewById(R.id.tv_livevideo_praiselist_honor_name);
-                holder.tvCounts = (TextView)convertView.findViewById(R.id.tv_livevideo_praiselist_honor_counts);
-                convertView.setTag(holder);
-            }
-            else{
-                holder = (ViewHolder) convertView.getTag();
-            }
-
-            HonorListEntity.HonorEntity honorEntity = (HonorListEntity.HonorEntity)getItem(i);
+        public void convert(ViewHolder viewHolder, HonorListEntity.HonorEntity honorEntity, int i) {
             if (honorEntity != null  && !honorEntity.getStuName().equals("")) {
                 if(honorEntity.getIsMy()== 1) {
-                    holder.ivCrown.setImageResource(R.drawable.ic_livevideo_praiselist_crown);
-                    holder.tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
-                    holder.tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
+                    ivCrown.setImageResource(R.drawable.ic_livevideo_praiselist_crown);
+                    tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
+                    tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
                 }
                 else if(honorEntity.getIsMy()== 0){
-                    holder.ivCrown.setImageResource(0);
-                    holder.tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
-                    holder.tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
+                    ivCrown.setImageResource(0);
+                    tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
+                    tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
                 }
-                holder.tvName.setText(honorEntity.getStuName());
-                holder.tvCounts.setText("×"+honorEntity.getExcellentNum());
+                tvName.setText(honorEntity.getStuName());
+                tvCounts.setText("×"+honorEntity.getExcellentNum());
             }
-            return convertView;
-        }
-
-        class ViewHolder{
-            ImageView ivCrown;
-            TextView tvName;
-            TextView tvCounts;
         }
     }
 
-    /** 点赞榜适配器 */
-    private class ThumbsUpAdapter extends BaseAdapter{
-
-        ArrayList<ThumbsUpListEntity.ThumbsUpEntity> thumbsUpEntities;
-        private LayoutInflater layoutInflater;
-
-        public ThumbsUpAdapter(Context context, ArrayList<ThumbsUpListEntity.ThumbsUpEntity> thumbsUpEntities) {
-            this.thumbsUpEntities = thumbsUpEntities;
-            layoutInflater = LayoutInflater.from(context);
+    /**
+     * 点赞榜item
+     */
+    private class ThunbsUpItem implements RItemViewInterface<ThumbsUpListEntity.ThumbsUpEntity>{
+        ImageView ivCrown;
+        TextView tvName;
+        TextView tvCounts;
+        @Override
+        public int getItemLayoutId() {
+            return R.layout.item_livevideo_praiselist_honor;
         }
 
         @Override
-        public int getCount() {
-            return thumbsUpEntities.size();
+        public boolean isShowView(ThumbsUpListEntity.ThumbsUpEntity thumbsUpEntity, int i) {
+            return true;
         }
 
         @Override
-        public Object getItem(int i) {
-            return thumbsUpEntities.get(i);
+        public void initView(ViewHolder viewHolder, int i) {
+            ivCrown = (ImageView)viewHolder.getView(R.id.iv_livevideo_praiselist_honor_crown);
+            tvName = (TextView)viewHolder.getView(R.id.tv_livevideo_praiselist_honor_name);
+            tvCounts = (TextView)viewHolder.getView(R.id.tv_livevideo_praiselist_honor_counts);
         }
 
         @Override
-        public long getItemId(int i) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int i, View convertView, ViewGroup viewGroup) {
-            ViewHolder holder = null;
-            if(convertView == null){
-                convertView = layoutInflater.inflate(R.layout.item_livevideo_praiselist_honor,null);
-                holder = new ViewHolder();
-                holder.ivCrown = (ImageView)convertView.findViewById(R.id.iv_livevideo_praiselist_honor_crown);
-                holder.tvName = (TextView)convertView.findViewById(R.id.tv_livevideo_praiselist_honor_name);
-                holder.tvCounts = (TextView)convertView.findViewById(R.id.tv_livevideo_praiselist_honor_counts);
-                convertView.setTag(holder);
-            }
-            else{
-                holder = (ViewHolder) convertView.getTag();
-            }
-
-            ThumbsUpListEntity.ThumbsUpEntity thumbsUpEntity = (ThumbsUpListEntity.ThumbsUpEntity)getItem(i);
+        public void convert(ViewHolder viewHolder, ThumbsUpListEntity.ThumbsUpEntity thumbsUpEntity, int i) {
             if (thumbsUpEntity != null && !thumbsUpEntity.getStuName().equals("")) {
                 if(thumbsUpEntity.getIsMy()== 1) {
-                    holder.ivCrown.setImageResource(R.drawable.ic_livevideo_praiselist_crown);
-                    holder.tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
-                    holder.tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
+                    ivCrown.setImageResource(R.drawable.ic_livevideo_praiselist_crown);
+                    tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
+                    tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
                 }
                 else if(thumbsUpEntity.getIsMy()== 0){
-                    holder.ivCrown.setImageResource(0);
-                    holder.tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
-                    holder.tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
+                    ivCrown.setImageResource(0);
+                    tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
+                    tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
                 }
 
-                holder.tvName.setText(thumbsUpEntity.getStuName());
-                holder.tvCounts.setText("×"+thumbsUpEntity.getStuPraiseNum());
+                tvName.setText(thumbsUpEntity.getStuName());
+                tvCounts.setText("×"+thumbsUpEntity.getStuPraiseNum());
             }
-            return convertView;
-        }
-
-        class ViewHolder{
-            ImageView ivCrown;
-            TextView tvName;
-            TextView tvCounts;
         }
     }
-
-    /** 进步榜适配器 */
-    private class ProgressAdapter extends BaseAdapter{
-
-        ArrayList<ProgressListEntity.ProgressEntity> progressEntities;
-        private LayoutInflater layoutInflater;
-
-        public ProgressAdapter(Context context, ArrayList<ProgressListEntity.ProgressEntity> progressEntities) {
-            this.progressEntities = progressEntities;
-            layoutInflater = LayoutInflater.from(context);
+    /**
+     * 进步榜item
+     */
+    private class ProgressItem implements RItemViewInterface<ProgressListEntity.ProgressEntity>{
+        ImageView ivCrown;
+        TextView tvName;
+        TextView tvCounts;
+        ImageView ivArrow;
+        @Override
+        public int getItemLayoutId() {
+            return R.layout.item_livevideo_praiselist_progress;
         }
 
         @Override
-        public int getCount() {
-            return progressEntities.size();
+        public boolean isShowView(ProgressListEntity.ProgressEntity progressEntity, int i) {
+            return true;
         }
 
         @Override
-        public Object getItem(int i) {
-            return progressEntities.get(i);
+        public void initView(ViewHolder viewHolder, int i) {
+            ivCrown = (ImageView)viewHolder.getView(R.id.iv_livevideo_praiselist_progress_crown);
+            tvName = (TextView)viewHolder.getView(R.id.tv_livevideo_praiselist_progress_name);
+            tvCounts = (TextView)viewHolder.getView(R.id.tv_livevideo_praiselist_progress_counts);
+            ivArrow = (ImageView)viewHolder.getView(R.id.iv_livevideo_praiselist_progress_arrow);
         }
 
         @Override
-        public long getItemId(int i) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int i, View convertView, ViewGroup viewGroup) {
-            ViewHolder holder = null;
-            if(convertView == null){
-                convertView = layoutInflater.inflate(R.layout.item_livevideo_praiselist_progress,null);
-                holder = new ViewHolder();
-                holder.ivCrown = (ImageView)convertView.findViewById(R.id.iv_livevideo_praiselist_progress_crown);
-                holder.tvName = (TextView)convertView.findViewById(R.id.tv_livevideo_praiselist_progress_name);
-                holder.tvCounts = (TextView)convertView.findViewById(R.id.tv_livevideo_praiselist_progress_counts);
-                holder.ivArrow = (ImageView)convertView.findViewById(R.id.iv_livevideo_praiselist_progress_arrow);
-                convertView.setTag(holder);
-            }
-            else{
-                holder = (ViewHolder) convertView.getTag();
-            }
-
-            ProgressListEntity.ProgressEntity progressEntity = (ProgressListEntity.ProgressEntity)getItem(i);
+        public void convert(ViewHolder viewHolder, ProgressListEntity.ProgressEntity progressEntity, int i) {
             if (progressEntity != null && !progressEntity.getStuName().equals("")) {
                 if(progressEntity.getIsMy()== 1) {
-                    holder.ivCrown.setImageResource(R.drawable.ic_livevideo_praiselist_crown);
-                    holder.tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
-                    holder.tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
+                    ivCrown.setImageResource(R.drawable.ic_livevideo_praiselist_crown);
+                    tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
+                    tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
                 }
                 else if(progressEntity.getIsMy()== 0){
-                    holder.ivCrown.setImageResource(0);
-                    holder.tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
-                    holder.tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
+                    ivCrown.setImageResource(0);
+                    tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
+                    tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
                 }
 
-                holder.tvName.setText(progressEntity.getStuName());
-                holder.tvCounts.setText(progressEntity.getProgressScore()+"分");
-                holder.ivArrow.setImageResource(R.drawable.ic_livevideo_praiselist_arrow);
+                tvName.setText(progressEntity.getStuName());
+                tvCounts.setText(progressEntity.getProgressScore()+"分");
+                ivArrow.setImageResource(R.drawable.ic_livevideo_praiselist_arrow);
             }
-            return convertView;
-        }
-
-        class ViewHolder{
-            ImageView ivCrown;
-            TextView tvName;
-            TextView tvCounts;
-            ImageView ivArrow;
         }
     }
 
