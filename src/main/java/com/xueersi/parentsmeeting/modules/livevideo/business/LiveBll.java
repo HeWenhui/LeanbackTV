@@ -1517,7 +1517,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         try {
                             List<RankUserEntity> lst = JSON.parseArray(object.optString("stuInfo"), RankUserEntity.class);
                             if (mAnswerRankBll != null) {
-                                mAnswerRankBll.showRankList(lst);
+                                mAnswerRankBll.showRankList(lst,-1);
                             }
                         } catch (Exception e) {
                             Loger.i("=====notice " + e.getMessage());
@@ -1806,6 +1806,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
 
         public void onUnknown(String line) {
+            if(line.contains("BLOCK")){//发送了敏感词
+                if(mLiveAutoNoticeBll!=null) {
+                    mLiveAutoNoticeBll.showNotice("小孩子不要说脏话", "");
+                }
+            }
         }
     };
 

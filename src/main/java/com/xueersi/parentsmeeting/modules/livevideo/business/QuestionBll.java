@@ -428,7 +428,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             return;
                         }
                         if (mAnswerRankBll != null) {
-                            mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
+                            mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>(),XESCODE.STOPQUESTION);
                             mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                         }
                         hasQuestion = true;
@@ -930,7 +930,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
                 hasExam = true;
                 if (mAnswerRankBll != null) {
-                    mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>());
+                    mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>(),XESCODE.EXAM_STOP);
                     mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                 }
                 if (mExamAndBool.contains(num)) {

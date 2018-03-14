@@ -61,6 +61,8 @@ public class AnswerRankBll {
     private RCommonAdapter mAdapter;
     private LiveBll mLiveBll;
     private String nonce;
+    //private HashMap<String,Integer> mapHasLog;
+    private int curType;
     int wradio = 0;
 
     public void setNonce(String nonce) {
@@ -123,7 +125,7 @@ public class AnswerRankBll {
      * 显示上墙列表
      * @param lst
      */
-    public void showRankList(final List<RankUserEntity> lst) {
+    public void showRankList(final List<RankUserEntity> lst,int type) {
         if(mSoundPool==null) {
             mSoundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 5);
             mSoundPool.load(mContext, R.raw.sound_full_mark_list, 3);
@@ -135,6 +137,9 @@ public class AnswerRankBll {
             return;
         }
         //bottomContent.setClickable(true);
+        if(type!=-1){
+            curType=type;
+        }
         if (llRankList == null) {
             llRankList = new LinearLayout(mContext);
             //llRankList.setClickable(true);
@@ -166,17 +171,9 @@ public class AnswerRankBll {
             @Override
             public void run() {
                 for (int i = mLst.size(); i < lst.size(); i++) {
-                    /*if (i % 2 == 0) {
-                        LinearLayout linearLayout = new LinearLayout(mContext);
-                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(0, SizeUtils.Dp2Px(mContext, 7), 0, 0);
-                        linearLayout.setPadding(0, 0, SizeUtils.Dp2Px(mContext, 5), 0);
-                        linearLayout.setLayoutParams(params);
-                        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-                        llRankList.addView(linearLayout);
-                        llCurRow = linearLayout;
+                    if(lst.get(i).getId().equals(UserBll.getInstance().getMyUserInfoEntity().getStuId())){
+                        umsAgentUpWallBll(curType);
                     }
-                    llCurRow.addView(getRankListItemView(lst.get(i), i));*/
                     mLst.add(lst.get(i));
                 }
                 if(mAdapter!=null) {
@@ -337,7 +334,7 @@ public class AnswerRankBll {
         }
 
         bottomContent.addView(rlFullMarkList,mainParam);
-        umsAgentbll(type);
+        umsAgentFullListBll(type);
         if(tvStatus!=null){
             tvStatus.setText("答题结束");
         }
@@ -526,11 +523,12 @@ public class AnswerRankBll {
             mSoundPool.play(1, 1, 1, 10, 0, 1);
         }
     }
-    private void umsAgentbll(int type){
+    /**满分榜日志*/
+    private void umsAgentFullListBll(int type){
         HashMap<String,String> map=new HashMap<>();
         map.put("logtype","showMedalsPodium");
         map.put("testid",testId);
-        map.put("sno","6");
+        map.put("sno","7");
         map.put("nonce",nonce);
         map.put("ex","Y");
         map.put("stable","1");
@@ -550,6 +548,40 @@ public class AnswerRankBll {
                 break;
         }
         mLiveBll.umsAgentShowWithTeacherRole(eventId,map);
+    }
+
+    /**
+     * 上墙日志
+     * @param type
+     */
+    private void umsAgentUpWallBll(int type){
+//        if(mapHasLog.get(testId)==1){
+//            return;
+//        }
+        HashMap<String,String> map=new HashMap<>();
+        map.put("logtype","raiseHandList");
+        map.put("testid",testId);
+        map.put("sno","5");
+        //map.put("nonce",nonce);
+        map.put("ex","Y");
+        map.put("stable","2");
+        String eventId;
+        switch (type){
+            case XESCODE.STOPQUESTION:
+                eventId="live_h5test";
+                break;
+            case XESCODE.EXAM_STOP:
+                eventId="live_exam";
+                break;
+            case XESCODE.ENGLISH_H5_COURSEWARE:
+                eventId="live_h5waretest";
+                break;
+            default:
+                eventId="";
+                break;
+        }
+        mLiveBll.umsAgentShowWithTeacherRole(eventId,map);
+        //mapHasLog.put(testId,1);
     }
     private int getScreenParam(){
         final View contentView = ((Activity)mContext).findViewById(android.R.id.content);

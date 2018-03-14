@@ -105,7 +105,7 @@ public class LiveAutoNoticeBll {
         mSlowHorizontalScrollView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                //bottom.removeView(root);
+                bottom.removeView(root);
             }
         },last);
     }
