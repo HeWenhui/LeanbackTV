@@ -116,7 +116,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setConnectTimeout(20000);
                     connection.setReadTimeout(20000);
-                    connection.setRequestMethod("POST");
                     cancelable.connection = connection;
                     cancelable.callback = requestCallBack;
                     connection.setRequestProperty("Connection", "Keep-Alive");
@@ -750,13 +749,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_GET_THUMBS_UP_PROBABILITY, params, requestCallBack);
     }
-    public void saveLiveMark(String time,String url,HttpCallBack callBack){
-        HttpRequestParams params=new HttpRequestParams();
-        String stuId= UserBll.getInstance().getMyUserInfoEntity().getStuId();
-        params.addBodyParam("stuId",stuId);
-        params.addBodyParam("curTime",time);
-        params.addBodyParam("imageUrl",url);
+
+    public void saveLiveMark(String time, String url, HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("curTime", time);
+        params.addBodyParam("imageUrl", url);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_LIVE_SAVE_MARK_POINT,params,callBack);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_SAVE_MARK_POINT, params, callBack);
     }
 }
