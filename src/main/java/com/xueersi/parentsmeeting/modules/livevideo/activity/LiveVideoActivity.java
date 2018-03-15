@@ -191,7 +191,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     long startTime = System.currentTimeMillis();
     /** onPause状态不暂停视频 */
     boolean onPauseNotStopVideo = false;
-    LiveTextureView liveTextureView;
+//    LiveTextureView liveTextureView;
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         long before = System.currentTimeMillis();
@@ -232,13 +232,13 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     }
 
     private void initView() {
-        liveTextureView = (LiveTextureView) findViewById(R.id.ltv_course_video_video_texture);
-        liveTextureView.post(new Runnable() {
-            @Override
-            public void run() {
-                liveTextureView.vPlayer = vPlayer;
-            }
-        });
+//        liveTextureView = (LiveTextureView) findViewById(R.id.ltv_course_video_video_texture);
+//        liveTextureView.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                liveTextureView.vPlayer = vPlayer;
+//            }
+//        });
         // 预加载布局
         rlFirstBackgroundView = (RelativeLayout) findViewById(R.id.rl_course_video_first_backgroud);
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
@@ -302,9 +302,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         if (!isLand) {
                             return;
                         }
-                        if (liveTextureView.getLayoutParams() != lp) {
-                            liveTextureView.setLayoutParams(lp);
-                        }
+//                        if (liveTextureView.getLayoutParams() != lp) {
+//                            liveTextureView.setLayoutParams(lp);
+//                        }
                         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
                                 (int) VIDEO_HEIGHT, VIDEO_RATIO);
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
