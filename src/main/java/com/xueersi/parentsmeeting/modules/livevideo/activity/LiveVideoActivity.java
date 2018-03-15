@@ -30,7 +30,6 @@ import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
-import com.xueersi.parentsmeeting.modules.livevideo.business.AnswerRankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
@@ -66,6 +65,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.VPlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VP;
@@ -191,6 +191,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     long startTime = System.currentTimeMillis();
     /** onPause状态不暂停视频 */
     boolean onPauseNotStopVideo = false;
+    LiveTextureView liveTextureView;
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         long before = System.currentTimeMillis();
@@ -231,6 +232,13 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     }
 
     private void initView() {
+        liveTextureView = (LiveTextureView) findViewById(R.id.ltv_course_video_video_texture);
+        liveTextureView.post(new Runnable() {
+            @Override
+            public void run() {
+                liveTextureView.vPlayer = vPlayer;
+            }
+        });
         // 预加载布局
         rlFirstBackgroundView = (RelativeLayout) findViewById(R.id.rl_course_video_first_backgroud);
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
@@ -257,7 +265,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         //先让播放器按照默认模式设置
         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
                 (int) VIDEO_HEIGHT, VIDEO_RATIO);
-        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+        final ViewGroup.LayoutParams lp = videoView.getLayoutParams();
 
         //公开表扬,只有直播有
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
@@ -293,6 +301,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         //Loger.i(TAG, "setVideoWidthAndHeight:isLand=" + isLand);
                         if (!isLand) {
                             return;
+                        }
+                        if (liveTextureView.getLayoutParams() != lp) {
+                            liveTextureView.setLayoutParams(lp);
                         }
                         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
                                 (int) VIDEO_HEIGHT, VIDEO_RATIO);
@@ -489,8 +500,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     protected void onPlayOpenStart() {
         setFirstBackgroundVisible(View.VISIBLE);
         findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
-        LiveRemarkBll liveRemarkBll=new LiveRemarkBll(mContext,vPlayer.getPlayer());
-        if(mLiveBll!=null&&liveMediaControllerBottom!=null) {
+        LiveRemarkBll liveRemarkBll = new LiveRemarkBll(mContext, vPlayer.getPlayer());
+        if (mLiveBll != null && liveMediaControllerBottom != null) {
             liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             liveRemarkBll.setVideoView(videoView);
             mLiveBll.setLiveRemarkBll(liveRemarkBll);

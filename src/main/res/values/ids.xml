@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="ltv_course_video_video_texture" type="id" />
     <item name="rl_livevideo_student_load" type="id" />
     <item name="iv_livevideo_student_camera" type="id" />
     <item name="tv_livevideo_student_camera" type="id" />

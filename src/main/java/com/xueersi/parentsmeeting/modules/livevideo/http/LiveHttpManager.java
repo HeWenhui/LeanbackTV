@@ -116,6 +116,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setConnectTimeout(20000);
                     connection.setReadTimeout(20000);
+                    connection.setRequestMethod("POST");
                     cancelable.connection = connection;
                     cancelable.callback = requestCallBack;
                     connection.setRequestProperty("Connection", "Keep-Alive");
