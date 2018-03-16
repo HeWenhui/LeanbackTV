@@ -496,9 +496,11 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
         LiveRemarkBll liveRemarkBll = new LiveRemarkBll(mContext, vPlayer.getPlayer());
         if (mLiveBll != null && liveMediaControllerBottom != null) {
-            ViewStub viewStub = (ViewStub) findViewById(R.id.vs_course_video_video_texture);
-            liveTextureView = (LiveTextureView) viewStub.inflate();
-            liveTextureView.vPlayer = vPlayer;
+            if (liveTextureView == null) {
+                ViewStub viewStub = (ViewStub) findViewById(R.id.vs_course_video_video_texture);
+                liveTextureView = (LiveTextureView) viewStub.inflate();
+                liveTextureView.vPlayer = vPlayer;
+            }
             liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             liveRemarkBll.setVideoView(videoView);
             mLiveBll.setLiveRemarkBll(liveRemarkBll);
