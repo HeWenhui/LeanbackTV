@@ -152,6 +152,23 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_STUDY_RECEIVE_LIVE_PLAY_RED_PACKET_GOLD, params, requestCallBack);
     }
 
+    /**
+     * 获取体验直播课红包
+     *
+     * @param enStuId
+     * @param requestCallBack
+     */
+    public void getLivePlayRedPackets(String enStuId, String operateId,String termId, String liveId, HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+//        params.addBodyParam("enstuId", enStuId);
+        params.addBodyParam("operateId", operateId);
+        params.addBodyParam("termId", termId);
+        params.addBodyParam("liveId", liveId);
+        sendPost("http://laoshi.xueersi.com/science/AutoLive/receiveGold", params, requestCallBack);
+    }
+
     public void getLiveLectureMsgs(String enstuId, String keyName, int count, String start, int sort,
                                    HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();

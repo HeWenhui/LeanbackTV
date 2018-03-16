@@ -421,7 +421,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     protected void onPlayOpenSuccess() {
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(View.GONE);
-            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()));
+//            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()));
+            seekTo(7190000);
             initView();
             initMessagePager(bottomContent);
         }
@@ -482,6 +483,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         currentMsg = currentPosition;
         // 扫描互动题
         scanQuestion(currentPosition);
+        Log.e("Duncan","currentPosition:" + currentPosition);
     }
 
     /** 扫描是否有需要弹出的互动题 */
@@ -586,7 +588,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                         publicLiveCourseRedPacket();
                     } else {
                         BaseBll.postDataLoadEvent(loadEntity.beginLoading());
-                        lectureLivePlayBackBll.getLivePlayRedPacket(loadEntity, mVideoEntity.getLiveId(), mRedPacketId);
+                        lectureLivePlayBackBll.getLivePlayRedPackets(loadEntity,mRedPacketId,mVideoEntity.getLiveId(),mVideoEntity.getChapterId());
                     }
                     XesMobAgent.playVideoStatisticsMessage(MobEnumUtil.REDPACKET_LIVEPLAYBACK, MobEnumUtil.REDPACKET_GRAB,
                             XesMobAgent.XES_VIDEO_INTERACTIVE);

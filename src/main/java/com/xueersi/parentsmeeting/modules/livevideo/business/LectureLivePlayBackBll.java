@@ -284,6 +284,61 @@ public class LectureLivePlayBackBll extends BaseBll {
         }.execute(true);
     }
 
+    /**
+     * 体验直播课直播回放得到金币
+     *
+     * @param dataLoadEntity
+     * @param liveId
+     */
+    public void getLivePlayRedPackets(final DataLoadEntity dataLoadEntity, final String operateId, final String liveId, final String termId) {
+
+        new XSAsykTask() {
+
+            @Override
+            public void preTask() {
+            }
+
+            @Override
+            public void postTask() {
+                // 从网络更新数据库数据
+                if (!NetWorkHelper.isNetworkAvailable(mContext)) {
+                    postDataLoadEvent(dataLoadEntity.webDataError());
+                    EventBus.getDefault().post(new PlaybackVideoEvent.OnPlayVideoWebError(""));
+                    return;
+                }
+
+                MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+                // 网络加载数据
+                mCourseHttpManager.getLivePlayRedPackets(myUserInfoEntity.getEnstuId(),operateId,termId, liveId,
+                        new HttpCallBack(dataLoadEntity) {
+
+                            @Override
+                            public void onPmSuccess(ResponseEntity responseEntity) {
+                                VideoResultEntity entity = mCourseHttpResponseParser
+                                        .redPacketParseParser(responseEntity);
+                                isEmpty(entity, dataLoadEntity);
+                                EventBus.getDefault().post(new PlaybackVideoEvent.OnGetRedPacket(entity));
+                            }
+
+                            @Override
+                            public void onPmFailure(Throwable error, String msg) {
+                                XESToastUtils.showToast(mContext, msg);
+                            }
+
+                            @Override
+                            public void onPmError(ResponseEntity responseEntity) {
+                                XESToastUtils.showToast(mContext, responseEntity.getErrorMsg());
+                            }
+                        });
+            }
+
+            @Override
+            public void doInBack() {
+
+            }
+        }.execute(true);
+    }
+
     /** 从文件得到聊天记录 */
     public LiveMessageGroupEntity getLiveLectureMsgsFromFile(File file) {
         if (file.exists()) {

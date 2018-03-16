@@ -55,6 +55,9 @@ public class LiveVideoSAConfig {
         /** 获取红包 */
         public String URL_STUDY_RECEIVE_LIVE_PLAY_RED_PACKET_GOLD = HTTP_HOST
                 + "/LiveCourse/receiveGoldForPlayBack";
+        /*获取体验直播课的红包*/
+        public String URL_STUDY_RECEIVE_LIVE_PLAY_RED_PACKET_GOLDS = HTTP_HOST
+                + "/science/AutoLive/receiveGold";
         /** 用户试听 */
         public String URL_LIVE_USER_MODETIME = HTTP_HOST + "/LiveCourse/userModeTime";
         /** 学生上课情况 */
