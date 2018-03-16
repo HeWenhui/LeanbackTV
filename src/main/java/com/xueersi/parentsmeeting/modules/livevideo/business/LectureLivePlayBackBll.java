@@ -4,7 +4,9 @@ import android.content.Context;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.base.BaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ExPerienceLiveMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
@@ -21,6 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
+import com.xueersi.parentsmeeting.util.JsonUtil;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.app.XSAsykTask;
 import com.xueersi.xesalib.utils.file.FileUtils;
@@ -596,5 +599,58 @@ public class LectureLivePlayBackBll extends BaseBll {
                 callBack.onDataSucess();
             }
         });
+    }
+
+    // 18.03.14 获取体验课的聊天记录
+    public void getExperienceMsgs(String liveId,String classId,Long start,final ExperienceLiveVideoActivity.GetExperienceLiveMsgs
+            getLiveLectureMsgs){
+        mCourseHttpManager.getExperiencenMsgs(liveId, classId, start , new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                ExPerienceLiveMessage livebackmsg = JsonUtil.getEntityFromJson(responseEntity.getJsonObject().toString(), ExPerienceLiveMessage.class);
+                getLiveLectureMsgs.getLiveExperienceMsgs(livebackmsg);
+            }
+        });
+
+    }
+
+    /**
+     * 上传视频互动题答案
+     *
+     * @param dataLoadEntity
+     * @param sectionId
+     */
+    public void saveQuestionResults(final DataLoadEntity dataLoadEntity, final String srcType, final String sectionId,
+                                    final String result,
+                                    final String testDay, final String liveId, final int livePlayType) {
+        // 从网络更新数据库数据
+        if (!NetWorkHelper.isNetworkAvailable(mContext)) {
+            postDataLoadEvent(dataLoadEntity.webDataError());
+            EventBus.getDefault().post(new PlaybackVideoEvent.OnPlayVideoWebError(result));
+            return;
+        }
+        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        // 网络加载数据
+        mCourseHttpManager.saveTestRecords(myUserInfoEntity.getEnstuId(), srcType, sectionId, result, testDay,
+                liveId, livePlayType, false, false, new HttpCallBack(dataLoadEntity) {
+
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) {
+                        VideoResultEntity entity = mCourseHttpResponseParser
+                                .parseQuestionAnswer(responseEntity, false);
+                        isEmpty(entity, dataLoadEntity);
+                        EventBus.getDefault().post(new PlaybackVideoEvent.OnAnswerReslut(entity));
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        XESToastUtils.showToast(mContext, msg);
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        XESToastUtils.showToast(mContext, responseEntity.getErrorMsg());
+                    }
+                });
     }
 }

@@ -760,6 +760,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         });
     }
 
+    // 03.16 设置模拟的聊天连接
+    public void onConnects(){
+        addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT);
+        ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_online);
+    }
+
     /** 聊天进入房间 */
     public void onRegister() {
         mView.post(new Runnable() {
@@ -1076,5 +1082,20 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         tvMessageGold.setText(goldNum);
         tvMessageGold.setVisibility(View.VISIBLE);
         tvMessageGoldLable.setVisibility(View.VISIBLE);
+    }
+
+    // 03.16 模拟读取历史聊天记录
+    public void oldMessage(){
+        mView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT);
+            }
+        },10000);
+    }
+
+    // 03.16 模拟显示聊天人数
+    public void showPeopleCount(int num){
+        tvMessageCount.setText(num + "人正在上课");
     }
 }

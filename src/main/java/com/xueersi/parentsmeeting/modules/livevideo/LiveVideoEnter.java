@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity;
@@ -263,7 +264,8 @@ public class LiveVideoEnter {
      * @param bundle
      */
     public static boolean intentTo(Activity context, Bundle bundle, String where) {
-        LivePlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+//        LivePlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+        ExperienceLiveVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
         return true;
     }
 

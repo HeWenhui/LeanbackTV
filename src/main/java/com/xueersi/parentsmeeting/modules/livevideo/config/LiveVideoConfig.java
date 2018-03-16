@@ -114,5 +114,6 @@ public class LiveVideoConfig {
     /** 英语能量条提示 */
     public static String LEC_LEARN_REPORT = "lec_learn_report";
 
-
+    // 03.16 体验课互动题提交答案
+    public static String LIVE_EXPE_SUBMIT = AppConfig.HTTP_HOST + "/science/AutoLive/submitTestAnswer";
 }

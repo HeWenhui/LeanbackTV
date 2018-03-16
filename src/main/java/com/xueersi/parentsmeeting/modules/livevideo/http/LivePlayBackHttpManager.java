@@ -219,4 +219,53 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         requestCallBack.url = LiveVideoConfig.URL_LIVE_GET_LEC_AD;
         sendPost(LiveVideoConfig.URL_LIVE_GET_LEC_AD, params, requestCallBack);
     }
+
+    // 03.14 获取体验课聊天记录
+    public void getExperiencenMsgs(String liveId, String classId,Long start,
+                                   HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("start", start.toString());
+        sendPost("http://laoshi.xueersi.com/science/AutoLive/getLiveCourseMsgs", params, requestCallBack);
+
+    }
+
+    /**
+     * 提交互动题
+     *
+     * @param enStuId
+     * @param srcType         题库
+     * @param testId
+     * @param testResult
+     * @param testDay
+     * @param classId
+     * @param isRight
+     * @param requestCallBack
+     */
+    public void saveTestRecords(String enStuId, String srcType, String testId, String testResult, String testDay,
+                                String classId,
+                                int livePlayType, boolean voice, boolean isRight, HttpCallBack requestCallBack) {
+        String liveUrl = LiveVideoConfig.LIVE_EXPE_SUBMIT;
+        // 如果是录播直播回放
+//        if (livePlayType == LocalCourseConfig.LIVETYPE_RECORDED) {
+//            liveUrl = LiveVideoConfig.URL_STUDY_SAVE_TEST_RECORD;
+//            // 直播讲座
+//        } else if (livePlayType == LocalCourseConfig.LIVETYPE_LECTURE) {
+//            liveUrl = LiveVideoConfig.URL_PUBLIC_LIVE_COURSE_SUBMIT_QUESTION;
+//        } else {
+//            if (voice) {
+//                liveUrl = liveVideoSAConfigInner.URL_LIVE_SUBMIT_TEST_ANSWER_VOICE;
+//            } else {
+//                liveUrl = liveVideoSAConfigInner.URL_STUDY_SAVE_ANSWER_FOR_PLAYBACK;
+//            }
+//        }
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", "134436");
+        params.addBodyParam("termId", "19");
+        params.addBodyParam("testId", testId);
+        params.addBodyParam("testAnswer", testResult);
+        sendPost(liveUrl, params, requestCallBack);
+    }
 }
