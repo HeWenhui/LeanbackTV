@@ -17,6 +17,7 @@ import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
+import com.xueersi.parentsmeeting.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -657,7 +658,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-
+                    MobAgent.httpResponseParserError(TAG, "getFullMarkListH5", e.getMessage());
                 }
                 handler.postDelayed(new Runnable() {
                     @Override
