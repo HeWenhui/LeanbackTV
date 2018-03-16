@@ -31,7 +31,8 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
     }
 
     public void experience(){
-        findViewById(R.id. bt_livevideo_message_flowers).setVisibility(INVISIBLE);
+        findViewById(R.id.bt_livevideo_message_flowers).setVisibility(INVISIBLE);
+        findViewById(R.id.bt_livevideo_mark).setVisibility(INVISIBLE);
     }
 
 }
