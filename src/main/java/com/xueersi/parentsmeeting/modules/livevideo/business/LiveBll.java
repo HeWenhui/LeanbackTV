@@ -3562,7 +3562,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      */
     public void umsAgentShowWithTeacherRole(String eventId, Map<String, String> data) {
         data.put("teacherrole", getMode().equals(LiveTopic.MODE_CLASS) ? "1" : "4");
-        umsAgentDebug3(eventId, data);
+        umsAgentDebug2(eventId, data);
     }
 
     /**

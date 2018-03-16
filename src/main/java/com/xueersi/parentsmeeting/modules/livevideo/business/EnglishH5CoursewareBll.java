@@ -234,7 +234,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     if (!"1".equals(videoQuestionLiveEntity.getIsVoice()) || mErrorVoiceQue.contains(videoQuestionLiveEntity.url)) {
                         hasQuestion = true;
                         if (mAnswerRankBll != null) {
-                            mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>(),XESCODE.EXAM_STOP);
+                            mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>(),XESCODE.ENGLISH_H5_COURSEWARE);
                             mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                         }
                     }
