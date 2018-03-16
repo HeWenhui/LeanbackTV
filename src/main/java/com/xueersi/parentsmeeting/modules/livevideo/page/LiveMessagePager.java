@@ -1089,7 +1089,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT);
+                addMessage("Teacher", LiveMessageEntity.MESSAGE_TIP, CONNECT);
             }
         },10000);
     }
