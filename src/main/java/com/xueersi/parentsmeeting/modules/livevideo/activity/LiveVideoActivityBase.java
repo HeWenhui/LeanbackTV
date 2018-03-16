@@ -137,7 +137,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     protected int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
 
     /** 放播放器的 io.vov.vitamio.widget.CenterLayout */
-    private ViewGroup viewRoot;
+    protected ViewGroup viewRoot;
 
     /** 播放器的VideoView com.xueersi.parentsmeeting.player.media.VideoView */
     protected VideoView videoView;

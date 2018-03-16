@@ -21,6 +21,11 @@
             android:layout_centerVertical="true"
             android:background="@color/COLOR_000000">
 
+            <ViewStub
+                android:id="@id/vs_course_video_video_texture"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout="@layout/layout_live_texture" />
             <!-- 播放器 -->
 
             <com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoView

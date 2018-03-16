@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -191,7 +192,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     long startTime = System.currentTimeMillis();
     /** onPause状态不暂停视频 */
     boolean onPauseNotStopVideo = false;
-//    LiveTextureView liveTextureView;
+    LiveTextureView liveTextureView;
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         long before = System.currentTimeMillis();
@@ -232,13 +233,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     }
 
     private void initView() {
-//        liveTextureView = (LiveTextureView) findViewById(R.id.ltv_course_video_video_texture);
-//        liveTextureView.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                liveTextureView.vPlayer = vPlayer;
-//            }
-//        });
         // 预加载布局
         rlFirstBackgroundView = (RelativeLayout) findViewById(R.id.rl_course_video_first_backgroud);
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
@@ -502,6 +496,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
         LiveRemarkBll liveRemarkBll = new LiveRemarkBll(mContext, vPlayer.getPlayer());
         if (mLiveBll != null && liveMediaControllerBottom != null) {
+            ViewStub viewStub = (ViewStub) findViewById(R.id.vs_course_video_video_texture);
+            liveTextureView = (LiveTextureView) viewStub.inflate();
+            liveTextureView.vPlayer = vPlayer;
             liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             liveRemarkBll.setVideoView(videoView);
             mLiveBll.setLiveRemarkBll(liveRemarkBll);
