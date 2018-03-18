@@ -195,6 +195,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private LiveMessageBll liveMessageBll;
     private boolean isAnaswer = false;
     private AnswerRankBll mAnswerRankBll;
+    /**智能私信业务*/
+    private LiveAutoNoticeBll mLiveAutoNoticeBll;
     private VideoQuestionLiveEntity mVideoQuestionLiveEntity;
     private boolean hasQuestion;
     private boolean hasExam;
@@ -225,6 +227,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     public void setLiveMessageBll(LiveMessageBll liveMessageBll) {
         this.liveMessageBll = liveMessageBll;
+    }
+
+    public void setLiveAutoNoticeBll(LiveAutoNoticeBll liveAutoNoticeBll) {
+        mLiveAutoNoticeBll = liveAutoNoticeBll;
     }
 
     public void setVSectionID(String mVSectionID) {
@@ -786,6 +792,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         if (hasSubmit) {
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
+            getAutoNotice(0);
+            Loger.i(LiveAutoNoticeBll.class.getSimpleName(),"question end");
             hasQuestion = false;
         }
         if ("4".equals(ptype)) {
@@ -1700,11 +1708,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
-    public void onSubmit(int type, boolean isShowFullMarkList) {
+    public void onSubmit(int type, boolean isForceSubmit) {
         submitTime = System.currentTimeMillis();
         mLiveBll.sendRankMessage(XESCODE.RANK_STU_MESSAGE);
-        if (isShowFullMarkList) {
+        if (isForceSubmit) {
             getFullMarkList(type, 3000);
+            getAutoNotice(1);
+            Loger.i(LiveAutoNoticeBll.class.getSimpleName(),"question force submit");
             switch (type) {
                 case XESCODE.STOPQUESTION:
                     hasQuestion = false;
@@ -1766,5 +1776,21 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
             }
         }, delayTime);
+    }
+
+    /**
+     * 获取智能私信
+     */
+    public void getAutoNotice(final int isForce){
+        if(mLiveAutoNoticeBll==null){
+            return;
+        }
+        mVPlayVideoControlHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mLiveAutoNoticeBll.getAutoNotice(isForce,0);
+            }
+        },10000);
+
     }
 }

@@ -444,4 +444,8 @@
     <item name="iv_live_auto_notice_avatar" type="id" />
     <item name="tv_live_auto_notice_content" type="id" />
     <item name="bt_livevideo_mark" type="id" />
+    <item name="iv_video_mark_points" type="id" />
+    <item name="iv_live_mark_point_shot_pic" type="id" />
+    <item name="iv_live_mark_point_play" type="id" />
+    <item name="tv_live_mark_point_text" type="id" />
 </resources>

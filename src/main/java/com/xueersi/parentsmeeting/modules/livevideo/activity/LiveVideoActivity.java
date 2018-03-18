@@ -324,6 +324,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         if (mLiveBll != null && mLiveBll.getLiveAutoNoticeBll() != null) {
                             mLiveBll.getLiveAutoNoticeBll().setLayout(lp.width, lp.height);
                         }
+                        if(mLiveBll!=null&&mLiveBll.getLiveRemarkBll()!=null){
+                            mLiveBll.getLiveRemarkBll().setLayout(lp.width,lp.height);
+                        }
                         if (speechFeedBackAction != null) {
                             speechFeedBackAction.setVideoLayout(lp.width, lp.height);
                         }
@@ -501,6 +504,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 liveTextureView = (LiveTextureView) viewStub.inflate();
                 liveTextureView.vPlayer = vPlayer;
             }
+            liveRemarkBll.setTextureView(liveTextureView);
             liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             liveRemarkBll.setVideoView(videoView);
             mLiveBll.setLiveRemarkBll(liveRemarkBll);

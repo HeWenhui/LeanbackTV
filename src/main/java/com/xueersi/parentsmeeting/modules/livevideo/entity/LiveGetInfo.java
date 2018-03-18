@@ -131,6 +131,16 @@ public class LiveGetInfo {
     private TotalOpeningLength totalOpeningLength;
     /**是否显示满分榜*/
     private String is_show_ranks;
+    /**是否显示智能私信*/
+    private String isShowCounselorWhisper;
+
+    public String getIsShowCounselorWhisper() {
+        return isShowCounselorWhisper;
+    }
+
+    public void setIsShowCounselorWhisper(String isShowCounselorWhisper) {
+        this.isShowCounselorWhisper = isShowCounselorWhisper;
+    }
 
     public String getIs_show_ranks() {
         return is_show_ranks;

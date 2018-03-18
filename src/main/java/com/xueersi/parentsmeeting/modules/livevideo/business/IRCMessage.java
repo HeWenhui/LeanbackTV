@@ -300,6 +300,9 @@ public class IRCMessage {
                         mHandler.postDelayed(mPingRunnable, mPingDelay);
                     }
                 }
+                if (mIRCCallback != null) {
+                    mIRCCallback.onUnknown(line);
+                }
             }
         });
         new Thread() {

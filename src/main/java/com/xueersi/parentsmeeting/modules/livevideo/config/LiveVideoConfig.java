@@ -116,4 +116,10 @@ public class LiveVideoConfig {
 
     // 03.16 体验课互动题提交答案
     public static String LIVE_EXPE_SUBMIT = AppConfig.HTTP_HOST + "/science/AutoLive/submitTestAnswer";
+    /**获取标记点列表*/
+    public static String URL_LIVE_GET_MARK_POINTS=AppConfig.HTTP_HOST+"/science/LiveCourse/getMarkpoint";
+    /**保存标记点*/
+    public static String URL_LIVE_SET_MARK_POINTS=AppConfig.HTTP_HOST+"/science/LiveCourse/setMarkpoint";
+    /**删除标记点*/
+    public static String URL_LIVE_DELETE_MARK_POINTS=AppConfig.HTTP_HOST+"/science/LiveCourse/deleteMarkpoint";
 }

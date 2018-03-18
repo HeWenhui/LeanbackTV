@@ -90,11 +90,12 @@ public class LiveVideoSAConfig {
         /** 获取点赞概率 */
         public String URL_LIVE_GET_THUMBS_UP_PROBABILITY = HTTP_HOST + "/LiveCourse/getStuOnList";
         /**存标记点*/
-        public String URL_LIVE_SAVE_MARK_POINT=HTTP_HOST+"/Live/setMarkpoint";
+        public String URL_LIVE_SAVE_MARK_POINT=HTTP_HOST+"/LiveCourse/setMarkpoint";
         /**获取标记点*/
         public String URL_LIVE_GET_MARK_POINT=HTTP_HOST+"/Live/getMarkpoint";
         /**删除标记点*/
         public String URL_LIVE_DELETE_MARK_POINT=HTTP_HOST+"/Live/deleteMarkpoint";
+        public String URL_LIVE_GET_AUTO_NOTICE=HTTP_HOST+"/LiveCourse/counselorWhisper";
 
         /** h5课件地址 */
         public String coursewareH5 = "https://live.xueersi.com/" +

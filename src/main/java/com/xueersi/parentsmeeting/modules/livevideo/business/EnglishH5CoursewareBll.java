@@ -86,6 +86,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     private LiveBll mLiveBll;
     SpeechEvaluatorUtils mIse;
     private AnswerRankBll mAnswerRankBll;
+    /**智能私信业务*/
+    private LiveAutoNoticeBll mLiveAutoNoticeBll;
     private boolean hasQuestion;
     private long submitTime;
     private boolean hasSubmit;
@@ -123,6 +125,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
     public void setShareDataManager(ShareDataManager mShareDataManager) {
         this.mShareDataManager = mShareDataManager;
+    }
+
+    public void setLiveAutoNoticeBll(LiveAutoNoticeBll liveAutoNoticeBll) {
+        mLiveAutoNoticeBll = liveAutoNoticeBll;
     }
 
     public void setLiveBll(LiveBll mLiveBll) {
@@ -285,6 +291,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         answerPager.examSubmitAll("onH5Courseware", videoQuestionLiveEntity.nonce);
                     }
                     int delayTime = 0;
+                    int isForce=0;
                     if (h5CoursewarePager != null) {
                         curPager = h5CoursewarePager;
                         h5CoursewarePager.submitData();
@@ -297,8 +304,13 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                             webViewRequest.releaseWebView();
                         }
                         delayTime = 3000;
+                        isForce=1;
                     }
-                    getFullMarkList(delayTime);
+                    if(hasQuestion) {
+                        getFullMarkList(delayTime);
+                        getAutoNotice(isForce);
+                        hasQuestion=false;
+                    }
                 }
             }
         });
@@ -632,11 +644,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         if (mAnswerRankBll == null) {
             return;
         }
-        if (hasQuestion) {
+        /*if (hasQuestion) {
             hasQuestion = false;
         } else {
             return;
-        }
+        }*/
         //hasSubmit=false;
         mAnswerRankBll.getFullMarkListH5(new HttpCallBack(false) {
             @Override
@@ -740,5 +752,25 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         }else{
             hasSubmit=true;
         }*/
+    }
+    /**
+     * 获取智能私信
+     */
+    public void getAutoNotice(final int isForce){
+        if(mLiveAutoNoticeBll==null){
+            return;
+        }
+        /*if (hasQuestion) {
+            hasQuestion = false;
+        } else {
+            return;
+        }*/
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mLiveAutoNoticeBll.getAutoNotice(isForce,5);
+            }
+        },10000);
+
     }
 }

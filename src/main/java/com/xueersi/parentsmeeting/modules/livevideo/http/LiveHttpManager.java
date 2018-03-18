@@ -9,6 +9,7 @@ import com.xueersi.parentsmeeting.base.BaseHttpBusiness;
 import com.xueersi.parentsmeeting.http.CommonRequestCallBack;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.HttpRequestParams;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -648,6 +649,13 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(requestCallBack.url, params, requestCallBack);
     }
 
+    /**
+     * 互动题获取满分榜
+     * @param testId
+     * @param classId
+     * @param teamId
+     * @param callBack
+     */
     public void getFullMarkListQuestion(String testId, String classId, String teamId, HttpCallBack callBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
@@ -657,7 +665,12 @@ public class LiveHttpManager extends BaseHttpBusiness {
         String i = JSON.toJSON(params).toString();
         sendPost(liveVideoSAConfigInner.LIVE_FULL_MARK_LIST_QUESTION, params, callBack);
     }
-
+    /**
+     * 测试卷获取满分榜
+     * @param classId
+     * @param teamId
+     * @param callBack
+     */
     public void getFullMarkListTest(String classId, String teamId, String testPlan, HttpCallBack callBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
@@ -667,6 +680,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.LIVE_FULL_MARK_LIST_TEST, params, callBack);
     }
 
+    /**
+     * 课件获取满分榜
+     * @param classId
+     * @param teamId
+     * @param testId
+     * @param type
+     * @param callBack
+     */
     public void getFullMarkListH5(String classId, String teamId, String testId, String type, HttpCallBack callBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
@@ -750,6 +771,12 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_LIVE_GET_THUMBS_UP_PROBABILITY, params, requestCallBack);
     }
 
+    /**
+     * 保存标记点
+     * @param time
+     * @param url
+     * @param callBack
+     */
     public void saveLiveMark(String time, String url, HttpCallBack callBack) {
         HttpRequestParams params = new HttpRequestParams();
         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
@@ -758,5 +785,53 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("imageUrl", url);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_SAVE_MARK_POINT, params, callBack);
+    }
+
+    /**
+     * 获取标记点
+     * @param callBack
+     */
+    public void getMarkPoints(HttpCallBack callBack){
+        HttpRequestParams params=new HttpRequestParams();
+        params.addBodyParam("stuId",UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        setDefaultParameter(params);
+//        params.addBodyParam("stuId","15657");
+//        params.addBodyParam("liveId","107070");
+        sendPost(LiveVideoConfig.URL_LIVE_GET_MARK_POINTS,params,callBack);
+    }
+    /**
+     * 删除标记点
+     * @param callBack
+     */
+    public void deleteMarkPoints(long time,HttpCallBack callBack){
+        HttpRequestParams params=new HttpRequestParams();
+        params.addBodyParam("stuId",UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        setDefaultParameter(params);
+//        params.addBodyParam("stuId","15657");
+//        params.addBodyParam("liveId","107070");
+        params.addBodyParam("curTime",""+time);
+        sendPost(LiveVideoConfig.URL_LIVE_DELETE_MARK_POINTS,params,callBack);
+    }
+
+    /**
+     * 获取智能私信
+     * @param classId
+     * @param testId
+     * @param srcType
+     * @param type
+     * @param isForce
+     * @param callBack
+     */
+    public void getAutoNotice(String classId,String testId,String srcType,int type,int isForce,HttpCallBack callBack){
+        HttpRequestParams params=new HttpRequestParams();
+        params.addBodyParam("classId",classId);
+        params.addBodyParam("testId",testId);
+        params.addBodyParam("srcType",srcType);
+        params.addBodyParam("type",""+type);
+        params.addBodyParam("isForce",""+isForce);
+        params.addBodyParam("stuId",UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        setDefaultParameter(params);
+        Loger.i(LiveAutoNoticeBll.class.getSimpleName(),JSON.toJSON(params).toString());
+        sendPost(liveVideoSAConfigInner.URL_LIVE_GET_AUTO_NOTICE,params,callBack);
     }
 }

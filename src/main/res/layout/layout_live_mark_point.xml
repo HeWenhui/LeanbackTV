@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical">
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#a0ffffff"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <View
+            android:layout_width="5dp"
+            android:layout_height="5dp"
+            android:background="@drawable/shape_red_corners"/>
+    <FrameLayout
+        android:layout_width="72dp"
+        android:layout_height="54dp"
+        android:layout_margin="5dp">
+        <ImageView
+            android:id="@id/iv_live_mark_point_shot_pic"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"/>
+        <ImageView
+            android:id="@id/iv_live_mark_point_play"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#a0000000"
+            android:src="@drawable/bg_liveplayback_point_play"
+            android:padding="10dp"
+            />
+    </FrameLayout>
+    <TextView
+        android:id="@id/tv_live_mark_point_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>

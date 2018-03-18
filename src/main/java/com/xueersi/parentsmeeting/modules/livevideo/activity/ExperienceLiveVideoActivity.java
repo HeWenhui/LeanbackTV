@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PutQuestion;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
@@ -253,6 +254,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     /** 当前时间，豪妙 */
     private long currentMsg = 0;
     private ExPerienceLiveMessage mMessage;
+    private LiveRemarkBll mLiveRemarkBll;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -279,10 +281,19 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         questionBll = new QuestionBll(this, mVideoEntity.getStuCourseId());
         mLiveBll = new LiveBll(this, mVideoEntity.getSectionId(), mVideoEntity.getChapterId(), 1, 0);
         liveMessageBll = new LiveMessageBll(this, 1);
+
     }
 
     private void initView() {
         baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
+        baseLiveMediaControllerTop.setMarkPointsOp(true, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mLiveRemarkBll!=null){
+                    mLiveRemarkBll.getMarkPoints();
+                }
+            }
+        });
         mMediaController.setControllerTop(baseLiveMediaControllerTop);
         liveMediaControllerBottom = new LiveMediaControllerBottom(this, mMediaController, this);
         liveMediaControllerBottom.experience();
@@ -296,6 +307,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //        ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
         bottomContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
+
         praiselistContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_praiselist_content);
         praiselistContent.setVisibility(View.VISIBLE);
         ivLoading = (ImageView) findViewById(R.id.iv_course_video_loading_bg);
@@ -431,12 +443,16 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                     "mIsShowQuestion=" + mIsShowQuestion);
 //            showQuestion(mQuestionEntity);
         }
+        mLiveRemarkBll=new LiveRemarkBll(mContext,vPlayer.getPlayer());
+        mLiveRemarkBll.setBottom(bottomContent);
+        mLiveBll.setLiveRemarkBll(mLiveRemarkBll);
     }
 
     @Override
     protected void onPlayOpenStart() {
         setFirstBackgroundVisible(View.VISIBLE);
         findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
+
     }
 
     public void setFirstBackgroundVisible(int visible) {

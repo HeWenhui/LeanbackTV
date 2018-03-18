@@ -42,6 +42,8 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
     protected TextView tvFileName;
     /** 底部控制栏右边的横竖屏切换按钮 */
     private ImageView mAllView;
+    /**标题栏右侧按钮*/
+    private View vTitleRight;
 
     public BaseLiveMediaControllerTop(Context context, LiveMediaController controller, LiveMediaController.MediaPlayerControl mPlayer) {
         super(context);
@@ -91,6 +93,7 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
         mAllView = (ImageView) findViewById(R.id.iv_video_mediacontroller_controls_allview);
         mBack.setOnClickListener(mBackClickListener);
         mAllView.setOnClickListener(mAllViewClickListener);
+        vTitleRight=findViewById(R.id.iv_video_mark_points);
         FractionalTouchDelegate.setupDelegate(mSystemInfoLayout, mBack, new RectF(1.0f, 1f, 1.2f, 1.2f));
     }
 
@@ -135,6 +138,15 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
             mAllView.setVisibility(View.VISIBLE);
         } else {
             mAllView.setVisibility(View.INVISIBLE);
+        }
+    }
+    /**标记点按钮是否显示及监听*/
+    public void setMarkPointsOp(boolean isShow,OnClickListener listener){
+        if(isShow){
+            vTitleRight.setVisibility(VISIBLE);
+            vTitleRight.setOnClickListener(listener);
+        }else{
+            vTitleRight.setVisibility(GONE);
         }
     }
 }
