@@ -175,6 +175,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     SpeechEvaluatorUtils mIse;
     RankBll rankBll;
     EnglishH5CacheAction englishH5Cache;
+    private LiveRemarkBll liveRemarkBll;
     /** 视频宽度 */
     public static final float VIDEO_WIDTH = 1280f;
     /** 视频高度 */
@@ -497,17 +498,19 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     protected void onPlayOpenStart() {
         setFirstBackgroundVisible(View.VISIBLE);
         findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
-        LiveRemarkBll liveRemarkBll = new LiveRemarkBll(mContext, vPlayer.getPlayer());
-        if (mLiveBll != null && liveMediaControllerBottom != null) {
-            if (liveTextureView == null) {
-                ViewStub viewStub = (ViewStub) findViewById(R.id.vs_course_video_video_texture);
-                liveTextureView = (LiveTextureView) viewStub.inflate();
-                liveTextureView.vPlayer = vPlayer;
+        if(liveRemarkBll==null) {
+            liveRemarkBll = new LiveRemarkBll(mContext, vPlayer.getPlayer());
+            if (mLiveBll != null && liveMediaControllerBottom != null) {
+                if (liveTextureView == null) {
+                    ViewStub viewStub = (ViewStub) findViewById(R.id.vs_course_video_video_texture);
+                    liveTextureView = (LiveTextureView) viewStub.inflate();
+                    liveTextureView.vPlayer = vPlayer;
+                }
+                liveRemarkBll.setTextureView(liveTextureView);
+                liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+                liveRemarkBll.setVideoView(videoView);
+                mLiveBll.setLiveRemarkBll(liveRemarkBll);
             }
-            liveRemarkBll.setTextureView(liveTextureView);
-            liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-            liveRemarkBll.setVideoView(videoView);
-            mLiveBll.setLiveRemarkBll(liveRemarkBll);
         }
     }
 
@@ -1266,6 +1269,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                     failPlayserverEntity.add(lastPlayserverEntity);
                 }
             }
+        }
+        if(liveRemarkBll!=null){
+            liveRemarkBll.setBtEnable(false);
         }
         mHandler.post(new Runnable() {
 

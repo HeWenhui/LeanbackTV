@@ -46,7 +46,7 @@ public class LiveAutoNoticeBll {
     private int wradio;
     private View root;
     private SlowHorizontalScrollView mSlowHorizontalScrollView;
-    private View vLeft,vRight;
+    private View vLeft, vRight;
     private ImageView ivAvatar;
     private TextView tvContent;
     private RelativeLayout bottom;
@@ -55,72 +55,77 @@ public class LiveAutoNoticeBll {
     private String classId;
     private String testId;
     private String srcType;
-    String TAG=this.getClass().getSimpleName();
-    /**文案*/
-    String[][] notice={{"你不会是手抖输错了吧？据传说集中精神听课能治疗手抖，不信你试试!",
-            "你绝对是故意的😢（哭脸），错了不要紧，老师讲后懂了就是好样的。我会关注你的哦.",
+    private String teacherName;
+    private String teacherImg;
+    String TAG = this.getClass().getSimpleName();
+    /**
+     * 文案
+     */
+    String[][] notice = {{"你不会是手抖输错了吧？据传说集中精神听课能治疗手抖，不信你试试!",
+            "你绝对是故意的\uD83D\uDE22（哭脸），错了不要紧，老师讲后懂了就是好样的。我会关注你的哦.",
             "看来这个知识点你掌握的不是很牢固啊，记得下课看回放。"
-},{"你是如何做到用飞一样的速度做错的？",
+    }, {"你是如何做到用飞一样的速度做错的？\uD83D\uDE44",
             "正确率才是最重要的。只追求快是无意义的。默读三遍，记在心间。",
             "还是要认真审题，做完检查。才能避免这种很快错了的悲剧。",
-            "成为最快做错的同学，你真的开心吗？",
+            "成为最快做错的同学，你真的开心吗？\uD83D\uDE31",
             "你是如何做到连续5次成为最快做错的同学的。你也太厉害了。",
-            "你是根本没有用心做题吧。下课你需要和我聊聊了。"
-},{"你是如何做到用飞一样的速度做错的？",
-            "正确率才是最重要的。只追求快是无意义的。默读三遍，记在心间。",
-            "还是要认真审题，做完检查。才能避免这种很快错了的悲剧。",
-            "成为最快做错的同学，你真的开心吗？",
-            "你是如何做到连续5次成为最快做错的同学的。你也太厉害了。",
-            "你是根本没有用心做题吧。下课你需要和我聊聊了。"
-},{"你都全对了，为什么不主动提交呢。我猜你是找不到提交键，嘻嘻😁。",
+            "\uD83D\uDE44\uD83D\uDE44\uD83D\uDE44你是根本没有用心做题吧。下课你需要和我聊聊了。"
+    }, {"先跟上老师讲课的节奏，没听懂的先标记下，下课再问哦。",
+            "看来今天你状态不佳，据说好好听课能提升状态值，你试试看。",
+            "你这不仅是状态不佳了，可能运气也不佳啊\uD83D\uDE02 ，坚持听课还有救的。",
+            "你今天的互动题正确率已经天下无敌了，下课看回放，问我题吧，我不嫌弃你，心疼的抱抱。"
+    }, {"你都全对了，为什么不主动提交呢。我猜你是找不到提交键，嘻嘻😁。",
             "你还没找到提交键吗？要在结束前主动提交。相信自己哦。",
             "下次主动提交吧，错了也没关系。你要相信自己错了也能改对。",
-            "做对了也不提交，看来你是故意不让老师表扬你。"
-},{"错了没关系，勇于面对自己的问题是更可贵的精神，下次主动提交哦。",
-            "在你犹豫的时刻，是不是时间就到了？下回不要犹豫啦。",
+            "做对了也不提交，看来你是故意不让老师表扬你。\uD83D\uDE02"
+    }, {"错了没关系，勇于面对自己的问题是更可贵的精神，下次主动提交哦。",
+            "在你犹豫的时刻，是不是时间就到了？下回不要犹豫啦。\uD83D\uDE02",
             "好吧，你还是犹豫了，是不是你对这个知识点的掌握不够扎实呢？",
             "老师认为，勇于尝试，错了真的没关系，毕竟你是认真学了的，加油！"
-},{"是不是网络问题导致你不能主动提交？刷新，退出重进都是解决好办法。",
+    }, {"是不是网络问题导致你不能主动提交？刷新，退出重进都是解决好办法。",
             "是时间来不急了吗？下回提高做题速度哦。",
-            "你又没提交 ，是不是真的没做完啊，下回做多少交多少。",
+            "你又没提交\uD83D\uDE02 ，是不是真的没做完啊，下回做多少交多少。",
             "不敢提交的原因，有没有一丢丢是不会呢？如果有，看回放，问老师。"
-},{"是网络问题收不到互动题吗？刷新或退出重进试试看，如果都不行，联系我。",
+    }, {"是网络问题收不到互动题吗？刷新或退出重进试试看，如果都不行，联系我。",
             "如果不是网络问题，那就是你的问题了，认真听课和做题，我会关注你的。",
             "做错不可怕，可怕的是不做，态度不端正，怎么逆袭呢？",
             "今天来了一个假的你吧？四道题不做。看啦你需要下课找我了。"
-},{"你太牛了，这题的正确率还不到30%，但是你做对了。",
+    }, {}, {"你太牛了，这题的正确率还不到30%，但是你做对了。",
             "两次了，正确率那么低，但是你就是能做对，看来基本功扎实。",
             "厉害了，我的娃，暴击3次低正确率。",
             "老师已经开始膜拜你的能力了，暴击4次低正确率。"
-},{"你太牛了，这题的正确率还不到30%，但是你做对了。",
+    }, {"你太牛了，这题的正确率还不到30%，但是你做对了。",
             "两次了，正确率那么低，但是你就是能做对，看来基本功扎实。",
             "厉害了，我的娃，暴击3次低正确率。",
             "老师已经开始膜拜你的能力了，暴击4次低正确率。"
-},{"不要在上课期间发表不合适的言论。",
-        "禁止脏话及敏感词汇，你会被禁言。",
-        "尴尬了，我会收到你发的被屏蔽的留言，你还要发吗？",
-        "你需要找我聊聊人生了。"
-        }};
-    public LiveAutoNoticeBll(Context context,RelativeLayout bottom){
-        this.mContext =context;
-        this.bottom=bottom;
-        setLayout(1920,1080);
+    }, {"不要在上课期间发表不合适的言论。",
+            "禁止脏话及敏感词汇，你会被禁言。",
+            "尴尬了，我会收到你发的被屏蔽的留言，你还要发吗？",
+            "你需要找我聊聊人生了。"
+    }};
+
+    public LiveAutoNoticeBll(Context context, RelativeLayout bottom) {
+        this.mContext = context;
+        this.bottom = bottom;
+        setLayout(1920, 1080);
     }
-    public void setLayout(int width,int height){
+
+    public void setLayout(int width, int height) {
         int screenWidth = getScreenParam();
         displayHeight = height;
         displayWidth = screenWidth;
         if (width > 0) {
             wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
             wradio += (screenWidth - width) / 2;
-            if(displayWidth-wradio==videoWidth){
+            if (displayWidth - wradio == videoWidth) {
                 return;
-            }else {
+            } else {
                 videoWidth = displayWidth - wradio;
             }
         }
     }
-    private int getScreenParam(){
+
+    private int getScreenParam() {
         final View contentView = ((Activity) mContext).findViewById(android.R.id.content);
         final View actionBarOverlayLayout = (View) contentView.getParent();
         Rect r = new Rect();
@@ -145,30 +150,45 @@ public class LiveAutoNoticeBll {
         this.srcType = srcType;
     }
 
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
+    public void setTeacherImg(String teacherImg) {
+        this.teacherImg = teacherImg;
+    }
+
     public void setHttpManager(LiveHttpManager httpManager) {
         mHttpManager = httpManager;
     }
 
     /**
      * 敏感词提示
+     *
      * @param name
      * @param head
      */
-    public void showNotice(String name,String head){
-        showNotice(name,notice[notice.length-1][(int)Math.round(Math.random()*3)],head);
+    public void showNotice(String name, String head) {
+        try {
+            showNotice(name, notice[notice.length - 1][(int) Math.round(Math.random() * 3)], head);
+           // showNotice(name, notice[1][0], head);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
      * 显示智能私信
+     *
      * @param name
      * @param s
      * @param head
      */
-    public void showNotice(String name, String s, String head){
-        if(isShowing){
+    public void showNotice(String name, String s, String head) {
+        if (isShowing) {
             return;
         }
-        isShowing=true;
+        isShowing = true;
 
         try {
             if (root == null) {
@@ -180,11 +200,11 @@ public class LiveAutoNoticeBll {
                 tvContent = (TextView) root.findViewById(R.id.tv_live_auto_notice_content);
             }
             ImageLoader.with(mContext).load(head).error(R.drawable.ic_default_head_square).into(ivAvatar);
-            SpannableString content=new SpannableString(name+"@你"+s);
-            StyleSpan span=new StyleSpan(Typeface.BOLD);
+            SpannableString content = new SpannableString(name + "@你" + s);
+            StyleSpan span = new StyleSpan(Typeface.BOLD);
             try {
                 content.setSpan(span, 0, name.length() + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             tvContent.setText(content);
@@ -198,10 +218,10 @@ public class LiveAutoNoticeBll {
             vLeft.setLayoutParams(vParam);
             vRight.setLayoutParams(vParam);
             TextPaint paint = new TextPaint();
-            paint.setTextSize(SizeUtils.Dp2Px(mContext,12));
+            paint.setTextSize(SizeUtils.Dp2Px(mContext, 12));
             int tvWidth = (int) paint.measureText(content.toString());
             LinearLayout.LayoutParams tvParam = new LinearLayout.LayoutParams(tvWidth + 40, ViewGroup.LayoutParams.WRAP_CONTENT);
-            tvParam.setMargins(10,0,0,0);
+            tvParam.setMargins(10, 0, 0, 0);
             tvContent.setLayoutParams(tvParam);
             tvContent.setSingleLine();
             mSlowHorizontalScrollView.setOnTouchListener(new View.OnTouchListener() {
@@ -218,21 +238,22 @@ public class LiveAutoNoticeBll {
                 @Override
                 public void run() {
                     bottom.removeView(root);
-                    isShowing=false;
+                    isShowing = false;
                 }
             }, last);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
      * 获取智能私信
+     *
      * @param isForce
      * @param type
      */
-    public void getAutoNotice(int isForce,int type){
-        Loger.i(TAG,"getAutoNotice");
+    public void getAutoNotice(int isForce, int type) {
+        Loger.i(TAG, "getAutoNotice");
         mHttpManager.getAutoNotice(classId, testId, srcType, type, isForce, new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -241,12 +262,12 @@ public class LiveAutoNoticeBll {
                     Loger.i(TAG, "getAutoNotice success" + object.toString());
                     int type = object.optInt("type", -1);
                     int choose = object.optInt("choose", -1);
-                    String name = object.optString("teacherName","老师");
-                    String imgUrl = object.optString("imgUrl");
+                    String name = object.optString("teacherName", teacherName);
+                    String imgUrl = object.optString(teacherImg);
                     if (type > 0 && choose > 0 && !TextUtils.isEmpty(name)) {
                         showNotice(name, notice[type - 1][choose - 1], imgUrl);
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -254,14 +275,14 @@ public class LiveAutoNoticeBll {
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                Loger.i(TAG,"getAutoNotice fail"+msg);
+                Loger.i(TAG, "getAutoNotice fail" + msg);
                 //showNotice("老师",notice[1][1],"");
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                Loger.i(TAG,"getAutoNotice fail"+responseEntity.getErrorMsg());
+                Loger.i(TAG, "getAutoNotice fail" + responseEntity.getErrorMsg());
                 //showNotice("老师",notice[1][1],"");
             }
         });

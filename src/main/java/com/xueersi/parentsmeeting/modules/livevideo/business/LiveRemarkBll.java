@@ -136,7 +136,7 @@ public class LiveRemarkBll {
                     //mTimer.cancel();
                     Loger.i(TAG, "dfps   " + vdfps);
                     FrameInfo frameInfo = mPlayer.native_getFrameInfo();
-                    offSet = System.currentTimeMillis() - frameInfo.pkt;
+                    offSet = System.currentTimeMillis()/1000+sysTimeOffset - frameInfo.pkt/1000;
                     Loger.i(TAG, "nowtime  " + frameInfo.nowTime + "   dts     " + frameInfo.pkt_dts
                             + "   pkt   " + frameInfo.pkt + "  cache:" + mPlayer.getVideoCachedDuration());
                     mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
@@ -242,7 +242,10 @@ public class LiveRemarkBll {
     /**上传标记点*/
     private void reMark(File file) {
         String fileName = file.getAbsolutePath();
-        final long time = mPlayer.native_getFrameInfo().pkt - mPlayer.getVideoCachedDuration() + offSet;
+        final long time = mPlayer.native_getFrameInfo().pkt/1000 - mPlayer.getVideoCachedDuration()/1000 + offSet;
+        Loger.i(TAG,"frameTime:"+mPlayer.native_getFrameInfo().pkt/1000);
+        Loger.i(TAG,"cacheTime:"+mPlayer.getVideoCachedDuration()/1000);
+        Loger.i(TAG,"offset:"+offSet+"  time:"+time+"   sysTime:"+System.currentTimeMillis());
         if (!TextUtils.isEmpty(fileName)) {
             CloudUploadEntity entity = new CloudUploadEntity();
             entity.setFilePath(fileName);
@@ -327,6 +330,7 @@ public class LiveRemarkBll {
                         entity.setCurTime(points.optJSONObject(i).optLong("cur_time"));
                         entity.setRelativeTime(points.optJSONObject(i).optLong("relativeTime"));
                         entity.setPic(points.optJSONObject(i).optString("image_url"));
+                        entity.setBigenTime(points.optJSONObject(i).optLong("image_url"));
                         mList.add(entity);
                     }
                 }
@@ -404,6 +408,24 @@ public class LiveRemarkBll {
             rlMask.setVisibility(View.GONE);
         }
     }
+    public void setBtEnable(final boolean enable){
+        if(mLiveMediaControllerBottom==null){
+            return;
+        }
+        mLiveMediaControllerBottom.getBtMark().post(new Runnable() {
+            @Override
+            public void run() {
+                if(enable){
+                    mLiveMediaControllerBottom.getBtMark().setAlpha(1);
+                    mLiveMediaControllerBottom.getBtMark().setEnabled(true);
+                }else{
+                    mLiveMediaControllerBottom.getBtMark().setAlpha(0.5f);
+                    mLiveMediaControllerBottom.getBtMark().setEnabled(false);
+                }
+            }
+        });
+
+    }
     private void deletPoint(final PointEntity entity){
         mHttpManager.deleteMarkPoints(liveId,entity.getCurTime(),new HttpCallBack(){
             @Override
@@ -432,7 +454,16 @@ public class LiveRemarkBll {
         String pic;
         long curTime;
         long relativeTime;
+        long bigenTime;
         boolean isPlaying;
+
+        public long getBigenTime() {
+            return bigenTime;
+        }
+
+        public void setBigenTime(long bigenTime) {
+            this.bigenTime = bigenTime;
+        }
 
         public boolean isPlaying() {
             return isPlaying;
@@ -510,7 +541,7 @@ public class LiveRemarkBll {
                     if(!mEntity.isPlaying){
                         //ivPlay.setVisibility(View.GONE);
 
-                        mPlayerService.seekTo(mEntity.relativeTime);
+                        mPlayerService.seekTo(mEntity.relativeTime*1000);
                         for(int j=0;j<mList.size();j++){
                                 mList.get(j).isPlaying = false;
 

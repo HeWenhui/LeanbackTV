@@ -173,6 +173,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /**满分榜业务*/
     private AnswerRankBll mAnswerRankBll;
     private LiveRemarkBll mLiveRemarkBll;
+    /**校准系统时间*/
+    private long sysTimeOffset;
 
     public LiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form) {
         super(context);
@@ -750,6 +752,14 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         if (videoChatAction != null) {
                             videoChatAction.quit("off", "", "change");
                         }
+                        if(mLiveRemarkBll!=null){
+                            //主讲
+                            if(liveTopic.getMode().equals(LiveTopic.MODE_CLASS)){
+                                mLiveRemarkBll.setBtEnable(true);
+                            }else{
+                                mLiveRemarkBll.setBtEnable(false);
+                            }
+                        }
                         //模式切换为主讲，关闭表扬榜
                         if (mPraiseListAction != null && liveTopic.getMode().equals(LiveTopic.MODE_CLASS))
                             mPraiseListAction.closePraiseList();
@@ -1031,6 +1041,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         boolean begin = object.getBoolean("begin");
                         mLiveTopic.getMainRoomstatus().setClassbegin(begin);
                         msg += begin ? "CLASSBEGIN" : "CLASSEND";
+                        if(mLiveRemarkBll!=null&&LiveTopic.MODE_CLASS.equals(getMode())){
+                            mLiveRemarkBll.setBtEnable(true);
+                        }
                     }
                     break;
                     case XESCODE.UNDERSTANDT:
@@ -1901,6 +1914,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             mLiveAutoNoticeBll = liveLazyBllCreat.createAutoNoticeBll();
             mLiveAutoNoticeBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
             mLiveAutoNoticeBll.setHttpManager(mHttpManager);
+            mLiveAutoNoticeBll.setTeacherImg(mGetInfo.getTeacherIMG());
+            mLiveAutoNoticeBll.setTeacherName(mGetInfo.getTeacherName());
             if (mQuestionAction instanceof QuestionBll) {
                 ((QuestionBll) mQuestionAction).setLiveAutoNoticeBll(mLiveAutoNoticeBll);
             }
@@ -1908,6 +1923,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 ((EnglishH5CoursewareBll) englishH5CoursewareAction).setLiveAutoNoticeBll(mLiveAutoNoticeBll);
             }
         }
+        sysTimeOffset=(long)mGetInfo.getNowTime()-System.currentTimeMillis()/1000;
         if(!mGetInfo.getIsShowMarkPoint().equals("1")){
             if(mLiveRemarkBll!=null){
                 mLiveRemarkBll.hideBtMark();
@@ -3866,10 +3882,15 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mLiveRemarkBll = liveRemarkBll;
         mLiveRemarkBll.setHttpManager(mHttpManager);
         if(mGetInfo!=null){
-            mLiveRemarkBll.setSysTimeOffset((long)mGetInfo.getNowTime());
+            mLiveRemarkBll.setSysTimeOffset(sysTimeOffset);
         }
         if(mGetInfo!=null&&!"1".equals(mGetInfo.getIsShowMarkPoint())){
             mLiveRemarkBll.hideBtMark();
+        }
+        if(mGetInfo.getStat()==3&&LiveTopic.MODE_CLASS.equals(getMode())){
+            mLiveRemarkBll.setBtEnable(true);
+        }else{
+            mLiveRemarkBll.setBtEnable(false);
         }
     }
 }
