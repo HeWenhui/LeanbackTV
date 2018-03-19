@@ -791,10 +791,10 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * 获取标记点
      * @param callBack
      */
-    public void getMarkPoints(HttpCallBack callBack){
+    public void getMarkPoints(String liveId,HttpCallBack callBack){
         HttpRequestParams params=new HttpRequestParams();
         params.addBodyParam("stuId",UserBll.getInstance().getMyUserInfoEntity().getStuId());
-        setDefaultParameter(params);
+        params.addBodyParam("liveId",liveId);
 //        params.addBodyParam("stuId","15657");
 //        params.addBodyParam("liveId","107070");
         sendPost(LiveVideoConfig.URL_LIVE_GET_MARK_POINTS,params,callBack);

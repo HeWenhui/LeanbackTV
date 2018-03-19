@@ -41,7 +41,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PutQuestion;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
@@ -254,7 +253,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     /** 当前时间，豪妙 */
     private long currentMsg = 0;
     private ExPerienceLiveMessage mMessage;
-    private LiveRemarkBll mLiveRemarkBll;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -286,14 +284,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
     private void initView() {
         baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
-        baseLiveMediaControllerTop.setMarkPointsOp(true, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mLiveRemarkBll!=null){
-                    mLiveRemarkBll.getMarkPoints();
-                }
-            }
-        });
         mMediaController.setControllerTop(baseLiveMediaControllerTop);
         liveMediaControllerBottom = new LiveMediaControllerBottom(this, mMediaController, this);
         liveMediaControllerBottom.experience();
@@ -443,9 +433,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                     "mIsShowQuestion=" + mIsShowQuestion);
 //            showQuestion(mQuestionEntity);
         }
-        mLiveRemarkBll=new LiveRemarkBll(mContext,vPlayer.getPlayer());
-        mLiveRemarkBll.setBottom(bottomContent);
-        mLiveBll.setLiveRemarkBll(mLiveRemarkBll);
     }
 
     @Override

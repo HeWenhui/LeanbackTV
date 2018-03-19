@@ -52,6 +52,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Courseware
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertPagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PutQuestion;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionResultView;
@@ -208,6 +209,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     static int times = -1;
     long createTime;
     String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
+    private LiveRemarkBll mLiveRemarkBll;
+    private RelativeLayout bottom;
 
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
@@ -321,7 +324,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     private void initView() {
         // 预加载布局
         rlFirstBackgroundView = (RelativeLayout) findViewById(R.id.rl_course_video_first_backgroud);
-
+        bottom=(RelativeLayout)findViewById(R.id.live_play_back_bottom);
         ivLoading = (ImageView) findViewById(R.id.iv_course_video_loading_bg);
         updateLoadingImage();
         tvLoadingContent = (TextView) findViewById(R.id.tv_course_video_loading_content);
@@ -393,6 +396,14 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 //        if (AppConfig.DEBUG) {
 //            mWebPath = "http://r01.xesimg.com/stream/tmp/2016/11/30/1480481513276687694567.mp4";
 //        }
+        mLiveRemarkBll=new LiveRemarkBll(mContext,vPlayer.getPlayer());
+        mLiveRemarkBll.setBottom(bottom);
+        mMediaController.getTitleRightBtn().setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLiveRemarkBll.getMarkPoints(mVideoEntity.getLiveId());
+            }
+        });
         if (islocal) {
             // 互动题播放地址
             playNewVideo(Uri.parse(mWebPath), mSectionName);

@@ -217,6 +217,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         this.mCurrentDutyId = currentDutyId;
         this.form = form;
         mHttpManager = new LiveHttpManager(mContext);
+        mHttpManager.addBodyParam("liveId",vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
@@ -1907,13 +1908,17 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 ((EnglishH5CoursewareBll) englishH5CoursewareAction).setLiveAutoNoticeBll(mLiveAutoNoticeBll);
             }
         }
+        if(!mGetInfo.getIsShowMarkPoint().equals("1")){
+            if(mLiveRemarkBll!=null){
+                mLiveRemarkBll.hideBtMark();
+            }
+        }
         /*mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mLiveAutoNoticeBll.showNotice("hello","");
             }
         },3000);*/
-
         mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         if (mGetInfo.getStudentLiveInfo() != null
                 && mGetInfo.getIs_show_ranks().equals("1")) {
@@ -3862,6 +3867,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mLiveRemarkBll.setHttpManager(mHttpManager);
         if(mGetInfo!=null){
             mLiveRemarkBll.setSysTimeOffset((long)mGetInfo.getNowTime());
+        }
+        if(mGetInfo!=null&&!"1".equals(mGetInfo.getIsShowMarkPoint())){
+            mLiveRemarkBll.hideBtMark();
         }
     }
 }

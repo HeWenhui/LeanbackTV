@@ -85,6 +85,7 @@ public class LiveRemarkBll {
     private RelativeLayout rlMask;
     private RCommonAdapter mAdapter;
     private TextureView mTextureView;
+    private long lastMarkTime;
 
     public LiveRemarkBll(Context context, XESMediaPlayer player) {
         mContext = context;
@@ -123,6 +124,10 @@ public class LiveRemarkBll {
                     mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(final View v) {
+                            if(System.currentTimeMillis()-lastMarkTime<15000){
+                                XESToastUtils.showToast(mContext,"你标记太快了");
+                                return;
+                            }
                             final LiveTextureView liveTextureView = (LiveTextureView) ((Activity) mContext).findViewById(R.id.ltv_course_video_video_texture);
                             if (liveTextureView == null) {
                                 return;
@@ -229,6 +234,7 @@ public class LiveRemarkBll {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                             XESToastUtils.showToast(mContext, "标记成功");
+                            lastMarkTime=System.currentTimeMillis();
                         }
 
                         @Override
@@ -279,8 +285,8 @@ public class LiveRemarkBll {
     /**
      * 获取标记点列表
      */
-    public void getMarkPoints() {
-        mHttpManager.getMarkPoints(new HttpCallBack() {
+    public void getMarkPoints(String liveId) {
+        mHttpManager.getMarkPoints(liveId,new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 JSONArray points = ((JSONObject) responseEntity.getJsonObject()).optJSONArray("markpointData");

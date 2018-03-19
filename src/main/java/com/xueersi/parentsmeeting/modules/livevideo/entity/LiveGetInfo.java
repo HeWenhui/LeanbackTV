@@ -133,6 +133,16 @@ public class LiveGetInfo {
     private String is_show_ranks;
     /**是否显示智能私信*/
     private String isShowCounselorWhisper;
+    /**是否有标记点功能*/
+    private String isShowMarkPoint;
+
+    public String getIsShowMarkPoint() {
+        return isShowMarkPoint;
+    }
+
+    public void setIsShowMarkPoint(String isShowMarkPoint) {
+        this.isShowMarkPoint = isShowMarkPoint;
+    }
 
     public String getIsShowCounselorWhisper() {
         return isShowCounselorWhisper;
