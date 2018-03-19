@@ -803,13 +803,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * 删除标记点
      * @param callBack
      */
-    public void deleteMarkPoints(long time,HttpCallBack callBack){
+    public void deleteMarkPoints(String livdId,long time,HttpCallBack callBack){
         HttpRequestParams params=new HttpRequestParams();
         params.addBodyParam("stuId",UserBll.getInstance().getMyUserInfoEntity().getStuId());
         setDefaultParameter(params);
 //        params.addBodyParam("stuId","15657");
 //        params.addBodyParam("liveId","107070");
         params.addBodyParam("curTime",""+time);
+        params.addBodyParam("liveId",livdId);
         sendPost(LiveVideoConfig.URL_LIVE_DELETE_MARK_POINTS,params,callBack);
     }
 

@@ -64,6 +64,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.dialog.RedPacketAlertDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewarePager;
@@ -260,8 +261,19 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         }
 
         // 设置当前是否为横屏
-        LivePlaybackMediaController mMediaController = new LivePlaybackMediaController(this, this);
+        final LivePlaybackMediaController mMediaController = new LivePlaybackMediaController(this, this);
         this.mMediaController = mMediaController;
+        if(mLiveRemarkBll==null||mLiveRemarkBll.getList()==null||mLiveRemarkBll.getList().size()==0){
+            mMediaController.getTitleRightBtn().setVisibility(View.GONE);
+        }else {
+            mMediaController.getTitleRightBtn().setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mLiveRemarkBll.setController(mMediaController);
+                    mLiveRemarkBll.showMarkPoints();
+                }
+            });
+        }
         mMediaController.setAnchorView(videoView.getRootView());
         // 设置播放器横竖屏切换按钮不显示
         mMediaController.setAutoOrientation(false);
@@ -396,14 +408,32 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 //        if (AppConfig.DEBUG) {
 //            mWebPath = "http://r01.xesimg.com/stream/tmp/2016/11/30/1480481513276687694567.mp4";
 //        }
-        mLiveRemarkBll=new LiveRemarkBll(mContext,vPlayer.getPlayer());
+        mLiveRemarkBll=new LiveRemarkBll(this,vPlayer);
         mLiveRemarkBll.setBottom(bottom);
-        mMediaController.getTitleRightBtn().setOnClickListener(new OnClickListener() {
+        mLiveRemarkBll.setHttpManager(new LiveHttpManager(mContext));
+        mLiveRemarkBll.setLiveId(mVideoEntity.getLiveId());
+        mLiveRemarkBll.getMarkPoints(mVideoEntity.getLiveId(), new AbstractBusinessDataCallBack() {
             @Override
-            public void onClick(View v) {
-                mLiveRemarkBll.getMarkPoints(mVideoEntity.getLiveId());
+            public void onDataSucess(Object... objData) {
+                if(mMediaController!=null){
+                    mMediaController.getTitleRightBtn().setVisibility(View.VISIBLE);
+                    mMediaController.getTitleRightBtn().setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mLiveRemarkBll.setController(mMediaController);
+                            mLiveRemarkBll.showMarkPoints();
+                        }
+                    });
+                }
             }
         });
+        mLiveRemarkBll.setCallBack(new AbstractBusinessDataCallBack(){
+            @Override
+            public void onDataSucess(Object... objData) {
+                attachMediaController();
+            }
+        });
+
         if (islocal) {
             // 互动题播放地址
             playNewVideo(Uri.parse(mWebPath), mSectionName);

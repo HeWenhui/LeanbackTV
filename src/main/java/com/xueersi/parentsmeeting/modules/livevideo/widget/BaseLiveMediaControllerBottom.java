@@ -14,6 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.ControllerBottomInter;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController.MediaPlayerControl;
+import com.xueersi.xesalib.utils.app.XESToastUtils;
 
 /**
  * 直播播放器控制栏底部区域
@@ -70,6 +71,12 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
         cbMessageClock = (CheckBox) findViewById(R.id.cb_livevideo_message_clock);
         lvCommonWord = (ListView) findViewById(R.id.lv_livevideo_common_word);
         btMark=(Button)findViewById(R.id.bt_livevideo_mark);
+        btMark.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                XESToastUtils.showToast(mContext,"正在加载视频");
+            }
+        });
     }
 
     public Button getBtMesOpen() {

@@ -15,9 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.cloud.XesCloudUploadBusiness;
 import com.xueersi.parentsmeeting.cloud.config.CloudDir;
 import com.xueersi.parentsmeeting.cloud.config.XesCloudConfig;
@@ -28,14 +30,20 @@ import com.xueersi.parentsmeeting.config.FileConfig;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.MIJKMediaPlayer;
+import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaController;
+import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.XESMediaPlayer;
+import com.xueersi.parentsmeeting.widget.LivePlaybackMediaController;
+import com.xueersi.xesalib.adapter.AdapterItemInterface;
+import com.xueersi.xesalib.adapter.CommonAdapter;
 import com.xueersi.xesalib.adapter.RCommonAdapter;
 import com.xueersi.xesalib.adapter.RItemViewInterface;
 import com.xueersi.xesalib.adapter.ViewHolder;
@@ -66,6 +74,7 @@ import tv.danmaku.ijk.media.player.FrameInfo;
 public class LiveRemarkBll {
     private Context mContext;
     private MIJKMediaPlayer mPlayer;
+    private PlayerService mPlayerService;
     private String TAG = "LiveRemarkBll";
     private Timer mTimer;
     private long offSet;
@@ -80,16 +89,25 @@ public class LiveRemarkBll {
     private XesCloudUploadBusiness mCloudUploadBusiness;
     private RelativeLayout bottom;
     private List<PointEntity> mList;
-    private RecyclerView rvPoints;
+    private ListView lvPoints;
     private LinearLayout llPoints;
     private RelativeLayout rlMask;
     private RCommonAdapter mAdapter;
+    private CommonAdapter mAdapter1;
     private TextureView mTextureView;
     private long lastMarkTime;
+    private MediaController mController;
+    private AbstractBusinessDataCallBack mCallBack;
+    private String liveId;
 
     public LiveRemarkBll(Context context, XESMediaPlayer player) {
         mContext = context;
         mPlayer = (MIJKMediaPlayer) player;
+        initData();
+    }
+    public LiveRemarkBll(Context context, PlayerService playerService){
+        mContext=context;
+        mPlayerService=playerService;
         initData();
     }
 
@@ -169,13 +187,6 @@ public class LiveRemarkBll {
                         }
                     });
                     mTimer.cancel();
-                } else {
-                    mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            XESToastUtils.showToast(mContext, "正在缓冲视频，请稍后再标记");
-                        }
-                    });
                 }
 
             }
@@ -195,6 +206,18 @@ public class LiveRemarkBll {
         this.bottom = bottom;
     }
 
+    public void setCallBack(AbstractBusinessDataCallBack callBack) {
+        mCallBack = callBack;
+    }
+
+    public void setLiveId(String liveId) {
+        this.liveId = liveId;
+    }
+
+    public List<PointEntity> getList() {
+        return mList;
+    }
+
     public void setHttpManager(LiveHttpManager httpManager) {
         mHttpManager = httpManager;
     }
@@ -203,6 +226,10 @@ public class LiveRemarkBll {
         if (mLiveMediaControllerBottom != null) {
             mLiveMediaControllerBottom.getBtMark().setVisibility(View.VISIBLE);
         }
+    }
+
+    public void setController(MediaController controller) {
+        mController = controller;
     }
 
     public void setSysTimeOffset(long sysTimeOffset) {
@@ -285,7 +312,7 @@ public class LiveRemarkBll {
     /**
      * 获取标记点列表
      */
-    public void getMarkPoints(String liveId) {
+    public void getMarkPoints(String liveId, final AbstractBusinessDataCallBack callBack) {
         mHttpManager.getMarkPoints(liveId,new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -303,7 +330,10 @@ public class LiveRemarkBll {
                         mList.add(entity);
                     }
                 }
-                showMarkPoints();
+                if(mList.size()>0){
+                    callBack.onDataSucess();
+                }
+                //showMarkPoints();
             }
 
             @Override
@@ -321,7 +351,7 @@ public class LiveRemarkBll {
     /**
      * 显示标记点列表
      */
-    private void showMarkPoints() {
+    public void showMarkPoints() {
         if ( rlMask== null) {
             rlMask=new RelativeLayout(mContext);
             RelativeLayout.LayoutParams rlParam=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -332,18 +362,23 @@ public class LiveRemarkBll {
             TextView tv=new TextView(mContext);
             tv.setText("标记点");
             tv.setTextSize(12);
+            tv.setTextColor(Color.WHITE);
+            tv.setPadding(0,10,10,10);
             llPoints.addView(tv);
-            rvPoints = new RecyclerView(mContext);
-            mAdapter = new RCommonAdapter(mContext, mList);
-            rvPoints.setLayoutManager(new LinearLayoutManager(mContext));
-            mAdapter.addItemViewDelegate(new PointItem());
-            rvPoints.setAdapter(mAdapter);
+            lvPoints=new ListView(mContext);
+            mAdapter1=new CommonAdapter<PointEntity>(mList) {
+                @Override
+                public AdapterItemInterface getItemView(Object o) {
+                    return new PointListItem();
+                }
+            };
+            lvPoints.setAdapter(mAdapter1);
 
             RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(SizeUtils.Dp2Px(mContext,278), ViewGroup.LayoutParams.MATCH_PARENT);
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             //params.setMargins(0,40,0,0);
             llPoints.setPadding(20,20,0,0);
-            llPoints.addView(rvPoints);
+            llPoints.addView(lvPoints);
             rlMask.addView(llPoints);
             bottom.addView(rlMask);
             llPoints.setLayoutParams(params);
@@ -353,25 +388,29 @@ public class LiveRemarkBll {
             public void onClick(View v) {
                 if(rlMask.getVisibility()==View.VISIBLE){
                     rlMask.setVisibility(View.GONE);
+                    if(mCallBack!=null){
+                        mCallBack.onDataSucess();
+                    }
                 }
             }
         });
         rlMask.setVisibility(View.VISIBLE);
-        mAdapter.notifyDataSetChanged();
+        mController.release();
+        mAdapter1.notifyDataSetChanged();
     }
 
     public void hideMarkPoints() {
-        if (rvPoints != null) {
-            rvPoints.setVisibility(View.GONE);
+        if (rlMask != null) {
+            rlMask.setVisibility(View.GONE);
         }
     }
     private void deletPoint(final PointEntity entity){
-        mHttpManager.deleteMarkPoints(entity.getCurTime(),new HttpCallBack(){
+        mHttpManager.deleteMarkPoints(liveId,entity.getCurTime(),new HttpCallBack(){
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 try{
                     mList.remove(entity);
-                    mAdapter.notifyDataSetChanged();
+                    mAdapter1.notifyDataSetChanged();
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -427,35 +466,29 @@ public class LiveRemarkBll {
             this.curTime = time;
         }
     }
-
-    private class PointItem implements RItemViewInterface<PointEntity> {
+    private class PointListItem implements AdapterItemInterface<PointEntity>{
         private ImageView ivShot;
         private ImageView ivPlay;
         private TextView tvText;
         private ChooseListAlertDialog mDialog;
-
+        private View root;
+        private PointEntity mEntity;
         @Override
-        public int getItemLayoutId() {
+        public int getLayoutResId() {
             return R.layout.layout_live_mark_point;
         }
 
         @Override
-        public boolean isShowView(PointEntity pointEntity, int i) {
-            return true;
+        public void initViews(View view) {
+            root=view;
+            ivShot = (ImageView) view.findViewById(R.id.iv_live_mark_point_shot_pic);
+            ivPlay = (ImageView) view.findViewById(R.id.iv_live_mark_point_play);
+            tvText = (TextView) view.findViewById(R.id.tv_live_mark_point_text);
         }
 
         @Override
-        public void initView(ViewHolder viewHolder, int i) {
-            ivShot = (ImageView) viewHolder.getView(R.id.iv_live_mark_point_shot_pic);
-            ivPlay = (ImageView) viewHolder.getView(R.id.iv_live_mark_point_play);
-            tvText = (TextView) viewHolder.getView(R.id.tv_live_mark_point_text);
-        }
-
-        @Override
-        public void convert(ViewHolder viewHolder, final PointEntity pointEntity, final int i) {
-            ImageLoader.with(mContext).load(pointEntity.getPic()).error(R.drawable.bg_default_image).into(ivShot);
-            ivPlay.setTag(pointEntity.getPic());
-            viewHolder.getConvertView().setOnLongClickListener(new View.OnLongClickListener() {
+        public void bindListener() {
+            root.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     if(mDialog==null){
@@ -463,7 +496,7 @@ public class LiveRemarkBll {
                         mDialog.initInfo(new ChooseListAlertDialog.OnChooseItemClickImpl() {
                             @Override
                             public void onItemClick(int ii) {
-                                deletPoint(pointEntity);
+                                deletPoint(mEntity);
                             }
                         },R.string.live_mark_point_long_click_tip);
                     }
@@ -471,27 +504,33 @@ public class LiveRemarkBll {
                     return false;
                 }
             });
-            viewHolder.getConvertView().setOnClickListener(new View.OnClickListener() {
+            root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!pointEntity.isPlaying){
+                    if(!mEntity.isPlaying){
                         //ivPlay.setVisibility(View.GONE);
-                        pointEntity.isPlaying=true;
-                        mPlayer.seekTo(pointEntity.relativeTime);
+
+                        mPlayerService.seekTo(mEntity.relativeTime);
                         for(int j=0;j<mList.size();j++){
-                            if(j!=i) {
                                 mList.get(j).isPlaying = false;
-                            }
+
                         }
-                        mAdapter.notifyDataSetChanged();
+                        mEntity.isPlaying=true;
+                        mAdapter1.notifyDataSetChanged();
                     }
                 }
             });
-            if (!pointEntity.isPlaying) {
+        }
+
+        @Override
+        public void updateViews(PointEntity entity, int i, Object o) {
+            mEntity=entity;
+            ImageLoader.with(mContext).load(entity.getPic()).error(R.drawable.bg_default_image).into(ivShot);
+            ivPlay.setTag(entity.getPic());
+            if (!entity.isPlaying) {
                 ivPlay.setVisibility(View.VISIBLE);
             } else {
                 ivPlay.setVisibility(View.GONE);
-                //mAdapter.notifyDataSetChanged();
             }
             tvText.setText("疑问点" + (i + 1));
         }

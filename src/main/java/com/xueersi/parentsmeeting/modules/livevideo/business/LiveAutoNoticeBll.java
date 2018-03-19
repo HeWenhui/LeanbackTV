@@ -155,7 +155,7 @@ public class LiveAutoNoticeBll {
      * @param head
      */
     public void showNotice(String name,String head){
-        showNotice(name,notice[notice.length-1][(int)Math.round(Math.random()*4)],head);
+        showNotice(name,notice[notice.length-1][(int)Math.round(Math.random()*3)],head);
     }
 
     /**

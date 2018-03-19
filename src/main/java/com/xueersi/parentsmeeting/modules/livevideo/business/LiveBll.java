@@ -1833,7 +1833,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             public void run() {
                                 mLiveAutoNoticeBll.showNotice(mGetInfo.getTeacherName(), mGetInfo.getHeadImgPath());
                             }
-                        }, 10);
+                        }, 10000);
                     }
 
                 }
