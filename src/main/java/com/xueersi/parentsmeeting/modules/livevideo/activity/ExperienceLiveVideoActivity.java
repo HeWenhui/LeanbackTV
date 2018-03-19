@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Message;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -108,6 +109,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     LiveMessageBll liveMessageBll;
     /** 横屏聊天信息 */
     private ArrayList<LiveMessageEntity> liveMessageLandEntities = new ArrayList<>();
+    private ScanRunnable scanRunnable;
+    private Handler scanHandler;
+    private List<ExPerienceLiveMessage.LiveExMsg> mMsgs;
+    private LiveMessagePager mLiveMessagePager;
+
     @Override
     public void onTeacherNotPresent(boolean isBefore) {
 
@@ -151,6 +157,39 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     @Override
     public void onMediaViewClick(View child) {
 
+    }
+
+    // 03.17 定时获取聊天记录的任务
+    class ScanRunnable implements Runnable{
+        HandlerThread handlerThread = new HandlerThread("ScanRunnable");
+
+        ScanRunnable() {
+            Loger.i(TAG, "ScanRunnable");
+            handlerThread.start();
+            scanHandler = new Handler(handlerThread.getLooper());
+        }
+
+        void exit() {
+            handlerThread.quit();
+        }
+        @Override
+        public void run() {
+            if (isFinishing()) {
+                return;
+            }
+            initOldMessage();
+            if(mMessage != null && mMessage.getMsg()!=null && mMessage.getMsg().size()>0){
+                mMsgs = new ArrayList<>();
+                for(int i = 0 ; i < mMessage.getMsg().size() ; i++){
+                    if("130".equals(mMessage.getMsg().get(i).getText().getType())){
+                        mMsgs.add(mMessage.getMsg().get(i));
+                    }
+                }
+            }
+            scanHandler.postDelayed(this, 60000);
+
+
+        }
     }
 
     private String TAG = "ExpericenceLiveVideoActivityLog";
@@ -271,7 +310,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
 //        initView();
         loadData();
-        Log.e("Duncan","ExperienceVideoActivity");
         return true;
     }
 
@@ -327,32 +365,32 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         bottomContent.addView(rlLiveMessageContent, params);
 
         long before = System.currentTimeMillis();
-        LiveMessagePager liveMessagePager = new LiveMessagePager(this, questionBll, liveMediaControllerBottom, liveMessageLandEntities, null);
+        mLiveMessagePager = new LiveMessagePager(this, questionBll, liveMediaControllerBottom, liveMessageLandEntities, null);
 //        mLiveMessagePager = liveMessagePager;
         Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
 
 //        mLiveMessagePager.getInfo = getInfo;
 //        mLiveMessagePager.urlclick = urlclick;
 //        liveMessagePager.setPeopleCount(peopleCount);
-        liveMessagePager.setMessageBll(liveMessageBll);
-        liveMessagePager.setLiveBll(mLiveBll);
-        liveMessagePager.onModeChange(mLiveBll.getMode());
+        mLiveMessagePager.setMessageBll(liveMessageBll);
+        mLiveMessagePager.setLiveBll(mLiveBll);
+        mLiveMessagePager.onModeChange(mLiveBll.getMode());
         // 03.08 设置假的聊天连接成功信号
-        liveMessagePager.onConnects();
-        liveMessagePager.setIsRegister(true);
+        mLiveMessagePager.onConnects();
+        mLiveMessagePager.setIsRegister(true);
         // 03.13 设置假的上课人数
         if(mMessage != null && mMessage.getOnlineNum().size()!=0 && mMessage.getOnlineNum().get(0).getOnlineNum()!=null){
-            liveMessagePager.showPeopleCount(Integer.parseInt(mMessage.getOnlineNum().get(0).getOnlineNum()));
+            mLiveMessagePager.showPeopleCount(Integer.parseInt(mMessage.getOnlineNum().get(0).getOnlineNum()));
         }else{
-            liveMessagePager.showPeopleCount(8);
+            mLiveMessagePager.showPeopleCount(8);
         }
 
-        liveMessagePager.oldMessage();
+        mLiveMessagePager.oldMessage();
 //
 //        if (mode != null) {
 //            mLiveMessagePager.onopenchat(openchat, mode, false);
 //        }
-        rlLiveMessageContent.addView(liveMessagePager.getRootView(), params);
+        rlLiveMessageContent.addView(mLiveMessagePager.getRootView(), params);
     }
 
     private void loadData() {
@@ -392,7 +430,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     }
 
     private void initOldMessage() {
-        lectureLivePlayBackBll.getExperienceMsgs("140161","12164",1519973913668L,new GetExperienceLiveMsgs(){
+        lectureLivePlayBackBll.getExperienceMsgs("140185","12162",2580L,new GetExperienceLiveMsgs(){
             @Override
             public void getLiveExperienceMsgs(ExPerienceLiveMessage liveMessageGroupEntity) {
                 mMessage = liveMessageGroupEntity;
@@ -423,8 +461,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     protected void onPlayOpenSuccess() {
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(View.GONE);
-//            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()));
-            seekTo(7190000);
+            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()));
+//            seekTo(7190000);
             initView();
             initMessagePager(bottomContent);
         }
@@ -487,7 +525,20 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         // 扫描互动题
         scanQuestion(currentPosition);
         Log.e("Duncan","currentPosition:" + currentPosition);
+        // 获取聊天记录
+//        if (scanRunnable == null) {
+//                scanRunnable = new ScanRunnable();
+//                scanHandler.post(scanRunnable);
+//            }
+        // 发送聊天记录
+//        for(int i = 0 ; i < mMsgs.size() ; i++){
+//            if(currentPosition == 7190010){
+//                mLiveMessagePager.addMessage(mMsgs.get(i).getText().getBy(),LiveMessageEntity.MESSAGE_TIP,mMsgs.get(i).getText().getMsg());
+//            }
+//        }
+
     }
+
 
     /** 扫描是否有需要弹出的互动题 */
     public void scanQuestion(long position) {
@@ -498,8 +549,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }
 
         // 互动题结束，隐藏互动题
-        if (mQuestionEntity != null && mQuestionEntity.getEndtime() != 0
-                && mQuestionEntity.getEndtime() == TimeUtils.gennerSecond(position)) {
+        if (mQuestionEntity != null && mQuestionEntity.getvEndTime() != 0
+                && mQuestionEntity.getvEndTime() == TimeUtils.gennerSecond(position)) {
             // 如果是互动题，则提示时间结束
             if (LocalCourseConfig.CATEGORY_QUESTION == mQuestionEntity.getvCategory()
                     && !mQuestionEntity.isAnswered()) {
@@ -1139,5 +1190,13 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private void initRedPacketOtherResult() {
         View popupWindow_view = getLayoutInflater().inflate(R.layout.pop_question_redpacket_other, null, false);
         initQuestionAnswerReslut(popupWindow_view);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (scanRunnable != null) {
+            scanRunnable.exit();
+        }
     }
 }

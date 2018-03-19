@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.xueersi.parentsmeeting.business.AppBll;
@@ -264,7 +265,17 @@ public class LiveVideoEnter {
      * @param bundle
      */
     public static boolean intentTo(Activity context, Bundle bundle, String where) {
-//        LivePlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+        LivePlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+        return true;
+    }
+
+    /**
+     * 跳转到体验直播播放器
+     *
+     * @param context
+     * @param bundle
+     */
+    public static boolean intentToExperience(Activity context, Bundle bundle, String where) {
         ExperienceLiveVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
         return true;
     }

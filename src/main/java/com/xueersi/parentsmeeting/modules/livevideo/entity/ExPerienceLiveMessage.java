@@ -26,6 +26,33 @@ public class ExPerienceLiveMessage implements Serializable{
             private Boolean refresh;
             private String time;
             private String type;
+            private String by;
+            private String msg;
+            private String name;
+
+            public String getBy() {
+                return by;
+            }
+
+            public void setBy(String by) {
+                this.by = by;
+            }
+
+            public String getMsg() {
+                return msg;
+            }
+
+            public void setMsg(String msg) {
+                this.msg = msg;
+            }
+
+            public String getName() {
+                return name;
+            }
+
+            public void setName(String name) {
+                this.name = name;
+            }
 
             public String getChoiceType() {
                 return choiceType;
