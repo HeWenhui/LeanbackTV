@@ -1005,7 +1005,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     }
 
     /** 判断当前为竖屏并且处于播放状态时，显示控制栏 */
-    protected void showLongMediaController() {
+    public void showLongMediaController() {
         if (!mIsLand) {
             // 竖屏时长时间显示
             mMediaController.showLong();

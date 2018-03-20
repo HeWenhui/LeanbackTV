@@ -224,7 +224,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     }
 
     @Override
-    protected void showLongMediaController() {
+    public void showLongMediaController() {
         mMediaController.show();
     }
 

@@ -16,6 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLivePlayBack
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.StandLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.sharebusiness.config.LiveVideoBusinessConfig;
 
@@ -130,7 +131,7 @@ public class LiveVideoEnter {
         bundle.putString("vSectionID", vSectionID);
         bundle.putInt("type", LiveBll.LIVE_TYPE_LIVE);
         bundle.putInt(LiveVideoActivity.ENTER_ROOM_FROM, from);
-        LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+        StandLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
         return true;
     }
 

@@ -21,6 +21,7 @@ import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.MicTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.RaiseHandDialog;
@@ -53,7 +54,7 @@ import static com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog.TITLE
 public class VideoChatBll implements VideoChatAction {
     private String TAG = "VideoChatBll";
     String eventId = LiveVideoConfig.LIVE_LINK_MIRCO;
-    private LiveVideoActivity activity;
+    private LiveVideoActivityBase activity;
     private Button btRaiseHands;
     private LiveBll liveBll;
     private LiveGetInfo getInfo;
@@ -94,8 +95,8 @@ public class VideoChatBll implements VideoChatAction {
     String openhandsStatus = "off";
     String onmicStatus = "off";
 
-    public VideoChatBll(Activity activity) {
-        this.activity = (LiveVideoActivity) activity;
+    public VideoChatBll(LiveVideoActivityBase activity) {
+        this.activity = activity;
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
@@ -233,8 +234,10 @@ public class VideoChatBll implements VideoChatAction {
             videoChatInter.updateUser(classmateChange, classmateEntities);
             return;
         }
-        AudioRequest audioRequest = activity;
-        audioRequest.request(null);
+        if (activity instanceof AudioRequest) {
+            AudioRequest audioRequest = (AudioRequest) activity;
+            audioRequest.request(null);
+        }
         if (nativeLibLoaded != 2) {
             activity.setVolume(0, 0);
         }
@@ -749,8 +752,10 @@ public class VideoChatBll implements VideoChatAction {
     public void stopRecord() {
         if (videoChatInter != null) {
             videoChatInter.stopRecord();
-            AudioRequest audioRequest = activity;
-            audioRequest.release();
+            if (activity instanceof AudioRequest) {
+                AudioRequest audioRequest = (AudioRequest) activity;
+                audioRequest.release();
+            }
         }
     }
 
@@ -773,9 +778,11 @@ public class VideoChatBll implements VideoChatAction {
      * @param text
      */
     public void showToast(String text) {
-        ActivityStatic activityStatic = activity;
-        if (activityStatic.isResume()) {
-            XESToastUtils.showToast(activity, text);
+        if (activity instanceof ActivityStatic) {
+            ActivityStatic activityStatic = (ActivityStatic) activity;
+            if (activityStatic.isResume()) {
+                XESToastUtils.showToast(activity, text);
+            }
         }
     }
 }

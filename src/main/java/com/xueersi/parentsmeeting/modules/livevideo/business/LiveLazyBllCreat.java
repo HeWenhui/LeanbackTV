@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.app.Activity;
 import android.util.Log;
 import android.widget.RelativeLayout;
 
@@ -11,7 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
  * 直播一些类的用的时候加载
  */
 public class LiveLazyBllCreat {
-    LiveVideoActivity liveVideoActivity;
+    Activity liveVideoActivity;
     RelativeLayout bottomContent;
     RelativeLayout praiselistContent;
     LiveBll liveBll;
@@ -20,7 +21,7 @@ public class LiveLazyBllCreat {
     private LiveGetInfo liveGetInfo;
     private PraiseListBll praiseListBll;
 
-    public LiveLazyBllCreat(LiveVideoActivity liveVideoActivity, LiveBll liveBll) {
+    public LiveLazyBllCreat(Activity liveVideoActivity, LiveBll liveBll) {
         this.liveVideoActivity = liveVideoActivity;
         this.liveBll = liveBll;
     }
