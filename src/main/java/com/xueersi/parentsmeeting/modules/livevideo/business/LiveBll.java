@@ -1916,6 +1916,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             mLiveAutoNoticeBll.setHttpManager(mHttpManager);
             mLiveAutoNoticeBll.setTeacherImg(mGetInfo.getTeacherIMG());
             mLiveAutoNoticeBll.setTeacherName(mGetInfo.getTeacherName());
+            mLiveAutoNoticeBll.setLiveId(mLiveId);
             if (mQuestionAction instanceof QuestionBll) {
                 ((QuestionBll) mQuestionAction).setLiveAutoNoticeBll(mLiveAutoNoticeBll);
             }

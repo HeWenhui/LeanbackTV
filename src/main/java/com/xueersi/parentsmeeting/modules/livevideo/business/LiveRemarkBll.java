@@ -66,6 +66,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import tv.danmaku.ijk.media.player.FrameInfo;
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 /**
  * Created by Tang on 2018/3/5.
@@ -73,7 +74,6 @@ import tv.danmaku.ijk.media.player.FrameInfo;
 
 public class LiveRemarkBll {
     private Context mContext;
-    private MIJKMediaPlayer mPlayer;
     private PlayerService mPlayerService;
     private String TAG = "LiveRemarkBll";
     private Timer mTimer;
@@ -100,11 +100,6 @@ public class LiveRemarkBll {
     private AbstractBusinessDataCallBack mCallBack;
     private String liveId;
 
-    public LiveRemarkBll(Context context, XESMediaPlayer player) {
-        mContext = context;
-        mPlayer = (MIJKMediaPlayer) player;
-        initData();
-    }
     public LiveRemarkBll(Context context, PlayerService playerService){
         mContext=context;
         mPlayerService=playerService;
@@ -124,21 +119,21 @@ public class LiveRemarkBll {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                if (mPlayer == null) {
+                if (mPlayerService.getPlayer() == null) {
                     return;
                 }
-                long tcpSpeed = mPlayer.getTcpSpeed();
-                float vdfps = mPlayer.getVideoDecodeFramesPerSecond();
+                long tcpSpeed = ((IjkMediaPlayer)mPlayerService.getPlayer()).getTcpSpeed();
+                float vdfps = ((IjkMediaPlayer)mPlayerService.getPlayer()).getVideoDecodeFramesPerSecond();
                 if(mLiveMediaControllerBottom==null){
                     return;
                 }
                 if (Math.round(vdfps) == 12) {
                     //mTimer.cancel();
                     Loger.i(TAG, "dfps   " + vdfps);
-                    FrameInfo frameInfo = mPlayer.native_getFrameInfo();
+                    FrameInfo frameInfo = ((IjkMediaPlayer)mPlayerService.getPlayer()).native_getFrameInfo();
                     offSet = System.currentTimeMillis()/1000+sysTimeOffset - frameInfo.pkt/1000;
                     Loger.i(TAG, "nowtime  " + frameInfo.nowTime + "   dts     " + frameInfo.pkt_dts
-                            + "   pkt   " + frameInfo.pkt + "  cache:" + mPlayer.getVideoCachedDuration());
+                            + "   pkt   " + frameInfo.pkt + "  cache:" + ((IjkMediaPlayer)mPlayerService.getPlayer()).getVideoCachedDuration());
                     mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(final View v) {
@@ -152,15 +147,15 @@ public class LiveRemarkBll {
                             }
                             final LiveVideoView liveVideoView = (LiveVideoView) ((Activity) mContext).findViewById(R.id.vv_course_video_video);
 //                liveVideoView.setVisibility(View.INVISIBLE);
-                            mPlayer.setSurface(liveTextureView.surface);
+                            ((IjkMediaPlayer)mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
                             v.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mPlayer.setDisplay(liveVideoView.getSurfaceHolder());
+                                    ((IjkMediaPlayer)mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
                                     v.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
-                                            mPlayer.setSurface(liveTextureView.surface);
+                                            ((IjkMediaPlayer)mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
                                             v.postDelayed(new Runnable() {
                                                 @Override
                                                 public void run() {
@@ -177,7 +172,7 @@ public class LiveRemarkBll {
                                                     File file = new File(saveDir, "" + System.currentTimeMillis() + ".png");
                                                     ImageUtils.save(bitmap, file, Bitmap.CompressFormat.JPEG);
                                                     reMark(file);
-                                                    mPlayer.setDisplay(liveVideoView.getSurfaceHolder());
+                                                    ((IjkMediaPlayer)mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
                                                 }
                                             }, 100);
                                         }
@@ -242,9 +237,16 @@ public class LiveRemarkBll {
     /**上传标记点*/
     private void reMark(File file) {
         String fileName = file.getAbsolutePath();
-        final long time = mPlayer.native_getFrameInfo().pkt/1000 - mPlayer.getVideoCachedDuration()/1000 + offSet;
-        Loger.i(TAG,"frameTime:"+mPlayer.native_getFrameInfo().pkt/1000);
-        Loger.i(TAG,"cacheTime:"+mPlayer.getVideoCachedDuration()/1000);
+        long testTime=0;
+
+        try {
+            testTime = ((IjkMediaPlayer)mPlayerService.getPlayer()).native_getFrameInfo().pkt / 1000 - ((IjkMediaPlayer)mPlayerService.getPlayer()).getVideoCachedDuration() / 1000 + offSet;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        final long time=testTime;
+        Loger.i(TAG,"frameTime:"+((IjkMediaPlayer)mPlayerService.getPlayer()).native_getFrameInfo().pkt/1000);
+        Loger.i(TAG,"cacheTime:"+((IjkMediaPlayer)mPlayerService.getPlayer()).getVideoCachedDuration()/1000);
         Loger.i(TAG,"offset:"+offSet+"  time:"+time+"   sysTime:"+System.currentTimeMillis());
         if (!TextUtils.isEmpty(fileName)) {
             CloudUploadEntity entity = new CloudUploadEntity();

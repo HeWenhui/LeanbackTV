@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SlowHorizontalScrollView;
+import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
@@ -57,6 +58,7 @@ public class LiveAutoNoticeBll {
     private String srcType;
     private String teacherName;
     private String teacherImg;
+    private String liveId;
     String TAG = this.getClass().getSimpleName();
     /**
      * 文案
@@ -154,6 +156,10 @@ public class LiveAutoNoticeBll {
         this.teacherName = teacherName;
     }
 
+    public void setLiveId(String liveId) {
+        this.liveId = liveId;
+    }
+
     public void setTeacherImg(String teacherImg) {
         this.teacherImg = teacherImg;
     }
@@ -170,7 +176,9 @@ public class LiveAutoNoticeBll {
      */
     public void showNotice(String name, String head) {
         try {
-            showNotice(name, notice[notice.length - 1][(int) Math.round(Math.random() * 3)], head);
+            int i=ShareDataManager.getInstance().getInt("LiveAutoNotice_"+liveId,-1,ShareDataManager.SHAREDATA_USER);
+            showNotice(name, notice[10][(i+1)%4], head);
+            ShareDataManager.getInstance().put("LiveAutoNotice_"+liveId,i+1,ShareDataManager.SHAREDATA_USER);
            // showNotice(name, notice[1][0], head);
         }catch (Exception e){
             e.printStackTrace();
@@ -200,7 +208,7 @@ public class LiveAutoNoticeBll {
                 tvContent = (TextView) root.findViewById(R.id.tv_live_auto_notice_content);
             }
             ImageLoader.with(mContext).load(head).error(R.drawable.ic_default_head_square).into(ivAvatar);
-            SpannableString content = new SpannableString(name + "@你" + s);
+            SpannableString content = new SpannableString(name + "@你  " + s);
             StyleSpan span = new StyleSpan(Typeface.BOLD);
             try {
                 content.setSpan(span, 0, name.length() + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
