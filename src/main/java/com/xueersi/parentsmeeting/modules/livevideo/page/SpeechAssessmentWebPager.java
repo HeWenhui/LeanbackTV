@@ -469,7 +469,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
                                 }
                             });
                 } else {
-                    mIse.startEnglishEvaluator(assessRef, saveVideoFile.getAbsolutePath(), false,
+                    mIse.startEnglishEvaluator(assessRef, saveVideoFile.getAbsolutePath(), "2", false,
                             new EvaluatorListener() {
                                 @Override
                                 public void onBeginOfSpeech() {
