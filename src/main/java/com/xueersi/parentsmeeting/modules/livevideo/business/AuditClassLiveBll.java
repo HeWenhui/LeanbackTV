@@ -266,45 +266,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                 });
     }
 
-    /**
-     * 领取金币
-     *
-     * @param operateId
-     * @param liveId
-     */
-    public void sendReceiveGold(final int operateId, String liveId) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mLogtf.d("sendReceiveGold:enstuId=" + enstuId + ",operateId=" + operateId + ",liveId=" + liveId);
-        mHttpManager.sendReceiveGold(mLiveType, enstuId, operateId, liveId, new HttpCallBack() {
-
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                mLogtf.d("sendReceiveGold:onPmSuccess=" + responseEntity.getJsonObject().toString() + ",operateId=" +
-                        operateId);
-                if (readPackageBll != null) {
-                    VideoResultEntity entity = mHttpResponseParser.redPacketParseParser(responseEntity);
-                    readPackageBll.onGetPackage(entity);
-                }
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                mLogtf.d("sendReceiveGold:onPmFailure=" + msg + ",operateId=" + operateId);
-                if (readPackageBll != null) {
-                    readPackageBll.onGetPackageFailure(operateId);
-                }
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                mLogtf.d("sendReceiveGold:onPmError=" + responseEntity.getErrorMsg() + ",operateId=" + operateId);
-                if (readPackageBll != null) {
-                    readPackageBll.onGetPackageError(operateId);
-                }
-            }
-        });
-    }
-
     public void setVideoAction(AuditVideoAction videoAction) {
         this.mVideoAction = videoAction;
     }

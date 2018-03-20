@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
@@ -69,18 +70,15 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
         mVPlayVideoControlHandler.post(runnable);
     }
 
-    @Override
-    public void onGetPackage(VideoResultEntity entity) {
+    private void onGetPackage(VideoResultEntity entity) {
         rlRedpacketContent.removeAllViews();
         initRedPacketResult(entity.getGoldNum());
     }
 
-    @Override
-    public void onGetPackageFailure(int operateId) {
+    private void onGetPackageFailure(int operateId) {
     }
 
-    @Override
-    public void onGetPackageError(int operateId) {
+    private void onGetPackageError(int operateId) {
         rlRedpacketContent.removeAllViews();
     }
 
@@ -115,7 +113,22 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
         btnRedPacket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mLiveBll.sendReceiveGold(operateId, mVSectionID);
+                mLiveBll.sendReceiveGold(operateId, mVSectionID, new AbstractBusinessDataCallBack() {
+                    @Override
+                    public void onDataSucess(Object... objData) {
+                        VideoResultEntity entity = (VideoResultEntity) objData[0];
+                        onGetPackage(entity);
+                    }
+
+                    @Override
+                    public void onDataFail(int errStatus, String failMsg) {
+                        if (errStatus == 0) {
+                            onGetPackageFailure(operateId);
+                        } else {
+                            onGetPackageError(operateId);
+                        }
+                    }
+                });
             }
         });
         view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
