@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SlowHorizontalScrollView;
+import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
@@ -34,6 +35,8 @@ import com.xueersi.xesalib.utils.uikit.SizeUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 /**
  * Created by Tang on 2018/3/10.
@@ -59,6 +62,7 @@ public class LiveAutoNoticeBll {
     private String teacherName;
     private String teacherImg;
     private String liveId;
+    private LiveBll mLiveBll;
     String TAG = this.getClass().getSimpleName();
     /**
      * 文案
@@ -164,6 +168,10 @@ public class LiveAutoNoticeBll {
         this.teacherImg = teacherImg;
     }
 
+    public void setLiveBll(LiveBll liveBll) {
+        mLiveBll = liveBll;
+    }
+
     public void setHttpManager(LiveHttpManager httpManager) {
         mHttpManager = httpManager;
     }
@@ -178,8 +186,9 @@ public class LiveAutoNoticeBll {
         try {
             int i=ShareDataManager.getInstance().getInt("LiveAutoNotice_"+liveId,-1,ShareDataManager.SHAREDATA_USER);
             showNotice(name, notice[10][(i+1)%4], head);
+            umsAgent(11,(i+1)%4+1,true);
             ShareDataManager.getInstance().put("LiveAutoNotice_"+liveId,i+1,ShareDataManager.SHAREDATA_USER);
-           // showNotice(name, notice[1][0], head);
+            //showNotice(name, notice[1][0], head);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -274,6 +283,7 @@ public class LiveAutoNoticeBll {
                     String imgUrl = object.optString(teacherImg);
                     if (type > 0 && choose > 0 && !TextUtils.isEmpty(name)) {
                         showNotice(name, notice[type - 1][choose - 1], imgUrl);
+                        umsAgent(type,choose,true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -284,6 +294,7 @@ public class LiveAutoNoticeBll {
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
                 Loger.i(TAG, "getAutoNotice fail" + msg);
+                umsAgent(0,0,false);
                 //showNotice("老师",notice[1][1],"");
             }
 
@@ -291,8 +302,30 @@ public class LiveAutoNoticeBll {
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
                 Loger.i(TAG, "getAutoNotice fail" + responseEntity.getErrorMsg());
+                umsAgent(0,0,false);
                 //showNotice("老师",notice[1][1],"");
             }
         });
+    }
+    private void umsAgent(int type,int choose,boolean isSuccess){
+        HashMap<String,String> map=new HashMap<>();
+        map.put("testid",testId);
+        if(isSuccess) {
+            map.put("chattexttype", "" + type);
+            map.put("chattextnum", "" + choose);
+            if (type == 4 || type == 9 || type == 10) {
+                map.put("whisperreq","success");
+                map.put("actiontype", "whisperpraise");
+            } else if (type == 1 || type == 2 || type == 3 || type == 5 || type == 6 || type == 8) {
+                map.put("actiontype", "whisperencourage");
+                map.put("whisperreq","success");
+            } else if (type == 11) {
+                map.put("actiontype", "whisperwarning");
+                map.put("whisperwarntime", "" + System.currentTimeMillis());
+            }
+        }else{
+            map.put("whisperreq","fail");
+        }
+        mLiveBll.umsAgentDebug3("sci_whisper_func",map);
     }
 }

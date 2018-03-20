@@ -558,7 +558,7 @@ public class LiveRemarkBll {
         @Override
         public void updateViews(PointEntity entity, int i, Object o) {
             mEntity=entity;
-            ImageLoader.with(mContext).load(entity.getPic()).error(R.drawable.bg_default_image).into(ivShot);
+            ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
             ivPlay.setTag(entity.getPic());
             if (!entity.isPlaying) {
                 ivPlay.setVisibility(View.VISIBLE);
