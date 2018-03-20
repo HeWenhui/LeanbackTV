@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.base.BaseBll;
@@ -664,6 +665,7 @@ public class LectureLivePlayBackBll extends BaseBll {
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 ExPerienceLiveMessage livebackmsg = JsonUtil.getEntityFromJson(responseEntity.getJsonObject().toString(), ExPerienceLiveMessage.class);
                 getLiveLectureMsgs.getLiveExperienceMsgs(livebackmsg);
+                Log.e("Duncan","livebackmsgsize:" + livebackmsg.getMsg().size());
             }
         });
 

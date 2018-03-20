@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -70,6 +71,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LectureLivePlaybackMediaController;
@@ -113,6 +115,13 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private Handler scanHandler;
     private List<ExPerienceLiveMessage.LiveExMsg> mMsgs;
     private LiveMessagePager mLiveMessagePager;
+    private Long timer = 0L;
+    /** 视频宽度 */
+    public static final float VIDEO_WIDTH = 1280f;
+    /** 视频高度 */
+    public static final float VIDEO_HEIGHT = 720f;
+    /** 视频宽高比 */
+    public static final float VIDEO_RATIO = VIDEO_WIDTH / VIDEO_HEIGHT;
 
     @Override
     public void onTeacherNotPresent(boolean isBefore) {
@@ -177,16 +186,25 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             if (isFinishing()) {
                 return;
             }
-            initOldMessage();
-            if(mMessage != null && mMessage.getMsg()!=null && mMessage.getMsg().size()>0){
-                mMsgs = new ArrayList<>();
-                for(int i = 0 ; i < mMessage.getMsg().size() ; i++){
-                    if("130".equals(mMessage.getMsg().get(i).getText().getType())){
-                        mMsgs.add(mMessage.getMsg().get(i));
-                    }
-                }
-            }
-            scanHandler.postDelayed(this, 60000);
+//            initOldMessage(mVideoEntity.getLiveId(),mVideoEntity.getCourseId(),timer + Long.parseLong(mVideoEntity.getVisitTimeKey()));
+            initOldMessage(mVideoEntity.getLiveId(),mVideoEntity.getCourseId(),timer + 2960L);
+            timer = timer + 10;
+//            if(mMessage != null && mMessage.getMsg()!=null && mMessage.getMsg().size()>0){
+//                mMsgs = new ArrayList<>();
+//                for(int i = 0 ; i < mMessage.getMsg().size() ; i++){
+//                    if("130".equals(mMessage.getMsg().get(i).getText().getType())){
+//                        mMsgs.add(mMessage.getMsg().get(i));
+//                    }
+//                }
+//            }
+//            if(mMsgs.size() > 0){
+//                for(int i = 0 ; i < mMsgs.size() ; i++){
+//                    mLiveMessagePager.addMessage(mMsgs.get(i).getText().getBy(),LiveMessageEntity.MESSAGE_TIP,mMsgs.get(i).getText().getMsg());
+//                }
+//                mMsgs.clear();
+//            }
+            Log.e("Duncan","timer:" + timer);
+            scanHandler.postDelayed(this, 10000);
 
 
         }
@@ -292,6 +310,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     /** 当前时间，豪妙 */
     private long currentMsg = 0;
     private ExPerienceLiveMessage mMessage;
+    private Boolean send = false;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -332,7 +351,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }
         mMediaController.setControllerBottom(liveMediaControllerBottom,false);
 //        rlFirstBackgroundView = (RelativeLayout) findViewById(R.id.rl_course_video_first_backgroud);
-//        ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
+        ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
+//        ivTeacherNotpresent.setImageResource(R.drawable.);
         bottomContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
 
@@ -355,8 +375,30 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 rlQuestionContent = null;
             }
         }
+        final ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+        setFirstParam(lp);
         // 03.08 尝试添加聊天的布局页面
 //        initMessagePager(bottomContent);
+    }
+
+    private void setFirstParam(ViewGroup.LayoutParams lp) {
+        final View contentView = findViewById(android.R.id.content);
+        final View actionBarOverlayLayout = (View) contentView.getParent();
+        Rect r = new Rect();
+        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
+        int screenWidth = (r.right - r.left);
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
+        int rightMargin = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * lp.width / VIDEO_WIDTH + (screenWidth - lp.width) / 2);
+        int topMargin = (ScreenUtils.getScreenHeight() - lp.height) / 2;
+        if (params.rightMargin != rightMargin || params.bottomMargin != topMargin) {
+            params.rightMargin = rightMargin;
+            params.bottomMargin = params.topMargin = topMargin;
+            LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
+//            rlFirstBackgroundView.setLayoutParams(params);
+            LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
+//            ivTeacherNotpresent.setLayoutParams(params);
+        }
+
     }
 
     private void initMessagePager(RelativeLayout bottomContent) {
@@ -384,9 +426,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }else{
             mLiveMessagePager.showPeopleCount(8);
         }
-
-        mLiveMessagePager.oldMessage();
-//
 //        if (mode != null) {
 //            mLiveMessagePager.onopenchat(openchat, mode, false);
 //        }
@@ -418,8 +457,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         // 播放视频
         mWebPath = mVideoEntity.getVideoPath();
         playNewVideo(Uri.parse(mWebPath), mSectionName);
-        // 03.13 测试旧的获取聊天记录的接口
-        initOldMessage();
 
     }
 
@@ -429,11 +466,12 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         void onPmFailure();
     }
 
-    private void initOldMessage() {
-        lectureLivePlayBackBll.getExperienceMsgs("140185","12162",2580L,new GetExperienceLiveMsgs(){
+    private void initOldMessage(String liveId,String classId,Long start) {
+        lectureLivePlayBackBll.getExperienceMsgs(liveId,classId,start,new GetExperienceLiveMsgs(){
             @Override
             public void getLiveExperienceMsgs(ExPerienceLiveMessage liveMessageGroupEntity) {
                 mMessage = liveMessageGroupEntity;
+                sendMessage();
             }
 
             @Override
@@ -441,6 +479,20 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
             }
         } );
+    }
+
+    private void sendMessage() {
+        if(mMessage != null && mMessage.getMsg()!=null && mMessage.getMsg().size()>0){
+            mMsgs = new ArrayList<>();
+            for(int i = 0 ; i < mMessage.getMsg().size() ; i++){
+                if("130".equals(mMessage.getMsg().get(i).getText().getType())){
+                    mMsgs.add(mMessage.getMsg().get(i));
+                }
+            }
+            if(mMsgs.size() > 0){
+                send = true;
+            }
+        }
     }
 
     /**
@@ -461,8 +513,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     protected void onPlayOpenSuccess() {
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(View.GONE);
-            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()));
-//            seekTo(7190000);
+//            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()));
+            seekTo(2960000);
             initView();
             initMessagePager(bottomContent);
         }
@@ -526,16 +578,19 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         scanQuestion(currentPosition);
         Log.e("Duncan","currentPosition:" + currentPosition);
         // 获取聊天记录
-//        if (scanRunnable == null) {
-//                scanRunnable = new ScanRunnable();
-//                scanHandler.post(scanRunnable);
-//            }
-        // 发送聊天记录
-//        for(int i = 0 ; i < mMsgs.size() ; i++){
-//            if(currentPosition == 7190010){
-//                mLiveMessagePager.addMessage(mMsgs.get(i).getText().getBy(),LiveMessageEntity.MESSAGE_TIP,mMsgs.get(i).getText().getMsg());
-//            }
-//        }
+        if (scanRunnable == null) {
+                scanRunnable = new ScanRunnable();
+                scanHandler.post(scanRunnable);
+            }
+        //发送聊天记录
+        if(send && mMsgs.size() > 0){
+            for(int i = 0 ; i < mMsgs.size() ; i++){
+                if(currentMsg/1000 == mMsgs.get(i).getReleative_time() ){
+                    mLiveMessagePager.addMessage(mMsgs.get(i).getText().getName(),LiveMessageEntity.MESSAGE_TIP,mMsgs.get(i).getText().getMsg());
+                    mMsgs.remove(i);
+                }
+            }
+        }
 
     }
 
@@ -753,7 +808,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     @Override
     protected void resultComplete() {
         // 播放完毕直接退出
-        onUserBackPressed();
+//        onUserBackPressed();
+        // 03.20 直播结束后，显示结束的提示图片
+        ivTeacherNotpresent.setVisibility(View.VISIBLE);
+        ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
+
     }
 
     private void showExam() {
@@ -1199,4 +1258,13 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             scanRunnable.exit();
         }
     }
+
+    /** 刷新界面重新加载视频 */
+    protected void onRefresh() {
+        if (mIsEnalbePlayer) {
+            loadView(mLayoutVideo);
+            Log.e("Duncan","refresh");
+        }
+    }
+
 }

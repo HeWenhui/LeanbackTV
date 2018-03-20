@@ -1084,15 +1084,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         tvMessageGoldLable.setVisibility(View.VISIBLE);
     }
 
-    // 03.16 模拟读取历史聊天记录
-    public void oldMessage(){
-        mView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                addMessage("Teacher", LiveMessageEntity.MESSAGE_TIP, CONNECT);
-            }
-        },10000);
-    }
 
     // 03.16 模拟显示聊天人数
     public void showPeopleCount(int num){

@@ -136,6 +136,15 @@ public class ExPerienceLiveMessage implements Serializable{
         }
         private String notice;
         private String ts;
+        private Long releative_time;
+
+        public Long getReleative_time() {
+            return releative_time;
+        }
+
+        public void setReleative_time(Long releative_time) {
+            this.releative_time = releative_time;
+        }
 
         public String getId() {
             return id;
