@@ -48,7 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageStandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBll;
@@ -163,7 +163,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
     VideoChatBll videoChatBll;
     QuestionBll questionBll;
     RollCallBll rollCallBll;
-    RedPackageBll redPackageBll;
+    RedPackageStandBll redPackageBll;
     LearnReportBll learnReportBll;
     H5CoursewareBll h5CoursewareBll;
     EnglishH5CoursewareBll englishH5CoursewareBll;
@@ -393,7 +393,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         liveMessageBll.setQuestionBll(questionBll);
         videoChatBll = new VideoChatBll(this);
         rollCallBll = new RollCallBll(this);
-        redPackageBll = new RedPackageBll(this);
+        redPackageBll = new RedPackageStandBll(this);
         learnReportBll = new LearnReportBll(this);
         h5CoursewareBll = new H5CoursewareBll(this);
         englishH5CoursewareBll = new EnglishH5CoursewareBll(this);

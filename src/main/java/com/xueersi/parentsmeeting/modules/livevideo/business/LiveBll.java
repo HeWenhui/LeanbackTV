@@ -427,26 +427,17 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         operateId);
                 VideoResultEntity entity = mHttpResponseParser.redPacketParseParser(responseEntity);
                 callBack.onDataSucess(entity);
-//                if (readPackageBll != null) {
-//                    readPackageBll.onGetPackage(entity);
-//                }
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 mLogtf.d("sendReceiveGold:onPmFailure=" + msg + ",operateId=" + operateId);
-//                if (readPackageBll != null) {
-//                    readPackageBll.onGetPackageFailure(operateId);
-//                }
                 callBack.onDataFail(0, msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 mLogtf.d("sendReceiveGold:onPmError=" + responseEntity.getErrorMsg() + ",operateId=" + operateId);
-//                if (readPackageBll != null) {
-//                    readPackageBll.onGetPackageError(operateId);
-//                }
                 callBack.onDataFail(1, responseEntity.getErrorMsg());
             }
         });
@@ -640,8 +631,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         this.mPraiseOrEncourageAction = action;
     }
 
-    public void setReadPackageBll(RedPackageBll readPackageBll) {
-        this.readPackageBll = readPackageBll;
+    public void setReadPackageBll(RedPackageAction redPackageAction) {
+        this.readPackageBll = redPackageAction;
     }
 
     public void setVideoAction(VideoAction videoAction) {
