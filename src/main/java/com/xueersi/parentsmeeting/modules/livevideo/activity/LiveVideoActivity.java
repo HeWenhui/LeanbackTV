@@ -297,9 +297,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         if (!isLand) {
                             return;
                         }
-//                        if (liveTextureView.getLayoutParams() != lp) {
-//                            liveTextureView.setLayoutParams(lp);
-//                        }
                         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
                                 (int) VIDEO_HEIGHT, VIDEO_RATIO);
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
@@ -325,8 +322,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         if (mLiveBll != null && mLiveBll.getLiveAutoNoticeBll() != null) {
                             mLiveBll.getLiveAutoNoticeBll().setLayout(lp.width, lp.height);
                         }
-                        if(mLiveBll!=null&&mLiveBll.getLiveRemarkBll()!=null){
-                            mLiveBll.getLiveRemarkBll().setLayout(lp.width,lp.height);
+                        if (mLiveBll != null && mLiveBll.getLiveRemarkBll() != null) {
+                            mLiveBll.getLiveRemarkBll().setLayout(lp.width, lp.height);
                         }
                         if (speechFeedBackAction != null) {
                             speechFeedBackAction.setVideoLayout(lp.width, lp.height);
@@ -498,13 +495,14 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     protected void onPlayOpenStart() {
         setFirstBackgroundVisible(View.VISIBLE);
         findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
-        if(liveRemarkBll==null) {
+        if (liveRemarkBll == null) {
             liveRemarkBll = new LiveRemarkBll(mContext, vPlayer);
             if (mLiveBll != null && liveMediaControllerBottom != null) {
                 if (liveTextureView == null) {
                     ViewStub viewStub = (ViewStub) findViewById(R.id.vs_course_video_video_texture);
                     liveTextureView = (LiveTextureView) viewStub.inflate();
                     liveTextureView.vPlayer = vPlayer;
+                    liveTextureView.setLayoutParams(videoView.getLayoutParams());
                 }
                 liveRemarkBll.setTextureView(liveTextureView);
                 liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
@@ -1270,7 +1268,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 }
             }
         }
-        if(liveRemarkBll!=null){
+        if (liveRemarkBll != null) {
             liveRemarkBll.setBtEnable(false);
         }
         mHandler.post(new Runnable() {
