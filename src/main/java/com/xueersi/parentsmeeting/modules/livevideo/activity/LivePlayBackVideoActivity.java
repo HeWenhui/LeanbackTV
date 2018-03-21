@@ -2584,6 +2584,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
      * @param requestCode
      */
     public static void intentTo(Activity context, Bundle bundle, String where, int requestCode) {
+//        Intent intent = new Intent(context, LiveStandPlayBackVideoActivity.class);
         Intent intent = new Intent(context, LivePlayBackVideoActivity.class);
         intent.putExtras(bundle);
         intent.putExtra("where", where);

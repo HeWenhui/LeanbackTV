@@ -9,17 +9,9 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@id/rl_livevideo_star_content"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@color/COLOR_333333"
-            android:visibility="gone"></RelativeLayout>
-
-        <RelativeLayout
             android:id="@id/rl_livevideo_message_status"
             android:layout_width="match_parent"
             android:layout_height="25dp"
-            android:layout_below="@id/rl_livevideo_star_content"
             android:background="@color/COLOR_333333">
 
             <TextView
@@ -65,12 +57,19 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@id/rl_livevideo_star_content"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:visibility="gone" />
+
+    <RelativeLayout
         android:id="@id/rl_livevideo_english_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_below="@id/rl_livevideo_star_content"
+        android:layout_toLeftOf="@id/rl_livevideo_star_content"
         android:layout_toRightOf="@id/rl_livevideo_info"
-        android:background="@color/COLOR_333333"
         android:visibility="visible" />
 
     <RelativeLayout

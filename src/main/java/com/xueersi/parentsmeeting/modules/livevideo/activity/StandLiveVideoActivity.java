@@ -37,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CacheAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishSpeekBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishStandSpeekBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ExpeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.H5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportBll;
@@ -45,6 +46,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLazyBllCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
@@ -66,6 +68,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.VPlayerListener;
@@ -170,8 +173,8 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
     LearnReportBll learnReportBll;
     H5CoursewareBll h5CoursewareBll;
     EnglishH5CoursewareBll englishH5CoursewareBll;
-    LiveAchievementBll starBll;
-    EnglishSpeekBll englishSpeekBll;
+    LiveStandAchievementBll starBll;
+    EnglishStandSpeekBll englishSpeekBll;
     SpeechFeedBackAction speechFeedBackAction;
     boolean audioRequest = false;
     SpeechEvaluatorUtils mIse;
@@ -415,7 +418,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         mLiveBll.setVideoChatAction(videoChatBll);
         videoChatBll.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
         mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), false);
-        baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
+        baseLiveMediaControllerTop = new LiveStandMediaControllerTop(this, mMediaController, this);
         mMediaController.setControllerTop(baseLiveMediaControllerTop);
         setMediaControllerBottomParam(videoView.getLayoutParams());
 
@@ -898,12 +901,12 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         //本场成就
         if (1 == getInfo.getIsAllowStar()) {
 //            starBll = new StarInteractBll(this, liveType, getInfo.getStarCount(), mIsLand);
-            starBll = new LiveAchievementBll(this, liveType, getInfo.getStarCount(), getInfo.getGoldCount(), mIsLand);
+            starBll = new LiveStandAchievementBll(this, liveType, getInfo.getStarCount(), getInfo.getGoldCount(), mIsLand);
             starBll.setLiveBll(mLiveBll);
             starBll.initView(bottomContent);
             mLiveBll.setStarAction(starBll);
             //能量条
-            EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(this);
+            EnglishStandSpeekBll englishSpeekBll = new EnglishStandSpeekBll(this);
             boolean initView = englishSpeekBll.initView(bottomContent, mGetInfo.getMode());
             if (initView) {
                 englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());

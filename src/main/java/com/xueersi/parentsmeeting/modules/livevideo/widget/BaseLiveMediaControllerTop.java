@@ -81,7 +81,7 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
     }
 
     /** 播放器的布局界面 */
-    public View inflateLayout() {
+    protected View inflateLayout() {
         return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_top, this);
     }
 
