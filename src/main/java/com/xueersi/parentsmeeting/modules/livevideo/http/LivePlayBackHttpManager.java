@@ -256,13 +256,13 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
      * @param srcType         题库
      * @param testId
      * @param testResult
-     * @param testDay
-     * @param classId
+     * @param liveId
+     * @param termId
      * @param isRight
      * @param requestCallBack
      */
-    public void saveTestRecords(String enStuId, String srcType, String testId, String testResult, String testDay,
-                                String classId,
+    public void saveTestRecords(String enStuId, String srcType, String testId, String testResult, String liveId,
+                                String termId,
                                 int livePlayType, boolean voice, boolean isRight, HttpCallBack requestCallBack) {
         String liveUrl = LiveVideoConfig.LIVE_EXPE_SUBMIT;
         // 如果是录播直播回放
@@ -279,8 +279,8 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
 //            }
 //        }
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("liveId", "134436");
-        params.addBodyParam("termId", "19");
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("termId", termId);
         params.addBodyParam("testId", testId);
         params.addBodyParam("testAnswer", testResult);
         sendPost(liveUrl, params, requestCallBack);

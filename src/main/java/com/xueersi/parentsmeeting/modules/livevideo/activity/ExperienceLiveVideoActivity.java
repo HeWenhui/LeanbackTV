@@ -133,8 +133,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     /** 视频宽高比 */
     public static final float VIDEO_RATIO = VIDEO_WIDTH / VIDEO_HEIGHT;
     private Boolean pause = false;
+    private Boolean end = false;
     private Long startTime;
     private Long rebackTime;
+    private Long mTotaltime;
 
     @Override
     public void onTeacherNotPresent(boolean isBefore) {
@@ -199,7 +201,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             if (isFinishing()) {
                 return;
             }
-            initOldMessage(mVideoEntity.getLiveId(),mVideoEntity.getCourseId(),timer + Long.parseLong(mVideoEntity.getVisitTimeKey())/1000);
+            initOldMessage(mVideoEntity.getLiveId(),mVideoEntity.getCourseId(),timer + Long.parseLong(mVideoEntity.getVisitTimeKey()));
 //            initOldMessage(mVideoEntity.getLiveId(),mVideoEntity.getCourseId(),timer + 2970L);
             timer = timer + 10;
             Log.e("Duncan","timer:" + timer);
@@ -512,19 +514,30 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
     @Override
     protected void onPlayOpenSuccess() {
+        mTotaltime = getDuration();
+        Log.e("mqtt","mTotaltime:"+ mTotaltime);
+        Log.e("mqtt","seekto:"+ mVideoEntity.getVisitTimeKey());
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(View.GONE);
+            initView();
+            initMessagePager(bottomContent);
+            if(mTotaltime < Long.parseLong(mVideoEntity.getVisitTimeKey())*1000){
+                // 03.21 提示直播已结束
+                ivTeacherNotpresent.setVisibility(View.VISIBLE);
+                ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
+                vPlayer.releaseSurface();
+                vPlayer.stop();
+                return;
+            }
             if(pause){
-                seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) +(rebackTime - startTime));
+                seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey())*1000 +(rebackTime - startTime));
                 startTime = 0L;
                 rebackTime = 0L;
             }else{
-                seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()));
+                seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey())*1000);
             }
 //            seekTo(2970000);
             startTime = System.currentTimeMillis();
-            initView();
-            initMessagePager(bottomContent);
         }
         if (mQuestionEntity != null) {
             Loger.d(TAG, "onPlayOpenSuccess:showQuestion:isAnswered=" + mQuestionEntity.isAnswered() + "," +
@@ -537,6 +550,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     protected void onPlayOpenStart() {
         setFirstBackgroundVisible(View.VISIBLE);
         findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
+
+
 
     }
 
@@ -1009,7 +1024,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         loadEntity.setLoadingTip(R.string.loading_tip_default);
         BaseBll.postDataLoadEvent(loadEntity.beginLoading());
         lectureLivePlayBackBll.saveQuestionResults(loadEntity, questionEntity.getSrcType(), questionEntity.getvQuestionID(), result,
-                questionEntity.getAnswerDay(), mVideoEntity.getLiveId(), mVideoEntity.getvLivePlayBackType());
+                mVideoEntity.getLiveId(), mVideoEntity.getChapterId(), mVideoEntity.getvLivePlayBackType());
         questionEntity.setAnswered(true);
         questionViewGone();
         XesMobAgent.playVideoStatisticsMessage(MobEnumUtil.QUESTION_LIVEPLAYBACK, MobEnumUtil.QUESTION_ANSWER,
