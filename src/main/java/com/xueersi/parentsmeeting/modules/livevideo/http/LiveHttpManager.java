@@ -835,4 +835,15 @@ public class LiveHttpManager extends BaseHttpBusiness {
         Loger.i(LiveAutoNoticeBll.class.getSimpleName(),JSON.toJSON(params).toString());
         sendPost(liveVideoSAConfigInner.URL_LIVE_GET_AUTO_NOTICE,params,callBack);
     }
+    /**
+     * 智能私信统计接口
+     */
+    public void autoNoticeStatisc(String classId,HttpCallBack callBack){
+        HttpRequestParams params=new HttpRequestParams();
+        params.addBodyParam("classId",classId);
+        params.addBodyParam("stuId",UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        params.addBodyParam("type","11");
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_STATISTICS_AUTO_NOTICE,params,callBack);
+    }
 }

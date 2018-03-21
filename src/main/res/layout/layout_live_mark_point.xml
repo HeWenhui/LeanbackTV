@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#a0000000"
-            android:src="@drawable/bg_liveplayback_point_play"
+            android:src="@drawable/bt_btn_live_mark_points"
             android:padding="10dp"
             />
     </FrameLayout>

@@ -188,6 +188,12 @@ public class LiveAutoNoticeBll {
             showNotice(name, notice[10][(i+1)%4], head);
             umsAgent(11,(i+1)%4+1,true);
             ShareDataManager.getInstance().put("LiveAutoNotice_"+liveId,i+1,ShareDataManager.SHAREDATA_USER);
+            mHttpManager.autoNoticeStatisc(classId, new HttpCallBack(false) {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+
+                }
+            });
             //showNotice(name, notice[1][0], head);
         }catch (Exception e){
             e.printStackTrace();

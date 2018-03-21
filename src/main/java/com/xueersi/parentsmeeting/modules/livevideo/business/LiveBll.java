@@ -166,12 +166,14 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /** 是不是有分组 */
     private boolean haveTeam = false;
     private int form;
+    /**智能私信业务*/
     private LiveAutoNoticeBll mLiveAutoNoticeBll;
     long openStartTime;
     /** 区分文理appid */
     String appID = UmsConstants.LIVE_APP_ID;
     /**满分榜业务*/
     private AnswerRankBll mAnswerRankBll;
+    /**标记点业务*/
     private LiveRemarkBll mLiveRemarkBll;
     /**校准系统时间*/
     private long sysTimeOffset;
@@ -1909,22 +1911,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
         //判断是否有智能私信功能
         Loger.i("LiveAutoNoticeBll","isshowNotice:"+mGetInfo.getIsShowCounselorWhisper());
-        if(mGetInfo.getStudentLiveInfo() != null
-                &&"1".equals(mGetInfo.getIsShowCounselorWhisper())) {
-            mLiveAutoNoticeBll = liveLazyBllCreat.createAutoNoticeBll();
-            mLiveAutoNoticeBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
-            mLiveAutoNoticeBll.setHttpManager(mHttpManager);
-            mLiveAutoNoticeBll.setTeacherImg(mGetInfo.getTeacherIMG());
-            mLiveAutoNoticeBll.setTeacherName(mGetInfo.getTeacherName());
-            mLiveAutoNoticeBll.setLiveId(mLiveId);
-            mLiveAutoNoticeBll.setLiveBll(this);
-            if (mQuestionAction instanceof QuestionBll) {
-                ((QuestionBll) mQuestionAction).setLiveAutoNoticeBll(mLiveAutoNoticeBll);
-            }
-            if (englishH5CoursewareAction instanceof EnglishH5CoursewareBll) {
-                ((EnglishH5CoursewareBll) englishH5CoursewareAction).setLiveAutoNoticeBll(mLiveAutoNoticeBll);
-            }
-        }
         sysTimeOffset=(long)mGetInfo.getNowTime()-System.currentTimeMillis()/1000;
         if(!mGetInfo.getIsShowMarkPoint().equals("1")){
             if(mLiveRemarkBll!=null){
@@ -3894,5 +3880,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }else{
             mLiveRemarkBll.setBtEnable(false);
         }
+    }
+
+    public void setLiveAutoNoticeBll(LiveAutoNoticeBll liveAutoNoticeBll) {
+        mLiveAutoNoticeBll = liveAutoNoticeBll;
+        mLiveAutoNoticeBll.setHttpManager(mHttpManager);
+        mLiveAutoNoticeBll.setLiveId(mLiveId);
     }
 }

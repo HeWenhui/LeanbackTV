@@ -540,10 +540,10 @@ public class LiveRemarkBll {
             root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mPlayerService.seekTo(mEntity.relativeTime*1000);
                     if(!mEntity.isPlaying){
                         //ivPlay.setVisibility(View.GONE);
 
-                        mPlayerService.seekTo(mEntity.relativeTime*1000);
                         for(int j=0;j<mList.size();j++){
                                 mList.get(j).isPlaying = false;
 

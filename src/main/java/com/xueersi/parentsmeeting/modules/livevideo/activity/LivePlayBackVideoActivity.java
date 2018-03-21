@@ -263,9 +263,10 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         // 设置当前是否为横屏
         final LivePlaybackMediaController mMediaController = new LivePlaybackMediaController(this, this);
         this.mMediaController = mMediaController;
-        if(mLiveRemarkBll==null||mLiveRemarkBll.getList()==null||mLiveRemarkBll.getList().size()==0){
+        if(mLiveRemarkBll==null||mVideoEntity.getIsAllowMarkpoint()!=1){
             mMediaController.getTitleRightBtn().setVisibility(View.GONE);
         }else {
+            mMediaController.getTitleRightBtn().setVisibility(View.VISIBLE);
             mMediaController.getTitleRightBtn().setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

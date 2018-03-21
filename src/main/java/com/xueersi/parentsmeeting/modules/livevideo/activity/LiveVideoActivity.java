@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.ExpeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.H5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAchievementBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLazyBllCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
@@ -889,6 +890,23 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         if (liveLazyBllCreat != null) {
             liveLazyBllCreat.setGetInfo(getInfo);
         }
+        if(mGetInfo.getStudentLiveInfo() != null
+                &&"1".equals(mGetInfo.getIsShowCounselorWhisper())) {
+
+            LiveAutoNoticeBll liveAutoNoticeBll = liveLazyBllCreat.createAutoNoticeBll();
+            liveAutoNoticeBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
+            liveAutoNoticeBll.setTeacherImg(mGetInfo.getTeacherIMG());
+            liveAutoNoticeBll.setTeacherName(mGetInfo.getTeacherName());
+            liveAutoNoticeBll.setLiveBll(mLiveBll);
+            mLiveBll.setLiveAutoNoticeBll(liveAutoNoticeBll);
+            //if (mQuestionAction instanceof QuestionBll) {
+                questionBll.setLiveAutoNoticeBll(liveAutoNoticeBll);
+            //}
+            //if (englishH5CoursewareAction instanceof EnglishH5CoursewareBll) {
+                englishH5CoursewareBll.setLiveAutoNoticeBll(liveAutoNoticeBll);
+            //}
+        }
+
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
             if (studentLiveInfo != null && studentLiveInfo.isExpe()) {
