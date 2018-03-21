@@ -184,10 +184,13 @@ public class LiveAutoNoticeBll {
      */
     public void showNotice(String name, String head) {
         try {
-            int i=ShareDataManager.getInstance().getInt("LiveAutoNotice_"+liveId,-1,ShareDataManager.SHAREDATA_USER);
-            showNotice(name, notice[10][(i+1)%4], head);
-            umsAgent(11,(i+1)%4+1,true);
-            ShareDataManager.getInstance().put("LiveAutoNotice_"+liveId,i+1,ShareDataManager.SHAREDATA_USER);
+            if (Integer.parseInt(classId) < 0) {
+                return;
+            }
+            int i = ShareDataManager.getInstance().getInt("LiveAutoNotice_" + liveId, -1, ShareDataManager.SHAREDATA_USER);
+            showNotice(name, notice[10][(i + 1) % 4], head);
+            umsAgent(11, (i + 1) % 4 + 1, true);
+            ShareDataManager.getInstance().put("LiveAutoNotice_" + liveId, i + 1, ShareDataManager.SHAREDATA_USER);
             mHttpManager.autoNoticeStatisc(classId, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -195,7 +198,7 @@ public class LiveAutoNoticeBll {
                 }
             });
             //showNotice(name, notice[1][0], head);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -277,7 +280,14 @@ public class LiveAutoNoticeBll {
      */
     public void getAutoNotice(int isForce, int type) {
         Loger.i(TAG, "getAutoNotice");
-        mHttpManager.getAutoNotice(classId, testId, srcType, type, isForce, new HttpCallBack() {
+        try {
+            if (Integer.parseInt(classId) < 0) {
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mHttpManager.getAutoNotice(classId, testId, srcType, type, isForce, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 try {
@@ -289,7 +299,7 @@ public class LiveAutoNoticeBll {
                     String imgUrl = object.optString(teacherImg);
                     if (type > 0 && choose > 0 && !TextUtils.isEmpty(name)) {
                         showNotice(name, notice[type - 1][choose - 1], imgUrl);
-                        umsAgent(type,choose,true);
+                        umsAgent(type, choose, true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -300,7 +310,7 @@ public class LiveAutoNoticeBll {
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
                 Loger.i(TAG, "getAutoNotice fail" + msg);
-                umsAgent(0,0,false);
+                umsAgent(0, 0, false);
                 //showNotice("老师",notice[1][1],"");
             }
 
@@ -308,30 +318,31 @@ public class LiveAutoNoticeBll {
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
                 Loger.i(TAG, "getAutoNotice fail" + responseEntity.getErrorMsg());
-                umsAgent(0,0,false);
+                umsAgent(0, 0, false);
                 //showNotice("老师",notice[1][1],"");
             }
         });
     }
-    private void umsAgent(int type,int choose,boolean isSuccess){
-        HashMap<String,String> map=new HashMap<>();
-        map.put("testid",testId);
-        if(isSuccess) {
+
+    private void umsAgent(int type, int choose, boolean isSuccess) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("testid", testId);
+        if (isSuccess) {
             map.put("chattexttype", "" + type);
             map.put("chattextnum", "" + choose);
             if (type == 4 || type == 9 || type == 10) {
-                map.put("whisperreq","success");
+                map.put("whisperreq", "success");
                 map.put("actiontype", "whisperpraise");
             } else if (type == 1 || type == 2 || type == 3 || type == 5 || type == 6 || type == 8) {
                 map.put("actiontype", "whisperencourage");
-                map.put("whisperreq","success");
+                map.put("whisperreq", "success");
             } else if (type == 11) {
                 map.put("actiontype", "whisperwarning");
                 map.put("whisperwarntime", "" + System.currentTimeMillis());
             }
-        }else{
-            map.put("whisperreq","fail");
+        } else {
+            map.put("whisperreq", "fail");
         }
-        mLiveBll.umsAgentDebug3("sci_whisper_func",map);
+        mLiveBll.umsAgentDebug3("sci_whisper_func", map);
     }
 }

@@ -262,7 +262,7 @@ public class LiveRemarkBll {
                 @Override
                 public void onSuccess(XesCloudResult result) {
                     Loger.i(TAG, "upCloud Sucess");
-                    mHttpManager.saveLiveMark("" + time, result.getHttpPath(), new HttpCallBack() {
+                    mHttpManager.saveLiveMark("" + time, result.getHttpPath(), new HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                             XESToastUtils.showToast(mContext, "标记成功");
@@ -318,7 +318,7 @@ public class LiveRemarkBll {
      * 获取标记点列表
      */
     public void getMarkPoints(String liveId, final AbstractBusinessDataCallBack callBack) {
-        mHttpManager.getMarkPoints(liveId,new HttpCallBack() {
+        mHttpManager.getMarkPoints(liveId,new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 JSONArray points = ((JSONObject) responseEntity.getJsonObject()).optJSONArray("markpointData");
