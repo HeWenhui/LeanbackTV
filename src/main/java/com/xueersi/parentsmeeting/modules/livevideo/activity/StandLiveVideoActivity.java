@@ -98,6 +98,9 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 public class StandLiveVideoActivity extends LiveVideoActivityBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest {
 
     private String TAG = "LiveVideoActivityLog";
+//    {
+//        mLayoutVideo = R.layout.activity_video_audit_live;
+//    }
     /** 播放器同步 */
     private static final Object mIjkLock = new Object();
     private WeakHandler mHandler = new WeakHandler(null);
@@ -251,7 +254,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         long before = System.currentTimeMillis();
         liveLazyBllCreat.setBottomContent(bottomContent);
         liveLazyBllCreat.setPraiselistContent(praiselistContent);
-        liveMessageBll.initViewLive(bottomContent);
+        liveMessageBll.initViewLiveStand(bottomContent);
         Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
 

@@ -41,8 +41,6 @@ public abstract class BaseIRCCallback implements IRCCallback {
     private LiveGetInfo mGetInfo;
     private final LiveTopic mLiveTopic;
     private VideoAction mVideoAction;
-    /** 是不是有分组 */
-    private boolean haveTeam = false;
     /** 主讲教师 */
     private Teacher mMainTeacher;
     /** 主讲教师名字 */
@@ -100,22 +98,6 @@ public abstract class BaseIRCCallback implements IRCCallback {
 
     public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target,
                                  String message) {
-        if (!"T".equals(message) && haveTeam) {
-            LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
-            String teamId = studentLiveInfo.getTeamId();
-            try {
-                JSONObject jsonObject = new JSONObject(message);
-                int type = jsonObject.getInt("type");
-                if (type == XESCODE.TEACHER_MESSAGE) {
-                    String to = jsonObject.optString("to", teamId);
-                    if (!teamId.equals(to)) {
-                        return;
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
         if (mRoomAction != null) {
             mRoomAction.onPrivateMessage(isSelf, sender, login, hostname, target, message);
         }

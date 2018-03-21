@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveMessageStandPager;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -73,6 +74,35 @@ public class LiveMessageBll implements RoomAction {
 
     public View getView() {
         return rlLiveMessageContent;
+    }
+
+
+    /**
+     * 站立直播聊天
+     *
+     * @param bottomContent
+     */
+    public void initViewLiveStand(RelativeLayout bottomContent) {
+        rlLiveMessageContent = new RelativeLayout(activity);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        bottomContent.addView(rlLiveMessageContent, params);
+
+        long before = System.currentTimeMillis();
+        LiveMessageStandPager liveMessagePager = new LiveMessageStandPager(activity, questionBll, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+        mLiveMessagePager = liveMessagePager;
+        Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
+
+        mLiveMessagePager.getInfo = getInfo;
+        mLiveMessagePager.urlclick = urlclick;
+        mLiveMessagePager.setPeopleCount(peopleCount);
+        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
+        mLiveMessagePager.setLiveBll(mLiveBll);
+        mLiveMessagePager.onModeChange(mLiveBll.getMode());
+
+        if (mode != null) {
+            mLiveMessagePager.onopenchat(openchat, mode, false);
+        }
+        rlLiveMessageContent.addView(mLiveMessagePager.getRootView(), params);
     }
 
     public void initViewLive(RelativeLayout bottomContent) {
