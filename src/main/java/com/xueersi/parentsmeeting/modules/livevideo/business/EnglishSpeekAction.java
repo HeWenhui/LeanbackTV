@@ -14,4 +14,10 @@ public interface EnglishSpeekAction {
     void remind(int answer);
 
     void onModeChange(String mode, boolean audioRequest);
+
+    void start();
+
+    void stop(AudioRequest.OnAudioRequest onAudioRequest);
+
+    void destory();
 }

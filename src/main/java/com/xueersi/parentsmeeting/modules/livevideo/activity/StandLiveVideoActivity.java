@@ -36,12 +36,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePage
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CacheAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishSpeekAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishSpeekBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishStandSpeekBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.ExpeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.H5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLazyBllCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
@@ -54,6 +53,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageStandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.StarInteractAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
@@ -173,8 +173,8 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
     LearnReportBll learnReportBll;
     H5CoursewareBll h5CoursewareBll;
     EnglishH5CoursewareBll englishH5CoursewareBll;
-    LiveStandAchievementBll starBll;
-    EnglishStandSpeekBll englishSpeekBll;
+    StarInteractAction starAction;
+    EnglishSpeekAction englishSpeekAction;
     SpeechFeedBackAction speechFeedBackAction;
     boolean audioRequest = false;
     SpeechEvaluatorUtils mIse;
@@ -314,8 +314,11 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
                             rankBll.setVideoLayout(lp.width, lp.height);
                         }
                         setMediaControllerBottomParam(lp);
-                        if (englishSpeekBll != null) {
-                            englishSpeekBll.setVideoWidthAndHeight(lp.width, lp.height);
+                        if (englishSpeekAction != null) {
+                            if (englishSpeekAction instanceof EnglishSpeekBll) {
+                                EnglishSpeekBll englishSpeekBll = (EnglishSpeekBll) englishSpeekAction;
+                                englishSpeekBll.setVideoWidthAndHeight(lp.width, lp.height);
+                            }
                         }
                         if (englishH5CoursewareBll != null) {
                             englishH5CoursewareBll.setVideoLayout(lp.width, lp.height);
@@ -326,8 +329,8 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
                         if (mLiveBll != null && mLiveBll.getLiveAutoNoticeBll() != null) {
                             mLiveBll.getLiveAutoNoticeBll().setLayout(lp.width, lp.height);
                         }
-                        if(mLiveBll!=null&&mLiveBll.getLiveRemarkBll()!=null){
-                            mLiveBll.getLiveRemarkBll().setLayout(lp.width,lp.height);
+                        if (mLiveBll != null && mLiveBll.getLiveRemarkBll() != null) {
+                            mLiveBll.getLiveRemarkBll().setLayout(lp.width, lp.height);
                         }
                         if (speechFeedBackAction != null) {
                             speechFeedBackAction.setVideoLayout(lp.width, lp.height);
@@ -900,11 +903,12 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         before = System.currentTimeMillis();
         //本场成就
         if (1 == getInfo.getIsAllowStar()) {
-//            starBll = new StarInteractBll(this, liveType, getInfo.getStarCount(), mIsLand);
-            starBll = new LiveStandAchievementBll(this, liveType, getInfo.getStarCount(), getInfo.getGoldCount(), mIsLand);
+//            starAction = new StarInteractBll(this, liveType, getInfo.getStarCount(), mIsLand);
+            LiveStandAchievementBll starBll = new LiveStandAchievementBll(this, liveType, getInfo.getStarCount(), getInfo.getGoldCount(), mIsLand);
             starBll.setLiveBll(mLiveBll);
             starBll.initView(bottomContent);
             mLiveBll.setStarAction(starBll);
+            StandLiveVideoActivity.this.starAction = starBll;
             //能量条
             EnglishStandSpeekBll englishSpeekBll = new EnglishStandSpeekBll(this);
             boolean initView = englishSpeekBll.initView(bottomContent, mGetInfo.getMode());
@@ -914,7 +918,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
                 englishSpeekBll.setLiveMessageBll(liveMessageBll);
                 englishSpeekBll.setmShareDataManager(mShareDataManager);
                 mLiveBll.setEnglishSpeekAction(englishSpeekBll);
-                StandLiveVideoActivity.this.englishSpeekBll = englishSpeekBll;
+                StandLiveVideoActivity.this.englishSpeekAction = englishSpeekBll;
             }
         }
         Loger.d(TAG, "onLiveInit:time2=" + (System.currentTimeMillis() - before));
@@ -971,8 +975,8 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
             mLogtf.e("onModeChange:mode=" + mode, e);
         }
         mLogtf.i("onModeChange:mode=" + mode);
-        if (englishSpeekBll != null) {
-            englishSpeekBll.onModeChange(mode, audioRequest);
+        if (englishSpeekAction != null) {
+            englishSpeekAction.onModeChange(mode, audioRequest);
         }
         mHandler.post(new Runnable() {
 
@@ -1415,8 +1419,8 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         }.start();
         AppBll.getInstance().unRegisterAppEvent(this);
         englishH5CoursewareBll.destroy();
-        if (englishSpeekBll != null) {
-            englishSpeekBll.destory();
+        if (englishSpeekAction != null) {
+            englishSpeekAction.destory();
         }
         if (englishH5Cache != null) {
             englishH5Cache.stop();
@@ -1460,8 +1464,8 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
-                englishSpeekBll.start();
-                Loger.d(TAG, "start:englishSpeekBll.start");
+                englishSpeekAction.start();
+                Loger.d(TAG, "start:englishSpeekAction.start");
             }
         }
     };
@@ -1469,10 +1473,10 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
     @Override
     public void request(OnAudioRequest onAudioRequest) {
         audioRequest = true;
-        Loger.d(TAG, "request:englishSpeekBll=" + (englishSpeekBll == null));
-        if (englishSpeekBll != null) {
+        Loger.d(TAG, "request:englishSpeekAction=" + (englishSpeekAction == null));
+        if (englishSpeekAction != null) {
             handler.removeMessages(1);
-            englishSpeekBll.stop(onAudioRequest);
+            englishSpeekAction.stop(onAudioRequest);
         } else {
             if (onAudioRequest != null) {
                 onAudioRequest.requestSuccess();
@@ -1483,8 +1487,8 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
     @Override
     public void release() {
         audioRequest = false;
-        Loger.d(TAG, "release:englishSpeekBll=" + (englishSpeekBll == null));
-        if (englishSpeekBll != null) {
+        Loger.d(TAG, "release:englishSpeekAction=" + (englishSpeekAction == null));
+        if (englishSpeekAction != null) {
             handler.sendEmptyMessageDelayed(1, 2000);
         }
     }

@@ -257,6 +257,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
         tv_livevideo_english_time.setText(mingStr + ":" + secStr);
     }
 
+    @Override
     public void start() {
         Loger.d(TAG, "start:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",mode=" + mode);
         if (isDestory) {
@@ -451,6 +452,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
         }
     }
 
+    @Override
     public void stop(AudioRequest.OnAudioRequest onAudioRequest) {
         Loger.d(TAG, "stop:isAudioStart=" + isAudioStart);
         this.onAudioRequest = onAudioRequest;
@@ -469,6 +471,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
         }
     }
 
+    @Override
     public void destory() {
         Loger.d(TAG, "destory:isDestory=" + isDestory + ",isDestory2=" + isDestory2);
         isDestory = true;
