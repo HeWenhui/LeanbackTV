@@ -45,6 +45,7 @@ import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PutQuestion;
@@ -62,6 +63,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageGroupEntit
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewarePager;
@@ -103,6 +105,7 @@ import org.json.JSONArray;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
@@ -113,7 +116,7 @@ import static com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog.TITLE
  * Created by Administrator on 2018/3/6.
  */
 
-public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implements VideoAction,BaseLiveMediaControllerBottom.MediaChildViewClick{
+public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implements BaseLiveMediaControllerBottom.MediaChildViewClick{
     QuestionBll questionBll;
     private RelativeLayout rlLiveMessageContent;
     LiveMessageBll liveMessageBll;
@@ -137,51 +140,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private Long startTime;
     private Long rebackTime;
     private Long mTotaltime;
-
-    @Override
-    public void onTeacherNotPresent(boolean isBefore) {
-
-    }
-
-    @Override
-    public void onTeacherQuit(boolean isQuit) {
-
-    }
-
-    @Override
-    public void onLiveInit(LiveGetInfo getInfo) {
-
-    }
-
-    @Override
-    public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
-
-    }
-
-    @Override
-    public void onClassTimoOut() {
-
-    }
-
-    @Override
-    public void onModeChange(String mode, boolean isPresent) {
-
-    }
-
-    @Override
-    public void onLiveError(ResponseEntity responseEntity) {
-
-    }
-
-    @Override
-    public void onLiveDontAllow(String msg) {
-
-    }
-
-    @Override
-    public void onMediaViewClick(View child) {
-
-    }
 
     // 03.17 定时获取聊天记录的任务
     class ScanRunnable implements Runnable{
@@ -210,6 +168,24 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
         }
     }
+
+    // 03.22 日志的埋点
+    LiveAndBackDebug ums = new LiveAndBackDebug() {
+        @Override
+        public void umsAgentDebug(String eventId, Map<String, String> mData) {
+
+        }
+
+        @Override
+        public void umsAgentDebug2(String eventId, Map<String, String> mData) {
+
+        }
+
+        @Override
+        public void umsAgentDebug3(String eventId, Map<String, String> mData) {
+
+        }
+    };
 
     private String TAG = "ExpericenceLiveVideoActivityLog";
     BaseLiveMediaControllerTop baseLiveMediaControllerTop;
@@ -328,6 +304,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         initAllBll();
         rlFirstBackgroundView = (RelativeLayout) findViewById(R.id.rl_course_video_first_backgroud);
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
+        AppBll.getInstance().registerAppEvent(this);
 //        initView();
         loadData();
         return true;
@@ -408,7 +385,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         bottomContent.addView(rlLiveMessageContent, params);
 
         long before = System.currentTimeMillis();
-        mLiveMessagePager = new LiveMessagePager(this, questionBll, liveMediaControllerBottom, liveMessageLandEntities, null);
+        mLiveMessagePager = new LiveMessagePager(this, questionBll,ums, liveMediaControllerBottom, liveMessageLandEntities, null);
 //        mLiveMessagePager = liveMessagePager;
         Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
 
@@ -429,6 +406,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }else{
             mLiveMessagePager.showPeopleCount(8);
         }
+        // 03.22 设置统计日志的公共参数
+        mLiveMessagePager.setLiveTermId(mVideoEntity.getLiveId(),mVideoEntity.getChapterId());
 //        if (mode != null) {
 //            mLiveMessagePager.onopenchat(openchat, mode, false);
 //        }
@@ -517,6 +496,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         mTotaltime = getDuration();
         Log.e("mqtt","mTotaltime:"+ mTotaltime);
         Log.e("mqtt","seekto:"+ mVideoEntity.getVisitTimeKey());
+        // 03.22 统计用户进入体验播放器的时间
+        StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayEnter");
+        logHashMap.put("liveid",mVideoEntity.getLiveId());
+        logHashMap.put("termid",mVideoEntity.getChapterId());
+        ums.umsAgentDebug2(LiveVideoConfig.LIVE_EXPERIENCE_ENTER,logHashMap.getData());
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(View.GONE);
             initView();
@@ -1281,6 +1265,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         if (scanRunnable != null) {
             scanRunnable.exit();
         }
+        // 03.22 统计用户离开体验播放器的时间
+        StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayExit");
+        logHashMap.put("liveid",mVideoEntity.getLiveId());
+        logHashMap.put("termid",mVideoEntity.getChapterId());
+        ums.umsAgentDebug2(LiveVideoConfig.LIVE_EXPERIENCE_EXIT,logHashMap.getData());
     }
 
 //    /** 刷新界面重新加载视频 */
@@ -1365,7 +1354,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 }
             }
         });
-        mLiveBll.liveGetPlayServer(false);
+//        mLiveBll.liveGetPlayServer(false);
     }
 
     @Override
@@ -1378,4 +1367,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         return super.onTouchEvent(event);
     }
 
+
+    @Override
+    public void onMediaViewClick(View child) {
+
+    }
 }

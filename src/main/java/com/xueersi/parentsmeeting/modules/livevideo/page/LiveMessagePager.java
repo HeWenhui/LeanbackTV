@@ -17,6 +17,7 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -46,13 +47,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
@@ -125,13 +129,17 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     private QuestionBll questionBll;
     /** 竖屏的时候，也添加横屏的消息 */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
+    LiveAndBackDebug liveAndBackDebug;
+    private String liveId;
+    private String termId;
 
-    public LiveMessagePager(Context context, QuestionBll questionBll, BaseLiveMediaControllerBottom
+    public LiveMessagePager(Context context, QuestionBll questionBll, LiveAndBackDebug ums, BaseLiveMediaControllerBottom
             liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
         super(context);
         liveVideoActivity = (Activity) context;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
         this.questionBll = questionBll;
+        this.liveAndBackDebug = ums;
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
         Resources resources = context.getResources();
@@ -868,6 +876,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     }
 
+    public void setLiveTermId(String liveId,String termId){
+        this.liveId = liveId;
+        this.termId = termId;
+    }
+
     /** 被禁言 */
     public void onDisable(final boolean disable, final boolean fromNotice) {
         mView.post(new Runnable() {
@@ -1007,6 +1020,14 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 });
             }
         });
+        // 03.22 体验课播放器统计用户的发送信息
+        if(liveAndBackDebug != null){
+            StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayUserMsg");
+            logHashMap.put("LiveFreePlayUserMsg", text);
+            liveAndBackDebug.umsAgentDebug2(LiveVideoConfig.LIVE_EXPERIENCE_IMMSG, logHashMap.getData());
+        }
+        Log.e("Duncan","sender:" + sender);
+
     }
 
     /**

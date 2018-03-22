@@ -73,11 +73,11 @@ public class LiveVideoConfig {
 
     //新的日志
     /** 体验播放器-进入播放器 */
-    public static String LIVE_EXPERIENCE_ENTER = "live_experience_enter";
+    public static String LIVE_EXPERIENCE_ENTER = "LiveFreePlayEvent";
     /** 体验播放器-关闭播放器 */
-    public static String LIVE_EXPERIENCE_EXIT = "live_experience_exit";
+    public static String LIVE_EXPERIENCE_EXIT = "LiveFreePlayEvent";
     /** 体验播放器-聊天内容 */
-    public static String LIVE_EXPERIENCE_IMMSG = "live_experience_immsg";
+    public static String LIVE_EXPERIENCE_IMMSG = "LiveFreePlayEvent";
     /** 直播-H5课件互动题 */
     public static String LIVE_ENGLISH_COURSEWARE = "live_h5waretest";
     /** 直播-接麦 */

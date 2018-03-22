@@ -96,6 +96,8 @@ public class QuestionFillInBlankLivePager extends BaseLiveQuestionPager {
                     rlQuestionHide.setVisibility(View.VISIBLE);
                 } else {
                     EventBus.getDefault().post(new PlaybackVideoEvent.OnQuesionDown(baseVideoQuestionEntity));
+                    rlQuestionContent.setVisibility(View.INVISIBLE);
+                    rlQuestionHide.setVisibility(View.VISIBLE);
                 }
             }
         });
