@@ -87,6 +87,7 @@ import com.xueersi.parentsmeeting.modules.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
+import com.xueersi.xesalib.umsagent.UmsAgentManager;
 import com.xueersi.xesalib.umsagent.UmsConstants;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -140,7 +141,14 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private Long startTime;
     private Long rebackTime;
     private Long mTotaltime;
-
+    /** 播放时长定时任务(心跳) */
+    private final long mPlayDurTime = 300000;
+    /** 正在播放 */
+    private boolean isPlay = false;
+    /** 播放时长 */
+    long playTime = 0;
+    /** 上次播放统计开始时间 */
+    long lastPlayTime;
     // 03.17 定时获取聊天记录的任务
     class ScanRunnable implements Runnable{
         HandlerThread handlerThread = new HandlerThread("ScanRunnable");
@@ -169,6 +177,20 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }
     }
 
+    /** 播放时长，5分钟统计 */
+    private Runnable mPlayDuration = new Runnable() {
+        @Override
+        public void run() {
+            if (isPlay && !isFinishing()) {
+                // 03.22 上传心跳时间
+                lastPlayTime = System.currentTimeMillis();
+                playTime += mPlayDurTime;
+                mLiveBll.uploadExperiencePlayTime(mVideoEntity.getChapterId(),playTime/1000);
+                mHandler.postDelayed(this, mPlayDurTime);
+            }
+        }
+    };
+
     // 03.22 日志的埋点
     LiveAndBackDebug ums = new LiveAndBackDebug() {
         @Override
@@ -178,6 +200,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
         @Override
         public void umsAgentDebug2(String eventId, Map<String, String> mData) {
+            UmsAgentManager.umsAgentOtherBusiness(ExperienceLiveVideoActivity.this, appID, UmsConstants.uploadBehavior, mData);
 
         }
 
@@ -288,6 +311,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private long currentMsg = 0;
     private ExPerienceLiveMessage mMessage;
     private Boolean send = false;
+    private String testIdKey = "ExperienceLiveQuestion";
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -493,6 +517,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
     @Override
     protected void onPlayOpenSuccess() {
+        isPlay = true;
         mTotaltime = getDuration();
         Log.e("mqtt","mTotaltime:"+ mTotaltime);
         Log.e("mqtt","seekto:"+ mVideoEntity.getVisitTimeKey());
@@ -528,6 +553,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                     "mIsShowQuestion=" + mIsShowQuestion);
 //            showQuestion(mQuestionEntity);
         }
+        // 03.22 心跳时间的统计
+        mHandler.postDelayed(mPlayDuration, mPlayDurTime);
     }
 
     @Override
@@ -655,7 +682,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             }
         }
         // 有交互信息并且没有互动题
-        if (mQuestionEntity != null && !mQuestionEntity.isAnswered() && !mIsShowQuestion && mShareDataManager.getBoolean(mQuestionEntity.getvSectionID(),false,1)) {
+        if (mQuestionEntity != null && !mQuestionEntity.isAnswered() && !mIsShowQuestion && !mQuestionEntity.getvSectionID().equals(mShareDataManager.getString(testIdKey,"",1))) {
             // 互动题
             if (LocalCourseConfig.CATEGORY_QUESTION == mQuestionEntity.getvCategory()) {
                 if (!(mMediaController != null && mMediaController.isShow())) {
@@ -821,6 +848,19 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
         EventBus.getDefault().post(new BrowserEvent.ExperienceLiveEndEvent(1));
 
+    }
+
+    protected void onRefresh() {
+        resultFailed = false;
+        if (AppBll.getInstance(this).isNetWorkAlert()) {
+            videoBackgroundRefresh.setVisibility(View.GONE);
+//            Loger.d(TAG, "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
+//            if (rlQuestionContent.getChildCount() > 0) {
+//                rlQuestionContent.setVisibility(View.VISIBLE);
+//            }
+            playNewVideo(Uri.parse(mWebPath), mSectionName);
+        }
+        AppBll.getInstance(mBaseApplication);
     }
 
     private void showExam() {
@@ -1011,7 +1051,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 mVideoEntity.getLiveId(), mVideoEntity.getChapterId(), mVideoEntity.getvLivePlayBackType());
         questionEntity.setAnswered(true);
         // 03.22 本地缓存答过题的testId
-        mShareDataManager.put(questionEntity.getvQuestionID(),true,1);
+//        mShareDataManager.put(questionEntity.getvQuestionID(),true,1);
+        mShareDataManager.put(testIdKey,questionEntity.getvQuestionID(),1);
         questionViewGone();
         XesMobAgent.playVideoStatisticsMessage(MobEnumUtil.QUESTION_LIVEPLAYBACK, MobEnumUtil.QUESTION_ANSWER,
                 XesMobAgent.XES_VIDEO_INTERACTIVE);
@@ -1264,6 +1305,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     @Override
     public void onDestroy() {
         super.onDestroy();
+        isPlay = false;
         if (scanRunnable != null) {
             scanRunnable.exit();
         }
@@ -1286,6 +1328,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     @Override
     public void onPause() {
         super.onPause();
+        isPlay = false;
         pause = true;
         vPlayer.releaseSurface();
         vPlayer.stop();

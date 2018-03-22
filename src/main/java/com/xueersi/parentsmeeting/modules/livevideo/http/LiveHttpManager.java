@@ -846,4 +846,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_STATISTICS_AUTO_NOTICE,params,callBack);
     }
+
+    /* 上传体验课播放器播放时长的接口 */
+    public void uploadExperiencePlayingTime(String termId,Long hbTime,HttpCallBack callBack ){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("termId", termId);
+        params.addBodyParam("hbTime", hbTime.toString());
+        params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
+        setDefaultParameter(params);
+        sendPost("http://laoshi.xueersi.com/science/AutoLive/visitTime", params, callBack);
+    }
 }
