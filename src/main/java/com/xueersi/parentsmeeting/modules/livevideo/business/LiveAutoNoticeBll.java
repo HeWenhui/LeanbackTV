@@ -307,10 +307,10 @@ public class LiveAutoNoticeBll {
                     Loger.i(TAG, "getAutoNotice success" + object.toString());
                     int type = object.optInt("type", -1);
                     int choose = object.optInt("choose", -1);
-                    String name = object.optString("teacherName", teacherName);
-                    String imgUrl = object.optString(teacherImg);
-                    if (type > 0 && choose > 0 && !TextUtils.isEmpty(name)) {
-                        showNotice(name, notice[type - 1][choose - 1], imgUrl);
+//                    String name = object.optString("teacherName", teacherName);
+//                    String imgUrl = object.optString(teacherImg);
+                    if (type > 0 && choose > 0 && !TextUtils.isEmpty(teacherName)) {
+                        showNotice(teacherName, notice[type - 1][choose - 1], teacherImg);
                         umsAgent(type, choose, true);
                     }
                 } catch (Exception e) {
