@@ -448,4 +448,7 @@
     <item name="iv_live_mark_point_shot_pic" type="id" />
     <item name="iv_live_mark_point_play" type="id" />
     <item name="tv_live_mark_point_text" type="id" />
+    <!--站立直播标题-->
+    <item name="iv_live_stand_title_red" type="id" />
+    <item name="tv_live_stand_title_time" type="id" />
 </resources>

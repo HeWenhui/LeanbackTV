@@ -408,7 +408,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         });
     }
 
-
     /**
      * 领取金币
      *
@@ -432,6 +431,40 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 mLogtf.d("sendReceiveGold:onPmFailure=" + msg + ",operateId=" + operateId);
+                callBack.onDataFail(0, msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                mLogtf.d("sendReceiveGold:onPmError=" + responseEntity.getErrorMsg() + ",operateId=" + operateId);
+                callBack.onDataFail(1, responseEntity.getErrorMsg());
+            }
+        });
+    }
+
+
+    /**
+     * 领取红包-站立直播
+     *
+     * @param operateId
+     * @param liveId
+     * @param callBack
+     */
+    public void getReceiveGoldTeamStatus(final int operateId, String liveId, final AbstractBusinessDataCallBack callBack) {
+        mLogtf.d("sendReceiveGoldStand:operateId=" + operateId + ",liveId=" + liveId);
+        mHttpManager.getReceiveGoldTeamStatus(operateId, liveId, new HttpCallBack() {
+
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                mLogtf.d("sendReceiveGoldStand:onPmSuccess=" + responseEntity.getJsonObject().toString() + ",operateId=" +
+                        operateId);
+                VideoResultEntity entity = mHttpResponseParser.redPacketParseParser(responseEntity);
+                callBack.onDataSucess(entity);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                mLogtf.d("sendReceiveGoldStand:onPmFailure=" + msg + ",operateId=" + operateId);
                 callBack.onDataFail(0, msg);
             }
 
@@ -1966,6 +1999,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             }
         } else {
             StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+            mHttpManager.addBodyParam("teamId", studentLiveInfo.getTeamId());
             if (StringUtils.isEmpty(courseId)) {
                 courseId = studentLiveInfo.getCourseId();
             }

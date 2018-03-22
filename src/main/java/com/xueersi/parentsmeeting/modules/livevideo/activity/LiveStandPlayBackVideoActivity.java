@@ -59,7 +59,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.dialog.RedPacketAlertDialog;
+import com.xueersi.parentsmeeting.modules.livevideo.dialog.StandLiveRedPacketAlertDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
@@ -159,7 +159,7 @@ public class LiveStandPlayBackVideoActivity extends VideoActivity implements Liv
 //    private LoadingDialog mProgressDialog;
 
     /** 红包弹窗 */
-    private RedPacketAlertDialog mRedPacketDialog;
+    private StandLiveRedPacketAlertDialog mRedPacketDialog;
 
     /** 互动题 */
     private VideoQuestionEntity mQuestionEntity;
@@ -370,7 +370,7 @@ public class LiveStandPlayBackVideoActivity extends VideoActivity implements Liv
     /** 竖屏时填充视频列表布局 */
     protected void initData() {
         BaseApplication baseApplication = (BaseApplication) getApplication();
-        mRedPacketDialog = new RedPacketAlertDialog(this, baseApplication, false);
+        mRedPacketDialog = new StandLiveRedPacketAlertDialog(this, baseApplication, false);
         stuCourId = mVideoEntity.getStuCourseId();
         lectureLivePlayBackBll = new LectureLivePlayBackBll(LiveStandPlayBackVideoActivity.this, stuCourId);
         mVideoType = MobEnumUtil.VIDEO_LIVEPLAYBACK;

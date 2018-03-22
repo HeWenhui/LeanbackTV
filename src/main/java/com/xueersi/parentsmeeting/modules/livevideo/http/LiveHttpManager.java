@@ -308,6 +308,18 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(url, params, requestCallBack);
     }
 
+    public void getReceiveGoldTeamStatus(int operateId, String liveid,
+                                     HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        String url = liveVideoSAConfigInner.URL_LIVE_RECEIVE_GOLD;
+        requestCallBack.url = url;
+        params.addBodyParam("liveId", liveid);
+        setDefaultParameter(params);
+//        params.addBodyParam("enstuId", enstuId);
+        params.addBodyParam("operateId", "" + operateId);
+        sendPost(url, params, requestCallBack);
+    }
+
     /**
      * 提交测试题
      *
@@ -651,6 +663,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 互动题获取满分榜
+     *
      * @param testId
      * @param classId
      * @param teamId
@@ -665,8 +678,10 @@ public class LiveHttpManager extends BaseHttpBusiness {
         String i = JSON.toJSON(params).toString();
         sendPost(liveVideoSAConfigInner.LIVE_FULL_MARK_LIST_QUESTION, params, callBack);
     }
+
     /**
      * 测试卷获取满分榜
+     *
      * @param classId
      * @param teamId
      * @param callBack
@@ -682,6 +697,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 课件获取满分榜
+     *
      * @param classId
      * @param teamId
      * @param testId
@@ -773,6 +789,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 保存标记点
+     *
      * @param time
      * @param url
      * @param callBack
@@ -789,33 +806,37 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 获取标记点
+     *
      * @param callBack
      */
-    public void getMarkPoints(String liveId,HttpCallBack callBack){
-        HttpRequestParams params=new HttpRequestParams();
-        params.addBodyParam("stuId",UserBll.getInstance().getMyUserInfoEntity().getStuId());
-        params.addBodyParam("liveId",liveId);
+    public void getMarkPoints(String liveId, HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuId", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        params.addBodyParam("liveId", liveId);
 //        params.addBodyParam("stuId","15657");
 //        params.addBodyParam("liveId","107070");
-        sendPost(LiveVideoConfig.URL_LIVE_GET_MARK_POINTS,params,callBack);
+        sendPost(LiveVideoConfig.URL_LIVE_GET_MARK_POINTS, params, callBack);
     }
+
     /**
      * 删除标记点
+     *
      * @param callBack
      */
-    public void deleteMarkPoints(String livdId,long time,HttpCallBack callBack){
-        HttpRequestParams params=new HttpRequestParams();
-        params.addBodyParam("stuId",UserBll.getInstance().getMyUserInfoEntity().getStuId());
+    public void deleteMarkPoints(String livdId, long time, HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuId", UserBll.getInstance().getMyUserInfoEntity().getStuId());
         setDefaultParameter(params);
 //        params.addBodyParam("stuId","15657");
 //        params.addBodyParam("liveId","107070");
-        params.addBodyParam("curTime",""+time);
-        params.addBodyParam("liveId",livdId);
-        sendPost(LiveVideoConfig.URL_LIVE_DELETE_MARK_POINTS,params,callBack);
+        params.addBodyParam("curTime", "" + time);
+        params.addBodyParam("liveId", livdId);
+        sendPost(LiveVideoConfig.URL_LIVE_DELETE_MARK_POINTS, params, callBack);
     }
 
     /**
      * 获取智能私信
+     *
      * @param classId
      * @param testId
      * @param srcType
@@ -823,16 +844,16 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param isForce
      * @param callBack
      */
-    public void getAutoNotice(String classId,String testId,String srcType,int type,int isForce,HttpCallBack callBack){
-        HttpRequestParams params=new HttpRequestParams();
-        params.addBodyParam("classId",classId);
-        params.addBodyParam("testId",testId);
-        params.addBodyParam("srcType",srcType);
-        params.addBodyParam("type",""+type);
-        params.addBodyParam("isForce",""+isForce);
-        params.addBodyParam("stuId",UserBll.getInstance().getMyUserInfoEntity().getStuId());
+    public void getAutoNotice(String classId, String testId, String srcType, int type, int isForce, HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("testId", testId);
+        params.addBodyParam("srcType", srcType);
+        params.addBodyParam("type", "" + type);
+        params.addBodyParam("isForce", "" + isForce);
+        params.addBodyParam("stuId", UserBll.getInstance().getMyUserInfoEntity().getStuId());
         setDefaultParameter(params);
-        Loger.i(LiveAutoNoticeBll.class.getSimpleName(),JSON.toJSON(params).toString());
-        sendPost(liveVideoSAConfigInner.URL_LIVE_GET_AUTO_NOTICE,params,callBack);
+        Loger.i(LiveAutoNoticeBll.class.getSimpleName(), JSON.toJSON(params).toString());
+        sendPost(liveVideoSAConfigInner.URL_LIVE_GET_AUTO_NOTICE, params, callBack);
     }
 }

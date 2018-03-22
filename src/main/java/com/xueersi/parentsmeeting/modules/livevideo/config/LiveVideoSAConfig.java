@@ -30,7 +30,9 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_USER_ONLINE = HTTP_HOST + "/LiveCourse/userOnline";
         /** 直播课的直播领取金币 */
         public String URL_LIVE_RECEIVE_GOLD = HTTP_HOST + "/LiveCourse/receiveGold";
-        ;
+        /** 直播课的直播领取金币 */
+        public String URL_LIVE_ = HTTP_HOST + "/LiveCourse/getReceiveGoldTeamStatus";
+
         /** 直播课的直播提交测试题 */
         public String URL_LIVE_SUBMIT_TEST_ANSWER = HTTP_HOST + "/LiveCourse/submitTestAnswer";
         /** 直播课的直播提交测试题-语音答题 */

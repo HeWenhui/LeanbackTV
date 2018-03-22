@@ -177,7 +177,8 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
         rl_livevideo_english_speak_error = layout_livevideo_stat_gold.findViewById(R.id.rl_livevideo_english_speak_error);
         rl_livevideo_english_stat = layout_livevideo_stat_gold.findViewById(R.id.rl_livevideo_english_stat);
         tv_livevideo_english_time = (TextView) layout_livevideo_stat_gold.findViewById(R.id.tv_livevideo_english_time);
-        tv_livevideo_english_prog = (ProgressBar) layout_livevideo_stat_gold.findViewById(R.id.tv_livevideo_english_prog);
+//        tv_livevideo_english_prog = (ProgressBar) layout_livevideo_stat_gold.findViewById(R.id.tv_livevideo_english_prog);
+        tv_livevideo_english_prog = (ProgressBar) activity.findViewById(R.id.tv_livevideo_english_prog);
         tv_livevideo_english_time2 = (TextView) layout_livevideo_stat_gold.findViewById(R.id.tv_livevideo_english_time2);
         layout_livevideo_stat_gold.findViewById(R.id.bt_livevideo_english_speak_set).setOnClickListener(new View.OnClickListener() {
             @Override

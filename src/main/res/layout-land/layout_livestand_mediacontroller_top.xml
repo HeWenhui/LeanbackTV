@@ -6,10 +6,11 @@
 
     <RelativeLayout
         android:id="@id/rl_video_mediacontroller_info_panel"
-        android:background="@drawable/shape_live_stand_title"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:alpha="0.6"
+        android:background="@drawable/shape_live_stand_title">
 
         <!-- 退出按钮 （横屏的时候变成竖屏，竖屏的时候退出当前Activity） -->
 
@@ -24,11 +25,24 @@
             android:src="@drawable/cy_bars_bockwite_icon_normal" />
 
         <ImageView
+            android:id="@id/iv_live_stand_title_red"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/iv_video_mediacontroller_back"
             android:src="@drawable/zhibojiemian_nav_zhibo_icon_normal" />
+
+        <TextView
+            android:id="@id/tv_live_stand_title_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/iv_live_stand_title_red"
+            android:includeFontPadding="false"
+            android:text="直播 00:25:34"
+            android:textColor="@android:color/white"
+            android:visibility="visible" />
         <!-- 播放的视频名称 -->
 
         <TextView

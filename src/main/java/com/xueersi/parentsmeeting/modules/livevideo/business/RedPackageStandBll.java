@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.page.RedPackagePage;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 import java.io.File;
@@ -61,14 +62,12 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
 
     @Override
     public void onReadPackage(final int operateId) {
-        Runnable runnable = new Runnable() {
-
+        mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
                 showRedPacket(operateId);
             }
-        };
-        mVPlayVideoControlHandler.post(runnable);
+        });
     }
 
     private void onGetPackage(VideoResultEntity entity) {
@@ -97,6 +96,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
 //        else {
 //            initRedPacketResult(5);
 //        }
+//        showRedPacket(1);
     }
 
     /**
@@ -105,15 +105,10 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     private void showRedPacket(final int operateId) {
         mLogtf.d("showRedPacket:operateId=" + operateId);
         rlRedpacketContent.removeAllViews();
-        View view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_view, rlRedpacketContent, false);
-        view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
-        view.setTag(operateId);
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        rlRedpacketContent.addView(view, params);
-        Button btnRedPacket = (Button) view.findViewById(R.id.bt_livevideo_redpackage_cofirm);
-        btnRedPacket.setOnClickListener(new View.OnClickListener() {
+        RedPackagePage redPackagePage = new RedPackagePage(activity, operateId, new RedPackagePage.RedPackagePageAction() {
+
             @Override
-            public void onClick(View v) {
+            public void onPackageClick(final int operateId) {
                 mLiveBll.sendReceiveGold(operateId, mVSectionID, new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
@@ -131,13 +126,17 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                     }
                 });
             }
-        });
-        view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(View v) {
+            public void onPackageClose(int operateId) {
                 rlRedpacketContent.removeAllViews();
             }
         });
+        View view = redPackagePage.getRootView();
+        view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
+        view.setTag(operateId);
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        rlRedpacketContent.addView(view, params);
         activity.getWindow().getDecorView().requestLayout();
         activity.getWindow().getDecorView().invalidate();
     }
