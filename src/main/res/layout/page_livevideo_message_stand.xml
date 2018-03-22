@@ -59,8 +59,9 @@
     <RelativeLayout
         android:id="@id/rl_livevideo_star_content"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_alignParentRight="true"
+        android:layout_marginTop="30dp"
         android:visibility="visible" />
 
     <RelativeLayout
@@ -70,6 +71,11 @@
         android:layout_below="@id/rl_livevideo_star_content"
         android:layout_toRightOf="@id/rl_livevideo_info"
         android:visibility="visible" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@id/lav_livevideo_chievement"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <RelativeLayout
         android:id="@id/rl_livevideo_message_panelcontent"

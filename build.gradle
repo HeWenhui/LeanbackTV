@@ -19,5 +19,5 @@ dependencies {
 
     compile(rootProject.ext.libraries.ijkplayer) { changing = true }
     compile(rootProject.ext.libraries.speechrecognizer) { changing = true }
-    compile project(':lottie')
+    compile project(':lottiexes')
 }

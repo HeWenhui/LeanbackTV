@@ -3,6 +3,14 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +22,11 @@ import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieComposition;
+import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -28,6 +40,7 @@ import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,6 +58,8 @@ public class LiveStandAchievementBll implements StarInteractAction {
     private View flyLight;
     private ImageView ivStarInteractStat;
     private ImageView ivStarInteractGold;
+    LottieAnimationView lottieAnimationView;
+    LottieComposition composition;
     /**
      * 本场成就星星数量
      */
@@ -196,6 +211,9 @@ public class LiveStandAchievementBll implements StarInteractAction {
         ivStarInteractGold = (ImageView) myView.findViewById(R.id.iv_livevideo_starinteract_gold);
         tvStarInteractGoldCount = (TextView) myView.findViewById(R.id.tv_livevideo_starinteract_gold_count);
         tvStarInteractGoldHind = (TextView) myView.findViewById(R.id.tv_livevideo_starinteract_gold_hind);
+
+        lottieAnimationView = activity.findViewById(R.id.lav_livevideo_chievement);
+        initlottieAnim();
 //        if (isExpe) {
 //            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) myView.getLayoutParams();
 //            lp.topMargin = (int) (44 * ScreenUtils.getScreenDensity() + 10);
@@ -315,6 +333,50 @@ public class LiveStandAchievementBll implements StarInteractAction {
 
             }
         });
+    }
+
+    private void initlottieAnim() {
+        final String fileName = "jindu.json";
+        final HashMap<String, String> assetFolders = new HashMap<String, String>();
+        assetFolders.put(fileName, "Images/jindu");
+        LottieComposition.Factory.fromAssetFileName(activity, fileName, new OnCompositionLoadedListener() {
+            @Override
+            public void onCompositionLoaded(@Nullable LottieComposition composition) {
+                Log.d(TAG, "onCompositionLoaded:composition=" + composition);
+                if (composition == null) {
+//                    Toast.makeText(activity, "加载失败", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+//                Toast.makeText(activity, "加载成功", Toast.LENGTH_SHORT).show();
+                LiveStandAchievementBll.this.composition = composition;
+                lottieAnimationView.setImageAssetsFolder(assetFolders.get(fileName));
+                lottieAnimationView.setComposition(composition);
+                updateBitmap("" + goldCount);
+            }
+        });
+    }
+
+    private void updateBitmap(String num) {
+        AssetManager manager = activity.getAssets();
+        Bitmap img_3Bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.ic_launcher);
+        try {
+            img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
+            Bitmap img_9Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_9.png"));
+            Bitmap creatBitmap = Bitmap.createBitmap(img_3Bitmap.getWidth(), img_3Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(creatBitmap);
+            canvas.drawBitmap(img_3Bitmap, 0, 0, null);
+            Paint paint = new Paint();
+            paint.setTextSize(24);
+            paint.setColor(Color.WHITE);
+            float width = paint.measureText(num);
+            canvas.drawText(num, (img_3Bitmap.getWidth() - img_9Bitmap.getWidth() / 2) / 2 + img_9Bitmap.getWidth() / 2 - width / 2, img_3Bitmap.getHeight() / 2 + paint.measureText("a") / 2, paint);
+//                    canvas.drawRect(img_9Bitmap.getWidth()/2, 0, img_3Bitmap.getWidth(), img_3Bitmap.getHeight(), paint);
+            img_3Bitmap = creatBitmap;
+        } catch (IOException e) {
+//            e.printStackTrace();
+            return;
+        }
+        lottieAnimationView.updateBitmap("image_3", img_3Bitmap);
     }
 
     private void getLayoutParams() {

@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.tal.speech.asr.talAsrJni;
 import com.tal.speech.language.LanguageEncodeThread;
 import com.tal.speech.language.LanguageListener;
@@ -68,12 +69,9 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
     boolean isAudioStart = false;
     RelativeLayout bottomContent;
     private ViewGroup myView;
-    private View rl_livevideo_english_speak_content;
     private View rl_livevideo_english_speak_error;
-    private View rl_livevideo_english_stat;
-    private TextView tv_livevideo_english_time;
     private ProgressBar tv_livevideo_english_prog;
-    private TextView tv_livevideo_english_time2;
+    private LottieAnimationView lottieAnimationView;
     int praiseWidth;
     File s_language;
     TalLanguage talLanguage;
@@ -148,9 +146,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
         this.totalOpeningLength = totalOpeningLength;
         int d = (int) totalOpeningLength.duration;
         second15 = d % 60 % 15;
-        setEnglishTime(d / 60, d % 60);
         tv_livevideo_english_prog.setProgress(second15 * 3);
-        setTime(MAX_SECOND - second15);
         if (!StringUtils.isEmpty(totalOpeningLength.speakingLen)) {
             totalEn_seg_len.append(totalOpeningLength.speakingLen);
         }
@@ -173,13 +169,10 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
         myView.setVisibility(View.VISIBLE);
         final View layout_livevideo_stat_gold = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_stand_english_speek, myView, false);
         myView.addView(layout_livevideo_stat_gold);
-        rl_livevideo_english_speak_content = layout_livevideo_stat_gold.findViewById(R.id.rl_livevideo_english_speak_content);
         rl_livevideo_english_speak_error = layout_livevideo_stat_gold.findViewById(R.id.rl_livevideo_english_speak_error);
-        rl_livevideo_english_stat = layout_livevideo_stat_gold.findViewById(R.id.rl_livevideo_english_stat);
-        tv_livevideo_english_time = (TextView) layout_livevideo_stat_gold.findViewById(R.id.tv_livevideo_english_time);
 //        tv_livevideo_english_prog = (ProgressBar) layout_livevideo_stat_gold.findViewById(R.id.tv_livevideo_english_prog);
         tv_livevideo_english_prog = (ProgressBar) activity.findViewById(R.id.tv_livevideo_english_prog);
-        tv_livevideo_english_time2 = (TextView) layout_livevideo_stat_gold.findViewById(R.id.tv_livevideo_english_time2);
+        lottieAnimationView = activity.findViewById(R.id.lav_livevideo_chievement);
         layout_livevideo_stat_gold.findViewById(R.id.bt_livevideo_english_speak_set).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,10 +195,8 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
         this.mode = mode;
         if (LiveTopic.MODE_TRANING.equals(mode)) {
             tv_livevideo_english_prog.setVisibility(View.GONE);
-            rl_livevideo_english_stat.setVisibility(View.GONE);
         } else {
             tv_livevideo_english_prog.setVisibility(View.VISIBLE);
-            rl_livevideo_english_stat.setVisibility(View.VISIBLE);
             start();
         }
         return true;
@@ -235,29 +226,6 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
         });
     }
 
-    private void setTime(int second) {
-        SpannableString sp = new SpannableString("再说" + second + "秒获得");
-        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.COLOR_FFFF00));
-        sp.setSpan(foregroundColorSpan, 2, 2 + ("" + second).length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        tv_livevideo_english_time2.setText(sp);
-    }
-
-    private void setEnglishTime(int min, int second) {
-        String mingStr;
-        if (min < 10) {
-            mingStr = "0" + min;
-        } else {
-            mingStr = "" + min;
-        }
-        String secStr;
-        if (second < 10) {
-            secStr = "0" + second;
-        } else {
-            secStr = "" + second;
-        }
-        tv_livevideo_english_time.setText(mingStr + ":" + secStr);
-    }
-
     public void start() {
         Loger.d(TAG, "start:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",mode=" + mode);
         if (isDestory) {
@@ -282,7 +250,6 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
                     Loger.d(TAG, "onError:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",result=" + result);
                     isDestory = true;
                     isDestory2 = true;
-                    rl_livevideo_english_speak_content.setVisibility(View.INVISIBLE);
                     rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
                     if (onAudioRequest != null) {
                         onAudioRequest.requestSuccess();
@@ -294,7 +261,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
 
                 @Override
                 public void onProcessData(final String out) {
-                    tv_livevideo_english_time.post(new Runnable() {
+                    myView.post(new Runnable() {
                         String lastduration;
 
                         @Override
@@ -325,12 +292,6 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
                                             Loger.d(TAG, "onProcessData(sendDBStudent):dbDuration=" + dbDuration);
                                         }
                                     }
-                                    if (totalOpeningLength.duration == 0) {
-                                        setEnglishTime(totalSecond / 60, totalSecond % 60);
-                                    } else {
-                                        int d = (int) totalOpeningLength.duration;
-                                        setEnglishTime((totalSecond + d) / 60, (totalSecond + d) % 60);
-                                    }
 //                                        Loger.d(TAG, "onProcessData:totalSecond=" + totalSecond);
                                     second15 += totalSecond - lastSecond;
                                     int oldProgress = tv_livevideo_english_prog.getProgress();
@@ -342,18 +303,13 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
 //                                                newProgress = (second15 - 15) * 3;
 //                                                setTime(2 * MAX_SECOND - second15);
                                             newProgress = (second15 % MAX_SECOND) * 3;
-                                            setTime(MAX_SECOND - second15 % MAX_SECOND);
 //                                                        Loger.d(TAG, "onProcessData(<0):oldProgress=" + oldProgress + ",second15=" + second15);
                                         } else {
                                             newProgress = second15 * 3;
-                                            if (second15 != 15) {
-                                                setTime(MAX_SECOND - second15);
-                                            } else {
-                                                setTime(MAX_SECOND);
-                                            }
                                         }
                                         Loger.d(TAG, "onProcessData:second=" + second + ",oldProgress=" + oldProgress + ",newProgress=" + newProgress);
                                         if (newProgress != 45) {
+                                            lottieAnimationView.setProgress(newProgress / 45);
                                             final ValueAnimator valueAnimator = ValueAnimator.ofFloat(startProgress, newProgress);
                                             final float finalNewProgress = newProgress;
                                             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -395,6 +351,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
                                             valueAnimator.start();
                                             lastValueAnimator = valueAnimator;
                                         } else {
+                                            lottieAnimationView.setProgress(0);
                                             if (lastValueAnimator != null) {
                                                 lastValueAnimator.cancel();
                                                 lastValueAnimator = null;
@@ -553,11 +510,9 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
             public void run() {
                 if (LiveTopic.MODE_TRANING.equals(mode)) {
                     tv_livevideo_english_prog.setVisibility(View.GONE);
-                    rl_livevideo_english_stat.setVisibility(View.GONE);
                     stop(null);
                 } else {
                     tv_livevideo_english_prog.setVisibility(View.VISIBLE);
-                    rl_livevideo_english_stat.setVisibility(View.VISIBLE);
                     if (!showTip) {
                         showTip = true;
 //                        int tips = mShareDataManager.getInt(ENGLISH_TIP, 0, ShareDataManager.SHAREDATA_NOT_CLEAR);

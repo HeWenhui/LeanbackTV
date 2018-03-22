@@ -451,4 +451,5 @@
     <!--站立直播标题-->
     <item name="iv_live_stand_title_red" type="id" />
     <item name="tv_live_stand_title_time" type="id" />
+    <item name="lav_livevideo_chievement" type="id" />
 </resources>
