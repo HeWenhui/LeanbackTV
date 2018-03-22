@@ -194,7 +194,19 @@ public class LiveAutoNoticeBll {
             mHttpManager.autoNoticeStatisc(classId, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                    umsAgentReq(true);
+                }
 
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    super.onPmFailure(error, msg);
+                    umsAgentReq(false);
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    super.onPmError(responseEntity);
+                    umsAgentReq(false);
                 }
             });
             //showNotice(name, notice[1][0], head);
@@ -324,6 +336,12 @@ public class LiveAutoNoticeBll {
         });
     }
 
+    /**
+     * 智能私信日志
+     * @param type
+     * @param choose
+     * @param isSuccess
+     */
     private void umsAgent(int type, int choose, boolean isSuccess) {
         HashMap<String, String> map = new HashMap<>();
         map.put("testid", testId);
@@ -344,5 +362,12 @@ public class LiveAutoNoticeBll {
             map.put("whisperreq", "fail");
         }
         mLiveBll.umsAgentDebug3("sci_whisper_func", map);
+    }
+    /**脏词入库请求日志*/
+    private void umsAgentReq(boolean isSuccess){
+        HashMap<String,String> map=new HashMap<>();
+        map.put("chattexttype","11");
+        map.put("whisperwarningreq",isSuccess?"success":"fail");
+        mLiveBll.umsAgentDebug3("sci_whisper_func",map);
     }
 }

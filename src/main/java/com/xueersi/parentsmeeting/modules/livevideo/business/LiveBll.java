@@ -1846,7 +1846,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         postDelayedIfNotFinish(new Runnable() {
                             @Override
                             public void run() {
-                                mLiveAutoNoticeBll.showNotice(mGetInfo.getTeacherName(), mGetInfo.getHeadImgPath());
+                                mLiveAutoNoticeBll.showNotice(mGetInfo.getTeacherName(), mGetInfo.getTeacherIMG());
                             }
                         }, 10000);
                     }
