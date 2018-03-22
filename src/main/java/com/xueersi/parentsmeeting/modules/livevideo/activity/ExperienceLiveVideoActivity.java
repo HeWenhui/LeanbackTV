@@ -655,7 +655,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             }
         }
         // 有交互信息并且没有互动题
-        if (mQuestionEntity != null && !mQuestionEntity.isAnswered() && !mIsShowQuestion) {
+        if (mQuestionEntity != null && !mQuestionEntity.isAnswered() && !mIsShowQuestion && mShareDataManager.getBoolean(mQuestionEntity.getvSectionID(),false,1)) {
             // 互动题
             if (LocalCourseConfig.CATEGORY_QUESTION == mQuestionEntity.getvCategory()) {
                 if (!(mMediaController != null && mMediaController.isShow())) {
@@ -1010,6 +1010,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         lectureLivePlayBackBll.saveQuestionResults(loadEntity, questionEntity.getSrcType(), questionEntity.getvQuestionID(), result,
                 mVideoEntity.getLiveId(), mVideoEntity.getChapterId(), mVideoEntity.getvLivePlayBackType());
         questionEntity.setAnswered(true);
+        // 03.22 本地缓存答过题的testId
+        mShareDataManager.put(questionEntity.getvQuestionID(),true,1);
         questionViewGone();
         XesMobAgent.playVideoStatisticsMessage(MobEnumUtil.QUESTION_LIVEPLAYBACK, MobEnumUtil.QUESTION_ANSWER,
                 XesMobAgent.XES_VIDEO_INTERACTIVE);
@@ -1301,63 +1303,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     }
 
     @Override
-    protected void resultFailed(final int arg1, final int arg2) {
-        postDelayedIfNotFinish(new Runnable() {
-
-            @Override
-            public void run() {
-                new Thread() {
-                    @Override
-                    public void run() {
-                        synchronized (mIjkLock) {
-                            onFail(arg1, arg2);
-                        }
-                    }
-                }.start();
-            }
-        }, 1200);
-    }
-
-    public void postDelayedIfNotFinish(Runnable r, long delayMillis) {
-        if (isFinishing()) {
-            return;
-        }
-        mHandler.postDelayed(r, delayMillis);
-    }
-
-    /**
-     * 播放失败，或者完成时调用
-     */
-    private void onFail(int arg1, final int arg2) {
-        mHandler.post(new Runnable() {
-
-            @Override
-            public void run() {
-                if (tvLoadingHint != null) {
-                    String errorMsg = null;
-                    AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
-                    if (error != null) {
-                        errorMsg = error.getNum() + " (" + error.getTag() + ")";
-                    }
-                    TextView tvFail = (TextView) findViewById(R.id.tv_course_video_loading_fail);
-                    if (errorMsg != null) {
-                        if (tvFail != null) {
-                            tvFail.setVisibility(View.VISIBLE);
-                            tvFail.setText(errorMsg);
-                        }
-                    } else {
-                        if (tvFail != null) {
-                            tvFail.setVisibility(View.INVISIBLE);
-                        }
-                    }
-
-                }
-            }
-        });
-//        mLiveBll.liveGetPlayServer(false);
-    }
-
-    @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (null != this.getCurrentFocus()) {
             /** 点击空白位置 隐藏软键盘 */
@@ -1371,5 +1316,12 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     @Override
     public void onMediaViewClick(View child) {
 
+    }
+
+    @Override
+    protected void resultFailed(int arg1, int arg2) {
+        super.resultFailed(arg1, arg2);
+        resultFailed = true;
+        mIsShowQuestion = mIsShowRedpacket = false;
     }
 }
