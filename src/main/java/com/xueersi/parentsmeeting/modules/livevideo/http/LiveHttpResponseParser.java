@@ -64,9 +64,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setLiveType(data.getInt("liveType"));
             getInfo.setLiveTime(data.getString("liveTime"));
             getInfo.setNowTime(data.getDouble("nowTime"));
-            getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));
-            //getInfo.setIsShowMarkPoint("1");
-            getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
+            //getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));
+            getInfo.setIsShowMarkPoint("0");
+            //getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
+            getInfo.setIsShowCounselorWhisper("0");
             if (data.has("followType")) {
                 JSONObject followType = data.getJSONObject("followType");
                 FollowTypeEntity followTypeEntity = new FollowTypeEntity();

@@ -496,19 +496,21 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     protected void onPlayOpenStart() {
         setFirstBackgroundVisible(View.VISIBLE);
         findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
-        if (liveRemarkBll == null) {
-            liveRemarkBll = new LiveRemarkBll(mContext, vPlayer);
-            if (mLiveBll != null && liveMediaControllerBottom != null) {
-                if (liveTextureView == null) {
-                    ViewStub viewStub = (ViewStub) findViewById(R.id.vs_course_video_video_texture);
-                    liveTextureView = (LiveTextureView) viewStub.inflate();
-                    liveTextureView.vPlayer = vPlayer;
-                    liveTextureView.setLayoutParams(videoView.getLayoutParams());
+        if(mGetInfo!=null&&mGetInfo.getIsShowMarkPoint().equals("1")) {
+            if (liveRemarkBll == null) {
+                liveRemarkBll = new LiveRemarkBll(mContext, vPlayer);
+                if (mLiveBll != null && liveMediaControllerBottom != null) {
+                    if (liveTextureView == null) {
+                        ViewStub viewStub = (ViewStub) findViewById(R.id.vs_course_video_video_texture);
+                        liveTextureView = (LiveTextureView) viewStub.inflate();
+                        liveTextureView.vPlayer = vPlayer;
+                        liveTextureView.setLayoutParams(videoView.getLayoutParams());
+                    }
+                    liveRemarkBll.setTextureView(liveTextureView);
+                    liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+                    liveRemarkBll.setVideoView(videoView);
+                    mLiveBll.setLiveRemarkBll(liveRemarkBll);
                 }
-                liveRemarkBll.setTextureView(liveTextureView);
-                liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-                liveRemarkBll.setVideoView(videoView);
-                mLiveBll.setLiveRemarkBll(liveRemarkBll);
             }
         }
     }

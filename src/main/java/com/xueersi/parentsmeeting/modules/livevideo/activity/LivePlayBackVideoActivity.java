@@ -409,31 +409,33 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 //        if (AppConfig.DEBUG) {
 //            mWebPath = "http://r01.xesimg.com/stream/tmp/2016/11/30/1480481513276687694567.mp4";
 //        }
-        mLiveRemarkBll=new LiveRemarkBll(this,vPlayer);
-        mLiveRemarkBll.setBottom(bottom);
-        mLiveRemarkBll.setHttpManager(new LiveHttpManager(mContext));
-        mLiveRemarkBll.setLiveId(mVideoEntity.getLiveId());
-        mLiveRemarkBll.getMarkPoints(mVideoEntity.getLiveId(), new AbstractBusinessDataCallBack() {
-            @Override
-            public void onDataSucess(Object... objData) {
-                if(mMediaController!=null){
-                    mMediaController.getTitleRightBtn().setVisibility(View.VISIBLE);
-                    mMediaController.getTitleRightBtn().setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mLiveRemarkBll.setController(mMediaController);
-                            mLiveRemarkBll.showMarkPoints();
-                        }
-                    });
+        if(mVideoEntity!=null&&mVideoEntity.getIsAllowMarkpoint()==1) {
+            mLiveRemarkBll = new LiveRemarkBll(this, vPlayer);
+            mLiveRemarkBll.setBottom(bottom);
+            mLiveRemarkBll.setHttpManager(new LiveHttpManager(mContext));
+            mLiveRemarkBll.setLiveId(mVideoEntity.getLiveId());
+            mLiveRemarkBll.getMarkPoints(mVideoEntity.getLiveId(), new AbstractBusinessDataCallBack() {
+                @Override
+                public void onDataSucess(Object... objData) {
+                    if (mMediaController != null) {
+                        mMediaController.getTitleRightBtn().setVisibility(View.VISIBLE);
+                        mMediaController.getTitleRightBtn().setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mLiveRemarkBll.setController(mMediaController);
+                                mLiveRemarkBll.showMarkPoints();
+                            }
+                        });
+                    }
                 }
-            }
-        });
-        mLiveRemarkBll.setCallBack(new AbstractBusinessDataCallBack(){
-            @Override
-            public void onDataSucess(Object... objData) {
-                attachMediaController();
-            }
-        });
+            });
+            mLiveRemarkBll.setCallBack(new AbstractBusinessDataCallBack() {
+                @Override
+                public void onDataSucess(Object... objData) {
+                    attachMediaController();
+                }
+            });
+        }
 
         if (islocal) {
             // 互动题播放地址
