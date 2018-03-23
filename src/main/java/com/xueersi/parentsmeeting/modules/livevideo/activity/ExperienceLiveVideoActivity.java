@@ -183,9 +183,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         public void run() {
             if (isPlay && !isFinishing()) {
                 // 03.22 上传心跳时间
-                lastPlayTime = System.currentTimeMillis();
-                playTime += mPlayDurTime;
-                mLiveBll.uploadExperiencePlayTime(mVideoEntity.getChapterId(),playTime/1000);
+//                lastPlayTime = System.currentTimeMillis();
+//                playTime += mPlayDurTime;
+                mLiveBll.uploadExperiencePlayTime(mVideoEntity.getChapterId(),300L);
                 mHandler.postDelayed(this, mPlayDurTime);
             }
         }
@@ -200,7 +200,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
         @Override
         public void umsAgentDebug2(String eventId, Map<String, String> mData) {
-            UmsAgentManager.umsAgentOtherBusiness(ExperienceLiveVideoActivity.this, appID, UmsConstants.uploadBehavior, mData);
+            UmsAgentManager.umsAgentOtherBusiness(ExperienceLiveVideoActivity.this, appID, UmsConstants.uploadSystem, mData);
 
         }
 
@@ -297,7 +297,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     String where;
     int isArts;
     /** 区分文理appid */
-    String appID = UmsConstants.LIVE_APP_ID_BACK;
+    String appID = UmsConstants.OPERAT_APP_ID;
     private LiveVideoSAConfig liveVideoSAConfig;
     boolean IS_SCIENCE;
     /** 本地视频 */
@@ -525,6 +525,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayEnter");
         logHashMap.put("liveid",mVideoEntity.getLiveId());
         logHashMap.put("termid",mVideoEntity.getChapterId());
+        logHashMap.put("eventid",LiveVideoConfig.LIVE_EXPERIENCE_ENTER);
         ums.umsAgentDebug2(LiveVideoConfig.LIVE_EXPERIENCE_ENTER,logHashMap.getData());
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(View.GONE);
@@ -1313,6 +1314,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayExit");
         logHashMap.put("liveid",mVideoEntity.getLiveId());
         logHashMap.put("termid",mVideoEntity.getChapterId());
+        logHashMap.put("eventid",LiveVideoConfig.LIVE_EXPERIENCE_EXIT);
         ums.umsAgentDebug2(LiveVideoConfig.LIVE_EXPERIENCE_EXIT,logHashMap.getData());
     }
 

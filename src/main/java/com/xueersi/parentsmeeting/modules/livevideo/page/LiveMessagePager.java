@@ -1021,9 +1021,10 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             }
         });
         // 03.22 体验课播放器统计用户的发送信息
-        if(liveAndBackDebug != null){
+        if(liveAndBackDebug != null && type == LiveMessageEntity.MESSAGE_MINE){
             StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayUserMsg");
             logHashMap.put("LiveFreePlayUserMsg", text);
+            logHashMap.put("eventid",LiveVideoConfig.LIVE_EXPERIENCE_IMMSG);
             liveAndBackDebug.umsAgentDebug2(LiveVideoConfig.LIVE_EXPERIENCE_IMMSG, logHashMap.getData());
         }
         Log.e("Duncan","sender:" + sender);
