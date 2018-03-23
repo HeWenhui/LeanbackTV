@@ -770,6 +770,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     //模式切换
                     if (!(mLiveTopic.getMode().equals(liveTopic.getMode()))) {
                         mLiveTopic.setMode(liveTopic.getMode());
+                        mGetInfo.setMode(liveTopic.getMode());
                         if (mVideoAction != null) {
                             boolean isPresent = isPresent(mLiveTopic.getMode());
                             mVideoAction.onModeChange(mLiveTopic.getMode(), isPresent);
@@ -1108,6 +1109,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         mLogtf.d("onNotice:oldmode=" + mLiveTopic.getMode() + ",newmode=" + mode);
                         if (!(mLiveTopic.getMode().equals(mode))) {
                             mLiveTopic.setMode(mode);
+                            mGetInfo.setMode(mode);
                             if (mVideoAction != null) {
                                 boolean isPresent = isPresent(mode);
                                 mVideoAction.onModeChange(mode, isPresent);

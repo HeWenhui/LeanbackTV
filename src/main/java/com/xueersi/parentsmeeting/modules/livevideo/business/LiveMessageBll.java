@@ -83,10 +83,13 @@ public class LiveMessageBll implements RoomAction {
      * @param bottomContent
      */
     public void initViewLiveStand(RelativeLayout bottomContent) {
-        rlLiveMessageContent = new RelativeLayout(activity);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        bottomContent.addView(rlLiveMessageContent, params);
-
+        if (rlLiveMessageContent == null) {
+            rlLiveMessageContent = new RelativeLayout(activity);
+            bottomContent.addView(rlLiveMessageContent, params);
+        } else {
+            rlLiveMessageContent.removeAllViews();
+        }
         long before = System.currentTimeMillis();
         LiveMessageStandPager liveMessagePager = new LiveMessageStandPager(activity, questionBll, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
         mLiveMessagePager = liveMessagePager;
@@ -106,10 +109,13 @@ public class LiveMessageBll implements RoomAction {
     }
 
     public void initViewLive(RelativeLayout bottomContent) {
-        rlLiveMessageContent = new RelativeLayout(activity);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        bottomContent.addView(rlLiveMessageContent, params);
-
+        if (rlLiveMessageContent == null) {
+            rlLiveMessageContent = new RelativeLayout(activity);
+            bottomContent.addView(rlLiveMessageContent, params);
+        } else {
+            rlLiveMessageContent.removeAllViews();
+        }
         long before = System.currentTimeMillis();
         LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
         mLiveMessagePager = liveMessagePager;

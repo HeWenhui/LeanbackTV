@@ -351,7 +351,7 @@ public class LiveStandAchievementBll implements StarInteractAction {
                 LiveStandAchievementBll.this.composition = composition;
                 lottieAnimationView.setImageAssetsFolder(assetFolders.get(fileName));
                 lottieAnimationView.setComposition(composition);
-                updateBitmap("" + goldCount);
+//                updateBitmap("" + goldCount);
             }
         });
     }

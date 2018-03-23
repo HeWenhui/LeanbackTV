@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+    android:id="@id/rl_livevideo_starinteract_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@id/iv_livevideo_starinteract_stat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true" />
 
     <com.xueersi.parentsmeeting.modules.livevideo.widget.StrokeTextView
         android:id="@id/tv_livevideo_starinteract_count"
@@ -18,5 +19,5 @@
         android:layout_toRightOf="@id/iv_livevideo_starinteract_stat"
         android:text="×01"
         android:textColor="#ffe000"
-        android:textSize="30sp"/>
+        android:textSize="30sp" />
 </RelativeLayout>

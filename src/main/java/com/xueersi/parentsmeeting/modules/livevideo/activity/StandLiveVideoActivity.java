@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishSpeekBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishStandSpeekBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.H5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLazyBllCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
@@ -883,6 +884,12 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         if (liveLazyBllCreat != null) {
             liveLazyBllCreat.setGetInfo(getInfo);
         }
+        String mode = mGetInfo.getMode();
+        if (LiveTopic.MODE_CLASS.equals(mode)) {
+            liveMessageBll.initViewLiveStand(bottomContent);
+        } else {
+            liveMessageBll.initViewLive(bottomContent);
+        }
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
             if (rankBll != null) {
@@ -903,23 +910,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         before = System.currentTimeMillis();
         //本场成就
         if (1 == getInfo.getIsAllowStar()) {
-//            starAction = new StarInteractBll(this, liveType, getInfo.getStarCount(), mIsLand);
-            LiveStandAchievementBll starBll = new LiveStandAchievementBll(this, liveType, getInfo.getStarCount(), getInfo.getGoldCount(), mIsLand);
-            starBll.setLiveBll(mLiveBll);
-            starBll.initView(bottomContent);
-            mLiveBll.setStarAction(starBll);
-            StandLiveVideoActivity.this.starAction = starBll;
-            //能量条
-            EnglishStandSpeekBll englishSpeekBll = new EnglishStandSpeekBll(this);
-            boolean initView = englishSpeekBll.initView(bottomContent, mGetInfo.getMode());
-            if (initView) {
-                englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
-                englishSpeekBll.setLiveBll(mLiveBll);
-                englishSpeekBll.setLiveMessageBll(liveMessageBll);
-                englishSpeekBll.setmShareDataManager(mShareDataManager);
-                mLiveBll.setEnglishSpeekAction(englishSpeekBll);
-                StandLiveVideoActivity.this.englishSpeekAction = englishSpeekBll;
-            }
+            initAchievement(mode);
         }
         Loger.d(TAG, "onLiveInit:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
@@ -937,6 +928,52 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         questionBll.setUserName(getInfo);
         videoChatBll.onLiveInit(getInfo);
         Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
+    }
+
+    private void initAchievement(String mode) {
+        StarInteractAction starAction;
+        EnglishSpeekAction englishSpeekAction = null;
+        if (LiveTopic.MODE_CLASS.equals(mode)) {
+            LiveStandAchievementBll starBll = new LiveStandAchievementBll(this, liveType, mGetInfo.getStarCount(), mGetInfo.getGoldCount(), mIsLand);
+            starBll.setLiveBll(mLiveBll);
+            starBll.initView(bottomContent);
+            starAction = starBll;
+
+            if (StandLiveVideoActivity.this.englishSpeekAction != null) {
+                StandLiveVideoActivity.this.englishSpeekAction.stop(null);
+            }
+            //能量条
+            EnglishStandSpeekBll englishSpeekBll = new EnglishStandSpeekBll(this);
+            boolean initView = englishSpeekBll.initView(bottomContent, mGetInfo.getMode());
+            if (initView) {
+                englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
+                englishSpeekBll.setLiveBll(mLiveBll);
+                englishSpeekBll.setLiveMessageBll(liveMessageBll);
+                englishSpeekBll.setmShareDataManager(mShareDataManager);
+                englishSpeekAction = englishSpeekBll;
+            }
+
+        } else {
+            LiveAchievementBll starBll = new LiveAchievementBll(this, liveType, mGetInfo.getStarCount(), mGetInfo.getGoldCount(), mIsLand);
+            starBll.setLiveBll(mLiveBll);
+            starBll.initView(bottomContent);
+            starAction = starBll;
+
+            //能量条
+            EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(this);
+            boolean initView = englishSpeekBll.initView(bottomContent, mGetInfo.getMode());
+            if (initView) {
+                englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
+                englishSpeekBll.setLiveBll(mLiveBll);
+                englishSpeekBll.setLiveMessageBll(liveMessageBll);
+                englishSpeekBll.setmShareDataManager(mShareDataManager);
+                englishSpeekAction = englishSpeekBll;
+            }
+        }
+        mLiveBll.setStarAction(starAction);
+        mLiveBll.setEnglishSpeekAction(englishSpeekAction);
+        StandLiveVideoActivity.this.starAction = starAction;
+        StandLiveVideoActivity.this.englishSpeekAction = englishSpeekAction;
     }
 
     @Override
@@ -965,6 +1002,12 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         rePlay(change.get());
     }
 
+    /**
+     * 子线程
+     *
+     * @param mode      模式
+     * @param isPresent 老师在不在直播间
+     */
     @Override
     public void onModeChange(final String mode, final boolean isPresent) {
         mLogtf.i("onModeChange:mode=" + mode);
@@ -974,14 +1017,20 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         } catch (Exception e) {
             mLogtf.e("onModeChange:mode=" + mode, e);
         }
-        mLogtf.i("onModeChange:mode=" + mode);
-        if (englishSpeekAction != null) {
-            englishSpeekAction.onModeChange(mode, audioRequest);
-        }
         mHandler.post(new Runnable() {
 
             @Override
             public void run() {
+                if (LiveTopic.MODE_CLASS.equals(mode)) {
+                    liveMessageBll.initViewLiveStand(bottomContent);
+                } else {
+                    liveMessageBll.initViewLive(bottomContent);
+                }
+                initAchievement(mode);
+                mLogtf.i("onModeChange:mode=" + mode);
+//                if (englishSpeekAction != null) {
+//                    englishSpeekAction.onModeChange(mode, audioRequest);
+//                }
                 mLogtf.d("onModeChange:isInitialized=" + isInitialized());
                 if (isInitialized()) {
                     mHandler.removeCallbacks(mPlayDuration);

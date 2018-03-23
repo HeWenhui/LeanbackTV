@@ -259,12 +259,24 @@ public class LiveAchievementBll implements StarInteractAction {
                 }
             });
         }
-        flyStat = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_stat_fly, bottomContent, false);
+        View rl_livevideo_starinteract_layout = bottomContent.findViewById(R.id.rl_livevideo_starinteract_layout);
+        if (rl_livevideo_starinteract_layout != null) {//移除旧的view
+//            bottomContent.removeView(rl_livevideo_starinteract_layout);
+            flyStat = rl_livevideo_starinteract_layout;
+        } else {
+            flyStat = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_stat_fly, bottomContent, false);
+            bottomContent.addView(flyStat);
+        }
         flyStat.setVisibility(View.INVISIBLE);
-        bottomContent.addView(flyStat);
-        flyLight = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_stat_fly_light, bottomContent, false);
+        View rl_livevideo_starinteract_stat_light_layout = bottomContent.findViewById(R.id.rl_livevideo_starinteract_stat_light_layout);
+        if (rl_livevideo_starinteract_stat_light_layout != null) {//移除旧的view
+//            bottomContent.removeView(rl_livevideo_starinteract_stat_light_layout);
+            flyLight = rl_livevideo_starinteract_stat_light_layout;
+        } else {
+            flyLight = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_stat_fly_light, bottomContent, false);
+            bottomContent.addView(flyLight);
+        }
         flyLight.setVisibility(View.INVISIBLE);
-        bottomContent.addView(flyLight);
         getLayoutParams();
         mStarCountAnimSlideIn = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_star_text_in);
         mGoldCountAnimSlideIn = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_star_text_in);

@@ -16,9 +16,11 @@
     <item name="tv_livevideo_student_online" type="id" />
     <item name="tv_livevideo_student_radio" type="id" />
     <item name="tv_livevideo_student_team" type="id" />
+    <item name="rl_livevideo_starinteract_stat_light_layout" type="id" />
     <item name="iv_livevideo_starinteract_stat_light" type="id" />
     <item name="rl_livevideo_starinteract_stat" type="id" />
     <item name="tv_livevideo_starinteract_lable" type="id" />
+    <item name="rl_livevideo_starinteract_layout" type="id" />
     <item name="iv_livevideo_starinteract_stat" type="id" />
     <item name="rl_livevideo_starinteract_count" type="id" />
     <item name="tv_livevideo_starinteract_count" type="id" />
