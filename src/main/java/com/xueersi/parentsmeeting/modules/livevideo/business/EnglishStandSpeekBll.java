@@ -318,7 +318,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
                                         }
                                         float progress = newProgress / 45 * 0.32f;
                                         Loger.d(TAG, "onProcessData:second=" + second + ",oldProgress=" + oldProgress + ",newProgress=" + newProgress + ",progress=" + progress);
-                                        if (newProgress != 45) {
+                                        if (newProgress < 45) {
                                             lottieAnimationView.setProgress(progress);
                                             final ValueAnimator valueAnimator = ValueAnimator.ofFloat(startProgress, newProgress);
                                             final float finalNewProgress = newProgress;
@@ -361,7 +361,8 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
                                             valueAnimator.start();
                                             lastValueAnimator = valueAnimator;
                                         } else {
-                                            lottieAnimationView.setProgress(0);
+                                            lottieAnimationView.resumeAnimation();
+//                                            lottieAnimationView.setProgress(0);
                                             if (lastValueAnimator != null) {
                                                 lastValueAnimator.cancel();
                                                 lastValueAnimator = null;

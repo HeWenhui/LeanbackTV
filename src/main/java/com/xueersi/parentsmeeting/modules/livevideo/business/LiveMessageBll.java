@@ -90,6 +90,19 @@ public class LiveMessageBll implements RoomAction {
         } else {
             rlLiveMessageContent.removeAllViews();
         }
+        String text = null;
+        boolean isRegister = false;
+        boolean isHaveFlowers = false;
+        boolean isCloseChat = false;
+        BaseLiveMessagePager oldLiveMessagePager = mLiveMessagePager;
+        if (mLiveMessagePager != null) {
+            text = mLiveMessagePager.getMessageContentText();
+            isRegister = mLiveMessagePager.isRegister();
+            isHaveFlowers = mLiveMessagePager.isHaveFlowers();
+            isCloseChat = mLiveMessagePager.isCloseChat();
+            mLiveMessagePager.pool.shutdown();
+        }
+
         long before = System.currentTimeMillis();
         LiveMessageStandPager liveMessagePager = new LiveMessageStandPager(activity, questionBll, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
         mLiveMessagePager = liveMessagePager;
@@ -101,6 +114,17 @@ public class LiveMessageBll implements RoomAction {
         mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setLiveBll(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
+
+        if (text != null) {
+            mLiveMessagePager.setEtMessageContentText(text);
+        } else {
+            mLiveMessagePager.setEtMessageContentText("");
+        }
+        mLiveMessagePager.setIsRegister(isRegister);
+        if (peopleCount.get() > 0) {
+            mLiveMessagePager.onUserList("", new User[peopleCount.get()]);
+        }
+        mLiveMessagePager.closeChat(isCloseChat);
 
         if (mode != null) {
             mLiveMessagePager.onopenchat(openchat, mode, false);
@@ -116,6 +140,19 @@ public class LiveMessageBll implements RoomAction {
         } else {
             rlLiveMessageContent.removeAllViews();
         }
+        String text = null;
+        boolean isRegister = false;
+        boolean isHaveFlowers = false;
+        boolean isCloseChat = false;
+        BaseLiveMessagePager oldLiveMessagePager = mLiveMessagePager;
+        if (mLiveMessagePager != null) {
+            text = mLiveMessagePager.getMessageContentText();
+            isRegister = mLiveMessagePager.isRegister();
+            isHaveFlowers = mLiveMessagePager.isHaveFlowers();
+            isCloseChat = mLiveMessagePager.isCloseChat();
+            mLiveMessagePager.pool.shutdown();
+        }
+
         long before = System.currentTimeMillis();
         LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
         mLiveMessagePager = liveMessagePager;
@@ -128,6 +165,16 @@ public class LiveMessageBll implements RoomAction {
         mLiveMessagePager.setLiveBll(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
 
+        if (text != null) {
+            mLiveMessagePager.setEtMessageContentText(text);
+        } else {
+            mLiveMessagePager.setEtMessageContentText("");
+        }
+        mLiveMessagePager.setIsRegister(isRegister);
+        if (peopleCount.get() > 0) {
+            mLiveMessagePager.onUserList("", new User[peopleCount.get()]);
+        }
+        mLiveMessagePager.closeChat(isCloseChat);
         if (mode != null) {
             mLiveMessagePager.onopenchat(openchat, mode, false);
         }

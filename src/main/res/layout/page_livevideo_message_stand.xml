@@ -10,9 +10,9 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@id/rl_livevideo_message_status"
             android:layout_width="match_parent"
-            android:layout_height="25dp">
+            android:layout_height="25dp"
+            android:visibility="gone">
 
             <TextView
                 android:id="@id/tv_livevideo_message_count"
@@ -32,13 +32,6 @@
                 android:src="@drawable/bg_livevideo_message_offline" />
         </RelativeLayout>
 
-        <View
-            android:id="@id/v_livevideo_message_gap"
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_below="@id/rl_livevideo_message_status"
-            android:background="#5C5C5C" />
-
         <ListView
             android:id="@id/lv_livevideo_message"
             style="@style/listview_common_style"
@@ -46,7 +39,6 @@
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:layout_below="@id/v_livevideo_message_gap"
             android:divider="@null"
             android:listSelector="@color/transparent"
             android:paddingLeft="4dp"
@@ -72,7 +64,7 @@
         android:layout_toRightOf="@id/rl_livevideo_info"
         android:visibility="visible" />
 
-    <com.airbnb.lottie.LottieAnimationView
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveLottieAnimationView
         android:id="@id/lav_livevideo_chievement"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -1,46 +1,32 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
-import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LineEvaluator;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveLottieAnimationView;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,26 +42,8 @@ public class LiveStandAchievementBll implements StarInteractAction {
     private Activity activity;
     private View flyStat;
     private View flyLight;
-    private ImageView ivStarInteractStat;
-    private ImageView ivStarInteractGold;
-    LottieAnimationView lottieAnimationView;
+    StandLiveLottieAnimationView lottieAnimationView;
     LottieComposition composition;
-    /**
-     * 本场成就星星数量
-     */
-    private TextView tvStarInteractCount;
-    /**
-     * 本场成就星星数量-背后隐藏数量
-     */
-    private TextView tvStarInteractCountHind;
-    /**
-     * 本场成就金币数量
-     */
-    private TextView tvStarInteractGoldCount;
-    /**
-     * 本场成就金币数量-背后隐藏数量
-     */
-    private TextView tvStarInteractGoldHind;
     private ViewGroup myView;
     private Point startPoint;
     /**
@@ -105,14 +73,6 @@ public class LiveStandAchievementBll implements StarInteractAction {
     int topMargin;
     RelativeLayout bottomContent;
     /**
-     * 右侧星星数字动画出现
-     */
-    private Animation mStarCountAnimSlideIn;
-    /**
-     * 右侧金币数字动画出现
-     */
-    private Animation mGoldCountAnimSlideIn;
-    /**
      * 右侧星星和金币数字动画消失
      */
     private Animation mStarCountAnimSlideOut;
@@ -120,9 +80,6 @@ public class LiveStandAchievementBll implements StarInteractAction {
      * 背景光的动画旋转
      */
     private Animation mStarLightAnimRotate;
-    ArrayList<AllAnimation> allAnimations = new ArrayList<>();
-    private AllAnimation firstAllAnimation;
-    private AllAnimation lastAllAnimation;
     private final int AnimationType_STAR = 0;
     private final int AnimationType_GOLD = 1;
     AccelerateDecelerateInterpolator accelerateDecelerateInterpolator = new AccelerateDecelerateInterpolator();
@@ -204,14 +161,6 @@ public class LiveStandAchievementBll implements StarInteractAction {
         myView.setVisibility(View.VISIBLE);
         View layout_livevideo_stat_gold = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_stand_stat_gold, myView, false);
         myView.addView(layout_livevideo_stat_gold);
-        ivStarInteractStat = (ImageView) myView.findViewById(R.id.iv_livevideo_starinteract_stat);
-        tvStarInteractCount = (TextView) myView.findViewById(R.id.tv_livevideo_starinteract_count);
-        tvStarInteractCountHind = (TextView) myView.findViewById(R.id.tv_livevideo_starinteract_count_hind);
-
-        ivStarInteractGold = (ImageView) myView.findViewById(R.id.iv_livevideo_starinteract_gold);
-        tvStarInteractGoldCount = (TextView) myView.findViewById(R.id.tv_livevideo_starinteract_gold_count);
-        tvStarInteractGoldHind = (TextView) myView.findViewById(R.id.tv_livevideo_starinteract_gold_hind);
-
         lottieAnimationView = activity.findViewById(R.id.lav_livevideo_chievement);
         initlottieAnim();
 //        if (isExpe) {
@@ -230,109 +179,14 @@ public class LiveStandAchievementBll implements StarInteractAction {
 //        } else {
 //            myView.setVisibility(View.INVISIBLE);
 //        }
-        if (starCount < 10) {
-            tvStarInteractCount.setText("×0" + starCount);
-        } else {
-            tvStarInteractCount.setText("×" + starCount);
-        }
-        if (goldCount < 10) {
-            tvStarInteractGoldCount.setText("×0" + goldCount);
-        } else {
-            tvStarInteractGoldCount.setText("×" + goldCount);
-        }
-        if (AppConfig.DEBUG) {
-            ivStarInteractStat.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    starCount++;
-                    if (starCount < 10) {
-                        tvStarInteractCountHind.setText("×0" + starCount);
-                    } else {
-                        tvStarInteractCountHind.setText("×" + starCount);
-                    }
-                    Loger.i(TAG, "onClick:id=" + tvStarInteractCountHind.getId());
-                    AllAnimation allAnimation = onReceiveStat(AnimationType_STAR, 1, "");
-                    allAnimation.setOnAnimationEnd(new OnAnimationEnd() {
-                        @Override
-                        public void onEnd() {
-                            goldCount += 2;
-                            onReceiveStat(AnimationType_GOLD, 2, "");
-                        }
-                    });
-//                    liveBll.getStuGoldCount();
-                }
-            });
-            ivStarInteractGold.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    goldCount++;
-                    if (goldCount < 10) {
-                        tvStarInteractGoldHind.setText("×0" + goldCount);
-                    } else {
-                        tvStarInteractGoldHind.setText("×" + goldCount);
-                    }
-                    Loger.i(TAG, "onClick:id=" + tvStarInteractGoldHind.getId());
-                    onReceiveStat(AnimationType_GOLD, 1, "");
-//                    liveBll.getStuGoldCount();
-                }
-            });
-        }
         flyStat = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_stat_fly, bottomContent, false);
         flyStat.setVisibility(View.INVISIBLE);
         bottomContent.addView(flyStat);
         flyLight = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_stat_fly_light, bottomContent, false);
         flyLight.setVisibility(View.INVISIBLE);
         bottomContent.addView(flyLight);
-        getLayoutParams();
-        mStarCountAnimSlideIn = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_star_text_in);
-        mGoldCountAnimSlideIn = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_star_text_in);
         mStarCountAnimSlideOut = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_star_text_out);
         mStarLightAnimRotate = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_star_light_rotate);
-        mStarCountAnimSlideIn.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                if (tvStarInteractCountHind.getVisibility() != View.VISIBLE) {
-                    tvStarInteractCountHind.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                if (starCount < 10) {
-                    tvStarInteractCount.setText("×0" + starCount);
-                } else {
-                    tvStarInteractCount.setText("×" + starCount);
-                }
-                TextView tempTextView = tvStarInteractCount;
-                tvStarInteractCount = tvStarInteractCountHind;
-                tvStarInteractCountHind = tempTextView;
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        mGoldCountAnimSlideIn.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                if (tvStarInteractGoldHind.getVisibility() != View.VISIBLE) {
-                    tvStarInteractGoldHind.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                TextView tempTextView = tvStarInteractGoldCount;
-                tvStarInteractGoldCount = tvStarInteractGoldHind;
-                tvStarInteractGoldHind = tempTextView;
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
     }
 
     private void initlottieAnim() {
@@ -351,74 +205,34 @@ public class LiveStandAchievementBll implements StarInteractAction {
                 LiveStandAchievementBll.this.composition = composition;
                 lottieAnimationView.setImageAssetsFolder(assetFolders.get(fileName));
                 lottieAnimationView.setComposition(composition);
-//                updateBitmap("" + goldCount);
+                setGoldCount();
             }
         });
     }
 
-    private void updateBitmap(String num) {
-        AssetManager manager = activity.getAssets();
-        Bitmap img_3Bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.ic_launcher);
-        try {
-            img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
-            Bitmap img_9Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_9.png"));
-            Bitmap creatBitmap = Bitmap.createBitmap(img_3Bitmap.getWidth(), img_3Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(creatBitmap);
-            canvas.drawBitmap(img_3Bitmap, 0, 0, null);
-            Paint paint = new Paint();
-            paint.setTextSize(24);
-            paint.setColor(Color.WHITE);
-            float width = paint.measureText(num);
-            canvas.drawText(num, (img_3Bitmap.getWidth() - img_9Bitmap.getWidth() / 2) / 2 + img_9Bitmap.getWidth() / 2 - width / 2, img_3Bitmap.getHeight() / 2 + paint.measureText("a") / 2, paint);
-//                    canvas.drawRect(img_9Bitmap.getWidth()/2, 0, img_3Bitmap.getWidth(), img_3Bitmap.getHeight(), paint);
-            img_3Bitmap = creatBitmap;
-        } catch (IOException e) {
-//            e.printStackTrace();
-            return;
-        }
-        lottieAnimationView.updateBitmap("image_3", img_3Bitmap);
-    }
-
-    private void getLayoutParams() {
-//        {
-//            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) myView.getLayoutParams();
-//            params.rightMargin = (int) (wradio + 16 * ScreenUtils.getScreenDensity());
-//            myView.setLayoutParams(params);
+    private void setGoldCount() {
+        lottieAnimationView.setGoldCount(goldCount);
+//        String num = "" + goldCount;
+//        AssetManager manager = activity.getAssets();
+//        Bitmap img_7Bitmap;
+//        try {
+//            img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_9.png"));
+//            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
+//            Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+//            Canvas canvas = new Canvas(creatBitmap);
+//            canvas.drawBitmap(img_7Bitmap, 0, 0, null);
+//            Paint paint = new Paint();
+//            paint.setTextSize(24);
+//            paint.setColor(Color.WHITE);
+//            float width = paint.measureText(num);
+//            canvas.drawText(num, (img_7Bitmap.getWidth() - img_3Bitmap.getWidth() / 2) / 2 + img_3Bitmap.getWidth() / 2 - width / 2, img_7Bitmap.getHeight() / 2 + paint.measureText("a") / 2, paint);
+////                    canvas.drawRect(img_9Bitmap.getWidth()/2, 0, img_3Bitmap.getWidth(), img_3Bitmap.getHeight(), paint);
+//            img_7Bitmap = creatBitmap;
+//        } catch (IOException e) {
+////            e.printStackTrace();
+//            return;
 //        }
-        ivStarInteractStat.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                //飞的星星的位置
-                int screenWidth = ScreenUtils.getScreenWidth();
-                int screenHeight = ScreenUtils.getScreenHeight();
-                int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
-                {
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) flyStat.getLayoutParams();
-                    params.leftMargin = (screenWidth - wradio - flyStat.getWidth()) / 2;
-                    topMargin = params.topMargin = (screenHeight - flyStat.getHeight()) / 2;
-//                    flyStat.setLayoutParams(params);
-                    LayoutParamsUtil.setViewLayoutParams(flyStat, params);
-                    startPoint = new Point(params.leftMargin, params.topMargin);
-                }
-                {
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) flyLight.getLayoutParams();
-                    params.leftMargin = (screenWidth - wradio - flyLight.getWidth()) / 2;
-                    params.topMargin = (screenHeight - flyLight.getHeight()) / 2;
-//                    flyLight.setLayoutParams(params);
-                    LayoutParamsUtil.setViewLayoutParams(flyLight, params);
-                }
-                ivStarInteractStat.getViewTreeObserver().removeOnPreDrawListener(this);
-                int[] outLocation = new int[2];
-                ivStarInteractStat.getLocationInWindow(outLocation);
-                endStarPoint = new Point(outLocation[0] - (flyStat.getWidth() - ivStarInteractStat.getWidth()) / 2,
-                        outLocation[1] - (flyStat.getHeight() - ivStarInteractStat.getHeight()) / 2);
-                ivStarInteractGold.getLocationInWindow(outLocation);
-                endGoldPoint = new Point(outLocation[0] - (flyStat.getWidth() - ivStarInteractGold.getWidth()) / 2,
-                        outLocation[1] - (flyStat.getHeight() - ivStarInteractGold.getHeight()) / 2);
-                controlPoint = new Point(outLocation[0] - 60, topMargin + 60);
-                return false;
-            }
-        });
+//        lottieAnimationView.updateBitmap("image_9", img_7Bitmap);
     }
 
     @Override
@@ -472,11 +286,6 @@ public class LiveStandAchievementBll implements StarInteractAction {
                     @Override
                     public void onDataSucess(Object... objData) {
                         starCount++;
-                        if (starCount < 10) {
-                            tvStarInteractCountHind.setText("×0" + starCount);
-                        } else {
-                            tvStarInteractCountHind.setText("×" + starCount);
-                        }
                         if (mIsLand) {
                             onReceiveStat(AnimationType_STAR, 1, nonce);
                         }
@@ -540,47 +349,15 @@ public class LiveStandAchievementBll implements StarInteractAction {
 
     @Override
     public void onGetStar(StarAndGoldEntity starAndGoldEntity) {
-        int starCountAdd = starAndGoldEntity.getStarCount() - starCount;
-        AllAnimation allAnimationStar = null;
-        if (starCountAdd > 0) {
-            allAnimationStar = onReceiveStat(AnimationType_STAR, starCountAdd, "");
-        }
         starCount = starAndGoldEntity.getStarCount();
-        final int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
-        if (goldCountAdd > 0) {
-            if (allAnimationStar == null) {
-                onReceiveStat(AnimationType_GOLD, goldCountAdd, "");
-            } else {
-                allAnimationStar.setOnAnimationEnd(new OnAnimationEnd() {
-                    @Override
-                    public void onEnd() {
-                        onReceiveStat(AnimationType_GOLD, goldCountAdd, "");
-                    }
-                });
-            }
-        }
         goldCount = starAndGoldEntity.getGoldCount();
-        if (starCount < 10) {
-            tvStarInteractCountHind.setText("×0" + starCount);
-        } else {
-            tvStarInteractCountHind.setText("×" + starCount);
-        }
-        if (goldCount < 10) {
-            tvStarInteractGoldHind.setText("×0" + goldCount);
-        } else {
-            tvStarInteractGoldHind.setText("×" + goldCount);
-        }
+        setGoldCount();
     }
 
     @Override
     public void onStarAdd(int star, float x, float y) {
         Point startPoint = new Point(x, y);
         starCount += star;
-        if (starCount < 10) {
-            tvStarInteractCountHind.setText("×0" + starCount);
-        } else {
-            tvStarInteractCountHind.setText("×" + starCount);
-        }
         final View flyStat = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_english_stat_fly, bottomContent, false);
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) flyStat.getLayoutParams();
         params.leftMargin = (int) startPoint.getX();
@@ -602,63 +379,20 @@ public class LiveStandAchievementBll implements StarInteractAction {
                 float fraction = currentPoint.fraction;
                 flyStat.setAlpha(1 - fraction);
                 int width = iv_livevideo_starinteract_stat.getWidth();
-                float scale = ((float) ivStarInteractStat.getWidth() / (float) width - 1) * fraction + 1;
+//                float scale = ((float) ivStarInteractStat.getWidth() / (float) width - 1) * fraction + 1;
+                float scale = 1;
                 iv_livevideo_starinteract_stat.setScaleX(scale);
                 iv_livevideo_starinteract_stat.setScaleY(scale);
                 Loger.i(TAG, "onAnimationUpdate:fraction=" + fraction + ",leftMargin=" + params.leftMargin);
 //                    Loger.i(TAG, "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float) ivStarInteractStat.getWidth() / (float) width));
             }
         });
-        translateValueAnimator.addListener(new Animator.AnimatorListener() {
-            long before;
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                before = System.currentTimeMillis();
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                tvStarInteractCountHind.startAnimation(mStarCountAnimSlideIn);
-                tvStarInteractCount.startAnimation(mStarCountAnimSlideOut);
-                flyStat.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        int[] outLocation = new int[2];
-                        flyStat.getLocationInWindow(outLocation);
-                        String location1 = outLocation[0] + "-" + outLocation[1];
-                        ivStarInteractStat.getLocationInWindow(outLocation);
-                        String location2 = outLocation[0] + "-" + outLocation[1];
-                        bottomContent.removeView(flyStat);
-//                        String status = "true";
-//                        Map<String, String> mData = new HashMap<>();
-//                        mData.put("logtype", "showAnimation");
-//                        mData.put("startnum", "" + starCount);
-//                        mData.put("status", status);
-//                        mData.put("time", "" + (System.currentTimeMillis() - before));
-//                        mData.put("location1", location1);
-//                        mData.put("location2", location2);
-//                        liveBll.umsAgentDebug3(eventId, mData);
-                    }
-                });
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
         translateValueAnimator.start();
     }
 
-    private AllAnimation onReceiveStat(int type, int starCount, String nonce) {
+    private void onReceiveStat(int type, int starCount, String nonce) {
         if (starCount == 0) {
-            return null;
+            return;
         }
         final View flyStat = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_stat_fly, bottomContent, false);
         TextView tv_livevideo_statinteract_count = (TextView) flyStat.findViewById(R.id.tv_livevideo_starinteract_count);
@@ -667,35 +401,7 @@ public class LiveStandAchievementBll implements StarInteractAction {
         params.leftMargin = (int) startPoint.getX();
         params.topMargin = (int) startPoint.getY();
         bottomContent.addView(flyStat, params);
-        AllAnimation allAnimation;
-        if (!allAnimations.isEmpty()) {
-            allAnimation = allAnimations.remove(0);
-            Loger.i(TAG, "onReceiveStat:allAnimation=old");
-        } else {
-            allAnimation = new AllAnimation();
-            Loger.i(TAG, "onReceiveStat:allAnimation=new");
-        }
-        allAnimation.setFlyStat(type, flyStat);
-        allAnimation.setNonce(nonce);
-        allAnimation.start();
-        return allAnimation;
 //        myView.setVisibility(View.VISIBLE);
-    }
-
-    public void onConfigurationChanged(boolean isLand) {
-        this.mIsLand = isLand;
-        if (myView != null) {
-//            if (mIsLand) {
-//                if (starCount > 0) {
-//                    myView.setVisibility(View.VISIBLE);
-//                } else {
-//                    myView.setVisibility(View.INVISIBLE);
-//                }
-//            } else {
-//                myView.setVisibility(View.INVISIBLE);
-//            }
-            getLayoutParams();
-        }
     }
 
     class LineMath {
@@ -715,379 +421,4 @@ public class LiveStandAchievementBll implements StarInteractAction {
         return new LineMath(a, b);
     }
 
-    private class AllAnimation {
-        int type;
-        View flyStat;
-        /**
-         * 动画出现
-         */
-        private Animation mAnimSlideInStep1;
-        /**
-         * 晃动动画
-         */
-        private Animation mAnimSlideRotate;
-        /**
-         * 移动动画
-         */
-        ValueAnimator translateValueAnimator;
-        ImageView iv_livevideo_starinteract_stat;
-        boolean isLightRotate = false;
-        LineEvaluator.PointAndFloat endLinePoint;
-        OnAnimationEnd onAnimationEnd;
-        String nonce;
-
-        AllAnimation() {
-            mAnimSlideInStep1 = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_star_in_step1);
-            mAnimSlideInStep1.setInterpolator(new Interpolator() {
-                @Override
-                public float getInterpolation(float input) {
-                    float output;
-                    if (input < starScaleStep1) {
-                        output = accelerateDecelerateInterpolator.getInterpolation(input / starScaleStep1);
-                    } else if (input < starScaleStep2) {
-                        output = starInLine1a * input + starInLine1b;
-                        if (!isLightRotate) {
-                            isLightRotate = true;
-                            if (firstAllAnimation == LiveStandAchievementBll.AllAnimation.this) {
-                                flyLight.startAnimation(mStarLightAnimRotate);
-                            }
-                        }
-//                        output = accelerateInterpolator.getInterpolation(output);
-//                        output = accelerateDecelerateInterpolator.getInterpolation(output);
-                    } else {
-                        output = starInLine2a * input + starInLine2b;
-//                        output = accelerateInterpolator.getInterpolation(output);
-//                        output = accelerateDecelerateInterpolator.getInterpolation(output);
-                    }
-                    Loger.i(TAG, "getInterpolation:input=" + input + ",output=" + output + ",sameIn=" + (firstAllAnimation == LiveStandAchievementBll.AllAnimation.this) + "," + (lastAllAnimation == null));
-                    if (firstAllAnimation == LiveStandAchievementBll.AllAnimation.this) {
-                        flyLight.setScaleX(output);
-                        flyLight.setScaleY(output);
-                    }
-                    return output;
-                }
-            });
-            mAnimSlideRotate = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_star_rotate);
-//            mAnimSlideRotate.setRepeatCount(2);
-            endLinePoint = new LineEvaluator.PointAndFloat();
-            translateValueAnimator = ValueAnimator.ofObject(new LineEvaluator(), new LineEvaluator.PointAndFloat(startPoint), endLinePoint);
-            translateValueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-            translateValueAnimator.setDuration(600);
-            translateValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    LineEvaluator.PointAndFloat currentPoint = (LineEvaluator.PointAndFloat) animation.getAnimatedValue();
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) flyStat.getLayoutParams();
-                    params.topMargin = (int) currentPoint.point.getY();
-                    params.leftMargin = (int) currentPoint.point.getX();
-//                    flyStat.setLayoutParams(params);
-                    LayoutParamsUtil.setViewLayoutParams(flyStat, params);
-                    float fraction = currentPoint.fraction;
-                    flyStat.setAlpha(1 - fraction);
-                    int width = iv_livevideo_starinteract_stat.getWidth();
-                    float scale = ((float) ivStarInteractStat.getWidth() / (float) width - 1) * fraction + 1;
-                    iv_livevideo_starinteract_stat.setScaleX(scale);
-                    iv_livevideo_starinteract_stat.setScaleY(scale);
-                    Loger.i(TAG, "onAnimationUpdate:fraction=" + fraction + ",leftMargin=" + params.leftMargin);
-//                    Loger.i(TAG, "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float) ivStarInteractStat.getWidth() / (float) width));
-                }
-            });
-            translateValueAnimator.addListener(new Animator.AnimatorListener() {
-                long before;
-
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    before = System.currentTimeMillis();
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    if (type == AnimationType_STAR) {
-                        tvStarInteractCountHind.startAnimation(mStarCountAnimSlideIn);
-                        tvStarInteractCount.startAnimation(mStarCountAnimSlideOut);
-                    } else {
-                        tvStarInteractGoldHind.startAnimation(mGoldCountAnimSlideIn);
-                        tvStarInteractGoldCount.startAnimation(mStarCountAnimSlideOut);
-                    }
-                    if (onAnimationEnd != null) {
-                        onAnimationEnd.onEnd();
-                        onAnimationEnd = null;
-                    }
-                    flyStat.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Map<String, String> mData = new HashMap<>();
-                            int[] outLocation = new int[2];
-                            flyStat.getLocationInWindow(outLocation);
-                            String location1 = outLocation[0] + "-" + outLocation[1];
-                            ivStarInteractStat.getLocationInWindow(outLocation);
-                            String location2 = outLocation[0] + "-" + outLocation[1];
-                            String status = "true";
-                            mData.put("logtype", "showAnimation");
-                            mData.put("startnum", "" + starCount);
-                            mData.put("status", status);
-                            mData.put("starid", mStarid);
-                            if (!StringUtils.isEmpty(nonce)) {
-                                mData.put("ex", "Y");
-                                mData.put("sno", "4");
-                                mData.put("stable", "1");
-                            }
-                            mData.put("time", "" + (System.currentTimeMillis() - before));
-                            mData.put("location1", location1);
-                            mData.put("location2", location2);
-                            liveBll.umsAgentDebug3(eventId, mData);
-                            bottomContent.removeView(flyStat);
-                            allAnimations.add(LiveStandAchievementBll.AllAnimation.this);
-                        }
-                    });
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            });
-            mAnimSlideInStep1.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    flyStat.clearAnimation();
-                    flyStat.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            flyStat.startAnimation(mAnimSlideRotate);
-//                            rotateValueAnimator.start();
-                        }
-                    }, 300);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-            mAnimSlideRotate.setInterpolator(new Interpolator() {
-                @Override
-                public float getInterpolation(float fraction) {
-                    float output = fraction;
-                    if (fraction < 0.25f) {
-                        output = fraction / 0.25f;
-                    } else if (fraction < 0.75f) {
-                        output = starRotateLine1a * fraction + starRotateLine1b;
-                    } else {
-                        output = starRotateLine2a * fraction + starRotateLine2b;
-                    }
-                    Loger.d(TAG, "RotateInterpolator:input=" + fraction + "," + output);
-                    return output;
-                }
-            });
-            mAnimSlideRotate.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    flyLight.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (lastAllAnimation == LiveStandAchievementBll.AllAnimation.this) {
-                                lastAllAnimation = null;
-                                firstAllAnimation = null;
-                                flyLight.clearAnimation();
-                                flyLight.setVisibility(View.GONE);
-                            }
-                            translateValueAnimator.start();
-                        }
-                    }, 300);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-        }
-
-        public void setFlyStat(int type, View flyStat) {
-            this.type = type;
-            this.flyStat = flyStat;
-            iv_livevideo_starinteract_stat = (ImageView) flyStat.findViewById(R.id.iv_livevideo_starinteract_stat);
-            if (type == AnimationType_STAR) {
-                endLinePoint.point = endStarPoint;
-                iv_livevideo_starinteract_stat.setImageResource(R.drawable.bg_livevideo_statinteract_stat_big);
-            } else {
-                endLinePoint.point = endGoldPoint;
-                iv_livevideo_starinteract_stat.setImageResource(R.drawable.bg_livevideo_statinteract_gold_big);
-            }
-        }
-
-        public void setNonce(String nonce) {
-            this.nonce = nonce;
-        }
-
-        public void start() {
-            if (firstAllAnimation == null) {
-                firstAllAnimation = AllAnimation.this;
-            }
-            lastAllAnimation = AllAnimation.this;
-            isLightRotate = false;
-            flyLight.setVisibility(View.VISIBLE);
-            flyStat.startAnimation(mAnimSlideInStep1);
-//            flyStat.startAnimation(mAnimSlideRotate);
-        }
-
-        public void setOnAnimationEnd(OnAnimationEnd onAnimationEnd) {
-            this.onAnimationEnd = onAnimationEnd;
-        }
-    }
-
-    interface OnAnimationEnd {
-        void onEnd();
-    }
 }
-
-//        AllAnimation() {
-//            final AccelerateDecelerateInterpolator accelerateDecelerateInterpolator = new AccelerateDecelerateInterpolator();
-//            mAnimSlideInStep1 = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_star_in_step1);
-//            mAnimSlideInStep1.setInterpolator(accelerateDecelerateInterpolator);
-//            mAnimSlideInStep2 = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_star_in_step2);
-//            mAnimSlideRotate = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_star_rotate);
-//            mAnimSlideRotate.setRepeatCount(2);
-//            translateValueAnimator = ValueAnimator.ofObject(new LineEvaluator(), new LineEvaluator.PointAndFloat(startPoint), new LineEvaluator.PointAndFloat(endPoint));
-//            translateValueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-//            translateValueAnimator.setDuration(600);
-//            translateValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//                @Override
-//                public void onAnimationUpdate(ValueAnimator animation) {
-//                    LineEvaluator.PointAndFloat currentPoint = (LineEvaluator.PointAndFloat) animation.getAnimatedValue();
-//                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) flyStat.getLayoutParams();
-//                    params.topMargin = (int) currentPoint.point.getY();
-//                    params.leftMargin = (int) currentPoint.point.getX();
-//                    flyStat.setLayoutParams(params);
-//                    float fraction = currentPoint.fraction;
-//                    flyStat.setAlpha(1 - fraction);
-//                    int width = iv_livevideo_starinteract_stat.getWidth();
-//                    float scale = ((float) ivStarInteractStat.getWidth() / (float) width - 1) * fraction + 1;
-//                    iv_livevideo_starinteract_stat.setScaleX(scale);
-//                    iv_livevideo_starinteract_stat.setScaleY(scale);
-//                    Loger.i(TAG, "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float) ivStarInteractStat.getWidth() / (float) width));
-//                }
-//            });
-//            translateValueAnimator.addListener(new Animator.AnimatorListener() {
-//                long before;
-//
-//                @Override
-//                public void onAnimationStart(Animator animation) {
-//                    before = System.currentTimeMillis();
-//                }
-//
-//                @Override
-//                public void onAnimationEnd(Animator animation) {
-//                    tvStarInteractCountHind.startAnimation(mStarCountAnimSlideIn);
-//                    tvStarInteractCount.startAnimation(mStarCountAnimSlideOut);
-//                    flyStat.post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Map<String, String> mData = new HashMap<>();
-//                            int[] outLocation = new int[2];
-//                            flyStat.getLocationInWindow(outLocation);
-//                            String location1 = outLocation[0] + "-" + outLocation[1];
-//                            ivStarInteractStat.getLocationInWindow(outLocation);
-//                            String location2 = outLocation[0] + "-" + outLocation[1];
-//                            String status = "true";
-//                            if (!location1.equals(location2)) {
-////                                setLayoutParams();
-//                                status = "false";
-//                            }
-//                            mData.put("log_type", "showAnimation");
-//                            mData.put("star_num", "" + starCount);
-//                            mData.put("status", status);
-//                            mData.put("time", "" + (System.currentTimeMillis() - before));
-//                            mData.put("location1", location1);
-//                            mData.put("location2", location2);
-//                            liveBll.umsAgentDebug(eventId, mData);
-//                            bottomContent.removeView(flyStat);
-//                            allAnimations.add(AllAnimation.this);
-//                        }
-//                    });
-//                }
-//
-//                @Override
-//                public void onAnimationCancel(Animator animation) {
-//
-//                }
-//
-//                @Override
-//                public void onAnimationRepeat(Animator animation) {
-//
-//                }
-//            });
-//            mAnimSlideInStep1.setAnimationListener(new Animation.AnimationListener() {
-//                @Override
-//                public void onAnimationStart(Animation animation) {
-//
-//                }
-//
-//                @Override
-//                public void onAnimationEnd(Animation animation) {
-//                    if (firstAllAnimation == AllAnimation.this) {
-//                        flyLight.startAnimation(mStarLightAnimRotate);
-//                    }
-//                    flyStat.startAnimation(mAnimSlideInStep2);
-//                }
-//
-//                @Override
-//                public void onAnimationRepeat(Animation animation) {
-//
-//                }
-//            });
-//            mAnimSlideInStep2.setAnimationListener(new Animation.AnimationListener() {
-//                @Override
-//                public void onAnimationStart(Animation animation) {
-//
-//                }
-//
-//                @Override
-//                public void onAnimationEnd(Animation animation) {
-//                    flyStat.startAnimation(mAnimSlideRotate);
-//                }
-//
-//                @Override
-//                public void onAnimationRepeat(Animation animation) {
-//
-//                }
-//            });
-//            mAnimSlideRotate.setAnimationListener(new Animation.AnimationListener() {
-//                @Override
-//                public void onAnimationStart(Animation animation) {
-//
-//                }
-//
-//                @Override
-//                public void onAnimationEnd(Animation animation) {
-//                    if (lastAllAnimation == AllAnimation.this) {
-//                        lastAllAnimation = null;
-//                        firstAllAnimation = null;
-//                        flyLight.clearAnimation();
-//                        flyLight.setVisibility(View.GONE);
-//                    }
-//                    translateValueAnimator.start();
-//                }
-//
-//                @Override
-//                public void onAnimationRepeat(Animation animation) {
-//
-//                }
-//            });
-//        }

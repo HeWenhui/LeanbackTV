@@ -3,41 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="40dp">
 
-    <ImageView
-        android:id="@id/iv_livevideo_starinteract_stat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="5dp"
-        android:layout_toLeftOf="@id/rl_livevideo_starinteract_count"
-        android:src="@drawable/bg_livevideo_statinteract_stat_small" />
-
-    <RelativeLayout
-        android:id="@id/rl_livevideo_starinteract_count"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@id/tv_livevideo_english_prog">
-
-        <TextView
-            android:id="@id/tv_livevideo_starinteract_count"
-            style="@style/text_font10_ffffff_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="×01" />
-
-        <TextView
-            android:id="@id/tv_livevideo_starinteract_count_hind"
-            style="@style/text_font10_ffffff_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="×02"
-            android:visibility="invisible" />
-
-    </RelativeLayout>
-
     <ProgressBar
         android:id="@id/tv_livevideo_english_prog"
         style="@style/ProgressBar_live_english"
@@ -47,42 +12,6 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
-        android:layout_toLeftOf="@id/iv_livevideo_starinteract_gold"
         android:max="45" />
-
-    <ImageView
-        android:id="@id/iv_livevideo_starinteract_gold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="5dp"
-        android:layout_toLeftOf="@id/rl_livevideo_starinteract_gold_count"
-        android:src="@drawable/bg_livevideo_statinteract_gold" />
-
-    <RelativeLayout
-        android:id="@id/rl_livevideo_starinteract_gold_count"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="5dp">
-
-        <TextView
-            android:id="@id/tv_livevideo_starinteract_gold_count"
-            style="@style/text_font10_ffffff_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="×01" />
-
-        <TextView
-            android:id="@id/tv_livevideo_starinteract_gold_hind"
-            style="@style/text_font10_ffffff_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="×01"
-            android:visibility="invisible" />
-
-    </RelativeLayout>
 
 </RelativeLayout>
