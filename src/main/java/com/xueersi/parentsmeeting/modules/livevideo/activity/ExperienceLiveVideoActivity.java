@@ -387,9 +387,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
-                        if (videoView.getWidth() <= 0) {
-                            return;
-                        }
+//                        if (videoView.getWidth() <= 0) {
+//                            return;
+//                        }
                         boolean isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
                         //Loger.i(TAG, "setVideoWidthAndHeight:isLand=" + isLand);
                         if (!isLand) {
@@ -399,7 +399,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                                 (int) VIDEO_HEIGHT, VIDEO_RATIO);
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
                         setFirstParam(lp);
-                        liveMessageBll.setVideoLayout(lp.width, lp.height);
+                        mLiveMessagePager.setVideoWidthAndHeight(lp.width, lp.height);
                     }
                 });
             }
