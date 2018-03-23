@@ -149,7 +149,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     /** 播放时长 */
     long playTime = 0;
     /** 上次播放统计开始时间 */
-    long lastPlayTime;
+    private Long lastPlayTime;
+    /** 播放异常统计开始时间 */
+    private Long errorPlayTime;
     // 03.17 定时获取聊天记录的任务
     class ScanRunnable implements Runnable{
         HandlerThread handlerThread = new HandlerThread("ScanRunnable");
@@ -559,6 +561,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             rlFirstBackgroundView.setVisibility(View.GONE);
             initView();
             initMessagePager(bottomContent);
+            if(resultFailed){
+                seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey())*1000 +( System.currentTimeMillis() - startTime ));
+                resultFailed = false;
+            }
             if(mTotaltime < Long.parseLong(mVideoEntity.getVisitTimeKey())*1000){
                 // 03.21 提示直播已结束
                 ivTeacherNotpresent.setVisibility(View.VISIBLE);
@@ -884,7 +890,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     }
 
     protected void onRefresh() {
-        resultFailed = false;
         if (AppBll.getInstance(this).isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
 //            Loger.d(TAG, "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
