@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tal.speech.language.TalLanguage;
 import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.event.AppEvent;
@@ -933,18 +934,20 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
     private void initAchievement(String mode) {
         StarInteractAction starAction;
         EnglishSpeekAction englishSpeekAction = null;
+        TalLanguage talLanguage = null;
+        if (StandLiveVideoActivity.this.englishSpeekAction != null) {
+            StandLiveVideoActivity.this.englishSpeekAction.stop(null);
+            talLanguage = StandLiveVideoActivity.this.englishSpeekAction.getTalLanguage();
+        }
         if (LiveTopic.MODE_CLASS.equals(mode)) {
             LiveStandAchievementBll starBll = new LiveStandAchievementBll(this, liveType, mGetInfo.getStarCount(), mGetInfo.getGoldCount(), mIsLand);
             starBll.setLiveBll(mLiveBll);
             starBll.initView(bottomContent);
             starAction = starBll;
 
-            if (StandLiveVideoActivity.this.englishSpeekAction != null) {
-                StandLiveVideoActivity.this.englishSpeekAction.stop(null);
-            }
             //能量条
             EnglishStandSpeekBll englishSpeekBll = new EnglishStandSpeekBll(this);
-            boolean initView = englishSpeekBll.initView(bottomContent, mGetInfo.getMode());
+            boolean initView = englishSpeekBll.initView(bottomContent, mGetInfo.getMode(), talLanguage);
             if (initView) {
                 englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                 englishSpeekBll.setLiveBll(mLiveBll);
@@ -961,7 +964,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
 
             //能量条
             EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(this);
-            boolean initView = englishSpeekBll.initView(bottomContent, mGetInfo.getMode());
+            boolean initView = englishSpeekBll.initView(bottomContent, mGetInfo.getMode(), talLanguage);
             if (initView) {
                 englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                 englishSpeekBll.setLiveBll(mLiveBll);

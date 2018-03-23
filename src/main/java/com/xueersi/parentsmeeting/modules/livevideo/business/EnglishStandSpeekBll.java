@@ -7,9 +7,6 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Environment;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -153,16 +150,18 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
 //        lastSecond = (int) totalOpeningLength.duration;
     }
 
-    public boolean initView(RelativeLayout bottomContent, String mode) {
+    public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage) {
         if (!loadSuccess) {
             return false;
         }
         long before = System.currentTimeMillis();
-        saveFile();
-        if (!initLanuage()) {
-            return false;
+        if (talLanguage == null) {
+            saveFile();
+            if (!initLanuage()) {
+                return false;
+            }
+            talAsrJni.LangIDReset(0);
         }
-        talAsrJni.LangIDReset(0);
         Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
         this.bottomContent = bottomContent;
         myView = (ViewGroup) activity.findViewById(R.id.rl_livevideo_english_content);
@@ -191,7 +190,11 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
                 isDestory2 = true;
             }
         });
-        talLanguage = new TalLanguage(activity);
+        if (talLanguage == null) {
+            this.talLanguage = new TalLanguage(activity);
+        } else {
+            this.talLanguage = talLanguage;
+        }
         this.mode = mode;
         if (LiveTopic.MODE_TRANING.equals(mode)) {
             tv_livevideo_english_prog.setVisibility(View.GONE);
@@ -200,6 +203,11 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
             start();
         }
         return true;
+    }
+
+    @Override
+    public TalLanguage getTalLanguage() {
+        return talLanguage;
     }
 
     private void setFirstTip() {

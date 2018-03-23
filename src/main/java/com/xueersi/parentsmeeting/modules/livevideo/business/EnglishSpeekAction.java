@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import com.tal.speech.language.TalLanguage;
+
 /**
  * Created by lyqyuqiang on 2017/11/8.
  * 英语能量条
@@ -8,6 +10,8 @@ public interface EnglishSpeekAction {
     void onDBStart();
 
     void onDBStop();
+
+    TalLanguage getTalLanguage();
 
     void praise(int answer);
 

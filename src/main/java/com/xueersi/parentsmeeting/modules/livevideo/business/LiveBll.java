@@ -3064,6 +3064,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         Loger.i(TAG, "getStuGoldCount:onPmSuccess=" + responseEntity.getJsonObject());
                         if (starAction != null) {
                             StarAndGoldEntity starAndGoldEntity = mHttpResponseParser.parseStuGoldCount(responseEntity);
+                            mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
+                            mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
                             starAction.onGetStar(starAndGoldEntity);
                         }
                     }

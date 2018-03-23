@@ -922,7 +922,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             mLiveBll.setStarAction(starBll);
             //能量条
             EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(this);
-            boolean initView = englishSpeekBll.initView(bottomContent, mGetInfo.getMode());
+            boolean initView = englishSpeekBll.initView(bottomContent, mGetInfo.getMode(), null);
             if (initView) {
                 englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                 englishSpeekBll.setLiveBll(mLiveBll);
