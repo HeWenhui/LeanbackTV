@@ -65,7 +65,7 @@ public class LiveStandPlaybackMediaController extends MediaController {
     public void setHaveBottom(boolean have) {
 //        super.setHaveBottom(have);
         if (have) {
-            controllerBottom = new LiveStandMediaControllerBottom(getContext(), this, mPlayer);
+            controllerBottom = new LiveBackStandMediaControllerBottom(getContext(), this, mPlayer);
             ViewGroup.LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams
                     .MATCH_PARENT);
             mControlsLayout.addView((View) controllerBottom, layoutParams);

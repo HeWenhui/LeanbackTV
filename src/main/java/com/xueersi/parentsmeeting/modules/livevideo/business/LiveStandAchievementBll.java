@@ -364,30 +364,30 @@ public class LiveStandAchievementBll implements StarInteractAction {
         params.topMargin = (int) startPoint.getY();
         bottomContent.addView(flyStat, params);
         final ImageView iv_livevideo_starinteract_stat = (ImageView) flyStat.findViewById(R.id.iv_livevideo_starinteract_stat);
-        ValueAnimator translateValueAnimator = ValueAnimator.ofObject(new LineEvaluator(), new LineEvaluator.PointAndFloat(startPoint), new LineEvaluator.PointAndFloat(endStarPoint));
-        translateValueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        translateValueAnimator.setDuration(600);
-        translateValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                LineEvaluator.PointAndFloat currentPoint = (LineEvaluator.PointAndFloat) animation.getAnimatedValue();
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) flyStat.getLayoutParams();
-                params.topMargin = (int) currentPoint.point.getY();
-                params.leftMargin = (int) currentPoint.point.getX();
-//                    flyStat.setLayoutParams(params);
-                LayoutParamsUtil.setViewLayoutParams(flyStat, params);
-                float fraction = currentPoint.fraction;
-                flyStat.setAlpha(1 - fraction);
-                int width = iv_livevideo_starinteract_stat.getWidth();
-//                float scale = ((float) ivStarInteractStat.getWidth() / (float) width - 1) * fraction + 1;
-                float scale = 1;
-                iv_livevideo_starinteract_stat.setScaleX(scale);
-                iv_livevideo_starinteract_stat.setScaleY(scale);
-                Loger.i(TAG, "onAnimationUpdate:fraction=" + fraction + ",leftMargin=" + params.leftMargin);
-//                    Loger.i(TAG, "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float) ivStarInteractStat.getWidth() / (float) width));
-            }
-        });
-        translateValueAnimator.start();
+//        ValueAnimator translateValueAnimator = ValueAnimator.ofObject(new LineEvaluator(), new LineEvaluator.PointAndFloat(startPoint), new LineEvaluator.PointAndFloat(endStarPoint));
+//        translateValueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+//        translateValueAnimator.setDuration(600);
+//        translateValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            @Override
+//            public void onAnimationUpdate(ValueAnimator animation) {
+//                LineEvaluator.PointAndFloat currentPoint = (LineEvaluator.PointAndFloat) animation.getAnimatedValue();
+//                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) flyStat.getLayoutParams();
+//                params.topMargin = (int) currentPoint.point.getY();
+//                params.leftMargin = (int) currentPoint.point.getX();
+////                    flyStat.setLayoutParams(params);
+//                LayoutParamsUtil.setViewLayoutParams(flyStat, params);
+//                float fraction = currentPoint.fraction;
+//                flyStat.setAlpha(1 - fraction);
+//                int width = iv_livevideo_starinteract_stat.getWidth();
+////                float scale = ((float) ivStarInteractStat.getWidth() / (float) width - 1) * fraction + 1;
+//                float scale = 1;
+//                iv_livevideo_starinteract_stat.setScaleX(scale);
+//                iv_livevideo_starinteract_stat.setScaleY(scale);
+//                Loger.i(TAG, "onAnimationUpdate:fraction=" + fraction + ",leftMargin=" + params.leftMargin);
+////                    Loger.i(TAG, "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float) ivStarInteractStat.getWidth() / (float) width));
+//            }
+//        });
+//        translateValueAnimator.start();
     }
 
     private void onReceiveStat(int type, int starCount, String nonce) {

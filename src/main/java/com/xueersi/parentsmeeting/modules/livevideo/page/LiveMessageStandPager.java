@@ -87,10 +87,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     private String TAG = "LiveMessagePager";
     /** 聊天，默认开启 */
     private Button btMesOpen;
-    /** 聊天常用语 */
-    private Button btMsgCommon;
-    private RelativeLayout rl_livevideo_common_word;
-    ListView lvCommonWord;
     /** 献花，默认关闭 */
     private Button btMessageFlowers;
     /** 聊天，默认打开 */
@@ -140,10 +136,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         nameColors[2] = resources.getColor(R.color.COLOR_20ABFF);
 
         btMesOpen = liveMediaControllerBottom.getBtMesOpen();
-        btMsgCommon = liveMediaControllerBottom.getBtMsgCommon();
         btMessageFlowers = liveMediaControllerBottom.getBtMessageFlowers();
         cbMessageClock = liveMediaControllerBottom.getCbMessageClock();
-        lvCommonWord = liveMediaControllerBottom.getLvCommonWord();
 
         mView.post(new Runnable() {
             @Override
@@ -182,7 +176,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     @Override
     public void initListener() {
-        rl_livevideo_common_word = (RelativeLayout) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_word);
 //        int screenWidth = ScreenUtils.getScreenWidth();
 //        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
 //        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
@@ -194,47 +187,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                 liveMediaControllerBottom.onChildViewClick(v);
                 rlMessageContent.setVisibility(View.VISIBLE);
                 KPSwitchConflictUtil.showKeyboard(switchFSPanelLinearLayout, etMessageContent);
-            }
-        });
-        btMsgCommon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                liveMediaControllerBottom.onChildViewClick(v);
-                LiveMediaController controller = liveMediaControllerBottom.getController();
-                controller.show();
-                if (rl_livevideo_common_word.getVisibility() == View.VISIBLE) {
-                    rl_livevideo_common_word.setVisibility(View.INVISIBLE);
-                    return;
-                }
-                int[] location = new int[2];
-                v.getLocationOnScreen(location);
-                //在控件上方显示
-                Loger.i(TAG, "onClick:Width=" + rl_livevideo_common_word.getWidth() + ",Height=" + rl_livevideo_common_word.getHeight());
-                rl_livevideo_common_word.setVisibility(View.VISIBLE);
-//                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_common_word.getLayoutParams();
-//                int left = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
-//                if (lp.leftMargin == left) {
-//                    return;
-//                }
-//                lp.leftMargin = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
-//                rl_livevideo_common_word.setLayoutParams(lp);
-//                rl_livevideo_common_word.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-//                    @Override
-//                    public boolean onPreDraw() {
-//                        rl_livevideo_common_word.getViewTreeObserver().removeOnPreDrawListener(this);
-//                        int[] location = new int[2];
-//                        v.getLocationOnScreen(location);
-//                        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_common_word.getLayoutParams();
-//                        int left = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
-//                        if (lp.leftMargin == left) {
-//                            return false;
-//                        }
-//                        lp.leftMargin = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
-//                        rl_livevideo_common_word.setLayoutParams(lp);
-//                        Loger.i(TAG, "onClick2:Width=" + rl_livevideo_common_word.getWidth() + ",Height=" + rl_livevideo_common_word.getHeight());
-//                        return true;
-//                    }
-//                });
             }
         });
         etMessageContent.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -463,7 +415,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         });
         Loger.i(TAG, "initData:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        initCommonWord();
         Loger.i(TAG, "initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mView.post(new Runnable() {
@@ -474,48 +425,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         });
         Loger.i(TAG, "initData:time5=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-    }
-
-    private void initCommonWord() {
-        final ArrayList<String> words = new ArrayList<>();
-        words.add("[e]em_1[e]");
-        words.add("[e]em_11[e]");
-        words.add("[e]em_16[e]");
-        words.add("666");
-        words.add("2");
-        words.add("1");
-        lvCommonWord.setAdapter(new CommonAdapter<String>(words) {
-            @Override
-            public AdapterItemInterface<String> getItemView(Object type) {
-                return new CommonWordItem(mContext, this);
-            }
-        });
-        lvCommonWord.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String msg = words.get(position);
-                if (liveBll.openchat()) {
-                    if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
-                        boolean send = liveBll.sendMessage(msg);
-                        if (send) {
-                            etMessageContent.setText("");
-                            addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg);
-                            lastSendMsg = System.currentTimeMillis();
-                            onTitleShow(true);
-                            rl_livevideo_common_word.setVisibility(View.INVISIBLE);
-                        } else {
-                            XESToastUtils.showToast(mContext, "你已被禁言!");
-                        }
-                    } else {
-                        //暂时去掉3秒发言，信息提示
-//                                addMessage("提示", LiveMessageEntity.MESSAGE_TIP, "3秒后才能再次发言，要认真听课哦!");
-                        XESToastUtils.showToast(mContext, ((SEND_MSG_INTERVAL - System.currentTimeMillis() + lastSendMsg) / 1000) + "秒后才能再次发言，要认真听课哦!");
-                    }
-                } else {
-                    XESToastUtils.showToast(mContext, "老师未开启聊天");
-                }
-            }
-        });
     }
 
     private void initFlower() {

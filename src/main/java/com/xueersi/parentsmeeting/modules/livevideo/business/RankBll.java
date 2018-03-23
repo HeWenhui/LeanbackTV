@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
@@ -35,7 +36,7 @@ import java.util.ArrayList;
 public class RankBll {
     Activity liveVideoActivity;
     private LiveBll mLiveBll;
-    LiveMediaControllerBottom liveMediaControllerBottom;
+    BaseLiveMediaControllerBottom liveMediaControllerBottom;
     Button rl_livevideo_common_rank;
     View relativeLayout;
     /** 动画出现 */
@@ -78,7 +79,7 @@ public class RankBll {
         }
     }
 
-    public void setLiveMediaController(final LiveMediaController mMediaController, LiveMediaControllerBottom liveMediaControllerBottom) {
+    public void setLiveMediaController(final LiveMediaController mMediaController, BaseLiveMediaControllerBottom liveMediaControllerBottom) {
         this.liveMediaControllerBottom = liveMediaControllerBottom;
         rl_livevideo_common_rank = (Button) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_rank);
         rl_livevideo_common_rank.setOnClickListener(new View.OnClickListener() {

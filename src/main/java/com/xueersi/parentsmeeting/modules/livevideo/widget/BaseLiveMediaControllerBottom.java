@@ -38,7 +38,7 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     private Button btMessageFlowers;
     /** 聊天，默认打开 */
     private CheckBox cbMessageClock;
-    /**标记疑问点按钮*/
+    /** 标记疑问点按钮 */
     public Button btMark;
 
     public BaseLiveMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
@@ -70,13 +70,15 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
         btMessageFlowers = (Button) findViewById(R.id.bt_livevideo_message_flowers);
         cbMessageClock = (CheckBox) findViewById(R.id.cb_livevideo_message_clock);
         lvCommonWord = (ListView) findViewById(R.id.lv_livevideo_common_word);
-        btMark=(Button)findViewById(R.id.bt_livevideo_mark);
-        btMark.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                XESToastUtils.showToast(mContext,"正在加载视频");
-            }
-        });
+        btMark = (Button) findViewById(R.id.bt_livevideo_mark);
+        if (btMark != null) {
+            btMark.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    XESToastUtils.showToast(mContext, "正在加载视频");
+                }
+            });
+        }
     }
 
     public Button getBtMesOpen() {
@@ -98,7 +100,8 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     public CheckBox getCbMessageClock() {
         return cbMessageClock;
     }
-    public Button getBtMark(){
+
+    public Button getBtMark() {
         return btMark;
     }
 

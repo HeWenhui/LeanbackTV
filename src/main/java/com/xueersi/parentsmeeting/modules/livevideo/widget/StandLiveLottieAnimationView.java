@@ -59,14 +59,4 @@ public class StandLiveLottieAnimationView extends LottieAnimationView {
         updateBitmap("image_9", img_7Bitmap);
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        canvas.drawText("" + goldCount, 100, 100, paint);
-    }
-
-    @Override
-    public void draw(Canvas canvas) {
-        super.draw(canvas);
-    }
 }

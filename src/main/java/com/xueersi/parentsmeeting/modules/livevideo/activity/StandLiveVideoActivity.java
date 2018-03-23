@@ -14,7 +14,6 @@ import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -46,7 +45,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLazyBllCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
@@ -69,7 +67,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.Play
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackStandMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
@@ -166,7 +165,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
     private long videoCachedDuration;
     LiveLazyBllCreat liveLazyBllCreat;
     BaseLiveMediaControllerTop baseLiveMediaControllerTop;
-    LiveMediaControllerBottom liveMediaControllerBottom;
+    LiveStandMediaControllerBottom liveMediaControllerBottom;
     LiveMessageBll liveMessageBll;
     VideoChatBll videoChatBll;
     QuestionBll questionBll;
@@ -396,7 +395,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
     }
 
     private void initAllBll() {
-        liveMediaControllerBottom = new LiveMediaControllerBottom(this, mMediaController, this);
+        liveMediaControllerBottom = new LiveStandMediaControllerBottom(this, mMediaController, this);
         liveMediaControllerBottom.setVisibility(View.INVISIBLE);
         liveMessageBll = new LiveMessageBll(this, liveType);
         liveMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
@@ -504,18 +503,6 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
     protected void onPlayOpenStart() {
         setFirstBackgroundVisible(View.VISIBLE);
         findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
-        LiveRemarkBll liveRemarkBll = new LiveRemarkBll(mContext, vPlayer.getPlayer());
-        if (mLiveBll != null && liveMediaControllerBottom != null) {
-            if (liveTextureView == null) {
-                ViewStub viewStub = (ViewStub) findViewById(R.id.vs_course_video_video_texture);
-                liveTextureView = (LiveTextureView) viewStub.inflate();
-                liveTextureView.vPlayer = vPlayer;
-            }
-            liveRemarkBll.setTextureView(liveTextureView);
-            liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-            liveRemarkBll.setVideoView(videoView);
-            mLiveBll.setLiveRemarkBll(liveRemarkBll);
-        }
     }
 
     @Override
