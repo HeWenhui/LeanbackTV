@@ -68,6 +68,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackStandMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
@@ -395,6 +396,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
     }
 
     private void initAllBll() {
+//        liveMediaControllerBottom = new LiveMediaControllerBottom(this, mMediaController, this);
         liveMediaControllerBottom = new LiveStandMediaControllerBottom(this, mMediaController, this);
         liveMediaControllerBottom.setVisibility(View.INVISIBLE);
         liveMessageBll = new LiveMessageBll(this, liveType);
@@ -867,17 +869,25 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         IS_SCIENCE = liveVideoSAConfig.IS_SCIENCE;
         questionBll.setLiveVideoSAConfig(liveVideoSAConfig);
         englishH5CoursewareBll.setLiveVideoSAConfig(liveVideoSAConfig);
-        liveMediaControllerBottom.setVisibility(View.VISIBLE);
         long before = System.currentTimeMillis();
         if (liveLazyBllCreat != null) {
             liveLazyBllCreat.setGetInfo(getInfo);
         }
         String mode = mGetInfo.getMode();
+        liveMediaControllerBottom.onModeChange(mode);
         if (LiveTopic.MODE_CLASS.equals(mode)) {
+//            liveMediaControllerBottom = new LiveStandMediaControllerBottom(this, mMediaController, this);
             liveMessageBll.initViewLiveStand(bottomContent);
         } else {
+//            liveMediaControllerBottom = new LiveMediaControllerBottom(this, mMediaController, this);
             liveMessageBll.initViewLive(bottomContent);
         }
+        liveMediaControllerBottom.setVisibility(View.VISIBLE);
+//        liveMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+//        videoChatBll.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
+//        mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), false);
+//        rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
+
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
             if (rankBll != null) {
@@ -1011,6 +1021,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
 
             @Override
             public void run() {
+                liveMediaControllerBottom.onModeChange(mode);
                 if (LiveTopic.MODE_CLASS.equals(mode)) {
                     liveMessageBll.initViewLiveStand(bottomContent);
                 } else {

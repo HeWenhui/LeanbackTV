@@ -23,7 +23,7 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     String TAG = "MediaControllerBottom";
     /** 播放器的控制监听 */
     protected MediaPlayerControl mPlayer;
-    private LiveMediaController controller;
+    protected LiveMediaController controller;
     protected Context mContext;
     /** 顶部动画向下出现 */
     private Animation mAnimSlideInTop;

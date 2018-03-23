@@ -685,11 +685,13 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 //                rlInfo.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
             }
-            params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
-            if (params.rightMargin != wradio) {
-                params.rightMargin = wradio;
+            if(cbMessageClock!=null){
+                params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
+                if (params.rightMargin != wradio) {
+                    params.rightMargin = wradio;
 //                cbMessageClock.setLayoutParams(params);
-                LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
+                    LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
+                }
             }
         }
         if (height > 0) {
