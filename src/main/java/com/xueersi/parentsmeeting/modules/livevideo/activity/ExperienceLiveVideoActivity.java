@@ -451,7 +451,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         if(mMessage != null && mMessage.getOnlineNum().size()!=0 && mMessage.getOnlineNum().get(0).getOnlineNum()!=null){
             mLiveMessagePager.showPeopleCount(Integer.parseInt(mMessage.getOnlineNum().get(0).getOnlineNum()));
         }else{
-            mLiveMessagePager.showPeopleCount(8);
+            mLiveMessagePager.showPeopleCount(3);
         }
         // 03.22 设置统计日志的公共参数
         mLiveMessagePager.setLiveTermId(mVideoEntity.getLiveId(),mVideoEntity.getChapterId());
@@ -521,6 +521,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             if(mMsgs.size() > 0){
                 send = true;
             }
+        }
+        if(mMessage != null && mMessage.getOnlineNum().size()!=0 && mMessage.getOnlineNum().get(0).getOnlineNum()!=null){
+            mLiveMessagePager.showPeopleCount(Integer.parseInt(mMessage.getOnlineNum().get(0).getOnlineNum()));
+        }else{
+            mLiveMessagePager.showPeopleCount(3);
         }
     }
 
