@@ -3893,8 +3893,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mHttpManager.uploadExperiencePlayingTime(termId, hbtime, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Log.e("Duncan","responseEntity:"+responseEntity.getJsonObject());
-                Log.e("Duncan","responseEntity:"+responseEntity.getJsonObject());
+                Log.e("Duncan","uploadexperiencetime:" + responseEntity.getJsonObject());
+                Log.e("Duncan","uploadexperiencetime:" + responseEntity.getJsonObject());
             }
         });
     }

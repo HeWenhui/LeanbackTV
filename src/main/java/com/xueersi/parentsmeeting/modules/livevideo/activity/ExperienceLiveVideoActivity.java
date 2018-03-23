@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
@@ -379,8 +380,30 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }
         final ViewGroup.LayoutParams lp = videoView.getLayoutParams();
         setFirstParam(lp);
-        // 03.08 尝试添加聊天的布局页面
-//        initMessagePager(bottomContent);
+        final View contentView = findViewById(android.R.id.content);
+        contentView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        if (videoView.getWidth() <= 0) {
+                            return;
+                        }
+                        boolean isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+                        //Loger.i(TAG, "setVideoWidthAndHeight:isLand=" + isLand);
+                        if (!isLand) {
+                            return;
+                        }
+                        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
+                                (int) VIDEO_HEIGHT, VIDEO_RATIO);
+                        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+                        setFirstParam(lp);
+                        liveMessageBll.setVideoLayout(lp.width, lp.height);
+                    }
+                });
+            }
+        }, 10);
     }
 
     private void setFirstParam(ViewGroup.LayoutParams lp) {
@@ -683,7 +706,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             }
         }
         // 有交互信息并且没有互动题
-        if (mQuestionEntity != null && !mQuestionEntity.isAnswered() && !mIsShowQuestion && !mQuestionEntity.getvSectionID().equals(mShareDataManager.getString(testIdKey,"",1))) {
+        if (mQuestionEntity != null && !mQuestionEntity.isAnswered() && !mIsShowQuestion && !( mQuestionEntity.getvQuestionID() + mVideoEntity.getLiveId() ).equals(mShareDataManager.getString(testIdKey,"",1))) {
             // 互动题
             if (LocalCourseConfig.CATEGORY_QUESTION == mQuestionEntity.getvCategory()) {
                 if (!(mMediaController != null && mMediaController.isShow())) {
@@ -846,8 +869,12 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //        onUserBackPressed();
         // 03.20 直播结束后，显示结束的提示图片
         ivTeacherNotpresent.setVisibility(View.VISIBLE);
-        ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
+//        ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
+        ivTeacherNotpresent.setBackgroundResource(R.drawable.live_free_play_end);
         EventBus.getDefault().post(new BrowserEvent.ExperienceLiveEndEvent(1));
+        if (scanRunnable != null) {
+            scanRunnable.exit();
+        }
 
     }
 
@@ -1053,7 +1080,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         questionEntity.setAnswered(true);
         // 03.22 本地缓存答过题的testId
 //        mShareDataManager.put(questionEntity.getvQuestionID(),true,1);
-        mShareDataManager.put(testIdKey,questionEntity.getvQuestionID(),1);
+        mShareDataManager.put(testIdKey,questionEntity.getvQuestionID() + mVideoEntity.getLiveId(),1);
         questionViewGone();
         XesMobAgent.playVideoStatisticsMessage(MobEnumUtil.QUESTION_LIVEPLAYBACK, MobEnumUtil.QUESTION_ANSWER,
                 XesMobAgent.XES_VIDEO_INTERACTIVE);
