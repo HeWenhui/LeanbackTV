@@ -137,15 +137,16 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     public static final float VIDEO_HEIGHT = 720f;
     /** 视频宽高比 */
     public static final float VIDEO_RATIO = VIDEO_WIDTH / VIDEO_HEIGHT;
-    private Boolean pause = false;
-    private Boolean end = false;
     private Long startTime;
-    private Long rebackTime;
     private Long mTotaltime;
     /** 播放时长定时任务(心跳) */
     private final long mPlayDurTime = 300000;
     /** 正在播放 */
     private boolean isPlay = false;
+    /** 按Home键的进度模拟 */
+    private boolean firstTime = true;
+    /** 播放暂停状态的记录 */
+    private boolean pause = false;
     /** 播放时长 */
     long playTime = 0;
     /** 上次播放统计开始时间 */
@@ -561,9 +562,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             rlFirstBackgroundView.setVisibility(View.GONE);
             initView();
             initMessagePager(bottomContent);
-            if(resultFailed){
-                seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey())*1000 +( System.currentTimeMillis() - startTime ));
-                resultFailed = false;
+            if(firstTime){
+                startTime = System.currentTimeMillis();
+                firstTime = false;
             }
             if(mTotaltime < Long.parseLong(mVideoEntity.getVisitTimeKey())*1000){
                 // 03.21 提示直播已结束
@@ -573,15 +574,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 vPlayer.stop();
                 return;
             }
-            if(pause){
-                seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey())*1000 +(rebackTime - startTime));
-                startTime = 0L;
-                rebackTime = 0L;
-            }else{
-                seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey())*1000);
-            }
-//            seekTo(2970000);
-            startTime = System.currentTimeMillis();
+            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey())*1000 +(System.currentTimeMillis() - startTime));
         }
         if (mQuestionEntity != null) {
             Loger.d(TAG, "onPlayOpenSuccess:showQuestion:isAnswered=" + mQuestionEntity.isAnswered() + "," +
@@ -660,9 +653,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 }
             }
         }
-
     }
-
 
     /** 扫描是否有需要弹出的互动题 */
     public void scanQuestion(long position) {
@@ -822,6 +813,20 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //            }
             startTime = videoQuestionEntity.getvQuestionInsretTime();
             endTime = videoQuestionEntity.getvEndTime();
+            // 03.24 聊天指令的控制设置
+//            if(13 == videoQuestionEntity.getvCategory()){
+//                if (startTime == playPosition) {
+//                    mLiveMessagePager.onopenchat(true,"in-class",true);
+//                    break;
+//                }
+//
+//            }
+//            if(14 == videoQuestionEntity.getvCategory()){
+//                if (startTime == playPosition) {
+//                    mLiveMessagePager.onDisable(true,true);
+//                    break;
+//                }
+//            }
             // 红包只有开始时间
             if (LocalCourseConfig.CATEGORY_REDPACKET == videoQuestionEntity.getvCategory()) {
                 if (startTime == playPosition) {
@@ -1377,9 +1382,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     @Override
     public void onResume() {
         super.onResume();
-        if(pause){
-            rebackTime = System.currentTimeMillis();
-        }
         playNewVideo(Uri.parse(mWebPath), mSectionName);
 
     }
