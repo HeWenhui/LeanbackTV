@@ -21,40 +21,24 @@ import com.xueersi.xesalib.utils.app.XESToastUtils;
  */
 public class BaseLiveMediaControllerBottom extends FrameLayout implements ControllerBottomInter {
     String TAG = "MediaControllerBottom";
-    /**
-     * 播放器的控制监听
-     */
+    /** 播放器的控制监听 */
     protected MediaPlayerControl mPlayer;
     private LiveMediaController controller;
     protected Context mContext;
-    /**
-     * 顶部动画向下出现
-     */
+    /** 顶部动画向下出现 */
     private Animation mAnimSlideInTop;
-    /**
-     * 顶部动画向上隐藏
-     */
+    /** 顶部动画向上隐藏 */
     private Animation mAnimSlideOutTop;
-    /**
-     * 聊天，默认开启
-     */
+    /** 聊天，默认开启 */
     private Button btMesOpen;
-    /**
-     * 聊天常用语
-     */
+    /** 聊天常用语 */
     private Button btMsgCommon;
     private ListView lvCommonWord;
-    /**
-     * 献花，默认关闭
-     */
+    /** 献花，默认关闭 */
     private Button btMessageFlowers;
-    /**
-     * 聊天，默认打开
-     */
+    /** 聊天，默认打开 */
     private CheckBox cbMessageClock;
-    /**
-     * 标记疑问点按钮
-     */
+    /**标记疑问点按钮*/
     public Button btMark;
 
     public BaseLiveMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
@@ -74,16 +58,12 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
         mAnimSlideOutTop.setFillAfter(true);
     }
 
-    /**
-     * 播放器的布局界面
-     */
+    /** 播放器的布局界面 */
     public View inflateLayout() {
         return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this);
     }
 
-    /**
-     * 初始化控制界面上的控制部件
-     */
+    /** 初始化控制界面上的控制部件 */
     protected void findViewItems() {
         btMesOpen = (Button) findViewById(R.id.bt_livevideo_message_open);
         btMsgCommon = (Button) findViewById(R.id.bt_livevideo_message_common);
@@ -120,8 +100,7 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     public CheckBox getCbMessageClock() {
         return cbMessageClock;
     }
-
-    public Button getBtMark() {
+    public Button getBtMark(){
         return btMark;
     }
 
@@ -130,9 +109,7 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
 
     }
 
-    /**
-     * 设置横竖屏切换按钮是否显示
-     */
+    /** 设置横竖屏切换按钮是否显示 */
     @Override
     public void setAutoOrientation(boolean autoOrientation) {
 
@@ -148,9 +125,7 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
 
     }
 
-    /**
-     * 切换播放和暂停的样式
-     */
+    /** 切换播放和暂停的样式 */
     @Override
     public void updatePausePlay(boolean isPlaying) {
 

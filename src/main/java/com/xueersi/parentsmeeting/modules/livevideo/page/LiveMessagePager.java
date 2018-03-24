@@ -90,35 +90,21 @@ import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
  */
 public class LiveMessagePager extends BaseLiveMessagePager {
     private String TAG = "LiveMessagePager";
-    /**
-     * 聊天，默认开启
-     */
+    /** 聊天，默认开启 */
     private Button btMesOpen;
-    /**
-     * 聊天常用语
-     */
+    /** 聊天常用语 */
     private Button btMsgCommon;
     private RelativeLayout rl_livevideo_common_word;
     ListView lvCommonWord;
-    /**
-     * 献花，默认关闭
-     */
+    /** 献花，默认关闭 */
     private Button btMessageFlowers;
-    /**
-     * 聊天，默认打开
-     */
+    /** 聊天，默认打开 */
     private CheckBox cbMessageClock;
-    /**
-     * 聊天人数
-     */
+    /** 聊天人数 */
     private TextView tvMessageCount;
-    /**
-     * 聊天IRC一下状态，正在连接，在线等
-     */
+    /** 聊天IRC一下状态，正在连接，在线等 */
     private ImageView ivMessageOnline;
-    /**
-     * 聊天消息
-     */
+    /** 聊天消息 */
     private ListView lvMessage;
     private View rlInfo;
     private View rlMessageContent;
@@ -127,30 +113,22 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     private CommonAdapter<LiveMessageEntity> messageAdapter;
     private CommonAdapter<LiveMessageEntity> otherMessageAdapter;
     private boolean isTouch = false;
-    /**
-     * 聊天字体大小，最多13个汉字
-     */
+    /** 聊天字体大小，最多13个汉字 */
     private int messageSize = 0;
-    /**
-     * 献花
-     */
+    /** 献花 */
     private PopupWindow mFlowerWindow;
     private View flowerContentView;
     private TextView tvMessageGoldLable;
     private TextView tvMessageGold;
     private String goldNum;
-    /**
-     * 上次发送消息时间
-     */
+    /** 上次发送消息时间 */
     private long lastSendMsg;
     private BaseLiveMediaControllerBottom liveMediaControllerBottom;
     private KPSwitchFSPanelLinearLayout switchFSPanelLinearLayout;
     private ImageView ivExpressionCancle;
     private Activity liveVideoActivity;
     private QuestionBll questionBll;
-    /**
-     * 竖屏的时候，也添加横屏的消息
-     */
+    /** 竖屏的时候，也添加横屏的消息 */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
     LiveAndBackDebug liveAndBackDebug;
     private String liveId;
@@ -745,9 +723,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         }
     }
 
-    /**
-     * 聊天开始连接
-     */
+    /** 聊天开始连接 */
     public void onStartConnect() {
         mView.post(new Runnable() {
             @Override
@@ -779,9 +755,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         }
     }
 
-    /**
-     * 聊天连上
-     */
+    /** 聊天连上 */
     public void onConnect() {
         mView.post(new Runnable() {
             @Override
@@ -796,14 +770,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     // 03.16 设置模拟的聊天连接
-    public void onConnects() {
+    public void onConnects(){
         addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT);
         ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_online);
     }
 
-    /**
-     * 聊天进入房间
-     */
+    /** 聊天进入房间 */
     public void onRegister() {
         mView.post(new Runnable() {
             @Override
@@ -814,9 +786,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         });
     }
 
-    /**
-     * 聊天断开
-     */
+    /** 聊天断开 */
     public void onDisconnect() {
         mView.post(new Runnable() {
             @Override
@@ -907,14 +877,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     }
 
-    public void setLiveTermId(String liveId, String termId) {
+    public void setLiveTermId(String liveId,String termId){
         this.liveId = liveId;
         this.termId = termId;
     }
 
-    /**
-     * 被禁言
-     */
+    /** 被禁言 */
     public void onDisable(final boolean disable, final boolean fromNotice) {
         mView.post(new Runnable() {
             @Override
@@ -939,9 +907,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         });
     }
 
-    /**
-     * 关闭开启聊天
-     */
+    /** 关闭开启聊天 */
     public void onopenchat(final boolean openchat, final String mode, final boolean fromNotice) {
         mView.post(new Runnable() {
             @Override
@@ -995,9 +961,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         });
     }
 
-    /**
-     * 关闭开启弹幕
-     */
+    /** 关闭开启弹幕 */
     public void onOpenbarrage(final boolean openbarrage, final boolean fromNotice) {
         mView.post(new Runnable() {
             @Override
@@ -1063,13 +1027,13 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             }
         });
         // 03.22 体验课播放器统计用户的发送信息
-        if (liveAndBackDebug != null && type == LiveMessageEntity.MESSAGE_MINE) {
+        if(liveAndBackDebug != null && type == LiveMessageEntity.MESSAGE_MINE){
             StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayUserMsg");
             logHashMap.put("LiveFreePlayUserMsg", text);
-            logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_IMMSG);
+            logHashMap.put("eventid",LiveVideoConfig.LIVE_EXPERIENCE_IMMSG);
             liveAndBackDebug.umsAgentDebug2(LiveVideoConfig.LIVE_EXPERIENCE_IMMSG, logHashMap.getData());
         }
-        Log.e("Duncan", "sender:" + sender);
+        Log.e("Duncan","sender:" + sender);
 
     }
 
@@ -1150,7 +1114,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
 
     // 03.16 模拟显示聊天人数
-    public void showPeopleCount(int num) {
+    public void showPeopleCount(int num){
         tvMessageCount.setText(num + "人正在上课");
     }
 }
