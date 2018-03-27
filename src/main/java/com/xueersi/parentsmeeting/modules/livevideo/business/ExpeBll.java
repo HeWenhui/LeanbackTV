@@ -120,176 +120,176 @@ public class ExpeBll {
         startTime = time;
     }
 
-    private void updateTime() {
-        startTime += 1000;
-        if (startTime % 60000 / 1000 % 20 == 0) {
-            saveTime();
-        }
-        if ((System.currentTimeMillis() - enterTime) / 1000 % 60 == 0) {
-            liveBll.userModeTime(new AbstractBusinessDataCallBack() {
-                @Override
-                public void onDataSucess(Object... objData) {
+//    private void updateTime() {
+//        startTime += 1000;
+//        if (startTime % 60000 / 1000 % 20 == 0) {
+//            saveTime();
+//        }
+//        if ((System.currentTimeMillis() - enterTime) / 1000 % 60 == 0) {
+//            liveBll.userModeTime(new AbstractBusinessDataCallBack() {
+//                @Override
+//                public void onDataSucess(Object... objData) {
+//
+//                }
+//            });
+//        }
+//    }
 
-                }
-            });
-        }
-    }
-
-    private void saveTime() {
-        File dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/live/"
-                + AppBll.getInstance().getAppInfoEntity().getChildName());
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-        File file = new File(dir, EXPE_TIME);
-        try {
-            String shareString = mShareDataManager.getString(EXPE_TIME, "", ShareDataManager.SHAREDATA_USER);
-            String sdString = FileUtils.readFile2String(file.getPath(), "UTF-8");
-            String saveString;
-            if (!StringUtils.isEmpty(shareString)) {
-                saveString = shareString;
-            } else if (!StringUtils.isEmpty(sdString)) {
-                saveString = sdString;
-            } else {
-                saveString = "{}";
-            }
-            JSONObject jsonObject = new JSONObject(saveString);
-            JSONObject timeObject = jsonObject.optJSONObject(dayKey);
-            if (timeObject != null) {
-                timeObject.put("time", startTime);
-            } else {
-                timeObject = new JSONObject();
-                timeObject.put("time", 0);
-                jsonObject.put(dayKey, timeObject);
-            }
-            FileUtils.writeFileFromString(file, jsonObject.toString(), false);
-            mShareDataManager.put(EXPE_TIME, jsonObject.toString(), ShareDataManager.SHAREDATA_USER);
-        } catch (Exception e) {
-            MobclickAgent.reportError(activity, new Error("" + mVSectionID, e));
-            mShareDataManager.put(EXPE_TIME, "{}", ShareDataManager.SHAREDATA_USER);
-            file.delete();
-        }
-    }
+//    private void saveTime() {
+//        File dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/live/"
+//                + AppBll.getInstance().getAppInfoEntity().getChildName());
+//        if (!dir.exists()) {
+//            dir.mkdirs();
+//        }
+//        File file = new File(dir, EXPE_TIME);
+//        try {
+//            String shareString = mShareDataManager.getString(EXPE_TIME, "", ShareDataManager.SHAREDATA_USER);
+//            String sdString = FileUtils.readFile2String(file.getPath(), "UTF-8");
+//            String saveString;
+//            if (!StringUtils.isEmpty(shareString)) {
+//                saveString = shareString;
+//            } else if (!StringUtils.isEmpty(sdString)) {
+//                saveString = sdString;
+//            } else {
+//                saveString = "{}";
+//            }
+//            JSONObject jsonObject = new JSONObject(saveString);
+//            JSONObject timeObject = jsonObject.optJSONObject(dayKey);
+//            if (timeObject != null) {
+//                timeObject.put("time", startTime);
+//            } else {
+//                timeObject = new JSONObject();
+//                timeObject.put("time", 0);
+//                jsonObject.put(dayKey, timeObject);
+//            }
+//            FileUtils.writeFileFromString(file, jsonObject.toString(), false);
+//            mShareDataManager.put(EXPE_TIME, jsonObject.toString(), ShareDataManager.SHAREDATA_USER);
+//        } catch (Exception e) {
+//            MobclickAgent.reportError(activity, new Error("" + mVSectionID, e));
+//            mShareDataManager.put(EXPE_TIME, "{}", ShareDataManager.SHAREDATA_USER);
+//            file.delete();
+//        }
+//    }
 
     public void initView(RelativeLayout bottomContent) {
         view = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_expe, bottomContent, false);
         Button bt_livevideo_expe_enroll = (Button) view.findViewById(R.id.bt_livevideo_expe_enroll);
         final TextView textView = (TextView) view.findViewById(R.id.tv_livevideo_expe_time);
         long time = userModeTotalTime - startTime;
-        setTimeText(textView, time);
+//        setTimeText(textView, time);
         int screenWidth = ScreenUtils.getScreenWidth();
         int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) view.getLayoutParams();
         lp.rightMargin = wradio;
         bottomContent.addView(view, lp);
-        if (StringUtils.isEmpty(buyCourseUrl)) {
-            bt_livevideo_expe_enroll.setText("继续选课");
-        } else {
-            bt_livevideo_expe_enroll.setText("立即报名");
-        }
-        bt_livevideo_expe_enroll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (StringUtils.isEmpty(buyCourseUrl)) {
-                    OtherModulesEnter.intentToGradeActivityLive(activity, "");
-                } else {
-                    BrowserActivity.openBrowser(activity, buyCourseUrl);
-                }
-            }
-        });
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (!activity.isFinishing()) {
-                    updateTime();
-                    long time = userModeTotalTime - startTime;
-                    if (time >= 0) {
-                        setTimeText(textView, time);
-                    }
-                    if (time <= 0) {
-                        activity.stopPlay();
-                        activity.stopIRC();
-                        ExpeAlertDialog verifyCancelAlertDialog = new ExpeAlertDialog(activity, (BaseApplication) activity.getApplication(), false,
-                                buyCourseUrl);
-                        verifyCancelAlertDialog.initInfo("您今天的30分钟试听时间已用光 ，购买课程后继续听课，可享受全套的教学服务").showDialog();
-                        return;
-                    }
-                    handler.postDelayed(this, 1000);
-                }
-            }
-        };
-        handler.postDelayed(runnable, 1000);
+//        if (StringUtils.isEmpty(buyCourseUrl)) {
+//            bt_livevideo_expe_enroll.setText("继续选课");
+//        } else {
+//            bt_livevideo_expe_enroll.setText("立即报名");
+//        }
+//        bt_livevideo_expe_enroll.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (StringUtils.isEmpty(buyCourseUrl)) {
+//                    OtherModulesEnter.intentToGradeActivityLive(activity, "");
+//                } else {
+//                    BrowserActivity.openBrowser(activity, buyCourseUrl);
+//                }
+//            }
+//        });
+//        runnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                if (!activity.isFinishing()) {
+//                    updateTime();
+//                    long time = userModeTotalTime - startTime;
+//                    if (time >= 0) {
+//                        setTimeText(textView, time);
+//                    }
+//                    if (time <= 0) {
+//                        activity.stopPlay();
+//                        activity.stopIRC();
+//                        ExpeAlertDialog verifyCancelAlertDialog = new ExpeAlertDialog(activity, (BaseApplication) activity.getApplication(), false,
+//                                buyCourseUrl);
+//                        verifyCancelAlertDialog.initInfo("您今天的30分钟试听时间已用光 ，购买课程后继续听课，可享受全套的教学服务").showDialog();
+//                        return;
+//                    }
+//                    handler.postDelayed(this, 1000);
+//                }
+//            }
+//        };
+//        handler.postDelayed(runnable, 1000);
     }
 
-    public void setVideoLayout(int width, int height) {
-        final View contentView = activity.findViewById(android.R.id.content);
-        final View actionBarOverlayLayout = (View) contentView.getParent();
-        Rect r = new Rect();
-        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
-        int screenWidth = (r.right - r.left);
-        if (width > 0) {
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) view.getLayoutParams();
-            int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
-            wradio += (screenWidth - width) / 2;
-            if (wradio != params.rightMargin) {
-                params.rightMargin = wradio;
-//                view.setLayoutParams(params);
-                LayoutParamsUtil.setViewLayoutParams(view, params);
-            }
-        }
-    }
+//    public void setVideoLayout(int width, int height) {
+//        final View contentView = activity.findViewById(android.R.id.content);
+//        final View actionBarOverlayLayout = (View) contentView.getParent();
+//        Rect r = new Rect();
+//        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
+//        int screenWidth = (r.right - r.left);
+//        if (width > 0) {
+//            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) view.getLayoutParams();
+//            int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
+//            wradio += (screenWidth - width) / 2;
+//            if (wradio != params.rightMargin) {
+//                params.rightMargin = wradio;
+////                view.setLayoutParams(params);
+//                LayoutParamsUtil.setViewLayoutParams(view, params);
+//            }
+//        }
+//    }
 
-    private void setTimeText(TextView textView, long time) {
-        SpannableStringBuilder stringBuilder = new SpannableStringBuilder("你还可以试听");
-        {
-            SpannableString originalSpan = new SpannableString("" + time / 60000);
-            ForegroundColorSpan colorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.COLOR_E74C3C));
-            originalSpan.setSpan(colorSpan, 0, originalSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            stringBuilder.append(originalSpan);
-        }
-        stringBuilder.append("分");
-        {
-            SpannableString originalSpan = new SpannableString("" + time % 60000 / 1000);
-            ForegroundColorSpan colorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.COLOR_E74C3C));
-            originalSpan.setSpan(colorSpan, 0, originalSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            stringBuilder.append(originalSpan);
-        }
-        stringBuilder.append("秒");
-        textView.setText(stringBuilder);
-    }
+//    private void setTimeText(TextView textView, long time) {
+//        SpannableStringBuilder stringBuilder = new SpannableStringBuilder("你还可以试听");
+//        {
+//            SpannableString originalSpan = new SpannableString("" + time / 60000);
+//            ForegroundColorSpan colorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.COLOR_E74C3C));
+//            originalSpan.setSpan(colorSpan, 0, originalSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            stringBuilder.append(originalSpan);
+//        }
+//        stringBuilder.append("分");
+//        {
+//            SpannableString originalSpan = new SpannableString("" + time % 60000 / 1000);
+//            ForegroundColorSpan colorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.COLOR_E74C3C));
+//            originalSpan.setSpan(colorSpan, 0, originalSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            stringBuilder.append(originalSpan);
+//        }
+//        stringBuilder.append("秒");
+//        textView.setText(stringBuilder);
+//    }
 
-    public boolean onResume() {
-        long time = userModeTotalTime - startTime;
-        if (time <= 0) {
+//    public boolean onResume() {
+//        long time = userModeTotalTime - startTime;
+//        if (time <= 0) {
 //            ExpeAlertDialog verifyCancelAlertDialog = new ExpeAlertDialog(activity, (BaseApplication) activity.getApplication(), false,
 //                    buyCourseUrl);
 //            verifyCancelAlertDialog.initInfo("您今天的30分钟试听时间已用光 ，购买课程后继续听课，可享受全套的教学服务").showDialog();
-            return false;
-        }
-        if (runnable != null) {
-            handler.post(runnable);
-        }
-        return true;
-    }
+//            return false;
+//        }
+//        if (runnable != null) {
+//            handler.post(runnable);
+//        }
+//        return true;
+//    }
 
-    public void onPause() {
-        if (runnable != null) {
-            handler.removeCallbacks(runnable);
-            saveTime();
-        }
-    }
+//    public void onPause() {
+//        if (runnable != null) {
+//            handler.removeCallbacks(runnable);
+//            saveTime();
+//        }
+//    }
 
-    public void onModeChange(final String mode) {
-        if (LiveTopic.MODE_TRANING.equals(mode)) {
-            final Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    ExpeAlertDialog verifyCancelAlertDialog = new ExpeAlertDialog(activity, (BaseApplication) activity.getApplication(), false,
-                            buyCourseUrl);
-                    verifyCancelAlertDialog.initInfo("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务").showDialog();
-                }
-            });
-        }
-    }
+//    public void onModeChange(final String mode) {
+//        if (LiveTopic.MODE_TRANING.equals(mode)) {
+//            final Handler handler = new Handler(Looper.getMainLooper());
+//            handler.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    ExpeAlertDialog verifyCancelAlertDialog = new ExpeAlertDialog(activity, (BaseApplication) activity.getApplication(), false,
+//                            buyCourseUrl);
+//                    verifyCancelAlertDialog.initInfo("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务").showDialog();
+//                }
+//            });
+//        }
+//    }
 }

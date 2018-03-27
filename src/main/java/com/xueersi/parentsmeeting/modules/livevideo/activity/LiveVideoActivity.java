@@ -307,9 +307,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         if (rankBll != null) {
                             rankBll.setVideoLayout(lp.width, lp.height);
                         }
-                        if (expeBll != null) {
-                            expeBll.setVideoLayout(lp.width, lp.height);
-                        }
+//                        if (expeBll != null) {
+//                            expeBll.setVideoLayout(lp.width, lp.height);
+//                        }
                         setMediaControllerBottomParam(lp);
                         if (englishSpeekBll != null) {
                             englishSpeekBll.setVideoWidthAndHeight(lp.width, lp.height);
@@ -531,13 +531,13 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         mIsResume = true;
         if (mHaveStop) {
             mHaveStop = false;
-            if (expeBll != null) {
-                boolean onResume = expeBll.onResume();
-                if (!onResume) {
-                    setFirstBackgroundVisible(View.VISIBLE);
-                    return;
-                }
-            }
+//            if (expeBll != null) {
+//                boolean onResume = expeBll.onResume();
+//                if (!onResume) {
+//                    setFirstBackgroundVisible(View.VISIBLE);
+//                    return;
+//                }
+//            }
             if (startRemote.get()) {
                 return;
             }
@@ -566,9 +566,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         super.onPause();
         mIsResume = false;
         mHaveStop = true;
-        if (expeBll != null) {
-            expeBll.onPause();
-        }
+//        if (expeBll != null) {
+//            expeBll.onPause();
+//        }
         if (questionBll != null) {
             questionBll.onPause();
         }
@@ -1007,9 +1007,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             mLogtf.e("onModeChange:mode=" + mode, e);
         }
         mLogtf.i("onModeChange:mode=" + mode);
-        if (expeBll != null) {
-            expeBll.onModeChange(mode);
-        }
+//        if (expeBll != null) {
+//            expeBll.onModeChange(mode);
+//        }
         if (englishSpeekBll != null) {
             englishSpeekBll.onModeChange(mode, audioRequest);
         }
