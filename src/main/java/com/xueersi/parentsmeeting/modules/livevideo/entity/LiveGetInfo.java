@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
+import com.xueersi.xesalib.utils.string.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -768,6 +770,9 @@ public class LiveGetInfo {
         }
 
         public void setLearning_stage(String learning_stage) {
+            if (StringUtils.isEmpty(learning_stage)) {
+                learning_stage = "-1";
+            }
             this.learning_stage = learning_stage;
         }
     }

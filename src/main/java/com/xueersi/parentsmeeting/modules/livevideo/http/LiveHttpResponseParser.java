@@ -126,7 +126,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 studentLiveInfoEntity.setBuyCourseUrl(studentLiveInfo.optString("buyCourseUrl"));
                 studentLiveInfoEntity.setUserModeTotalTime(studentLiveInfo.optLong("userModeTotalTime", 1800));
                 studentLiveInfoEntity.setUserModeTime(studentLiveInfo.optLong("userModeTime", 1800));
-                studentLiveInfoEntity.setLearning_stage(studentLiveInfo.optString("learning_stage"));
+                studentLiveInfoEntity.setLearning_stage(studentLiveInfo.optString("learning_stage", "-1"));
                 getInfo.setStudentLiveInfo(studentLiveInfoEntity);
                 int mode = studentLiveInfo.optInt("mode", 0);
                 liveTopic.setMode(mode == 0 ? LiveTopic.MODE_TRANING : LiveTopic.MODE_CLASS);
@@ -690,9 +690,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 honorEntity.setIsMy(jsonObject.getInt("isMy"));
                 honorEntity.setExcellentNum(jsonObject.getString("excellent_num"));
                 honorEntity.setStuName(jsonObject.getString("stu_name"));
-                if(honorEntity.getIsMy()==1){
-                    honorListEntity.getHonorEntities().add(0,honorEntity);
-                }else {
+                if (honorEntity.getIsMy() == 1) {
+                    honorListEntity.getHonorEntities().add(0, honorEntity);
+                } else {
                     honorListEntity.getHonorEntities().add(honorEntity);
                 }
             }
@@ -724,9 +724,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 likeEntity.setIsMy(jsonObject.getInt("isMy"));
                 likeEntity.setStuPraiseNum(jsonObject.getInt("stu_praise_num"));
                 likeEntity.setStuName(jsonObject.getString("stu_name"));
-                if(likeEntity.getIsMy()==1){
-                    thumbsUpListEntity.getThumbsUpEntities().add(0,likeEntity);
-                }else {
+                if (likeEntity.getIsMy() == 1) {
+                    thumbsUpListEntity.getThumbsUpEntities().add(0, likeEntity);
+                } else {
                     thumbsUpListEntity.getThumbsUpEntities().add(likeEntity);
                 }
             }
@@ -759,9 +759,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 progressEntity.setStuName(jsonObject.getString("stu_name"));
                 progressEntity.setIsMy(jsonObject.getInt("isMy"));
                 progressEntity.setProgressScore(jsonObject.getString("progress_score"));
-                if(progressEntity.getIsMy()==1){
-                    progressListEntity.getProgressEntities().add(0,progressEntity);
-                }else {
+                if (progressEntity.getIsMy() == 1) {
+                    progressListEntity.getProgressEntities().add(0, progressEntity);
+                } else {
                     progressListEntity.getProgressEntities().add(progressEntity);
                 }
             }
