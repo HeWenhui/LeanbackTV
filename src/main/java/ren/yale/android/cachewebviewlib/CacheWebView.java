@@ -122,6 +122,7 @@ public class CacheWebView extends WebView {
         if (headerMap!=null){
             intent.putExtra(CachePreLoadService.KEY_URL_HEADER,headerMap);
         }
+        intent.setPackage(CachePreLoadService.class.getPackage().getName());
         context.startService(intent);
     }
 
