@@ -129,11 +129,11 @@ public class LiveGetInfo {
     /** 当前的直播模式 */
     private String mode = LiveTopic.MODE_TRANING;
     private TotalOpeningLength totalOpeningLength;
-    /**是否显示满分榜*/
+    /** 是否显示满分榜 */
     private String is_show_ranks;
-    /**是否显示智能私信*/
+    /** 是否显示智能私信 */
     private String isShowCounselorWhisper;
-    /**是否有标记点功能*/
+    /** 是否有标记点功能 */
     private String isShowMarkPoint;
 
     public String getIsShowMarkPoint() {
@@ -672,6 +672,8 @@ public class LiveGetInfo {
         private long userModeTime;
         /** 是不是试听 */
         private boolean isExpe = false;
+        /** 童音测评 */
+        private String learning_stage = "";
 
         public String getCourseId() {
             return courseId;
@@ -759,6 +761,14 @@ public class LiveGetInfo {
 
         public void setUserModeTime(long userModeTime) {
             this.userModeTime = userModeTime;
+        }
+
+        public String getLearning_stage() {
+            return learning_stage;
+        }
+
+        public void setLearning_stage(String learning_stage) {
+            this.learning_stage = learning_stage;
         }
     }
 

@@ -126,6 +126,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 studentLiveInfoEntity.setBuyCourseUrl(studentLiveInfo.optString("buyCourseUrl"));
                 studentLiveInfoEntity.setUserModeTotalTime(studentLiveInfo.optLong("userModeTotalTime", 1800));
                 studentLiveInfoEntity.setUserModeTime(studentLiveInfo.optLong("userModeTime", 1800));
+                studentLiveInfoEntity.setLearning_stage(studentLiveInfo.optString("learning_stage"));
                 getInfo.setStudentLiveInfo(studentLiveInfoEntity);
                 int mode = studentLiveInfo.optInt("mode", 0);
                 liveTopic.setMode(mode == 0 ? LiveTopic.MODE_TRANING : LiveTopic.MODE_CLASS);
