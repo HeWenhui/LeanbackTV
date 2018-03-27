@@ -295,7 +295,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                         keyboardShowing = isShowing;
                         questionBll.onKeyboardShowing(isShowing);
                         if (keyboardShowing) {
-                            btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
+                            btMessageExpress.setBackgroundResource(R.drawable.bg_live_chat_input_face_normal);
                         }
                     }
                 });
@@ -307,7 +307,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                                     btMessageExpress.setBackgroundResource(R.drawable.im_input_jianpan_icon_normal);
                                     etMessageContent.clearFocus();
                                 } else {
-                                    btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
+                                    btMessageExpress.setBackgroundResource(R.drawable.bg_live_chat_input_face_normal);
                                     etMessageContent.requestFocus();
                                 }
                             }

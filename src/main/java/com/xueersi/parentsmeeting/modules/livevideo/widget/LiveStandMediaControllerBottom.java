@@ -34,29 +34,17 @@ public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBotto
         View view;
 //        return LayoutInflater.from(mContext).inflate(R.layout.layout_livestand_mediacontroller_bottom, this);
         if (LiveTopic.MODE_CLASS.equals(mode)) {
-            if (mainLiveView != null) {
-                view = mainLiveView;
-//                ViewGroup group = (ViewGroup) view.getParent();
-//                if (group != null) {
-//                    group.removeAllViews();
-//                }
-                addView(view);
-            } else {
-                view = LayoutInflater.from(mContext).inflate(R.layout.layout_livestand_mediacontroller_bottom, this);
-                mainLiveView = getChildAt(0);
+            if (mainLiveView == null) {
+                mainLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livestand_mediacontroller_bottom, this, false);
             }
+            view = mainLiveView;
+            addView(view);
         } else {
-            if (tranLiveView != null) {
-                view = tranLiveView;
-//                ViewGroup group = (ViewGroup) view.getParent();
-//                if (group != null) {
-//                    group.removeAllViews();
-//                }
-                addView(view);
-            } else {
-                view = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this);
-                tranLiveView = getChildAt(0);
+            if (tranLiveView == null) {
+                tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this, false);
             }
+            view = tranLiveView;
+            addView(view);
         }
         Loger.d(TAG, "inflateLayout:mode=" + mode + ",mainLiveView=" + mainLiveView + ",tranLiveView=" + tranLiveView);
         return view;

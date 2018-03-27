@@ -215,10 +215,12 @@
     <item name="iv_livevideo_message_expression_cancle" type="id" />
     <item name="rl_livevideo_message_content" type="id" />
     <item name="rl_livevideo_message_content2" type="id" />
+    <item name="rl_livevideo_message_back" type="id" />
     <item name="bt_livevideo_message_express" type="id" />
     <item name="bt_livevideo_message_send" type="id" />
     <item name="et_livevideo_message_content" type="id" />
     <item name="tv_livevideo_message_disable" type="id" />
+    <item name="iv_livevideo_message_close" type="id" />
     <item name="layout_livevideo_flowers" type="id" />
     <item name="ll_livevideo_message_flower" type="id" />
     <item name="v_livevideo_message_flower_line" type="id" />
