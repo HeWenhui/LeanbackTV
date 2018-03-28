@@ -259,7 +259,9 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             mMediaController.setWindowLayoutType();
             mMediaController.release();
         }
-
+        if(mLiveRemarkBll!=null){
+            mLiveRemarkBll.hideMarkPoints();
+        }
         // 设置当前是否为横屏
         final LivePlaybackMediaController mMediaController = new LivePlaybackMediaController(this, this);
         this.mMediaController = mMediaController;
@@ -293,8 +295,10 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (lstVideoQuestion == null || lstVideoQuestion.size() == 0) {
             return;
         }
-        mMediaController.setVideoQuestions("playback" + mVideoEntity.getvLivePlayBackType() + "-", lstVideoQuestion,
-                vPlayer.getDuration());
+        if(mVideoEntity.getIsAllowMarkpoint()!=1) {
+            mMediaController.setVideoQuestions("playback" + mVideoEntity.getvLivePlayBackType() + "-", lstVideoQuestion,
+                    vPlayer.getDuration());
+        }
     }
 
     @Override
@@ -415,6 +419,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             mLiveRemarkBll.setHttpManager(new LiveHttpManager(mContext));
             mLiveRemarkBll.setList(mVideoEntity.getLstPoint());
             mLiveRemarkBll.setLiveId(mVideoEntity.getLiveId());
+            mLiveRemarkBll.showBtMark();
             mLiveRemarkBll.getMarkPoints(mVideoEntity.getLiveId(), new AbstractBusinessDataCallBack() {
                 @Override
                 public void onDataSucess(Object... objData) {

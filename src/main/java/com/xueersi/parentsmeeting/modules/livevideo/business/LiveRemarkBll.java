@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
@@ -101,6 +102,7 @@ public class LiveRemarkBll {
     private int englishH5Num=0;
     private int redPackNum=0;
     private int examNum=0;
+    private ChooseListAlertDialog mDialog;
 
     public LiveRemarkBll(Context context, PlayerService playerService){
         mContext=context;
@@ -434,6 +436,9 @@ public class LiveRemarkBll {
         if (rlMask != null) {
             rlMask.setVisibility(View.GONE);
         }
+        if(mDialog!=null&&mDialog.isDialogShow()){
+            mDialog.cancelDialog();
+        }
     }
     public void setBtEnable(final boolean enable){
         if(mLiveMediaControllerBottom==null){
@@ -534,7 +539,7 @@ public class LiveRemarkBll {
 
         @Override
         public void bindListener() {
-            root.setOnLongClickListener(new View.OnLongClickListener() {
+            /*root.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     if(mEntity.getType()!=999){
@@ -553,15 +558,16 @@ public class LiveRemarkBll {
                             }
                         },R.string.live_mark_point_long_click_tip,R.string.live_mark_point_long_click_cancel);
                     }
+                    LiveRemarkBll.this.mDialog=mDialog;
                     mDialog.showDialog();
                     return false;
                 }
-            });
+            });*/
             root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mPlayerService.seekTo(mEntity.getRelativeTime()*1000);
-                    if(!mEntity.isPlaying()){
+                    /*if(!mEntity.isPlaying()){
                         //ivPlay.setVisibility(View.GONE);
 
                         for(int j=0;j<mList.size();j++){
@@ -570,6 +576,9 @@ public class LiveRemarkBll {
                         }
                         mEntity.setPlaying(true);
                         mAdapter.notifyDataSetChanged();
+                    }*/
+                    if(LiveRemarkBll.this.mCallBack!=null){
+                        LiveRemarkBll.this.mCallBack.onDataSucess();
                     }
                 }
             });
@@ -589,6 +598,7 @@ public class LiveRemarkBll {
                             }
                         },R.string.live_mark_point_long_click_tip,R.string.live_mark_point_long_click_cancel);
                     }
+                    LiveRemarkBll.this.mDialog=mDialog;
                     mDialog.showDialog();
                 }
             });
@@ -597,7 +607,7 @@ public class LiveRemarkBll {
         @Override
         public void updateViews(VideoPointEntity entity, int i, Object o) {
             mEntity=entity;
-            ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
+
             ivPlay.setTag(entity.getPic());
             if (!entity.isPlaying()) {
                 ivPlay.setVisibility(View.VISIBLE);
@@ -605,26 +615,36 @@ public class LiveRemarkBll {
                 ivPlay.setVisibility(View.GONE);
             }
             vDelete.setVisibility(View.GONE);
+
             StringBuilder sb=new StringBuilder();
+            ivShot.setScaleType(ImageView.ScaleType.CENTER);
             switch (entity.getType()){
                 case CATEGORY_QUESTION:
                     sb.append("互动题");
                     vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f0773c);
-                    ivShot.setBackgroundResource(R.drawable.bg_live_mark_question);
+                    ivShot.setImageResource(R.drawable.bg_live_mark_question);
                     break;
                 case CATEGORY_REDPACKET:
                     sb.append("红包");
-                    ivShot.setBackgroundResource(R.drawable.bg_live_mark_redpack);
+                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
+                    ivShot.setImageResource(R.drawable.bg_live_mark_redpack);
                     break;
                 case CATEGORY_EXAM:
-                    sb.append("试卷");
+                    sb.append("测试卷");
+                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_green);
+                    ivShot.setImageResource(R.drawable.bg_live_video_mark_exam);
                     break;
                 case CATEGORY_H5COURSE_WARE:
                 case CATEGORY_ENGLISH_H5COURSE_WARE:
-                    sb.append("课件");
+                    sb.append("互动课件");
+                    vSig.setBackgroundResource(R.drawable.shape_blue_corners);
+                    ivShot.setImageResource(R.drawable.bg_live_video_mark_courceware);
                     break;
                 default:
+                    ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
                     vDelete.setVisibility(View.VISIBLE);
+                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
+                    ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
                     sb.append("疑问点");
             }
             sb.append(entity.getNum());
