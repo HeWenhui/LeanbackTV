@@ -95,8 +95,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     private Button btMesOpen;
     /** 献花，默认关闭 */
     private Button btMessageFlowers;
-    /** 聊天，默认打开 */
-    private CheckBox cbMessageClock;
+//    /** 聊天，默认打开 */
+//    private CheckBox cbMessageClock;
     /** 聊天人数 */
     private TextView tvMessageCount;
     /** 聊天IRC一下状态，正在连接，在线等 */
@@ -143,7 +143,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
         btMesOpen = liveMediaControllerBottom.getBtMesOpen();
         btMessageFlowers = liveMediaControllerBottom.getBtMessageFlowers();
-        cbMessageClock = liveMediaControllerBottom.getCbMessageClock();
+//        cbMessageClock = liveMediaControllerBottom.getCbMessageClock();
 
         mView.post(new Runnable() {
             @Override
@@ -230,15 +230,15 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                 isHaveFlowers = true;
             }
         });
-        cbMessageClock.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    liveMediaControllerBottom.onChildViewClick(v);
-                }
-                return false;
-            }
-        });
+//        cbMessageClock.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (event.getAction() == MotionEvent.ACTION_UP) {
+//                    liveMediaControllerBottom.onChildViewClick(v);
+//                }
+//                return false;
+//            }
+//        });
         btMessageSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -354,12 +354,18 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         int minisize = wradio / 13;
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
         Loger.i(TAG, "initData:minisize=" + minisize);
+
+        final String fileName = "live_stand_head.json";
+        final HashMap<String, String> assetFolders = new HashMap<String, String>();
+        assetFolders.put(fileName, "Images/head");
+
         messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities) {
             @Override
             public AdapterItemInterface<LiveMessageEntity> getItemView(Object type) {
                 return new AdapterItemInterface<LiveMessageEntity>() {
                     TextView tvMessageItem;
                     StandLiveHeadView standLiveHeadView;
+                    LottieComposition mComposition;
 
                     @Override
                     public int getLayoutResId() {
@@ -375,9 +381,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                     }
 
                     private void initlottieAnim() {
-                        final String fileName = "live_stand_head.json";
-                        final HashMap<String, String> assetFolders = new HashMap<String, String>();
-                        assetFolders.put(fileName, "Images/head");
                         LottieComposition.Factory.fromAssetFileName(mContext, fileName, new OnCompositionLoadedListener() {
                             @Override
                             public void onCompositionLoaded(@Nullable LottieComposition composition) {
@@ -385,6 +388,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                                 if (composition == null) {
                                     return;
                                 }
+                                if (mComposition != null) {
+                                    return;
+                                }
+                                mComposition = composition;
                                 standLiveHeadView.setImageAssetsFolder(assetFolders.get(fileName));
                                 standLiveHeadView.setComposition(composition);
                                 standLiveHeadView.playAnimation();
@@ -400,31 +407,25 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                     @Override
                     public void updateViews(LiveMessageEntity entity, int position, Object objTag) {
                         String sender = entity.getSender();
-                        SpannableString spanttt = new SpannableString(sender + ": ");
-                        int color;
-                        switch (entity.getType()) {
-                            case LiveMessageEntity.MESSAGE_MINE:
-                            case LiveMessageEntity.MESSAGE_TEACHER:
-                            case LiveMessageEntity.MESSAGE_TIP:
-                            case LiveMessageEntity.MESSAGE_CLASS:
-                                color = nameColors[entity.getType()];
-                                break;
-                            default:
-                                color = nameColors[0];
-                                break;
-                        }
-                        CharacterStyle characterStyle = new ForegroundColorSpan(color);
-                        spanttt.setSpan(characterStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+//                        switch (entity.getType()) {
+//                            case LiveMessageEntity.MESSAGE_MINE:
+//                            case LiveMessageEntity.MESSAGE_TEACHER:
+//                            case LiveMessageEntity.MESSAGE_TIP:
+//                            case LiveMessageEntity.MESSAGE_CLASS:
+//                                color = nameColors[entity.getType()];
+//                                break;
+//                            default:
+//                                color = nameColors[0];
+//                                break;
+//                        }
                         if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
                             tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
                             tvMessageItem.setText(entity.getText());
                             urlClick(tvMessageItem);
                             CharSequence text = tvMessageItem.getText();
-                            tvMessageItem.setText(spanttt);
                             tvMessageItem.append(text);
                         } else {
                             tvMessageItem.setAutoLinkMask(0);
-                            tvMessageItem.setText(spanttt);
                             tvMessageItem.append(entity.getText());
                         }
                         standLiveHeadView.setName(entity.getSender());
@@ -585,23 +586,24 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     }
 
     public void closeChat(final boolean close) {
-        mView.post(new Runnable() {
-            @Override
-            public void run() {
-                if (close) {
-//                    lvMessage.setVisibility(View.GONE);
-                    cbMessageClock.setChecked(true);
-                } else {
-//                    lvMessage.setVisibility(View.VISIBLE);
-                    cbMessageClock.setChecked(false);
-                }
-            }
-        });
+//        mView.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (close) {
+////                    lvMessage.setVisibility(View.GONE);
+//                    cbMessageClock.setChecked(true);
+//                } else {
+////                    lvMessage.setVisibility(View.VISIBLE);
+//                    cbMessageClock.setChecked(false);
+//                }
+//            }
+//        });
     }
 
     @Override
     public boolean isCloseChat() {
-        return cbMessageClock.isChecked();
+//        return cbMessageClock.isChecked();
+        return false;
     }
 
     public void setVideoWidthAndHeight(int width, int height) {
