@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.event.AppEvent;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
@@ -67,11 +68,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.Play
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackStandMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
+import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.VPlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VP;
@@ -200,6 +200,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
     /** onPause状态不暂停视频 */
     boolean onPauseNotStopVideo = false;
     LiveTextureView liveTextureView;
+    String mode = LiveTopic.MODE_TRANING;
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         long before = System.currentTimeMillis();
@@ -218,11 +219,16 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         }
         Loger.d(TAG, "onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
+        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        LiveGetInfo getInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
+        if (getInfo != null) {
+            mode = getInfo.getMode();
+        }
         initAllBll();
         Loger.d(TAG, "onVideoCreate:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         initView();
-        mLiveBll.getInfo();
+        mLiveBll.getInfo(getInfo);
         Loger.d(TAG, "onVideoCreate:time3=" + (System.currentTimeMillis() - before));
 //        SpeechAssessmentWebPager pager=new SpeechAssessmentWebPager(mContext,"","","",true,"",null);
 //        ((RelativeLayout)findViewById(R.id.rl_speech_test)).addView(pager.getRootView());
@@ -399,6 +405,9 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
 //        liveMediaControllerBottom = new LiveMediaControllerBottom(this, mMediaController, this);
         liveMediaControllerBottom = new LiveStandMediaControllerBottom(this, mMediaController, this);
         liveMediaControllerBottom.setVisibility(View.INVISIBLE);
+        if (LiveTopic.MODE_CLASS.equals(mode)) {
+            liveMediaControllerBottom.onModeChange(mode);
+        }
         liveMessageBll = new LiveMessageBll(this, liveType);
         liveMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
         questionBll = new QuestionBll(this, vStuCourseID);

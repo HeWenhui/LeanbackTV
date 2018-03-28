@@ -8,8 +8,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.xueersi.parentsmeeting.base.BaseBll;
 import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.config.AppConfig;
+import com.xueersi.parentsmeeting.http.HttpCallBack;
+import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLivePlayBackVideoActivity;
@@ -18,9 +21,18 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoAc
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.StandLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.sharebusiness.config.LiveVideoBusinessConfig;
+import com.xueersi.xesalib.utils.app.XESToastUtils;
+import com.xueersi.xesalib.view.layout.dataload.DataLoadEntity;
 
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 /**
  * 直播模块对外入口
@@ -58,6 +70,7 @@ public class LiveVideoEnter {
     public static final int ENTER_FROM_24 = 24;
     /** PushBll */
     public static final int ENTER_FROM_25 = 25;
+    public static HashMap<String, LiveGetInfo> getInfos = new HashMap();
 
     /**
      * 跳转到直播,直播课，通过网页
@@ -66,6 +79,7 @@ public class LiveVideoEnter {
      * @param context
      * @param mUri    网页地址
      */
+    @Deprecated
     public static boolean intentToLiveVideoWithUrl(Activity context, String mUri) {
         try {
             String name = AppBll.getInstance().getAppInfoEntity().getChildName();
@@ -119,19 +133,50 @@ public class LiveVideoEnter {
      * @param vSectionID 节id
      * @param from       入口
      */
-    public static boolean intentToLiveVideoActivity(Activity context, String vStuCourseID, String courseId, String vSectionID, int from) {
+    public static boolean intentToLiveVideoActivity(final Activity context, final String vStuCourseID, String courseId, final String vSectionID, final int from) {
 
         if (TextUtils.isEmpty(vSectionID)) {
             Toast.makeText(context, "直播场次不能为空", Toast.LENGTH_SHORT).show();
             return false;
         }
-        Bundle bundle = new Bundle();
+        final Bundle bundle = new Bundle();
         bundle.putString("courseId", courseId);
         bundle.putString("vStuCourseID", vStuCourseID);
         bundle.putString("vSectionID", vSectionID);
         bundle.putInt("type", LiveBll.LIVE_TYPE_LIVE);
         bundle.putInt(LiveVideoActivity.ENTER_ROOM_FROM, from);
-        StandLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+
+        DataLoadEntity dataLoadEntity = new DataLoadEntity(context);
+        BaseBll.postDataLoadEvent(dataLoadEntity.beginLoading());
+        LiveHttpManager httpManager = new LiveHttpManager(context);
+        httpManager.addBodyParam("stuCouId", vStuCourseID);
+        httpManager.addBodyParam("liveId", vSectionID);
+        httpManager.liveGetInfo("", courseId, vSectionID, 0, new HttpCallBack(dataLoadEntity) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                LiveHttpResponseParser mHttpResponseParser = new LiveHttpResponseParser(context);
+                JSONObject object = (JSONObject) responseEntity.getJsonObject();
+                LiveTopic mLiveTopic = new LiveTopic();
+                LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, LiveBll.LIVE_TYPE_LIVE, from);
+                if (mGetInfo == null) {
+                    XESToastUtils.showToast(context, "服务器异常");
+                    return;
+                }
+                String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
+                StandLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                XESToastUtils.showToast(context, "初始化失败");
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                XESToastUtils.showToast(context, responseEntity.getErrorMsg());
+            }
+        });
         return true;
     }
 

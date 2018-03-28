@@ -318,7 +318,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         mLiveBll.setRoomAction(liveMessageBll);
         mLiveBll.setH5CoursewareAction(h5CoursewareBll);
         mLiveBll.setLecAdvertAction(lecAdvertAction);
-        mLiveBll.getInfo();
+        mLiveBll.getInfo(null);
         mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), true);
         setMediaControllerBottomParam(videoView.getLayoutParams());
         return true;
