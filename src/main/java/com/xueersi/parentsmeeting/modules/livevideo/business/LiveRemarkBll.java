@@ -2,13 +2,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Environment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.TextureView;
 import android.view.View;
@@ -26,27 +24,20 @@ import com.xueersi.parentsmeeting.cloud.config.XesCloudConfig;
 import com.xueersi.parentsmeeting.cloud.entity.CloudUploadEntity;
 import com.xueersi.parentsmeeting.cloud.entity.XesCloudResult;
 import com.xueersi.parentsmeeting.cloud.listener.XesStsUploadListener;
-import com.xueersi.parentsmeeting.config.FileConfig;
+import com.xueersi.parentsmeeting.entity.VideoPointEntity;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.MIJKMediaPlayer;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaController;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VideoView;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.XESMediaPlayer;
-import com.xueersi.parentsmeeting.widget.LivePlaybackMediaController;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
 import com.xueersi.xesalib.adapter.CommonAdapter;
-import com.xueersi.xesalib.adapter.RCommonAdapter;
-import com.xueersi.xesalib.adapter.RItemViewInterface;
-import com.xueersi.xesalib.adapter.ViewHolder;
 import com.xueersi.xesalib.utils.app.ContextManager;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -59,14 +50,21 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import tv.danmaku.ijk.media.player.FrameInfo;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
+
+import static com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE;
+import static com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig.CATEGORY_EXAM;
+import static com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig.CATEGORY_H5COURSE_WARE;
+import static com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig.CATEGORY_QUESTION;
+import static com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig.CATEGORY_REDPACKET;
 
 /**
  * Created by Tang on 2018/3/5.
@@ -88,17 +86,21 @@ public class LiveRemarkBll {
     private LiveHttpManager mHttpManager;
     private XesCloudUploadBusiness mCloudUploadBusiness;
     private RelativeLayout bottom;
-    private List<PointEntity> mList;
+    private List<VideoPointEntity> mList;
     private ListView lvPoints;
     private LinearLayout llPoints;
     private RelativeLayout rlMask;
-    private RCommonAdapter mAdapter;
-    private CommonAdapter mAdapter1;
+    private CommonAdapter mAdapter;
     private TextureView mTextureView;
     private long lastMarkTime;
     private MediaController mController;
     private AbstractBusinessDataCallBack mCallBack;
     private String liveId;
+    private int markNum=0;
+    private int questionNum=0;
+    private int englishH5Num=0;
+    private int redPackNum=0;
+    private int examNum=0;
 
     public LiveRemarkBll(Context context, PlayerService playerService){
         mContext=context;
@@ -209,8 +211,13 @@ public class LiveRemarkBll {
         this.liveId = liveId;
     }
 
-    public List<PointEntity> getList() {
+    public List<VideoPointEntity> getList() {
         return mList;
+    }
+
+    public void setList(List<VideoPointEntity> list) {
+        mList = list;
+        setEntityNum(mList);
     }
 
     public void setHttpManager(LiveHttpManager httpManager) {
@@ -325,20 +332,28 @@ public class LiveRemarkBll {
                 if (mList == null) {
                     mList = new ArrayList<>();
                 }
-                mList.clear();
+                //mList.clear();
                 if (points != null) {
                     for (int i = 0; i < points.length(); i++) {
-                        PointEntity entity = new PointEntity();
+                        VideoPointEntity entity = new VideoPointEntity();
                         entity.setCurTime(points.optJSONObject(i).optLong("cur_time"));
                         entity.setRelativeTime(points.optJSONObject(i).optLong("relativeTime"));
                         entity.setPic(points.optJSONObject(i).optString("image_url"));
-                        entity.setBigenTime(points.optJSONObject(i).optLong("image_url"));
+                        entity.setBeginTime(points.optJSONObject(i).optLong("image_url"));
+                        entity.setType(999);
                         mList.add(entity);
                     }
                 }
                 if(mList.size()>0){
                     callBack.onDataSucess();
                 }
+                Collections.sort(mList, new Comparator<VideoPointEntity>() {
+                    @Override
+                    public int compare(VideoPointEntity o1, VideoPointEntity o2) {
+                        return (int)(o1.getRelativeTime()-o2.getRelativeTime());
+                    }
+                });
+                setEntityNum(mList);
                 //showMarkPoints();
             }
 
@@ -372,13 +387,23 @@ public class LiveRemarkBll {
             tv.setPadding(0,10,10,10);
             llPoints.addView(tv);
             lvPoints=new ListView(mContext);
-            mAdapter1=new CommonAdapter<PointEntity>(mList) {
+            mAdapter =new CommonAdapter<VideoPointEntity>(mList) {
                 @Override
                 public AdapterItemInterface getItemView(Object o) {
                     return new PointListItem();
                 }
             };
-            lvPoints.setAdapter(mAdapter1);
+            mAdapter.registerDataSetObserver(new DataSetObserver() {
+                @Override
+                public void onChanged() {
+                    super.onChanged();
+                    markNum=0;
+                    questionNum=0;
+                    englishH5Num=0;
+                    redPackNum=0;
+                }
+            });
+            lvPoints.setAdapter(mAdapter);
 
             RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(SizeUtils.Dp2Px(mContext,278), ViewGroup.LayoutParams.MATCH_PARENT);
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -402,7 +427,7 @@ public class LiveRemarkBll {
         });
         rlMask.setVisibility(View.VISIBLE);
         mController.release();
-        mAdapter1.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
     }
 
     public void hideMarkPoints() {
@@ -428,13 +453,14 @@ public class LiveRemarkBll {
         });
 
     }
-    private void deletPoint(final PointEntity entity){
+    private void deletPoint(final VideoPointEntity entity){
         mHttpManager.deleteMarkPoints(liveId,entity.getCurTime(),new HttpCallBack(){
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 try{
                     mList.remove(entity);
-                    mAdapter1.notifyDataSetChanged();
+                    setEntityNum(mList);
+                    mAdapter.notifyDataSetChanged();
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -451,61 +477,46 @@ public class LiveRemarkBll {
             }
         });
     }
-
-    private class PointEntity {
-        String pic;
-        long curTime;
-        long relativeTime;
-        long bigenTime;
-        boolean isPlaying;
-
-        public long getBigenTime() {
-            return bigenTime;
+    private void setEntityNum(List<VideoPointEntity> lst){
+        if(lst==null||lst.size()==0){
+            return;
         }
-
-        public void setBigenTime(long bigenTime) {
-            this.bigenTime = bigenTime;
-        }
-
-        public boolean isPlaying() {
-            return isPlaying;
-        }
-
-        public void setPlaying(boolean playing) {
-            isPlaying = playing;
-        }
-
-        public long getRelativeTime() {
-            return relativeTime;
-        }
-
-        public void setRelativeTime(long relativeTime) {
-            this.relativeTime = relativeTime;
-        }
-
-        public String getPic() {
-            return pic;
-        }
-
-        public void setPic(String pic) {
-            this.pic = pic;
-        }
-
-        public long getCurTime() {
-            return curTime;
-        }
-
-        public void setCurTime(long time) {
-            this.curTime = time;
+        questionNum=0;
+        redPackNum=0;
+        examNum=0;
+        englishH5Num=0;
+        markNum=0;
+        for(VideoPointEntity entity:lst){
+            switch (entity.getType()){
+                case CATEGORY_QUESTION:
+                    entity.setNum(++questionNum);
+                    break;
+                case CATEGORY_REDPACKET:
+                    entity.setNum(++redPackNum);
+                    break;
+                case CATEGORY_EXAM:
+                    entity.setNum(++examNum);
+                    break;
+                case CATEGORY_H5COURSE_WARE:
+                case CATEGORY_ENGLISH_H5COURSE_WARE:
+                    entity.setNum(++englishH5Num);
+                    break;
+                default:
+                    entity.setNum(++markNum);
+            }
         }
     }
-    private class PointListItem implements AdapterItemInterface<PointEntity>{
+
+
+    private class PointListItem implements AdapterItemInterface<VideoPointEntity>{
         private ImageView ivShot;
         private ImageView ivPlay;
         private TextView tvText;
         private ChooseListAlertDialog mDialog;
+        private View vDelete;
         private View root;
-        private PointEntity mEntity;
+        private View vSig;
+        private VideoPointEntity mEntity;
         @Override
         public int getLayoutResId() {
             return R.layout.layout_live_mark_point;
@@ -517,6 +528,8 @@ public class LiveRemarkBll {
             ivShot = (ImageView) view.findViewById(R.id.iv_live_mark_point_shot_pic);
             ivPlay = (ImageView) view.findViewById(R.id.iv_live_mark_point_play);
             tvText = (TextView) view.findViewById(R.id.tv_live_mark_point_text);
+            vDelete=view.findViewById(R.id.iv_live_mark_point_delete);
+            vSig=view.findViewById(R.id.v_live_mark_point_sig);
         }
 
         @Override
@@ -524,14 +537,21 @@ public class LiveRemarkBll {
             root.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+                    if(mEntity.getType()!=999){
+                        return false;
+                    }
                     if(mDialog==null){
                         mDialog=new ChooseListAlertDialog(mContext, ContextManager.getApplication(),false);
                         mDialog.initInfo(new ChooseListAlertDialog.OnChooseItemClickImpl() {
                             @Override
                             public void onItemClick(int ii) {
-                                deletPoint(mEntity);
+                                if(ii==R.string.live_mark_point_long_click_tip) {
+                                    deletPoint(mEntity);
+                                }else{
+                                    mDialog.cancelDialog();
+                                }
                             }
-                        },R.string.live_mark_point_long_click_tip);
+                        },R.string.live_mark_point_long_click_tip,R.string.live_mark_point_long_click_cancel);
                     }
                     mDialog.showDialog();
                     return false;
@@ -540,32 +560,76 @@ public class LiveRemarkBll {
             root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mPlayerService.seekTo(mEntity.relativeTime*1000);
-                    if(!mEntity.isPlaying){
+                    mPlayerService.seekTo(mEntity.getRelativeTime()*1000);
+                    if(!mEntity.isPlaying()){
                         //ivPlay.setVisibility(View.GONE);
 
                         for(int j=0;j<mList.size();j++){
-                                mList.get(j).isPlaying = false;
+                            mList.get(j).setPlaying(false);
 
                         }
-                        mEntity.isPlaying=true;
-                        mAdapter1.notifyDataSetChanged();
+                        mEntity.setPlaying(true);
+                        mAdapter.notifyDataSetChanged();
                     }
+                }
+            });
+            vDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mDialog==null){
+                        mDialog=new ChooseListAlertDialog(mContext, ContextManager.getApplication(),false);
+                        mDialog.initInfo(new ChooseListAlertDialog.OnChooseItemClickImpl() {
+                            @Override
+                            public void onItemClick(int ii) {
+                                if(ii==R.string.live_mark_point_long_click_tip) {
+                                    deletPoint(mEntity);
+                                }else{
+                                    mDialog.cancelDialog();
+                                }
+                            }
+                        },R.string.live_mark_point_long_click_tip,R.string.live_mark_point_long_click_cancel);
+                    }
+                    mDialog.showDialog();
                 }
             });
         }
 
         @Override
-        public void updateViews(PointEntity entity, int i, Object o) {
+        public void updateViews(VideoPointEntity entity, int i, Object o) {
             mEntity=entity;
             ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
             ivPlay.setTag(entity.getPic());
-            if (!entity.isPlaying) {
+            if (!entity.isPlaying()) {
                 ivPlay.setVisibility(View.VISIBLE);
             } else {
                 ivPlay.setVisibility(View.GONE);
             }
-            tvText.setText("疑问点" + (i + 1));
+            vDelete.setVisibility(View.GONE);
+            StringBuilder sb=new StringBuilder();
+            switch (entity.getType()){
+                case CATEGORY_QUESTION:
+                    sb.append("互动题");
+                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f0773c);
+                    ivShot.setBackgroundResource(R.drawable.bg_live_mark_question);
+                    break;
+                case CATEGORY_REDPACKET:
+                    sb.append("红包");
+                    ivShot.setBackgroundResource(R.drawable.bg_live_mark_redpack);
+                    break;
+                case CATEGORY_EXAM:
+                    sb.append("试卷");
+                    break;
+                case CATEGORY_H5COURSE_WARE:
+                case CATEGORY_ENGLISH_H5COURSE_WARE:
+                    sb.append("课件");
+                    break;
+                default:
+                    vDelete.setVisibility(View.VISIBLE);
+                    sb.append("疑问点");
+            }
+            sb.append(entity.getNum());
+            tvText.setText(sb.toString());
+            //tvText.setText("疑问点" + (i + 1));
         }
     }
 }
