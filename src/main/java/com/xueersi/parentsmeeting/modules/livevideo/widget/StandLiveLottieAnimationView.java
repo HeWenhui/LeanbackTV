@@ -7,11 +7,17 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieComposition;
+import com.airbnb.lottie.OnCompositionLoadedListener;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandAchievementBll;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * Created by lyqai on 2018/3/23.
@@ -20,6 +26,7 @@ import java.io.IOException;
 public class StandLiveLottieAnimationView extends LottieAnimationView {
     int goldCount;
     Paint paint;
+    private String TAG = "StandLiveLottieAnimationView";
 
     public StandLiveLottieAnimationView(Context context, AttributeSet attrs) {
         super(context, attrs);

@@ -151,6 +151,7 @@ public class LiveVideoEnter {
         LiveHttpManager httpManager = new LiveHttpManager(context);
         httpManager.addBodyParam("stuCouId", vStuCourseID);
         httpManager.addBodyParam("liveId", vSectionID);
+        httpManager.addBodyParam("from", "" + from);
         httpManager.liveGetInfo("", courseId, vSectionID, 0, new HttpCallBack(dataLoadEntity) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {

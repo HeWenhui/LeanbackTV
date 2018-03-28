@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -17,6 +18,7 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -38,6 +40,8 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieComposition;
+import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
@@ -47,6 +51,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
@@ -55,6 +60,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveHeadView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
@@ -84,7 +90,7 @@ import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
  * 直播聊天横屏-直播课和直播辅导
  */
 public class LiveMessageStandPager extends BaseLiveMessagePager {
-    private String TAG = "LiveMessagePager";
+    private String TAG = "LiveMessageStandPager";
     /** 聊天，默认开启 */
     private Button btMesOpen;
     /** 献花，默认关闭 */
@@ -353,16 +359,37 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             public AdapterItemInterface<LiveMessageEntity> getItemView(Object type) {
                 return new AdapterItemInterface<LiveMessageEntity>() {
                     TextView tvMessageItem;
+                    StandLiveHeadView standLiveHeadView;
 
                     @Override
                     public int getLayoutResId() {
-                        return R.layout.item_livevideo_message;
+                        return R.layout.item_livevideo_stand_message;
                     }
 
                     @Override
                     public void initViews(View root) {
                         tvMessageItem = (TextView) root.findViewById(R.id.tv_livevideo_message_item);
                         tvMessageItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
+                        standLiveHeadView = root.findViewById(R.id.slhv_livevideo_message_head);
+                        initlottieAnim();
+                    }
+
+                    private void initlottieAnim() {
+                        final String fileName = "live_stand_head.json";
+                        final HashMap<String, String> assetFolders = new HashMap<String, String>();
+                        assetFolders.put(fileName, "Images/head");
+                        LottieComposition.Factory.fromAssetFileName(mContext, fileName, new OnCompositionLoadedListener() {
+                            @Override
+                            public void onCompositionLoaded(@Nullable LottieComposition composition) {
+                                Log.d(TAG, "onCompositionLoaded:composition=" + composition);
+                                if (composition == null) {
+                                    return;
+                                }
+                                standLiveHeadView.setImageAssetsFolder(assetFolders.get(fileName));
+                                standLiveHeadView.setComposition(composition);
+                                standLiveHeadView.playAnimation();
+                            }
+                        });
                     }
 
                     @Override
@@ -400,6 +427,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                             tvMessageItem.setText(spanttt);
                             tvMessageItem.append(entity.getText());
                         }
+                        standLiveHeadView.setName(entity.getSender());
                     }
                 };
             }

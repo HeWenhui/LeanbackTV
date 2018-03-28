@@ -190,7 +190,7 @@ public class LiveStandAchievementBll implements StarInteractAction {
     }
 
     private void initlottieAnim() {
-        final String fileName = "jindu.json";
+        final String fileName = "live_stand_jindu.json";
         final HashMap<String, String> assetFolders = new HashMap<String, String>();
         assetFolders.put(fileName, "Images/jindu");
         LottieComposition.Factory.fromAssetFileName(activity, fileName, new OnCompositionLoadedListener() {
