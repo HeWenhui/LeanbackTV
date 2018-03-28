@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -11,11 +10,7 @@ import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.CharacterStyle;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.util.Linkify;
 import android.util.Log;
@@ -28,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -47,22 +41,19 @@ import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageEmojiParser;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveHeadView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
 import com.xueersi.xesalib.adapter.CommonAdapter;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
@@ -75,6 +66,7 @@ import com.xueersi.xesalib.view.button.CompoundButtonGroup;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -93,6 +85,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     private String TAG = "LiveMessageStandPager";
     /** 聊天，默认开启 */
     private Button btMesOpen;
+    FrameAnimation btMesOpenAnimation;
     /** 献花，默认关闭 */
     private Button btMessageFlowers;
 //    /** 聊天，默认打开 */
@@ -180,6 +173,38 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         return mView;
     }
 
+    void initBtMesOpenAnimation() {
+        try {
+            String[] files = mContext.getAssets().list("Images/openmsg");
+            for (int i = 0; i < files.length; i++) {
+                files[i] = "Images/openmsg/" + files[i];
+            }
+            btMesOpenAnimation = new FrameAnimation(btMesOpen, files, 50, false);
+//            btMesOpenAnimation.restartAnimation();
+            btMesOpenAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
+                @Override
+                public void onAnimationStart() {
+                    Log.d(TAG, "onAnimationStart");
+                }
+
+                @Override
+                public void onAnimationEnd() {
+                    Log.d(TAG, "onAnimationEnd");
+                    liveMediaControllerBottom.onChildViewClick(btMesOpen);
+                    rlMessageContent.setVisibility(View.VISIBLE);
+                    KPSwitchConflictUtil.showKeyboard(switchFSPanelLinearLayout, etMessageContent);
+                }
+
+                @Override
+                public void onAnimationRepeat() {
+                    Log.d(TAG, "onAnimationRepeat");
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void initListener() {
 //        int screenWidth = ScreenUtils.getScreenWidth();
@@ -190,9 +215,13 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         btMesOpen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                liveMediaControllerBottom.onChildViewClick(v);
-                rlMessageContent.setVisibility(View.VISIBLE);
-                KPSwitchConflictUtil.showKeyboard(switchFSPanelLinearLayout, etMessageContent);
+                if (btMesOpenAnimation != null) {
+                    btMesOpenAnimation.pauseAnimation();
+                }
+                initBtMesOpenAnimation();
+//                liveMediaControllerBottom.onChildViewClick(v);
+//                rlMessageContent.setVisibility(View.VISIBLE);
+//                KPSwitchConflictUtil.showKeyboard(switchFSPanelLinearLayout, etMessageContent);
             }
         });
         etMessageContent.setOnEditorActionListener(new TextView.OnEditorActionListener() {

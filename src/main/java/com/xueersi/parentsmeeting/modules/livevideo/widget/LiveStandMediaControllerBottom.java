@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController.MediaPlayerControl;
 import com.xueersi.xesalib.utils.log.Loger;
+
+import java.io.IOException;
 
 /**
  * 直播播放器控制栏底部区域
@@ -23,6 +26,7 @@ public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBotto
     public LiveStandMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
         super(context, controller, player);
     }
+
 
     @Override
     protected void initResources() {
