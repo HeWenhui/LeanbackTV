@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -202,6 +203,28 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
             tv_livevideo_english_prog.setVisibility(View.VISIBLE);
             start();
         }
+        lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                Log.d(TAG, "onCompositionLoaded:onAnimationStart");
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                Log.d(TAG, "onCompositionLoaded:onAnimationEnd");
+                lottieAnimationView.setProgress(0);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
         return true;
     }
 
@@ -319,6 +342,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
                                         float progress = newProgress / 45 * 0.32f;
                                         Loger.d(TAG, "onProcessData:second=" + second + ",oldProgress=" + oldProgress + ",newProgress=" + newProgress + ",progress=" + progress);
                                         if (newProgress < 45) {
+                                            lottieAnimationView.cancelAnimation();
                                             lottieAnimationView.setProgress(progress);
                                             final ValueAnimator valueAnimator = ValueAnimator.ofFloat(startProgress, newProgress);
                                             final float finalNewProgress = newProgress;

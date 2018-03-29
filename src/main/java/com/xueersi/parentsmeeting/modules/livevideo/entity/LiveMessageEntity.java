@@ -15,6 +15,8 @@ public class LiveMessageEntity {
     private int ftype;
     /** 献花用，是不是自己献花 */
     private boolean self;
+    private boolean playAnimation;
+    private String headUrl;
     public static final int MESSAGE_MINE = 0;
     public static final int MESSAGE_TEACHER = 1;
     public static final int MESSAGE_CLASS = 2;
@@ -25,6 +27,13 @@ public class LiveMessageEntity {
         this.sender = sender;
         this.type = type;
         this.text = text;
+    }
+
+    public LiveMessageEntity(String sender, int type, CharSequence text, String headUrl) {
+        this.sender = sender;
+        this.type = type;
+        this.text = text;
+        this.headUrl = headUrl;
     }
 
     public LiveMessageEntity(boolean self, String sender, int type, int ftype) {
@@ -60,5 +69,21 @@ public class LiveMessageEntity {
 
     public boolean isSelf() {
         return self;
+    }
+
+    public String getHeadUrl() {
+        return headUrl;
+    }
+
+    public void setHeadUrl(String headUrl) {
+        this.headUrl = headUrl;
+    }
+
+    public boolean isPlayAnimation() {
+        return playAnimation;
+    }
+
+    public void setPlayAnimation(boolean playAnimation) {
+        this.playAnimation = playAnimation;
     }
 }

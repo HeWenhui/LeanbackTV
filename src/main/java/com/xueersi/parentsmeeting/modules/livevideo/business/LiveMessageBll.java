@@ -463,7 +463,7 @@ public class LiveMessageBll implements RoomAction {
 
     public void addMessage(String sender, int type, String text) {
         if (mLiveMessagePager != null) {
-            mLiveMessagePager.addMessage(sender, type, text);
+            mLiveMessagePager.addMessage(sender, type, text, "");
         }
     }
 }

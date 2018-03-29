@@ -181,7 +181,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
                 String msg = editable.toString();
                 if (!StringUtils.isSpace(msg)) {
                     if (getInfo != null && getInfo.getBlockChinese() && isChinese(msg)) {
-                        addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, MESSAGE_CHINESE);
+                        addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, MESSAGE_CHINESE, "");
                         onTitleShow(true);
                         return;
                     }
@@ -190,7 +190,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
                             boolean send = liveBll.sendMessage(msg);
                             if (send) {
                                 etMessageContent.setText("");
-                                addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg);
+                                addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
                                 lastSendMsg = System.currentTimeMillis();
                                 onTitleShow(true);
                             } else {
@@ -205,7 +205,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
                         XESToastUtils.showToast(mContext, "老师未开启聊天");
                     }
                 } else {
-                    addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, MESSAGE_EMPTY);
+                    addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, MESSAGE_EMPTY, "");
                 }
             }
         });
@@ -519,7 +519,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
         mView.post(new Runnable() {
             @Override
             public void run() {
-                addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT);
+                addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT, "");
             }
         });
     }
@@ -540,7 +540,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 isRegister = false;
-                addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, DISCONNECT);
+                addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, DISCONNECT, "");
             }
         });
     }
@@ -552,7 +552,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text) {
-        addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text);
+        addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, "");
     }
 
     @Override
@@ -569,13 +569,13 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
                     int type = jsonObject.getInt("type");
                     if (type == XESCODE.TEACHER_MESSAGE) {
                         addMessage(jsonObject.getString("name"), LiveMessageEntity.MESSAGE_CLASS, jsonObject
-                                .getString("msg"));
+                                .getString("msg"), "");
                     } else if (type == XESCODE.FLOWERS) {
                         //{"ftype":2,"name":"林玉强","type":"110"}
                         addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"));
                     }
                 } catch (JSONException e) {
-                    addMessage(sender, LiveMessageEntity.MESSAGE_CLASS, message);
+                    addMessage(sender, LiveMessageEntity.MESSAGE_CLASS, message, "");
                 }
             }
         });
@@ -704,7 +704,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
 
     /*添加聊天信息，超过120，移除60个*/
     @Override
-    public void addMessage(final String sender, final int type, final String text) {
+    public void addMessage(final String sender, final int type, final String text, String headUrl) {
         pool.execute(new Runnable() {
             @Override
             public void run() {

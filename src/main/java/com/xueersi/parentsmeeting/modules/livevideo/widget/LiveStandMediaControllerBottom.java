@@ -1,6 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +16,7 @@ import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController.
 import com.xueersi.xesalib.utils.log.Loger;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * 直播播放器控制栏底部区域
@@ -59,6 +63,24 @@ public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBotto
         removeAllViews();
         inflateLayout();
         findViewItems();
+        InputStream inputStream = null;
+        try {
+            inputStream = getContext().getAssets().open("Images/openmsg/信息泡泡爆破_00074.png");
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            bitmap.setDensity(160);
+            getBtMesOpen().setBackgroundDrawable(new BitmapDrawable(bitmap));
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override

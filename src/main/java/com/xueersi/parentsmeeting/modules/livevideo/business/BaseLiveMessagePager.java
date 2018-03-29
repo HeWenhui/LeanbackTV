@@ -477,7 +477,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
 
     }
 
-    public abstract void addMessage(final String sender, final int type, final String text);
+    public abstract void addMessage(final String sender, final int type, final String text, String headUrl);
 
     public abstract CommonAdapter<LiveMessageEntity> getMessageAdapter();
 

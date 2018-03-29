@@ -263,14 +263,23 @@ public class FrameAnimation {
                     }
                 }
 //                mImageView.setBackgroundResource(mFrameRess[i]);
+                InputStream inputStream = null;
                 try {
                     String file = files[i];
-                    InputStream inputStream = mView.getContext().getAssets().open(file);
+                    inputStream = mView.getContext().getAssets().open(file);
                     Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                     bitmap.setDensity(160);
                     mView.setBackgroundDrawable(new BitmapDrawable(bitmap));
                 } catch (IOException e) {
                     e.printStackTrace();
+                } finally {
+                    if (inputStream != null) {
+                        try {
+                            inputStream.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
                 if (i == mLastFrame) {
 
