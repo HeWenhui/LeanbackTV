@@ -63,6 +63,7 @@ public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBotto
         removeAllViews();
         inflateLayout();
         findViewItems();
+        getBtMessageFlowers().setVisibility(GONE);
         InputStream inputStream = null;
         try {
             inputStream = getContext().getAssets().open("Images/openmsg/信息泡泡爆破_00074.png");

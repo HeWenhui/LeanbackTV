@@ -339,7 +339,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                             @Override
                             public void onClickSwitch(boolean switchToPanel) {
                                 if (switchToPanel) {
-                                    btMessageExpress.setBackgroundResource(R.drawable.im_input_jianpan_icon_normal);
+                                    btMessageExpress.setBackgroundResource(R.drawable.selector_live_stand_chat_input);
                                     etMessageContent.clearFocus();
                                 } else {
                                     btMessageExpress.setBackgroundResource(R.drawable.selector_live_stand_chat_expression);
