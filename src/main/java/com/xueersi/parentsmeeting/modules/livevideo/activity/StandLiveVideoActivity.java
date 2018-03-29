@@ -869,7 +869,18 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
                     }
                 }
                 ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_after);
+                if (LiveTopic.MODE_CLASS.equals(mode)) {
+                    long now = System.currentTimeMillis() / 1000;
+                    if (now < mGetInfo.getsTime()) {
+                        ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_before);
+                    } else if (now > mGetInfo.geteTime()) {
+                        ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_after);
+                    } else {
+                        ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_before_doing);
+                    }
+                } else {
+                    ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
+                }
                 findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
             }
         });

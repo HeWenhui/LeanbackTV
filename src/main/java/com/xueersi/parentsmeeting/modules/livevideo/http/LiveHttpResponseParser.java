@@ -63,8 +63,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setNotice(data.getString("notice"));
             getInfo.setLiveType(data.getInt("liveType"));
             getInfo.setLiveTime(data.getString("liveTime"));
-            getInfo.setsTime(data.optLong("sTime"));
-            getInfo.seteTime(data.optLong("eTime"));
+            getInfo.setsTime(data.optLong("stime"));
+            getInfo.seteTime(data.optLong("etime"));
             getInfo.setNowTime(data.getDouble("nowTime"));
             //getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));
             getInfo.setIsShowMarkPoint("1");
