@@ -679,8 +679,8 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     }
 
     @Override
-    public void onMessage(String target, String sender, String login, String hostname, String text) {
-        addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, "");
+    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
+        addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);
     }
 
     @Override

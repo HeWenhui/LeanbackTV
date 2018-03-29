@@ -490,13 +490,24 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
         int rightMargin = (int) (StandLiveVideoActivity.VIDEO_HEAD_WIDTH * lp.width / VIDEO_WIDTH + (screenWidth - lp.width) / 2);
         int topMargin = (ScreenUtils.getScreenHeight() - lp.height) / 2;
-        if (params.rightMargin != rightMargin || params.bottomMargin != topMargin) {
-            params.rightMargin = rightMargin;
-            params.bottomMargin = params.topMargin = topMargin;
-            LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
+        if (LiveTopic.MODE_CLASS.equals(mode)) {
+            if (params.rightMargin != 0 || params.bottomMargin != topMargin) {
+                params.rightMargin = 0;
+                params.bottomMargin = params.topMargin = topMargin;
+                LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
 //            rlFirstBackgroundView.setLayoutParams(params);
-            LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
+                LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
 //            ivTeacherNotpresent.setLayoutParams(params);
+            }
+        } else {
+            if (params.rightMargin != rightMargin || params.bottomMargin != topMargin) {
+                params.rightMargin = rightMargin;
+                params.bottomMargin = params.topMargin = topMargin;
+                LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
+//            rlFirstBackgroundView.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
+//            ivTeacherNotpresent.setLayoutParams(params);
+            }
         }
         //Loger.e(TAG, "setFirstParam:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
     }
@@ -858,7 +869,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
                     }
                 }
                 ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
+                ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_after);
                 findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
             }
         });
@@ -883,6 +894,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
             liveLazyBllCreat.setGetInfo(getInfo);
         }
         String mode = mGetInfo.getMode();
+        this.mode = mode;
         liveMediaControllerBottom.onModeChange(mode);
         if (LiveTopic.MODE_CLASS.equals(mode)) {
 //            liveMediaControllerBottom = new LiveStandMediaControllerBottom(this, mMediaController, this);
@@ -1020,6 +1032,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
     @Override
     public void onModeChange(final String mode, final boolean isPresent) {
         mLogtf.i("onModeChange:mode=" + mode);
+        this.mode = mode;
         try {
             liveMessageBll.onModeChange(mode, isPresent);
             rollCallBll.onModeChange(mode, isPresent);

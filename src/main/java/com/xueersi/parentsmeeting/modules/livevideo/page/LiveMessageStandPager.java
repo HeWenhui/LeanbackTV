@@ -457,6 +457,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                             tvMessageItem.setAutoLinkMask(0);
                             tvMessageItem.setText(entity.getText());
                         }
+                        standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
 //                        entity.setHeadUrl(getInfo.getHeadImgPath());
                         standLiveHeadView.setName(entity.getSender());
                         standLiveHeadView.setHead(entity.getHeadUrl());
@@ -780,8 +781,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     }
 
     @Override
-    public void onMessage(String target, String sender, String login, String hostname, String text) {
-        addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, "");
+    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
+        addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);
     }
 
     @Override
@@ -852,17 +853,17 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                 if (disable) {
                     XESToastUtils.showToast(mContext, "你被老师禁言了");
                     btMesOpen.setAlpha(0.4f);
-                    btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
+//                    btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                 } else {
                     if (fromNotice) {
                         XESToastUtils.showToast(mContext, "老师解除了你的禁言");
                     }
                     if (liveBll.openchat()) {
                         btMesOpen.setAlpha(1.0f);
-                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
+//                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     } else {
                         btMesOpen.setAlpha(0.4f);
-                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
+//                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     }
                 }
             }
@@ -876,14 +877,14 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             public void run() {
                 if (liveBll.isDisable()) {
                     btMesOpen.setAlpha(0.4f);
-                    btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
+//                    btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                 } else {
                     if (openchat) {
                         btMesOpen.setAlpha(1.0f);
-                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
+//                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     } else {
                         btMesOpen.setAlpha(0.4f);
-                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
+//                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     }
                     if (fromNotice) {
                         if (LiveTopic.MODE_CLASS.equals(mode)) {

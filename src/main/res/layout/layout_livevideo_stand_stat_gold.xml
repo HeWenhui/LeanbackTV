@@ -12,6 +12,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
-        android:max="45" />
+        android:max="45"
+        android:visibility="gone" />
 
 </RelativeLayout>

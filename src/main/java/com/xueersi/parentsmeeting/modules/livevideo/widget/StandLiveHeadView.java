@@ -35,12 +35,17 @@ public class StandLiveHeadView extends LottieAnimationView {
     private String TAG = "StandLiveHeadView";
     String name;
     String headUrl;
+    boolean isMine = true;
 
     public StandLiveHeadView(Context context, AttributeSet attrs) {
         super(context, attrs);
         paint = new Paint();
         paint.setTextSize(24);
         paint.setColor(Color.WHITE);
+    }
+
+    public void setIsMine(boolean isMine) {
+        this.isMine = isMine;
     }
 
     public void setHead(String url) {
@@ -85,6 +90,17 @@ public class StandLiveHeadView extends LottieAnimationView {
         }
     }
 
+    public void updateBack() {
+        Bitmap img_7Bitmap;
+        AssetManager manager = getContext().getAssets();
+        try {
+            img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/head/img_4.png"));
+            updateBitmap("image_3", img_7Bitmap);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 设置名字
      */
@@ -94,7 +110,11 @@ public class StandLiveHeadView extends LottieAnimationView {
         AssetManager manager = getContext().getAssets();
         Bitmap img_7Bitmap;
         try {
-            img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/head/img_3.png"));
+            if (isMine) {
+                img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/head/img_3.png"));
+            } else {
+                img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/head/img_4.png"));
+            }
             Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/head/img_1.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);

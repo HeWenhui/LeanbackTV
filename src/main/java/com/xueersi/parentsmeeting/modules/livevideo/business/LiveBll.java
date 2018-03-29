@@ -173,6 +173,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /** 满分榜业务 */
     private AnswerRankBll mAnswerRankBll;
     private LiveRemarkBll mLiveRemarkBll;
+    /** 校准系统时间 */
+    private long sysTimeOffset;
 
     public LiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form) {
         super(context);
@@ -1140,13 +1142,20 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             String name;
                             if (sourceNick.startsWith("t")) {
                                 name = "主讲老师";
-                                mRoomAction.onMessage(target, name, "", "", object.getString("msg"));
+                                String teacherImg = "";
+                                try {
+                                    teacherImg = mGetInfo.getMainTeacherInfo().getTeacherImg();
+                                } catch (Exception e) {
+
+                                }
+                                mRoomAction.onMessage(target, name, "", "", object.getString("msg"), teacherImg);
                             } else {
                                 name = "辅导老师";
                                 String teamId = mGetInfo.getStudentLiveInfo().getTeamId();
                                 String to = object.optString("to", "All");
                                 if ("All".equals(to) || teamId.equals(to)) {
-                                    mRoomAction.onMessage(target, name, "", "", object.getString("msg"));
+                                    String teacherIMG = mGetInfo.getTeacherIMG();
+                                    mRoomAction.onMessage(target, name, "", "", object.getString("msg"), teacherIMG);
                                 }
                             }
                         }
@@ -1667,7 +1676,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         @Override
         public void onMessage(String target, String sender, String login, String hostname, String text) {
             if (mRoomAction != null) {
-                mRoomAction.onMessage(target, sender, login, hostname, text);
+                mRoomAction.onMessage(target, sender, login, hostname, text, "");
             }
         }
 
@@ -1933,6 +1942,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
         //判断是否有智能私信功能
         Loger.i("LiveAutoNoticeBll", "isshowNotice:" + this.mGetInfo.getIsShowCounselorWhisper());
+        sysTimeOffset = (long) mGetInfo.getNowTime() - System.currentTimeMillis() / 1000;
         if (this.mGetInfo.getStudentLiveInfo() != null
                 && "1".equals(this.mGetInfo.getIsShowCounselorWhisper())) {
             mLiveAutoNoticeBll = liveLazyBllCreat.createAutoNoticeBll();

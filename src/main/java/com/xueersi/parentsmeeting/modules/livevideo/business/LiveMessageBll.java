@@ -310,7 +310,7 @@ public class LiveMessageBll implements RoomAction {
     }
 
     @Override
-    public void onMessage(final String target, final String sender, final String login, final String hostname, final String text) {
+    public void onMessage(final String target, final String sender, final String login, final String hostname, final String text, final String headurl) {
         if (!"NOTICE".equals(target) && mLiveMessagePager.isCloseChat()) {//只看老师
             return;
         }
@@ -318,7 +318,7 @@ public class LiveMessageBll implements RoomAction {
             @Override
             public void run() {
                 if (mLiveMessagePager != null) {
-                    mLiveMessagePager.onMessage(target, sender, login, hostname, text);
+                    mLiveMessagePager.onMessage(target, sender, login, hostname, text, headurl);
                 }
             }
         });

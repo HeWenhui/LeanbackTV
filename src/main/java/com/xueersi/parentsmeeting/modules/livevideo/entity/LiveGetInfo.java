@@ -88,6 +88,10 @@ public class LiveGetInfo {
     private int liveType;
     /** 直播开始时间 */
     private String liveTime;
+    /** 直播开始时间 */
+    private long sTime;
+    /** 直播开始时间 */
+    private long eTime;
     /** 当前时间 */
     private double nowTime;
     private List<TestInfoEntity> testInfo = new ArrayList<TestInfoEntity>();
@@ -430,6 +434,22 @@ public class LiveGetInfo {
 
     public String getLiveTime() {
         return liveTime;
+    }
+
+    public long getsTime() {
+        return sTime;
+    }
+
+    public void setsTime(long sTime) {
+        this.sTime = sTime;
+    }
+
+    public long geteTime() {
+        return eTime;
+    }
+
+    public void seteTime(long eTime) {
+        this.eTime = eTime;
     }
 
     public double getNowTime() {

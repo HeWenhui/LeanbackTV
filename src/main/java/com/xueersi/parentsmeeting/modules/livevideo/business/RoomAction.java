@@ -24,7 +24,7 @@ public interface RoomAction {
     void onUserList(String channel, User[] users);
 
     /** 正常消息 */
-    void onMessage(String target, String sender, String login, String hostname, String text);
+    void onMessage(String target, String sender, String login, String hostname, String text, String headurl);
 
     /** 私聊消息 */
     void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String

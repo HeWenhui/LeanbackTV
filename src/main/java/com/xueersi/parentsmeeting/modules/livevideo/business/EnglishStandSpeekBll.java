@@ -130,14 +130,14 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
     public void setmShareDataManager(ShareDataManager mShareDataManager) {
         this.mShareDataManager = mShareDataManager;
         tips = mShareDataManager.getInt(ENGLISH_TIP, 0, ShareDataManager.SHAREDATA_NOT_CLEAR);
-        if (tips < MAX_TIPS) {
-            if (LiveTopic.MODE_CLASS.equals(mode)) {
-                showTip = true;
-                setFirstTip();
-            }
-        } else {
-            showTip = true;
-        }
+//        if (tips < MAX_TIPS) {
+//            if (LiveTopic.MODE_CLASS.equals(mode)) {
+//                showTip = true;
+//                setFirstTip();
+//            }
+//        } else {
+//            showTip = true;
+//        }
     }
 
     public void setTotalOpeningLength(LiveGetInfo.TotalOpeningLength totalOpeningLength) {
@@ -200,7 +200,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
         if (LiveTopic.MODE_TRANING.equals(mode)) {
             tv_livevideo_english_prog.setVisibility(View.GONE);
         } else {
-            tv_livevideo_english_prog.setVisibility(View.VISIBLE);
+//            tv_livevideo_english_prog.setVisibility(View.VISIBLE);
             start();
         }
         lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
@@ -549,16 +549,16 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
                     tv_livevideo_english_prog.setVisibility(View.GONE);
                     stop(null);
                 } else {
-                    tv_livevideo_english_prog.setVisibility(View.VISIBLE);
-                    if (!showTip) {
-                        showTip = true;
-//                        int tips = mShareDataManager.getInt(ENGLISH_TIP, 0, ShareDataManager.SHAREDATA_NOT_CLEAR);
-//                        if (tips < MAX_TIPS) {
-//                            setFirstTip();
-//                            mShareDataManager.put(ENGLISH_TIP, tips + 1, ShareDataManager.SHAREDATA_NOT_CLEAR);
-//                        }
-                        setFirstTip();
-                    }
+//                    tv_livevideo_english_prog.setVisibility(View.VISIBLE);
+//                    if (!showTip) {
+//                        showTip = true;
+////                        int tips = mShareDataManager.getInt(ENGLISH_TIP, 0, ShareDataManager.SHAREDATA_NOT_CLEAR);
+////                        if (tips < MAX_TIPS) {
+////                            setFirstTip();
+////                            mShareDataManager.put(ENGLISH_TIP, tips + 1, ShareDataManager.SHAREDATA_NOT_CLEAR);
+////                        }
+//                        setFirstTip();
+//                    }
                     if (!audioRequest) {
                         start();
                     }

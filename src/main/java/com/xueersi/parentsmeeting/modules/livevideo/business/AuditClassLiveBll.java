@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.xueersi.parentsmeeting.base.BaseBll;
-import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.http.CommonRequestCallBack;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.HttpRequestParams;
@@ -728,7 +727,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         @Override
         public void onMessage(String target, String sender, String login, String hostname, String text) {
             if (mRoomAction != null) {
-                mRoomAction.onMessage(target, sender, login, hostname, text);
+                mRoomAction.onMessage(target, sender, login, hostname, text, "");
             }
         }
 

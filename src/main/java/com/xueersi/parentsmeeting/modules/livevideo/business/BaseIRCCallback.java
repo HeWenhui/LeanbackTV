@@ -1,30 +1,15 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.os.Environment;
-import android.text.TextUtils;
-import android.util.Log;
 
-import com.alibaba.fastjson.JSON;
-import com.xueersi.parentsmeeting.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.page.PraiseListPager;
 import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.string.StringUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by lyqai on 2018/3/20.
@@ -92,7 +77,7 @@ public abstract class BaseIRCCallback implements IRCCallback {
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text) {
         if (mRoomAction != null) {
-            mRoomAction.onMessage(target, sender, login, hostname, text);
+            mRoomAction.onMessage(target, sender, login, hostname, text, "");
         }
     }
 
