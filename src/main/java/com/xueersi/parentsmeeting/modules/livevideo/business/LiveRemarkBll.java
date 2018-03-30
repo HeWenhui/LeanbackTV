@@ -138,6 +138,7 @@ public class LiveRemarkBll {
                     offSet = System.currentTimeMillis()/1000+sysTimeOffset - frameInfo.pkt/1000;
                     Loger.i(TAG, "nowtime  " + frameInfo.nowTime + "   dts     " + frameInfo.pkt_dts
                             + "   pkt   " + frameInfo.pkt + "  cache:" + ((IjkMediaPlayer)mPlayerService.getPlayer()).getVideoCachedDuration());
+                    mLiveMediaControllerBottom.getBtMark().setEnabled(true);
                     mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(final View v) {

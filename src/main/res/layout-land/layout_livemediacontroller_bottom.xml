@@ -96,6 +96,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:background="@drawable/bg_bt_live_mark"
+            android:alpha="0.5"
+            android:enabled="false"
             android:visibility="gone" />
     </LinearLayout>
 

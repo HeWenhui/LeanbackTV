@@ -506,6 +506,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         liveTextureView.vPlayer = vPlayer;
                         liveTextureView.setLayoutParams(videoView.getLayoutParams());
                     }
+                    liveRemarkBll.showBtMark();
                     liveRemarkBll.setTextureView(liveTextureView);
                     liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
                     liveRemarkBll.setVideoView(videoView);
@@ -888,6 +889,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         questionBll.setLiveVideoSAConfig(liveVideoSAConfig);
         englishH5CoursewareBll.setLiveVideoSAConfig(liveVideoSAConfig);
         liveMediaControllerBottom.setVisibility(View.VISIBLE);
+        if("1".equals(mGetInfo.getIsShowMarkPoint())){
+            liveMediaControllerBottom.getBtMark().setVisibility(View.VISIBLE);
+        }
         long before = System.currentTimeMillis();
         if (liveLazyBllCreat != null) {
             liveLazyBllCreat.setGetInfo(getInfo);
