@@ -96,7 +96,12 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
 //        else {
 //            initRedPacketResult(5);
 //        }
-//        showRedPacket(1);
+        rlRedpacketContent.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showRedPacket(1);
+            }
+        },1000);
     }
 
     /**

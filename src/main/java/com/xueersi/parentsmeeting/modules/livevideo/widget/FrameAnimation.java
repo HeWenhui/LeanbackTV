@@ -11,6 +11,8 @@ import android.widget.ImageView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Created by Ansen on 2015/5/14 23:30.
@@ -65,7 +67,7 @@ public class FrameAnimation {
     private static final int SELECTED_C = 3;
 
     private static final int SELECTED_D = 4;
-
+    private HashMap<String, Bitmap> bitmapHashMap = new HashMap<>();
 
     /**
      * @param iv       播放动画的控件
@@ -267,8 +269,12 @@ public class FrameAnimation {
                 try {
                     String file = files[i];
                     inputStream = mView.getContext().getAssets().open(file);
-                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                    bitmap.setDensity(160);
+                    Bitmap bitmap = bitmapHashMap.get(file);
+                    if (bitmap == null) {
+                        bitmap = BitmapFactory.decodeStream(inputStream);
+                        bitmapHashMap.put(file, bitmap);
+                        bitmap.setDensity(160);
+                    }
                     mView.setBackgroundDrawable(new BitmapDrawable(bitmap));
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -373,4 +379,10 @@ public class FrameAnimation {
         }
     }
 
+    public void destory() {
+        Set<String> keys = bitmapHashMap.keySet();
+        for (String k : keys) {
+            bitmapHashMap.get(k).recycle();
+        }
+    }
 }
