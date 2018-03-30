@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
+import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveHeadView;
+
 /**
  * 聊天信息和竖屏献花信息
  * Created by linyuqiang on 2016/8/2.
@@ -16,6 +18,7 @@ public class LiveMessageEntity {
     /** 献花用，是不是自己献花 */
     private boolean self;
     private boolean playAnimation;
+    private StandLiveHeadView standLiveHeadView;
     private String headUrl;
     public static final int MESSAGE_MINE = 0;
     public static final int MESSAGE_TEACHER = 1;
@@ -85,5 +88,18 @@ public class LiveMessageEntity {
 
     public void setPlayAnimation(boolean playAnimation) {
         this.playAnimation = playAnimation;
+    }
+
+    public StandLiveHeadView getStandLiveHeadView() {
+        return standLiveHeadView;
+    }
+
+    public void setStandLiveHeadView(StandLiveHeadView standLiveHeadView) {
+        this.standLiveHeadView = standLiveHeadView;
+    }
+
+    @Override
+    public String toString() {
+        return "type=" + type + ",text=" + text;
     }
 }

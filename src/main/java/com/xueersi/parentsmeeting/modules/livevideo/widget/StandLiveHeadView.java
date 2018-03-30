@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.model.layer.Layer;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
@@ -36,12 +37,21 @@ public class StandLiveHeadView extends LottieAnimationView {
     String name;
     String headUrl;
     boolean isMine = true;
+    LiveMessageEntity entity;
 
     public StandLiveHeadView(Context context, AttributeSet attrs) {
         super(context, attrs);
         paint = new Paint();
         paint.setTextSize(24);
         paint.setColor(Color.WHITE);
+    }
+
+    public LiveMessageEntity getEntity() {
+        return entity;
+    }
+
+    public void setEntity(LiveMessageEntity entity) {
+        this.entity = entity;
     }
 
     public void setIsMine(boolean isMine) {
@@ -156,7 +166,7 @@ public class StandLiveHeadView extends LottieAnimationView {
                     int left = (img_7Bitmap.getWidth() - scalHeadBitmap.getWidth()) / 2;
                     canvas.drawBitmap(scalHeadBitmap, left, left, null);
                     scalHeadBitmap.recycle();
-                    headBitmap.recycle();
+//                    headBitmap.recycle();
                     img_7Bitmap = creatBitmap;
                 } catch (IOException e) {
                     Loger.e(TAG, "updateHead", e);

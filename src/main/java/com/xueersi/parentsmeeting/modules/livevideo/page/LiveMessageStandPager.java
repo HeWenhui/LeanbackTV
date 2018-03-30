@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.page;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
@@ -407,6 +408,28 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                         tvMessageItem = (TextView) root.findViewById(R.id.tv_livevideo_message_item);
                         tvMessageItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
                         standLiveHeadView = root.findViewById(R.id.slhv_livevideo_message_head);
+                        standLiveHeadView.addAnimatorListener(new Animator.AnimatorListener() {
+                            @Override
+                            public void onAnimationStart(Animator animator) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animator animator) {
+                                Log.d(TAG, "onAnimationEnd:progerss=" + standLiveHeadView.getProgress());
+//                                standLiveHeadView.setProgress(1.0f);
+                            }
+
+                            @Override
+                            public void onAnimationCancel(Animator animator) {
+
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animator animator) {
+
+                            }
+                        });
                         initlottieAnim();
                     }
 
@@ -457,6 +480,43 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                             tvMessageItem.setAutoLinkMask(0);
                             tvMessageItem.setText(entity.getText());
                         }
+//                        boolean deng = standLiveHeadView.getEntity() == entity;
+//                        Loger.d(TAG, "updateViews:deng=" + deng + ",text=" + entity.getText());
+//                        if (!deng) {
+//                            standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
+////                        entity.setHeadUrl(getInfo.getHeadImgPath());
+//                            standLiveHeadView.setName(entity.getSender());
+//                            standLiveHeadView.setHead(entity.getHeadUrl());
+//                            if (!entity.isPlayAnimation()) {
+//                                entity.setPlayAnimation(true);
+//                                standLiveHeadView.playAnimation();
+//                            } else {
+//                                standLiveHeadView.setProgress(1.0f);
+//                            }
+//                        } else {
+//                            if (!entity.isPlayAnimation()) {
+//                                Loger.d(TAG, "updateViews:isPlayAnimation=false");
+//                                entity.setPlayAnimation(true);
+//                                standLiveHeadView.playAnimation();
+//                            } else {
+//                                standLiveHeadView.setProgress(1.0f);
+//                            }
+//                        }
+//                        if (!entity.isPlayAnimation()) {
+//                            Loger.d(TAG, "updateViews:isPlayAnimation=false");
+//                            entity.setPlayAnimation(true);
+//                            standLiveHeadView.playAnimation();
+//                        } else {
+//                            Loger.d(TAG, "updateViews:equal=" + (standLiveHeadView.getEntity() != entity));
+//                            if (standLiveHeadView.getEntity() != entity) {
+////                                standLiveHeadView.setProgress(1.0f);
+//                                standLiveHeadView.playAnimation();
+//                            } else {
+////                                standLiveHeadView.resumeAnimation();
+//                            }
+//                        }
+                        boolean deng = standLiveHeadView.getEntity() == entity;
+                        Loger.d(TAG, "updateViews:deng=" + deng + ",progress=" + standLiveHeadView.getProgress() + ",standLiveHeadView=" + standLiveHeadView.hashCode() + ",text=" + entity.getText());
                         standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
 //                        entity.setHeadUrl(getInfo.getHeadImgPath());
                         standLiveHeadView.setName(entity.getSender());
@@ -467,6 +527,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                         } else {
                             standLiveHeadView.setProgress(1.0f);
                         }
+                        entity.setStandLiveHeadView(standLiveHeadView);
+                        standLiveHeadView.setEntity(entity);
                     }
                 };
             }
@@ -963,7 +1025,16 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                     @Override
                     public void run() {
                         if (liveMessageEntities.size() > 29) {
-                            liveMessageEntities.remove(0);
+                            LiveMessageEntity entity = liveMessageEntities.remove(0);
+                            //使用AutohListview会走这，现在listview不会
+//                            StandLiveHeadView standLiveHeadView = entity.getStandLiveHeadView();
+//                            boolean same = standLiveHeadView.getEntity() == entity;
+//                            if (same) {
+//                                standLiveHeadView.pauseAnimation();
+//                                Loger.d(TAG, "addMessage:pauseAnimation:entity=" + entity.getText());
+//                            } else {
+//                                Loger.d(TAG, "addMessage:entity=" + standLiveHeadView.getEntity() + "," + entity.getText());
+//                            }
                         }
                         LiveMessageEntity entity = new LiveMessageEntity(sender, type, sBuilder, headUrl);
                         liveMessageEntities.add(entity);
@@ -978,6 +1049,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                         }
                         messageAdapter.notifyDataSetChanged();
                         if (!isTouch) {
+//                            if (lvMessage.getChildCount() == 1) {
+//                                lvMessage.scrollBy(0, lvMessage.getChildAt(0).getHeight());
+//                            }
                             lvMessage.setSelection(lvMessage.getCount() - 1);
                         }
                     }
