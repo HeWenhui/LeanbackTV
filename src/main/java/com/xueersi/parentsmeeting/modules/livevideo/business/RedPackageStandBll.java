@@ -22,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.RedPackagePage;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -38,6 +39,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     /** 红包的布局 */
     private RelativeLayout rlRedpacketContent;
     RedPackagePage redPackagePage;
+    HashMap<String, RedPackagePage> packagePageHashMap = new HashMap<>();
     ReceiveGold receiveGold;
     String headUrl;
     String userName;
@@ -81,15 +83,18 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     }
 
     private void onGetPackage(VideoResultEntity entity) {
-        rlRedpacketContent.removeAllViews();
-        initRedPacketResult(entity.getGoldNum());
+//        rlRedpacketContent.removeAllViews();
+//        initRedPacketResult(entity.getGoldNum());
     }
 
     private void onGetPackageFailure(int operateId) {
     }
 
     private void onGetPackageError(int operateId) {
-        rlRedpacketContent.removeAllViews();
+        RedPackagePage redPackagePage = packagePageHashMap.remove("" + operateId);
+        if (redPackagePage != null) {
+            rlRedpacketContent.removeView(redPackagePage.getRootView());
+        }
     }
 
     public void initView(RelativeLayout bottomContent) {
@@ -119,7 +124,8 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
      */
     private void showRedPacket(final int operateId) {
         mLogtf.d("showRedPacket:operateId=" + operateId);
-        rlRedpacketContent.removeAllViews();
+//        rlRedpacketContent.removeAllViews();
+        final RedPackagePage oldRedPackagePage = redPackagePage;
         redPackagePage = new RedPackagePage(activity, operateId, new RedPackagePage.RedPackagePageAction() {
 
             @Override
@@ -128,7 +134,14 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                     @Override
                     public void onDataSucess(Object... objData) {
                         VideoResultEntity entity = (VideoResultEntity) objData[0];
+                        RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
                         redPackagePage.onGetPackage(entity);
+                        rlRedpacketContent.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                onPackageClose(operateId);
+                            }
+                        }, 3000);
                     }
 
                     @Override
@@ -144,10 +157,21 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
 
             @Override
             public void onPackageClose(int operateId) {
-                rlRedpacketContent.removeAllViews();
+                RedPackagePage redPackagePage = packagePageHashMap.remove("" + operateId);
+                if (redPackagePage != null) {
+                    rlRedpacketContent.removeView(redPackagePage.getRootView());
+                }
+            }
+
+            @Override
+            public void onPackageRight(int operateId) {
+                if (oldRedPackagePage != null) {
+                    oldRedPackagePage.onOtherPackage();
+                }
             }
         }, userName, headUrl);
         View view = redPackagePage.getRootView();
+        packagePageHashMap.put("" + operateId, redPackagePage);
 //        view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
         view.setTag(operateId);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -163,48 +187,48 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
      * @param goldNum 金币数量
      */
     private void initRedPacketResult(int goldNum) {
-        String msg = "+" + goldNum + "金币";
-        View view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_success, rlRedpacketContent, false);
-        view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
-        SpannableString msp = new SpannableString(msg);
-        float screenDensity = ScreenUtils.getScreenDensity();
-        // 字体
-        msp.setSpan(new AbsoluteSizeSpan((int) (50 * screenDensity)), 0, msg.length() - 2,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        TextView tvGoldHint = (TextView) view.findViewById(R.id.tv_livevideo_redpackage_gold);
-        tvGoldHint.setText(msp);
-        rlRedpacketContent.addView(view);
-        view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rlRedpacketContent.removeAllViews();
-            }
-        });
-        final TextView tvAutoclose = (TextView) view.findViewById(R.id.tv_livevideo_redpackage_autoclose);
-        final AtomicInteger count = new AtomicInteger(3);
-        postDelayedIfNotFinish(new Runnable() {
-            @Override
-            public void run() {
-                count.set(count.get() - 1);
-                if (count.get() == 0) {
-                    rlRedpacketContent.removeAllViews();
-                } else {
-                    if (rlRedpacketContent.getChildCount() > 0) {
-                        tvAutoclose.setText(count.get() + "秒自动关闭");
-                        postDelayedIfNotFinish(this, 1000);
-                    }
-                }
-            }
-        }, 1000);
-        postDelayedIfNotFinish(new Runnable() {
-            @Override
-            public void run() {
-                receiveGold.onReceiveGold();
-            }
-        }, 2900);
-        ImageView ivRedpackageLight = (ImageView) view.findViewById(R.id.iv_livevideo_redpackage_light);
-        Animation animation = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_light_rotate);
-        ivRedpackageLight.startAnimation(animation);
+//        String msg = "+" + goldNum + "金币";
+//        View view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_success, rlRedpacketContent, false);
+//        view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
+//        SpannableString msp = new SpannableString(msg);
+//        float screenDensity = ScreenUtils.getScreenDensity();
+//        // 字体
+//        msp.setSpan(new AbsoluteSizeSpan((int) (50 * screenDensity)), 0, msg.length() - 2,
+//                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        TextView tvGoldHint = (TextView) view.findViewById(R.id.tv_livevideo_redpackage_gold);
+//        tvGoldHint.setText(msp);
+//        rlRedpacketContent.addView(view);
+//        view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                rlRedpacketContent.removeAllViews();
+//            }
+//        });
+//        final TextView tvAutoclose = (TextView) view.findViewById(R.id.tv_livevideo_redpackage_autoclose);
+//        final AtomicInteger count = new AtomicInteger(3);
+//        postDelayedIfNotFinish(new Runnable() {
+//            @Override
+//            public void run() {
+//                count.set(count.get() - 1);
+//                if (count.get() == 0) {
+//                    rlRedpacketContent.removeAllViews();
+//                } else {
+//                    if (rlRedpacketContent.getChildCount() > 0) {
+//                        tvAutoclose.setText(count.get() + "秒自动关闭");
+//                        postDelayedIfNotFinish(this, 1000);
+//                    }
+//                }
+//            }
+//        }, 1000);
+//        postDelayedIfNotFinish(new Runnable() {
+//            @Override
+//            public void run() {
+//                receiveGold.onReceiveGold();
+//            }
+//        }, 2900);
+//        ImageView ivRedpackageLight = (ImageView) view.findViewById(R.id.iv_livevideo_redpackage_light);
+//        Animation animation = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_light_rotate);
+//        ivRedpackageLight.startAnimation(animation);
     }
 
     public void postDelayedIfNotFinish(Runnable r, long delayMillis) {

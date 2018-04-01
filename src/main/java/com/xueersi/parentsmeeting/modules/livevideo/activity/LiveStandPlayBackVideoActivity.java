@@ -502,35 +502,47 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
             redPackageStandBll.initView(rl_course_video_live_redpackage_content);
 
             if (AppConfig.DEBUG) {
+
+                mRedPacketId = "2";
                 final VideoQuestionEntity mQuestionEntity = new VideoQuestionEntity();
-                mRedPacketId = "1";
-                redPackageStandBll.setReceiveGold(new RedPackageStandBll.ReceiveGold() {
-                    @Override
-                    public void sendReceiveGold(int operateId, String liveId, final AbstractBusinessDataCallBack callBack) {
-                        mQuestionEntity.setAnswered(true);
-                        DataLoadEntity loadEntity = new DataLoadEntity(mContext);
-                        loadEntity.setLoadingTip(R.string.loading_tip_default);
-                        BaseBll.postDataLoadEvent(loadEntity.beginLoading());
-                        lectureLivePlayBackBll.getLivePlayRedPacket(loadEntity, mVideoEntity.getLiveId(), mRedPacketId, new AbstractBusinessDataCallBack() {
-                            @Override
-                            public void onDataSucess(Object... objData) {
-                                callBack.onDataSucess(objData);
-                                redPacketViewGone(mQuestionEntity);
-                            }
+                showRedPacket(mQuestionEntity);
 
-                            @Override
-                            public void onDataFail(int errStatus, String failMsg) {
-                                callBack.onDataFail(errStatus, failMsg);
-                                redPacketViewGone(mQuestionEntity);
-                            }
-                        });
-                    }
-
+                rl_course_video_live_redpackage_content.postDelayed(new Runnable() {
                     @Override
-                    public void onReceiveGold() {
+                    public void run() {
+                        mRedPacketId = "3";
+                        VideoQuestionEntity mQuestionEntity = new VideoQuestionEntity();
+                        showRedPacket(mQuestionEntity);
                     }
-                });
-                redPackageStandBll.onReadPackage(Integer.parseInt(mRedPacketId));
+                }, 7000);
+//                mRedPacketId = "1";
+//                redPackageStandBll.setReceiveGold(new RedPackageStandBll.ReceiveGold() {
+//                    @Override
+//                    public void sendReceiveGold(int operateId, String liveId, final AbstractBusinessDataCallBack callBack) {
+//                        mQuestionEntity.setAnswered(true);
+//                        DataLoadEntity loadEntity = new DataLoadEntity(mContext);
+//                        loadEntity.setLoadingTip(R.string.loading_tip_default);
+//                        BaseBll.postDataLoadEvent(loadEntity.beginLoading());
+//                        lectureLivePlayBackBll.getLivePlayRedPacket(loadEntity, mVideoEntity.getLiveId(), mRedPacketId, new AbstractBusinessDataCallBack() {
+//                            @Override
+//                            public void onDataSucess(Object... objData) {
+//                                callBack.onDataSucess(objData);
+//                                redPacketViewGone(mQuestionEntity);
+//                            }
+//
+//                            @Override
+//                            public void onDataFail(int errStatus, String failMsg) {
+//                                callBack.onDataFail(errStatus, failMsg);
+//                                redPacketViewGone(mQuestionEntity);
+//                            }
+//                        });
+//                    }
+//
+//                    @Override
+//                    public void onReceiveGold() {
+//                    }
+//                });
+//                redPackageStandBll.onReadPackage(Integer.parseInt(mRedPacketId));
             }
         }
     }

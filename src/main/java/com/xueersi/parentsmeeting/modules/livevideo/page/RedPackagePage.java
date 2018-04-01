@@ -33,7 +33,7 @@ public class RedPackagePage extends BasePager {
     Context context;
     int operateId;
     RedPackagePageAction redPackageAction;
-    RelativeLayout rl_livevideo_redpackage_bg;
+    View rl_livevideo_redpackage_bg;
     ImageView iv_livevideo_redpackage_bg;
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
     String userName;
@@ -236,9 +236,11 @@ public class RedPackagePage extends BasePager {
 
                             @Override
                             public void onAnimationStart() {
+                                redPackageAction.onPackageRight(operateId);
                                 iv_livevideo_redpackage_bg.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
+                                        Loger.d(TAG, "onPackageClick:operateId=" + operateId + "," + view.getTop() + "," + view);
                                         iv_livevideo_redpackage_bg.setOnClickListener(null);
                                         if (btframeAnimation1 != null) {
                                             btframeAnimation1.pauseAnimation();
@@ -255,7 +257,7 @@ public class RedPackagePage extends BasePager {
 //                                        initEnter2();
                                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) iv_livevideo_redpackage_bg.getLayoutParams();
                                 lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                                lp.rightMargin = 200;
+                                lp.rightMargin = 40;
                                 iv_livevideo_redpackage_bg.setLayoutParams(lp);
                                 btframeAnimation1 = createFromAees("Images/redpackage/7_xunhuan_xiao", true);
                                 frameAnimations.add(btframeAnimation1);
@@ -324,6 +326,13 @@ public class RedPackagePage extends BasePager {
         initEnter2(entity);
     }
 
+    public void onOtherPackage() {
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) iv_livevideo_redpackage_bg.getLayoutParams();
+        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        lp.bottomMargin = 100;
+        iv_livevideo_redpackage_bg.setLayoutParams(lp);
+    }
+
     public FrameAnimation createFromAees(String path, boolean isRepeat) {
         return FrameAnimation.createFromAees(mContext, iv_livevideo_redpackage_bg, path, 50, isRepeat);
     }
@@ -332,5 +341,7 @@ public class RedPackagePage extends BasePager {
         void onPackageClick(int operateId);
 
         void onPackageClose(int operateId);
+
+        void onPackageRight(int operateId);
     }
 }

@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.dialog;
 
 import android.content.Context;
 import android.view.View;
+
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RedPackagePage;
@@ -35,6 +36,11 @@ public class StandLiveRedPacketAlertDialog extends BaseAlertDialog {
             public void onPackageClose(int operateId) {
                 mAlertDialog.cancel();
                 redPackageAction.onPackageClose(operateId);
+            }
+
+            @Override
+            public void onPackageRight(int operateId) {
+
             }
         }, "", mMyInfo.getHeadImg());
         View view = redPackagePage.getRootView();
