@@ -16,7 +16,6 @@ import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -42,7 +41,7 @@ public class RedPackagePage extends BasePager {
 
     @Override
     public View initView() {
-        mView = View.inflate(mContext, R.layout.dialog_red_packet_view, null);
+        mView = View.inflate(mContext, R.layout.dialog_live_stand_red_packet_view, null);
         iv_livevideo_redpackage_bg = mView.findViewById(R.id.iv_livevideo_redpackage_bg);
         mView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
@@ -88,209 +87,156 @@ public class RedPackagePage extends BasePager {
 
             }
         });
-        initEnter();
 //        initEnter2();
     }
 
     private void initEnter2() {
-        try {
-            String[] files = mContext.getAssets().list("Images/redpackage/5_bianshen");
-            for (int i = 0; i < files.length; i++) {
-                files[i] = "Images/redpackage/5_bianshen/" + files[i];
+        final FrameAnimation btframeAnimation1 = createFromAees("Images/redpackage/5_bianshen", false);
+        frameAnimations.add(btframeAnimation1);
+        btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
+            @Override
+            public void onAnimationStart() {
+
             }
-            final FrameAnimation btframeAnimation1 = new FrameAnimation(iv_livevideo_redpackage_bg, files, 50, false);
-            frameAnimations.add(btframeAnimation1);
-            btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
-                @Override
-                public void onAnimationStart() {
 
-                }
-
-                @Override
-                public void onAnimationEnd() {
-                    try {
-                        String[] files = mContext.getAssets().list("Images/redpackage/4_feichuan");
-                        for (int i = 0; i < files.length; i++) {
-                            files[i] = "Images/redpackage/4_feichuan/" + files[i];
-                        }
-                        final FrameAnimation btframeAnimation2 = new FrameAnimation(iv_livevideo_redpackage_bg, files, 50, true);
-                        frameAnimations.add(btframeAnimation2);
-                        btframeAnimation2.setBitmapCreate(new FrameAnimation.BitmapCreate() {
-                            @Override
-                            public Bitmap onAnimationCreate(String file) {
-                                Loger.d(TAG,"onAnimationCreate:file="+file);
-                                return headBitmap;
-                            }
-                        });
-                    } catch (Exception e) {
-
+            @Override
+            public void onAnimationEnd() {
+                final FrameAnimation btframeAnimation2 = createFromAees("Images/redpackage/4_feichuan", true);
+                frameAnimations.add(btframeAnimation2);
+                btframeAnimation2.setBitmapCreate(new FrameAnimation.BitmapCreate() {
+                    @Override
+                    public Bitmap onAnimationCreate(String file) {
+                        Loger.d(TAG, "onAnimationCreate:file=" + file);
+                        return headBitmap;
                     }
-                }
+                });
+            }
 
-                @Override
-                public void onAnimationRepeat() {
+            @Override
+            public void onAnimationRepeat() {
 
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            }
+        });
     }
 
-    private void initEnter() {
-        try {
-            String[] files = mContext.getAssets().list("Images/redpackage/1_kaichang");
-            for (int i = 0; i < files.length; i++) {
-                files[i] = "Images/redpackage/1_kaichang/" + files[i];
+    public void initEnter() {
+        final FrameAnimation btframeAnimation1 = createFromAees("Images/redpackage/1_kaichang", false);
+        frameAnimations.add(btframeAnimation1);
+        btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
+            @Override
+            public void onAnimationStart() {
+
             }
-            final FrameAnimation btframeAnimation1 = new FrameAnimation(iv_livevideo_redpackage_bg, files, 50, false);
-            frameAnimations.add(btframeAnimation1);
-            btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
-                @Override
-                public void onAnimationStart() {
 
-                }
-
-                @Override
-                public void onAnimationEnd() {
-                    FrameAnimation btframeAnimation2 = null;
-                    try {
-                        String[] files = mContext.getAssets().list("Images/redpackage/2_xunhuan");
-                        for (int i = 0; i < files.length; i++) {
-                            files[i] = "Images/redpackage/2_xunhuan/" + files[i];
-                        }
-                        btframeAnimation2 = new FrameAnimation(iv_livevideo_redpackage_bg, files, 50, true);
-                        frameAnimations.add(btframeAnimation1);
+            @Override
+            public void onAnimationEnd() {
+                FrameAnimation btframeAnimation2 = null;
+                btframeAnimation2 = createFromAees("Images/redpackage/2_xunhuan", true);
+                frameAnimations.add(btframeAnimation1);
 //                        btMesOpenAnimation.setAnimationListener(null);
-                        iv_livevideo_redpackage_bg.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                btframeAnimation1.destory();
-                                frameAnimations.remove(btframeAnimation1);
-                            }
-                        }, 60);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                iv_livevideo_redpackage_bg.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        btframeAnimation1.destory();
+                        frameAnimations.remove(btframeAnimation1);
                     }
-                    final AtomicBoolean click = new AtomicBoolean(false);
-                    final FrameAnimation finalBtframeAnimation = btframeAnimation2;
-                    iv_livevideo_redpackage_bg.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (click.get()) {
-                                return;
-                            }
-                            iv_livevideo_redpackage_bg.setOnClickListener(null);
-                            try {
-                                if (finalBtframeAnimation != null) {
-                                    finalBtframeAnimation.pauseAnimation();
-                                }
-                                String[] files = mContext.getAssets().list("Images/redpackage/6_suoxiao");
-                                for (int i = 0; i < files.length; i++) {
-                                    files[i] = "Images/redpackage/6_suoxiao/" + files[i];
-                                }
-                                final FrameAnimation btframeAnimation1 = new FrameAnimation(iv_livevideo_redpackage_bg, files, 50, false);
-                                frameAnimations.add(btframeAnimation1);
-                                btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
-                                    FrameAnimation btframeAnimation1;
+                }, 60);
+                final AtomicBoolean click = new AtomicBoolean(false);
+                final FrameAnimation finalBtframeAnimation = btframeAnimation2;
+                iv_livevideo_redpackage_bg.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (click.get()) {
+                            return;
+                        }
+                        iv_livevideo_redpackage_bg.setOnClickListener(null);
+                        if (finalBtframeAnimation != null) {
+                            finalBtframeAnimation.pauseAnimation();
+                        }
+                        final FrameAnimation btframeAnimation1 = createFromAees("Images/redpackage/6_suoxiao", false);
+                        frameAnimations.add(btframeAnimation1);
+                        btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
+                            FrameAnimation btframeAnimation1;
 
+                            @Override
+                            public void onAnimationStart() {
+                                iv_livevideo_redpackage_bg.setOnClickListener(new View.OnClickListener() {
                                     @Override
-                                    public void onAnimationStart() {
-                                        iv_livevideo_redpackage_bg.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                iv_livevideo_redpackage_bg.setOnClickListener(null);
-                                                if (btframeAnimation1 != null) {
-                                                    btframeAnimation1.pauseAnimation();
-                                                }
-                                                initEnter2();
-                                            }
-                                        });
-                                    }
-
-                                    @Override
-                                    public void onAnimationEnd() {
-//                                        initEnter2();
-                                        try {
-                                            String[] files = mContext.getAssets().list("Images/redpackage/7_xunhuan_xiao");
-                                            for (int i = 0; i < files.length; i++) {
-                                                files[i] = "Images/redpackage/7_xunhuan_xiao/" + files[i];
-                                            }
-                                            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) iv_livevideo_redpackage_bg.getLayoutParams();
-                                            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-//                                            lp.width = 200;
-                                            iv_livevideo_redpackage_bg.setLayoutParams(lp);
-                                            btframeAnimation1 = new FrameAnimation(iv_livevideo_redpackage_bg, files, 50, true);
-                                            frameAnimations.add(btframeAnimation1);
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
+                                    public void onClick(View view) {
+                                        iv_livevideo_redpackage_bg.setOnClickListener(null);
+                                        if (btframeAnimation1 != null) {
+                                            btframeAnimation1.pauseAnimation();
                                         }
-                                    }
-
-                                    @Override
-                                    public void onAnimationRepeat() {
-
+                                        initEnter2();
                                     }
                                 });
-                            } catch (IOException e) {
-                                e.printStackTrace();
                             }
-                        }
-                    }, 3400);
-                    iv_livevideo_redpackage_bg.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            click.set(true);
+
+                            @Override
+                            public void onAnimationEnd() {
+//                                        initEnter2();
+                                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) iv_livevideo_redpackage_bg.getLayoutParams();
+                                lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//                                            lp.width = 200;
+                                iv_livevideo_redpackage_bg.setLayoutParams(lp);
+                                btframeAnimation1 = createFromAees("Images/redpackage/7_xunhuan_xiao", true);
+                                frameAnimations.add(btframeAnimation1);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat() {
+
+                            }
+                        });
+                    }
+                }, 3400);
+                iv_livevideo_redpackage_bg.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        click.set(true);
 //                            redPackageAction.onPackageClick(operateId);
-                            iv_livevideo_redpackage_bg.setOnClickListener(null);
-                            if (finalBtframeAnimation != null) {
-                                finalBtframeAnimation.pauseAnimation();
-                                iv_livevideo_redpackage_bg.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        finalBtframeAnimation.destory();
-                                    }
-                                }, 60);
-                            }
-                            try {
-                                String[] files = mContext.getAssets().list("Images/redpackage/3_feichu");
-                                for (int i = 0; i < files.length; i++) {
-                                    files[i] = "Images/redpackage/3_feichu/" + files[i];
+                        iv_livevideo_redpackage_bg.setOnClickListener(null);
+                        if (finalBtframeAnimation != null) {
+                            finalBtframeAnimation.pauseAnimation();
+                            iv_livevideo_redpackage_bg.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    finalBtframeAnimation.destory();
                                 }
-                                FrameAnimation btframeAnimation3 = new FrameAnimation(iv_livevideo_redpackage_bg, files, 50, false);
-                                frameAnimations.add(btframeAnimation3);
-                                btframeAnimation3.setAnimationListener(new FrameAnimation.AnimationListener() {
-                                    @Override
-                                    public void onAnimationStart() {
-
-                                    }
-
-                                    @Override
-                                    public void onAnimationEnd() {
-                                        iv_livevideo_redpackage_bg.setBackgroundColor(Color.TRANSPARENT);
-                                        redPackageAction.onPackageClose(operateId);
-                                    }
-
-                                    @Override
-                                    public void onAnimationRepeat() {
-
-                                    }
-                                });
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                            }, 60);
                         }
-                    });
-                }
+                        FrameAnimation btframeAnimation3 = createFromAees("Images/redpackage/3_feichu", false);
+                        frameAnimations.add(btframeAnimation3);
+                        btframeAnimation3.setAnimationListener(new FrameAnimation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart() {
 
-                @Override
-                public void onAnimationRepeat() {
+                            }
 
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                            @Override
+                            public void onAnimationEnd() {
+                                iv_livevideo_redpackage_bg.setBackgroundColor(Color.TRANSPARENT);
+                                redPackageAction.onPackageClose(operateId);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat() {
+
+                            }
+                        });
+                    }
+                });
+            }
+
+            @Override
+            public void onAnimationRepeat() {
+
+            }
+        });
+    }
+
+    public FrameAnimation createFromAees(String path, boolean isRepeat) {
+        return FrameAnimation.createFromAees(mContext, iv_livevideo_redpackage_bg, path, 50, isRepeat);
     }
 
     public interface RedPackagePageAction {

@@ -100,7 +100,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
             public void run() {
                 showRedPacket(1);
             }
-        },1000);
+        }, 1000);
     }
 
     /**
@@ -135,7 +135,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
             public void onPackageClose(int operateId) {
                 rlRedpacketContent.removeAllViews();
             }
-        }, "");
+        }, mLiveBll.getGetInfo().getHeadImgPath());
         View view = redPackagePage.getRootView();
 //        view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
         view.setTag(operateId);
@@ -143,6 +143,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
         rlRedpacketContent.addView(view, params);
         activity.getWindow().getDecorView().requestLayout();
         activity.getWindow().getDecorView().invalidate();
+        redPackagePage.initEnter();
     }
 
     /**

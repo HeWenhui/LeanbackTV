@@ -1922,6 +1922,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         return liveVideoSAConfig;
     }
 
+    public LiveGetInfo getGetInfo() {
+        return mGetInfo;
+    }
+
     /**
      * 请求房间状态成功
      *

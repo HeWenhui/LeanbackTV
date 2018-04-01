@@ -16,8 +16,9 @@ import com.xueersi.parentsmeeting.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.EmptyControllerBottomInter;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaController;
+import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaControllerBottom2;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -31,9 +32,9 @@ import java.util.List;
  *
  * @author linyuqiang
  */
-public class LiveStandPlaybackMediaController extends MediaController {
+public class LiveStandPlaybackMediaController extends MediaController2 {
     private String TAG = "LivePlaybackMediaController";
-    public MediaControllerBottom mediaControllerBottom;
+    public MediaControllerBottom2 mediaControllerBottom;
     private RelativeLayout rlKeyPoints;
     private RelativeLayout rlKeytip;
     Activity activity;
@@ -41,6 +42,11 @@ public class LiveStandPlaybackMediaController extends MediaController {
     public LiveStandPlaybackMediaController(Context context, MediaPlayerControl player) {
         super(context, player);
         activity = (Activity) context;
+        controllerBottom = new LiveBackStandMediaControllerBottom(getContext(), this, mPlayer);
+        setControllerBottom(controllerBottom);
+        mediaControllerBottom = (MediaControllerBottom2) controllerBottom;
+        rlKeyPoints = (RelativeLayout) mediaControllerBottom.findViewById(R.id.rl_video_mediacontroller_keypoints);
+        rlKeytip = (RelativeLayout) mediaControllerBottom.findViewById(R.id.rl_video_mediacontroller_keytip);
     }
 
     @Override
@@ -61,23 +67,23 @@ public class LiveStandPlaybackMediaController extends MediaController {
         }
     }
 
-    @Override
-    public void setHaveBottom(boolean have) {
-//        super.setHaveBottom(have);
-        if (have) {
-            controllerBottom = new LiveBackStandMediaControllerBottom(getContext(), this, mPlayer);
-            ViewGroup.LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams
-                    .MATCH_PARENT);
-            mControlsLayout.addView((View) controllerBottom, layoutParams);
-        } else {
-            mControlsLayout.removeAllViews();
-            controllerBottom = new EmptyControllerBottomInter();
-        }
-
-        mediaControllerBottom = (MediaControllerBottom) controllerBottom;
-        rlKeyPoints = (RelativeLayout) mediaControllerBottom.findViewById(R.id.rl_video_mediacontroller_keypoints);
-        rlKeytip = (RelativeLayout) mediaControllerBottom.findViewById(R.id.rl_video_mediacontroller_keytip);
-    }
+//    @Override
+//    public void setHaveBottom(boolean have) {
+////        super.setHaveBottom(have);
+//        if (have) {
+//            controllerBottom = new LiveBackStandMediaControllerBottom(getContext(), this, mPlayer);
+//            ViewGroup.LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams
+//                    .MATCH_PARENT);
+//            mControlsLayout.addView((View) controllerBottom, layoutParams);
+//        } else {
+//            mControlsLayout.removeAllViews();
+//            controllerBottom = new EmptyControllerBottomInter();
+//        }
+//
+//        mediaControllerBottom = (MediaControllerBottom) controllerBottom;
+//        rlKeyPoints = (RelativeLayout) mediaControllerBottom.findViewById(R.id.rl_video_mediacontroller_keypoints);
+//        rlKeytip = (RelativeLayout) mediaControllerBottom.findViewById(R.id.rl_video_mediacontroller_keytip);
+//    }
 
     /**
      * 添加互动题的点

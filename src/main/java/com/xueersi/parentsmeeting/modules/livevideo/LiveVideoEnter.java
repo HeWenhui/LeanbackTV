@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideo
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveStandPlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.StandLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
@@ -316,7 +317,8 @@ public class LiveVideoEnter {
      * @param bundle
      */
     public static boolean intentTo(Activity context, Bundle bundle, String where) {
-        LivePlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+//        LivePlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+        LiveStandPlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
         return true;
     }
 

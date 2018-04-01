@@ -133,11 +133,11 @@ public class LiveGetInfo {
     /** 当前的直播模式 */
     private String mode = LiveTopic.MODE_TRANING;
     private TotalOpeningLength totalOpeningLength;
-    /**是否显示满分榜*/
+    /** 是否显示满分榜 */
     private String is_show_ranks;
-    /**是否显示智能私信*/
+    /** 是否显示智能私信 */
     private String isShowCounselorWhisper;
-    /**是否有标记点功能*/
+    /** 是否有标记点功能 */
     private String isShowMarkPoint;
 
     public String getIsShowMarkPoint() {

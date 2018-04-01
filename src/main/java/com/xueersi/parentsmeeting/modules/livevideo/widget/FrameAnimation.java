@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -409,13 +408,13 @@ public class FrameAnimation {
         }
     }
 
-    public static FrameAnimation createFromAees(Context mContext, View iv, String path) {
+    public static FrameAnimation createFromAees(Context mContext, View iv, String path, int duration, boolean isRepeat) {
         try {
             String[] files = mContext.getAssets().list(path);
             for (int i = 0; i < files.length; i++) {
-                files[i] = path + files[i];
+                files[i] = path + "/" + files[i];
             }
-            FrameAnimation btframeAnimation1 = new FrameAnimation(iv, files, 50, false);
+            FrameAnimation btframeAnimation1 = new FrameAnimation(iv, files, duration, isRepeat);
             return btframeAnimation1;
         } catch (IOException e) {
             e.printStackTrace();

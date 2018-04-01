@@ -6,15 +6,17 @@ import android.view.View;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaController;
+import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaControllerBottom2;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaPlayerControl;
 
 /**
  * Created by lyqai on 2018/3/21.
  */
 
-public class LiveBackStandMediaControllerBottom extends MediaControllerBottom {
-    public LiveBackStandMediaControllerBottom(Context context, MediaController controller, MediaPlayerControl player) {
+public class LiveBackStandMediaControllerBottom extends MediaControllerBottom2 {
+    public LiveBackStandMediaControllerBottom(Context context, MediaController2 controller, MediaPlayerControl player) {
         super(context, controller, player);
     }
 

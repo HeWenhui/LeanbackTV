@@ -67,7 +67,6 @@ import com.xueersi.xesalib.view.button.CompoundButtonGroup;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -175,35 +174,27 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     }
 
     void initBtMesOpenAnimation() {
-        try {
-            String[] files = mContext.getAssets().list("Images/openmsg");
-            for (int i = 0; i < files.length; i++) {
-                files[i] = "Images/openmsg/" + files[i];
-            }
-            btMesOpenAnimation = new FrameAnimation(btMesOpen, files, 50, false);
+        btMesOpenAnimation = FrameAnimation.createFromAees(mContext, btMesOpen, "Images/openmsg", 50, false);
 //            btMesOpenAnimation.restartAnimation();
-            btMesOpenAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
-                @Override
-                public void onAnimationStart() {
-                    Log.d(TAG, "onAnimationStart");
-                }
+        btMesOpenAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
+            @Override
+            public void onAnimationStart() {
+                Log.d(TAG, "onAnimationStart");
+            }
 
-                @Override
-                public void onAnimationEnd() {
-                    Log.d(TAG, "onAnimationEnd");
-                    liveMediaControllerBottom.onChildViewClick(btMesOpen);
-                    rlMessageContent.setVisibility(View.VISIBLE);
-                    KPSwitchConflictUtil.showKeyboard(switchFSPanelLinearLayout, etMessageContent);
-                }
+            @Override
+            public void onAnimationEnd() {
+                Log.d(TAG, "onAnimationEnd");
+                liveMediaControllerBottom.onChildViewClick(btMesOpen);
+                rlMessageContent.setVisibility(View.VISIBLE);
+                KPSwitchConflictUtil.showKeyboard(switchFSPanelLinearLayout, etMessageContent);
+            }
 
-                @Override
-                public void onAnimationRepeat() {
-                    Log.d(TAG, "onAnimationRepeat");
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            @Override
+            public void onAnimationRepeat() {
+                Log.d(TAG, "onAnimationRepeat");
+            }
+        });
     }
 
     @Override
