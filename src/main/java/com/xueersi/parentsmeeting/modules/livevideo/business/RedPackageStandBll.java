@@ -33,11 +33,14 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     private LogToFile mLogtf;
     private Activity activity;
-    private LiveBll mLiveBll;
     /** 直播id */
     private String mVSectionID;
     /** 红包的布局 */
     private RelativeLayout rlRedpacketContent;
+    RedPackagePage redPackagePage;
+    ReceiveGold receiveGold;
+    String headUrl;
+    String userName;
 
     public RedPackageStandBll(Activity activity) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -46,8 +49,16 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
         this.activity = activity;
     }
 
-    public void setLiveBll(LiveBll mLiveBll) {
-        this.mLiveBll = mLiveBll;
+    public void setReceiveGold(ReceiveGold receiveGold) {
+        this.receiveGold = receiveGold;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setHeadUrl(String headUrl) {
+        this.headUrl = headUrl;
     }
 
     public void setVSectionID(String mVSectionID) {
@@ -95,12 +106,12 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
 //        else {
 //            initRedPacketResult(5);
 //        }
-        rlRedpacketContent.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                showRedPacket(1);
-            }
-        }, 1000);
+//        rlRedpacketContent.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                showRedPacket(1);
+//            }
+//        }, 1000);
     }
 
     /**
@@ -109,15 +120,15 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     private void showRedPacket(final int operateId) {
         mLogtf.d("showRedPacket:operateId=" + operateId);
         rlRedpacketContent.removeAllViews();
-        RedPackagePage redPackagePage = new RedPackagePage(activity, operateId, new RedPackagePage.RedPackagePageAction() {
+        redPackagePage = new RedPackagePage(activity, operateId, new RedPackagePage.RedPackagePageAction() {
 
             @Override
             public void onPackageClick(final int operateId) {
-                mLiveBll.sendReceiveGold(operateId, mVSectionID, new AbstractBusinessDataCallBack() {
+                receiveGold.sendReceiveGold(operateId, mVSectionID, new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
                         VideoResultEntity entity = (VideoResultEntity) objData[0];
-                        onGetPackage(entity);
+                        redPackagePage.onGetPackage(entity);
                     }
 
                     @Override
@@ -135,7 +146,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
             public void onPackageClose(int operateId) {
                 rlRedpacketContent.removeAllViews();
             }
-        }, mLiveBll.getGetInfo().getHeadImgPath());
+        }, userName, headUrl);
         View view = redPackagePage.getRootView();
 //        view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
         view.setTag(operateId);
@@ -188,7 +199,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
         postDelayedIfNotFinish(new Runnable() {
             @Override
             public void run() {
-                mLiveBll.getStuGoldCount();
+                receiveGold.onReceiveGold();
             }
         }, 2900);
         ImageView ivRedpackageLight = (ImageView) view.findViewById(R.id.iv_livevideo_redpackage_light);
@@ -201,5 +212,11 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
             return;
         }
         mVPlayVideoControlHandler.postDelayed(r, delayMillis);
+    }
+
+    public interface ReceiveGold {
+        void sendReceiveGold(final int operateId, String liveId, final AbstractBusinessDataCallBack callBack);
+
+        void onReceiveGold();
     }
 }

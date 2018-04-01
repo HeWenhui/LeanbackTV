@@ -248,6 +248,7 @@
     <item name="rl_livevideo_content_question" type="id" />
     <!--直播-红包根布局-->
     <item name="rl_livevideo_content_readpackage" type="id" />
+    <item name="rl_livevideo_redpackage_bg" type="id" />
     <item name="iv_livevideo_redpackage_bg" type="id" />
     <item name="tv_livevideo_redpackage_title" type="id" />
     <item name="tv_livevideo_redpackage_subtitle" type="id" />
@@ -257,6 +258,9 @@
     <item name="iv_livevideo_redpackage_close" type="id" />
     <item name="tv_livevideo_redpackage_gold" type="id" />
     <item name="tv_livevideo_redpackage_autoclose" type="id" />
+    <item name="tv_livevideo_redpackage_name" type="id" />
+    <item name="iv_livevideo_redpackage_num" type="id" />
+    <item name="tv_livevideo_redpackage_num" type="id" />
     <!--直播-学习报告根布局-->
     <item name="rl_livevideo_content_learnreport" type="id" />
     <item name="tv_livevideo_float_title" type="id" />

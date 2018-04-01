@@ -304,12 +304,16 @@
         </RelativeLayout>
 
     </RelativeLayout>
-    <!-- 互动题显示的界面位置 -->
+    <!-- MediaController2的界面位置 -->
     <RelativeLayout
         android:id="@id/rl_course_video_live_controller_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <RelativeLayout
+        android:id="@id/rl_course_video_live_redpackage_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     <!-- 直播回放 互动题显示的界面位置 -->
     <com.xueersi.parentsmeeting.modules.livevideo.widget.LiveRelativeLayout
         android:id="@id/rl_course_video_live_question_content"

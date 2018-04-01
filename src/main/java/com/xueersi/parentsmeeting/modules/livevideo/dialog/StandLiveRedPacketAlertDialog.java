@@ -15,11 +15,11 @@ import com.xueersi.xesalib.view.alertdialog.BaseAlertDialog;
 public class StandLiveRedPacketAlertDialog extends BaseAlertDialog {
     RedPackagePage redPackagePage;
 
+    private RedPackagePage.RedPackagePageAction redPackageAction;
+
     public StandLiveRedPacketAlertDialog(Context context, BaseApplication application, boolean isSystem) {
         super(context, application, isSystem);
     }
-
-    private RedPackagePage.RedPackagePageAction redPackageAction;
 
     @Override
     protected View initDialogLayout(int type) {
@@ -36,7 +36,7 @@ public class StandLiveRedPacketAlertDialog extends BaseAlertDialog {
                 mAlertDialog.cancel();
                 redPackageAction.onPackageClose(operateId);
             }
-        }, mMyInfo.getHeadImg());
+        }, "", mMyInfo.getHeadImg());
         View view = redPackagePage.getRootView();
         return view;
     }

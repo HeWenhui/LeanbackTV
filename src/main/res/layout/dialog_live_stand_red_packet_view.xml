@@ -4,17 +4,18 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/mediacontroller_bg"
-        android:layout_centerInParent="true">
-
-        <ImageView
-            android:id="@id/iv_livevideo_redpackage_bg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
+        android:id="@id/rl_livevideo_redpackage_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:background="@color/mediacontroller_bg">
 
     </RelativeLayout>
+
+    <ImageView
+        android:id="@id/iv_livevideo_redpackage_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
 
 </RelativeLayout>

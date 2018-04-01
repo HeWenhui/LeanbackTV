@@ -284,6 +284,34 @@ public class LectureLivePlayBackBll extends BaseBll {
         }.execute(true);
     }
 
+    public void getLivePlayRedPacket(final DataLoadEntity dataLoadEntity, final String liveId, final String operateId, final AbstractBusinessDataCallBack callBack) {
+        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        // 网络加载数据
+        mCourseHttpManager.getLivePlayRedPacket(myUserInfoEntity.getEnstuId(), operateId, liveId,
+                new HttpCallBack(dataLoadEntity) {
+
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) {
+                        VideoResultEntity entity = mCourseHttpResponseParser
+                                .redPacketParseParser(responseEntity);
+                        callBack.onDataSucess(entity);
+//                        EventBus.getDefault().post(new PlaybackVideoEvent.OnGetRedPacket(entity));
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        XESToastUtils.showToast(mContext, msg);
+                        callBack.onDataFail(0, msg);
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        XESToastUtils.showToast(mContext, responseEntity.getErrorMsg());
+                        callBack.onDataFail(1, responseEntity.getErrorMsg());
+                    }
+                });
+    }
+
     /**
      * 体验直播课直播回放得到金币
      *
@@ -309,7 +337,7 @@ public class LectureLivePlayBackBll extends BaseBll {
 
                 MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
                 // 网络加载数据
-                mCourseHttpManager.getLivePlayRedPackets(myUserInfoEntity.getEnstuId(),operateId,termId, liveId,
+                mCourseHttpManager.getLivePlayRedPackets(myUserInfoEntity.getEnstuId(), operateId, termId, liveId,
                         new HttpCallBack(dataLoadEntity) {
 
                             @Override
@@ -657,9 +685,9 @@ public class LectureLivePlayBackBll extends BaseBll {
     }
 
     // 18.03.14 获取体验课的聊天记录
-    public void getExperienceMsgs(String liveId,String classId,Long start,final ExperienceLiveVideoActivity.GetExperienceLiveMsgs
-            getLiveLectureMsgs){
-        mCourseHttpManager.getExperiencenMsgs(liveId, classId, start , new HttpCallBack(false) {
+    public void getExperienceMsgs(String liveId, String classId, Long start, final ExperienceLiveVideoActivity.GetExperienceLiveMsgs
+            getLiveLectureMsgs) {
+        mCourseHttpManager.getExperiencenMsgs(liveId, classId, start, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 ExPerienceLiveMessage livebackmsg = JsonUtil.getEntityFromJson(responseEntity.getJsonObject().toString(), ExPerienceLiveMessage.class);

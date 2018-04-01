@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tal.speech.language.TalLanguage;
+import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.event.AppEvent;
@@ -439,7 +440,6 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
 
         liveMessageBll.setLiveBll(mLiveBll);
         rollCallBll.setLiveBll(mLiveBll);
-        redPackageBll.setLiveBll(mLiveBll);
         learnReportBll.setLiveBll(mLiveBll);
         questionBll.setLiveBll(mLiveBll);
         questionBll.setVSectionID(mVSectionID);
@@ -957,6 +957,20 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         rollCallBll.onLiveInit(getInfo);
         questionBll.setUserName(getInfo);
         videoChatBll.onLiveInit(getInfo);
+        redPackageBll.setHeadUrl(getInfo.getUname());
+        redPackageBll.setHeadUrl(getInfo.getHeadImgPath());
+        redPackageBll.setReceiveGold(new RedPackageStandBll.ReceiveGold() {
+
+            @Override
+            public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
+                mLiveBll.sendReceiveGold(operateId, liveId, callBack);
+            }
+
+            @Override
+            public void onReceiveGold() {
+                mLiveBll.getStuGoldCount();
+            }
+        });
         Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
     }
 
