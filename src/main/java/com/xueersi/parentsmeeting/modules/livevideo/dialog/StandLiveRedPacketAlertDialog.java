@@ -41,7 +41,7 @@ public class StandLiveRedPacketAlertDialog extends BaseAlertDialog {
                     mClickListener.onClick(btnRedClose);
                 }
             }
-        });
+        }, "");
         View view = redPackagePage.getRootView();
         btnRedPacket = view.findViewById(R.id.bt_livevideo_redpackage_cofirm);
         btnRedClose = view.findViewById(R.id.iv_livevideo_redpackage_close);

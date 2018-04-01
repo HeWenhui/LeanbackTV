@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -44,6 +45,7 @@ public class FrameAnimation {
      * 每帧动画的播放间隔
      */
     private int mDuration;
+    private BitmapCreate bitmapCreate;
 
     /**
      * 下一遍动画播放的延迟时间
@@ -140,6 +142,14 @@ public class FrameAnimation {
         this.mDelay = delay;
         this.mLastFrame = frameRess.length - 1;
         playByDurationsAndDelay(0);
+    }
+
+    public BitmapCreate getBitmapCreate() {
+        return bitmapCreate;
+    }
+
+    public void setBitmapCreate(BitmapCreate bitmapCreate) {
+        this.bitmapCreate = bitmapCreate;
     }
 
     private void playByDurationsAndDelay(final int i) {
@@ -271,9 +281,17 @@ public class FrameAnimation {
                     inputStream = mView.getContext().getAssets().open(file);
                     Bitmap bitmap = bitmapHashMap.get(file);
                     if (bitmap == null) {
-                        bitmap = BitmapFactory.decodeStream(inputStream);
-                        bitmapHashMap.put(file, bitmap);
-                        bitmap.setDensity(160);
+                        if (bitmapCreate != null) {
+                            bitmap = bitmapCreate.onAnimationCreate(file);
+                            if (bitmap != null) {
+                                bitmapHashMap.put(file, bitmap);
+                            }
+                        }
+                        if (bitmap == null) {
+                            bitmap = BitmapFactory.decodeStream(inputStream);
+                            bitmapHashMap.put(file, bitmap);
+                            bitmap.setDensity(160);
+                        }
                     }
                     mView.setBackgroundDrawable(new BitmapDrawable(bitmap));
                 } catch (IOException e) {
@@ -328,6 +346,10 @@ public class FrameAnimation {
         void onAnimationRepeat();
     }
 
+    public interface BitmapCreate {
+        Bitmap onAnimationCreate(String file);
+    }
+
     /**
      * <p>Binds an animation listener to this animation. The animation listener
      * is notified of animation events such as the end of the animation or the
@@ -380,9 +402,24 @@ public class FrameAnimation {
     }
 
     public void destory() {
+        pauseAnimation();
         Set<String> keys = bitmapHashMap.keySet();
         for (String k : keys) {
             bitmapHashMap.get(k).recycle();
         }
+    }
+
+    public static FrameAnimation createFromAees(Context mContext, View iv, String path) {
+        try {
+            String[] files = mContext.getAssets().list(path);
+            for (int i = 0; i < files.length; i++) {
+                files[i] = path + files[i];
+            }
+            FrameAnimation btframeAnimation1 = new FrameAnimation(iv, files, 50, false);
+            return btframeAnimation1;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

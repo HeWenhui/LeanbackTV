@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -136,9 +135,9 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
             public void onPackageClose(int operateId) {
                 rlRedpacketContent.removeAllViews();
             }
-        });
+        }, "");
         View view = redPackagePage.getRootView();
-        view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
+//        view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
         view.setTag(operateId);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         rlRedpacketContent.addView(view, params);
