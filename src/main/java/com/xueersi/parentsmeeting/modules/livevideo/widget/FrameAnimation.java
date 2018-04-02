@@ -288,11 +288,15 @@ public class FrameAnimation {
                         }
                         if (bitmap == null) {
                             bitmap = BitmapFactory.decodeStream(inputStream);
-                            bitmapHashMap.put(file, bitmap);
-                            bitmap.setDensity(160);
+                            if (bitmap != null) {
+                                bitmapHashMap.put(file, bitmap);
+                                bitmap.setDensity(160);
+                            }
                         }
                     }
-                    mView.setBackgroundDrawable(new BitmapDrawable(bitmap));
+                    if (bitmap != null) {
+                        mView.setBackgroundDrawable(new BitmapDrawable(bitmap));
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {

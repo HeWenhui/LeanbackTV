@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
@@ -25,6 +27,7 @@ import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -192,25 +195,23 @@ public class RedPackagePage extends BasePager {
                 float left = (bitmap.getWidth() - scalHeadBitmap.getWidth()) / 2;
                 float top = (bitmap.getHeight() - scalHeadBitmap.getHeight()) / 2;
                 canvas.drawBitmap(scalHeadBitmap, left + 3f, top + 4, null);
-
-                String gold = "+" + entity.getGoldNum();
-
-                View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout.layout_live_stand_red_mine1, null);
-                TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_name);
-                tv_livevideo_redpackage_name.setText("" + userName);
-                TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
-                tv_livevideo_redpackage_num.setText(gold);
-                layout_live_stand_red_mine1.measure(canvasBitmap.getWidth(), canvasBitmap.getHeight());
-                layout_live_stand_red_mine1.layout(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight());
-
-                canvas.save();
-                canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 160);
-                layout_live_stand_red_mine1.draw(canvas);
-                canvas.restore();
-
                 scalHeadBitmap.recycle();
                 bitmap.recycle();
             }
+            //画名字和金币数量
+            String gold = "+" + entity.getGoldNum();
+            View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout.layout_live_stand_red_mine1, null);
+            TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_name);
+            tv_livevideo_redpackage_name.setText("" + userName);
+            TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
+            tv_livevideo_redpackage_num.setText(gold);
+            layout_live_stand_red_mine1.measure(canvasBitmap.getWidth(), canvasBitmap.getHeight());
+            layout_live_stand_red_mine1.layout(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight());
+
+            canvas.save();
+            canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 160);
+            layout_live_stand_red_mine1.draw(canvas);
+            canvas.restore();
             return canvasBitmap;
         } catch (IOException e) {
             e.printStackTrace();
@@ -359,6 +360,85 @@ public class RedPackagePage extends BasePager {
         } else {
             initResult(entity);
         }
+    }
+
+    public void onGetTeamPackage(GoldTeamStatus entity) {
+        ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
+        Random random = new Random();
+        for (int i = 0; i < students.size(); i++) {
+            GoldTeamStatus.Student student = students.get(i);
+            ImageView imageView = new ImageView(mContext);
+            ViewGroup group = (ViewGroup) mView;
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp.leftMargin = random.nextInt(1820);
+            lp.topMargin = random.nextInt(1000);
+            group.addView(imageView, lp);
+            initResult(student, imageView);
+        }
+    }
+
+    private void initResult(final GoldTeamStatus.Student entity, ImageView imageView) {
+        final FrameAnimation btframeAnimation1 =
+                FrameAnimation.createFromAees(mContext, imageView, "Images/redpackage/4_feichuan", 50, true);
+        frameAnimations.add(btframeAnimation1);
+        btframeAnimation1.setBitmapCreate(new FrameAnimation.BitmapCreate() {
+            @Override
+            public Bitmap onAnimationCreate(String file) {
+                return initTeamHeadAndGold(entity, file);
+            }
+        });
+    }
+
+    private Bitmap initTeamHeadAndGold(GoldTeamStatus.Student entity, String file) {
+        InputStream inputStream = null;
+        try {
+            inputStream = mContext.getAssets().open(file);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            bitmap.setDensity(160);
+            Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            canvasBitmap.setDensity(160);
+            Canvas canvas = new Canvas(canvasBitmap);
+            canvas.drawBitmap(bitmap, 0, 0, null);
+
+            if (headBitmap != null && !headBitmap.isRecycled()) {
+                float scaleWidth = 61f / headBitmap.getHeight();
+                Matrix matrix = new Matrix();
+                matrix.postScale(scaleWidth, scaleWidth);
+                Bitmap scalHeadBitmap = Bitmap.createBitmap(headBitmap, 0, 0, headBitmap.getWidth(), headBitmap.getHeight(), matrix, true);
+                scalHeadBitmap.setDensity(160);
+                float left = (bitmap.getWidth() - scalHeadBitmap.getWidth()) / 2;
+                float top = (bitmap.getHeight() - scalHeadBitmap.getHeight()) / 2;
+                canvas.drawBitmap(scalHeadBitmap, left + 3f, top + 4, null);
+                scalHeadBitmap.recycle();
+                bitmap.recycle();
+            }
+            //画名字和金币数量
+            String gold = "+" + entity.getGold();
+            View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout.layout_live_stand_red_mine1, null);
+            TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_name);
+            tv_livevideo_redpackage_name.setText("" + entity.getNickname());
+            TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
+            tv_livevideo_redpackage_num.setText(gold);
+            layout_live_stand_red_mine1.measure(canvasBitmap.getWidth(), canvasBitmap.getHeight());
+            layout_live_stand_red_mine1.layout(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight());
+
+            canvas.save();
+            canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 160);
+            layout_live_stand_red_mine1.draw(canvas);
+            canvas.restore();
+            return canvasBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
     }
 
     public void onOtherPackage() {

@@ -47,6 +47,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLazyBllCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveReceiveGold;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
@@ -957,20 +958,10 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         rollCallBll.onLiveInit(getInfo);
         questionBll.setUserName(getInfo);
         videoChatBll.onLiveInit(getInfo);
-        redPackageBll.setHeadUrl(getInfo.getUname());
+        redPackageBll.setUserName(getInfo.getUname());
         redPackageBll.setHeadUrl(getInfo.getHeadImgPath());
-        redPackageBll.setReceiveGold(new RedPackageStandBll.ReceiveGold() {
-
-            @Override
-            public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
-                mLiveBll.sendReceiveGold(operateId, liveId, callBack);
-            }
-
-            @Override
-            public void onReceiveGold() {
-                mLiveBll.getStuGoldCount();
-            }
-        });
+        redPackageBll.setReceiveGold(new LiveReceiveGold(mLiveBll));
+        redPackageBll.onReadPackage(1);
         Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
     }
 

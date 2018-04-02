@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
@@ -451,35 +452,33 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         });
     }
 
-
     /**
      * 领取红包-站立直播
      *
      * @param operateId
-     * @param liveId
      * @param callBack
      */
-    public void getReceiveGoldTeamStatus(final int operateId, String liveId, final AbstractBusinessDataCallBack callBack) {
-        mLogtf.d("sendReceiveGoldStand:operateId=" + operateId + ",liveId=" + liveId);
-        mHttpManager.getReceiveGoldTeamStatus(operateId, liveId, new HttpCallBack() {
+    public void getReceiveGoldTeamStatus(final int operateId, final AbstractBusinessDataCallBack callBack) {
+        mLogtf.d("sendReceiveGoldStand:operateId=" + operateId + ",liveId=" + mLiveId);
+        mHttpManager.getReceiveGoldTeamStatus(operateId, new HttpCallBack() {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
-                mLogtf.d("sendReceiveGoldStand:onPmSuccess=" + responseEntity.getJsonObject().toString() + ",operateId=" +
+                mLogtf.d("getReceiveGoldTeamStatus:onPmSuccess=" + responseEntity.getJsonObject().toString() + ",operateId=" +
                         operateId);
-                VideoResultEntity entity = mHttpResponseParser.redPacketParseParser(responseEntity);
+                GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId());
                 callBack.onDataSucess(entity);
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                mLogtf.d("sendReceiveGoldStand:onPmFailure=" + msg + ",operateId=" + operateId);
+                mLogtf.d("getReceiveGoldTeamStatus:onPmFailure=" + msg + ",operateId=" + operateId);
                 callBack.onDataFail(0, msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                mLogtf.d("sendReceiveGold:onPmError=" + responseEntity.getErrorMsg() + ",operateId=" + operateId);
+                mLogtf.d("getReceiveGoldTeamStatus:onPmError=" + responseEntity.getErrorMsg() + ",operateId=" + operateId);
                 callBack.onDataFail(1, responseEntity.getErrorMsg());
             }
         });
@@ -2023,6 +2022,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         } else {
             StudentLiveInfoEntity studentLiveInfo = this.mGetInfo.getStudentLiveInfo();
             mHttpManager.addBodyParam("teamId", studentLiveInfo.getTeamId());
+            mHttpManager.addBodyParam("classId", "" + studentLiveInfo.getClassId());
             if (StringUtils.isEmpty(courseId)) {
                 courseId = studentLiveInfo.getCourseId();
             }

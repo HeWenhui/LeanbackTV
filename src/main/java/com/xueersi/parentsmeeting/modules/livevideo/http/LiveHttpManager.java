@@ -308,12 +308,11 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(url, params, requestCallBack);
     }
 
-    public void getReceiveGoldTeamStatus(int operateId, String liveid,
+    public void getReceiveGoldTeamStatus(int operateId,
                                      HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        String url = liveVideoSAConfigInner.URL_LIVE_RECEIVE_GOLD;
+        String url = liveVideoSAConfigInner.URL_RED_GOLD_TEAM_STATUS;
         requestCallBack.url = url;
-        params.addBodyParam("liveId", liveid);
         setDefaultParameter(params);
 //        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("operateId", "" + operateId);

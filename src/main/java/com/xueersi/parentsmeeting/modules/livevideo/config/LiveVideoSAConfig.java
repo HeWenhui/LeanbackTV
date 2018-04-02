@@ -54,6 +54,9 @@ public class LiveVideoSAConfig {
         /** 直播回放提交答案地址 */
         public String URL_STUDY_SAVE_ANSWER_FOR_PLAYBACK = HTTP_HOST +
                 "/LiveCourse/submitTestAnswerForPlayBack";
+        /** 获取组内领取红包情况 */
+        public String URL_RED_GOLD_TEAM_STATUS = HTTP_HOST
+                + "/LiveCourse/getReceiveGoldTeamStatus";
         /** 获取红包 */
         public String URL_STUDY_RECEIVE_LIVE_PLAY_RED_PACKET_GOLD = HTTP_HOST
                 + "/LiveCourse/receiveGoldForPlayBack";

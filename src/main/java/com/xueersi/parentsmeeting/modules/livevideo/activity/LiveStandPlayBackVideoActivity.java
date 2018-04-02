@@ -1819,6 +1819,11 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
             public void onReceiveGold() {
                 redPacketViewGone(mQuestionEntity);
             }
+
+            @Override
+            public void getReceiveGoldTeamStatus(int operateId, AbstractBusinessDataCallBack callBack) {
+
+            }
         });
         redPackageStandBll.onReadPackage(Integer.parseInt(mRedPacketId));
 //        mRedPacketDialog.setRedPacketConfirmListener(new RedPackagePage.RedPackagePageAction() {
