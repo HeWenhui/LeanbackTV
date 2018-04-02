@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,11 +42,14 @@ public class RedPackagePage extends BasePager {
     private ArrayList<GoldTeamStatus.Student> addStudents = new ArrayList<>();
     private View rl_livevideo_redpackage_bg;
     private ImageView iv_livevideo_redpackage_bg;
+    private RelativeLayout rl_livevideo_redpackage_teams;
+    GoldTeamStatus goldTeamStatus;
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
     private HashMap<String, Bitmap> stuHeadBitmap = new HashMap<>();
     private String userName;
     private String headUrl;
     private Bitmap headBitmap;
+    /** 获取金币，点击的位置，1.在中间，2.在右边 */
     private int clickPackage = 1;
 
     public RedPackagePage(Context context, int operateId, RedPackagePageAction redPackageAction, String userName, String headUrl) {
@@ -62,6 +66,7 @@ public class RedPackagePage extends BasePager {
         mView = View.inflate(mContext, R.layout.dialog_live_stand_red_packet_view, null);
         rl_livevideo_redpackage_bg = mView.findViewById(R.id.rl_livevideo_redpackage_bg);
         iv_livevideo_redpackage_bg = mView.findViewById(R.id.iv_livevideo_redpackage_bg);
+        rl_livevideo_redpackage_teams = mView.findViewById(R.id.rl_livevideo_redpackage_teams);
         mView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View view) {
@@ -115,121 +120,9 @@ public class RedPackagePage extends BasePager {
 //        initResult2();
     }
 
-    private void initCenterResult(final VideoResultEntity entity) {
-        final FrameAnimation btframeAnimation1 = FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg,
-                "Images/redpackage/8_transition", 50, false);
-        frameAnimations.add(btframeAnimation1);
-        btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
-            @Override
-            public void onAnimationStart() {
-
-            }
-
-            @Override
-            public void onAnimationEnd() {
-                FrameAnimation btframeAnimation2 = FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg,
-                        "Images/redpackage/9_teams", 50, false);
-                frameAnimations.add(btframeAnimation2);
-            }
-
-            @Override
-            public void onAnimationRepeat() {
-
-            }
-        });
-    }
-
-    private void initRightResult(final VideoResultEntity entity) {
-        final FrameAnimation btframeAnimation1 = createFromAees("Images/redpackage/5_bianshen", false);
-        frameAnimations.add(btframeAnimation1);
-        btframeAnimation1.setBitmapCreate(new FrameAnimation.BitmapCreate() {
-            @Override
-            public Bitmap onAnimationCreate(String file) {
-                if (file.contains("0017")) {
-                    return initHeadAndGold(entity, file);
-                }
-                return null;
-            }
-        });
-        btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
-            @Override
-            public void onAnimationStart() {
-
-            }
-
-            @Override
-            public void onAnimationEnd() {
-                final FrameAnimation btframeAnimation2 = createFromAees("Images/redpackage/4_feichuan", true);
-                frameAnimations.add(btframeAnimation2);
-                btframeAnimation2.setBitmapCreate(new FrameAnimation.BitmapCreate() {
-                    @Override
-                    public Bitmap onAnimationCreate(String file) {
-                        Loger.d(TAG, "onAnimationCreate:file=" + file);
-//                        return headBitmap;
-                        return initHeadAndGold(entity, file);
-                    }
-                });
-            }
-
-            @Override
-            public void onAnimationRepeat() {
-
-            }
-        });
-    }
-
-    private Bitmap initHeadAndGold(VideoResultEntity entity, String file) {
-        InputStream inputStream = null;
-        try {
-            inputStream = mContext.getAssets().open(file);
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            bitmap.setDensity(160);
-            Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-            canvasBitmap.setDensity(160);
-            Canvas canvas = new Canvas(canvasBitmap);
-            canvas.drawBitmap(bitmap, 0, 0, null);
-
-            if (headBitmap != null && !headBitmap.isRecycled()) {
-                float scaleWidth = 61f / headBitmap.getHeight();
-                Matrix matrix = new Matrix();
-                matrix.postScale(scaleWidth, scaleWidth);
-                Bitmap scalHeadBitmap = Bitmap.createBitmap(headBitmap, 0, 0, headBitmap.getWidth(), headBitmap.getHeight(), matrix, true);
-                scalHeadBitmap.setDensity(160);
-                float left = (bitmap.getWidth() - scalHeadBitmap.getWidth()) / 2;
-                float top = (bitmap.getHeight() - scalHeadBitmap.getHeight()) / 2;
-                canvas.drawBitmap(scalHeadBitmap, left + 3f, top + 4, null);
-                scalHeadBitmap.recycle();
-                bitmap.recycle();
-            }
-            //画名字和金币数量
-            String gold = "+" + entity.getGoldNum();
-            View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout.layout_live_stand_red_mine1, null);
-            TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_name);
-            tv_livevideo_redpackage_name.setText("" + userName);
-            TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
-            tv_livevideo_redpackage_num.setText(gold);
-            layout_live_stand_red_mine1.measure(canvasBitmap.getWidth(), canvasBitmap.getHeight());
-            layout_live_stand_red_mine1.layout(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight());
-
-            canvas.save();
-            canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 160);
-            layout_live_stand_red_mine1.draw(canvas);
-            canvas.restore();
-            return canvasBitmap;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return null;
-    }
-
+    /**
+     * 收到金币命令的开场动画
+     */
     public void initEnter() {
         final FrameAnimation btframeAnimation1 = createFromAees("Images/redpackage/1_kaichang", false);
         frameAnimations.add(btframeAnimation1);
@@ -351,6 +244,11 @@ public class RedPackagePage extends BasePager {
         });
     }
 
+    /**
+     * 获取金币
+     *
+     * @param entity
+     */
     public void onGetPackage(VideoResultEntity entity) {
         if (clickPackage == 2) {
             initRightResult(entity);
@@ -361,14 +259,191 @@ public class RedPackagePage extends BasePager {
                 }
             }, 3000);
         } else {
+            ViewParent parent = rl_livevideo_redpackage_teams.getParent();
+            if (parent == null) {
+                return;
+            }
             initCenterResult(entity);
         }
     }
 
+    /**
+     * 在中间获得金币
+     *
+     * @param entity
+     */
+    private void initCenterResult(final VideoResultEntity entity) {
+        final FrameAnimation btframeAnimation1 = FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg,
+                "Images/redpackage/8_transition", 50, false);
+        frameAnimations.add(btframeAnimation1);
+        btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
+            @Override
+            public void onAnimationStart() {
+
+            }
+
+            @Override
+            public void onAnimationEnd() {
+                FrameAnimation btframeAnimation2 = FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg,
+                        "Images/redpackage/9_teams", 50, false);
+                frameAnimations.add(btframeAnimation2);
+                btframeAnimation2.setAnimationListener(new FrameAnimation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart() {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd() {
+                        rl_livevideo_redpackage_teams.setVisibility(View.VISIBLE);
+                        rl_livevideo_redpackage_teams.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                ViewGroup group = (ViewGroup) rl_livevideo_redpackage_teams.getParent();
+                                if (group == null) {
+                                    return;
+                                }
+                                group.removeView(rl_livevideo_redpackage_teams);
+                            }
+                        }, 4000);
+                        if (goldTeamStatus != null) {
+                            onGetTeamPackage(goldTeamStatus);
+                        }
+                    }
+
+                    @Override
+                    public void onAnimationRepeat() {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onAnimationRepeat() {
+
+            }
+        });
+    }
+
+    /**
+     * 在右侧获得金币
+     *
+     * @param entity
+     */
+    private void initRightResult(final VideoResultEntity entity) {
+        final FrameAnimation btframeAnimation1 = createFromAees("Images/redpackage/5_bianshen", false);
+        frameAnimations.add(btframeAnimation1);
+        btframeAnimation1.setBitmapCreate(new FrameAnimation.BitmapCreate() {
+            @Override
+            public Bitmap onAnimationCreate(String file) {
+                if (file.contains("0017")) {
+                    return initHeadAndGold(entity, file);
+                }
+                return null;
+            }
+        });
+        btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
+            @Override
+            public void onAnimationStart() {
+
+            }
+
+            @Override
+            public void onAnimationEnd() {
+                final FrameAnimation btframeAnimation2 = createFromAees("Images/redpackage/4_feichuan", true);
+                frameAnimations.add(btframeAnimation2);
+                btframeAnimation2.setBitmapCreate(new FrameAnimation.BitmapCreate() {
+                    @Override
+                    public Bitmap onAnimationCreate(String file) {
+                        Loger.d(TAG, "onAnimationCreate:file=" + file);
+//                        return headBitmap;
+                        return initHeadAndGold(entity, file);
+                    }
+                });
+            }
+
+            @Override
+            public void onAnimationRepeat() {
+
+            }
+        });
+    }
+
+    /**
+     * 在右侧获得金币,设置头像和金币
+     *
+     * @param entity
+     * @param file
+     * @return
+     */
+    private Bitmap initHeadAndGold(VideoResultEntity entity, String file) {
+        InputStream inputStream = null;
+        try {
+            inputStream = mContext.getAssets().open(file);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            bitmap.setDensity(160);
+            Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            canvasBitmap.setDensity(160);
+            Canvas canvas = new Canvas(canvasBitmap);
+            canvas.drawBitmap(bitmap, 0, 0, null);
+
+            if (headBitmap != null && !headBitmap.isRecycled()) {
+                float scaleWidth = 61f / headBitmap.getHeight();
+                Matrix matrix = new Matrix();
+                matrix.postScale(scaleWidth, scaleWidth);
+                Bitmap scalHeadBitmap = Bitmap.createBitmap(headBitmap, 0, 0, headBitmap.getWidth(), headBitmap.getHeight(), matrix, true);
+                scalHeadBitmap.setDensity(160);
+                float left = (bitmap.getWidth() - scalHeadBitmap.getWidth()) / 2;
+                float top = (bitmap.getHeight() - scalHeadBitmap.getHeight()) / 2;
+                canvas.drawBitmap(scalHeadBitmap, left + 3f, top + 4, null);
+                scalHeadBitmap.recycle();
+                bitmap.recycle();
+            }
+            //画名字和金币数量
+            String gold = "+" + entity.getGoldNum();
+            View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout.layout_live_stand_red_mine1, null);
+            TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_name);
+            tv_livevideo_redpackage_name.setText("" + userName);
+            TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
+            tv_livevideo_redpackage_num.setText(gold);
+            layout_live_stand_red_mine1.measure(canvasBitmap.getWidth(), canvasBitmap.getHeight());
+            layout_live_stand_red_mine1.layout(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight());
+
+            canvas.save();
+            canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 160);
+            layout_live_stand_red_mine1.draw(canvas);
+            canvas.restore();
+            return canvasBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 请求到小组金币列表
+     *
+     * @param entity
+     */
     public void onGetTeamPackage(GoldTeamStatus entity) {
         ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
         Random random = new Random();
-        ViewGroup group = (ViewGroup) mView;
+        ViewParent parent = rl_livevideo_redpackage_teams.getParent();
+        if (parent == null) {
+            return;
+        }
+        if (rl_livevideo_redpackage_teams.getVisibility() != View.VISIBLE) {
+            goldTeamStatus = entity;
+            return;
+        }
         for (int i = 0; i < students.size(); i++) {
             GoldTeamStatus.Student student = students.get(i);
             if (addStudents.contains(student)) {
@@ -383,7 +458,7 @@ public class RedPackagePage extends BasePager {
                 lp.leftMargin = random.nextInt(1800);
                 lp.topMargin = random.nextInt(900);
             }
-            group.addView(imageView, lp);
+            rl_livevideo_redpackage_teams.addView(imageView, lp);
             if (student.isMe()) {
                 initCenterResult(student, imageView);
             } else {
@@ -392,6 +467,12 @@ public class RedPackagePage extends BasePager {
         }
     }
 
+    /**
+     * 自己得到动画，放在中间
+     *
+     * @param entity
+     * @param imageView
+     */
     private void initCenterResult(final GoldTeamStatus.Student entity, final ImageView imageView) {
         final String path = "Images/redpackage/10_team_mine";
         final FrameAnimation btframeAnimation1 =
@@ -439,6 +520,12 @@ public class RedPackagePage extends BasePager {
         });
     }
 
+    /**
+     * 小组得到金币动画
+     *
+     * @param entity
+     * @param imageView
+     */
     private void initTeamResult(final GoldTeamStatus.Student entity, final ImageView imageView) {
         final String path = "Images/redpackage/12_team_other";
         final FrameAnimation btframeAnimation1 =
@@ -486,6 +573,15 @@ public class RedPackagePage extends BasePager {
         });
     }
 
+    /**
+     * 小组头像和金币
+     *
+     * @param entity
+     * @param file
+     * @param havename
+     * @param upFrameAnimation
+     * @return
+     */
     private Bitmap initTeamHeadAndGold(final GoldTeamStatus.Student entity, final String file, boolean havename, final FrameAnimation upFrameAnimation) {
         InputStream inputStream = null;
         try {
@@ -577,6 +673,9 @@ public class RedPackagePage extends BasePager {
         return null;
     }
 
+    /**
+     * 第二个红包到了
+     */
     public void onOtherPackage() {
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) iv_livevideo_redpackage_bg.getLayoutParams();
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);

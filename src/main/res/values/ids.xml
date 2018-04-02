@@ -249,6 +249,7 @@
     <!--直播-红包根布局-->
     <item name="rl_livevideo_content_readpackage" type="id" />
     <item name="rl_livevideo_redpackage_bg" type="id" />
+    <item name="rl_livevideo_redpackage_teams" type="id" />
     <item name="iv_livevideo_redpackage_bg" type="id" />
     <item name="tv_livevideo_redpackage_title" type="id" />
     <item name="tv_livevideo_redpackage_subtitle" type="id" />

@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by linyuqiang on 2018/3/20.
@@ -144,7 +145,8 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                             goldTeamStatus.getStudents().add(student);
                             redPackagePage.onGetTeamPackage(goldTeamStatus);
                             //结果页获得小组数据
-                            getReceiveGoldTeamStatus(operateId);
+                            AtomicInteger getCount = new AtomicInteger();
+                            getReceiveGoldTeamStatus(operateId, getCount);
                         }
                     }
 
@@ -172,7 +174,8 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                                 goldTeamStatus.getStudents().add(student);
                                 redPackagePage.onGetTeamPackage(goldTeamStatus);
                                 //
-                                getReceiveGoldTeamStatus(operateId);
+                                AtomicInteger getCount = new AtomicInteger();
+                                getReceiveGoldTeamStatus(operateId, getCount);
                             }
                         }
                     }
@@ -209,8 +212,9 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
      * 结果页获得小组数据
      *
      * @param operateId
+     * @param getCount
      */
-    private void getReceiveGoldTeamStatus(final int operateId) {
+    private void getReceiveGoldTeamStatus(final int operateId, final AtomicInteger getCount) {
         receiveGold.getReceiveGoldTeamStatus(operateId, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
@@ -229,12 +233,16 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
             }
 
             void onFinish() {
+                getCount.getAndIncrement();
+                if (getCount.get() > 9) {
+                    return;
+                }
                 RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
                 if (redPackagePage != null) {
                     redPackagePage.getRootView().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            getReceiveGoldTeamStatus(operateId);
+                            getReceiveGoldTeamStatus(operateId, getCount);
                         }
                     }, 1000);
                 }
