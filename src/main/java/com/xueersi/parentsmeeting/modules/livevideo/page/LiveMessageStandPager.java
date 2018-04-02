@@ -195,6 +195,17 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                 Log.d(TAG, "onAnimationRepeat");
             }
         });
+        btMesOpen.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View view) {
+                Log.d(TAG, "btMesOpen.onViewAttachedToWindow");
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View view) {
+                Log.d(TAG, "btMesOpen.onViewDetachedFromWindow");
+            }
+        });
     }
 
     @Override

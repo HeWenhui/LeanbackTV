@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.page;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -88,6 +89,12 @@ public class RedPackagePage extends BasePager {
 //                redPackageAction.onPackageClose(operateId);
 //            }
 //        });
+        if (mContext instanceof Activity) {
+            Activity activity = (Activity) mContext;
+            if (activity.isFinishing()) {
+                return;
+            }
+        }
         ImageLoader.with(mContext).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
             @Override
             public void onSuccess(Drawable drawable) {
@@ -99,10 +106,34 @@ public class RedPackagePage extends BasePager {
 
             }
         });
-//        initEnter2();
+//        initResult2();
     }
 
-    private void initEnter2(final VideoResultEntity entity) {
+    private void initResult(final VideoResultEntity entity) {
+        final FrameAnimation btframeAnimation1 = FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg,
+                "Images/redpackage/8_transition", 50, false);
+        frameAnimations.add(btframeAnimation1);
+        btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
+            @Override
+            public void onAnimationStart() {
+
+            }
+
+            @Override
+            public void onAnimationEnd() {
+                FrameAnimation btframeAnimation2 = FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg,
+                        "Images/redpackage/9_teams", 50, false);
+                frameAnimations.add(btframeAnimation2);
+            }
+
+            @Override
+            public void onAnimationRepeat() {
+
+            }
+        });
+    }
+
+    private void initResult2(final VideoResultEntity entity) {
         final FrameAnimation btframeAnimation1 = createFromAees("Images/redpackage/5_bianshen", false);
         frameAnimations.add(btframeAnimation1);
         btframeAnimation1.setBitmapCreate(new FrameAnimation.BitmapCreate() {
@@ -254,7 +285,7 @@ public class RedPackagePage extends BasePager {
                             @Override
                             public void onAnimationEnd() {
                                 rl_livevideo_redpackage_bg.setVisibility(View.GONE);
-//                                        initEnter2();
+//                                        initResult2();
                                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) iv_livevideo_redpackage_bg.getLayoutParams();
                                 lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                                 lp.rightMargin = 40;
@@ -317,13 +348,17 @@ public class RedPackagePage extends BasePager {
     }
 
     public void onGetPackage(VideoResultEntity entity) {
-//        if (clickPackage == 1) {
-//            FrameAnimation btframeAnimation3 = createFromAees("Images/redpackage/3_feichu", false);
-//            frameAnimations.add(btframeAnimation3);
-//        } else {
-//            initEnter2(entity);
-//        }
-        initEnter2(entity);
+        if (clickPackage == 2) {
+            initResult2(entity);
+            mView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    redPackageAction.onPackageClose(operateId);
+                }
+            }, 3000);
+        } else {
+            initResult(entity);
+        }
     }
 
     public void onOtherPackage() {

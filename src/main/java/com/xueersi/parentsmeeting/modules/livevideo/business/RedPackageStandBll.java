@@ -136,12 +136,6 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                         VideoResultEntity entity = (VideoResultEntity) objData[0];
                         RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
                         redPackagePage.onGetPackage(entity);
-                        rlRedpacketContent.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                onPackageClose(operateId);
-                            }
-                        }, 3000);
                     }
 
                     @Override
