@@ -119,7 +119,15 @@ public class LiveRemarkBll {
         mTextureView = textureView;
     }
 
-    private void initData() {
+    public void initData() {
+        if(mLiveMediaControllerBottom!=null){
+            mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    XESToastUtils.showToast(mContext,"正在加载视频");
+                }
+            });
+        }
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
@@ -138,7 +146,7 @@ public class LiveRemarkBll {
                     offSet = System.currentTimeMillis()/1000+sysTimeOffset - frameInfo.pkt/1000;
                     Loger.i(TAG, "nowtime  " + frameInfo.nowTime + "   dts     " + frameInfo.pkt_dts
                             + "   pkt   " + frameInfo.pkt + "  cache:" + ((IjkMediaPlayer)mPlayerService.getPlayer()).getVideoCachedDuration());
-                    mLiveMediaControllerBottom.getBtMark().setEnabled(true);
+                    //setBtEnable(true);
                     mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(final View v) {
@@ -282,11 +290,13 @@ public class LiveRemarkBll {
                         @Override
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
+                            XESToastUtils.showToast(mContext, "标记失败");
                         }
 
                         @Override
                         public void onPmError(ResponseEntity responseEntity) {
                             super.onPmError(responseEntity);
+                            XESToastUtils.showToast(mContext, "标记失败");
                         }
                     });
                 }
@@ -297,7 +307,7 @@ public class LiveRemarkBll {
                 }
             });
         } else {
-            XESToastUtils.showToast(mContext, "标记上传失败");
+            XESToastUtils.showToast(mContext, "标记失败");
         }
 
     }

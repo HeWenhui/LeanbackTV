@@ -419,7 +419,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             mLiveRemarkBll.setHttpManager(new LiveHttpManager(mContext));
             mLiveRemarkBll.setList(mVideoEntity.getLstPoint());
             mLiveRemarkBll.setLiveId(mVideoEntity.getLiveId());
-            mLiveRemarkBll.showBtMark();
+            //mLiveRemarkBll.showBtMark();
             mLiveRemarkBll.getMarkPoints(mVideoEntity.getLiveId(), new AbstractBusinessDataCallBack() {
                 @Override
                 public void onDataSucess(Object... objData) {
