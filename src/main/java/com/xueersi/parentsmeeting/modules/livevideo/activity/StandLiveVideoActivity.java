@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.tal.speech.language.TalLanguage;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.business.AppBll;
+import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.event.AppEvent;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
@@ -961,7 +962,10 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         redPackageBll.setUserName(getInfo.getStuName());
         redPackageBll.setHeadUrl(getInfo.getHeadImgPath());
         redPackageBll.setReceiveGold(new LiveReceiveGold(mLiveBll));
-        redPackageBll.onReadPackage(1);
+
+        if (AppConfig.DEBUG) {
+            redPackageBll.onReadPackage(1);
+        }
         Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
     }
 

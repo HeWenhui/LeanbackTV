@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +21,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.xesalib.utils.uikit.imageloader.GlideLoader;
+import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
+import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -30,16 +36,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by lyqai on 2018/3/21.
  */
 public class RedPackagePage extends BasePager {
-    Context context;
-    int operateId;
-    RedPackagePageAction redPackageAction;
-    View rl_livevideo_redpackage_bg;
-    ImageView iv_livevideo_redpackage_bg;
+    private int operateId;
+    private RedPackagePageAction redPackageAction;
+    private ArrayList<GoldTeamStatus.Student> addStudents = new ArrayList<>();
+    private View rl_livevideo_redpackage_bg;
+    private ImageView iv_livevideo_redpackage_bg;
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
-    String userName;
-    String headUrl;
-    Bitmap headBitmap;
-    int clickPackage = 1;
+    private HashMap<String, Bitmap> stuHeadBitmap = new HashMap<>();
+    private String userName;
+    private String headUrl;
+    private Bitmap headBitmap;
+    private int clickPackage = 1;
 
     public RedPackagePage(Context context, int operateId, RedPackagePageAction redPackageAction, String userName, String headUrl) {
         super(context);
@@ -364,29 +371,29 @@ public class RedPackagePage extends BasePager {
         ViewGroup group = (ViewGroup) mView;
         for (int i = 0; i < students.size(); i++) {
             GoldTeamStatus.Student student = students.get(i);
-            View oldView = group.findViewWithTag(student.getStuId());
-            if (oldView != null) {
+            if (addStudents.contains(student)) {
                 continue;
             }
+            addStudents.add(student);
             ImageView imageView = new ImageView(mContext);
-            imageView.setTag(student.getStuId());
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             if (student.isMe()) {
                 lp.addRule(RelativeLayout.CENTER_IN_PARENT);
             } else {
-                lp.leftMargin = random.nextInt(1820);
-                lp.topMargin = random.nextInt(1000);
+                lp.leftMargin = random.nextInt(1800);
+                lp.topMargin = random.nextInt(900);
             }
             group.addView(imageView, lp);
-            initCenterResult(student, imageView);
+            if (student.isMe()) {
+                initCenterResult(student, imageView);
+            } else {
+                initTeamResult(student, imageView);
+            }
         }
     }
 
     private void initCenterResult(final GoldTeamStatus.Student entity, final ImageView imageView) {
         final String path = "Images/redpackage/10_team_mine";
-        if (entity.isMe()) {
-
-        }
         final FrameAnimation btframeAnimation1 =
                 FrameAnimation.createFromAees(mContext, imageView, path, 50, false);
         frameAnimations.add(btframeAnimation1);
@@ -401,7 +408,7 @@ public class RedPackagePage extends BasePager {
                         || file.contains("HSchuchang_00181") || file.contains("HSchuchang_00182")) {
                     havename = true;
                 }
-                return initTeamHeadAndGold(entity, file, havename);
+                return initTeamHeadAndGold(entity, file, havename, btframeAnimation1);
 //                return null;
             }
         });
@@ -420,7 +427,7 @@ public class RedPackagePage extends BasePager {
                 btframeAnimation2.setBitmapCreate(new FrameAnimation.BitmapCreate() {
                     @Override
                     public Bitmap onAnimationCreate(String file) {
-                        return initTeamHeadAndGold(entity, file, true);
+                        return initTeamHeadAndGold(entity, file, true, btframeAnimation2);
                     }
                 });
             }
@@ -432,7 +439,54 @@ public class RedPackagePage extends BasePager {
         });
     }
 
-    private Bitmap initTeamHeadAndGold(GoldTeamStatus.Student entity, String file, boolean havename) {
+    private void initTeamResult(final GoldTeamStatus.Student entity, final ImageView imageView) {
+        final String path = "Images/redpackage/12_team_other";
+        final FrameAnimation btframeAnimation1 =
+                FrameAnimation.createFromAees(mContext, imageView, path, 50, false);
+        frameAnimations.add(btframeAnimation1);
+        btframeAnimation1.setBitmapCreate(new FrameAnimation.BitmapCreate() {
+            @Override
+            public Bitmap onAnimationCreate(String file) {
+                if (file.contains("LS15_00003") || file.contains("LS15_00004")) {
+                    return null;
+                }
+                boolean havename = true;
+                if (file.contains("LS15_00005") || file.contains("LS15_00006") || file.contains("LS15_00007")
+                        || file.contains("LS15_00008") || file.contains("LS15_00001") || file.contains("LS15_00010")) {
+                    havename = false;
+                }
+                return initTeamHeadAndGold(entity, file, havename, btframeAnimation1);
+//                return null;
+            }
+        });
+        btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
+            @Override
+            public void onAnimationStart() {
+
+            }
+
+            @Override
+            public void onAnimationEnd() {
+                String path = "Images/redpackage/13_team_other_loop";
+                final FrameAnimation btframeAnimation2 =
+                        FrameAnimation.createFromAees(mContext, imageView, path, 50, true);
+                frameAnimations.add(btframeAnimation2);
+                btframeAnimation2.setBitmapCreate(new FrameAnimation.BitmapCreate() {
+                    @Override
+                    public Bitmap onAnimationCreate(String file) {
+                        return initTeamHeadAndGold(entity, file, true, btframeAnimation2);
+                    }
+                });
+            }
+
+            @Override
+            public void onAnimationRepeat() {
+
+            }
+        });
+    }
+
+    private Bitmap initTeamHeadAndGold(final GoldTeamStatus.Student entity, final String file, boolean havename, final FrameAnimation upFrameAnimation) {
         InputStream inputStream = null;
         try {
             inputStream = mContext.getAssets().open(file);
@@ -443,8 +497,14 @@ public class RedPackagePage extends BasePager {
             Canvas canvas = new Canvas(canvasBitmap);
             canvas.drawBitmap(bitmap, 0, 0, null);
             Bitmap head = null;
-            if (entity.isMe()) {
+            final boolean isMe = entity.isMe();
+            if (isMe) {
                 head = headBitmap;
+                if (head == null) {
+                    head = stuHeadBitmap.get(entity.getStuId());
+                }
+            } else {
+                head = stuHeadBitmap.get(entity.getStuId());
             }
             if (head != null && !head.isRecycled()) {
                 float scaleWidth = 70f / head.getHeight();
@@ -457,6 +517,26 @@ public class RedPackagePage extends BasePager {
                 canvas.drawBitmap(scalHeadBitmap, left + 3f, top - 2, null);
                 scalHeadBitmap.recycle();
                 bitmap.recycle();
+            } else {
+                Activity activity = (Activity) mContext;
+                if (!activity.isFinishing()) {
+                    ImageLoader.with(mContext).load(entity.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
+                        @Override
+                        public void onSuccess(Drawable drawable) {
+                            Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                            if (isMe) {
+                                RedPackagePage.this.headBitmap = headBitmap;
+                            }
+                            stuHeadBitmap.put(entity.getStuId(), headBitmap);
+                            upFrameAnimation.removeBitmapCache(file);
+                        }
+
+                        @Override
+                        public void onFail() {
+
+                        }
+                    });
+                }
             }
             //画名字和金币数量
             if (havename) {
@@ -466,11 +546,19 @@ public class RedPackagePage extends BasePager {
                 tv_livevideo_redpackage_name.setText("" + entity.getNickname());
                 TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
                 tv_livevideo_redpackage_num.setText(gold);
+                if (!isMe) {
+                    tv_livevideo_redpackage_name.setTextColor(0xff096D62);
+                    tv_livevideo_redpackage_num.setTextColor(0xff096D62);
+                }
                 layout_live_stand_red_mine1.measure(canvasBitmap.getWidth(), canvasBitmap.getHeight());
                 layout_live_stand_red_mine1.layout(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight());
 
                 canvas.save();
-                canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 283);
+                if (isMe) {
+                    canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 283);
+                } else {
+                    canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 190);
+                }
                 layout_live_stand_red_mine1.draw(canvas);
                 canvas.restore();
             }

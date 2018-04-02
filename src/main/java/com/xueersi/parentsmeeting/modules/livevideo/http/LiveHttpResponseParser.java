@@ -470,7 +470,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     JSONObject stu = stuList.getJSONObject(i);
                     GoldTeamStatus.Student student = new GoldTeamStatus.Student();
                     String stuId2 = stu.getString("stuId");
-                    student.setMe(stuid.equals(stuId2));
+//                    student.setMe(stuid.equals(stuId2));
                     student.setStuId(stuId2);
                     student.setName(stu.optString("name"));
                     student.setNickname(stu.getString("nickname"));

@@ -81,5 +81,14 @@ public class GoldTeamStatus {
         public void setAvatar_path(String avatar_path) {
             this.avatar_path = avatar_path;
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof Student)) {
+                return false;
+            }
+            Student other = (Student) obj;
+            return ("" + stuId).equals(other.stuId);
+        }
     }
 }

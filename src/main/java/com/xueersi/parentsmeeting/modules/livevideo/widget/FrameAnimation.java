@@ -404,6 +404,10 @@ public class FrameAnimation {
         }
     }
 
+    public void removeBitmapCache(String file) {
+        bitmapHashMap.remove(file);
+    }
+
     public void destory() {
         pauseAnimation();
         Set<String> keys = bitmapHashMap.keySet();

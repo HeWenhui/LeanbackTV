@@ -10,10 +10,12 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.config.AppConfig;
+import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RedPackagePage;
+import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 
 import java.io.File;
 import java.util.HashMap;
@@ -130,6 +132,18 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                         RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
                         redPackagePage.onGetPackage(entity);
                         if (clickPackage == 1) {
+                            //结果页增加自己数据
+                            MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
+                            GoldTeamStatus goldTeamStatus = new GoldTeamStatus();
+                            GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+                            student.setNickname(userName);
+                            student.setAvatar_path(headUrl);
+                            student.setStuId(mMyInfo.getStuId());
+                            student.setGold("" + entity.getGoldNum());
+                            student.setMe(true);
+                            goldTeamStatus.getStudents().add(student);
+                            redPackagePage.onGetTeamPackage(goldTeamStatus);
+                            //结果页获得小组数据
                             getReceiveGoldTeamStatus(operateId);
                         }
                     }
@@ -147,6 +161,17 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                             RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
                             redPackagePage.onGetPackage(entity);
                             if (clickPackage == 1) {
+                                MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
+                                GoldTeamStatus goldTeamStatus = new GoldTeamStatus();
+                                GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+                                student.setNickname(userName);
+                                student.setAvatar_path(headUrl);
+                                student.setStuId(mMyInfo.getStuId());
+                                student.setGold("99");
+                                student.setMe(true);
+                                goldTeamStatus.getStudents().add(student);
+                                redPackagePage.onGetTeamPackage(goldTeamStatus);
+                                //
                                 getReceiveGoldTeamStatus(operateId);
                             }
                         }
@@ -180,6 +205,11 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
         redPackagePage.initEnter();
     }
 
+    /**
+     * 结果页获得小组数据
+     *
+     * @param operateId
+     */
     private void getReceiveGoldTeamStatus(final int operateId) {
         receiveGold.getReceiveGoldTeamStatus(operateId, new AbstractBusinessDataCallBack() {
             @Override
