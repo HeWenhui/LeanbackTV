@@ -27,6 +27,12 @@
             android:windowSoftInputMode="adjustUnspecified|stateHidden">
         </activity>
         <activity
+            android:name=".activity.TestpayActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden">
+        </activity>
+        <activity
             android:name=".activity.AuditClassLiveActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"
@@ -36,6 +42,7 @@
             android:name=".activity.LectureLiveVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="portrait"
+            android:launchMode="singleInstance"
             android:windowSoftInputMode="adjustUnspecified|stateHidden">
         </activity>
         <service android:name="ren.yale.android.cachewebviewlib.CachePreLoadService">

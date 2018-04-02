@@ -2,10 +2,12 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -212,6 +215,9 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
     private LiveRemarkBll mLiveRemarkBll;
     private RelativeLayout bottom;
+    // 03.29 临时测试(待删除)
+    private View mFloatView;
+    private PopupWindow mPopupWindows;
 
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
@@ -528,6 +534,16 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     "mIsShowQuestion=" + mIsShowQuestion);
 //            showQuestion(mQuestionEntity);
         }
+        // 03.29 测试报名的入口(临时测试，待删除)
+//        showPopupwindow();
+    }
+
+    private void showPopupwindow() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mFloatView = inflater.inflate(R.layout.livemessage_jumpboard, null);
+        mPopupWindows = new PopupWindow(mFloatView, 415, 100, false);
+        mPopupWindows.setOutsideTouchable(false);
+        mPopupWindows.showAtLocation(mFloatView, Gravity.BOTTOM | Gravity.LEFT, ScreenUtils.getScreenWidth()-450, 50);
     }
 
     @Override

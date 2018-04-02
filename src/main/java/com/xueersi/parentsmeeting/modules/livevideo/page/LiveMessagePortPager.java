@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.Editable;
@@ -27,12 +28,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.parentsmeeting.event.AppEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.TestpayActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerPortItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageEmojiParser;
@@ -42,6 +46,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.event.MiniEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
 import com.xueersi.xesalib.adapter.CommonAdapter;
@@ -52,6 +57,7 @@ import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.view.button.CompoundButtonGroup;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -105,10 +111,16 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     private String COUNT_TAG_FLO = "flo";
     /** 聊天倒计时标记 */
     private String COUNT_TAG_MSG = "msg";
+    /** 立即报名 */
+    private Button mApplyButton;
+    /** 更多课程 */
+    private RelativeLayout mMoreClassLayout;
+    private Activity liveVideoActivity;
 
     public LiveMessagePortPager(Context context, QuestionBll questionBll,
                                 ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
         super(context);
+        liveVideoActivity = (Activity) context;
         this.questionBll = questionBll;
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
@@ -119,6 +131,8 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_message_port, null);
+        mApplyButton = (Button) mView.findViewById(R.id.bt_to_apply);
+        mMoreClassLayout = (RelativeLayout) mView.findViewById(R.id.more_class);
         tvMessageCount = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
         lvMessage = (ListView) mView.findViewById(R.id.lv_livevideo_message);
         dvMessageDanmaku = (DanmakuView) mView.findViewById(R.id.dv_livevideo_message_danmaku);
@@ -320,6 +334,23 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                 } else {
                     XESToastUtils.showToast(mContext, "接收全部消息");
                 }
+            }
+        });
+
+        // 03.28 跳转支付页面
+        mApplyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EventBus.getDefault().post(new MiniEvent("Min"));
+//                liveVideoActivity.startActivity(new Intent(liveVideoActivity, TestpayActivity.class));
+            }
+        });
+
+        // 03.28 展开更多课程的列表
+        mMoreClassLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
     }

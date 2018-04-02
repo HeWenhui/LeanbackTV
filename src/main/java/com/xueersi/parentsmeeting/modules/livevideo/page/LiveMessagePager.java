@@ -133,6 +133,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     LiveAndBackDebug liveAndBackDebug;
     private String liveId;
     private String termId;
+    private View mFloatView;
+    private PopupWindow mPopupWindow;
 
     public LiveMessagePager(Context context, QuestionBll questionBll, LiveAndBackDebug ums, BaseLiveMediaControllerBottom
             liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
@@ -1110,6 +1112,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         tvMessageGold.setText(goldNum);
         tvMessageGold.setVisibility(View.VISIBLE);
         tvMessageGoldLable.setVisibility(View.VISIBLE);
+
     }
 
 

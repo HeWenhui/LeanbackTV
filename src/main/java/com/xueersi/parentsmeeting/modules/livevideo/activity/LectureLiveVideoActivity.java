@@ -1,20 +1,29 @@
 package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,9 +54,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.MiniEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.videoplayer.media.CenterLayout;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.VPlayerListener;
@@ -178,6 +189,9 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     long openStartTime;
     /** onPause状态不暂停视频 */
     boolean onPauseNotStopVideo = false;
+    private View mFloatView;
+    private PopupWindow mPopupWindows;
+    private View mInflate;
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -347,6 +361,18 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
 //            starBll.initView(questionContent);
 //            starBll.onConfigurationChanged(mIsLand);
 //        }
+        if(mIsLand){
+            if(mPopupWindows != null){
+                mPopupWindows = null;
+            }
+            showPopupwindow();
+        }else {
+            if(mPopupWindows != null){
+                mPopupWindows.dismiss();
+            }
+
+        }
+
     }
 
     /**
@@ -495,6 +521,9 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     protected void onPlayOpenStart() {
         setFirstBackgroundVisible(View.VISIBLE);
         findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
+        if(mIsLand){
+            showPopupwindow();
+        }
     }
 
     @Override
@@ -505,6 +534,25 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         }
         setFirstBackgroundVisible(View.GONE);
         rollCallBll.onPlayOpenSuccess(videoView.getLayoutParams());
+//        if(mIsLand){
+//            showPopupwindow();
+//        }
+    }
+
+    private void showPopupwindow() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mFloatView = inflater.inflate(R.layout.livemessage_jumpboard, null);
+        mPopupWindows = new PopupWindow(mFloatView, 415, 100, false);
+        mPopupWindows.setOutsideTouchable(false);
+        mPopupWindows.showAtLocation(mFloatView, Gravity.BOTTOM | Gravity.LEFT, ScreenUtils.getScreenWidth()-450, 50);
+        // 03.29 横竖屏的切换
+        mFloatView.findViewById(R.id.switch_orientation).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //判断当前屏幕方向
+                changeLOrP();
+            }
+        });
     }
 
     @Override
@@ -553,6 +601,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 }
             }.start();
         }
+        Log.e("Duncan","onPause");
     }
 
     @Override
@@ -1161,6 +1210,35 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     public void onEvent(AppEvent.OnlyWIFIEvent onlyWIFIEvent) {
         Toast.makeText(this, "没有wifi", Toast.LENGTH_SHORT).show();
         onUserBackPressed();
+    }
+    /*播放视频Activity最小化的测试*/
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void onEvent(MiniEvent event) {
+        if("Min".equals(event.getMin())){
+            showPopupwindows();
+//            addView();
+            Log.e("Duncan","Min");
+        }
+
+    }
+
+    private void showPopupwindows() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflate = inflater.inflate(R.layout.live_picinpic, null);
+        PopupWindow popupWindow = new PopupWindow(mInflate, 415, 300, false);
+        popupWindow.setOutsideTouchable(false);
+        popupWindow.showAtLocation(mInflate, Gravity.CENTER, 0, 0);
+        LinearLayout view1 = (LinearLayout) mInflate.findViewById(R.id.live_picture);
+        ViewGroup parent = (ViewGroup)videoView.getParent();
+        if(parent != null){
+//            parent.removeAllViews();
+            parent.removeView(videoView);
+        }
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        view1.addView(videoView,params);
+
     }
 
     /**
