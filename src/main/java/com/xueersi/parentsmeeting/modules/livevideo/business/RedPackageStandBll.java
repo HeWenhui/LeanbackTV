@@ -4,16 +4,9 @@ import android.app.Activity;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.AbsoluteSizeSpan;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.config.AppConfig;
@@ -21,12 +14,9 @@ import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RedPackagePage;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by linyuqiang on 2018/3/20.
@@ -132,14 +122,16 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
         redPackagePage = new RedPackagePage(activity, operateId, new RedPackagePage.RedPackagePageAction() {
 
             @Override
-            public void onPackageClick(final int operateId) {
+            public void onPackageClick(final int operateId, final int clickPackage) {
                 receiveGold.sendReceiveGold(operateId, mVSectionID, new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
                         VideoResultEntity entity = (VideoResultEntity) objData[0];
                         RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
                         redPackagePage.onGetPackage(entity);
-                        getReceiveGoldTeamStatus(operateId);
+                        if (clickPackage == 1) {
+                            getReceiveGoldTeamStatus(operateId);
+                        }
                     }
 
                     @Override
@@ -154,7 +146,9 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                             entity.setGoldNum(12);
                             RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
                             redPackagePage.onGetPackage(entity);
-                            getReceiveGoldTeamStatus(operateId);
+                            if (clickPackage == 1) {
+                                getReceiveGoldTeamStatus(operateId);
+                            }
                         }
                     }
                 });
@@ -193,7 +187,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                 GoldTeamStatus entity = (GoldTeamStatus) objData[0];
                 RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
                 if (redPackagePage != null) {
-                     redPackagePage.onGetTeamPackage(entity);
+                    redPackagePage.onGetTeamPackage(entity);
                 }
                 onFinish();
             }

@@ -958,7 +958,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         rollCallBll.onLiveInit(getInfo);
         questionBll.setUserName(getInfo);
         videoChatBll.onLiveInit(getInfo);
-        redPackageBll.setUserName(getInfo.getUname());
+        redPackageBll.setUserName(getInfo.getStuName());
         redPackageBll.setHeadUrl(getInfo.getHeadImgPath());
         redPackageBll.setReceiveGold(new LiveReceiveGold(mLiveBll));
         redPackageBll.onReadPackage(1);

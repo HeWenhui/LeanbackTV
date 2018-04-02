@@ -27,9 +27,9 @@ public class StandLiveRedPacketAlertDialog extends BaseAlertDialog {
         MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
         redPackagePage = new RedPackagePage(mContext, 0, new RedPackagePage.RedPackagePageAction() {
             @Override
-            public void onPackageClick(int operateId) {
+            public void onPackageClick(int operateId, int clickPackage) {
                 mAlertDialog.cancel();
-                redPackageAction.onPackageClick(operateId);
+                redPackageAction.onPackageClick(operateId, 1);
             }
 
             @Override
