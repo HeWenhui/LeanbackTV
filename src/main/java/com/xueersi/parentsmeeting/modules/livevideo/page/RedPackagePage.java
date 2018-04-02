@@ -22,7 +22,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.uikit.imageloader.GlideLoader;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 
@@ -51,13 +50,15 @@ public class RedPackagePage extends BasePager {
     private Bitmap headBitmap;
     /** 获取金币，点击的位置，1.在中间，2.在右边 */
     private int clickPackage = 1;
+    private boolean isLive;
 
-    public RedPackagePage(Context context, int operateId, RedPackagePageAction redPackageAction, String userName, String headUrl) {
+    public RedPackagePage(Context context, int operateId, RedPackagePageAction redPackageAction, String userName, String headUrl, boolean isLive) {
         super(context);
         this.operateId = operateId;
         this.redPackageAction = redPackageAction;
         this.headUrl = headUrl;
         this.userName = userName;
+        this.isLive = isLive;
         initData();
     }
 
@@ -296,16 +297,16 @@ public class RedPackagePage extends BasePager {
                     @Override
                     public void onAnimationEnd() {
                         rl_livevideo_redpackage_teams.setVisibility(View.VISIBLE);
-                        rl_livevideo_redpackage_teams.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                ViewGroup group = (ViewGroup) rl_livevideo_redpackage_teams.getParent();
-                                if (group == null) {
-                                    return;
-                                }
-                                group.removeView(rl_livevideo_redpackage_teams);
-                            }
-                        }, 4000);
+//                        rl_livevideo_redpackage_teams.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                ViewGroup group = (ViewGroup) rl_livevideo_redpackage_teams.getParent();
+//                                if (group == null) {
+//                                    return;
+//                                }
+//                                group.removeView(rl_livevideo_redpackage_teams);
+//                            }
+//                        }, 4000);
                         if (goldTeamStatus != null) {
                             onGetTeamPackage(goldTeamStatus);
                         }
@@ -511,6 +512,14 @@ public class RedPackagePage extends BasePager {
                         return initTeamHeadAndGold(entity, file, true, btframeAnimation2);
                     }
                 });
+                if (!isLive) {
+                    mView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            redPackageAction.onPackageClose(operateId);
+                        }
+                    }, 4000);
+                }
             }
 
             @Override
@@ -609,8 +618,14 @@ public class RedPackagePage extends BasePager {
                 Bitmap scalHeadBitmap = Bitmap.createBitmap(head, 0, 0, head.getWidth(), head.getHeight(), matrix, true);
                 scalHeadBitmap.setDensity(160);
                 float left = (bitmap.getWidth() - scalHeadBitmap.getWidth()) / 2;
-                float top = (bitmap.getHeight() - scalHeadBitmap.getHeight()) / 2;
-                canvas.drawBitmap(scalHeadBitmap, left + 3f, top - 2, null);
+                float top;
+                if (isMe) {
+                    left += 3f;
+                    top = (bitmap.getHeight() - scalHeadBitmap.getHeight()) / 2;
+                } else {
+                    top = 120;
+                }
+                canvas.drawBitmap(scalHeadBitmap, left, top - 2, null);
                 scalHeadBitmap.recycle();
                 bitmap.recycle();
             } else {
@@ -674,6 +689,60 @@ public class RedPackagePage extends BasePager {
     }
 
     /**
+     * 得到幸运儿动画
+     *
+     * @param entity
+     */
+    public void onGetTeamRank(GoldTeamStatus entity) {
+        ViewGroup group = (ViewGroup) rl_livevideo_redpackage_teams.getParent();
+        if (group != null) {
+            group.removeView(rl_livevideo_redpackage_teams);
+        }
+        String path = "Images/redpackage/14_transition";
+        final FrameAnimation btframeAnimation1 =
+                FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, path, 50, false);
+        frameAnimations.add(btframeAnimation1);
+        btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
+            @Override
+            public void onAnimationStart() {
+
+            }
+
+            @Override
+            public void onAnimationEnd() {
+                String path = "Images/redpackage/15_rank_enter";
+                FrameAnimation btframeAnimation2 =
+                        FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, path, 50, false);
+                frameAnimations.add(btframeAnimation2);
+                btframeAnimation2.setAnimationListener(new FrameAnimation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart() {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd() {
+                        String path = "Images/redpackage/16_rank_looper";
+                        FrameAnimation btframeAnimation3 =
+                                FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, path, 50, true);
+                        frameAnimations.add(btframeAnimation3);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat() {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onAnimationRepeat() {
+
+            }
+        });
+    }
+
+    /**
      * 第二个红包到了
      */
     public void onOtherPackage() {
@@ -682,6 +751,7 @@ public class RedPackagePage extends BasePager {
         lp.bottomMargin = 100;
         iv_livevideo_redpackage_bg.setLayoutParams(lp);
     }
+
 
     public FrameAnimation createFromAees(String path, boolean isRepeat) {
         return FrameAnimation.createFromAees(mContext, iv_livevideo_redpackage_bg, path, 50, isRepeat);

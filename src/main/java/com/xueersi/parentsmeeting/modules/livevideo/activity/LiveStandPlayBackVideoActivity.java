@@ -19,7 +19,6 @@ import android.text.style.AbsoluteSizeSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -53,7 +52,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Courseware
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertPagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PutQuestion;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionResultView;
@@ -62,11 +60,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageStandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.dialog.StandLiveRedPacketAlertDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewarePager;
@@ -78,7 +74,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectLive
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSubjectivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.RedPackagePage;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
@@ -87,8 +82,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandPlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.business.VideoBll;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.VideoActivity;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.VideoActivity2;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VideoViewActivity;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
@@ -495,7 +488,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //            mQuestionEntity.setvEndTime(120);
 //            showExam();
             MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
-            redPackageStandBll = new RedPackageStandBll(this);
+            redPackageStandBll = new RedPackageStandBll(this, false);
             redPackageStandBll.setVSectionID(mVideoEntity.getLiveId());
             redPackageStandBll.setUserName(mMyInfo.getNickName());
             redPackageStandBll.setHeadUrl(mMyInfo.getHeadImg());
@@ -1822,6 +1815,11 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 
             @Override
             public void getReceiveGoldTeamStatus(int operateId, AbstractBusinessDataCallBack callBack) {
+
+            }
+
+            @Override
+            public void getReceiveGoldTeamRank(int operateId, AbstractBusinessDataCallBack callBack) {
 
             }
         });

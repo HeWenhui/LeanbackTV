@@ -309,9 +309,20 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     public void getReceiveGoldTeamStatus(int operateId,
-                                     HttpCallBack requestCallBack) {
+                                         HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         String url = liveVideoSAConfigInner.URL_RED_GOLD_TEAM_STATUS;
+        requestCallBack.url = url;
+        setDefaultParameter(params);
+//        params.addBodyParam("enstuId", enstuId);
+        params.addBodyParam("operateId", "" + operateId);
+        sendPost(url, params, requestCallBack);
+    }
+
+    public void getReceiveGoldTeamRank(int operateId,
+                                       HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        String url = liveVideoSAConfigInner.URL_RED_GOLD_TEAM_RANK;
         requestCallBack.url = url;
         setDefaultParameter(params);
 //        params.addBodyParam("enstuId", enstuId);

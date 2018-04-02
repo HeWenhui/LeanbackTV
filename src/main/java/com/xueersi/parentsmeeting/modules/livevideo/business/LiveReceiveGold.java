@@ -27,4 +27,9 @@ public class LiveReceiveGold implements RedPackageStandBll.ReceiveGold {
     public void getReceiveGoldTeamStatus(int operateId, AbstractBusinessDataCallBack callBack) {
         mLiveBll.getReceiveGoldTeamStatus(operateId, callBack);
     }
+
+    @Override
+    public void getReceiveGoldTeamRank(int operateId, AbstractBusinessDataCallBack callBack) {
+        mLiveBll.getReceiveGoldTeamRank(operateId, callBack);
+    }
 }

@@ -484,6 +484,32 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         });
     }
 
+    public void getReceiveGoldTeamRank(final int operateId, final AbstractBusinessDataCallBack callBack) {
+        mLogtf.d("getReceiveGoldTeamRank:operateId=" + operateId + ",liveId=" + mLiveId);
+        mHttpManager.getReceiveGoldTeamRank(operateId, new HttpCallBack() {
+
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                mLogtf.d("getReceiveGoldTeamRank:onPmSuccess=" + responseEntity.getJsonObject().toString() + ",operateId=" +
+                        operateId);
+                GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId());
+                callBack.onDataSucess(entity);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                mLogtf.d("getReceiveGoldTeamRank:onPmFailure=" + msg + ",operateId=" + operateId);
+                callBack.onDataFail(0, msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                mLogtf.d("getReceiveGoldTeamRank:onPmError=" + responseEntity.getErrorMsg() + ",operateId=" + operateId);
+                callBack.onDataFail(1, responseEntity.getErrorMsg());
+            }
+        });
+    }
+
     /**
      * 提交测试题
      *

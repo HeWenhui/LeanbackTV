@@ -57,6 +57,9 @@ public class LiveVideoSAConfig {
         /** 获取组内领取红包情况 */
         public String URL_RED_GOLD_TEAM_STATUS = HTTP_HOST
                 + "/LiveCourse/getReceiveGoldTeamStatus";
+        /** 获取组内领取红包排行 */
+        public String URL_RED_GOLD_TEAM_RANK = HTTP_HOST
+                + "/LiveCourse/getReceiveGoldTeamRank";
         /** 获取红包 */
         public String URL_STUDY_RECEIVE_LIVE_PLAY_RED_PACKET_GOLD = HTTP_HOST
                 + "/LiveCourse/receiveGoldForPlayBack";

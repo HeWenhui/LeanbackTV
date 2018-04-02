@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 站立直播红包
  */
 public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
-    String TAG = "RedPackageStandBll";
+    private String TAG = "RedPackageStandBll";
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     private LogToFile mLogtf;
     private Activity activity;
@@ -34,17 +34,19 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     private String mVSectionID;
     /** 红包的布局 */
     private RelativeLayout rlRedpacketContent;
-    RedPackagePage redPackagePage;
-    HashMap<String, RedPackagePage> packagePageHashMap = new HashMap<>();
-    ReceiveGold receiveGold;
-    String headUrl;
-    String userName;
+    private RedPackagePage redPackagePage;
+    private HashMap<String, RedPackagePage> packagePageHashMap = new HashMap<>();
+    private ReceiveGold receiveGold;
+    private String headUrl;
+    private String userName;
+    private boolean isLive;
 
-    public RedPackageStandBll(Activity activity) {
+    public RedPackageStandBll(Activity activity, boolean isLive) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
         this.activity = activity;
+        this.isLive = isLive;
     }
 
     public void setReceiveGold(ReceiveGold receiveGold) {
@@ -144,9 +146,24 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                             student.setMe(true);
                             goldTeamStatus.getStudents().add(student);
                             redPackagePage.onGetTeamPackage(goldTeamStatus);
-                            //结果页获得小组数据
-                            AtomicInteger getCount = new AtomicInteger();
-                            getReceiveGoldTeamStatus(operateId, getCount);
+                            //直播获得小组数据，回放隔几秒就消失
+                            if (isLive) {
+                                AtomicInteger getCount = new AtomicInteger();
+                                getReceiveGoldTeamStatus(operateId, getCount);
+                                rlRedpacketContent.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        receiveGold.getReceiveGoldTeamRank(operateId, new AbstractBusinessDataCallBack() {
+                                            @Override
+                                            public void onDataSucess(Object... objData) {
+                                                GoldTeamStatus entity = (GoldTeamStatus) objData[0];
+                                                RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
+                                                redPackagePage.onGetTeamRank(entity);
+                                            }
+                                        });
+                                    }
+                                }, 14000);
+                            }
                         }
                     }
 
@@ -173,9 +190,24 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                                 student.setMe(true);
                                 goldTeamStatus.getStudents().add(student);
                                 redPackagePage.onGetTeamPackage(goldTeamStatus);
-                                //
-                                AtomicInteger getCount = new AtomicInteger();
-                                getReceiveGoldTeamStatus(operateId, getCount);
+                                //直播获得小组数据，回放隔几秒就消失
+                                if (isLive) {
+                                    AtomicInteger getCount = new AtomicInteger();
+                                    getReceiveGoldTeamStatus(operateId, getCount);
+                                    rlRedpacketContent.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            receiveGold.getReceiveGoldTeamRank(operateId, new AbstractBusinessDataCallBack() {
+                                                @Override
+                                                public void onDataSucess(Object... objData) {
+                                                    GoldTeamStatus entity = (GoldTeamStatus) objData[0];
+                                                    RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
+                                                    redPackagePage.onGetTeamRank(entity);
+                                                }
+                                            });
+                                        }
+                                    }, 14000);
+                                }
                             }
                         }
                     }
@@ -196,7 +228,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                     oldRedPackagePage.onOtherPackage();
                 }
             }
-        }, userName, headUrl);
+        }, userName, headUrl, isLive);
         View view = redPackagePage.getRootView();
         packagePageHashMap.put("" + operateId, redPackagePage);
 //        view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
@@ -308,9 +340,11 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     }
 
     public interface ReceiveGold {
-        void sendReceiveGold(final int operateId, String liveId, final AbstractBusinessDataCallBack callBack);
+        void sendReceiveGold(final int operateId, String liveId, AbstractBusinessDataCallBack callBack);
 
-        void getReceiveGoldTeamStatus(int operateId, final AbstractBusinessDataCallBack callBack);
+        void getReceiveGoldTeamStatus(int operateId, AbstractBusinessDataCallBack callBack);
+
+        void getReceiveGoldTeamRank(int operateId, AbstractBusinessDataCallBack callBack);
 
         void onReceiveGold();
     }

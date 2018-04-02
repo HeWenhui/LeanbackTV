@@ -42,7 +42,7 @@ public class StandLiveRedPacketAlertDialog extends BaseAlertDialog {
             public void onPackageRight(int operateId) {
 
             }
-        }, "", mMyInfo.getHeadImg());
+        }, "", mMyInfo.getHeadImg(), false);
         View view = redPackagePage.getRootView();
         return view;
     }
