@@ -115,7 +115,8 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 import static com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE;
 
 /**
- * Created by Administrator on 2018/3/6.
+ * Created by David on 2018/3/6.
+ * 体验课播放器
  */
 
 public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implements BaseLiveMediaControllerBottom.MediaChildViewClick{
@@ -189,7 +190,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 // 03.22 上传心跳时间
 //                lastPlayTime = System.currentTimeMillis();
 //                playTime += mPlayDurTime;
-                mLiveBll.uploadExperiencePlayTime(mVideoEntity.getChapterId(),300L);
+                mLiveBll.uploadExperiencePlayTime(mVideoEntity.getLiveId(),mVideoEntity.getChapterId(),300L);
                 mHandler.postDelayed(this, mPlayDurTime);
             }
         }

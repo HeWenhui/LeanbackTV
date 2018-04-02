@@ -3890,12 +3890,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     }
 
     // 03.22 上传体验课播放器的心跳时间
-    public void uploadExperiencePlayTime(String termId, Long hbtime) {
-        mHttpManager.uploadExperiencePlayingTime(termId, hbtime, new HttpCallBack(false) {
+    public void uploadExperiencePlayTime(String liveId,String termId,Long hbtime){
+        mHttpManager.uploadExperiencePlayingTime(liveId,termId, hbtime, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Log.e("Duncan", "uploadexperiencetime:" + responseEntity.getJsonObject());
-                Log.e("Duncan", "uploadexperiencetime:" + responseEntity.getJsonObject());
+                Log.e("Duncan","uploadexperiencetime:" + responseEntity.getJsonObject());
             }
         });
     }
