@@ -80,7 +80,7 @@ public class StartProgress extends RelativeLayout {
                 }
                 {
                     LayoutParams lp = (LayoutParams) tv_live_star_result_sorce.getLayoutParams();
-                    lp.topMargin = (int) (55 * ScreenUtils.getScreenDensity());
+                    lp.topMargin = (int) (50 * ScreenUtils.getScreenDensity());
                     LayoutParamsUtil.setViewLayoutParams(tv_live_star_result_sorce, lp);
                 }
 //                invalidate();
