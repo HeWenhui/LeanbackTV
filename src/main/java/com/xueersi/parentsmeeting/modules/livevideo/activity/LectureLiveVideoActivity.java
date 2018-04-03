@@ -3,14 +3,16 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -58,11 +60,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.MiniEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.CenterLayout;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.VPlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.modules.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
@@ -79,6 +81,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import floatwindow.xishuang.float_lib.FloatActionController;
+import floatwindow.xishuang.float_lib.FloatWindowManager;
+import floatwindow.xishuang.float_lib.permission.FloatPermissionManager;
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /**
@@ -192,6 +197,9 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     private View mFloatView;
     private PopupWindow mPopupWindows;
     private View mInflate;
+    private static WindowManager mWindowManager;
+    private static WindowManager.LayoutParams wmParams;
+    private ViewGroup mParent;
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -505,6 +513,8 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         //Loger.e(TAG, "setFirstParamLand:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
     }
 
+
+
     private void setFirstParamPort() {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
         if (params.rightMargin != RelativeLayout.LayoutParams.MATCH_PARENT || params.bottomMargin != RelativeLayout.LayoutParams.MATCH_PARENT) {
@@ -534,9 +544,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         }
         setFirstBackgroundVisible(View.GONE);
         rollCallBll.onPlayOpenSuccess(videoView.getLayoutParams());
-//        if(mIsLand){
-//            showPopupwindow();
-//        }
     }
 
     private void showPopupwindow() {
@@ -554,6 +561,17 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             }
         });
     }
+
+    private void createRealVideo(VideoView videoView){
+        boolean isPermission = FloatPermissionManager.getInstance().applyFloatWindow(this);
+        //有对应权限或者系统版本小于7.0
+        if (isPermission || Build.VERSION.SDK_INT < 24) {
+            //开启悬浮窗
+//            FloatActionController.getInstance().startMonkServer(this);
+            FloatWindowManager.addView(this,videoView);
+        }
+    }
+
 
     @Override
     public void onResume() {
@@ -1215,30 +1233,40 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(MiniEvent event) {
         if("Min".equals(event.getMin())){
-            showPopupwindows();
-//            addView();
+            mParent = (ViewGroup)videoView.getParent();
+            if(mParent != null){
+                mParent.removeView(videoView);
+            }
+            createRealVideo(videoView);
+            startActivity(new Intent(this,TestpayActivity.class));
+            onPauseNotStopVideo = true;
             Log.e("Duncan","Min");
+        }
+        // 04.03 从支付页面跳转回来的重新加载
+        if("Back".equals(event.getMin())){
+            ViewGroup parents = (ViewGroup)videoView.getParent();
+            if(parents != null){
+                parents.removeView(videoView);
+                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+                mParent.addView(videoView,params);
+            }
         }
 
     }
 
-    private void showPopupwindows() {
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mInflate = inflater.inflate(R.layout.live_picinpic, null);
-        PopupWindow popupWindow = new PopupWindow(mInflate, 415, 300, false);
-        popupWindow.setOutsideTouchable(false);
-        popupWindow.showAtLocation(mInflate, Gravity.CENTER, 0, 0);
+
+    private void addView() {
         LinearLayout view1 = (LinearLayout) mInflate.findViewById(R.id.live_picture);
         ViewGroup parent = (ViewGroup)videoView.getParent();
         if(parent != null){
-//            parent.removeAllViews();
             parent.removeView(videoView);
         }
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         view1.addView(videoView,params);
-
     }
 
     /**
@@ -1317,6 +1345,9 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         }.start();
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
+        //关闭悬浮窗
+//        FloatActionController.getInstance().stopMonkServer(this);
+        FloatWindowManager.hide();
     }
 
     /**

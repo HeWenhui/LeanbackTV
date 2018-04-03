@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.xueersi.parentsmeeting.modules.livevideo">
-
+    <!-- 悬浮窗必加权限 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <application>
         <activity
             android:name=".activity.LivePlayBackVideoActivity"
@@ -46,8 +47,8 @@
             android:windowSoftInputMode="adjustUnspecified|stateHidden">
         </activity>
         <service android:name="ren.yale.android.cachewebviewlib.CachePreLoadService">
-
         </service>
+        <service android:name="floatwindow.xishuang.float_lib.service.FloatMonkService"/>
     </application>
 
 </manifest>
