@@ -103,6 +103,8 @@ public class LiveRemarkBll {
     private int redPackNum=0;
     private int examNum=0;
     private ChooseListAlertDialog mDialog;
+    private boolean isVideoReady;
+    private boolean isClassReady;
 
     public LiveRemarkBll(Context context, PlayerService playerService){
         mContext=context;
@@ -120,14 +122,15 @@ public class LiveRemarkBll {
     }
 
     public void initData() {
-        if(mLiveMediaControllerBottom!=null){
-            mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    XESToastUtils.showToast(mContext,"正在加载视频");
-                }
-            });
-        }
+//        if(mLiveMediaControllerBottom!=null){
+//            mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    XESToastUtils.showToast(mContext,"正在加载视频");
+//                }
+//            });
+//        }
+        setVideoReady(false);
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
@@ -147,6 +150,7 @@ public class LiveRemarkBll {
                     Loger.i(TAG, "nowtime  " + frameInfo.nowTime + "   dts     " + frameInfo.pkt_dts
                             + "   pkt   " + frameInfo.pkt + "  cache:" + ((IjkMediaPlayer)mPlayerService.getPlayer()).getVideoCachedDuration());
                     //setBtEnable(true);
+                    setVideoReady(true);
                     mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(final View v) {
@@ -204,6 +208,16 @@ public class LiveRemarkBll {
         if (mLiveMediaControllerBottom != null) {
             mLiveMediaControllerBottom.getBtMark().setVisibility(View.GONE);
         }
+    }
+
+    public void setVideoReady(boolean videoReady) {
+        isVideoReady = videoReady;
+        setBtEnable(isClassReady&&isVideoReady);
+    }
+
+    public void setClassReady(boolean classReady) {
+        isClassReady = classReady;
+        setBtEnable(isClassReady&&isVideoReady);
     }
 
     public void setBottom(RelativeLayout bottom) {
