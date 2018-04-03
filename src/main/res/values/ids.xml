@@ -320,6 +320,7 @@
     <item name="tv_livevideo_speecteval_countdown3" type="id" />
     <item name="tv_livevideo_speecteval_countdown4" type="id" />
     <item name="vwv_livevideo_speecteval_wave" type="id" />
+    <item name="iv_livevideo_speecteval_wave" type="id" />
     <item name="rl_livevideo_speecteval_error" type="id" />
     <item name="iv_livevideo_speecteval_error" type="id" />
     <item name="tv_livevideo_speecteval_error" type="id" />
@@ -384,6 +385,7 @@
     <item name="tv_livevideo_voiceans_title" type="id" />
     <item name="rl_livevideo_voiceans_switch" type="id" />
     <item name="tv_livevideo_voiceans_switch" type="id" />
+    <item name="iv_livevideo_voiceans_switch" type="id" />
     <item name="rl_livevideo_speecteval_tip" type="id" />
     <item name="iv_livevideo_speecteval_tip" type="id" />
     <item name="iv_livevideo_speecteval_tip_pao" type="id" />

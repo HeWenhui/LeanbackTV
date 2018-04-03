@@ -46,6 +46,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLazyBllCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoiceAnswerCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
@@ -328,8 +329,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         if (mLiveBll != null && mLiveBll.getLiveAutoNoticeBll() != null) {
                             mLiveBll.getLiveAutoNoticeBll().setLayout(lp.width, lp.height);
                         }
-                        if(mLiveBll!=null&&mLiveBll.getLiveRemarkBll()!=null){
-                            mLiveBll.getLiveRemarkBll().setLayout(lp.width,lp.height);
+                        if (mLiveBll != null && mLiveBll.getLiveRemarkBll() != null) {
+                            mLiveBll.getLiveRemarkBll().setLayout(lp.width, lp.height);
                         }
                         if (speechFeedBackAction != null) {
                             speechFeedBackAction.setVideoLayout(lp.width, lp.height);
@@ -433,6 +434,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         redPackageBll.setVSectionID(mVSectionID);
         questionBll.setLiveType(liveType);
         questionBll.initData();
+        questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat());
         englishH5CoursewareBll.setShareDataManager(mShareDataManager);
         englishH5CoursewareBll.setLiveType(liveType);
         englishH5CoursewareBll.setVSectionID(mVSectionID);

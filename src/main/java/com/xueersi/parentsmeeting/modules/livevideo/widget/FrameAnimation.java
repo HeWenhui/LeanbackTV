@@ -414,6 +414,7 @@ public class FrameAnimation {
         for (String k : keys) {
             bitmapHashMap.get(k).recycle();
         }
+        bitmapHashMap.clear();
     }
 
     public static FrameAnimation createFromAees(Context mContext, View iv, String path, int duration, boolean isRepeat) {

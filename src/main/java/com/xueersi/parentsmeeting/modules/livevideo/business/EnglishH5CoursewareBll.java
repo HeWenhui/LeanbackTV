@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
@@ -66,7 +67,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     private RelativeLayout rlQuestionResContent;
     EnglishH5CoursewarePager h5CoursewarePager;
     private EnglishH5CoursewarePager curPager;
-    private VoiceAnswerPager voiceAnswerPager;
+    private BaseVoiceAnswerPager voiceAnswerPager;
     private LogToFile logToFile;
     RelativeLayout bottomContent;
     /** 语音强制提交，外层 */
@@ -279,7 +280,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     }
                 } else {
                     if (voiceAnswerPager != null && !voiceAnswerPager.isEnd()) {
-                        final VoiceAnswerPager answerPager = voiceAnswerPager;
+                        final VoiceAnswerPager answerPager = (VoiceAnswerPager) voiceAnswerPager;
 //                        voiceAnswerPager = null;
 //                        rlVoiceQuestionContent = new RelativeLayout(liveVideoActivityBase);
 //                        View view = answerPager.getRootView();
@@ -515,7 +516,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         }
 
         @Override
-        public void stopSpeech(VoiceAnswerPager answerPager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
+        public void stopSpeech(BaseVoiceAnswerPager answerPager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
             bottomContent.removeView(answerPager.getRootView());
             if (context instanceof AudioRequest) {
                 AudioRequest audioRequest = (AudioRequest) context;

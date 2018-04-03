@@ -939,7 +939,7 @@ public class RedPackagePage extends BasePager {
     }
 
 
-    public FrameAnimation createFromAees(String path, boolean isRepeat) {
+    private FrameAnimation createFromAees(String path, boolean isRepeat) {
         return FrameAnimation.createFromAees(mContext, iv_livevideo_redpackage_bg, path, 50, isRepeat);
     }
 

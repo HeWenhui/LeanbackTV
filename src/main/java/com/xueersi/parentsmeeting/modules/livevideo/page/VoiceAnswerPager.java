@@ -41,7 +41,7 @@ import java.util.List;
  * Created by linyuqiang on 2017/12/5.
  */
 
-public class VoiceAnswerPager extends BasePager {
+public class VoiceAnswerPager extends BaseVoiceAnswerPager {
     String eventId = LiveVideoConfig.LIVE_TEST_VOICE;
     private SpeechEvaluatorUtils mIse;
     BaseVideoQuestionEntity baseVideoQuestionEntity;
@@ -107,10 +107,12 @@ public class VoiceAnswerPager extends BasePager {
         initData();
     }
 
+    @Override
     public BaseVideoQuestionEntity getBaseVideoQuestionEntity() {
         return baseVideoQuestionEntity;
     }
 
+    @Override
     public void setAudioRequest() {
         Loger.d(TAG, "setAudioRequest:mIse=" + (mIse == null));
         mView.post(new Runnable() {
@@ -126,10 +128,6 @@ public class VoiceAnswerPager extends BasePager {
 
     public void setIse(SpeechEvaluatorUtils ise) {
         this.mIse = ise;
-    }
-
-    public void setEnd() {
-        isEnd = true;
     }
 
     @Override
@@ -225,6 +223,7 @@ public class VoiceAnswerPager extends BasePager {
 //        });
     }
 
+    @Override
     public void stopPlayer() {
         if (mIse != null) {
             mIse.stop();
@@ -254,10 +253,17 @@ public class VoiceAnswerPager extends BasePager {
         }
     };
 
+    @Override
     public boolean isEnd() {
         return isEnd;
     }
 
+    @Override
+    public void setEnd() {
+        isEnd = true;
+    }
+
+    @Override
     public void examSubmitAll(String method, String nonce) {
         isEnd = true;
         endnonce = nonce;
@@ -278,6 +284,7 @@ public class VoiceAnswerPager extends BasePager {
         }
     }
 
+    @Override
     public void onUserBack() {
         userBack = true;
         if (mIse != null) {
@@ -593,6 +600,7 @@ public class VoiceAnswerPager extends BasePager {
         }
     }
 
+    @Override
     public void onNetWorkChange(int netWorkType) {
         this.netWorkType = netWorkType;
         if (netWorkType != NetWorkHelper.NO_NETWORK) {

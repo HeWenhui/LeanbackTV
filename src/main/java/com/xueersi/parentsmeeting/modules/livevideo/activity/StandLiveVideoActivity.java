@@ -49,6 +49,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLazyBllCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveReceiveGold;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandAchievementBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandVoiceAnswerCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
@@ -447,6 +448,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         redPackageBll.setVSectionID(mVSectionID);
         questionBll.setLiveType(liveType);
         questionBll.initData();
+        questionBll.setBaseVoiceAnswerCreat(new LiveStandVoiceAnswerCreat());
         englishH5CoursewareBll.setShareDataManager(mShareDataManager);
         englishH5CoursewareBll.setLiveType(liveType);
         englishH5CoursewareBll.setVSectionID(mVSectionID);
@@ -962,9 +964,9 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         redPackageBll.setHeadUrl(getInfo.getHeadImgPath());
         redPackageBll.setReceiveGold(new LiveReceiveGold(mLiveBll));
 
-        if (AppConfig.DEBUG) {
-            redPackageBll.onReadPackage(1);
-        }
+//        if (AppConfig.DEBUG) {
+//            redPackageBll.onReadPackage(1);
+//        }
         Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
     }
 
