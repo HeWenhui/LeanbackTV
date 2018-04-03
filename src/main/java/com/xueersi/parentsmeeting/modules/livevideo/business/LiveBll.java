@@ -755,18 +755,19 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         if (videoChatAction != null) {
                             videoChatAction.quit("off", "", "change");
                         }
-                        if (mLiveRemarkBll != null) {
-                            //主讲
-                            if (liveTopic.getMode().equals(LiveTopic.MODE_CLASS)) {
-                                mLiveRemarkBll.setBtEnable(true);
-                            } else {
-                                mLiveRemarkBll.setBtEnable(false);
-                            }
-                        }
+
                         //模式切换为主讲，关闭表扬榜
                         if (mPraiseListAction != null && liveTopic.getMode().equals(LiveTopic.MODE_CLASS))
                             mPraiseListAction.closePraiseList();
                         liveGetPlayServer(true);
+                    }
+                    if (mLiveRemarkBll != null) {
+                        //主讲
+                        if (!liveTopic.getMainRoomstatus().isOnbreak()&&liveTopic.getMode().equals(LiveTopic.MODE_CLASS)) {
+                            mLiveRemarkBll.setBtEnable(true);
+                        } else {
+                            mLiveRemarkBll.setBtEnable(false);
+                        }
                     }
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
                     if (mainRoomstatus.isHaveExam() && mQuestionAction != null) {
@@ -3876,7 +3877,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         if (mGetInfo != null && !"1".equals(mGetInfo.getIsShowMarkPoint())) {
             mLiveRemarkBll.hideBtMark();
         }
-        if (mGetInfo.getStat() == 3 && LiveTopic.MODE_CLASS.equals(getMode())) {
+        if (!mLiveTopic.getMainRoomstatus().isOnbreak()&&mGetInfo.getStat() == 3 && LiveTopic.MODE_CLASS.equals(getMode())) {
             mLiveRemarkBll.setBtEnable(true);
         } else {
             mLiveRemarkBll.setBtEnable(false);

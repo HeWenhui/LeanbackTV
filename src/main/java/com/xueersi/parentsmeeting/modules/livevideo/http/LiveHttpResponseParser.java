@@ -64,8 +64,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setLiveType(data.getInt("liveType"));
             getInfo.setLiveTime(data.getString("liveTime"));
             getInfo.setNowTime(data.getDouble("nowTime"));
-            //getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));
-            getInfo.setIsShowMarkPoint("1");
+            getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));
+            //getInfo.setIsShowMarkPoint("1");
             getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
             //getInfo.setIsShowCounselorWhisper("1");
             if (data.has("followType")) {
@@ -329,6 +329,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         if (liveTopicJson.has("room_1")) {
             JSONObject status = liveTopicJson.getJSONObject("room_1");
             RoomStatusEntity mainStatusEntity = liveTopic.getMainRoomstatus();
+            mainStatusEntity.setOnbreak(status.optBoolean("isOnBreak"));
             mainStatusEntity.setId(status.getInt("id"));
             mainStatusEntity.setClassbegin(status.getBoolean("classbegin"));
             mainStatusEntity.setOpenbarrage(status.getBoolean("openbarrage"));

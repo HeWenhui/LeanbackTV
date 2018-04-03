@@ -7,6 +7,7 @@ import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.view.TextureView;
@@ -284,6 +285,7 @@ public class LiveRemarkBll {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                             XESToastUtils.showToast(mContext, "标记成功");
+                            startCountDown();
                             lastMarkTime=System.currentTimeMillis();
                         }
 
@@ -310,6 +312,25 @@ public class LiveRemarkBll {
             XESToastUtils.showToast(mContext, "标记失败");
         }
 
+    }
+    private void startCountDown(){
+        CountDownTimer timer=new CountDownTimer(15000,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+                mLiveMediaControllerBottom.getBtMark().setText(millisUntilFinished/1000+"");
+                mLiveMediaControllerBottom.getBtMark().setBackgroundResource(R.drawable.shape_oval_black);
+            }
+
+            @Override
+            public void onFinish() {
+                mLiveMediaControllerBottom.getBtMark().setBackgroundResource(R.drawable.bg_bt_live_mark);
+                mLiveMediaControllerBottom.getBtMark().setText("");
+                mLiveMediaControllerBottom.getBtMark().setEnabled(true);
+            }
+        };
+        mLiveMediaControllerBottom.getBtMark().setEnabled(false);
+        timer.start();
     }
 
     public void setLayout(int width, int height) {
