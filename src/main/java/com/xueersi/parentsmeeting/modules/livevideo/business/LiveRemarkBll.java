@@ -94,7 +94,6 @@ public class LiveRemarkBll {
     private RelativeLayout rlMask;
     private CommonAdapter mAdapter;
     private TextureView mTextureView;
-    private long lastMarkTime;
     private MediaController mController;
     private AbstractBusinessDataCallBack mCallBack;
     private String liveId;
@@ -151,10 +150,6 @@ public class LiveRemarkBll {
                     mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(final View v) {
-                            if(System.currentTimeMillis()-lastMarkTime<15000){
-                                XESToastUtils.showToast(mContext,"你标记太快了");
-                                return;
-                            }
                             final LiveTextureView liveTextureView = (LiveTextureView) ((Activity) mContext).findViewById(R.id.ltv_course_video_video_texture);
                             if (liveTextureView == null) {
                                 return;
@@ -286,7 +281,6 @@ public class LiveRemarkBll {
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                             XESToastUtils.showToast(mContext, "标记成功");
                             startCountDown();
-                            lastMarkTime=System.currentTimeMillis();
                         }
 
                         @Override
