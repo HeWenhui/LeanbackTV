@@ -94,7 +94,6 @@ public class LiveRemarkBll {
     private RelativeLayout rlMask;
     private CommonAdapter mAdapter;
     private TextureView mTextureView;
-    private long lastMarkTime;
     private MediaController mController;
     private AbstractBusinessDataCallBack mCallBack;
     private String liveId;
@@ -104,6 +103,8 @@ public class LiveRemarkBll {
     private int redPackNum=0;
     private int examNum=0;
     private ChooseListAlertDialog mDialog;
+    private boolean isVideoReady;
+    private boolean isClassReady;
 
     public LiveRemarkBll(Context context, PlayerService playerService){
         mContext=context;
@@ -121,14 +122,15 @@ public class LiveRemarkBll {
     }
 
     public void initData() {
-        if(mLiveMediaControllerBottom!=null){
-            mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    XESToastUtils.showToast(mContext,"正在加载视频");
-                }
-            });
-        }
+//        if(mLiveMediaControllerBottom!=null){
+//            mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    XESToastUtils.showToast(mContext,"正在加载视频");
+//                }
+//            });
+//        }
+        setVideoReady(false);
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
@@ -148,19 +150,12 @@ public class LiveRemarkBll {
                     Loger.i(TAG, "nowtime  " + frameInfo.nowTime + "   dts     " + frameInfo.pkt_dts
                             + "   pkt   " + frameInfo.pkt + "  cache:" + ((IjkMediaPlayer)mPlayerService.getPlayer()).getVideoCachedDuration());
                     //setBtEnable(true);
+                    setVideoReady(true);
                     mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(final View v) {
-                            if(System.currentTimeMillis()-lastMarkTime<15000){
-                                XESToastUtils.showToast(mContext,"你标记太快了");
-                                return;
-                            }
                             final LiveTextureView liveTextureView = (LiveTextureView) ((Activity) mContext).findViewById(R.id.ltv_course_video_video_texture);
                             if (liveTextureView == null) {
-                                return;
-                            }
-                            if(mPlayerService.getPlayer()==null){
-                                XESToastUtils.showToast(mContext,"暂时无法进行标记");
                                 return;
                             }
                             final LiveVideoView liveVideoView = (LiveVideoView) ((Activity) mContext).findViewById(R.id.vv_course_video_video);
@@ -213,6 +208,16 @@ public class LiveRemarkBll {
         if (mLiveMediaControllerBottom != null) {
             mLiveMediaControllerBottom.getBtMark().setVisibility(View.GONE);
         }
+    }
+
+    public void setVideoReady(boolean videoReady) {
+        isVideoReady = videoReady;
+        setBtEnable(isClassReady&&isVideoReady);
+    }
+
+    public void setClassReady(boolean classReady) {
+        isClassReady = classReady;
+        setBtEnable(isClassReady&&isVideoReady);
     }
 
     public void setBottom(RelativeLayout bottom) {
@@ -290,7 +295,6 @@ public class LiveRemarkBll {
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                             XESToastUtils.showToast(mContext, "标记成功");
                             startCountDown();
-                            lastMarkTime=System.currentTimeMillis();
                         }
 
                         @Override

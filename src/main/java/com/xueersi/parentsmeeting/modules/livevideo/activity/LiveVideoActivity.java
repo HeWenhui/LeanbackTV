@@ -1297,7 +1297,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             }
         }
         if (liveRemarkBll != null) {
-            liveRemarkBll.setBtEnable(false);
+            liveRemarkBll.setVideoReady(false);
         }
         mHandler.post(new Runnable() {
 

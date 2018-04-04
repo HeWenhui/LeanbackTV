@@ -223,7 +223,7 @@ public class LiveAutoNoticeBll {
      * @param head
      */
     public void showNotice(String name, String s, String head) {
-        if (isShowing) {
+         if (isShowing) {
             return;
         }
         isShowing = true;
