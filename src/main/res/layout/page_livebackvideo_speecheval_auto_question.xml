@@ -364,7 +364,7 @@
                     android:layout_marginLeft="5dp"
                     android:text="+3枚"
                     android:textColor="#ffe100"
-                    android:textSize="20sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -375,7 +375,7 @@
                 android:layout_centerHorizontal="true"
                 android:text="流畅性:90"
                 android:textColor="#ffe100"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@id/tv_live_star_result_accuracy"
@@ -385,7 +385,7 @@
                 android:layout_toRightOf="@id/tv_live_star_result_fluent"
                 android:text="准确性:90"
                 android:textColor="#ffe100"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
         </RelativeLayout>
     </com.xueersi.parentsmeeting.modules.livevideo.widget.StartProgress>
 </RelativeLayout>
