@@ -195,7 +195,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private LiveMessageBll liveMessageBll;
     private boolean isAnaswer = false;
     private AnswerRankBll mAnswerRankBll;
-    /**智能私信业务*/
+    /** 智能私信业务 */
     private LiveAutoNoticeBll mLiveAutoNoticeBll;
     private VideoQuestionLiveEntity mVideoQuestionLiveEntity;
     private boolean hasQuestion;
@@ -434,7 +434,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             return;
                         }
                         if (mAnswerRankBll != null) {
-                            mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>(),XESCODE.STOPQUESTION);
+                            mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>(), XESCODE.STOPQUESTION);
                             mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                         }
                         hasQuestion = true;
@@ -570,9 +570,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     if ("1".equals(videoQuestionLiveEntity.isAllow42)) {
                         /** 已经作答 */
                         boolean haveAnswer = mQueAndBool.contains(videoQuestionLiveEntity.id);
+                        LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = liveGetInfo.getStudentLiveInfo();
+                        String learning_stage = null;
+                        if (studentLiveInfo != null) {
+                            learning_stage = studentLiveInfo.getLearning_stage();
+                        }
                         SpeechAssAutoPager speechAssAutoPager =
                                 new SpeechAssAutoPager(activity, liveGetInfo.getId(), id, videoQuestionLiveEntity.nonce,
-                                        videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time, haveAnswer, QuestionBll.
+                                        videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time, haveAnswer, learning_stage, QuestionBll.
                                         this);
                         speechAssessmentPager = speechAssAutoPager;
                         speechAssessmentPager.setIse(mIse);
@@ -793,7 +798,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         if (hasSubmit) {
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
             getAutoNotice(0);
-            Loger.i(LiveAutoNoticeBll.class.getSimpleName(),"question end");
+            Loger.i(LiveAutoNoticeBll.class.getSimpleName(), "question end");
             hasQuestion = false;
         }
         if ("4".equals(ptype)) {
@@ -938,7 +943,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
                 hasExam = true;
                 if (mAnswerRankBll != null) {
-                    mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>(),XESCODE.EXAM_STOP);
+                    mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>(), XESCODE.EXAM_STOP);
                     mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                 }
                 if (mExamAndBool.contains(num)) {
@@ -1714,7 +1719,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         if (isForceSubmit) {
             getFullMarkList(type, 3000);
             getAutoNotice(1);
-            Loger.i(LiveAutoNoticeBll.class.getSimpleName(),"question force submit");
+            Loger.i(LiveAutoNoticeBll.class.getSimpleName(), "question force submit");
             switch (type) {
                 case XESCODE.STOPQUESTION:
                     hasQuestion = false;
@@ -1781,16 +1786,16 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     /**
      * 获取智能私信
      */
-    public void getAutoNotice(final int isForce){
-        if(mLiveAutoNoticeBll==null){
+    public void getAutoNotice(final int isForce) {
+        if (mLiveAutoNoticeBll == null) {
             return;
         }
         mVPlayVideoControlHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mLiveAutoNoticeBll.getAutoNotice(isForce,0);
+                mLiveAutoNoticeBll.getAutoNotice(isForce, 0);
             }
-        },10000);
+        }, 10000);
 
     }
 }

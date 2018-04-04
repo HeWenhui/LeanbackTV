@@ -6,4 +6,5 @@
     <string name="agora_private_app_id_debug">8a751989972f4599a315ed9129471f32</string>
     <string name="agora_private_app_id_release">f8d8132f9e1446c79568e2c22e585f82</string>
     <string name="live_mark_point_long_click_tip">删除</string>
+    <string name="live_mark_point_long_click_cancel">取消</string>
 </resources>

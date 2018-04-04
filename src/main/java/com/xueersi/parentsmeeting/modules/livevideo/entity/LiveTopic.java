@@ -126,6 +126,8 @@ public class LiveTopic {
         private String mode = MODE_TRANING;
         /** 当前的表扬榜模式 */
         private int listStatus;
+        /**是否课间休息*/
+        private boolean isOnbreak;
 
         private boolean haveExam = false;
         private String examStatus = "";
@@ -173,6 +175,14 @@ public class LiveTopic {
             isOpenFeedback = roomStatusEntity.isOpenFeedback;
             agoraVoiceChatRoom = roomStatusEntity.agoraVoiceChatRoom;
             onVideoChat = roomStatusEntity.onVideoChat;
+        }
+
+        public boolean isOnbreak() {
+            return isOnbreak;
+        }
+
+        public void setOnbreak(boolean onbreak) {
+            isOnbreak = onbreak;
         }
 
         public void setClassbegin(boolean classbegin) {

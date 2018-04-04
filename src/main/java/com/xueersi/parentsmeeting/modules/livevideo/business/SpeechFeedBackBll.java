@@ -23,6 +23,7 @@ import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import io.agora.rtc.Constants;
 
@@ -38,6 +39,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
     LiveBll liveBll;
     LiveGetInfo mGetInfo;
     SpeechFeedBackPager speechFeedBackPager;
+    private String nonce;
     /** 每次读取的字节大小 */
     private int mBufferSize;
     /** 采样率 */
@@ -56,6 +58,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
     private short[] mPCMBuffer;
     private WorkerThread mWorkerThread;
     private String roomId;
+    private long joinTime;
 
     private void initAudioRecorder() throws IOException {
         mBufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLING_RATE,
@@ -82,12 +85,19 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         this.mGetInfo = mGetInfo;
     }
 
+    @Override
+    public void setNonce(String s) {
+        this.nonce=s;
+    }
+
     public void setBottomContent(RelativeLayout bottomContent) {
         this.bottomContent = bottomContent;
     }
 
     @Override
     public void start(final String roomId) {
+        boolean permission=isHasPermission(activity);
+        umsagentCommand(2,"on",permission?1:0);
         if (isStart) {
             return;
         }
@@ -104,7 +114,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                 bottomContent.addView(speechFeedBackPager.getRootView(), params);
             }
         });
-        if (!isHasPermission(activity)) {
+        if (!permission) {
             XESToastUtils.showToast(activity, "请检查是否获取录音权限");
             return;
         }
@@ -128,6 +138,8 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                         @Override
                         public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
                             Loger.i(TAG, "joinchannelsuccess");
+                            joinTime=System.currentTimeMillis();
+                            umsagentJoin();
                         }
 
                         @Override
@@ -150,6 +162,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                             if (err == 1108) {
                                 XESToastUtils.showToast(activity, "请检查是否获取麦克风权限");
                             }
+                            umsagentError(err);
                             Loger.i(TAG, "error" + err);
                             //SpeechFeedBackBll.this.stop();
                         }
@@ -188,6 +201,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
 
     @Override
     public void stop() {
+        umsagentCommand(5,"off",1);
         if (!isStart) {
             return;
         }
@@ -195,7 +209,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         mWorkerThread.leaveChannel(roomId, new WorkerThread.OnLevelChannel() {
             @Override
             public void onLevelChannel(int leaveChannel) {
-
+                umsagentLeave();
             }
         });
         isStart = false;
@@ -294,5 +308,65 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         audioRecord = null;
 
         return true;
+    }
+
+    /**
+     * 接收语音反馈指令日志
+     * @param sno
+     * @param cmd
+     * @param micStatus
+     */
+    private void umsagentCommand(int sno,String cmd,int micStatus){
+        HashMap<String,String> map=new HashMap<>();
+        map.put("sno",""+sno);
+        map.put("nonce",nonce);
+        map.put("stable","1");
+        map.put("logtype","voiceInterationCmd");
+        map.put("command",cmd);
+        map.put("status",""+micStatus);
+        map.put("channelname",roomId);
+        liveBll.umsAgentDebug("live_voice",map);
+    }
+
+    /**
+     * 加入连麦房间日志
+     */
+    private void umsagentJoin(){
+        HashMap<String,String> map=new HashMap<>();
+        map.put("sno","3");
+        map.put("nonce",nonce);
+        map.put("stable","1");
+        map.put("ex","Y");
+        map.put("logtype","joinChannelSuccess");
+        map.put("channelname",roomId);
+        liveBll.umsAgentDebug("live_voice",map);
+    }
+
+    /**
+     * 离开连麦房间日志
+     */
+    private void umsagentLeave(){
+        HashMap<String,String> map=new HashMap<>();
+        map.put("sno","6");
+        map.put("nonce",nonce);
+        map.put("stable","1");
+        map.put("ex","Y");
+        map.put("logtype","leaveChannel");
+        map.put("channelname",roomId);
+        map.put("duration",""+(System.currentTimeMillis()-joinTime)/1000);
+        liveBll.umsAgentDebug("live_voice",map);
+    }
+
+    /**
+     * 连麦错误日志
+     * @param errCode
+     */
+    private void umsagentError(int errCode){
+        HashMap<String,String> map=new HashMap<>();
+        map.put("nonce",nonce);
+        map.put("stable","2");
+        map.put("logtype","voiceInterationError");
+        map.put("errcode",""+errCode);
+        liveBll.umsAgentDebug("live_voice",map);
     }
 }

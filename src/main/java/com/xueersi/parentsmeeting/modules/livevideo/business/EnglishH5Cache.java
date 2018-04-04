@@ -16,6 +16,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.RelativeLayout;
 
+import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -236,6 +237,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         }
         if (useService) {
             Intent intent = new Intent(context, CachePreLoadService.class);
+            intent.setPackage(AppConfig.APPLICATION_ID);
             context.stopService(intent);
         } else {
             for (int i = 0; i < cacheWebViews.size(); i++) {
@@ -301,6 +303,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                         cacheReceiver = null;
                     }
                     Intent intent = new Intent(context, CachePreLoadService.class);
+                    intent.setPackage(AppConfig.APPLICATION_ID);
                     context.stopService(intent);
                     Map<String, String> mData = new HashMap<>();
                     mData.put("liveid", liveId);
@@ -316,6 +319,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                     if (errorUrls.isEmpty()) {
                         context.unregisterReceiver(this);
                         Intent intent = new Intent(context, CachePreLoadService.class);
+                        intent.setPackage(AppConfig.APPLICATION_ID);
                         context.stopService(intent);
                         cacheReceiver = null;
                         Map<String, String> mData = new HashMap<>();

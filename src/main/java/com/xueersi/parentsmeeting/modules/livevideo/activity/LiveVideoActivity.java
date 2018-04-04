@@ -53,6 +53,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBllOld;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
@@ -307,9 +308,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         if (rankBll != null) {
                             rankBll.setVideoLayout(lp.width, lp.height);
                         }
-                        if (expeBll != null) {
-                            expeBll.setVideoLayout(lp.width, lp.height);
-                        }
+//                        if (expeBll != null) {
+//                            expeBll.setVideoLayout(lp.width, lp.height);
+//                        }
                         setMediaControllerBottomParam(lp);
                         if (englishSpeekBll != null) {
                             englishSpeekBll.setVideoWidthAndHeight(lp.width, lp.height);
@@ -506,11 +507,14 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                         liveTextureView.vPlayer = vPlayer;
                         liveTextureView.setLayoutParams(videoView.getLayoutParams());
                     }
+                    liveRemarkBll.showBtMark();
                     liveRemarkBll.setTextureView(liveTextureView);
                     liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
                     liveRemarkBll.setVideoView(videoView);
                     mLiveBll.setLiveRemarkBll(liveRemarkBll);
                 }
+            }else{
+                liveRemarkBll.initData();
             }
         }
     }
@@ -531,13 +535,13 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         mIsResume = true;
         if (mHaveStop) {
             mHaveStop = false;
-            if (expeBll != null) {
-                boolean onResume = expeBll.onResume();
-                if (!onResume) {
-                    setFirstBackgroundVisible(View.VISIBLE);
-                    return;
-                }
-            }
+//            if (expeBll != null) {
+//                boolean onResume = expeBll.onResume();
+//                if (!onResume) {
+//                    setFirstBackgroundVisible(View.VISIBLE);
+//                    return;
+//                }
+//            }
             if (startRemote.get()) {
                 return;
             }
@@ -566,9 +570,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         super.onPause();
         mIsResume = false;
         mHaveStop = true;
-        if (expeBll != null) {
-            expeBll.onPause();
-        }
+//        if (expeBll != null) {
+//            expeBll.onPause();
+//        }
         if (questionBll != null) {
             questionBll.onPause();
         }
@@ -888,6 +892,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         questionBll.setLiveVideoSAConfig(liveVideoSAConfig);
         englishH5CoursewareBll.setLiveVideoSAConfig(liveVideoSAConfig);
         liveMediaControllerBottom.setVisibility(View.VISIBLE);
+        if("1".equals(mGetInfo.getIsShowMarkPoint())){
+            liveMediaControllerBottom.getBtMark().setVisibility(View.VISIBLE);
+        }
         long before = System.currentTimeMillis();
         if (liveLazyBllCreat != null) {
             liveLazyBllCreat.setGetInfo(getInfo);
@@ -925,9 +932,10 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 englishH5Cache.getCourseWareUrl();
             }
             if (IS_SCIENCE) {
-                SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(this, mLiveBll);
+                //SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(this, mLiveBll);
+                //speechFeedBackBll.setGetInfo(getInfo);
+                SpeechFeedBackBllOld speechFeedBackBll = new SpeechFeedBackBllOld(this, mLiveBll);
                 speechFeedBackBll.setBottomContent(bottomContent);
-                speechFeedBackBll.setGetInfo(getInfo);
                 speechFeedBackAction = speechFeedBackBll;
                 mLiveBll.setSpeechFeedBackAction(speechFeedBackBll);
             }
@@ -1007,9 +1015,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             mLogtf.e("onModeChange:mode=" + mode, e);
         }
         mLogtf.i("onModeChange:mode=" + mode);
-        if (expeBll != null) {
-            expeBll.onModeChange(mode);
-        }
+//        if (expeBll != null) {
+//            expeBll.onModeChange(mode);
+//        }
         if (englishSpeekBll != null) {
             englishSpeekBll.onModeChange(mode, audioRequest);
         }
@@ -1289,7 +1297,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             }
         }
         if (liveRemarkBll != null) {
-            liveRemarkBll.setBtEnable(false);
+            liveRemarkBll.setVideoReady(false);
         }
         mHandler.post(new Runnable() {
 

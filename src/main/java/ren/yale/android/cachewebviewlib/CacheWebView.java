@@ -13,6 +13,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.xueersi.parentsmeeting.config.AppConfig;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -122,6 +124,7 @@ public class CacheWebView extends WebView {
         if (headerMap!=null){
             intent.putExtra(CachePreLoadService.KEY_URL_HEADER,headerMap);
         }
+        intent.setPackage(AppConfig.APPLICATION_ID);
         context.startService(intent);
     }
 
