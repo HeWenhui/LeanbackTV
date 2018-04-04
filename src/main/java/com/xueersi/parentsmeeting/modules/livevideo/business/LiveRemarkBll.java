@@ -159,6 +159,10 @@ public class LiveRemarkBll {
                             if (liveTextureView == null) {
                                 return;
                             }
+                            if(mPlayerService.getPlayer()==null){
+                                XESToastUtils.showToast(mContext,"暂时无法进行标记");
+                                return;
+                            }
                             final LiveVideoView liveVideoView = (LiveVideoView) ((Activity) mContext).findViewById(R.id.vv_course_video_video);
 //                liveVideoView.setVisibility(View.INVISIBLE);
                             ((IjkMediaPlayer)mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
