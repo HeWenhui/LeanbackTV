@@ -464,4 +464,27 @@
     <item name="iv_live_stand_title_red" type="id" />
     <item name="tv_live_stand_title_time" type="id" />
     <item name="lav_livevideo_chievement" type="id" />
+
+    <!--RolePlayer-->
+    <item name="ll_roleplayer_main" type="id" />
+    <item name="rl_live_roleplayer_matchpager" type="id" />
+    <item name="tv_live_roleplayer_countdown" type="id" />
+    <item name="ll_live_roleplayer_countdown_main" type="id" />
+    <item name="tv_live_roleplayer_countdown_tip" type="id" />
+    <item name="gv_live_roleplayer_headshow" type="id" />
+    <item name="tv_live_roleplayer_nickname" type="id" />
+    <item name="tv_live_roleplayer_item_rolehead_nickname" type="id" />
+    <item name="civ_roleplayer_item_rolehead_img" type="id" />
+    <item name="tv_live_roleplayer_item_rolename" type="id" />
+    <item name="btn_live_roleplayer_enter" type="id" />
+    <item name="rl_live_roleplayer_rolelist_main" type="id" />
+    <item name="rl_live_roleplayer_read_main" type="id" />
+    <item name="lv_live_roleplayer_read_list" type="id" />
+    <item name="civ_live_roleplayer_message_user_head" type="id" />
+    <item name="ll_live_roleplayer_message_user_name" type="id" />
+    <item name="tv_live_roleplayer_message_username" type="id" />
+    <item name="iv_live_roleplayer_message_voice_main" type="id" />
+    <item name="tv_live_roleplayer_message_voice_content" type="id" />
+    <item name="rl_live_roleplayer_message_voice_main" type="id" />
+    <item name="tv_live_roleplayer_message_counttime" type="id" />
 </resources>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <!--RolePlayer主布局-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!--头部提示及计时区-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
+
+            <!--倒计时布局-->
+            <LinearLayout
+                android:id="@id/ll_live_roleplayer_countdown_main"
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_about_xueersi_logo" />
+
+                <!--倒计时时间更新区-->
+                <TextView
+                    android:id="@id/tv_live_roleplayer_countdown"
+                    style="@style/text_font16_999999_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:text="时间：3分0秒" />
+
+            </LinearLayout>
+
+            <!--头部提示文字区 -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@id/ll_live_roleplayer_countdown_main">
+
+                <TextView
+                    android:id="@id/tv_live_roleplayer_countdown_tip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey" />
+        </RelativeLayout>
+
+        <!--准备角色页及朗读页区-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!--角色列表区-->
+            <RelativeLayout
+                android:id="@id/rl_live_roleplayer_rolelist_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="100dp"
+                android:paddingRight="100dp"
+                android:paddingTop="10dp">
+
+                <!--角色分配列表-->
+                <com.xueersi.xesalib.view.gridview.AutohGridview
+                    android:id="@id/gv_live_roleplayer_headshow"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/white"
+                    android:horizontalSpacing="10dp"
+                    android:listSelector="#00000000"
+                    android:numColumns="3"
+                    android:verticalSpacing="10dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/gv_live_roleplayer_headshow"
+                    android:layout_centerHorizontal="true"
+                    android:text="注意~ 大家的对话会被录音，请认真朗读" />
+
+            </RelativeLayout>
+
+            <!--多人朗读区-->
+            <RelativeLayout
+                android:id="@id/rl_live_roleplayer_read_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <!--对话区-->
+                <ListView
+                    android:id="@id/lv_live_roleplayer_read_list"
+                    style="@style/listview_common_style"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:background="#f1f1f1"
+                    android:divider="@null"
+                    android:dividerHeight="0dp"
+                    android:footerDividersEnabled="true"
+                    android:headerDividersEnabled="true"
+                    android:transcriptMode="normal" />
+
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <!--匹配等待页-->
+    <RelativeLayout
+        android:id="@id/rl_live_roleplayer_matchpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/text_font12_666666_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="匹配中......" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

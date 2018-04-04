@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingBottom="5dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:paddingTop="5dp">
+
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="8dp">
+
+
+        <TextView
+            android:id="@id/tv_live_roleplayer_message_counttime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true" />
+
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView
+            android:id="@id/civ_live_roleplayer_message_user_head"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/tv_live_roleplayer_message_counttime"
+            android:focusable="false"
+            android:src="@drawable/ic_default_head_square" />
+
+        <TextView
+            android:id="@id/tv_live_roleplayer_message_username"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:layout_toLeftOf="@id/civ_live_roleplayer_message_user_head"
+            android:background="@color/COLOR_C1BCB8"
+            android:gravity="center"
+            android:minHeight="12dp"
+            android:textColor="@color/white"
+            android:textSize="8sp" />
+
+        <LinearLayout
+            android:id="@id/rl_live_roleplayer_message_voice_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_live_roleplayer_message_username"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="8dp"
+            android:layout_toLeftOf="@id/civ_live_roleplayer_message_user_head"
+            android:background="@drawable/bg_bubble_chat_right_red"
+            android:clickable="true"
+            android:minHeight="40dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@id/tv_live_roleplayer_message_voice_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/iv_live_roleplayer_message_voice_main"
+                android:maxWidth="250dp"
+                android:textColor="@color/white"
+                android:textSize="17sp" />
+
+            <ImageView
+                android:id="@id/iv_live_roleplayer_message_voice_main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/bg_chat_voice_to_playing_img" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>
