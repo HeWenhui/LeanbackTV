@@ -562,13 +562,18 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         });
     }
 
-    private void createRealVideo(VideoView videoView){
+    private void createRealVideo(){
         boolean isPermission = FloatPermissionManager.getInstance().applyFloatWindow(this);
         //有对应权限或者系统版本小于7.0
         if (isPermission || Build.VERSION.SDK_INT < 24) {
+            mParent = (ViewGroup)videoView.getParent();
+            if(mParent != null){
+                mParent.removeView(videoView);
+            }
             //开启悬浮窗
 //            FloatActionController.getInstance().startMonkServer(this);
             FloatWindowManager.addView(this,videoView);
+            startActivity(new Intent(this,TestpayActivity.class));
         }
     }
 
@@ -1233,12 +1238,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(MiniEvent event) {
         if("Min".equals(event.getMin())){
-            mParent = (ViewGroup)videoView.getParent();
-            if(mParent != null){
-                mParent.removeView(videoView);
-            }
-            createRealVideo(videoView);
-            startActivity(new Intent(this,TestpayActivity.class));
+            createRealVideo();
             onPauseNotStopVideo = true;
             Log.e("Duncan","Min");
         }
@@ -1254,19 +1254,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             }
         }
 
-    }
-
-
-    private void addView() {
-        LinearLayout view1 = (LinearLayout) mInflate.findViewById(R.id.live_picture);
-        ViewGroup parent = (ViewGroup)videoView.getParent();
-        if(parent != null){
-            parent.removeView(videoView);
-        }
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        view1.addView(videoView,params);
     }
 
     /**
