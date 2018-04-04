@@ -32,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -60,6 +61,7 @@ import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
+import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -3896,6 +3898,20 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 Log.e("Duncan","uploadexperiencetime:" + responseEntity.getJsonObject());
+            }
+        });
+    }
+
+    // 04.04 获取更多课程
+    public void getMoreChoice(final PageDataLoadEntity pageDataLoadEntity, final AbstractBusinessDataCallBack getDataCallBack){
+        mHttpManager.getMoreChoiceCount(mLiveId, new HttpCallBack(pageDataLoadEntity){
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                Log.e("Duncan","responseEntity:"+responseEntity);
+                MoreChoice choiceEntity = mHttpResponseParser.parseMoreChoice(responseEntity);
+                if(choiceEntity != null){
+                    getDataCallBack.onDataSucess(choiceEntity);
+                }
             }
         });
     }

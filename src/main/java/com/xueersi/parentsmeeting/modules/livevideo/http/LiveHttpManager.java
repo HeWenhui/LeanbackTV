@@ -857,4 +857,15 @@ public class LiveHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         sendPost(LiveVideoConfig.URL_EXPERIENCE_LIVE_ONLINETIME, params, callBack);
     }
+
+    /** 直播讲座获取更多课程的信息*/
+    public void getMoreChoiceCount(String liveId, HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        setDefaultParameter(params);
+        sendPost("http://laoshi.xueersi.com/LiveLecture/getAdCase", params, requestCallBack);
+    }
+
+
 }

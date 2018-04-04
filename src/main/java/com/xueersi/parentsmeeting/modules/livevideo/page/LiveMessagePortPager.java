@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.Editable;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -14,6 +15,7 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,12 +27,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.event.AppEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
@@ -38,6 +42,7 @@ import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.TestpayActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerPortItem;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.item.MoreChoiceItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
@@ -46,6 +51,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.event.MiniEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
@@ -56,12 +62,15 @@ import com.xueersi.xesalib.utils.string.RegexUtils;
 import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.view.button.CompoundButtonGroup;
+import com.xueersi.xesalib.view.layout.dataload.DataErrorManager;
+import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
@@ -116,6 +125,15 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     /** 更多课程 */
     private RelativeLayout mMoreClassLayout;
     private Activity liveVideoActivity;
+    private PageDataLoadEntity mPageDataLoadEntity;
+    private List<MoreChoice.Choice> mChoices = new ArrayList<>();
+    private CommonAdapter<MoreChoice.Choice> mCourseAdapter;
+    private ListView mMorecourse;
+    private TextView mApplyNum;
+    private ImageButton mShutDowm;
+    private MoreChoice mData;
+    private RelativeLayout mFirstSight;
+    private LinearLayout mSecondSight;
 
     public LiveMessagePortPager(Context context, QuestionBll questionBll,
                                 ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
@@ -131,8 +149,13 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_message_port, null);
+        mFirstSight = (RelativeLayout) mView.findViewById(R.id.ll_all_content);
+        mSecondSight = (LinearLayout) mView.findViewById(R.id.ll_detail_list);
         mApplyButton = (Button) mView.findViewById(R.id.bt_to_apply);
         mMoreClassLayout = (RelativeLayout) mView.findViewById(R.id.more_class);
+        mApplyNum = (TextView)mView.findViewById(R.id.tv_apply_number);
+        mShutDowm = (ImageButton)mView.findViewById(R.id.ib_back);
+        mMorecourse = (ListView)mView.findViewById(R.id.morecourse_list);
         tvMessageCount = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
         lvMessage = (ListView) mView.findViewById(R.id.lv_livevideo_message);
         dvMessageDanmaku = (DanmakuView) mView.findViewById(R.id.dv_livevideo_message_danmaku);
@@ -342,7 +365,6 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
             @Override
             public void onClick(View view) {
                 EventBus.getDefault().post(new MiniEvent("Min"));
-//                liveVideoActivity.startActivity(new Intent(liveVideoActivity, TestpayActivity.class));
             }
         });
 
@@ -350,14 +372,55 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
         mMoreClassLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                liveBll.getMoreChoice(mPageDataLoadEntity,getDataCallBack);
+            }
+        });
+        // 04.04 关闭更多课程页面
+        mShutDowm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mFirstSight.setVisibility(View.VISIBLE);
+                mSecondSight.setVisibility(View.GONE);
             }
         });
     }
 
+    AbstractBusinessDataCallBack getDataCallBack = new AbstractBusinessDataCallBack(){
+        @Override
+        public void onDataSucess(Object... objData) {
+             // 04.04 获取到数据之后的逻辑处理
+            if(objData.length > 0){
+                mData = (MoreChoice) objData[0];
+                Log.e("Duncan","mData:"+ mData);
+                mChoices.clear();
+                mChoices.addAll(mData.getCases());
+                for(int i = 1 ; i < 11 ; i++){
+                    MoreChoice.Choice choice = new MoreChoice.Choice();
+                    choice.setIsLearn(0);
+                    choice.setLimit(i);
+                    choice.setSaleName("毛尖" + i);
+                    mChoices.add(choice);
+                }
+                if(mChoices.size() > 0){
+                    mFirstSight.setVisibility(View.GONE);
+                    mSecondSight.setVisibility(View.VISIBLE);
+                    mApplyNum.setText(Html.fromHtml("<font color='#333333'>正在报名中</font>"+ "<font color='#F13232'>" +"  " +4+ "</font>"));
+                    mCourseAdapter.updateData(mChoices);
+                }else{
+                    mFirstSight.setVisibility(View.VISIBLE);
+                    mSecondSight.setVisibility(View.GONE);
+                }
+
+            }
+
+        }
+    };
+
     @Override
     public void initData() {
         super.initData();
+        mPageDataLoadEntity = new PageDataLoadEntity(mView, R.id.ll_all_content, DataErrorManager.IMG_TIP_BUTTON)
+                .setWebErrorTip(R.string.web_error_tip_default).setDataIsEmptyTip("暂无更多课程").setOverrideBackgroundColor();
         new Thread() {
             @Override
             public void run() {
@@ -579,6 +642,18 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                 return false;
             }
         });
+        // 04.04 更多课程的数据加载
+        if (mCourseAdapter == null) {
+            mCourseAdapter = new CommonAdapter<MoreChoice.Choice>(mChoices) {
+                @Override
+                public AdapterItemInterface<MoreChoice.Choice> getItemView(Object type) {
+                    MoreChoiceItem morelistItem = new MoreChoiceItem(mContext,mData);
+                    return morelistItem;
+                }
+
+            };
+            mMorecourse.setAdapter(mCourseAdapter);
+        }
     }
 
     /** 添加献花布局 */

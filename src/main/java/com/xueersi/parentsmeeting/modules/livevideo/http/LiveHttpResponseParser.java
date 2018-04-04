@@ -12,6 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -793,5 +794,28 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             MobAgent.httpResponseParserError(TAG, "parseThumbsUpProbability", e.getMessage());
         }
         return thumbsUpProbabilityEntity;
+    }
+
+    /*
+    * 解析更多课程的数据
+    * */
+    public MoreChoice parseMoreChoice(ResponseEntity responseEntity){
+        JSONObject data = (JSONObject) responseEntity.getJsonObject();
+        MoreChoice moreChoice = new MoreChoice();
+        JSONArray casesjson = data.optJSONArray("cases");
+        List<MoreChoice.Choice> choices = new ArrayList<>();
+        for(int i = 0 ; i < casesjson.length() ; i++){
+            JSONObject jsonObject = casesjson.optJSONObject(i);
+            MoreChoice.Choice choice = new MoreChoice.Choice();
+            choice.setSaleName(jsonObject.optString("saleName"));
+            choice.setLimit(jsonObject.optInt("limit"));
+            choice.setSignUpUrl(jsonObject.optString("signUpUrl"));
+            choice.setIsLearn(jsonObject.optInt("isLearn"));
+            choices.add(choice);
+        }
+        moreChoice.setCases(choices);
+        moreChoice.setRows(data.optString("rows"));
+        return moreChoice;
+
     }
 }
