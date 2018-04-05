@@ -636,7 +636,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     GoldTeamStatus entity = new GoldTeamStatus();
                     for (int i = 0; i < 3; i++) {
                         GoldTeamStatus.Student student = new GoldTeamStatus.Student();
-                        student.setNickname("a" + i);
+                        student.setNickname("测试" + i);
                         student.setGold("90");
                         student.setAvatar_path(mGetInfo.getHeadImgPath());
                         student.setRight(i % 2 == 0);
