@@ -1218,7 +1218,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         removeQuestionViews();
         BaseVoiceAnswerPager voiceAnswerPager2 =
-                baseVoiceAnswerCreat.create(activity, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch, rlQuestionContent, mIse, this);
+                baseVoiceAnswerCreat.create(activity, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.type, this, rlQuestionContent, mIse, this);
 
 //        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 //                ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -1241,98 +1241,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         VoiceAnswerLog.sno2H5test(mLiveBll, videoQuestionLiveEntity.type, videoQuestionLiveEntity.id, videoQuestionLiveEntity.nonce);
     }
-
-    QuestionSwitch questionSwitch = new LiveStandQuestionSwitch() {
-
-
-        @Override
-        public String getsourcetype(BaseVideoQuestionEntity baseQuestionEntity) {
-            return "h5test";
-        }
-
-        @Override
-        public BasePager questionSwitch(BaseVideoQuestionEntity baseQuestionEntity) {
-            VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) baseQuestionEntity;
-            if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity1.type)) {
-                if ("1".equals(videoQuestionLiveEntity1.choiceType)) {
-                    showSelectQuestion(videoQuestionLiveEntity1);
-                    if (voiceAnswerPager != null) {
-                        stopVoiceAnswerPager();
-                    }
-                    return baseQuestionPager;
-                } else {
-                    showMulitSelectQuestion(videoQuestionLiveEntity1);
-                    if (voiceAnswerPager != null) {
-                        stopVoiceAnswerPager();
-                    }
-                    return baseQuestionPager;
-                }
-            } else if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)) {
-                showFillBlankQuestion(videoQuestionLiveEntity1);
-                if (voiceAnswerPager != null) {
-                    stopVoiceAnswerPager();
-                }
-                return baseQuestionPager;
-            }
-            return null;
-        }
-
-        @Override
-        public void getQuestion(BaseVideoQuestionEntity baseQuestionEntity, final OnQuestionGet onQuestionGet) {
-            final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) baseQuestionEntity;
-            mLiveBll.getQuestion(videoQuestionLiveEntity1, new AbstractBusinessDataCallBack() {
-
-                @Override
-                public void onDataSucess(Object... objData) {
-                    onQuestionGet.onQuestionGet(videoQuestionLiveEntity1);
-                }
-            });
-        }
-
-        @Override
-        public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, OnAnswerReslut answerReslut) {
-            final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
-            String testAnswer;
-            if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)) {
-//                testAnswer = "" + sorce;
-                testAnswer = "A";
-            } else {
-//                testAnswer = result + ":" + sorce;
-                testAnswer = result;
-            }
-            mLiveBll.liveSubmitTestAnswer(videoQuestionLiveEntity1, mVSectionID, testAnswer, true, isRight, answerReslut);
-        }
-
-        @Override
-        public void getQuestionTeamRank(BaseVideoQuestionEntity videoQuestionLiveEntity, AbstractBusinessDataCallBack callBack) {
-            final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
-            mLiveBll.getQuestionTeamRank(videoQuestionLiveEntity1, callBack);
-        }
-
-        @Override
-        public void uploadVoiceFile(File file) {
-
-        }
-
-        @Override
-        public void stopSpeech(BaseVoiceAnswerPager answerPager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
-            rlQuestionContent.removeView(answerPager.getRootView());
-            voiceAnswerPager = null;
-            if (activity instanceof AudioRequest) {
-                AudioRequest audioRequest = (AudioRequest) activity;
-                audioRequest.release();
-            }
-//            if (rlVoiceQuestionContent != null) {
-//                rlVoiceQuestionContent.removeAllViews();
-//                bottomContent.removeView(rlVoiceQuestionContent);
-//                rlVoiceQuestionContent = null;
-//                if (activity instanceof AudioRequest) {
-//                    AudioRequest audioRequest = (AudioRequest) activity;
-//                    audioRequest.release();
-//                }
-//            }
-        }
-    };
 
     /**
      * 填空题
@@ -1812,6 +1720,100 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mLiveAutoNoticeBll.getAutoNotice(isForce, 0);
             }
         }, 10000);
+    }
 
+    public class LiveStandQuestionSwitchImpl extends LiveQuestionSwitchImpl implements LiveStandQuestionSwitch {
+
+        @Override
+        public void getQuestionTeamRank(BaseVideoQuestionEntity videoQuestionLiveEntity, AbstractBusinessDataCallBack callBack) {
+            final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
+            mLiveBll.getQuestionTeamRank(videoQuestionLiveEntity1, callBack);
+        }
+
+    }
+
+    public class LiveQuestionSwitchImpl implements QuestionSwitch {
+
+        @Override
+        public String getsourcetype(BaseVideoQuestionEntity baseQuestionEntity) {
+            return "h5test";
+        }
+
+        @Override
+        public BasePager questionSwitch(BaseVideoQuestionEntity baseQuestionEntity) {
+            VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) baseQuestionEntity;
+            if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity1.type)) {
+                if ("1".equals(videoQuestionLiveEntity1.choiceType)) {
+                    showSelectQuestion(videoQuestionLiveEntity1);
+                    if (voiceAnswerPager != null) {
+                        stopVoiceAnswerPager();
+                    }
+                    return baseQuestionPager;
+                } else {
+                    showMulitSelectQuestion(videoQuestionLiveEntity1);
+                    if (voiceAnswerPager != null) {
+                        stopVoiceAnswerPager();
+                    }
+                    return baseQuestionPager;
+                }
+            } else if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)) {
+                showFillBlankQuestion(videoQuestionLiveEntity1);
+                if (voiceAnswerPager != null) {
+                    stopVoiceAnswerPager();
+                }
+                return baseQuestionPager;
+            }
+            return null;
+        }
+
+        @Override
+        public void getQuestion(BaseVideoQuestionEntity baseQuestionEntity, final OnQuestionGet onQuestionGet) {
+            final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) baseQuestionEntity;
+            mLiveBll.getQuestion(videoQuestionLiveEntity1, new AbstractBusinessDataCallBack() {
+
+                @Override
+                public void onDataSucess(Object... objData) {
+                    onQuestionGet.onQuestionGet(videoQuestionLiveEntity1);
+                }
+            });
+        }
+
+        @Override
+        public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, OnAnswerReslut answerReslut) {
+            final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
+            String testAnswer;
+            if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)) {
+//                testAnswer = "" + sorce;
+                testAnswer = "A";
+            } else {
+//                testAnswer = result + ":" + sorce;
+                testAnswer = result;
+            }
+            mLiveBll.liveSubmitTestAnswer(videoQuestionLiveEntity1, mVSectionID, testAnswer, true, isRight, answerReslut);
+        }
+
+        @Override
+        public void uploadVoiceFile(File file) {
+
+        }
+
+        @Override
+        public void stopSpeech(BaseVoiceAnswerPager answerPager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
+            rlQuestionContent.removeView(answerPager.getRootView());
+            voiceAnswerPager = null;
+            if (activity instanceof AudioRequest) {
+                AudioRequest audioRequest = (AudioRequest) activity;
+                audioRequest.release();
+            }
+//            if (rlVoiceQuestionContent != null) {
+//                rlVoiceQuestionContent.removeAllViews();
+//                bottomContent.removeView(rlVoiceQuestionContent);
+//                rlVoiceQuestionContent = null;
+//                if (activity instanceof AudioRequest) {
+//                    AudioRequest audioRequest = (AudioRequest) activity;
+//                    audioRequest.release();
+//                }
+//            }
+        }
     }
 }
