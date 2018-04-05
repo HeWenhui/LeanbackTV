@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
@@ -31,7 +32,9 @@ public interface QuestionSwitch {
      */
     void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, OnAnswerReslut answerReslut);
 
-    /** 得到互动题，暂时没用 */
+    /**
+     * 得到互动题，暂时没用
+     */
     void getQuestion(BaseVideoQuestionEntity baseQuestionEntity, OnQuestionGet onQuestionGet);
 
     /**
@@ -43,16 +46,26 @@ public interface QuestionSwitch {
 
     void stopSpeech(BaseVoiceAnswerPager answerPager, BaseVideoQuestionEntity baseVideoQuestionEntity);
 
-    /** 得到互动题，暂时没用 */
+    /**
+     * 得到互动题，暂时没用
+     */
     interface OnQuestionGet {
         void onQuestionGet(BaseVideoQuestionEntity baseQuestionEntity);
     }
 
-    /** 提交互动题，得到结果 */
+    /**
+     * 提交互动题，得到结果
+     */
     interface OnAnswerReslut {
         void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity);
 
-        /** 提交答题网络失败 */
+        /**
+         * 提交答题网络失败
+         */
         void onAnswerFailure();
+    }
+
+    interface OnQuesVoiceTeamReslut {
+        void onDataFail(int errStatus, String failMsg);
     }
 }

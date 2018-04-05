@@ -37,6 +37,8 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_SUBMIT_TEST_ANSWER = HTTP_HOST + "/LiveCourse/submitTestAnswer";
         /** 直播课的直播提交测试题-语音答题 */
         public String URL_LIVE_SUBMIT_TEST_ANSWER_VOICE = HTTP_HOST + "/LiveCourse/submitTestAnswerUseVoice";
+        /** 直播课的直播测试题小组排名 */
+        public String URL_LIVE_ANSWER_TEAM = HTTP_HOST + "/LiveCourse/getTestAnswerTeamStatus";
         /** 直播课的直播提交测试题-h5课件 */
         public String URL_LIVE_SUBMIT_TEST_H5_ANSWER = HTTP_HOST + "/LiveCourse/sumitCourseWareH5AnswerUseVoice";
         /** 直播献花 */
@@ -97,13 +99,13 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_GET_PRPGRESS_LIST = HTTP_HOST + "/LiveCourse/getStuIsOnProgressList";
         /** 获取点赞概率 */
         public String URL_LIVE_GET_THUMBS_UP_PROBABILITY = HTTP_HOST + "/LiveCourse/getStuOnList";
-        /**存标记点*/
-        public String URL_LIVE_SAVE_MARK_POINT=HTTP_HOST+"/LiveCourse/setMarkpoint";
-        /**获取标记点*/
-        public String URL_LIVE_GET_MARK_POINT=HTTP_HOST+"/Live/getMarkpoint";
-        /**删除标记点*/
-        public String URL_LIVE_DELETE_MARK_POINT=HTTP_HOST+"/Live/deleteMarkpoint";
-        public String URL_LIVE_GET_AUTO_NOTICE=HTTP_HOST+"/LiveCourse/counselorWhisper";
+        /** 存标记点 */
+        public String URL_LIVE_SAVE_MARK_POINT = HTTP_HOST + "/LiveCourse/setMarkpoint";
+        /** 获取标记点 */
+        public String URL_LIVE_GET_MARK_POINT = HTTP_HOST + "/Live/getMarkpoint";
+        /** 删除标记点 */
+        public String URL_LIVE_DELETE_MARK_POINT = HTTP_HOST + "/Live/deleteMarkpoint";
+        public String URL_LIVE_GET_AUTO_NOTICE = HTTP_HOST + "/LiveCourse/counselorWhisper";
 
         /** h5课件地址 */
         public String coursewareH5 = "https://live.xueersi.com/" +

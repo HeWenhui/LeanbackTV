@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSON;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseBll;
+import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.http.CommonRequestCallBack;
 import com.xueersi.parentsmeeting.http.DownloadCallBack;
@@ -78,6 +79,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.Call;
@@ -121,24 +123,40 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private final LiveTopic mLiveTopic = new LiveTopic();
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private LogToFile mLogtf;
-    /** 主讲教师 */
+    /**
+     * 主讲教师
+     */
     private Teacher mMainTeacher;
-    /** 主讲教师名字 */
+    /**
+     * 主讲教师名字
+     */
     private String mMainTeacherStr = null;
-    /** 辅导教师 */
+    /**
+     * 辅导教师
+     */
     private Teacher mCounteacher;
-    /** 辅导教师IRC */
+    /**
+     * 辅导教师IRC
+     */
     private String mCounTeacherStr = null;
-    /** 渠道前缀 */
+    /**
+     * 渠道前缀
+     */
     private final String CNANNEL_PREFIX = "x_";
-    /** 主讲老师前缀 */
+    /**
+     * 主讲老师前缀
+     */
     public static final String TEACHER_PREFIX = "t_";
-    /** 辅导老师前缀 */
+    /**
+     * 辅导老师前缀
+     */
     public static String COUNTTEACHER_PREFIX = "f_";
     private final String ROOM_MIDDLE = "L";
     private Callback.Cancelable mCataDataCancle;
     private Callback.Cancelable mGetPlayServerCancle;
-    /** 学习记录提交时间间隔 */
+    /**
+     * 学习记录提交时间间隔
+     */
     private int mHbTime = 300, mHbCount = 0;
     private AtomicInteger mOpenCount = new AtomicInteger(0);
     private AtomicInteger mBufferCount = new AtomicInteger(0);
@@ -150,31 +168,51 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private AtomicInteger mCompleteCount = new AtomicInteger(0);
     private AtomicInteger mCompleteMainTeacherCount = new AtomicInteger(0);
     private AtomicInteger mCompleteCounTeacherCount = new AtomicInteger(0);
-    /** 录播课的直播 */
+    /**
+     * 录播课的直播
+     */
     public final static int LIVE_TYPE_TUTORIAL = 1;
-    /** 公开直播 */
+    /**
+     * 公开直播
+     */
     public final static int LIVE_TYPE_LECTURE = 2;
-    /** 直播课的直播 */
+    /**
+     * 直播课的直播
+     */
     public final static int LIVE_TYPE_LIVE = 3;
-    /** 用户心跳解析错误 */
+    /**
+     * 用户心跳解析错误
+     */
     private int userOnlineError = 0;
     private PlayServerEntity mServer;
     private PlayServerEntity.PlayserverEntity playserverEntity;
-    /** 网络类型 */
+    /**
+     * 网络类型
+     */
     private int netWorkType;
-    /** 调度是不是在无网络下失败 */
+    /**
+     * 调度是不是在无网络下失败
+     */
     private boolean liveGetPlayServerError = false;
-    /** 是不是有分组 */
+    /**
+     * 是不是有分组
+     */
     private boolean haveTeam = false;
     private int form;
     private LiveAutoNoticeBll mLiveAutoNoticeBll;
     long openStartTime;
-    /** 区分文理appid */
+    /**
+     * 区分文理appid
+     */
     String appID = UmsConstants.LIVE_APP_ID;
-    /** 满分榜业务 */
+    /**
+     * 满分榜业务
+     */
     private AnswerRankBll mAnswerRankBll;
     private LiveRemarkBll mLiveRemarkBll;
-    /** 校准系统时间 */
+    /**
+     * 校准系统时间
+     */
     private long sysTimeOffset;
 
     public LiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form) {
@@ -460,7 +498,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      */
     public void getReceiveGoldTeamStatus(final int operateId, final AbstractBusinessDataCallBack callBack) {
         mLogtf.d("sendReceiveGoldStand:operateId=" + operateId + ",liveId=" + mLiveId);
-        mHttpManager.getReceiveGoldTeamStatus(operateId, new HttpCallBack() {
+        mHttpManager.getReceiveGoldTeamStatus(operateId, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -486,7 +524,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
     public void getReceiveGoldTeamRank(final int operateId, final AbstractBusinessDataCallBack callBack) {
         mLogtf.d("getReceiveGoldTeamRank:operateId=" + operateId + ",liveId=" + mLiveId);
-        mHttpManager.getReceiveGoldTeamRank(operateId, new HttpCallBack() {
+        mHttpManager.getReceiveGoldTeamRank(operateId, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -577,6 +615,41 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 });
     }
 
+    public void getQuestionTeamRank(final VideoQuestionLiveEntity videoQuestionLiveEntity, final AbstractBusinessDataCallBack callBack) {
+        mHttpManager.getQuestionTeamRank(videoQuestionLiveEntity.id, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId());
+                callBack.onDataSucess(entity);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                callBack.onDataFail(0, msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                if (AppConfig.DEBUG) {
+                    GoldTeamStatus entity = new GoldTeamStatus();
+                    for (int i = 0; i < 3; i++) {
+                        GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+                        student.setNickname("a" + i);
+                        student.setGold("90");
+                        student.setAvatar_path(mGetInfo.getHeadImgPath());
+                        student.setRight(i % 2 == 0);
+                        entity.getStudents().add(student);
+                    }
+                    callBack.onDataSucess(entity);
+                } else {
+                    callBack.onDataFail(1, responseEntity.getErrorMsg());
+                }
+            }
+        });
+    }
+
     public void liveSubmitTestH5Answer(final VideoQuestionLiveEntity videoQuestionLiveEntity, String liveId, String
             testAnswer, String type, String isSubmit, double voiceTime, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
@@ -663,7 +736,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 //        mHttpManager.getStuRanking(enstuId, mLiveId, classId, requestCallBack);
 //    }
 
-    /** 用户试听 */
+    /**
+     * 用户试听
+     */
     public void userModeTime(AbstractBusinessDataCallBack callBack) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mHttpManager.userModeTime(enstuId, mLiveId, new HttpCallBack(false) {
@@ -1913,7 +1988,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     };
     private long blockTime;
 
-    /** 当前状态，老师是不是在直播间 */
+    /**
+     * 当前状态，老师是不是在直播间
+     */
     public boolean isPresent() {
         return isPresent(mLiveTopic.getMode());
     }
@@ -2287,7 +2364,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         });
     }
 
-    /** 第一次调度，不判断老师状态 */
+    /**
+     * 第一次调度，不判断老师状态
+     */
     public void liveGetPlayServerFirst() {
         liveGetPlayServer(mLiveTopic.getMode(), false);
     }
@@ -2446,7 +2525,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         });
     }
 
-    /** 结束聊天 */
+    /**
+     * 结束聊天
+     */
     public void stopIRC() {
         if (mIRCMessage != null) {
             mIRCMessage.setCallback(null);
@@ -2732,7 +2813,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         });
     }
 
-    /** 点名成功，状态设置为2.发notice信息 */
+    /**
+     * 点名成功，状态设置为2.发notice信息
+     */
     public void onRollCallSuccess() {
         try {
             mGetInfo.getStudentLiveInfo().setSignStatus(2);
@@ -2765,7 +2848,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         return haveTeam;
     }
 
-    /** 是否开启聊天 */
+    /**
+     * 是否开启聊天
+     */
     public boolean openchat() {
         boolean openchat;
         if (LiveTopic.MODE_CLASS.equals(getMode())) {
@@ -2777,7 +2862,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         return openchat;
     }
 
-    /** 发生聊天消息 */
+    /**
+     * 发生聊天消息
+     */
     public boolean sendMessage(String msg) {
         if (mLiveTopic.isDisable()) {
             return false;
@@ -2808,7 +2895,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
     }
 
-    /** 发送上墙信号聊天消息 */
+    /**
+     * 发送上墙信号聊天消息
+     */
     public void sendRankMessage(int code) {
         if (mLiveTopic.isDisable()) {
             return;
@@ -2824,12 +2913,16 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
     }
 
-    /** 是否开启献花 */
+    /**
+     * 是否开启献花
+     */
     public boolean isOpenbarrage() {
         return mLiveTopic.getMainRoomstatus().isOpenbarrage();
     }
 
-    /** 发生献花消息 */
+    /**
+     * 发生献花消息
+     */
     public void sendFlowerMessage(int ftype) {
         try {
             JSONObject jsonObject = new JSONObject();
@@ -2866,7 +2959,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
     }
 
-    /** 放弃举手 */
+    /**
+     * 放弃举手
+     */
     public void giveupMicro(String from) {
         try {
             JSONObject jsonObject = new JSONObject();
@@ -2907,7 +3002,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
     }
 
-    /** 学生发送秒数指令 */
+    /**
+     * 学生发送秒数指令
+     */
     public void sendDBStudent(int time) {
         try {
             JSONObject jsonObject = new JSONObject();
@@ -2948,7 +3045,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
     }
 
-    /** 得到老师名字 */
+    /**
+     * 得到老师名字
+     */
     public String getModeTeacher() {
         String mainnick = "null";
         synchronized (mIRCcallback) {
@@ -2963,7 +3062,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
     }
 
-    /** 得到当前模式 */
+    /**
+     * 得到当前模式
+     */
     public String getMode() {
         String mode;
         if (mLiveType == LIVE_TYPE_LIVE) {

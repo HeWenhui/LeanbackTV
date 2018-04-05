@@ -25,6 +25,7 @@ public class GoldTeamStatus {
         String nickname;// "ssss",
         String en_name;// "rer",
         String avatar_path;// "http:\/\/xesfile.xesimg.com\/user\/h\/31203.jpg"
+        boolean isRight = false;
 
         public boolean isMe() {
             return isMe;
@@ -80,6 +81,14 @@ public class GoldTeamStatus {
 
         public void setAvatar_path(String avatar_path) {
             this.avatar_path = avatar_path;
+        }
+
+        public boolean isRight() {
+            return isRight;
+        }
+
+        public void setRight(boolean right) {
+            isRight = right;
         }
 
         @Override

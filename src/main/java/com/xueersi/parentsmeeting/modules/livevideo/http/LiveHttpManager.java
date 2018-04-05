@@ -379,6 +379,15 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(url, params, requestCallBack);
     }
 
+    public void getQuestionTeamRank(String testId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        String url = liveVideoSAConfigInner.URL_LIVE_ANSWER_TEAM;
+//        params.addBodyParam("enstuId", enstuId);
+        setDefaultParameter(params);
+        params.addBodyParam("testId", testId);
+        sendPost(url, params, requestCallBack);
+    }
+
     public void liveSubmitTestH5Answer(String enstuId, String srcType, String testId, String liveId, String
             testAnswer, String type, String userMode, String isSubmit,
                                        double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
@@ -654,7 +663,9 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(requestCallBack.url, params, requestCallBack);
     }
 
-    /** 获得预加载课件地址 */
+    /**
+     * 获得预加载课件地址
+     */
     public void getCourseWareUrl(HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
@@ -662,7 +673,9 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(requestCallBack.url, params, requestCallBack);
     }
 
-    /** 获得广告信息 */
+    /**
+     * 获得广告信息
+     */
     public void getAdOnLL(String courseId, final HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);

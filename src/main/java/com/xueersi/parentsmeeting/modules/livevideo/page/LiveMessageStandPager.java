@@ -388,8 +388,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         Loger.i(TAG, "initData:minisize=" + minisize);
 
         final String fileName = "live_stand_head.json";
-        final HashMap<String, String> assetFolders = new HashMap<String, String>();
-        assetFolders.put(fileName, "Images/head");
 
         messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities) {
             @Override
@@ -447,7 +445,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                                     return;
                                 }
                                 mComposition = composition;
-                                standLiveHeadView.setImageAssetsFolder(assetFolders.get(fileName));
+                                standLiveHeadView.setImageAssetsFolder("Images/head");
                                 standLiveHeadView.setComposition(composition);
                             }
                         });

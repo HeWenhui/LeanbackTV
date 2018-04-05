@@ -127,7 +127,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 语音答题
      */
     private BaseVoiceAnswerPager voiceAnswerPager;
-    /** 创建语音答题 */
+    /**
+     * 创建语音答题
+     */
     private BaseVoiceAnswerCreat baseVoiceAnswerCreat;
     /**
      * 语音强制提交，外层
@@ -163,9 +165,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 答题的暂存状态
      */
     private HashSet<String> mQueAndBool = new HashSet<>();
-    /** 答题的暂存状态-可以重复作答的 */
+    /**
+     * 答题的暂存状态-可以重复作答的
+     */
     private HashSet<String> mQueReAnswer = new HashSet<>();
-    /** 语音答题错误 */
+    /**
+     * 语音答题错误
+     */
     private HashSet<String> mErrorVoiceQue = new HashSet<>();
     /**
      * 试卷的暂存状态
@@ -197,7 +203,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private LiveMessageBll liveMessageBll;
     private boolean isAnaswer = false;
     private AnswerRankBll mAnswerRankBll;
-    /** 智能私信业务 */
+    /**
+     * 智能私信业务
+     */
     private LiveAutoNoticeBll mLiveAutoNoticeBll;
     private VideoQuestionLiveEntity mVideoQuestionLiveEntity;
     private boolean hasQuestion;
@@ -1234,7 +1242,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         VoiceAnswerLog.sno2H5test(mLiveBll, videoQuestionLiveEntity.type, videoQuestionLiveEntity.id, videoQuestionLiveEntity.nonce);
     }
 
-    QuestionSwitch questionSwitch = new QuestionSwitch() {
+    QuestionSwitch questionSwitch = new LiveStandQuestionSwitch() {
+
 
         @Override
         public String getsourcetype(BaseVideoQuestionEntity baseQuestionEntity) {
@@ -1292,6 +1301,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 testAnswer = result;
             }
             mLiveBll.liveSubmitTestAnswer(videoQuestionLiveEntity1, mVSectionID, testAnswer, true, isRight, answerReslut);
+        }
+
+        @Override
+        public void getQuestionTeamRank(BaseVideoQuestionEntity videoQuestionLiveEntity, AbstractBusinessDataCallBack callBack) {
+            final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
+            mLiveBll.getQuestionTeamRank(videoQuestionLiveEntity1, callBack);
         }
 
         @Override
