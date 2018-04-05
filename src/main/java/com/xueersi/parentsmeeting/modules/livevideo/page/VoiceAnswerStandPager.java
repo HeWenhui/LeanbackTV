@@ -54,7 +54,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -68,39 +67,65 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     private SpeechEvaluatorUtils mIse;
     BaseVideoQuestionEntity baseVideoQuestionEntity;
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
-    /** 手动答题切换动画 */
+    /**
+     * 手动答题切换动画
+     */
     FrameAnimation switchFrameAnimation;
     RelativeLayout rl_livevideo_voiceans_content;
-    /** 错误提示 */
+    /**
+     * 错误提示
+     */
     RelativeLayout rlSpeectevalTip;
-    /** 错误提示-图片 */
+    /**
+     * 错误提示-图片
+     */
     ImageView ivSpeectevalTip;
-    /** 错误提示-文字 */
+    /**
+     * 错误提示-文字
+     */
     TextView tvSpeectevalTip;
-    /** 波形 */
+    /**
+     * 波形
+     */
     VolumeWaveView vwvSpeectevalWave;
     ImageView iv_livevideo_speecteval_wave;
-    /** 答题切换 */
+    /**
+     * 答题切换
+     */
     ImageView ivVoiceansSwitch;
     QuestionSwitch questionSwitch;
     LiveAndBackDebug liveAndBackDebug;
-    /** 语音保存位置-目录 */
+    /**
+     * 语音保存位置-目录
+     */
     File dir;
-    /** 语音保存位置 */
+    /**
+     * 语音保存位置
+     */
     private File saveVideoFile;
-    /** 是不是评测失败 */
+    /**
+     * 是不是评测失败
+     */
     private boolean isSpeechError = false;
     private boolean isSpeechSuccess = false;
-    /** 评测文本 */
+    /**
+     * 评测文本
+     */
     JSONObject assess_ref;
     String answer;
     boolean multRef = true;
-    /** 是不是结束答题 */
+    /**
+     * 是不是结束答题
+     */
     boolean isEnd = false;
     String endnonce;
-    /** 是不是用户返回 */
+    /**
+     * 是不是用户返回
+     */
     boolean userBack = false;
-    /** 是不是用户切换答题 */
+    /**
+     * 是不是用户切换答题
+     */
     boolean userSwitch = false;
     String type;
     ScoreAndIndex lastMaxScoreAndIndex = null;
@@ -332,10 +357,17 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                             for (int i = 0; i < students.size(); i++) {
                                 final GoldTeamStatus.Student student = students.get(i);
                                 final LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
-                                lottieAnimationView.setImageAssetsFolder("Images/voice_answer/right");
-                                LottieComposition.Factory.fromAssetFileName(mContext, "live_stand_voice_right.json", new OnCompositionLoadedListener() {
+                                String path;
+                                if (student.isRight()) {
+                                    path = "live_stand_voice_right.json";
+                                    lottieAnimationView.setImageAssetsFolder("Images/voice_answer/right");
+                                } else {
+                                    path = "live_stand_voice_wrong.json";
+                                    lottieAnimationView.setImageAssetsFolder("Images/voice_answer/wrong");
+                                }
+                                LottieComposition.Factory.fromAssetFileName(mContext, path, new OnCompositionLoadedListener() {
 
-                                    void updateName(LottieComposition lottieComposition) {
+                                    void updateName() {
                                         InputStream inputStream = null;
                                         try {
                                             inputStream = mContext.getAssets().open("Images/voice_answer/right/img_1.png");
@@ -345,7 +377,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                             canvas.drawBitmap(headBack, 0, 0, null);
                                             String name = student.getNickname();
                                             Paint paint = new Paint();
-                                            paint.setTextSize(12);
+                                            paint.setTextSize(20);
                                             paint.setColor(0xffA56202);
                                             float width = paint.measureText(name);
                                             canvas.drawText(name, headBack.getWidth() / 2 - width / 2, headBack.getHeight() / 2 + paint.measureText("a") / 2, paint);
@@ -364,7 +396,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                         }
                                     }
 
-                                    void updateHead(LottieComposition lottieComposition) {
+                                    void updateHead() {
                                         Activity activity = (Activity) mContext;
                                         if (!activity.isFinishing()) {
                                             ImageLoader.with(mContext).load(student.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
@@ -410,17 +442,18 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                         }
                                         lottieAnimationView.setComposition(lottieComposition);
                                         lottieAnimationView.playAnimation();
-                                        updateHead(lottieComposition);
-                                        updateName(lottieComposition);
+                                        updateHead();
+                                        updateName();
                                     }
                                 });
                                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                                if (i % 2 == 0) {
+                                int nextInt = random.nextInt(500);
+                                if (nextInt % 2 == 0) {
                                     lp.addRule(RelativeLayout.RIGHT_OF, R.id.iv_livevideo_speecteval_wave);
-                                    lp.leftMargin = random.nextInt(500);
+                                    lp.leftMargin = nextInt;
                                 } else {
                                     lp.addRule(RelativeLayout.LEFT_OF, R.id.iv_livevideo_speecteval_wave);
-                                    lp.rightMargin = random.nextInt(500);
+                                    lp.rightMargin = nextInt;
                                 }
                                 rl_livevideo_voiceans_content.addView(lottieAnimationView, lp);
                             }
