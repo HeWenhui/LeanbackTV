@@ -134,6 +134,9 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     private MoreChoice mData;
     private RelativeLayout mFirstSight;
     private LinearLayout mSecondSight;
+    private LinearLayout mAdvance;
+    private Boolean havaAdvance = true;
+    private TextView mLimitnum;
 
     public LiveMessagePortPager(Context context, QuestionBll questionBll,
                                 ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
@@ -149,12 +152,14 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_message_port, null);
+        mAdvance = (LinearLayout)mView.findViewById(R.id.ll_advance);
         mFirstSight = (RelativeLayout) mView.findViewById(R.id.ll_all_content);
         mSecondSight = (LinearLayout) mView.findViewById(R.id.ll_detail_list);
         mApplyButton = (Button) mView.findViewById(R.id.bt_to_apply);
         mMoreClassLayout = (RelativeLayout) mView.findViewById(R.id.more_class);
         mApplyNum = (TextView)mView.findViewById(R.id.tv_apply_number);
         mShutDowm = (ImageButton)mView.findViewById(R.id.ib_back);
+        mLimitnum = (TextView)mView.findViewById(R.id.tv_limitnum);
         mMorecourse = (ListView)mView.findViewById(R.id.morecourse_list);
         tvMessageCount = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
         lvMessage = (ListView) mView.findViewById(R.id.lv_livevideo_message);
@@ -653,6 +658,13 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
 
             };
             mMorecourse.setAdapter(mCourseAdapter);
+        }
+
+        if(havaAdvance){
+            mAdvance.setVisibility(View.VISIBLE);
+            mLimitnum.setText(Html.fromHtml("<font color='#999999'>剩余名额</font>"+ "<font color='#F13232'>" +"  " +12+ "</font>"));
+        }else{
+            mAdvance.setVisibility(View.GONE);
         }
     }
 

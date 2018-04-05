@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.activity.item;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
 
@@ -46,6 +47,6 @@ public class MoreChoiceItem implements AdapterItemInterface<MoreChoice.Choice> {
             return;
         mDetail = choice;
         mCourseName.setText(mDetail.getSaleName());
-        mLimitNum.setText("剩余名额  "+ mDetail.getLimit());
+        mLimitNum.setText(Html.fromHtml("<font color='#999999'>剩余名额</font>"+ "<font color='#F13232'>" +"  " +mDetail.getLimit()+ "</font>"));
     }
 }
