@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.content.Context;
 import android.util.Log;
 
+import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.http.HttpResponseParser;
 import com.xueersi.parentsmeeting.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
@@ -465,6 +466,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         try {
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
             JSONArray stuList = jsonObject.getJSONArray("stuList");
+            String avatar_path = "";
             for (int i = 0; i < stuList.length(); i++) {
                 try {
                     JSONObject stu = stuList.getJSONObject(i);
@@ -475,12 +477,24 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     student.setName(stu.optString("name"));
                     student.setNickname(stu.getString("nickname"));
                     student.setGold(stu.getString("gold"));
-                    student.setAvatar_path(stu.getString("avatar_path"));
+                    avatar_path = stu.getString("avatar_path");
+                    student.setAvatar_path(avatar_path);
                     entity.getStudents().add(student);
                 } catch (Exception e) {
                     MobAgent.httpResponseParserError(TAG, "redGoldTeamStatus:i=" + i, e.getMessage());
                 }
             }
+//            if(AppConfig.DEBUG){
+//                for (int i = 0; i < 12; i++) {
+//                    GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                    student.setStuId("12345" + i);
+//                    student.setName(student.getStuId());
+//                    student.setNickname(student.getStuId());
+//                    student.setGold("1" + i);
+//                    student.setAvatar_path(avatar_path);
+//                    entity.getStudents().add(student);
+//                }
+//            }
         } catch (Exception e) {
             MobAgent.httpResponseParserError(TAG, "redGoldTeamStatus", e.getMessage());
         }

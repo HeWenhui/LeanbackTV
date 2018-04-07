@@ -274,39 +274,53 @@ public class FrameAnimation {
                     }
                 }
 //                mImageView.setBackgroundResource(mFrameRess[i]);
-                InputStream inputStream = null;
-                try {
-                    String file = files[i];
-                    inputStream = mView.getContext().getAssets().open(file);
-                    Bitmap bitmap = bitmapHashMap.get(file);
-                    if (bitmap == null) {
-                        if (bitmapCreate != null) {
-                            bitmap = bitmapCreate.onAnimationCreate(file);
-                            if (bitmap != null) {
-                                bitmapHashMap.put(file, bitmap);
+                final String file = files[i];
+                Bitmap bitmap = bitmapHashMap.get(file);
+                if (bitmap != null) {
+                    mView.setBackgroundDrawable(new BitmapDrawable(bitmap));
+                } else {
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            InputStream inputStream = null;
+                            Bitmap bitmap = null;
+                            try {
+                                if (bitmapCreate != null) {
+                                    bitmap = bitmapCreate.onAnimationCreate(file);
+                                    if (bitmap != null) {
+                                        bitmapHashMap.put(file, bitmap);
+                                    }
+                                }
+                                if (bitmap == null) {
+                                    inputStream = mView.getContext().getAssets().open(file);
+                                    bitmap = BitmapFactory.decodeStream(inputStream);
+                                    if (bitmap != null) {
+                                        bitmapHashMap.put(file, bitmap);
+                                        bitmap.setDensity(160);
+                                    }
+                                }
+                                if (bitmap != null) {
+                                    final Bitmap finalBitmap = bitmap;
+                                    mView.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mView.setBackgroundDrawable(new BitmapDrawable(finalBitmap));
+                                        }
+                                    });
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } finally {
+                                if (inputStream != null) {
+                                    try {
+                                        inputStream.close();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
                             }
                         }
-                        if (bitmap == null) {
-                            bitmap = BitmapFactory.decodeStream(inputStream);
-                            if (bitmap != null) {
-                                bitmapHashMap.put(file, bitmap);
-                                bitmap.setDensity(160);
-                            }
-                        }
-                    }
-                    if (bitmap != null) {
-                        mView.setBackgroundDrawable(new BitmapDrawable(bitmap));
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    if (inputStream != null) {
-                        try {
-                            inputStream.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    }.start();
                 }
                 if (i == mLastFrame) {
 

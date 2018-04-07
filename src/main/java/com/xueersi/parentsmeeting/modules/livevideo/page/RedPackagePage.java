@@ -22,8 +22,10 @@ import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 
@@ -403,17 +405,22 @@ public class RedPackagePage extends BasePager {
             } else {
                 Activity activity = (Activity) mContext;
                 if (!activity.isFinishing()) {
-                    ImageLoader.with(mContext).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
+                    activity.runOnUiThread(new Runnable() {
                         @Override
-                        public void onSuccess(Drawable drawable) {
-                            Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                            RedPackagePage.this.headBitmap = headBitmap;
-                            btframeAnimation1.removeBitmapCache(file);
-                        }
+                        public void run() {
+                            ImageLoader.with(mContext).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
+                                @Override
+                                public void onSuccess(Drawable drawable) {
+                                    Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                                    RedPackagePage.this.headBitmap = headBitmap;
+                                    btframeAnimation1.removeBitmapCache(file);
+                                }
 
-                        @Override
-                        public void onFail() {
+                                @Override
+                                public void onFail() {
 
+                                }
+                            });
                         }
                     });
                 }
@@ -448,6 +455,29 @@ public class RedPackagePage extends BasePager {
         return null;
     }
 
+    private ArrayList<Point> teamLeftAndTops = new ArrayList<>();
+
+    {
+        int screenWidth = ScreenUtils.getScreenWidth();
+        int screenHeight = ScreenUtils.getScreenHeight();
+        int width = 368;
+        int height = 352;
+
+        teamLeftAndTops.add(new Point(screenWidth / 2 - 164 - width, screenHeight / 2 - height / 2));//左
+        teamLeftAndTops.add(new Point(screenWidth / 2 + 164, screenHeight / 2 - height / 2));//右
+        teamLeftAndTops.add(new Point(screenWidth / 2 - 82 - width, 72));//左上
+        teamLeftAndTops.add(new Point(screenWidth / 2 - 82 - width, screenHeight / 2 + height / 2));//左下
+        teamLeftAndTops.add(new Point(screenWidth / 2 + 84, 30));//右上
+        teamLeftAndTops.add(new Point(screenWidth / 2 + 70, screenHeight / 2 + height / 2));//右下
+
+        teamLeftAndTops.add(new Point(152, 63));
+        teamLeftAndTops.add(new Point(52, 325));
+        teamLeftAndTops.add(new Point(172, screenHeight / 2 + height / 2));
+
+        teamLeftAndTops.add(new Point(screenWidth - 152 - width, 128));
+        teamLeftAndTops.add(new Point(screenWidth - 172 - width, 456));
+    }
+
     /**
      * 请求到小组金币列表
      *
@@ -475,15 +505,29 @@ public class RedPackagePage extends BasePager {
             }
             addStudents.add(student);
             ImageView imageView = new ImageView(mContext);
+            boolean center = student.isMe();
+//            boolean center = rl_livevideo_redpackage_teams.getChildCount() == 0;
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            if (student.isMe()) {
+//            if (student.isMe()) {
+//                lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+//            } else {
+//                lp.leftMargin = random.nextInt(1800);
+//                lp.topMargin = random.nextInt(900);
+//            }
+            if (center) {
                 lp.addRule(RelativeLayout.CENTER_IN_PARENT);
             } else {
-                lp.leftMargin = random.nextInt(1800);
-                lp.topMargin = random.nextInt(900);
+                if (!teamLeftAndTops.isEmpty()) {
+                    Point point = teamLeftAndTops.remove(0);
+                    lp.leftMargin = (int) point.x;
+                    lp.topMargin = (int) point.y;
+                } else {
+                    lp.leftMargin = random.nextInt(1700);
+                    lp.topMargin = random.nextInt(850);
+                }
             }
             final ArrayList<FrameAnimation> frameAnimations2;
-            if (student.isMe()) {
+            if (center) {
                 frameAnimations2 = initCenterResult(student, imageView);
             } else {
                 frameAnimations2 = initTeamResult(student, imageView);
@@ -677,20 +721,25 @@ public class RedPackagePage extends BasePager {
             } else {
                 Activity activity = (Activity) mContext;
                 if (!activity.isFinishing()) {
-                    ImageLoader.with(mContext).load(entity.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
+                    activity.runOnUiThread(new Runnable() {
                         @Override
-                        public void onSuccess(Drawable drawable) {
-                            Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                            if (isMe) {
-                                RedPackagePage.this.headBitmap = headBitmap;
-                            }
-                            stuHeadBitmap.put(entity.getStuId(), headBitmap);
-                            upFrameAnimation.removeBitmapCache(file);
-                        }
+                        public void run() {
+                            ImageLoader.with(mContext).load(entity.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
+                                @Override
+                                public void onSuccess(Drawable drawable) {
+                                    Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                                    if (isMe) {
+                                        RedPackagePage.this.headBitmap = headBitmap;
+                                    }
+                                    stuHeadBitmap.put(entity.getStuId(), headBitmap);
+                                    upFrameAnimation.removeBitmapCache(file);
+                                }
 
-                        @Override
-                        public void onFail() {
+                                @Override
+                                public void onFail() {
 
+                                }
+                            });
                         }
                     });
                 }
@@ -747,6 +796,9 @@ public class RedPackagePage extends BasePager {
             rl_livevideo_redpackage_teams.removeAllViews();
         }
         final ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
+        while (students.size() > 3) {
+            students.remove(students.size() - 1);
+        }
 //        entity.getStudents().add(entity.getStudents().get(0));
 //        entity.getStudents().add(entity.getStudents().get(0));
         String path = "Images/redpackage/14_transition";
@@ -859,20 +911,25 @@ public class RedPackagePage extends BasePager {
                 } else {
                     Activity activity = (Activity) mContext;
                     if (!activity.isFinishing()) {
-                        ImageLoader.with(mContext).load(entity.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
+                        activity.runOnUiThread(new Runnable() {
                             @Override
-                            public void onSuccess(Drawable drawable) {
-                                Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                                if (isMe) {
-                                    RedPackagePage.this.headBitmap = headBitmap;
-                                }
-                                stuHeadBitmap.put(entity.getStuId(), headBitmap);
-                                upFrameAnimation.removeBitmapCache(file);
-                            }
+                            public void run() {
+                                ImageLoader.with(mContext).load(entity.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
+                                    @Override
+                                    public void onSuccess(Drawable drawable) {
+                                        Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                                        if (isMe) {
+                                            RedPackagePage.this.headBitmap = headBitmap;
+                                        }
+                                        stuHeadBitmap.put(entity.getStuId(), headBitmap);
+                                        upFrameAnimation.removeBitmapCache(file);
+                                    }
 
-                            @Override
-                            public void onFail() {
+                                    @Override
+                                    public void onFail() {
 
+                                    }
+                                });
                             }
                         });
                     }
