@@ -60,6 +60,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageStandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ExPerienceLiveMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
@@ -539,6 +540,18 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //                redPackageStandBll.onReadPackage(Integer.parseInt(mRedPacketId));
             }
         }
+//        lectureLivePlayBackBll.getExperienceMsgs(mVideoEntity.getLiveId(), "", 0L, new ExperienceLiveVideoActivity.GetExperienceLiveMsgs() {
+//
+//            @Override
+//            public void getLiveExperienceMsgs(ExPerienceLiveMessage liveMessageGroupEntity) {
+//                Loger.d(TAG, "getLiveExperienceMsgs");
+//            }
+//
+//            @Override
+//            public void onPmFailure() {
+//                Loger.d(TAG, "onPmFailure");
+//            }
+//        });
     }
 
     @Override
