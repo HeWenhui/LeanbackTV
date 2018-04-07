@@ -162,9 +162,11 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         switchFSPanelLinearLayout = (KPSwitchFSPanelLinearLayout) mView.findViewById(R.id
                 .rl_livevideo_message_panelroot);
         ivExpressionCancle = (ImageView) mView.findViewById(R.id.iv_livevideo_message_expression_cancle);
-        int screenWidth = ScreenUtils.getScreenWidth();
-        int screenHeight = ScreenUtils.getScreenHeight();
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
+//        int screenWidth = ScreenUtils.getScreenWidth();
+//        int screenHeight = ScreenUtils.getScreenHeight();
+//        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
+//        params.topMargin = ScreenUtils.getScreenHeight() / 2;
+//        rlInfo.setLayoutParams(params);
 //        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
 //        int hradio = (int) ((LiveVideoActivity.VIDEO_HEIGHT - LiveVideoActivity.VIDEO_HEAD_HEIGHT) * screenHeight /
 //                LiveVideoActivity.VIDEO_HEIGHT);
@@ -387,9 +389,14 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
         Loger.i(TAG, "initData:minisize=" + minisize);
 
-        final String fileName = "live_stand_head.json";
+//        for (int i = 0; i < 10; i++) {
+//            LiveMessageEntity liveMessageEntity = new LiveMessageEntity(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, MESSAGE_CHINESE, "");
+//            liveMessageEntities.add(liveMessageEntity);
+//        }
 
         messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities) {
+            String fileName = "live_stand_head.json";
+
             @Override
             public AdapterItemInterface<LiveMessageEntity> getItemView(Object type) {
                 return new AdapterItemInterface<LiveMessageEntity>() {
@@ -516,7 +523,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //                            }
 //                        }
                         boolean deng = standLiveHeadView.getEntity() == entity;
-                        Loger.d(TAG, "updateViews:deng=" + deng + ",progress=" + standLiveHeadView.getProgress() + ",standLiveHeadView=" + standLiveHeadView.hashCode() + ",text=" + entity.getText());
+                        Loger.d(TAG, "updateViews:deng=" + deng + ",progress=" + standLiveHeadView.getProgress() + ",standLiveHeadView=" + standLiveHeadView.getEntity() + ",text=" + entity.getText());
                         standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
 //                        entity.setHeadUrl(getInfo.getHeadImgPath());
                         standLiveHeadView.setName(entity.getSender());
@@ -534,6 +541,15 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             }
         };
         lvMessage.setAdapter(messageAdapter);
+//        mView.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                for (int i = 0; i < 10; i++) {
+//                    liveMessageEntities.remove(0);
+//                }
+//                messageAdapter.notifyDataSetChanged();
+//            }
+//        });
         Loger.i(TAG, "initData:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mView.post(new Runnable() {
