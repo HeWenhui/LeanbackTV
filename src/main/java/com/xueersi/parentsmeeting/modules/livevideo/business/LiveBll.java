@@ -79,7 +79,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.Call;
@@ -615,8 +614,43 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 });
     }
 
-    public void getQuestionTeamRank(final VideoQuestionLiveEntity videoQuestionLiveEntity, final AbstractBusinessDataCallBack callBack) {
-        mHttpManager.getQuestionTeamRank(videoQuestionLiveEntity.id, new HttpCallBack(false) {
+    public void getTestAnswerTeamStatus(final VideoQuestionLiveEntity videoQuestionLiveEntity, final AbstractBusinessDataCallBack callBack) {
+        mHttpManager.getTestAnswerTeamStatus(videoQuestionLiveEntity.id, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId());
+                callBack.onDataSucess(entity);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                callBack.onDataFail(0, msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                if (AppConfig.DEBUG) {
+                    GoldTeamStatus entity = new GoldTeamStatus();
+                    for (int i = 0; i < 3; i++) {
+                        GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+                        student.setNickname("测试" + i);
+                        student.setGold("90");
+                        student.setAvatar_path(mGetInfo.getHeadImgPath());
+                        student.setRight(i % 2 == 0);
+                        entity.getStudents().add(student);
+                    }
+                    callBack.onDataSucess(entity);
+                } else {
+                    callBack.onDataFail(1, responseEntity.getErrorMsg());
+                }
+            }
+        });
+    }
+
+    public void getSpeechEvalAnswerTeamStatus(String testId, final AbstractBusinessDataCallBack callBack) {
+        mHttpManager.getSpeechEvalAnswerTeamStatus(testId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId());

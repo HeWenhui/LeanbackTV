@@ -8,5 +8,5 @@ import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
  */
 
 public interface LiveStandQuestionSwitch extends QuestionSwitch {
-    void getQuestionTeamRank(BaseVideoQuestionEntity videoQuestionLiveEntity, AbstractBusinessDataCallBack callBack);
+    void getTestAnswerTeamStatus(BaseVideoQuestionEntity videoQuestionLiveEntity, AbstractBusinessDataCallBack callBack);
 }

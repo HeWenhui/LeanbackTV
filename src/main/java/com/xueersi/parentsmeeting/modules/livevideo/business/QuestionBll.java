@@ -1713,9 +1713,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public class LiveStandQuestionSwitchImpl extends LiveQuestionSwitchImpl implements LiveStandQuestionSwitch {
 
         @Override
-        public void getQuestionTeamRank(BaseVideoQuestionEntity videoQuestionLiveEntity, AbstractBusinessDataCallBack callBack) {
+        public void getTestAnswerTeamStatus(BaseVideoQuestionEntity videoQuestionLiveEntity, AbstractBusinessDataCallBack callBack) {
             final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
-            mLiveBll.getQuestionTeamRank(videoQuestionLiveEntity1, callBack);
+            mLiveBll.getTestAnswerTeamStatus(videoQuestionLiveEntity1, callBack);
         }
 
     }

@@ -451,7 +451,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         questionBll.setLiveType(liveType);
         questionBll.initData();
         questionBll.setBaseVoiceAnswerCreat(new LiveStandVoiceAnswerCreat());
-        questionBll.setBaseSpeechCreat(new LiveStandSpeechCreat());
+        questionBll.setBaseSpeechCreat(new LiveStandSpeechCreat(mLiveBll));
 //        questionBll.setBaseSpeechCreat(new LiveSpeechCreat());
         englishH5CoursewareBll.setShareDataManager(mShareDataManager);
         englishH5CoursewareBll.setLiveType(liveType);

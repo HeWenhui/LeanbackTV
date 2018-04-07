@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -39,7 +38,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
-import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -209,7 +207,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
                 @Override
                 public void run() {
-                    liveStandQuestionSwitch.getQuestionTeamRank(baseVideoQuestionEntity, new AbstractBusinessDataCallBack() {
+                    liveStandQuestionSwitch.getTestAnswerTeamStatus(baseVideoQuestionEntity, new AbstractBusinessDataCallBack() {
                         @Override
                         public void onDataSucess(Object... objData) {
                             GoldTeamStatus entity = (GoldTeamStatus) objData[0];

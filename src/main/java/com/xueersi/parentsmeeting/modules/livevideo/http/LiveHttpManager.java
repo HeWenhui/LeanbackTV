@@ -379,9 +379,18 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(url, params, requestCallBack);
     }
 
-    public void getQuestionTeamRank(String testId, HttpCallBack requestCallBack) {
+    public void getTestAnswerTeamStatus(String testId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         String url = liveVideoSAConfigInner.URL_LIVE_ANSWER_TEAM;
+//        params.addBodyParam("enstuId", enstuId);
+        setDefaultParameter(params);
+        params.addBodyParam("testId", testId);
+        sendPost(url, params, requestCallBack);
+    }
+
+    public void getSpeechEvalAnswerTeamStatus(String testId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        String url = liveVideoSAConfigInner.URL_LIVE_SPEECH_TEAM;
 //        params.addBodyParam("enstuId", enstuId);
         setDefaultParameter(params);
         params.addBodyParam("testId", testId);
