@@ -69,6 +69,7 @@ public class FrameAnimation {
 
     private static final int SELECTED_D = 4;
     private HashMap<String, Bitmap> bitmapHashMap = new HashMap<>();
+    private boolean destory = false;
 
     /**
      * @param iv       播放动画的控件
@@ -282,12 +283,19 @@ public class FrameAnimation {
                     new Thread() {
                         @Override
                         public void run() {
+                            if (destory) {
+                                return;
+                            }
                             InputStream inputStream = null;
                             Bitmap bitmap = null;
                             try {
                                 if (bitmapCreate != null) {
                                     bitmap = bitmapCreate.onAnimationCreate(file);
                                     if (bitmap != null) {
+                                        if (destory) {
+                                            bitmap.recycle();
+                                            return;
+                                        }
                                         bitmapHashMap.put(file, bitmap);
                                     }
                                 }
@@ -295,6 +303,10 @@ public class FrameAnimation {
                                     inputStream = mView.getContext().getAssets().open(file);
                                     bitmap = BitmapFactory.decodeStream(inputStream);
                                     if (bitmap != null) {
+                                        if (destory) {
+                                            bitmap.recycle();
+                                            return;
+                                        }
                                         bitmapHashMap.put(file, bitmap);
                                         bitmap.setDensity(160);
                                     }
@@ -304,6 +316,10 @@ public class FrameAnimation {
                                     mView.post(new Runnable() {
                                         @Override
                                         public void run() {
+                                            if (destory) {
+                                                finalBitmap.recycle();
+                                                return;
+                                            }
                                             mView.setBackgroundDrawable(new BitmapDrawable(finalBitmap));
                                         }
                                     });
@@ -423,6 +439,7 @@ public class FrameAnimation {
     }
 
     public void destory() {
+        destory = true;
         pauseAnimation();
         Set<String> keys = bitmapHashMap.keySet();
         for (String k : keys) {
