@@ -46,6 +46,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLazyBllCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoiceAnswerCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
@@ -435,6 +436,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         questionBll.setLiveType(liveType);
         questionBll.initData();
         questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat());
+        questionBll.setBaseSpeechCreat(new LiveSpeechCreat());
         englishH5CoursewareBll.setShareDataManager(mShareDataManager);
         englishH5CoursewareBll.setLiveType(liveType);
         englishH5CoursewareBll.setVSectionID(mVSectionID);

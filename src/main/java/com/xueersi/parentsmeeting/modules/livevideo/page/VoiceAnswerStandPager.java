@@ -82,18 +82,11 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
      * 错误提示-图片
      */
     ImageView ivSpeectevalTip;
-    /**
-     * 错误提示-文字
-     */
+    /** 错误提示-文字 */
     TextView tvSpeectevalTip;
-    /**
-     * 波形
-     */
-    VolumeWaveView vwvSpeectevalWave;
+    /** 波形 */
     ImageView iv_livevideo_speecteval_wave;
-    /**
-     * 答题切换
-     */
+    /** 答题切换 */
     ImageView ivVoiceansSwitch;
     QuestionSwitch questionSwitch;
     LiveAndBackDebug liveAndBackDebug;
@@ -354,12 +347,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         rlSpeectevalTip = (RelativeLayout) view.findViewById(R.id.rl_livevideo_speecteval_tip);
         ivSpeectevalTip = (ImageView) view.findViewById(R.id.iv_livevideo_speecteval_tip);
         tvSpeectevalTip = (TextView) view.findViewById(R.id.tv_livevideo_speecteval_tip);
-        vwvSpeectevalWave = (VolumeWaveView) view.findViewById(R.id.vwv_livevideo_speecteval_wave);
         iv_livevideo_speecteval_wave = view.findViewById(R.id.iv_livevideo_speecteval_wave);
-        int colors[] = {0x19F13232, 0x32F13232, 0x64F13232, 0x96F13232, 0xFFF13232};
-        vwvSpeectevalWave.setColors(colors);
-//        vwvSpeectevalWave.setBackColor(0xffeaebf9);
-        vwvSpeectevalWave.setBackColor(Color.TRANSPARENT);
         ivVoiceansSwitch = view.findViewById(R.id.iv_livevideo_voiceans_switch);
 //        tvSpeectevalTip.setText("语音输入有点小问题，\n先手动答题哦（1131)");
         view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
@@ -461,7 +449,6 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         mView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                vwvSpeectevalWave.start();
                 FrameAnimation frameAnimation1 = createFromAees("Images/voice_answer/1_enter", false);
                 frameAnimations.add(frameAnimation1);
                 frameAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
@@ -597,8 +584,6 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
         @Override
         public void onVolumeUpdate(int volume) {
-//            Loger.d(TAG, "onVolumeUpdate:volume=" + volume);
-            vwvSpeectevalWave.setVolume(volume * 3);
         }
     }
 

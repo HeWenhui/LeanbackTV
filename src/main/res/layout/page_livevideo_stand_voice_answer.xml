@@ -37,12 +37,6 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true" />
 
-        <com.xueersi.parentsmeeting.widget.VolumeWaveView
-            android:id="@id/vwv_livevideo_speecteval_wave"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="12dp"
-            android:visibility="gone" />
     </RelativeLayout>
 
     <RelativeLayout

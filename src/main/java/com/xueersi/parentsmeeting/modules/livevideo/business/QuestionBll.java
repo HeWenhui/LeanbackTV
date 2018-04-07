@@ -44,7 +44,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
@@ -198,6 +197,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 语音评测页面
      */
     private BaseSpeechAssessmentPager speechAssessmentPager;
+    private BaseSpeechCreat baseSpeechCreat;
     private SubjectResultPager subjectResultPager;
     boolean isLand;
     private LiveMessageBll liveMessageBll;
@@ -580,15 +580,16 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     if ("1".equals(videoQuestionLiveEntity.isAllow42)) {
                         /** 已经作答 */
                         boolean haveAnswer = mQueAndBool.contains(videoQuestionLiveEntity.id);
-                        SpeechAssAutoPager speechAssAutoPager =
-                                new SpeechAssAutoPager(activity, liveGetInfo.getId(), id, videoQuestionLiveEntity.nonce,
-                                        videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time, haveAnswer, QuestionBll.
-                                        this);
+                        BaseSpeechAssessmentPager speechAssAutoPager = baseSpeechCreat.create(activity, liveGetInfo.getId(), id, videoQuestionLiveEntity.nonce,
+                                videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time, haveAnswer, QuestionBll.
+                                        this, lp);
                         speechAssessmentPager = speechAssAutoPager;
                         speechAssessmentPager.setIse(mIse);
-                        int screenWidth = ScreenUtils.getScreenWidth();
-                        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
-                        lp.rightMargin = wradio;
+//                        if (speechAssAutoPager instanceof SpeechAssAutoPager) {
+//                            int screenWidth = ScreenUtils.getScreenWidth();
+//                            int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
+//                            lp.rightMargin = wradio;
+//                        }
                         speechAssessmentPager.initData();
 //                        rlQuestionContent.postDelayed(new Runnable() {
 //                            @Override
@@ -839,10 +840,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
                 wradio += (screenWidth - width) / 2;
                 if (speechAssessmentPager instanceof SpeechAssAutoPager) {
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) speechAssessmentPager.getRootView().getLayoutParams();
-                    if (wradio != params.rightMargin) {
-                        params.rightMargin = wradio;
-                        LayoutParamsUtil.setViewLayoutParams(speechAssessmentPager.getRootView(), params);
+                    if (baseSpeechCreat != null) {
+                        baseSpeechCreat.setViewLayoutParams(speechAssessmentPager, wradio);
                     }
                 }
                 if (baseVoiceAnswerCreat != null) {
@@ -1690,6 +1689,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
             }
         }, delayTime);
+    }
+
+    public void setBaseSpeechCreat(BaseSpeechCreat baseSpeechCreat) {
+        this.baseSpeechCreat = baseSpeechCreat;
     }
 
     /**
