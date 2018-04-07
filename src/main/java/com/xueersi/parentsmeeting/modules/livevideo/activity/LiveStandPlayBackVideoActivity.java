@@ -540,18 +540,18 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //                redPackageStandBll.onReadPackage(Integer.parseInt(mRedPacketId));
             }
         }
-//        lectureLivePlayBackBll.getExperienceMsgs(mVideoEntity.getLiveId(), "", 0L, new ExperienceLiveVideoActivity.GetExperienceLiveMsgs() {
-//
-//            @Override
-//            public void getLiveExperienceMsgs(ExPerienceLiveMessage liveMessageGroupEntity) {
-//                Loger.d(TAG, "getLiveExperienceMsgs");
-//            }
-//
-//            @Override
-//            public void onPmFailure() {
-//                Loger.d(TAG, "onPmFailure");
-//            }
-//        });
+        lectureLivePlayBackBll.getExperienceMsgs(mVideoEntity.getLiveId(), mVideoEntity.getClassId(), 0L, new ExperienceLiveVideoActivity.GetExperienceLiveMsgs() {
+
+            @Override
+            public void getLiveExperienceMsgs(ExPerienceLiveMessage liveMessageGroupEntity) {
+                Loger.d(TAG, "getLiveExperienceMsgs");
+            }
+
+            @Override
+            public void onPmFailure() {
+                Loger.d(TAG, "onPmFailure");
+            }
+        });
     }
 
     @Override
