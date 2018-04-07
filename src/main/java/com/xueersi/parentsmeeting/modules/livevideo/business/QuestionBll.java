@@ -582,7 +582,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         boolean haveAnswer = mQueAndBool.contains(videoQuestionLiveEntity.id);
                         BaseSpeechAssessmentPager speechAssAutoPager = baseSpeechCreat.create(activity, liveGetInfo.getId(), id, videoQuestionLiveEntity.nonce,
                                 videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time, haveAnswer, QuestionBll.
-                                        this, lp);
+                                        this, lp, liveGetInfo.getStuName(), liveGetInfo.getHeadImgPath());
                         speechAssessmentPager = speechAssAutoPager;
                         speechAssessmentPager.setIse(mIse);
 //                        if (speechAssAutoPager instanceof SpeechAssAutoPager) {

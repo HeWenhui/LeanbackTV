@@ -76,8 +76,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectLive
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSubjectivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
@@ -1062,9 +1062,12 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                             LayoutParams.MATCH_PARENT);
                     if ("1".equals(mQuestionEntity.getIsAllow42())) {
-                        speechQuestionPlaybackPager = new SpeechAssAutoPager(LiveStandPlayBackVideoActivity.this,
+                        MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
+                        speechQuestionPlaybackPager = new StandSpeechAssAutoPager(LiveStandPlayBackVideoActivity.this,
                                 mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(),
-                                "", mQuestionEntity.getSpeechContent(), mQuestionEntity.getEstimatedTime(), mQuestionEntity.getvEndTime() - mQuestionEntity.getvQuestionInsretTime(), LiveStandPlayBackVideoActivity.this);
+                                "", mQuestionEntity.getSpeechContent(), mQuestionEntity.getEstimatedTime(),
+                                mQuestionEntity.getvEndTime() - mQuestionEntity.getvQuestionInsretTime(),
+                                LiveStandPlayBackVideoActivity.this, mMyInfo.getNickName(), mMyInfo.getHeadImg());
 //                        int screenWidth = ScreenUtils.getScreenWidth();
 //                        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
 //                        lp.rightMargin = wradio;

@@ -5,12 +5,14 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -40,7 +42,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.StartProgress;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -75,8 +76,6 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     RelativeLayout rlSpeectevalEncourage;
     /** great文字 */
     TextView tvSpeectevalEncourage;
-    /** 结果页星星进度条和一些动画 */
-    StartProgress spStarResult;
     /** 提示和波浪线的外层 */
     RelativeLayout rlSpeectevalBg;
     RelativeLayout rl_livevideo_voiceans_content;
@@ -135,9 +134,12 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     boolean userBack = false;
     /** 已经作答 */
     boolean haveAnswer;
+    private String headUrl;
+    private Bitmap headBitmap;
+    private String userName;
 
     public StandSpeechAssAutoPager(Context context, String liveid, String testId,
-                                   String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction) {
+                                   String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, String userName, String headUrl) {
         super(context);
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
@@ -154,6 +156,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //        this.content = "C" + content.substring(1);
         this.content = content;
         this.time = time;
+        this.userName = userName;
+        this.headUrl = headUrl;
         entranceTime = System.currentTimeMillis();
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "receiveVoiceTest");
@@ -166,7 +170,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     public StandSpeechAssAutoPager(Context context, String liveid, String testId,
-                                   String nonce, String content, int time, int examSubmit, SpeechEvalAction speechEvalAction) {
+                                   String nonce, String content, int time, int examSubmit, SpeechEvalAction speechEvalAction, String userName, String headUrl) {
         super(context);
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
@@ -182,6 +186,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         this.content = content;
         this.time = time;
         this.examSubmit = examSubmit;
+        this.userName = userName;
+        this.headUrl = headUrl;
         entranceTime = System.currentTimeMillis();
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "receiveVoiceTest");
@@ -219,16 +225,10 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         tvSpeectevalEncourage = (TextView) view.findViewById(R.id.tv_livevideo_speecteval_encourage);
         rlSpeectevalBg = (RelativeLayout) view.findViewById(R.id.rl_livevideo_speecteval_bg);
         iv_livevideo_speecteval_wave = view.findViewById(R.id.iv_livevideo_speecteval_wave);
-        spStarResult = (StartProgress) view.findViewById(R.id.sp_live_star_result);
         rlSpeectevalError = (RelativeLayout) view.findViewById(R.id.rl_livevideo_speecteval_error);
         ivSpeectevalError = (ImageView) view.findViewById(R.id.iv_livevideo_speecteval_error);
         tvSpeectevalError = (TextView) view.findViewById(R.id.tv_livevideo_speecteval_error);
         tv_livevideo_speecteval_countdown = (TextView) view.findViewById(R.id.tv_livevideo_speecteval_countdown);
-        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.bg_live_star_result_bg);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) spStarResult.getLayoutParams();
-        lp.width = bitmap.getWidth();
-        lp.height = bitmap.getHeight();
-        spStarResult.setLayoutParams(lp);
 //        iv_livevideo_speecteval_wave.setBackgroundResource(R.drawable.bg_livevideo_speecteval_wave);
         view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
@@ -253,10 +253,6 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         animSpeechEncourage = AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_speech_encourage);
         animSpeechEncourage.setInterpolator(new OvershootInterpolator());
         content2 = content.replace("\n", " ");
-        String[] split = content.split(" ");
-        if (split.length == 1) {
-            spStarResult.setIsWord();
-        }
         Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(),
                 "fangzhengmiaowu.ttf");
         tvSpeectevalEncourage.setTypeface(fontFace);
@@ -265,6 +261,17 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         if (!dir.exists()) {
             dir.mkdirs();
         }
+        ImageLoader.with(mContext).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
+            @Override
+            public void onSuccess(Drawable drawable) {
+                headBitmap = ((BitmapDrawable) drawable).getBitmap();
+            }
+
+            @Override
+            public void onFail() {
+
+            }
+        });
         saveVideoFile = new File(dir, "ise" + System.currentTimeMillis() + ".mp3");
         rgiv_livevideo_stand_readygo.setAnimationListener(new FrameAnimation.AnimationListener() {
             @Override
@@ -314,6 +321,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     liveStandSpeechEvalAction.getSpeechEvalAnswerTeamStatus(id, new AbstractBusinessDataCallBack() {
                         @Override
                         public void onDataSucess(Object... objData) {
+                            if (rl_livevideo_voiceans_content.getVisibility() == View.GONE) {
+                                return;
+                            }
                             GoldTeamStatus entity = (GoldTeamStatus) objData[0];
                             ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
                             for (int i = 0; i < students.size(); i++) {
@@ -429,6 +439,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                         }
 
                         private void onFinish() {
+                            if (isSpeechSuccess) {
+                                return;
+                            }
                             mView.postDelayed(r, 3000);
                         }
                     });
@@ -540,7 +553,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             if (score == 1) {
                 errorSetVisible();
                 tvSpeectevalError.setText("要认真些，再来一次哦！");
-                spStarResult.postDelayed(new Runnable() {
+                mView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         errorSetGone();
@@ -551,7 +564,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             } else if (score < 60) {
                 errorSetVisible();
                 tvSpeectevalError.setText("你可以说的更好，再来一次哦！");
-                spStarResult.postDelayed(new Runnable() {
+                mView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         errorSetGone();
@@ -610,7 +623,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
-                        spStarResult.postDelayed(new Runnable() {
+                        mView.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), onSpeechEval);
@@ -632,39 +645,113 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         iv_livevideo_speecteval_wave.setVisibility(View.GONE);
     }
 
-    private void onSpeechEvalSuccess(ResultEntity resultEntity, int gold) {
-        isSpeechSuccess = true;
-        rlSpeectevalBg.setVisibility(View.GONE);
-        rlSpeectevalBg.removeAllViews();
-        final View v_live_star_result_out = mView.findViewById(R.id.v_live_star_result_out);
-        v_live_star_result_out.setVisibility(View.VISIBLE);
-        v_live_star_result_out.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ViewGroup group = (ViewGroup) spStarResult.getParent();
-                if (group != null) {
-                    group.removeView(spStarResult);
-                    if (isEnd) {
-                        speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, id);
-                    }
-                }
-                group = (ViewGroup) v_live_star_result_out.getParent();
-                if (group != null) {
-                    group.removeView(v_live_star_result_out);
+    private Bitmap updateHead(final FrameAnimation frameAnimation, ResultEntity resultEntity, final String file, boolean havename, int gold) {
+        InputStream inputStream = null;
+        try {
+            inputStream = mContext.getAssets().open(file);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            bitmap.setDensity(160);
+            Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            canvasBitmap.setDensity(160);
+            Canvas canvas = new Canvas(canvasBitmap);
+            canvas.drawBitmap(bitmap, 0, 0, null);
+            final Bitmap head = headBitmap;
+            if (head != null && !head.isRecycled()) {
+                float scaleWidth = 148f / head.getHeight();
+                Matrix matrix = new Matrix();
+                matrix.postScale(scaleWidth, scaleWidth);
+                Bitmap scalHeadBitmap = Bitmap.createBitmap(head, 0, 0, head.getWidth(), head.getHeight(), matrix, true);
+                scalHeadBitmap.setDensity(160);
+                float left = (bitmap.getWidth() - scalHeadBitmap.getWidth()) / 2;
+                float top;
+                left += 3f;
+                top = (bitmap.getHeight() - scalHeadBitmap.getHeight()) / 2 - 30;
+                canvas.drawBitmap(scalHeadBitmap, left, top - 2, null);
+                scalHeadBitmap.recycle();
+            } else {
+                Activity activity = (Activity) mContext;
+                if (!activity.isFinishing()) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ImageLoader.with(mContext).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
+                                @Override
+                                public void onSuccess(Drawable drawable) {
+                                    Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                                    StandSpeechAssAutoPager.this.headBitmap = headBitmap;
+                                    frameAnimation.removeBitmapCache(file);
+                                }
+
+                                @Override
+                                public void onFail() {
+
+                                }
+                            });
+                        }
+                    });
                 }
             }
-        });
+            bitmap.recycle();
+            //画名字和金币数量
+            if (havename) {
+                String strGold = "" + gold;
+                View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout.layout_live_stand_red_mine2, null);
+                TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_name);
+                tv_livevideo_redpackage_name.setText("" + userName);
+                TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
+                tv_livevideo_redpackage_num.setText(strGold);
+                tv_livevideo_redpackage_name.setTextSize(12.5f);
+                tv_livevideo_redpackage_num.setTextSize(12.5f);
+                tv_livevideo_redpackage_name.setTextColor(0xff97091D);
+                tv_livevideo_redpackage_num.setTextColor(0xff97091D);
+                layout_live_stand_red_mine1.measure(canvasBitmap.getWidth(), canvasBitmap.getHeight());
+                layout_live_stand_red_mine1.layout(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight());
+
+                canvas.save();
+                canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 350);
+                layout_live_stand_red_mine1.draw(canvas);
+                canvas.restore();
+            }
+            return canvasBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    private void onSpeechEvalSuccess(final ResultEntity resultEntity, final int gold) {
+        isSpeechSuccess = true;
+        rl_livevideo_voiceans_content.removeAllViews();
+        rl_livevideo_voiceans_content.setVisibility(View.GONE);
+        rlSpeectevalBg.setVisibility(View.GONE);
+        rlSpeectevalBg.removeAllViews();
         int score = resultEntity.getScore();
-        spStarResult.setVisibility(View.VISIBLE);
+        ImageView lottieAnimationView = new ImageView(mContext);
+        RelativeLayout group = (RelativeLayout) mView;
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+        group.addView(lottieAnimationView, lp);
+        final FrameAnimation frameAnimation = FrameAnimation.createFromAees(mContext, lottieAnimationView, "Images/speech/mine_score", 50, true);
+        frameAnimations.add(frameAnimation);
+        frameAnimation.setBitmapCreate(new FrameAnimation.BitmapCreate() {
+            @Override
+            public Bitmap onAnimationCreate(String file) {
+                return updateHead(frameAnimation, resultEntity, file, true, gold);
+            }
+        });
         if (haveAnswer) {
-            spStarResult.setAnswered();
+
         }
 //        spStarResult.setAnswered();
-        spStarResult.setSorce(score);
-        spStarResult.setStarCount(gold);
-        spStarResult.setFluent(resultEntity.getContScore());
-        spStarResult.setAccuracy(resultEntity.getPronScore());
-        spStarResult.setClickable(true);
+
         int progress;
         if (score < 40) {
             progress = 1;
@@ -677,20 +764,11 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         } else {
             progress = 5;
         }
-        spStarResult.setProgress(progress);
-        spStarResult.postDelayed(new Runnable() {
+        mView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                ViewGroup group = (ViewGroup) spStarResult.getParent();
-                if (group != null) {
-                    group.removeView(spStarResult);
-                    if (isEnd) {
-                        speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, id);
-                    }
-                }
-                group = (ViewGroup) v_live_star_result_out.getParent();
-                if (group != null) {
-                    group.removeView(v_live_star_result_out);
+                if (isEnd) {
+                    speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, id);
                 }
             }
         }, 3000);
@@ -721,7 +799,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //                            XESToastUtils.showToast(mContext, "声音有点小，大点声哦！");
             tvSpeectevalError.setText("声音有点小，再来一次哦！");
             if (!isEnd) {
-                spStarResult.postDelayed(new Runnable() {
+                mView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         errorSetGone();
@@ -740,7 +818,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     onLineError++;
                     if (onLineError == 1) {
                         if (!isEnd) {
-                            spStarResult.postDelayed(new Runnable() {
+                            mView.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     errorSetGone();
@@ -759,7 +837,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     onLineError++;
                     if (onLineError == 1) {
                         if (!isEnd) {
-                            spStarResult.postDelayed(new Runnable() {
+                            mView.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     errorSetGone();
@@ -777,7 +855,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //        vwvSpeectevalWave.setVisibility(View.INVISIBLE);
 //        vwvSpeectevalWave.stop();
         if (isEnd) {
-            spStarResult.postDelayed(new Runnable() {
+            mView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, id);
