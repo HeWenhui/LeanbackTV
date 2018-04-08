@@ -106,6 +106,7 @@ public class LiveRemarkBll {
     private ChooseListAlertDialog mDialog;
     private boolean isVideoReady;
     private boolean isClassReady;
+    private boolean isOnChat;
     private boolean isMarking;
 
     public LiveRemarkBll(Context context, PlayerService playerService){
@@ -153,6 +154,7 @@ public class LiveRemarkBll {
                             + "   pkt   " + frameInfo.pkt + "  cache:" + ((IjkMediaPlayer)mPlayerService.getPlayer()).getVideoCachedDuration());
                     //setBtEnable(true);
                     setVideoReady(true);
+                    mTimer.cancel();
                     mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(final View v) {
@@ -164,7 +166,7 @@ public class LiveRemarkBll {
                                 return;
                             }
                             if(mPlayerService.getPlayer()==null){
-                                XESToastUtils.showToast(mContext,"暂时无法标记");
+                                XESToastUtils.showToast(mContext,"标记失败");
                                 return;
                             }
                             isMarking=true;
@@ -205,11 +207,14 @@ public class LiveRemarkBll {
                             }, 100);
                         }
                     });
-                    mTimer.cancel();
+
                 }
 
             }
         };
+        if(mTimer!=null){
+            mTimer.cancel();
+        }
         mTimer = new Timer();
         mTimer.schedule(task, 1000, 1000);
         mCloudUploadBusiness = new XesCloudUploadBusiness(mContext);
@@ -227,12 +232,17 @@ public class LiveRemarkBll {
 
     public void setVideoReady(boolean videoReady) {
         isVideoReady = videoReady;
-        setBtEnable(isClassReady&&isVideoReady);
+        setBtEnable(isClassReady&&isVideoReady&&!isOnChat);
     }
 
     public void setClassReady(boolean classReady) {
         isClassReady = classReady;
-        setBtEnable(isClassReady&&isVideoReady);
+        setBtEnable(isClassReady&&isVideoReady&&!isOnChat);
+    }
+
+    public void setOnChat(boolean onChat) {
+        isOnChat = onChat;
+        setBtEnable(isClassReady&&isVideoReady&&!isOnChat);
     }
 
     public void setBottom(RelativeLayout bottom) {
