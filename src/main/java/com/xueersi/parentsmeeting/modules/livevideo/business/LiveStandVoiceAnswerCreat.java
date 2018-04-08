@@ -15,6 +15,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
+import com.xueersi.parentsmeeting.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
@@ -66,10 +67,21 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     @Override
     public boolean onAnswerReslut(final Context context, final AnswerRightResultVoice questionBll, BaseVideoQuestionEntity baseVideoQuestionEntity, final VideoResultEntity entity) {
         boolean isSuccess = false;
-        final VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
+        final String type;
+        if (baseVideoQuestionEntity instanceof VideoQuestionLiveEntity) {
+            final VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
+            type = videoQuestionLiveEntity.type;
+        } else {
+            VideoQuestionEntity questionEntity = (VideoQuestionEntity) baseVideoQuestionEntity;
+            if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == questionEntity.getvCategory()) {
+                type = questionEntity.getVoiceQuestiontype();
+            } else {
+                type = questionEntity.getvQuestionType();
+            }
+        }
         if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
             String path;
-            if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
+            if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
 //                questionBll.initSelectAnswerRightResultVoice(entity);
                 path = "live_stand_voice_my_right.json";
             } else {
@@ -80,7 +92,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                 @Override
                 public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
                     if (lottieComposition == null) {
-                        if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
+                        if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
                             questionBll.initSelectAnswerRightResultVoice(entity);
                         } else {
                             questionBll.initFillinAnswerRightResultVoice(entity);
@@ -99,7 +111,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             // 回答错误提示
         } else if (entity.getResultType() == QUE_RES_TYPE2) {
             String path;
-            if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
+            if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
 //                questionBll.initSelectAnswerWrongResultVoice(entity);
                 path = "live_stand_voice_my_wrong.json";
             } else {
@@ -110,7 +122,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                 @Override
                 public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
                     if (lottieComposition == null) {
-                        if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
+                        if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
                             questionBll.initSelectAnswerWrongResultVoice(entity);
                         } else {
                             questionBll.initFillAnswerWrongResultVoice(entity);

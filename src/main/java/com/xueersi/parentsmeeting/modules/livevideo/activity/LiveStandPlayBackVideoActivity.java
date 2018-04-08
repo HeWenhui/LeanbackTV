@@ -48,10 +48,12 @@ import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
+import com.xueersi.parentsmeeting.modules.livevideo.business.BaseVoiceAnswerCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertPagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandVoiceAnswerCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PutQuestion;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionResultView;
@@ -79,7 +81,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandPlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
@@ -123,7 +125,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 @SuppressLint("HandlerLeak")
 @SuppressWarnings("unchecked")
 public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements LivePlaybackMediaController.OnPointClick,
-        SpeechEvalAction, QuestionWebPager.StopWebQuestion, LiveAndBackDebug, ActivityChangeLand {
+        SpeechEvalAction, QuestionWebPager.StopWebQuestion, LiveAndBackDebug, ActivityChangeLand, BaseVoiceAnswerCreat.AnswerRightResultVoice {
 
     String TAG = "LivePlayBackVideoActivityLog";
 
@@ -176,7 +178,8 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
     private Exception questionEntityNullEx;
     /** 各种互动题的页面 */
     /** 语音答题的页面 */
-    private VoiceAnswerPager voiceAnswerPager;
+    private VoiceAnswerStandPager voiceAnswerPager;
+    LiveStandVoiceAnswerCreat liveStandVoiceAnswerCreat;
     /** 普通互动题，h5显示页面 */
     private QuestionWebPager questionWebPager;
     /** 课前测的页面 */
@@ -293,9 +296,9 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //        mMediaController.setSetSpeedVisable(true);
         setFileName(); // 设置视频显示名称
         showLongMediaController();
-        if (mIsShowQuestion || mIsShowRedpacket || mIsShowDialog) {
+        if (mIsShowQuestion || mIsShowDialog) {
             mMediaController.release();
-            Loger.d(TAG, "attachMediaController:release:mIsShowQuestion=" + mIsShowQuestion + "," + mIsShowRedpacket
+            Loger.d(TAG, "attachMediaController:release:mIsShowQuestion=" + mIsShowQuestion
                     + "," + mIsShowDialog);
         }
         List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
@@ -495,21 +498,21 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
             redPackageStandBll.setUserName(mMyInfo.getNickName());
             redPackageStandBll.setHeadUrl(mMyInfo.getHeadImg());
             redPackageStandBll.initView(rl_course_video_live_redpackage_content);
-
+            liveStandVoiceAnswerCreat = new LiveStandVoiceAnswerCreat(questionSwitch);
             if (AppConfig.DEBUG) {
 
-                mRedPacketId = "2";
-                final VideoQuestionEntity mQuestionEntity = new VideoQuestionEntity();
-                showRedPacket(mQuestionEntity);
-
-                rl_course_video_live_redpackage_content.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mRedPacketId = "3";
-                        VideoQuestionEntity mQuestionEntity = new VideoQuestionEntity();
-                        showRedPacket(mQuestionEntity);
-                    }
-                }, 7000);
+//                mRedPacketId = "2";
+//                final VideoQuestionEntity mQuestionEntity = new VideoQuestionEntity();
+//                showRedPacket(mQuestionEntity);
+//
+//                rl_course_video_live_redpackage_content.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mRedPacketId = "3";
+//                        VideoQuestionEntity mQuestionEntity = new VideoQuestionEntity();
+//                        showRedPacket(mQuestionEntity);
+//                    }
+//                }, 7000);
 //                mRedPacketId = "1";
 //                redPackageStandBll.setReceiveGold(new RedPackageStandBll.ReceiveGold() {
 //                    @Override
@@ -1248,7 +1251,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //        }
         rlQuestionContent.removeAllViews();
         rlQuestionContent.setVisibility(View.VISIBLE);
-        voiceAnswerPager = new VoiceAnswerPager(this, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.getVoiceQuestiontype(), questionSwitch, this);
+        voiceAnswerPager = new VoiceAnswerStandPager(this, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.getVoiceQuestiontype(), questionSwitch, this);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT);
         rlQuestionContent.addView(voiceAnswerPager.getRootView(), params);
@@ -2153,24 +2156,28 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         initQuestionAnswerReslut(popupWindow_view);
     }
 
-    private void initSelectAnswerRightResultVoice(VideoResultEntity entity) {
+    @Override
+    public void initSelectAnswerRightResultVoice(VideoResultEntity entity) {
         final View popupWindow_view = QuestionResultView.initSelectAnswerRightResultVoice(this, entity);
         initQuestionAnswerReslut(popupWindow_view);
     }
 
-    private void initFillinAnswerRightResultVoice(VideoResultEntity entity) {
+    @Override
+    public void initFillinAnswerRightResultVoice(VideoResultEntity entity) {
         View popupWindow_view = QuestionResultView.initFillinAnswerRightResultVoice(this, entity);
         initQuestionAnswerReslut(popupWindow_view);
     }
 
     /** 语音答题回答错误 */
-    private void initSelectAnswerWrongResultVoice(VideoResultEntity entity) {
+    @Override
+    public void initSelectAnswerWrongResultVoice(VideoResultEntity entity) {
         View popupWindow_view = QuestionResultView.initSelectAnswerWrongResultVoice(this, entity);
         initQuestionAnswerReslut(popupWindow_view);
     }
 
     /** 语音答题回答错误 */
-    private void initFillAnswerWrongResultVoice(VideoResultEntity entity) {
+    @Override
+    public void initFillAnswerWrongResultVoice(VideoResultEntity entity) {
         View popupWindow_view = QuestionResultView.initFillAnswerWrongResultVoice(this, entity);
         initQuestionAnswerReslut(popupWindow_view);
     }
@@ -2186,7 +2193,8 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
     /**
      * 创建互动题作答，抢红包结果提示PopupWindow
      */
-    protected void initQuestionAnswerReslut(View popupWindow_view) {
+    @Override
+    public void initQuestionAnswerReslut(View popupWindow_view) {
         if (rlQuestionContent == null) {
             return;
         }
@@ -2410,11 +2418,12 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                     type = questionEntity.getvQuestionType();
                     sourcetype = "h5test";
                 }
-                if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
-                    initSelectAnswerRightResultVoice(entity);
-                } else {
-                    initFillinAnswerRightResultVoice(entity);
-                }
+                liveStandVoiceAnswerCreat.onAnswerReslut(this, this, questionEntity, entity);
+//                if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
+//                    initSelectAnswerRightResultVoice(entity);
+//                } else {
+//                    initFillinAnswerRightResultVoice(entity);
+//                }
                 StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
                 logHashMap.put("testid", "" + questionEntity.getvQuestionID());
                 logHashMap.put("sourcetype", sourcetype).addNonce(questionEntity.nonce);
@@ -2432,11 +2441,12 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                 } else {
                     type = questionEntity.getvQuestionType();
                 }
-                if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
-                    initSelectAnswerWrongResultVoice(entity);
-                } else {
-                    initFillAnswerWrongResultVoice(entity);
-                }
+                liveStandVoiceAnswerCreat.onAnswerReslut(this, this, questionEntity, entity);
+//                if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
+//                    initSelectAnswerWrongResultVoice(entity);
+//                } else {
+//                    initFillAnswerWrongResultVoice(entity);
+//                }
             } else {
                 initAnswerWrongResult();
             }
