@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.xesalib.utils.listener.OnAlphaTouchListener;
+import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
 
 /**
@@ -147,18 +148,18 @@ public class RolePlayerSelfItem extends RolePlayerItem {
     }
 
     @Override
-    public void updateViews(RolePlayerEntity.RolePlayerMessage entity, int position, Object objTag) {
+    public void updateViews(final RolePlayerEntity.RolePlayerMessage entity, int position, Object objTag) {
         super.updateViews(entity, position, objTag);
         updateUserHeadImage(civUserHead, UserBll.getInstance().getMyUserInfoEntity()
                 .getHeadImg());
         tvMessageContent.setText(entity.getReadMsg());
-        tvUserNickName.setText(entity.getRolePlayer().getNickName() + "(" + entity.getRolePlayer().getRoleName() + ")");
+        tvUserNickName.setText(entity.getRolePlayer().getNickName());
 
 
         switch (entity.getMsgStatus()) {
             case RolePlayerEntity.RolePlayerMessageStatus.WAIT_NORMAL:
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.bg_chat_voice_to_playing_img);
-                tvCountTime.setVisibility(View.GONE);
+                tvCountTime.setVisibility(View.INVISIBLE);
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY:
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_homework_voice_right_anim);
@@ -167,36 +168,31 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 if (selfVoiceAnimationDrawable != null && !selfVoiceAnimationDrawable.isRunning()) {
                     selfVoiceAnimationDrawable.start();
                 }
-                tvCountTime.setVisibility(View.VISIBLE);
-                tvCountTime.setText(entity.getMaxReadTime()+"");
-                civUserHead.setBorderWidth(7);
-                if(entity.getMaxReadTime()<=3){
-                    civUserHead.setFinishBorderColor(Color.GRAY);
-                    civUserHead.setUnFinishBorderColor(Color.RED);
-                    tvCountTime.setTextColor(Color.RED);
-                }else {
-                    civUserHead.setFinishBorderColor(Color.GRAY);
-                    civUserHead.setUnFinishBorderColor(Color.BLUE);
-                    tvCountTime.setTextColor(Color.BLUE);
+                tvCountTime.setText(entity.getMaxReadTime() + "");
+                civUserHead.setFinishBorderColor(Color.parseColor("#C8E7D4"));
+                civUserHead.setUnFinishBorderColor(Color.parseColor("#36BC9B"));
+                if (entity.getMaxReadTime() <= 3) {
+                    tvCountTime.setVisibility(View.VISIBLE);
                 }
-                civUserHead.startCountDown(entity.getMaxReadTime() * 1000, new CountDownHeadImageView.countDownTimeImpl() {
+                civUserHead.startCountDown(entity.getMaxReadTime() * 1000, entity.getEndReadTime() * 1000, new CountDownHeadImageView.countDownTimeImpl() {
                     @Override
                     public void countTime(long time) {
-                        tvCountTime.setText(time+"");
-                        if(time<=3){
-                            tvCountTime.setTextColor(Color.RED);
-                            civUserHead.setUnFinishBorderColor(Color.RED);
+                        tvCountTime.setText(time + "");
+                        if (time <= 3) {
+                            tvCountTime.setVisibility(View.VISIBLE);
                         }
+                        entity.setEndReadTime((int) time);
+
                     }
                 });
-
 
 
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY:
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.bg_chat_voice_to_playing_img);
-                civUserHead.setBorderWidth(0);
-                tvCountTime.setVisibility(View.GONE);
+                civUserHead.invalidate();
+                tvCountTime.setText("");
+                tvCountTime.setVisibility(View.INVISIBLE);
                 break;
             default:
                 break;

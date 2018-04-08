@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.activity.item;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.TextUtils;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -8,6 +9,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
 import com.xueersi.xesalib.utils.app.ContextManager;
+import com.xueersi.xesalib.utils.uikit.SizeUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 
 
@@ -45,6 +47,7 @@ public abstract class RolePlayerItem implements AdapterItemInterface<RolePlayerE
 
     /**
      * 更新头像信息
+     *
      * @param civHeadImage
      * @param imgURL
      */
@@ -55,6 +58,8 @@ public abstract class RolePlayerItem implements AdapterItemInterface<RolePlayerE
             return;
         }
 
+        civHeadImage.setBorderWidth(SizeUtils.Dp2Px(mContext, 3));
+        civHeadImage.setBorderColor(Color.WHITE);
         ImageLoader.with(ContextManager.getApplication()).load(imgURL).error(R.drawable.ic_default_head_square).placeHolder(R.drawable
                 .ic_default_head_square)
                 .into(civHeadImage);

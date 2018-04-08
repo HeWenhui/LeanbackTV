@@ -489,4 +489,12 @@
     <item name="tv_live_roleplayer_message_voice_content" type="id" />
     <item name="rl_live_roleplayer_message_voice_main" type="id" />
     <item name="tv_live_roleplayer_message_counttime" type="id" />
+    <item name="lav_live_roleplayer_match" type="id" />
+    <item name="rl_live_roleplayer_match_lottie" type="id" />
+    <item name="civ_live_roleplayer_match_head" type="id" />
+    <item name="rl_live_roleplayer_rolelist" type="id" />
+    <item name="iv_live_roleplayer_title" type="id" />
+    <item name="rl_live_roleplayer_speech_volumewave_main" type="id" />
+    <item name="vwv_livevideo_roleplayer_speech_volumewave" type="id" />
+    <item name="ll_roleplayer_message_self_head_main" type="id" />
 </resources>

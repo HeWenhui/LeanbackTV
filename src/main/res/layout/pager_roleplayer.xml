@@ -1,147 +1,201 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@drawable/livevideo_roleplay_bg">
 
     <!--RolePlayer主布局-->
-    <LinearLayout
+    <RelativeLayout
+        android:id="@id/rl_live_roleplayer_read_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <!--头部提示及计时区-->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="80dp">
+        <ImageView
+            android:id="@id/iv_live_roleplayer_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="28dp"
+            android:src="@drawable/livevideo_roleplay_title" />
 
-            <!--倒计时布局-->
-            <LinearLayout
-                android:id="@id/ll_live_roleplayer_countdown_main"
-                android:layout_width="200dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_about_xueersi_logo" />
+        <!--倒计时布局-->
+        <LinearLayout
+            android:id="@id/ll_live_roleplayer_countdown_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="24dp"
+            android:background="@drawable/livevideo_roleplay_time_bg"
+            android:orientation="horizontal">
 
-                <!--倒计时时间更新区-->
-                <TextView
-                    android:id="@id/tv_live_roleplayer_countdown"
-                    style="@style/text_font16_999999_style"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="15dp"
-                    android:text="时间：3分0秒" />
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="9dp"
+                android:src="@drawable/livevideo_roleplay_time_ic" />
 
-            </LinearLayout>
-
-            <!--头部提示文字区 -->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_toLeftOf="@id/ll_live_roleplayer_countdown_main">
-
-                <TextView
-                    android:id="@id/tv_live_roleplayer_countdown_tip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true" />
-
-            </RelativeLayout>
-
+            <!--倒计时时间更新区-->
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:id="@id/tv_live_roleplayer_countdown"
+                style="@style/text_font16_999999_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:text="时间：3分0秒"
+                android:textColor="@color/white"
+                android:textSize="11sp" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/grey" />
-        </RelativeLayout>
+        </LinearLayout>
 
-        <!--准备角色页及朗读页区-->
-        <RelativeLayout
+
+        <TextView
+            android:id="@id/tv_live_roleplayer_countdown_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_live_roleplayer_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="47dp"
+            android:hint="ready go"
+            android:textColor="#FF9600"
+            android:textSize="18sp" />
+
+
+        <!--多人朗读区-->
+        <!--对话区-->
+        <ListView
+            android:id="@id/lv_live_roleplayer_read_list"
+            style="@style/listview_common_style"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <!--角色列表区-->
-            <RelativeLayout
-                android:id="@id/rl_live_roleplayer_rolelist_main"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingLeft="100dp"
-                android:paddingRight="100dp"
-                android:paddingTop="10dp">
-
-                <!--角色分配列表-->
-                <com.xueersi.xesalib.view.gridview.AutohGridview
-                    android:id="@id/gv_live_roleplayer_headshow"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="5dp"
-                    android:background="@color/white"
-                    android:horizontalSpacing="10dp"
-                    android:listSelector="#00000000"
-                    android:numColumns="3"
-                    android:verticalSpacing="10dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/gv_live_roleplayer_headshow"
-                    android:layout_centerHorizontal="true"
-                    android:text="注意~ 大家的对话会被录音，请认真朗读" />
-
-            </RelativeLayout>
-
-            <!--多人朗读区-->
-            <RelativeLayout
-                android:id="@id/rl_live_roleplayer_read_main"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone">
-
-                <!--对话区-->
-                <ListView
-                    android:id="@id/lv_live_roleplayer_read_list"
-                    style="@style/listview_common_style"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:background="#f1f1f1"
-                    android:divider="@null"
-                    android:dividerHeight="0dp"
-                    android:footerDividersEnabled="true"
-                    android:headerDividersEnabled="true"
-                    android:transcriptMode="normal" />
+            android:layout_height="wrap_content"
+            android:layout_above="@id/rl_live_roleplayer_speech_volumewave_main"
+            android:layout_below="@id/iv_live_roleplayer_title"
+            android:layout_marginBottom="23dp"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:footerDividersEnabled="true"
+            android:headerDividersEnabled="true"
+            android:transcriptMode="normal" />
 
 
-            </RelativeLayout>
+        <!--测评音量条区-->
+        <RelativeLayout
+            android:id="@id/rl_live_roleplayer_speech_volumewave_main"
+            android:layout_width="324dp"
+            android:layout_height="53dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/shape_livevideo_roleplayer_speech_volumewave_bg"
+            android:visibility="invisible">
+
+            <com.xueersi.parentsmeeting.widget.VolumeWaveView
+                android:id="@id/vwv_livevideo_roleplayer_speech_volumewave"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true" />
 
         </RelativeLayout>
 
-    </LinearLayout>
+
+    </RelativeLayout>
 
     <!--匹配等待页-->
     <RelativeLayout
         android:id="@id/rl_live_roleplayer_matchpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="#b2000000"
         android:visibility="gone">
-
-        <TextView
-            style="@style/text_font12_666666_style"
+        <!--匹配动画3秒-->
+        <LinearLayout
+            android:id="@id/rl_live_roleplayer_match_lottie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="匹配中......" />
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@id/lav_live_roleplayer_match"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="live_stand_roleplayer_match.json"
+                    app:lottie_imageAssetsFolder="Images/roleplayer_match"
+                    app:lottie_loop="true"
+                    app:lottie_repeatMode="restart" />
+
+                <com.xueersi.xesalib.view.image.CircleImageView
+                    android:id="@id/civ_live_roleplayer_match_head"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_default_head_square" />
+            </RelativeLayout>
+
+
+            <TextView
+                style="@style/text_font16_ffffff_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rl_live_roleplayer_match_lottie"
+                android:layout_gravity="center_horizontal"
+                android:text="正在匹配中" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="13dp"
+                android:background="@drawable/shape_livevideo_roleplayer_match_tip_bg"
+                android:paddingBottom="8dp"
+                android:paddingLeft="18dp"
+                android:paddingRight="18dp"
+                android:paddingTop="8dp"
+                android:text="大家的对话会被录音，请认真朗读哦~"
+                android:textColor="#36BC9B"
+                android:textSize="11sp" />
+
+        </LinearLayout>
+
+        <!--准备角色页-->
+        <RelativeLayout
+            android:id="@id/rl_live_roleplayer_rolelist"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="30dp"
+            android:paddingLeft="130dp"
+            android:paddingRight="130dp"
+            android:paddingTop="30dp"
+            android:visibility="gone">
+
+
+            <!--角色分配列表-->
+            <com.xueersi.xesalib.view.gridview.AutohGridview
+                android:id="@id/gv_live_roleplayer_headshow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:horizontalSpacing="42dp"
+                android:listSelector="#00000000"
+                android:numColumns="3"
+                android:verticalSpacing="50dp" />
+
+
+        </RelativeLayout>
+
 
     </RelativeLayout>
 

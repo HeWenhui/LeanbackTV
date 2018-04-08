@@ -92,6 +92,8 @@ public class RolePlayerEntity {
         private String readMsg;
         /** 用来朗读倒计时的最长时长 */
         private int maxReadTime;
+        /** 剩下的秒数 */
+        private int endReadTime;
         /** 是否已赞 */
         private boolean isFavour;
         /** 测评分数 */
@@ -105,6 +107,7 @@ public class RolePlayerEntity {
             this.rolePlayer = head;
             this.readMsg = msg;
             this.maxReadTime = maxTime;
+            this.endReadTime=maxTime;
             this.msgStatus = RolePlayerMessageStatus.WAIT_NORMAL;
         }
 
@@ -131,6 +134,7 @@ public class RolePlayerEntity {
 
         public void setMaxReadTime(int maxReadTime) {
             this.maxReadTime = maxReadTime;
+            this.endReadTime = maxReadTime;
         }
 
         public boolean isFavour() {
@@ -164,6 +168,14 @@ public class RolePlayerEntity {
         public void setWebVoiceUrl(String webVoiceUrl) {
             this.webVoiceUrl = webVoiceUrl;
         }
+
+        public int getEndReadTime() {
+            return endReadTime;
+        }
+
+        public void setEndReadTime(int endReadTime) {
+            this.endReadTime = endReadTime;
+        }
     }
 
     /**
@@ -172,7 +184,7 @@ public class RolePlayerEntity {
     public static class RolePlayerMessageStatus {
 
         /** 等待朗读中 */
-        public static final  int WAIT_NORMAL = 1;
+        public static final int WAIT_NORMAL = 1;
         /** 进入角色朗读状态 */
         public static final int BEGIN_ROLEPLAY = 2;
         /** 朗读完成 */

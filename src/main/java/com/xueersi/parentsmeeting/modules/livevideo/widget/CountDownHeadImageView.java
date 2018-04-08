@@ -34,6 +34,8 @@ public class CountDownHeadImageView extends CircleImageView {
     protected int mUnFinishBorderColor = Color.BLACK;
     /** 未完成的边框画笔 */
     protected final Paint mUnFinishBorderPaint = new Paint();
+    /** 倒计时上的小圆 */
+    protected final Paint mUnFinishCirclePaint = new Paint();
 
     protected int mCountDownBorder = DEFAULT_BORDER_COLOR;
 
@@ -68,18 +70,23 @@ public class CountDownHeadImageView extends CircleImageView {
      *
      * @param countDownTime 毫秒
      */
-    public void startCountDown(int countDownTime, final countDownTimeImpl downtimeImpl) {
-        beginCountDownTime = System.currentTimeMillis();
+    public void startCountDown(int countDownTime, int endDownTime, final countDownTimeImpl downtimeImpl) {
+        beginCountDownTime = System.currentTimeMillis() - (countDownTime - endDownTime);
         this.allCountDownTime = countDownTime;
-        this.countDownTime = countDownTime;
+        this.countDownTime = endDownTime;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
 
+                if (CountDownHeadImageView.this.countDownTime <= 0) {
+                    return;
+                }
+
                 CountDownHeadImageView.this.countDownTime = ((beginCountDownTime + (allCountDownTime) - System.currentTimeMillis()));
                 invalidate();
+
                 if (downtimeImpl != null) {
-                    downtimeImpl.countTime((long)Math.ceil((double) CountDownHeadImageView.this.countDownTime / (double)1000));
+                    downtimeImpl.countTime((long) Math.ceil((double) CountDownHeadImageView.this.countDownTime / (double) 1000));
                 }
                 if (CountDownHeadImageView.this.countDownTime > 0) {
                     postDelayed(this, 50);
@@ -120,6 +127,11 @@ public class CountDownHeadImageView extends CircleImageView {
         mUnFinishBorderPaint.setStyle(Paint.Style.STROKE);
         mUnFinishBorderPaint.setAntiAlias(true);
         mUnFinishBorderPaint.setStrokeWidth(mBorderWidth);
+
+        mUnFinishCirclePaint.setColor(mUnFinishBorderColor);
+        mUnFinishCirclePaint.setStyle(Paint.Style.FILL);
+        mUnFinishCirclePaint.setStrokeWidth(1);
+
         invalidate();
     }
 
@@ -140,6 +152,14 @@ public class CountDownHeadImageView extends CircleImageView {
             canvas.drawArc(unfinishedOuterRect, -90, unFinishRange, false, mUnFinishBorderPaint);
             canvas.drawArc(finishedOuterRect, unFinishRange - 90, 360 - unFinishRange, false, mFinishBorderPaint);
 
+
+            double arg = unFinishRange * Math.PI / 180;
+            int x = (int) (Math.cos(arg) * (getWidth() ) / 2 + getWidth() / 2);
+            int y = (int) (Math.sin(arg) * (getHeight()) / 2 + getHeight() / 2);
+            canvas.drawCircle(x, y, 0, mUnFinishCirclePaint);
+
+        } else if (mBitmapWidth > 0) {
+            canvas.drawCircle(getWidth() / 2, getHeight() / 2, mBorderRadius, mBorderPaint);
         }
     }
 }

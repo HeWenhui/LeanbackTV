@@ -13,7 +13,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageVie
 import com.xueersi.xesalib.utils.listener.OnAlphaTouchListener;
 
 
-
 /**
  * 语音类接收的消息
  *
@@ -156,7 +155,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
         // 播放语音
         ivVoiceAnimtor.setBackgroundResource(R.drawable.bg_chat_voice_from_playing_img_blue);
         tvMessageContent.setText(entity.getReadMsg());
-        tvUserNickName.setText(entity.getRolePlayer().getNickName() + "(" + entity.getRolePlayer().getRoleName() + ")");
+        tvUserNickName.setText(entity.getRolePlayer().getNickName());
 
         switch (entity.getMsgStatus()) {
             case RolePlayerEntity.RolePlayerMessageStatus.WAIT_NORMAL:
