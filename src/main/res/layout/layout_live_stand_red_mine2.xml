@@ -14,6 +14,7 @@
         android:id="@id/iv_livevideo_redpackage_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@drawable/bg_live_stand_red_gold_sma"
         android:layout_below="@id/tv_livevideo_redpackage_name" />
 
     <TextView

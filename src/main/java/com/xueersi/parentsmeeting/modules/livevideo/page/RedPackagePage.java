@@ -507,6 +507,7 @@ public class RedPackagePage extends BasePager {
             ImageView imageView = new ImageView(mContext);
             boolean center = student.isMe();
 //            boolean center = rl_livevideo_redpackage_teams.getChildCount() == 0;
+//            student.setMe(center);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 //            if (student.isMe()) {
 //                lp.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -939,6 +940,8 @@ public class RedPackagePage extends BasePager {
                 if (havename) {
                     String gold = "+" + entity.getGold();
                     View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout.layout_live_stand_red_mine2, null);
+                    ImageView iv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.iv_livevideo_redpackage_num);
+                    iv_livevideo_redpackage_num.setImageResource(R.drawable.bg_live_stand_red_gold_big);
                     TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_name);
                     tv_livevideo_redpackage_name.setText("" + entity.getNickname());
                     TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);

@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -148,17 +149,34 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                             redPackagePage.onGetTeamPackage(goldTeamStatus);
                             //直播获得小组数据，回放隔几秒就消失
                             if (isLive) {
-                                AtomicInteger getCount = new AtomicInteger();
-                                getReceiveGoldTeamStatus(operateId, getCount);
+                                final AtomicBoolean stop = new AtomicBoolean(false);
+                                getReceiveGoldTeamStatus(operateId, stop);
                                 rlRedpacketContent.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
+                                        stop.set(true);
+                                        final AtomicInteger tryTime = new AtomicInteger();
                                         receiveGold.getReceiveGoldTeamRank(operateId, new AbstractBusinessDataCallBack() {
                                             @Override
                                             public void onDataSucess(Object... objData) {
                                                 GoldTeamStatus entity = (GoldTeamStatus) objData[0];
                                                 RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
                                                 redPackagePage.onGetTeamRank(entity);
+                                            }
+
+                                            @Override
+                                            public void onDataFail(int errStatus, String failMsg) {
+                                                super.onDataFail(errStatus, failMsg);
+                                                if (errStatus == 0) {
+                                                    if (tryTime.get() == 0) {
+                                                        receiveGold.getReceiveGoldTeamRank(operateId, this);
+                                                        tryTime.getAndIncrement();
+                                                    } else {
+                                                        onPackageClose(operateId);
+                                                    }
+                                                } else if (errStatus == 1) {
+                                                    onPackageClose(operateId);
+                                                }
                                             }
                                         });
                                     }
@@ -192,17 +210,34 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                                 redPackagePage.onGetTeamPackage(goldTeamStatus);
                                 //直播获得小组数据，回放隔几秒就消失
                                 if (isLive) {
-                                    AtomicInteger getCount = new AtomicInteger();
-                                    getReceiveGoldTeamStatus(operateId, getCount);
+                                    final AtomicBoolean stop = new AtomicBoolean(false);
+                                    getReceiveGoldTeamStatus(operateId, stop);
                                     rlRedpacketContent.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
+                                            stop.set(true);
+                                            final AtomicInteger tryTime = new AtomicInteger();
                                             receiveGold.getReceiveGoldTeamRank(operateId, new AbstractBusinessDataCallBack() {
                                                 @Override
                                                 public void onDataSucess(Object... objData) {
                                                     GoldTeamStatus entity = (GoldTeamStatus) objData[0];
                                                     RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
                                                     redPackagePage.onGetTeamRank(entity);
+                                                }
+
+                                                @Override
+                                                public void onDataFail(int errStatus, String failMsg) {
+                                                    super.onDataFail(errStatus, failMsg);
+                                                    if (errStatus == 0) {
+                                                        if (tryTime.get() == 0) {
+                                                            receiveGold.getReceiveGoldTeamRank(operateId, this);
+                                                            tryTime.getAndIncrement();
+                                                        } else {
+                                                            onPackageClose(operateId);
+                                                        }
+                                                    } else if (errStatus == 1) {
+                                                        onPackageClose(operateId);
+                                                    }
                                                 }
                                             });
                                         }
@@ -246,7 +281,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
      * @param operateId
      * @param getCount
      */
-    private void getReceiveGoldTeamStatus(final int operateId, final AtomicInteger getCount) {
+    private void getReceiveGoldTeamStatus(final int operateId, final AtomicBoolean getCount) {
         receiveGold.getReceiveGoldTeamStatus(operateId, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
@@ -265,8 +300,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
             }
 
             void onFinish() {
-                getCount.getAndIncrement();
-                if (getCount.get() > 9) {
+                if (getCount.get()) {
                     return;
                 }
                 RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
