@@ -42,6 +42,7 @@ import com.xueersi.xesalib.adapter.AdapterItemInterface;
 import com.xueersi.xesalib.adapter.CommonAdapter;
 import com.xueersi.xesalib.utils.app.ContextManager;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
+import com.xueersi.xesalib.utils.listener.OnUnDoubleClickListener;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ImageUtils;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
@@ -105,6 +106,7 @@ public class LiveRemarkBll {
     private ChooseListAlertDialog mDialog;
     private boolean isVideoReady;
     private boolean isClassReady;
+    private boolean isMarking;
 
     public LiveRemarkBll(Context context, PlayerService playerService){
         mContext=context;
@@ -154,6 +156,9 @@ public class LiveRemarkBll {
                     mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(final View v) {
+                            if(isMarking){
+                                return;
+                            }
                             final LiveTextureView liveTextureView = (LiveTextureView) ((Activity) mContext).findViewById(R.id.ltv_course_video_video_texture);
                             if (liveTextureView == null) {
                                 return;
@@ -162,6 +167,7 @@ public class LiveRemarkBll {
                                 XESToastUtils.showToast(mContext,"暂时无法标记");
                                 return;
                             }
+                            isMarking=true;
                             final LiveVideoView liveVideoView = (LiveVideoView) ((Activity) mContext).findViewById(R.id.vv_course_video_video);
 //                liveVideoView.setVisibility(View.INVISIBLE);
                             ((IjkMediaPlayer)mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
@@ -178,10 +184,11 @@ public class LiveRemarkBll {
                                                 public void run() {
                                                     Bitmap bitmap = liveTextureView.getBitmap();
                                                     if (bitmap == null) {
-                                                        XESToastUtils.showToast(mContext, "标记获取图片失败");
+                                                        markFail();
                                                         return;
                                                     }
                                                     bitmap=Bitmap.createBitmap(bitmap,0,0,(int)videoWidth,displayHeight);
+                                                    bitmap=Bitmap.createScaledBitmap(bitmap,320,240,true);
                                                     File saveDir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/save");
                                                     if (!saveDir.exists()) {
                                                         saveDir.mkdirs();
@@ -206,6 +213,10 @@ public class LiveRemarkBll {
         mTimer = new Timer();
         mTimer.schedule(task, 1000, 1000);
         mCloudUploadBusiness = new XesCloudUploadBusiness(mContext);
+    }
+    public void markFail(){
+        XESToastUtils.showToast(mContext,"标记失败");
+        isMarking=false;
     }
 
     public void hideBtMark() {
@@ -298,19 +309,20 @@ public class LiveRemarkBll {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                             XESToastUtils.showToast(mContext, "标记成功");
+                            isMarking=false;
                             startCountDown();
                         }
 
                         @Override
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
-                            XESToastUtils.showToast(mContext, "标记失败");
+                            markFail();
                         }
 
                         @Override
                         public void onPmError(ResponseEntity responseEntity) {
                             super.onPmError(responseEntity);
-                            XESToastUtils.showToast(mContext, "标记失败");
+                            markFail();
                         }
                     });
                 }
@@ -321,7 +333,7 @@ public class LiveRemarkBll {
                 }
             });
         } else {
-            XESToastUtils.showToast(mContext, "标记失败");
+            markFail();
         }
 
     }
@@ -338,10 +350,10 @@ public class LiveRemarkBll {
             public void onFinish() {
                 mLiveMediaControllerBottom.getBtMark().setBackgroundResource(R.drawable.bg_bt_live_mark);
                 mLiveMediaControllerBottom.getBtMark().setText("");
-                mLiveMediaControllerBottom.getBtMark().setEnabled(true);
+                setVideoReady(true);
             }
         };
-        mLiveMediaControllerBottom.getBtMark().setEnabled(false);
+        setVideoReady(false);
         timer.start();
     }
 
