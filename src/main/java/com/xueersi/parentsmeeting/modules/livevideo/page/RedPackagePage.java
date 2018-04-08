@@ -55,6 +55,22 @@ public class RedPackagePage extends BasePager {
     /** 获取金币，点击的位置，1.在中间，2.在右边 */
     private int clickPackage = 1;
     private boolean isLive;
+    String file1 = "Images/redpackage/1_enter";
+    String file2 = "Images/redpackage/2_loop";
+    String file3 = "Images/redpackage/3_fly_up";
+    String file4 = "Images/redpackage/4_ship_loop";
+    String file5 = "Images/redpackage/5_shapeshift";
+    String file6 = "Images/redpackage/6_narrow";
+    String file7 = "Images/redpackage/7_right_loop";
+    String file8 = "Images/redpackage/8_transition";
+    String file9 = "Images/redpackage/9_teams_bg";
+    String file10 = "Images/redpackage/10_team_mine";
+    String file11 = "Images/redpackage/11_team_mine_loop";
+    String file12 = "Images/redpackage/12_team_other";
+    String file13 = "Images/redpackage/13_team_other_loop";
+    String file14 = "Images/redpackage/14_transition";
+    String file15 = "Images/redpackage/15_rank_enter";
+    String file16 = "Images/redpackage/16_rank_looper";
 
     public RedPackagePage(Context context, int operateId, RedPackagePageAction redPackageAction, String userName, String headUrl, boolean isLive) {
         super(context);
@@ -128,7 +144,7 @@ public class RedPackagePage extends BasePager {
      * 收到金币命令的开场动画
      */
     public void initEnter() {
-        final FrameAnimation btframeAnimation1 = createFromAees("Images/redpackage/1_kaichang", false);
+        final FrameAnimation btframeAnimation1 = createFromAees(file1, false);
         frameAnimations.add(btframeAnimation1);
         btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
             @Override
@@ -139,7 +155,7 @@ public class RedPackagePage extends BasePager {
             @Override
             public void onAnimationEnd() {
                 FrameAnimation btframeAnimation2 = null;
-                btframeAnimation2 = createFromAees("Images/redpackage/2_xunhuan", true);
+                btframeAnimation2 = createFromAees(file2, true);
                 frameAnimations.add(btframeAnimation1);
 //                        btMesOpenAnimation.setAnimationListener(null);
                 iv_livevideo_redpackage_bg.postDelayed(new Runnable() {
@@ -161,7 +177,7 @@ public class RedPackagePage extends BasePager {
                         if (finalBtframeAnimation != null) {
                             finalBtframeAnimation.pauseAnimation();
                         }
-                        final FrameAnimation btframeAnimation1 = createFromAees("Images/redpackage/6_suoxiao", false);
+                        final FrameAnimation btframeAnimation1 = createFromAees(file6, false);
                         frameAnimations.add(btframeAnimation1);
                         btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
                             FrameAnimation btframeAnimation1;
@@ -191,7 +207,7 @@ public class RedPackagePage extends BasePager {
                                 lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                                 lp.rightMargin = 40;
                                 iv_livevideo_redpackage_bg.setLayoutParams(lp);
-                                btframeAnimation1 = createFromAees("Images/redpackage/7_xunhuan_xiao", true);
+                                btframeAnimation1 = createFromAees(file7, true);
                                 frameAnimations.add(btframeAnimation1);
                             }
 
@@ -216,7 +232,7 @@ public class RedPackagePage extends BasePager {
                                 }
                             }, 60);
                         }
-                        FrameAnimation btframeAnimation3 = createFromAees("Images/redpackage/3_feichu", false);
+                        FrameAnimation btframeAnimation3 = createFromAees(file3, false);
                         frameAnimations.add(btframeAnimation3);
                         btframeAnimation3.setAnimationListener(new FrameAnimation.AnimationListener() {
                             @Override
@@ -278,7 +294,7 @@ public class RedPackagePage extends BasePager {
      */
     private void initCenterResult(final VideoResultEntity entity) {
         final FrameAnimation btframeAnimation1 = FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg,
-                "Images/redpackage/8_transition", 50, false);
+                file8, 50, false);
         frameAnimations.add(btframeAnimation1);
         btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
             @Override
@@ -289,7 +305,7 @@ public class RedPackagePage extends BasePager {
             @Override
             public void onAnimationEnd() {
                 FrameAnimation btframeAnimation2 = FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg,
-                        "Images/redpackage/9_teams", 50, false);
+                        file9, 50, false);
                 frameAnimations.add(btframeAnimation2);
                 btframeAnimation2.setAnimationListener(new FrameAnimation.AnimationListener() {
                     @Override
@@ -335,7 +351,7 @@ public class RedPackagePage extends BasePager {
      * @param entity
      */
     private void initRightResult(final VideoResultEntity entity) {
-        final FrameAnimation btframeAnimation1 = createFromAees("Images/redpackage/5_bianshen", false);
+        final FrameAnimation btframeAnimation1 = createFromAees(file5, false);
         frameAnimations.add(btframeAnimation1);
         btframeAnimation1.setBitmapCreate(new FrameAnimation.BitmapCreate() {
             @Override
@@ -354,7 +370,7 @@ public class RedPackagePage extends BasePager {
 
             @Override
             public void onAnimationEnd() {
-                final FrameAnimation btframeAnimation2 = createFromAees("Images/redpackage/4_feichuan", true);
+                final FrameAnimation btframeAnimation2 = createFromAees(file4, true);
                 frameAnimations.add(btframeAnimation2);
                 btframeAnimation2.setBitmapCreate(new FrameAnimation.BitmapCreate() {
                     @Override
@@ -560,7 +576,7 @@ public class RedPackagePage extends BasePager {
      */
     private ArrayList<FrameAnimation> initCenterResult(final GoldTeamStatus.Student entity, final ImageView imageView) {
         final ArrayList<FrameAnimation> frameAnimations2 = new ArrayList<>();
-        final String path = "Images/redpackage/10_team_mine";
+        final String path = file10;
         final FrameAnimation btframeAnimation1 =
                 FrameAnimation.createFromAees(mContext, imageView, path, 50, false);
         frameAnimations.add(btframeAnimation1);
@@ -588,7 +604,7 @@ public class RedPackagePage extends BasePager {
 
             @Override
             public void onAnimationEnd() {
-                String path = "Images/redpackage/11_team_mine_loop";
+                String path = file11;
                 final FrameAnimation btframeAnimation2 =
                         FrameAnimation.createFromAees(mContext, imageView, path, 50, true);
                 frameAnimations.add(btframeAnimation2);
@@ -625,7 +641,7 @@ public class RedPackagePage extends BasePager {
      */
     private ArrayList<FrameAnimation> initTeamResult(final GoldTeamStatus.Student entity, final ImageView imageView) {
         final ArrayList<FrameAnimation> frameAnimations2 = new ArrayList<>();
-        final String path = "Images/redpackage/12_team_other";
+        final String path = file12;
         final FrameAnimation btframeAnimation1 =
                 FrameAnimation.createFromAees(mContext, imageView, path, 50, false);
         frameAnimations.add(btframeAnimation1);
@@ -653,7 +669,7 @@ public class RedPackagePage extends BasePager {
 
             @Override
             public void onAnimationEnd() {
-                String path = "Images/redpackage/13_team_other_loop";
+                String path = file13;
                 final FrameAnimation btframeAnimation2 =
                         FrameAnimation.createFromAees(mContext, imageView, path, 50, true);
                 frameAnimations.add(btframeAnimation2);
@@ -802,7 +818,7 @@ public class RedPackagePage extends BasePager {
         }
 //        entity.getStudents().add(entity.getStudents().get(0));
 //        entity.getStudents().add(entity.getStudents().get(0));
-        String path = "Images/redpackage/14_transition";
+        String path = file14;
         final FrameAnimation btframeAnimation1 =
                 FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, path, 50, false);
         frameAnimations.add(btframeAnimation1);
@@ -814,7 +830,7 @@ public class RedPackagePage extends BasePager {
 
             @Override
             public void onAnimationEnd() {
-                String path = "Images/redpackage/15_rank_enter";
+                String path = file15;
                 FrameAnimation btframeAnimation2 =
                         FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, path, 50, false);
                 frameAnimations.add(btframeAnimation2);
@@ -826,7 +842,7 @@ public class RedPackagePage extends BasePager {
 
                     @Override
                     public void onAnimationEnd() {
-                        String path = "Images/redpackage/16_rank_looper";
+                        String path = file16;
                         final FrameAnimation btframeAnimation3 =
                                 FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, path, 50, true);
                         frameAnimations.add(btframeAnimation3);
