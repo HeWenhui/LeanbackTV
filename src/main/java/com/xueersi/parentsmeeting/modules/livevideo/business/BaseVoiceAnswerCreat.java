@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import android.app.Activity;
 import android.content.Context;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
@@ -16,8 +16,8 @@ import org.json.JSONObject;
  * 语音答题普通直播和站立直播
  */
 public interface BaseVoiceAnswerCreat {
-    BaseVoiceAnswerPager create(Activity activity, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
-                                QuestionBll questionBll, RelativeLayout rlQuestionContent, SpeechEvaluatorUtils mIse, LiveAndBackDebug liveAndBackDebug);
+    BaseVoiceAnswerPager create(Context activity, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
+                                RelativeLayout rlQuestionContent, SpeechEvaluatorUtils mIse, LiveAndBackDebug liveAndBackDebug);
 
     void setViewLayoutParams(BaseVoiceAnswerPager baseVoiceAnswerPager, int rightMargin);
 
@@ -30,5 +30,17 @@ public interface BaseVoiceAnswerCreat {
      * @param entity
      * @return
      */
-    boolean onAnswerReslut(Context context, QuestionBll questionBll, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity);
+    boolean onAnswerReslut(Context context, AnswerRightResultVoice questionBll, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity);
+
+    interface AnswerRightResultVoice {
+        void initQuestionAnswerReslut(View popupWindow_view);
+
+        void initSelectAnswerRightResultVoice(VideoResultEntity entity);
+
+        void initFillinAnswerRightResultVoice(VideoResultEntity entity);
+
+        void initSelectAnswerWrongResultVoice(VideoResultEntity entity);
+
+        void initFillAnswerWrongResultVoice(VideoResultEntity entity);
+    }
 }

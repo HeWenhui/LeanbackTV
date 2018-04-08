@@ -73,7 +73,7 @@ import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE5;
  * Created by linyuqiang on 2016/9/23.
  */
 public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEvalAction, QuestionWebPager
-        .StopWebQuestion {
+        .StopWebQuestion, BaseVoiceAnswerCreat.AnswerRightResultVoice {
     String TAG = "QuestionBll";
     SpeechEvaluatorUtils mIse;
     private LiveVideoSAConfig liveVideoSAConfig;
@@ -1202,7 +1202,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         removeQuestionViews();
         BaseVoiceAnswerPager voiceAnswerPager2 =
-                baseVoiceAnswerCreat.create(activity, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.type, this, rlQuestionContent, mIse, this);
+                baseVoiceAnswerCreat.create(activity, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.type, rlQuestionContent, mIse, this);
 
 //        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 //                ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -1314,7 +1314,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     /**
      * 创建互动题作答，抢红包结果提示PopupWindow
      */
-    void initQuestionAnswerReslut(View popupWindow_view) {
+    @Override
+    public void initQuestionAnswerReslut(View popupWindow_view) {
         rlQuestionResContent.addView(popupWindow_view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         popupWindow_view.setOnClickListener(new View.OnClickListener() {
@@ -1402,7 +1403,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     /**
      * 语音答题选择题回答正确
      */
-    void initSelectAnswerRightResultVoice(VideoResultEntity entity) {
+    @Override
+    public void initSelectAnswerRightResultVoice(VideoResultEntity entity) {
         final View popupWindow_view = QuestionResultView.initSelectAnswerRightResultVoice(activity, entity);
         initQuestionAnswerReslut(popupWindow_view);
     }
@@ -1410,7 +1412,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     /**
      * 语音答题填空题回答正确
      */
-    void initFillinAnswerRightResultVoice(VideoResultEntity entity) {
+    @Override
+    public void initFillinAnswerRightResultVoice(VideoResultEntity entity) {
         View popupWindow_view = QuestionResultView.initFillinAnswerRightResultVoice(activity, entity);
         initQuestionAnswerReslut(popupWindow_view);
     }
@@ -1418,7 +1421,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     /**
      * 语音答题回答错误
      */
-    void initSelectAnswerWrongResultVoice(VideoResultEntity entity) {
+    @Override
+    public void initSelectAnswerWrongResultVoice(VideoResultEntity entity) {
         View popupWindow_view = QuestionResultView.initSelectAnswerWrongResultVoice(activity, entity);
         initQuestionAnswerReslut(popupWindow_view);
     }
@@ -1426,7 +1430,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     /**
      * 语音答题回答错误
      */
-    void initFillAnswerWrongResultVoice(VideoResultEntity entity) {
+    @Override
+    public void initFillAnswerWrongResultVoice(VideoResultEntity entity) {
         View popupWindow_view = QuestionResultView.initFillAnswerWrongResultVoice(activity, entity);
         initQuestionAnswerReslut(popupWindow_view);
     }
@@ -1710,7 +1715,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }, 10000);
     }
 
-    public class LiveStandQuestionSwitchImpl extends LiveQuestionSwitchImpl implements LiveStandQuestionSwitch {
+    class LiveStandQuestionSwitchImpl extends LiveQuestionSwitchImpl implements LiveStandQuestionSwitch {
 
         @Override
         public void getTestAnswerTeamStatus(BaseVideoQuestionEntity videoQuestionLiveEntity, AbstractBusinessDataCallBack callBack) {

@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -37,12 +36,16 @@ import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE4;
  */
 public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     String TAG = "LiveStandVoiceAnswerCreat";
+    QuestionSwitch questionSwitch;
+
+    public LiveStandVoiceAnswerCreat(QuestionSwitch questionSwitch) {
+        this.questionSwitch = questionSwitch;
+    }
 
     @Override
-    public BaseVoiceAnswerPager create(Activity activity, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
-                                       QuestionBll questionBll, RelativeLayout rlQuestionContent, SpeechEvaluatorUtils mIse, LiveAndBackDebug liveAndBackDebug) {
+    public BaseVoiceAnswerPager create(Context activity, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
+                                       RelativeLayout rlQuestionContent, SpeechEvaluatorUtils mIse, LiveAndBackDebug liveAndBackDebug) {
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
-        QuestionSwitch questionSwitch = questionBll.new LiveStandQuestionSwitchImpl();
         VoiceAnswerStandPager voiceAnswerPager2 = new VoiceAnswerStandPager(activity, baseVideoQuestionEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch, liveAndBackDebug);
         voiceAnswerPager2.setIse(mIse);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -61,7 +64,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     }
 
     @Override
-    public boolean onAnswerReslut(final Context context, final QuestionBll questionBll, BaseVideoQuestionEntity baseVideoQuestionEntity, final VideoResultEntity entity) {
+    public boolean onAnswerReslut(final Context context, final AnswerRightResultVoice questionBll, BaseVideoQuestionEntity baseVideoQuestionEntity, final VideoResultEntity entity) {
         boolean isSuccess = false;
         final VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
         if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {

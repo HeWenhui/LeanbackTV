@@ -88,22 +88,14 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     ImageView ivVoiceansSwitch;
     QuestionSwitch questionSwitch;
     LiveAndBackDebug liveAndBackDebug;
-    /**
-     * 语音保存位置-目录
-     */
+    /** 语音保存位置-目录 */
     File dir;
-    /**
-     * 语音保存位置
-     */
+    /** 语音保存位置 */
     private File saveVideoFile;
-    /**
-     * 是不是评测失败
-     */
+    /** 是不是评测失败 */
     private boolean isSpeechError = false;
     private boolean isSpeechSuccess = false;
-    /**
-     * 评测文本
-     */
+    /** 评测文本 */
     JSONObject assess_ref;
     String answer;
     boolean multRef = true;
