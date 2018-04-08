@@ -1795,7 +1795,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             public void run() {
                 mLiveAutoNoticeBll.getAutoNotice(isForce, 0);
             }
-        }, 10000);
+        }, (int)(7000+Math.random()*4000));
 
     }
 }

@@ -770,7 +770,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             public void run() {
                 mLiveAutoNoticeBll.getAutoNotice(isForce,5);
             }
-        },10000);
+        },(int)(7000+Math.random()*4000));
 
     }
 }
