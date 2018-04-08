@@ -7,10 +7,12 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.media.Image;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.ImageSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TextAppearanceSpan;
 import android.view.MotionEvent;
@@ -37,6 +39,8 @@ import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Tang on 2018/3/10.
@@ -64,10 +68,17 @@ public class LiveAutoNoticeBll {
     private String liveId;
     private LiveBll mLiveBll;
     String TAG = this.getClass().getSimpleName();
+    Pattern pattern=Pattern.compile("#[0-9]#");
+    String[] emojis={"\uD83D\uDE22","\uD83D\uDE44","\uD83D\uDE31","\uD83D\uDE02","\uD83D\uDE15"};
+    //int[] emoji={R.drawable.live_emoji_1,R.drawable.live_emoji_2,R.drawable.live_emoji_3};
     /**
      * 文案
      */
-    String[][] notice = {{"你不会是手抖输错了吧？据传说集中精神听课能治疗手抖，不信你试试!",
+    String[] notice={"不要在上课期间发表不合适的言论。",
+            "禁止脏话及敏感词汇，你会被禁言。",
+            "尴尬了，我会收到你发的被屏蔽的留言，你还要发吗？",
+            "你需要找我聊聊人生了。"};
+    /*String[][] notice = {{"你不会是手抖输错了吧？据传说集中精神听课能治疗手抖，不信你试试!",
             "你绝对是故意的\uD83D\uDE22（哭脸），错了不要紧，老师讲后懂了就是好样的。我会关注你的哦.",
             "看来这个知识点你掌握的不是很牢固啊，记得下课看回放。"
     }, {"你是如何做到用飞一样的速度做错的？\uD83D\uDE44",
@@ -108,12 +119,13 @@ public class LiveAutoNoticeBll {
             "禁止脏话及敏感词汇，你会被禁言。",
             "尴尬了，我会收到你发的被屏蔽的留言，你还要发吗？",
             "你需要找我聊聊人生了。"
-    }};
+    }};*/
 
     public LiveAutoNoticeBll(Context context, RelativeLayout bottom) {
         this.mContext = context;
         this.bottom = bottom;
         setLayout(1920, 1080);
+
     }
 
     public void setLayout(int width, int height) {
@@ -188,8 +200,9 @@ public class LiveAutoNoticeBll {
                 return;
             }
             int i = ShareDataManager.getInstance().getInt("LiveAutoNotice_" + liveId, -1, ShareDataManager.SHAREDATA_USER);
-            showNotice(name, notice[10][(i + 1) % 4], head);
-            umsAgent(11, (i + 1) % 4 + 1, true);
+            showNotice(name, notice[(i + 1) % 4], head);
+            //showNotice(name,parseEmoji("不要#1#说#2#脏话哦#3###"),head);
+            umsAgent(2, true);
             ShareDataManager.getInstance().put("LiveAutoNotice_" + liveId, i + 1, ShareDataManager.SHAREDATA_USER);
             mHttpManager.autoNoticeStatisc(classId, new HttpCallBack(false) {
                 @Override
@@ -222,7 +235,7 @@ public class LiveAutoNoticeBll {
      * @param s
      * @param head
      */
-    public void showNotice(String name, String s, String head) {
+    public void showNotice(String name, CharSequence s, String head) {
          if (isShowing) {
             return;
         }
@@ -305,13 +318,15 @@ public class LiveAutoNoticeBll {
                 try {
                     JSONObject object = (JSONObject) responseEntity.getJsonObject();
                     Loger.i(TAG, "getAutoNotice success" + object.toString());
+
                     int type = object.optInt("type", -1);
                     int choose = object.optInt("choose", -1);
+                    String content=object.optString("text");
 //                    String name = object.optString("teacherName", teacherName);
 //                    String imgUrl = object.optString(teacherImg);
-                    if (type > 0 && choose > 0 && !TextUtils.isEmpty(teacherName)) {
-                        showNotice(teacherName, notice[type - 1][choose - 1], teacherImg);
-                        umsAgent(type, choose, true);
+                    if (!TextUtils.isEmpty(content) && !TextUtils.isEmpty(teacherName)) {
+                        showNotice(teacherName, parseEmoji(content), teacherImg);
+                        umsAgent(type, true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -322,7 +337,7 @@ public class LiveAutoNoticeBll {
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
                 Loger.i(TAG, "getAutoNotice fail" + msg);
-                umsAgent(0, 0, false);
+                umsAgent(0, false);
                 //showNotice("老师",notice[1][1],"");
             }
 
@@ -330,7 +345,7 @@ public class LiveAutoNoticeBll {
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
                 Loger.i(TAG, "getAutoNotice fail" + responseEntity.getErrorMsg());
-                umsAgent(0, 0, false);
+                umsAgent(0, false);
                 //showNotice("老师",notice[1][1],"");
             }
         });
@@ -339,22 +354,21 @@ public class LiveAutoNoticeBll {
     /**
      * 智能私信日志
      * @param type
-     * @param choose
      * @param isSuccess
      */
-    private void umsAgent(int type, int choose, boolean isSuccess) {
+    private void umsAgent(int type, boolean isSuccess) {
         HashMap<String, String> map = new HashMap<>();
         map.put("testid", testId);
         if (isSuccess) {
             map.put("chattexttype", "" + type);
-            map.put("chattextnum", "" + choose);
-            if (type == 4 || type == 9 || type == 10) {
+            //map.put("chattextnum", "" + choose);
+            if (type == 1) {
                 map.put("whisperreq", "success");
                 map.put("actiontype", "whisperpraise");
-            } else if (type == 1 || type == 2 || type == 3 || type == 5 || type == 6 || type == 8) {
+            } else if (type == 0) {
                 map.put("actiontype", "whisperencourage");
                 map.put("whisperreq", "success");
-            } else if (type == 11) {
+            } else if (type == 2) {
                 map.put("actiontype", "whisperwarning");
                 map.put("whisperwarntime", "" + System.currentTimeMillis());
             }
@@ -362,6 +376,22 @@ public class LiveAutoNoticeBll {
             map.put("whisperreq", "fail");
         }
         mLiveBll.umsAgentDebug3("sci_whisper_func", map);
+    }
+    private CharSequence parseEmoji(String src){
+        Matcher matcher=pattern.matcher(src);
+        SpannableString sp=new SpannableString(src);
+        while (matcher.find()){
+            String s=matcher.group(0);
+            int e=Integer.parseInt(s.replaceAll("#",""));
+            if(e>0&&e<6){
+//                ImageSpan span=new ImageSpan(mContext.getResources().getDrawable(emoji[e]));
+//                sp.setSpan(span,matcher.start(),matcher.end(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                src=src.replaceAll(s,emojis[e]);
+            }else{
+                src=src.replaceAll(s,"");
+            }
+        }
+        return src;
     }
     /**脏词入库请求日志*/
     private void umsAgentReq(boolean isSuccess){
