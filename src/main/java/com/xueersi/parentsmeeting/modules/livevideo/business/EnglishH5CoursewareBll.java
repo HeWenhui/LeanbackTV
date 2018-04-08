@@ -282,7 +282,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     }
                 } else {
                     if (voiceAnswerPager != null && !voiceAnswerPager.isEnd()) {
-                        final VoiceAnswerPager answerPager = (VoiceAnswerPager) voiceAnswerPager;
 //                        voiceAnswerPager = null;
 //                        rlVoiceQuestionContent = new RelativeLayout(liveVideoActivityBase);
 //                        View view = answerPager.getRootView();
@@ -291,7 +290,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 //                        rlVoiceQuestionContent.addView(view, lp);
 //                        bottomContent.addView(rlVoiceQuestionContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 //                                ViewGroup.LayoutParams.MATCH_PARENT));
-                        answerPager.examSubmitAll("onH5Courseware", videoQuestionLiveEntity.nonce);
+                        voiceAnswerPager.examSubmitAll("onH5Courseware", videoQuestionLiveEntity.nonce);
                     }
                     int delayTime = 0;
                     int isForce = 0;

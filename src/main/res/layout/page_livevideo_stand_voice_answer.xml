@@ -55,7 +55,8 @@
             android:layout_alignRight="@id/tv_livevideo_speecteval_tip"
             android:layout_marginBottom="29.3dp"
             android:layout_marginLeft="50dp"
-            android:background="@drawable/bg_livevideo_speecteval_tip_paopao" />
+            android:background="@drawable/bg_livevideo_speecteval_tip_paopao"
+            android:visibility="gone" />
 
         <TextView
             android:id="@id/tv_livevideo_speecteval_tip"
@@ -68,7 +69,8 @@
             android:gravity="center_vertical"
             android:paddingLeft="5dp"
             android:paddingRight="7dp"
-            android:text="语音输入有点小问题，请先手动答题哦（1131)" />
+            android:text="语音输入有点小问题，请先手动答题哦（1131)"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@id/iv_livevideo_speecteval_tip"
@@ -76,7 +78,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="17dp"
-            android:src="@drawable/bg_livevideo_speecteval_tip2" />
+            android:src="@drawable/bg_livevideo_speecteval_tip2"
+            android:visibility="gone" />
 
     </RelativeLayout>
 

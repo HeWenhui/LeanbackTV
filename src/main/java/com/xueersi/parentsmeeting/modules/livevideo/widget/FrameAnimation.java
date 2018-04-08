@@ -92,7 +92,9 @@ public class FrameAnimation {
         this.mDuration = duration;
         this.mLastFrame = files.length - 1;
         this.mIsRepeat = isRepeat;
-        play(0);
+        if (files.length > 0) {
+            play(0);
+        }
     }
 
     /**
@@ -392,6 +394,10 @@ public class FrameAnimation {
      */
     public void setAnimationListener(AnimationListener listener) {
         this.mAnimationListener = listener;
+        if (files != null && files.length == 0) {
+            listener.onAnimationStart();
+            listener.onAnimationEnd();
+        }
     }
 
     public void release() {
@@ -459,6 +465,7 @@ public class FrameAnimation {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        FrameAnimation btframeAnimation1 = new FrameAnimation(iv, new String[0], duration, isRepeat);
+        return btframeAnimation1;
     }
 }

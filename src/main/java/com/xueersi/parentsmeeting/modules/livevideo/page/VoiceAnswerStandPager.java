@@ -66,6 +66,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     private SpeechEvaluatorUtils mIse;
     BaseVideoQuestionEntity baseVideoQuestionEntity;
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
+    private ArrayList<FrameAnimation> waveFrameAnimations = new ArrayList<>();
+    private ArrayList<GoldTeamStatus.Student> addStudents = new ArrayList<>();
     /**
      * 手动答题切换动画
      */
@@ -206,6 +208,10 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                             ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
                             for (int i = 0; i < students.size(); i++) {
                                 final GoldTeamStatus.Student student = students.get(i);
+                                if (addStudents.contains(student)) {
+                                    continue;
+                                }
+                                addStudents.add(student);
                                 final LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
                                 String path;
                                 if (student.isRight()) {
@@ -410,7 +416,9 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     }
 
     private FrameAnimation createFromAees(String path, boolean isRepeat) {
-        return FrameAnimation.createFromAees(mContext, iv_livevideo_speecteval_wave, path, 50, isRepeat);
+        FrameAnimation btframeAnimation1 = FrameAnimation.createFromAees(mContext, iv_livevideo_speecteval_wave, path, 50, isRepeat);
+        waveFrameAnimations.add(btframeAnimation1);
+        return btframeAnimation1;
     }
 
     private boolean switchQuestion() {
@@ -726,6 +734,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                 if (entity != null) {
                                     entity.setYourAnswer(option);
                                     entity.setStandardAnswer(answer);
+                                    iv_livevideo_speecteval_wave.setVisibility(View.INVISIBLE);
                                 }
                             }
 
@@ -831,6 +840,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                         public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
                             if (entity != null) {
                                 entity.setStandardAnswer(answer);
+                                iv_livevideo_speecteval_wave.setVisibility(View.INVISIBLE);
                             }
                         }
 

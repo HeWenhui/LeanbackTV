@@ -524,17 +524,17 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     MobAgent.httpResponseParserError(TAG, "redGoldTeamStatus:i=" + i, e.getMessage());
                 }
             }
-            if (AppConfig.DEBUG) {
-                for (int i = 0; i < 3; i++) {
-                    GoldTeamStatus.Student student = new GoldTeamStatus.Student();
-                    student.setStuId("12345" + i);
-                    student.setName(student.getStuId());
-                    student.setNickname(student.getStuId());
-                    student.setRight(i % 2 == 0);
-                    student.setAvatar_path(avatar_path);
-                    entity.getStudents().add(student);
-                }
-            }
+//            if (AppConfig.DEBUG) {
+//                for (int i = 0; i < 3; i++) {
+//                    GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                    student.setStuId("12345" + i);
+//                    student.setName(student.getStuId());
+//                    student.setNickname(student.getStuId());
+//                    student.setRight(i % 2 == 0);
+//                    student.setAvatar_path(avatar_path);
+//                    entity.getStudents().add(student);
+//                }
+//            }
         } catch (Exception e) {
             MobAgent.httpResponseParserError(TAG, "redGoldTeamStatus", e.getMessage());
         }
