@@ -164,7 +164,12 @@ public class WorkerThread extends Thread {
             return;
         }
 
-        ensureRtcEngineReadyLock();
+        try {
+            ensureRtcEngineReadyLock();
+        } catch (Exception e) {
+            onJoinChannel.onJoinChannel(-11111);
+            return;
+        }
         int joinChannel = mRtcEngine.joinChannel(null, channel, "OpenLive", uid);
         onJoinChannel.onJoinChannel(joinChannel);
         Loger.d(TAG, "joinChannel:channelKey=" + channelKey + ",channel=" + channel + ",uid=" + uid + ",joinChannel=" + joinChannel);
@@ -214,13 +219,17 @@ public class WorkerThread extends Thread {
             return;
         }
 
-        ensureRtcEngineReadyLock();
+        try {
+            ensureRtcEngineReadyLock();
+        } catch (Exception e) {
+            return;
+        }
         mEngineConfig.mClientRole = cRole;
         mEngineConfig.mVideoProfile = vProfile;
 
         mRtcEngine.setVideoProfile(mEngineConfig.mVideoProfile, true);
 
-        mRtcEngine.setClientRole(cRole, "");
+        mRtcEngine.setClientRole(cRole);
         if (feadback) {
             mRtcEngine.enableAudioVolumeIndication(500, 3);
             mRtcEngine.muteAllRemoteAudioStreams(true);
@@ -238,7 +247,11 @@ public class WorkerThread extends Thread {
             return;
         }
 
-        ensureRtcEngineReadyLock();
+        try {
+            ensureRtcEngineReadyLock();
+        } catch (Exception e) {
+            return;
+        }
         if (start) {
             mRtcEngine.setupLocalVideo(new VideoCanvas(view, VideoCanvas.RENDER_MODE_HIDDEN, uid));
             mRtcEngine.startPreview();
@@ -253,7 +266,7 @@ public class WorkerThread extends Thread {
         return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
-    private RtcEngine ensureRtcEngineReadyLock() {
+    private RtcEngine ensureRtcEngineReadyLock() throws Exception {
         if (mRtcEngine == null) {
             String appId;
             if (AppConfig.DEBUG) {
