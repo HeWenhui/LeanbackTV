@@ -14,6 +14,33 @@ public class MoreChoice implements Serializable {
         private int limit;
         private String signUpUrl;
         private int isLearn;
+        private String courseId;
+        private String adId;
+        private String classId;
+
+        public String getCourseId() {
+            return courseId;
+        }
+
+        public void setCourseId(String courseId) {
+            this.courseId = courseId;
+        }
+
+        public String getAdId() {
+            return adId;
+        }
+
+        public void setAdId(String adId) {
+            this.adId = adId;
+        }
+
+        public String getClassId() {
+            return classId;
+        }
+
+        public void setClassId(String classId) {
+            this.classId = classId;
+        }
 
         public String getSaleName() {
             return saleName;

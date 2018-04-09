@@ -1626,16 +1626,16 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
                         break;
                     }
-//                    case XESCODE.LEC_ADVERT: {
-//                        if (lecAdvertAction != null) {
-//                            LecAdvertEntity entity = new LecAdvertEntity();
-//                            entity.course_id = object.optString("course_id");
-//                            entity.id = object.optString("id");
-//                            entity.nonce = object.optString("nonce");
-//                            lecAdvertAction.start(entity);
-//                        }
-//                        break;
-//                    }
+                    case XESCODE.LEC_ADVERT: {
+                        if (lecAdvertAction != null) {
+                            LecAdvertEntity entity = new LecAdvertEntity();
+                            entity.course_id = object.optString("course_id");
+                            entity.id = object.optString("id");
+                            entity.nonce = object.optString("nonce");
+                            lecAdvertAction.start(entity);
+                        }
+                        break;
+                    }
                 }
                 mLogtf.i("onNotice:msg=" + msg);
                 // Loger.d(TAG, "onNotice:msg=" + msg);

@@ -811,6 +811,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             choice.setLimit(jsonObject.optInt("limit"));
             choice.setSignUpUrl(jsonObject.optString("signUpUrl"));
             choice.setIsLearn(jsonObject.optInt("isLearn"));
+            choice.setCourseId(jsonObject.optString("courseId"));
+            choice.setAdId(jsonObject.optString("adId"));
+            choice.setClassId(jsonObject.optString("classId"));
             choices.add(choice);
         }
         moreChoice.setCases(choices);

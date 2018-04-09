@@ -135,7 +135,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     private RelativeLayout mFirstSight;
     private LinearLayout mSecondSight;
     private LinearLayout mAdvance;
-    private Boolean havaAdvance = true;
+    private Boolean isExpand = false;
     private TextView mLimitnum;
 
     public LiveMessagePortPager(Context context, QuestionBll questionBll,
@@ -377,6 +377,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
         mMoreClassLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                isExpand = true;
                 liveBll.getMoreChoice(mPageDataLoadEntity,getDataCallBack);
             }
         });
@@ -384,6 +385,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
         mShutDowm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                isExpand = false;
                 mFirstSight.setVisibility(View.VISIBLE);
                 mSecondSight.setVisibility(View.GONE);
             }
@@ -399,27 +401,29 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                 Log.e("Duncan","mData:"+ mData);
                 mChoices.clear();
                 mChoices.addAll(mData.getCases());
-                for(int i = 1 ; i < 11 ; i++){
-                    MoreChoice.Choice choice = new MoreChoice.Choice();
-                    choice.setIsLearn(0);
-                    choice.setLimit(i);
-                    choice.setSaleName("毛尖" + i);
-                    mChoices.add(choice);
-                }
-                if(mChoices.size() > 0){
+//                for(int i = 1 ; i < 11 ; i++){
+//                    MoreChoice.Choice choice = new MoreChoice.Choice();
+//                    choice.setIsLearn(0);
+//                    choice.setLimit(i);
+//                    choice.setSaleName("毛尖" + i);
+//                    mChoices.add(choice);
+//                }
+                if(mChoices.size() > 0 && isExpand){
                     mFirstSight.setVisibility(View.GONE);
                     mSecondSight.setVisibility(View.VISIBLE);
-                    mApplyNum.setText(Html.fromHtml("<font color='#333333'>正在报名中</font>"+ "<font color='#F13232'>" +"  " +4+ "</font>"));
+                    mApplyNum.setText(Html.fromHtml("<font color='#333333'>正在报名中</font>"+ "<font color='#F13232'>" +"  " + mChoices.size() + "</font>"));
                     mCourseAdapter.updateData(mChoices);
                 }else{
                     mFirstSight.setVisibility(View.VISIBLE);
                     mSecondSight.setVisibility(View.GONE);
+                    mLimitnum.setText(Html.fromHtml("<font color='#999999'>剩余名额</font>"+ "<font color='#F13232'>" +"  " + mChoices.get(mChoices.size()-1)+ "</font>"));
                 }
 
             }
 
         }
     };
+
 
     @Override
     public void initData() {
@@ -659,13 +663,13 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
             };
             mMorecourse.setAdapter(mCourseAdapter);
         }
-
-        if(havaAdvance){
-            mAdvance.setVisibility(View.VISIBLE);
-            mLimitnum.setText(Html.fromHtml("<font color='#999999'>剩余名额</font>"+ "<font color='#F13232'>" +"  " +12+ "</font>"));
-        }else{
-            mAdvance.setVisibility(View.GONE);
-        }
+//        if(havaAdvance){
+//            mAdvance.setVisibility(View.VISIBLE);
+//            mLimitnum.setText(Html.fromHtml("<font color='#999999'>剩余名额</font>"+ "<font color='#F13232'>" +"  " +12+ "</font>"));
+//        }else{
+//            mAdvance.setVisibility(View.GONE);
+//        }
+//        liveBll.getMoreChoice(mPageDataLoadEntity,getDataCallBack);
     }
 
     /** 添加献花布局 */

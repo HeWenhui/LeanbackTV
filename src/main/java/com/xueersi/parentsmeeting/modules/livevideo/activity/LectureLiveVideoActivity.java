@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -30,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.business.AppBll;
@@ -54,6 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.MiniEvent;
@@ -85,6 +88,8 @@ import floatwindow.xishuang.float_lib.FloatActionController;
 import floatwindow.xishuang.float_lib.FloatWindowManager;
 import floatwindow.xishuang.float_lib.permission.FloatPermissionManager;
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
+
+import static com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile.liveBll;
 
 /**
  * 直播
@@ -310,6 +315,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
 //                }
             }
         });
+
     }
 
     protected boolean initData() {
@@ -330,7 +336,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             Toast.makeText(this, "直播类型不支持", Toast.LENGTH_SHORT).show();
             return false;
         }
-        LogToFile.liveBll = mLiveBll;
+        liveBll = mLiveBll;
         mPlayStatistics = mLiveBll.getVideoListener();
         mLiveBll.setQuestionAction(questionBll);
         mLiveBll.setRollCallAction(rollCallBll);
@@ -1255,6 +1261,17 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         }
 
     }
+
+    AbstractBusinessDataCallBack getDataCallBack = new AbstractBusinessDataCallBack(){
+        @Override
+        public void onDataSucess(Object... objData) {
+            // 04.04 获取到数据之后的逻辑处理
+            if(objData.length > 0){
+
+            }
+
+        }
+    };
 
     /**
      * 是否显示移动网络提示
