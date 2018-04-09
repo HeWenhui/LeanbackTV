@@ -32,4 +32,12 @@ public class OtherModulesEnter {
         ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.personals.PersonalsEnter",
                 "requestGoldTotal", new Class[]{Context.class}, new Object[]{mContext});
     }
+
+    // 04.09 跳转订单支付页面
+    public static void intentToOrderConfirmActivity(Activity activity, String courseIds, Integer productType, String whereFrom){
+        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.xesmall.XesMallEnter",
+                "intentToOrderConfirmActivity", new Class[]{Context.class, String.class,Integer.TYPE,String.class}, new Object[]{activity, courseIds,productType,whereFrom});
+    }
+
+
 }

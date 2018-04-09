@@ -28,12 +28,6 @@
             android:windowSoftInputMode="adjustUnspecified|stateHidden">
         </activity>
         <activity
-            android:name=".activity.TestpayActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden">
-        </activity>
-        <activity
             android:name=".activity.AuditClassLiveActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"

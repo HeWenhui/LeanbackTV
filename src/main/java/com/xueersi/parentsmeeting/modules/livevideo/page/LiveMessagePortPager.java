@@ -2,9 +2,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
@@ -35,12 +36,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
-import com.xueersi.parentsmeeting.event.AppEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.TestpayActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerPortItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.MoreChoiceItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
@@ -48,11 +47,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageEmojiPar
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
-import com.xueersi.parentsmeeting.modules.livevideo.event.MiniEvent;
+import com.xueersi.parentsmeeting.event.MiniEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
 import com.xueersi.xesalib.adapter.CommonAdapter;
@@ -130,6 +130,8 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     private CommonAdapter<MoreChoice.Choice> mCourseAdapter;
     private ListView mMorecourse;
     private TextView mApplyNum;
+    private TextView mTvCoursename;
+    private TextView mCourseNum;
     private ImageButton mShutDowm;
     private MoreChoice mData;
     private RelativeLayout mFirstSight;
@@ -137,7 +139,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     private LinearLayout mAdvance;
     private Boolean isExpand = false;
     private TextView mLimitnum;
-
+    private Handler mHandler;
     public LiveMessagePortPager(Context context, QuestionBll questionBll,
                                 ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
         super(context);
@@ -145,6 +147,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
         this.questionBll = questionBll;
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
+        mHandler = new Handler();
         initListener();
         initData();
     }
@@ -153,6 +156,8 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_message_port, null);
         mAdvance = (LinearLayout)mView.findViewById(R.id.ll_advance);
+        mTvCoursename = (TextView)mView.findViewById(R.id.tv_coursename);
+        mCourseNum = (TextView)mView.findViewById(R.id.tv_morecourse_num);
         mFirstSight = (RelativeLayout) mView.findViewById(R.id.ll_all_content);
         mSecondSight = (LinearLayout) mView.findViewById(R.id.ll_detail_list);
         mApplyButton = (Button) mView.findViewById(R.id.bt_to_apply);
@@ -365,27 +370,19 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
             }
         });
 
-        // 03.28 跳转支付页面
-        mApplyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                EventBus.getDefault().post(new MiniEvent("Min"));
-            }
-        });
-
         // 03.28 展开更多课程的列表
         mMoreClassLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isExpand = true;
                 liveBll.getMoreChoice(mPageDataLoadEntity,getDataCallBack);
+                mFirstSight.setVisibility(View.GONE);
+                mSecondSight.setVisibility(View.VISIBLE);
             }
         });
         // 04.04 关闭更多课程页面
         mShutDowm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isExpand = false;
                 mFirstSight.setVisibility(View.VISIBLE);
                 mSecondSight.setVisibility(View.GONE);
             }
@@ -408,15 +405,50 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
 //                    choice.setSaleName("毛尖" + i);
 //                    mChoices.add(choice);
 //                }
-                if(mChoices.size() > 0 && isExpand){
-                    mFirstSight.setVisibility(View.GONE);
-                    mSecondSight.setVisibility(View.VISIBLE);
-                    mApplyNum.setText(Html.fromHtml("<font color='#333333'>正在报名中</font>"+ "<font color='#F13232'>" +"  " + mChoices.size() + "</font>"));
-                    mCourseAdapter.updateData(mChoices);
+//                if(mChoices.size() > 0 && isExpand){
+//                    mFirstSight.setVisibility(View.GONE);
+//                    mSecondSight.setVisibility(View.VISIBLE);
+//                    mApplyNum.setText(Html.fromHtml("<font color='#333333'>正在报名中</font>"+ "<font color='#F13232'>" +"  " + mChoices.size() + "</font>"));
+//                    mCourseAdapter.updateData(mChoices);
+//                }else{
+//                    mFirstSight.setVisibility(View.VISIBLE);
+//                    mSecondSight.setVisibility(View.GONE);
+//                    mLimitnum.setText(Html.fromHtml("<font color='#999999'>剩余名额</font>"+ "<font color='#F13232'>" +"  " + mChoices.get(mChoices.size()-1)+ "</font>"));
+//                }
+                LiveVideoConfig.MORE_COURSE = mChoices.size();
+                if(mChoices.size() > 0){
+                    mTvCoursename.setText(mChoices.get(mChoices.size()-1).getSaleName());
+                    mLimitnum.setText(Html.fromHtml("<font color='#999999'>剩余名额</font>"+ "<font color='#F13232'>" +"  " + mChoices.get(mChoices.size()-1).getLimit()+ "</font>"));
+                    // 04.09 按钮不同状态的维护
+                    if(mChoices.get(mChoices.size()-1).getIsLearn() > 0){
+                        mApplyButton.setText("已报名");
+                        mApplyButton.setTextColor(Color.parseColor("#999999"));
+                        mApplyButton.setBackgroundResource(R.drawable.bg_applyed);
+                    }else{
+                        mApplyButton.setText("立即报名");
+                        mApplyButton.setTextColor(Color.parseColor("#F13232"));
+                        mApplyButton.setBackgroundResource(R.drawable.bg_apply);
+                    }
+                    if(mChoices.get(mChoices.size()-1).getLimit() == 0){
+                        mApplyButton.setText("");
+                        mApplyButton.setTextColor(Color.parseColor("#999999"));
+                        mApplyButton.setBackgroundResource(R.drawable.cannotapply);
+                    }
+                    // 04.09 跳转支付页面
+                    mApplyButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if(mChoices.get(mChoices.size()-1).getLimit() > 0){
+                                EventBus.getDefault().post(new MiniEvent("Order"));
+                                OtherModulesEnter.intentToOrderConfirmActivity(liveVideoActivity,mChoices.get(mChoices.size()-1).getCourseId()+"-"+mChoices.get(mChoices.size()-1).getClassId(),100,"LectureLiveVideoActivity");
+                            }
+
+                        }
+                    });
+                    mCourseNum.setText(mChoices.size() + "");
+                    mAdvance.setVisibility(View.VISIBLE);
                 }else{
-                    mFirstSight.setVisibility(View.VISIBLE);
-                    mSecondSight.setVisibility(View.GONE);
-                    mLimitnum.setText(Html.fromHtml("<font color='#999999'>剩余名额</font>"+ "<font color='#F13232'>" +"  " + mChoices.get(mChoices.size()-1)+ "</font>"));
+                    mAdvance.setVisibility(View.GONE);
                 }
 
             }
@@ -670,7 +702,15 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
 //            mAdvance.setVisibility(View.GONE);
 //        }
 //        liveBll.getMoreChoice(mPageDataLoadEntity,getDataCallBack);
+        mHandler.postDelayed(MoreChoice,1000);
     }
+
+    private Runnable MoreChoice = new Runnable() {
+        @Override
+        public void run() {
+            liveBll.getMoreChoice(mPageDataLoadEntity,getDataCallBack);
+        }
+    };
 
     /** 添加献花布局 */
     private void addFlowers() {

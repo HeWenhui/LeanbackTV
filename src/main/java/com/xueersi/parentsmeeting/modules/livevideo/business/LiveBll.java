@@ -3161,6 +3161,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     lecAdvertEntity.limit = jsonObject.optString("limit");
                     lecAdvertEntity.signUpUrl = jsonObject.optString("signUpUrl");
                     lecAdvertEntity.saleName = jsonObject.optString("saleName");
+                    lecAdvertEntity.courseId = jsonObject.optString("courseId");
+                    lecAdvertEntity.classId = jsonObject.optString("classId");
                 }
                 callBack.onDataSucess();
             }

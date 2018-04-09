@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.page;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.util.Base64;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.browser.business.BrowserBll;
 import com.xueersi.parentsmeeting.business.AppBll;
+import com.xueersi.parentsmeeting.event.MiniEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertPagerClose;
@@ -20,6 +23,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.LecAdvertLog;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by linyuqiang on 2018/1/15.
@@ -38,9 +43,11 @@ public class LecAdvertPager extends BasePager {
     LecAdvertEntity lecAdvertEntity;
     String liveid;
     LiveAndBackDebug liveAndBackDebug;
+    private Activity mActivity;
 
     public LecAdvertPager(Context context, LecAdvertEntity lecAdvertEntity, LecAdvertPagerClose lecAdvertBll, String liveid, LiveAndBackDebug liveAndBackDebug) {
         super(context);
+        this.mActivity = (Activity) context;
         this.lecAdvertBll = lecAdvertBll;
         this.lecAdvertEntity = lecAdvertEntity;
         this.liveid = liveid;
@@ -72,17 +79,21 @@ public class LecAdvertPager extends BasePager {
         step1.findViewById(R.id.tv_livelec_advert_step1_enroll).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mContext instanceof ActivityChangeLand) {
-                    ActivityChangeLand activityChangeLand = (ActivityChangeLand) mContext;
-                    activityChangeLand.setAutoOrientation(false);
-                    activityChangeLand.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                }
-                step = 2;
-                step2 = inflater.inflate(R.layout.page_leclive_advert_step2, group, false);
-                ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                group.addView(step2, lp);
-                initViewStep2();
-                LecAdvertLog.sno5(lecAdvertEntity, liveAndBackDebug);
+//                if (mContext instanceof ActivityChangeLand) {
+//                    ActivityChangeLand activityChangeLand = (ActivityChangeLand) mContext;
+//                    activityChangeLand.setAutoOrientation(false);
+//                    activityChangeLand.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//                }
+//                step = 2;
+//                step2 = inflater.inflate(R.layout.page_leclive_advert_step2, group, false);
+//                ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//                group.addView(step2, lp);
+//                initViewStep2();
+//                LecAdvertLog.sno5(lecAdvertEntity, liveAndBackDebug);
+                // 04.09 直接跳转到订单支付页面
+                EventBus.getDefault().post(new MiniEvent("Order"));
+                OtherModulesEnter.intentToOrderConfirmActivity(mActivity,lecAdvertEntity.courseId+"-"+lecAdvertEntity.classId,100,"LectureLiveVideoActivity");
+                lecAdvertBll.close();
             }
         });
     }

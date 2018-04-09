@@ -1,14 +1,21 @@
 package com.xueersi.parentsmeeting.modules.livevideo.activity.item;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
+import com.xueersi.parentsmeeting.event.MiniEvent;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by Administrator on 2018/4/4.
@@ -21,8 +28,10 @@ public class MoreChoiceItem implements AdapterItemInterface<MoreChoice.Choice> {
     private TextView mCourseName;
     private TextView mLimitNum;
     private Button mToApply;
+    private Activity mActivity;
 
     public MoreChoiceItem(Context context, MoreChoice entity) {
+        mActivity = (Activity)context;
        this.mContext = context;
        this.mEntity = entity;
     }
@@ -53,13 +62,28 @@ public class MoreChoiceItem implements AdapterItemInterface<MoreChoice.Choice> {
         mLimitNum.setText(Html.fromHtml("<font color='#999999'>剩余名额</font>"+ "<font color='#F13232'>" +"  " +mDetail.getLimit()+ "</font>"));
         if(mDetail.getIsLearn() > 0){
             mToApply.setText("已报名");
+            mToApply.setTextColor(Color.parseColor("#999999"));
             mToApply.setBackgroundResource(R.drawable.bg_applyed);
         }else{
             mToApply.setText("立即报名");
+            mToApply.setTextColor(Color.parseColor("#F13232"));
             mToApply.setBackgroundResource(R.drawable.bg_apply);
         }
         if(mDetail.getLimit() == 0){
+            mToApply.setText("");
+            mToApply.setTextColor(Color.parseColor("#999999"));
             mToApply.setBackgroundResource(R.drawable.cannotapply);
         }
+
+        mToApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mDetail.getLimit() > 0 ){
+                    Log.e("Duncan","jumpConfirmActivity");
+                    EventBus.getDefault().post(new MiniEvent("Order"));
+                    OtherModulesEnter.intentToOrderConfirmActivity(mActivity,mDetail.getCourseId()+"-"+mDetail.getClassId(),100,"LectureLiveVideoActivity");
+                }
+            }
+        });
     }
 }

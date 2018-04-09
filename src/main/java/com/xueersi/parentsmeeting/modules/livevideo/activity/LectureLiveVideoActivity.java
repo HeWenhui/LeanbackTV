@@ -3,29 +3,23 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.text.Html;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,6 +27,7 @@ import android.widget.Toast;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.entity.FooterIconEntity;
+import com.xueersi.parentsmeeting.event.MiniEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.event.AppEvent;
@@ -53,13 +48,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.event.MiniEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
@@ -67,7 +61,6 @@ import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.VPlayerListener;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VP;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
@@ -84,7 +77,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import floatwindow.xishuang.float_lib.FloatActionController;
 import floatwindow.xishuang.float_lib.FloatWindowManager;
 import floatwindow.xishuang.float_lib.permission.FloatPermissionManager;
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
@@ -379,7 +371,9 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             if(mPopupWindows != null){
                 mPopupWindows = null;
             }
-            showPopupwindow();
+            if(LiveVideoConfig.MORE_COURSE > 0){
+                showPopupwindow();
+            }
         }else {
             if(mPopupWindows != null){
                 mPopupWindows.dismiss();
@@ -566,6 +560,9 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 changeLOrP();
             }
         });
+        TextView totalnum = (TextView)mFloatView.findViewById(R.id.tv_apply_totalnum);
+        totalnum.setText(LiveVideoConfig.MORE_COURSE + "");
+
     }
 
     private void createRealVideo(){
@@ -579,7 +576,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             //开启悬浮窗
 //            FloatActionController.getInstance().startMonkServer(this);
             FloatWindowManager.addView(this,videoView);
-            startActivity(new Intent(this,TestpayActivity.class));
         }
     }
 
@@ -1243,7 +1239,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     /*播放视频Activity最小化的测试*/
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(MiniEvent event) {
-        if("Min".equals(event.getMin())){
+        if("Order".equals(event.getMin())){
             createRealVideo();
             onPauseNotStopVideo = true;
             Log.e("Duncan","Min");
@@ -1259,6 +1255,8 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 mParent.addView(videoView,params);
             }
         }
+
+
 
     }
 
