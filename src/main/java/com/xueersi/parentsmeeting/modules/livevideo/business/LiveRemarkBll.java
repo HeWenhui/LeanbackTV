@@ -632,7 +632,7 @@ public class LiveRemarkBll {
             root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mPlayerService.seekTo(mEntity.getRelativeTime()*1000);
+                    mPlayerService.seekTo((mEntity.getRelativeTime()>=5?mEntity.getRelativeTime()-5:0)*1000);
                     /*if(!mEntity.isPlaying()){
                         //ivPlay.setVisibility(View.GONE);
 

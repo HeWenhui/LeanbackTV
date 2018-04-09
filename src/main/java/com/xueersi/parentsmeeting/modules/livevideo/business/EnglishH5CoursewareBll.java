@@ -768,7 +768,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mLiveAutoNoticeBll.getAutoNotice(isForce,5);
+                mLiveAutoNoticeBll.getAutoNotice(0,5);
             }
         },(int)(7000+Math.random()*4000));
 
