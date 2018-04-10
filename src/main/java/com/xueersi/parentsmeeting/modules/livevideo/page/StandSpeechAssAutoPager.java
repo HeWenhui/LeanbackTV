@@ -144,9 +144,10 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     private String headUrl;
     private Bitmap headBitmap;
     private String userName;
+    private String learning_stage;
 
     public StandSpeechAssAutoPager(Context context, String liveid, String testId,
-                                   String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, String userName, String headUrl) {
+                                   String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, String userName, String headUrl, String learning_stage) {
         super(context);
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
@@ -158,6 +159,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         startProgColor = context.getResources().getColor(R.color.COLOR_6462A2);
         progColor = 0;
         this.haveAnswer = haveAnswer;
+        this.learning_stage = learning_stage;
 //        content = "You are very good,You are very clever,welcome to my home";
 //        content = "welcome to my home";
 //        this.content = "C" + content.substring(1);
@@ -177,7 +179,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     public StandSpeechAssAutoPager(Context context, String liveid, String testId,
-                                   String nonce, String content, int time, int examSubmit, SpeechEvalAction speechEvalAction, String userName, String headUrl) {
+                                   String nonce, String content, int time, int examSubmit, SpeechEvalAction speechEvalAction, String userName, String headUrl, String learning_stage) {
         super(context);
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
@@ -195,6 +197,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         this.examSubmit = examSubmit;
         this.userName = userName;
         this.headUrl = headUrl;
+        this.learning_stage = learning_stage;
         entranceTime = System.currentTimeMillis();
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "receiveVoiceTest");
@@ -263,7 +266,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         animSpeechEncourage.setInterpolator(new OvershootInterpolator());
         content2 = content.replace("\n", " ");
         Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(),
-                "fangzhengmiaowu.ttf");
+                "fangzhengyouyuan.ttf");
         tvSpeectevalEncourage.setTypeface(fontFace);
         File dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/livevideo/");
         FileUtils.deleteDir(dir);
@@ -494,7 +497,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mData.put("testid", id);
         mData.put("islive", "" + isLive);
         speechEvalAction.umsAgentDebug2(eventId, mData);
-        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, new EvaluatorListener() {
+        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, learning_stage, new EvaluatorListener() {
             int lastVolume = 0;
 
             @Override
@@ -586,7 +589,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     @Override
                     public void run() {
                         errorSetGone();
-                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, evaluatorListener);
+                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, learning_stage, evaluatorListener);
                     }
                 }, 500);
                 return;
@@ -597,7 +600,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     @Override
                     public void run() {
                         errorSetGone();
-                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, evaluatorListener);
+                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, learning_stage, evaluatorListener);
                     }
                 }, 500);
                 return;
@@ -864,7 +867,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     @Override
                     public void run() {
                         errorSetGone();
-                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, evaluatorListener);
+                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, learning_stage, evaluatorListener);
                     }
                 }, 1000);
                 return;
@@ -883,7 +886,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                                 @Override
                                 public void run() {
                                     errorSetGone();
-                                    speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, evaluatorListener);
+                                    speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, learning_stage, evaluatorListener);
                                 }
                             }, 1000);
                             return;
@@ -902,7 +905,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                                 @Override
                                 public void run() {
                                     errorSetGone();
-                                    speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, evaluatorListener);
+                                    speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, learning_stage, evaluatorListener);
                                 }
                             }, 1000);
                             return;

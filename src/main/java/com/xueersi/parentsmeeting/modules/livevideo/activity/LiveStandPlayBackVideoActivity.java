@@ -1066,11 +1066,12 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                             LayoutParams.MATCH_PARENT);
                     if ("1".equals(mQuestionEntity.getIsAllow42())) {
                         MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
+                        String learning_stage = mVideoEntity.getLearning_stage();
                         speechQuestionPlaybackPager = new StandSpeechAssAutoPager(LiveStandPlayBackVideoActivity.this,
                                 mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(),
                                 "", mQuestionEntity.getSpeechContent(), mQuestionEntity.getEstimatedTime(),
                                 mQuestionEntity.getvEndTime() - mQuestionEntity.getvQuestionInsretTime(),
-                                LiveStandPlayBackVideoActivity.this, mMyInfo.getNickName(), mMyInfo.getHeadImg());
+                                LiveStandPlayBackVideoActivity.this, mMyInfo.getNickName(), mMyInfo.getHeadImg(), learning_stage);
 //                        int screenWidth = ScreenUtils.getScreenWidth();
 //                        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
 //                        lp.rightMargin = wradio;

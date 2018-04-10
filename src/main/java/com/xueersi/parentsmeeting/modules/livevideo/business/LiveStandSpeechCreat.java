@@ -26,7 +26,7 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         speechEvalAction = new LiveStandSpeechEvalActionImpl(speechEvalAction);
         StandSpeechAssAutoPager speechAssAutoPager =
                 new StandSpeechAssAutoPager(context, liveid, testId, nonce,
-                        content, (int) time, haveAnswer, speechEvalAction, userName, headUrl);
+                        content, (int) time, haveAnswer, speechEvalAction, userName, headUrl, learning_stage);
         return speechAssAutoPager;
     }
 

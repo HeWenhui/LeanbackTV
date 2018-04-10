@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.Top3FrameAnim;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
@@ -55,6 +56,7 @@ public class RedPackagePage extends BasePager {
     /** 获取金币，点击的位置，1.在中间，2.在右边 */
     private int clickPackage = 1;
     private boolean isLive;
+    Top3FrameAnim top3FrameAnim;
     String file1 = "Images/redpackage/1_enter";
     String file2 = "Images/redpackage/2_loop";
     String file3 = "Images/redpackage/3_fly_up";
@@ -79,6 +81,9 @@ public class RedPackagePage extends BasePager {
         this.headUrl = headUrl;
         this.userName = userName;
         this.isLive = isLive;
+        if (isLive) {
+            top3FrameAnim = new Top3FrameAnim(context, rl_livevideo_redpackage_bg, stuHeadBitmap, frameAnimations);
+        }
         initData();
     }
 
@@ -131,6 +136,9 @@ public class RedPackagePage extends BasePager {
             @Override
             public void onSuccess(Drawable drawable) {
                 headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                if (top3FrameAnim != null) {
+                    top3FrameAnim.setHeadBitmap(headBitmap);
+                }
             }
 
             @Override
@@ -830,11 +838,7 @@ public class RedPackagePage extends BasePager {
 
             @Override
             public void onAnimationEnd() {
-                String path = file15;
-                FrameAnimation btframeAnimation2 =
-                        FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, path, 50, false);
-                frameAnimations.add(btframeAnimation2);
-                btframeAnimation2.setAnimationListener(new FrameAnimation.AnimationListener() {
+                top3FrameAnim.start(new FrameAnimation.AnimationListener() {
                     @Override
                     public void onAnimationStart() {
                         btframeAnimation1.destory();
@@ -842,33 +846,53 @@ public class RedPackagePage extends BasePager {
 
                     @Override
                     public void onAnimationEnd() {
-                        String path = file16;
-                        final FrameAnimation btframeAnimation3 =
-                                FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, path, 50, true);
-                        frameAnimations.add(btframeAnimation3);
-                        btframeAnimation3.setBitmapCreate(new FrameAnimation.BitmapCreate() {
-                            @Override
-                            public Bitmap onAnimationCreate(String file) {
-                                if (students.isEmpty()) {
-                                    return null;
-                                }
-                                return initTeamRankHeadAndGold(students, file, true, btframeAnimation3);
-                            }
-                        });
-                        rl_livevideo_redpackage_bg.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                btframeAnimation3.destory();
-                                redPackageAction.onPackageClose(operateId);
-                            }
-                        }, 3000);
+                        redPackageAction.onPackageClose(operateId);
                     }
 
                     @Override
                     public void onAnimationRepeat() {
 
                     }
-                });
+                }, students);
+//                String path = file15;
+//                FrameAnimation btframeAnimation2 =
+//                        FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, path, 50, false);
+//                frameAnimations.add(btframeAnimation2);
+//                btframeAnimation2.setAnimationListener(new FrameAnimation.AnimationListener() {
+//                    @Override
+//                    public void onAnimationStart() {
+//                        btframeAnimation1.destory();
+//                    }
+//
+//                    @Override
+//                    public void onAnimationEnd() {
+//                        String path = file16;
+//                        final FrameAnimation btframeAnimation3 =
+//                                FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, path, 50, true);
+//                        frameAnimations.add(btframeAnimation3);
+//                        btframeAnimation3.setBitmapCreate(new FrameAnimation.BitmapCreate() {
+//                            @Override
+//                            public Bitmap onAnimationCreate(String file) {
+//                                if (students.isEmpty()) {
+//                                    return null;
+//                                }
+//                                return initTeamRankHeadAndGold(students, file, true, btframeAnimation3);
+//                            }
+//                        });
+//                        rl_livevideo_redpackage_bg.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                btframeAnimation3.destory();
+//                                redPackageAction.onPackageClose(operateId);
+//                            }
+//                        }, 3000);
+//                    }
+//
+//                    @Override
+//                    public void onAnimationRepeat() {
+//
+//                    }
+//                });
             }
 
             @Override

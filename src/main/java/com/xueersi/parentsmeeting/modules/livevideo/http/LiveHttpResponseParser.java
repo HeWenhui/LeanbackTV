@@ -464,6 +464,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return entity;
     }
 
+//    private int testid = 1;
+//    private boolean lyqTest = true;
+
     public GoldTeamStatus redGoldTeamStatus(ResponseEntity responseEntity, String stuid) {
         GoldTeamStatus entity = new GoldTeamStatus();
         try {
@@ -487,17 +490,17 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     MobAgent.httpResponseParserError(TAG, "redGoldTeamStatus:i=" + i, e.getMessage());
                 }
             }
-            if (AppConfig.DEBUG) {
-                for (int i = 0; i < 12; i++) {
-                    GoldTeamStatus.Student student = new GoldTeamStatus.Student();
-                    student.setStuId("12345" + i);
-                    student.setName(student.getStuId());
-                    student.setNickname(student.getStuId());
-                    student.setGold("1" + i);
-                    student.setAvatar_path(avatar_path);
-                    entity.getStudents().add(student);
-                }
-            }
+//            if (AppConfig.DEBUG && lyqTest) {
+//                for (int i = 0; i < 2; i++) {
+//                    GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                    student.setStuId("12345" + testid++);
+//                    student.setName(student.getStuId());
+//                    student.setNickname("测试" + testid++);
+//                    student.setGold("1" + i);
+//                    student.setAvatar_path(avatar_path);
+//                    entity.getStudents().add(student);
+//                }
+//            }
         } catch (Exception e) {
             MobAgent.httpResponseParserError(TAG, "redGoldTeamStatus", e.getMessage());
         }
@@ -527,17 +530,17 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     MobAgent.httpResponseParserError(TAG, "redGoldTeamStatus:i=" + i, e.getMessage());
                 }
             }
-            if (AppConfig.DEBUG) {
-                for (int i = 0; i < 3; i++) {
-                    GoldTeamStatus.Student student = new GoldTeamStatus.Student();
-                    student.setStuId("12345" + i);
-                    student.setName(student.getStuId());
-                    student.setNickname(student.getStuId());
-                    student.setRight(i % 2 == 0);
-                    student.setAvatar_path(avatar_path);
-                    entity.getStudents().add(student);
-                }
-            }
+//            if (AppConfig.DEBUG && lyqTest) {
+//                for (int i = 0; i < 3; i++) {
+//                    GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                    student.setStuId("12345" + testid++);
+//                    student.setName(student.getStuId());
+//                    student.setNickname("测试" + testid++);
+//                    student.setRight(i % 2 == 0);
+//                    student.setAvatar_path(avatar_path);
+//                    entity.getStudents().add(student);
+//                }
+//            }
         } catch (Exception e) {
             MobAgent.httpResponseParserError(TAG, "redGoldTeamStatus", e.getMessage());
         }
@@ -567,17 +570,17 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     MobAgent.httpResponseParserError(TAG, "redGoldTeamStatus:i=" + i, e.getMessage());
                 }
             }
-            if (AppConfig.DEBUG) {
-                for (int i = 0; i < 3; i++) {
-                    GoldTeamStatus.Student student = new GoldTeamStatus.Student();
-                    student.setStuId("12345" + i);
-                    student.setName(student.getStuId());
-                    student.setNickname(student.getStuId());
-                    student.setScore("" + (10 + i));
-                    student.setAvatar_path(avatar_path);
-                    entity.getStudents().add(student);
-                }
-            }
+//            if (AppConfig.DEBUG && lyqTest) {
+//                for (int i = 0; i < 3; i++) {
+//                    GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                    student.setStuId("12345" + testid++);
+//                    student.setName(student.getStuId());
+//                    student.setNickname("测试" + testid++);
+//                    student.setScore("" + (10 + i));
+//                    student.setAvatar_path(avatar_path);
+//                    entity.getStudents().add(student);
+//                }
+//            }
         } catch (Exception e) {
             MobAgent.httpResponseParserError(TAG, "redGoldTeamStatus", e.getMessage());
         }
