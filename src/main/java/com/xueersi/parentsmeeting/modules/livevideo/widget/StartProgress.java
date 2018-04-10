@@ -80,7 +80,7 @@ public class StartProgress extends RelativeLayout {
                 }
                 {
                     LayoutParams lp = (LayoutParams) tv_live_star_result_sorce.getLayoutParams();
-                    lp.topMargin = (int) (55 * ScreenUtils.getScreenDensity());
+                    lp.topMargin = (int) (50 * ScreenUtils.getScreenDensity());
                     LayoutParamsUtil.setViewLayoutParams(tv_live_star_result_sorce, lp);
                 }
 //                invalidate();
@@ -158,7 +158,7 @@ public class StartProgress extends RelativeLayout {
         tv_live_star_result_fluent = (TextView) findViewById(R.id.tv_live_star_result_fluent);
         tv_live_star_result_accuracy = (TextView) findViewById(R.id.tv_live_star_result_accuracy);
         Typeface fontFace = Typeface.createFromAsset(getContext().getAssets(),
-                "fangzhengmiaowu.ttf");
+                "fangzhengyouyuan.ttf");
         tv_live_star_result_sorce.setTypeface(fontFace);
         tv_live_star_result_count.setTypeface(fontFace);
         tv_live_star_result_fluent.setTypeface(fontFace);

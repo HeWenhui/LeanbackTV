@@ -260,13 +260,16 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             mMediaController.setWindowLayoutType();
             mMediaController.release();
         }
-
+        if(mLiveRemarkBll!=null){
+            mLiveRemarkBll.hideMarkPoints();
+        }
         // 设置当前是否为横屏
         final LivePlaybackMediaController mMediaController = new LivePlaybackMediaController(this, this);
         this.mMediaController = mMediaController;
-        if(mLiveRemarkBll==null||mLiveRemarkBll.getList()==null||mLiveRemarkBll.getList().size()==0){
+        if (mLiveRemarkBll == null || mVideoEntity.getIsAllowMarkpoint() != 1) {
             mMediaController.getTitleRightBtn().setVisibility(View.GONE);
-        }else {
+        } else {
+            mMediaController.getTitleRightBtn().setVisibility(View.VISIBLE);
             mMediaController.getTitleRightBtn().setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -293,8 +296,10 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (lstVideoQuestion == null || lstVideoQuestion.size() == 0) {
             return;
         }
-        mMediaController.setVideoQuestions("playback" + mVideoEntity.getvLivePlayBackType() + "-", lstVideoQuestion,
-                vPlayer.getDuration());
+        if(mVideoEntity.getIsAllowMarkpoint()!=1) {
+            mMediaController.setVideoQuestions("playback" + mVideoEntity.getvLivePlayBackType() + "-", lstVideoQuestion,
+                    vPlayer.getDuration());
+        }
     }
 
     @Override
@@ -337,7 +342,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     private void initView() {
         // 预加载布局
         rlFirstBackgroundView = (RelativeLayout) findViewById(R.id.rl_course_video_first_backgroud);
-        bottom=(RelativeLayout)findViewById(R.id.live_play_back_bottom);
+        bottom = (RelativeLayout) findViewById(R.id.live_play_back_bottom);
         ivLoading = (ImageView) findViewById(R.id.iv_course_video_loading_bg);
         updateLoadingImage();
         tvLoadingContent = (TextView) findViewById(R.id.tv_course_video_loading_content);
@@ -409,31 +414,35 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 //        if (AppConfig.DEBUG) {
 //            mWebPath = "http://r01.xesimg.com/stream/tmp/2016/11/30/1480481513276687694567.mp4";
 //        }
-        mLiveRemarkBll=new LiveRemarkBll(this,vPlayer);
-        mLiveRemarkBll.setBottom(bottom);
-        mLiveRemarkBll.setHttpManager(new LiveHttpManager(mContext));
-        mLiveRemarkBll.setLiveId(mVideoEntity.getLiveId());
-        mLiveRemarkBll.getMarkPoints(mVideoEntity.getLiveId(), new AbstractBusinessDataCallBack() {
-            @Override
-            public void onDataSucess(Object... objData) {
-                if(mMediaController!=null){
-                    mMediaController.getTitleRightBtn().setVisibility(View.VISIBLE);
-                    mMediaController.getTitleRightBtn().setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mLiveRemarkBll.setController(mMediaController);
-                            mLiveRemarkBll.showMarkPoints();
-                        }
-                    });
+        if (mVideoEntity != null && mVideoEntity.getIsAllowMarkpoint() == 1) {
+            mLiveRemarkBll = new LiveRemarkBll(this, vPlayer);
+            mLiveRemarkBll.setBottom(bottom);
+            mLiveRemarkBll.setHttpManager(new LiveHttpManager(mContext));
+            mLiveRemarkBll.setList(mVideoEntity.getLstPoint());
+            mLiveRemarkBll.setLiveId(mVideoEntity.getLiveId());
+            //mLiveRemarkBll.showBtMark();
+            mLiveRemarkBll.getMarkPoints(mVideoEntity.getLiveId(), new AbstractBusinessDataCallBack() {
+                @Override
+                public void onDataSucess(Object... objData) {
+                    if (mMediaController != null) {
+                        mMediaController.getTitleRightBtn().setVisibility(View.VISIBLE);
+                        mMediaController.getTitleRightBtn().setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mLiveRemarkBll.setController(mMediaController);
+                                mLiveRemarkBll.showMarkPoints();
+                            }
+                        });
+                    }
                 }
-            }
-        });
-        mLiveRemarkBll.setCallBack(new AbstractBusinessDataCallBack(){
-            @Override
-            public void onDataSucess(Object... objData) {
-                attachMediaController();
-            }
-        });
+            });
+            mLiveRemarkBll.setCallBack(new AbstractBusinessDataCallBack() {
+                @Override
+                public void onDataSucess(Object... objData) {
+                    attachMediaController();
+                }
+            });
+        }
 
         if (islocal) {
             // 互动题播放地址
@@ -989,9 +998,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT);
                     if ("1".equals(mQuestionEntity.getIsAllow42())) {
+                        String learning_stage = mVideoEntity.getLearning_stage();
                         speechQuestionPlaybackPager = new SpeechAssAutoPager(LivePlayBackVideoActivity.this,
                                 mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(),
-                                "", mQuestionEntity.getSpeechContent(), mQuestionEntity.getEstimatedTime(), mQuestionEntity.getvEndTime() - mQuestionEntity.getvQuestionInsretTime(), LivePlayBackVideoActivity.this);
+                                "", mQuestionEntity.getSpeechContent(), mQuestionEntity.getEstimatedTime(),
+                                mQuestionEntity.getvEndTime() - mQuestionEntity.getvQuestionInsretTime(), learning_stage, LivePlayBackVideoActivity.this);
 //                        int screenWidth = ScreenUtils.getScreenWidth();
 //                        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
 //                        lp.rightMargin = wradio;

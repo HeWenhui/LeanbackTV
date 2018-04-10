@@ -17,6 +17,7 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -38,6 +39,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
@@ -46,13 +48,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
@@ -125,13 +130,17 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     private QuestionBll questionBll;
     /** 竖屏的时候，也添加横屏的消息 */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
+    LiveAndBackDebug liveAndBackDebug;
+    private String liveId;
+    private String termId;
 
-    public LiveMessagePager(Context context, QuestionBll questionBll, BaseLiveMediaControllerBottom
+    public LiveMessagePager(Context context, QuestionBll questionBll, LiveAndBackDebug ums, BaseLiveMediaControllerBottom
             liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
         super(context);
         liveVideoActivity = (Activity) context;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
         this.questionBll = questionBll;
+        this.liveAndBackDebug = ums;
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
         Resources resources = context.getResources();
@@ -289,7 +298,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 String msg = editable.toString();
                 if (!StringUtils.isSpace(msg)) {
                     if (getInfo != null && getInfo.getBlockChinese() && isChinese(msg)) {
-                        addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, MESSAGE_CHINESE, "");
+                        addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, MESSAGE_CHINESE);
                         onTitleShow(true);
                         return;
                     }
@@ -298,7 +307,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                             boolean send = liveBll.sendMessage(msg);
                             if (send) {
                                 etMessageContent.setText("");
-                                addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
+                                addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg);
                                 lastSendMsg = System.currentTimeMillis();
                                 onTitleShow(true);
                             } else {
@@ -313,7 +322,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                         XESToastUtils.showToast(mContext, "老师未开启聊天");
                     }
                 } else {
-                    addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, MESSAGE_EMPTY, "");
+                    addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, MESSAGE_EMPTY);
                 }
             }
         });
@@ -499,7 +508,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                         boolean send = liveBll.sendMessage(msg);
                         if (send) {
                             etMessageContent.setText("");
-                            addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
+                            addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg);
                             lastSendMsg = System.currentTimeMillis();
                             onTitleShow(true);
                             rl_livevideo_common_word.setVisibility(View.INVISIBLE);
@@ -685,13 +694,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 //                rlInfo.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
             }
-            if(cbMessageClock!=null){
-                params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
-                if (params.rightMargin != wradio) {
-                    params.rightMargin = wradio;
+            params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
+            if (params.rightMargin != wradio) {
+                params.rightMargin = wradio;
 //                cbMessageClock.setLayoutParams(params);
-                    LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
-                }
+                LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
             }
         }
         if (height > 0) {
@@ -753,7 +760,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mView.post(new Runnable() {
             @Override
             public void run() {
-                addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT, "");
+                addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT);
 //                if (BuildConfig.DEBUG) {
 //                    addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, getInfo.getTeacherId() + "_" + getInfo.getId());
 //                }
@@ -764,7 +771,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     // 03.16 设置模拟的聊天连接
     public void onConnects(){
-        addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT, "");
+        addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT);
         ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_online);
     }
 
@@ -785,7 +792,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 isRegister = false;
-                addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, DISCONNECT, "");
+                addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, DISCONNECT);
                 ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_offline);
             }
         });
@@ -806,8 +813,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     @Override
-    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-        addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, "");
+    public void onMessage(String target, String sender, String login, String hostname, String text) {
+        addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text);
     }
 
     @Override
@@ -824,13 +831,13 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     int type = jsonObject.getInt("type");
                     if (type == XESCODE.TEACHER_MESSAGE) {
                         addMessage(jsonObject.getString("name"), LiveMessageEntity.MESSAGE_CLASS, jsonObject
-                                .getString("msg"), "");
+                                .getString("msg"));
                     } else if (type == XESCODE.FLOWERS) {
                         //{"ftype":2,"name":"林玉强","type":"110"}
                         addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"));
                     }
                 } catch (JSONException e) {
-                    addMessage(sender, LiveMessageEntity.MESSAGE_CLASS, message, "");
+                    addMessage(sender, LiveMessageEntity.MESSAGE_CLASS, message);
                 }
             }
         });
@@ -977,7 +984,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     /*添加聊天信息，超过120，移除60个*/
     @Override
-    public void addMessage(final String sender, final int type, final String text, String headUrl) {
+    public void addMessage(final String sender, final int type, final String text) {
+        final Exception e = new Exception();
         pool.execute(new Runnable() {
             @Override
             public void run() {
@@ -1001,7 +1009,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                         if (otherMessageAdapter != null) {
                             otherMessageAdapter.notifyDataSetChanged();
                         }
-                        messageAdapter.notifyDataSetChanged();
+                        if (messageAdapter != null) {
+                            messageAdapter.notifyDataSetChanged();
+                        } else {
+                            Loger.e(BaseApplication.getContext(), TAG, "" + mContext + "," + sender + "," + type, e, true);
+                        }
                         if (!isTouch) {
                             lvMessage.setSelection(lvMessage.getCount() - 1);
                         }
@@ -1009,6 +1021,15 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 });
             }
         });
+        // 03.22 体验课播放器统计用户的发送信息
+        if(liveAndBackDebug != null && type == LiveMessageEntity.MESSAGE_MINE){
+            StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayUserMsg");
+            logHashMap.put("LiveFreePlayUserMsg", text);
+            logHashMap.put("eventid",LiveVideoConfig.LIVE_EXPERIENCE_IMMSG);
+            liveAndBackDebug.umsAgentDebug2(LiveVideoConfig.LIVE_EXPERIENCE_IMMSG, logHashMap.getData());
+        }
+        Log.e("Duncan","sender:" + sender);
+
     }
 
     /**
@@ -1086,15 +1107,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         tvMessageGoldLable.setVisibility(View.VISIBLE);
     }
 
-    // 03.16 模拟读取历史聊天记录
-    public void oldMessage(){
-        mView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                addMessage("Teacher", LiveMessageEntity.MESSAGE_TIP, CONNECT, "");
-            }
-        },10000);
-    }
 
     // 03.16 模拟显示聊天人数
     public void showPeopleCount(int num){

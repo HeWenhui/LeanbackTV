@@ -69,8 +69,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.seteTime(data.optLong("etime"));
             getInfo.setNowTime(data.getDouble("nowTime"));
             //getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));
-            getInfo.setIsShowMarkPoint("1");
+            getInfo.setIsShowMarkPoint("0");
             getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
+            //getInfo.setIsShowCounselorWhisper("1");
             if (data.has("followType")) {
                 JSONObject followType = data.getJSONObject("followType");
                 FollowTypeEntity followTypeEntity = new FollowTypeEntity();
@@ -130,6 +131,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 studentLiveInfoEntity.setBuyCourseUrl(studentLiveInfo.optString("buyCourseUrl"));
                 studentLiveInfoEntity.setUserModeTotalTime(studentLiveInfo.optLong("userModeTotalTime", 1800));
                 studentLiveInfoEntity.setUserModeTime(studentLiveInfo.optLong("userModeTime", 1800));
+                studentLiveInfoEntity.setLearning_stage(studentLiveInfo.optString("learning_stage", "-1"));
                 getInfo.setStudentLiveInfo(studentLiveInfoEntity);
                 int mode = studentLiveInfo.optInt("mode", 0);
                 liveTopic.setMode(mode == 0 ? LiveTopic.MODE_TRANING : LiveTopic.MODE_CLASS);
@@ -332,6 +334,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         if (liveTopicJson.has("room_1")) {
             JSONObject status = liveTopicJson.getJSONObject("room_1");
             RoomStatusEntity mainStatusEntity = liveTopic.getMainRoomstatus();
+            mainStatusEntity.setOnbreak(status.optBoolean("isOnBreak"));
             mainStatusEntity.setId(status.getInt("id"));
             mainStatusEntity.setClassbegin(status.getBoolean("classbegin"));
             mainStatusEntity.setOpenbarrage(status.getBoolean("openbarrage"));

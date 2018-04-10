@@ -154,7 +154,7 @@ public class LiveMessageBll implements RoomAction {
         }
 
         long before = System.currentTimeMillis();
-        LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+        LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll, null,baseLiveMediaControllerBottom, liveMessageLandEntities, null);
         mLiveMessagePager = liveMessagePager;
         Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
 
@@ -205,11 +205,11 @@ public class LiveMessageBll implements RoomAction {
 //            }
             if (liveType == LiveBll.LIVE_TYPE_LECTURE) {
                 LiveMessagePager liveMessagePager =
-                        new LiveMessagePager(activity, questionBll, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
+                        new LiveMessagePager(activity, questionBll,null, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
                 mLiveMessagePager = liveMessagePager;
             } else {
                 long before = System.currentTimeMillis();
-                LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll,null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
                 Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
             }

@@ -72,6 +72,12 @@ public class LiveVideoConfig {
     public static String LIVE_PUBLISH_TEST = "live_publish_test";
 
     //新的日志
+    /** 体验播放器-进入播放器 */
+    public static String LIVE_EXPERIENCE_ENTER = "LiveFreePlayEvent";
+    /** 体验播放器-关闭播放器 */
+    public static String LIVE_EXPERIENCE_EXIT = "LiveFreePlayEvent";
+    /** 体验播放器-聊天内容 */
+    public static String LIVE_EXPERIENCE_IMMSG = "LiveFreePlayEvent";
     /** 直播-H5课件互动题 */
     public static String LIVE_ENGLISH_COURSEWARE = "live_h5waretest";
     /** 直播-接麦 */
@@ -117,9 +123,11 @@ public class LiveVideoConfig {
     // 03.16 体验课互动题提交答案
     public static String LIVE_EXPE_SUBMIT = AppConfig.HTTP_HOST + "/science/AutoLive/submitTestAnswer";
     /**获取标记点列表*/
-    public static String URL_LIVE_GET_MARK_POINTS=AppConfig.HTTP_HOST+"/science/LiveCourse/getMarkpoint";
+    public static String URL_LIVE_GET_MARK_POINTS = AppConfig.HTTP_HOST+"/science/LiveCourse/getMarkpoint";
     /**保存标记点*/
-    public static String URL_LIVE_SET_MARK_POINTS=AppConfig.HTTP_HOST+"/science/LiveCourse/setMarkpoint";
+    public static String URL_LIVE_SET_MARK_POINTS = AppConfig.HTTP_HOST+"/science/LiveCourse/setMarkpoint";
     /**删除标记点*/
-    public static String URL_LIVE_DELETE_MARK_POINTS=AppConfig.HTTP_HOST+"/science/LiveCourse/deleteMarkpoint";
+    public static String URL_LIVE_DELETE_MARK_POINTS = AppConfig.HTTP_HOST+"/science/LiveCourse/deleteMarkpoint";
+    /**体验课播放器上传心跳时间*/
+    public static String URL_EXPERIENCE_LIVE_ONLINETIME = AppConfig.HTTP_HOST+"/science/AutoLive/visitTime";
 }

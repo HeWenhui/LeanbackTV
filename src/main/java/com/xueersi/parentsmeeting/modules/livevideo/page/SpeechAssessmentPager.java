@@ -285,7 +285,7 @@ public class SpeechAssessmentPager extends BasePager {
         evaText = evaText.replace("<br>", " ");
         evaText = evaText.replace("\n", " ");
         saveVideoFile = new File(saveVideoFile.getParent(), "ise" + System.currentTimeMillis() + ".mp3");
-        mIse.startEnglishEvaluator(evaText, saveVideoFile.getPath(),false, mEvaluatorListener, true, "");
+        mIse.startEnglishEvaluator(evaText, saveVideoFile.getPath(), false, mEvaluatorListener, true, "");
         setSpeechEvalStartStop();
         tvSpeectevalVideotime.setVisibility(View.VISIBLE);
         final AtomicInteger timeInteger = new AtomicInteger(0);

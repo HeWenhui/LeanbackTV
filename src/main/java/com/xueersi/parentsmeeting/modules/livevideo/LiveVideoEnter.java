@@ -74,7 +74,7 @@ public class LiveVideoEnter {
     public static HashMap<String, LiveGetInfo> getInfos = new HashMap();
 
     /**
-     * 跳转到直播,直播课，通过网页
+     * 跳转到直播,直播课，通过网页,已经废弃
      * //https://live.xueersi.com/Live/index/30641
      *
      * @param context
@@ -82,36 +82,37 @@ public class LiveVideoEnter {
      */
     @Deprecated
     public static boolean intentToLiveVideoWithUrl(Activity context, String mUri) {
-        try {
-            String name = AppBll.getInstance().getAppInfoEntity().getChildName();
-            if (AppConfig.DEBUG || name.contains("100tal.com") || name.contains("xueersi.com")) {
-                int index = mUri.indexOf("index/");
-                String idUrl = mUri.substring(index + 6);
-                for (int i = 0; i < idUrl.length(); i++) {
-                    char c = idUrl.charAt(i);
-                    if (c < '0' || c > '9') {
-                        index = i;
-                        idUrl = idUrl.substring(0, index);
-                        break;
-                    }
-                }
-                if (intentToLiveVideoActivity(context, "", "", idUrl, LiveVideoBusinessConfig.ENTER_FROM_4)) {
-                    return true;
-                }
-            }
-        } catch (Exception e) {
-            return false;
-        }
+//        try {
+//            String name = AppBll.getInstance().getAppInfoEntity().getChildName();
+//            if (AppConfig.DEBUG || name.contains("100tal.com") || name.contains("xueersi.com")) {
+//                int index = mUri.indexOf("index/");
+//                String idUrl = mUri.substring(index + 6);
+//                for (int i = 0; i < idUrl.length(); i++) {
+//                    char c = idUrl.charAt(i);
+//                    if (c < '0' || c > '9') {
+//                        index = i;
+//                        idUrl = idUrl.substring(0, index);
+//                        break;
+//                    }
+//                }
+//                if (intentToLiveVideoActivity(context, "", "", idUrl, LiveVideoBusinessConfig.ENTER_FROM_4)) {
+//                    return true;
+//                }
+//            }
+//        } catch (Exception e) {
+//            return false;
+//        }
         return false;
     }
 
     /**
-     * 跳转到直播,直播课
+     * 跳转到直播,直播课,体验直播使用
      *
      * @param context
      * @param vSectionID 节id
      * @param from       入口
      */
+    @Deprecated
     public static boolean intentToLiveVideoActivity(Activity context, String courseId, String vSectionID, int from) {
 
         if (TextUtils.isEmpty(vSectionID)) {

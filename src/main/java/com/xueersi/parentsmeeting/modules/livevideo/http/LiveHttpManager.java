@@ -888,4 +888,26 @@ public class LiveHttpManager extends BaseHttpBusiness {
         Loger.i(LiveAutoNoticeBll.class.getSimpleName(), JSON.toJSON(params).toString());
         sendPost(liveVideoSAConfigInner.URL_LIVE_GET_AUTO_NOTICE, params, callBack);
     }
+    /**
+     * 智能私信统计接口
+     */
+    public void autoNoticeStatisc(String classId,HttpCallBack callBack){
+        HttpRequestParams params=new HttpRequestParams();
+        params.addBodyParam("classId",classId);
+        params.addBodyParam("stuId",UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        params.addBodyParam("type","11");
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_STATISTICS_AUTO_NOTICE,params,callBack);
+    }
+
+    /* 上传体验课播放器播放时长的接口 */
+    public void uploadExperiencePlayingTime(String liveId,String termId,Long hbTime,HttpCallBack callBack ){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("termId", termId);
+        params.addBodyParam("hbTime", hbTime.toString());
+        params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
+        setDefaultParameter(params);
+        sendPost(LiveVideoConfig.URL_EXPERIENCE_LIVE_ONLINETIME, params, callBack);
+    }
 }

@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
+import com.xueersi.xesalib.utils.string.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -692,6 +694,8 @@ public class LiveGetInfo {
         private long userModeTime;
         /** 是不是试听 */
         private boolean isExpe = false;
+        /** 童音测评 */
+        private String learning_stage = "";
 
         public String getCourseId() {
             return courseId;
@@ -779,6 +783,14 @@ public class LiveGetInfo {
 
         public void setUserModeTime(long userModeTime) {
             this.userModeTime = userModeTime;
+        }
+
+        public String getLearning_stage() {
+            return learning_stage;
+        }
+
+        public void setLearning_stage(String learning_stage) {
+            this.learning_stage = learning_stage;
         }
     }
 

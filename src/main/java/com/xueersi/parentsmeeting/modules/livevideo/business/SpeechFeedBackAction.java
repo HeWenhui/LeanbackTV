@@ -10,4 +10,5 @@ public interface SpeechFeedBackAction {
     void stop();
 
     void setVideoLayout(int width, int height);
+    void setNonce(String s);
 }
