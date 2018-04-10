@@ -8,6 +8,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -17,6 +19,7 @@ import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerStandPager;
@@ -99,12 +102,22 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                         }
                         return;
                     }
+                    final RelativeLayout group = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_livevideo_stand_voice_result, null);
                     LottieAnimationView lottieAnimationView = new LottieAnimationView(context);
                     lottieAnimationView.setImageAssetsFolder("Images/voice_answer/my_right");
                     lottieAnimationView.setComposition(lottieComposition);
-                    questionBll.initQuestionAnswerReslut(lottieAnimationView);
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+                    group.addView(lottieAnimationView, lp);
+                    questionBll.initQuestionAnswerReslut(group);
                     lottieAnimationView.playAnimation();
                     setRightGold(context, lottieAnimationView, entity.getGoldNum());
+                    group.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            questionBll.removeQuestionAnswerReslut(group);
+                        }
+                    });
                 }
             });
             isSuccess = true;
@@ -129,12 +142,22 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                         }
                         return;
                     }
+                    final RelativeLayout group = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_livevideo_stand_voice_result, null);
                     LottieAnimationView lottieAnimationView = new LottieAnimationView(context);
                     lottieAnimationView.setImageAssetsFolder("Images/voice_answer/my_wrong");
                     lottieAnimationView.setComposition(lottieComposition);
                     lottieAnimationView.playAnimation();
-                    questionBll.initQuestionAnswerReslut(lottieAnimationView);
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+                    group.addView(lottieAnimationView, lp);
+                    questionBll.initQuestionAnswerReslut(group);
                     setWrongTip(context, lottieAnimationView, entity.getStandardAnswer());
+                    group.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            questionBll.removeQuestionAnswerReslut(group);
+                        }
+                    });
                 }
             });
             // 填空题部分正确提示

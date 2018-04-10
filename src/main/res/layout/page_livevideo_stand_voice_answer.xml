@@ -37,6 +37,20 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true" />
 
+        <LinearLayout
+            android:id="@id/ll_livevideo_voiceans_team_left"
+            android:layout_width="wrap_content"
+            android:layout_toLeftOf="@id/iv_livevideo_speecteval_wave"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+
+        <LinearLayout
+            android:id="@id/ll_livevideo_voiceans_team_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv_livevideo_speecteval_wave"
+            android:orientation="horizontal" />
+
     </RelativeLayout>
 
     <RelativeLayout

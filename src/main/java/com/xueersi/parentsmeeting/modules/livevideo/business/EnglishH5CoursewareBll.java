@@ -462,6 +462,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         disMissAnswerResult();
     }
 
+    @Override
+    public void removeQuestionAnswerReslut(View popupWindow_view) {
+        rlQuestionResContent.removeView(popupWindow_view);
+    }
+
     /**
      * 回答问题结果提示框延迟三秒消失
      */

@@ -465,7 +465,7 @@ public class FrameAnimation {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        FrameAnimation btframeAnimation1 = new FrameAnimation(iv, new String[0], duration, isRepeat);
+        FrameAnimation btframeAnimation1 = new FrameAnimation(iv, new String[0], duration, false);
         return btframeAnimation1;
     }
 }

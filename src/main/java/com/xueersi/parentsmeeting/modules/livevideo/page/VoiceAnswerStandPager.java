@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -68,19 +69,17 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
     private ArrayList<FrameAnimation> waveFrameAnimations = new ArrayList<>();
     private ArrayList<GoldTeamStatus.Student> addStudents = new ArrayList<>();
-    /**
-     * 手动答题切换动画
-     */
+    /** 手动答题切换动画 */
     FrameAnimation switchFrameAnimation;
     ReadyGoImageView rgiv_livevideo_stand_readygo;
     RelativeLayout rl_livevideo_voiceans_content;
-    /**
-     * 错误提示
-     */
+    /** 组内战况-左边 */
+    LinearLayout ll_livevideo_voiceans_team_left;
+    /** 组内战况-右边 */
+    LinearLayout ll_livevideo_voiceans_team_right;
+    /** 错误提示 */
     RelativeLayout rlSpeectevalTip;
-    /**
-     * 错误提示-图片
-     */
+    /** 错误提示-图片 */
     ImageView ivSpeectevalTip;
     /** 错误提示-文字 */
     TextView tvSpeectevalTip;
@@ -302,16 +301,19 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                         updateName();
                                     }
                                 });
-                                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                                int nextInt = random.nextInt(500);
-                                if (nextInt % 2 == 0) {
-                                    lp.addRule(RelativeLayout.RIGHT_OF, R.id.iv_livevideo_speecteval_wave);
-                                    lp.leftMargin = nextInt;
+                                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                if (student.isRight()) {
+                                    int countLeft = ll_livevideo_voiceans_team_left.getChildCount();
+                                    if (countLeft > 4) {
+                                        ll_livevideo_voiceans_team_left.removeViewAt(countLeft - 1);
+                                    }
+                                    ll_livevideo_voiceans_team_left.addView(lottieAnimationView, 0, lp);
                                 } else {
-                                    lp.addRule(RelativeLayout.LEFT_OF, R.id.iv_livevideo_speecteval_wave);
-                                    lp.rightMargin = nextInt;
+                                    if (ll_livevideo_voiceans_team_right.getChildCount() > 4) {
+                                        ll_livevideo_voiceans_team_right.removeViewAt(0);
+                                    }
+                                    ll_livevideo_voiceans_team_right.addView(lottieAnimationView, lp);
                                 }
-                                rl_livevideo_voiceans_content.addView(lottieAnimationView, lp);
                             }
                             onFinish();
                         }
@@ -340,6 +342,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         View view = View.inflate(mContext, R.layout.page_livevideo_stand_voice_answer, null);
         rgiv_livevideo_stand_readygo = view.findViewById(R.id.rgiv_livevideo_stand_readygo);
         rl_livevideo_voiceans_content = view.findViewById(R.id.rl_livevideo_voiceans_content);
+        ll_livevideo_voiceans_team_left = view.findViewById(R.id.ll_livevideo_voiceans_team_left);
+        ll_livevideo_voiceans_team_right = view.findViewById(R.id.ll_livevideo_voiceans_team_right);
         rlSpeectevalTip = (RelativeLayout) view.findViewById(R.id.rl_livevideo_speecteval_tip);
         ivSpeectevalTip = (ImageView) view.findViewById(R.id.iv_livevideo_speecteval_tip);
         tvSpeectevalTip = (TextView) view.findViewById(R.id.tv_livevideo_speecteval_tip);

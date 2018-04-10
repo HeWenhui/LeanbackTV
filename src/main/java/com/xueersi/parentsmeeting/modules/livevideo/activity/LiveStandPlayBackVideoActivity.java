@@ -2215,6 +2215,13 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         disMissAnswerPopWindow();
     }
 
+    @Override
+    public void removeQuestionAnswerReslut(View popupWindow_view) {
+        if (mAnswerPopupWindow != null) {
+            mAnswerPopupWindow.dismiss();
+        }
+    }
+
     /** 回答问题结果提示框延迟三秒消失 */
     public void disMissAnswerPopWindow() {
         new Handler() {

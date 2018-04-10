@@ -650,11 +650,13 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         });
     }
 
+    private int test1 = 0;
+
     public void getSpeechEvalAnswerTeamStatus(String testId, final AbstractBusinessDataCallBack callBack) {
         mHttpManager.getSpeechEvalAnswerTeamStatus(testId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId());
+                GoldTeamStatus entity = mHttpResponseParser.getSpeechEvalAnswerTeamStatus(responseEntity, mGetInfo.getStuId());
                 callBack.onDataSucess(entity);
             }
 
@@ -671,10 +673,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     GoldTeamStatus entity = new GoldTeamStatus();
                     for (int i = 0; i < 3; i++) {
                         GoldTeamStatus.Student student = new GoldTeamStatus.Student();
-                        student.setNickname("测试" + i);
-                        student.setGold("90");
+                        student.setNickname("测试" + (test1++));
+                        student.setScore("90");
                         student.setAvatar_path(mGetInfo.getHeadImgPath());
-                        student.setRight(i % 2 == 0);
                         entity.getStudents().add(student);
                     }
                     callBack.onDataSucess(entity);

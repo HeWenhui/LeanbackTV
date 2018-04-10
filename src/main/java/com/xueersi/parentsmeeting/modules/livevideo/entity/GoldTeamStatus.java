@@ -21,6 +21,7 @@ public class GoldTeamStatus {
         boolean isMe = false;
         String stuId;// "31203",
         String gold;// 15,
+        String score;// 15,
         String name;// "lyq2@qq.com",
         String nickname;// "ssss",
         String en_name;// "rer",
@@ -49,6 +50,14 @@ public class GoldTeamStatus {
 
         public void setGold(String gold) {
             this.gold = gold;
+        }
+
+        public String getScore() {
+            return score;
+        }
+
+        public void setScore(String score) {
+            this.score = score;
         }
 
         public String getName() {

@@ -1328,6 +1328,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         disMissAnswerResult();
     }
 
+    @Override
+    public void removeQuestionAnswerReslut(View popupWindow_view) {
+        rlQuestionResContent.removeView(popupWindow_view);
+    }
+
     /**
      * 试题布局隐藏
      */

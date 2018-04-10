@@ -35,6 +35,8 @@ public interface BaseVoiceAnswerCreat {
     interface AnswerRightResultVoice {
         void initQuestionAnswerReslut(View popupWindow_view);
 
+        void removeQuestionAnswerReslut(View popupWindow_view);
+
         void initSelectAnswerRightResultVoice(VideoResultEntity entity);
 
         void initFillinAnswerRightResultVoice(VideoResultEntity entity);
