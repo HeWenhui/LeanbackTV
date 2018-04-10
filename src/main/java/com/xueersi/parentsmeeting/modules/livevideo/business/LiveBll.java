@@ -52,6 +52,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
+import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.xesalib.umsagent.UmsAgent;
 import com.xueersi.xesalib.umsagent.UmsAgentManager;
@@ -173,7 +174,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     long openStartTime;
     /** 区分文理appid */
     String appID = UmsConstants.LIVE_APP_ID;
-    /**满分榜业务*/
+    /** 满分榜业务 */
     private AnswerRankBll mAnswerRankBll;
     /** 标记点业务 */
     private LiveRemarkBll mLiveRemarkBll;
@@ -224,7 +225,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         this.mCurrentDutyId = currentDutyId;
         this.form = form;
         mHttpManager = new LiveHttpManager(mContext);
-        mHttpManager.addBodyParam("liveId",vSectionID);
+        mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
@@ -896,7 +897,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     }
                     if (mLiveRemarkBll != null) {
                         //主讲
-                        if (!liveTopic.getMainRoomstatus().isOnbreak()&&liveTopic.getMode().equals(LiveTopic.MODE_CLASS)) {
+                        if (!liveTopic.getMainRoomstatus().isOnbreak() && liveTopic.getMode().equals(LiveTopic.MODE_CLASS)) {
                             mLiveRemarkBll.setClassReady(true);
                         } else {
                             mLiveRemarkBll.setClassReady(false);
@@ -985,13 +986,25 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         if (mAnswerRankBll != null) {
                             mAnswerRankBll.setTestId(liveTopic.getVideoQuestionLiveEntity().getvQuestionID());
                         }
-                        if(mLiveAutoNoticeBll!=null){
+                        if (mLiveAutoNoticeBll != null) {
                             mLiveAutoNoticeBll.setTestId(liveTopic.getVideoQuestionLiveEntity().getvQuestionID());
                             mLiveAutoNoticeBll.setSrcType(liveTopic.getVideoQuestionLiveEntity().srcType);
                         }
                     }
                 } else {
                     if (mQuestionAction != null) {
+//                        VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+//                        videoQuestionLiveEntity.id = "100382-1";
+//                        videoQuestionLiveEntity.speechContent = "how are you";
+//                        videoQuestionLiveEntity.isAllow42 = "1";
+//                        videoQuestionLiveEntity.type = LocalCourseConfig.QUESTION_TYPE_SPEECH;
+//                        mQuestionAction.showQuestion(videoQuestionLiveEntity);
+//                        mHandler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                mQuestionAction.onStopQuestion("4", "");
+//                            }
+//                        }, 10000);
                         mQuestionAction.showQuestion(null);
                     }
                 }
@@ -1045,7 +1058,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                             mAnswerRankBll.setType(videoQuestionLiveEntity.courseware_type);
                         }
-                        if(mLiveAutoNoticeBll!=null){
+                        if (mLiveAutoNoticeBll != null) {
                             mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                             mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.courseware_type);
                         }
@@ -1153,7 +1166,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             if (mAnswerRankBll != null) {
                                 mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                             }
-                            if(mLiveAutoNoticeBll!=null){
+                            if (mLiveAutoNoticeBll != null) {
                                 mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                                 mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.srcType);
                             }
@@ -1259,7 +1272,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 } catch (Exception e) {
 
                                 }
-                                mRoomAction.onMessage(target, name, "", "", object.getString("msg"),teacherImg);
+                                mRoomAction.onMessage(target, name, "", "", object.getString("msg"), teacherImg);
                             } else {
                                 name = "辅导老师";
                                 String teamId = mGetInfo.getStudentLiveInfo().getTeamId();
@@ -1413,7 +1426,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                     mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                                     mAnswerRankBll.setType(videoQuestionLiveEntity.courseware_type);
                                 }
-                                if(mLiveAutoNoticeBll!=null){
+                                if (mLiveAutoNoticeBll != null) {
                                     mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                                     mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.courseware_type);
                                 }
@@ -1692,7 +1705,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         try {
                             List<RankUserEntity> lst = JSON.parseArray(object.optString("stuInfo"), RankUserEntity.class);
                             if (mAnswerRankBll != null) {
-                                mAnswerRankBll.showRankList(lst,-1);
+                                mAnswerRankBll.showRankList(lst, -1);
                             }
                         } catch (Exception e) {
                             Loger.i("=====notice " + e.getMessage());
@@ -3146,6 +3159,29 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         });
     }
 
+    public void getSpeechEvalAnswerTeamRank(final String id, final AbstractBusinessDataCallBack callBack) {
+        mHttpManager.getSpeechEvalAnswerTeamRank(id, new HttpCallBack(false) {
+
+            @Override
+            public void onPmSuccess(final ResponseEntity responseEntity) {
+                mLogtf.i("getSpeechEvalAnswerTeamRank:onPmSuccess=" + responseEntity.getJsonObject());
+                GoldTeamStatus entity = mHttpResponseParser.parseSpeechTeamRank(responseEntity, mGetInfo);
+                callBack.onDataSucess(entity);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                mLogtf.i("getSpeechEvalAnswerTeamRank:onPmFailure=" + msg);
+                callBack.onDataFail(0, msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                mLogtf.i("getSpeechEvalAnswerTeamRank:onPmError=" + responseEntity.getErrorMsg());
+            }
+        });
+    }
+
     public void speechEval42IsAnswered(final String id, String num, final SpeechEvalAction.SpeechIsAnswered isAnswered) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mHttpManager.speechEval42IsAnswered(enstuId, id, num, new HttpCallBack(false) {
@@ -4021,7 +4057,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         if (mGetInfo != null && !"1".equals(mGetInfo.getIsShowMarkPoint())) {
             mLiveRemarkBll.hideBtMark();
         }
-        if (!mLiveTopic.getMainRoomstatus().isOnbreak()&&mGetInfo.getStat() == 3 && LiveTopic.MODE_CLASS.equals(getMode())) {
+        if (!mLiveTopic.getMainRoomstatus().isOnbreak() && mGetInfo.getStat() == 3 && LiveTopic.MODE_CLASS.equals(getMode())) {
             mLiveRemarkBll.setClassReady(true);
         } else {
             mLiveRemarkBll.setClassReady(false);
@@ -4035,11 +4071,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     }
 
     // 03.22 上传体验课播放器的心跳时间
-    public void uploadExperiencePlayTime(String liveId,String termId,Long hbtime){
-        mHttpManager.uploadExperiencePlayingTime(liveId,termId, hbtime, new HttpCallBack(false) {
+    public void uploadExperiencePlayTime(String liveId, String termId, Long hbtime) {
+        mHttpManager.uploadExperiencePlayingTime(liveId, termId, hbtime, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Log.e("Duncan","uploadexperiencetime:" + responseEntity.getJsonObject());
+                Log.e("Duncan", "uploadexperiencetime:" + responseEntity.getJsonObject());
             }
         });
     }

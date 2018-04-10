@@ -7,7 +7,54 @@ import java.util.ArrayList;
  */
 
 public class GoldTeamStatus {
+
+    private String myScore;//学生本人分数
+    private String myName;//"学生本人姓名
+    private String myNickName;//"学生本人昵称
+    private String myEnName;//"学生本人英文名
+    private String myAvatarPath;//":"http://xesfile.xesimg.com/user/h/def10002.png"
+
     private ArrayList<Student> students = new ArrayList<>();
+
+    public String getMyScore() {
+        return myScore;
+    }
+
+    public void setMyScore(String myScore) {
+        this.myScore = myScore;
+    }
+
+    public String getMyName() {
+        return myName;
+    }
+
+    public void setMyName(String myName) {
+        this.myName = myName;
+    }
+
+    public String getMyNickName() {
+        return myNickName;
+    }
+
+    public void setMyNickName(String myNickName) {
+        this.myNickName = myNickName;
+    }
+
+    public String getMyEnName() {
+        return myEnName;
+    }
+
+    public void setMyEnName(String myEnName) {
+        this.myEnName = myEnName;
+    }
+
+    public String getMyAvatarPath() {
+        return myAvatarPath;
+    }
+
+    public void setMyAvatarPath(String myAvatarPath) {
+        this.myAvatarPath = myAvatarPath;
+    }
 
     public ArrayList<Student> getStudents() {
         return students;

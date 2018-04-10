@@ -60,14 +60,12 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
 
     @Override
     public void onReadPackage(final int operateId) {
-        Runnable runnable = new Runnable() {
-
+        mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
                 showRedPacket(operateId);
             }
-        };
-        mVPlayVideoControlHandler.post(runnable);
+        });
     }
 
     private void onGetPackage(VideoResultEntity entity) {

@@ -395,6 +395,7 @@
     <item name="iv_livevideo_speecteval_tip_pao" type="id" />
     <item name="tv_livevideo_speecteval_tip" type="id" />
     <item name="iv_livevideo_speecteval_result_close" type="id" />
+    <item name="iv_livevideo_speecteval_result_top3" type="id" />
     <!--直播-投票-->
     <item name="il_livevideo_vote_choice" type="id" />
     <item name="btn_livevideo_vote_item" type="id" />

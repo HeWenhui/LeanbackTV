@@ -553,6 +553,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42, params, requestCallBack);
     }
 
+    public void getSpeechEvalAnswerTeamRank(String id, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("testId", id);
+        setDefaultParameter(params);
+        Loger.i(TAG, "getSpeechEvalAnswerTeamRank:id=" + id);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_SPEECH_TEAM_RAND, params, requestCallBack);
+    }
+
     public void speechEval42IsAnswered(String enstuId, String liveId, String id, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
 //        params.addBodyParam("enstuId", enstuId);
@@ -888,20 +896,21 @@ public class LiveHttpManager extends BaseHttpBusiness {
         Loger.i(LiveAutoNoticeBll.class.getSimpleName(), JSON.toJSON(params).toString());
         sendPost(liveVideoSAConfigInner.URL_LIVE_GET_AUTO_NOTICE, params, callBack);
     }
+
     /**
      * 智能私信统计接口
      */
-    public void autoNoticeStatisc(String classId,HttpCallBack callBack){
-        HttpRequestParams params=new HttpRequestParams();
-        params.addBodyParam("classId",classId);
-        params.addBodyParam("stuId",UserBll.getInstance().getMyUserInfoEntity().getStuId());
-        params.addBodyParam("type","11");
+    public void autoNoticeStatisc(String classId, HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("stuId", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        params.addBodyParam("type", "11");
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_LIVE_STATISTICS_AUTO_NOTICE,params,callBack);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_STATISTICS_AUTO_NOTICE, params, callBack);
     }
 
     /* 上传体验课播放器播放时长的接口 */
-    public void uploadExperiencePlayingTime(String liveId,String termId,Long hbTime,HttpCallBack callBack ){
+    public void uploadExperiencePlayingTime(String liveId, String termId, Long hbTime, HttpCallBack callBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("termId", termId);

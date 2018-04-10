@@ -60,6 +60,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageStandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.StandSpeechTop3Bll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.StarInteractAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
@@ -289,6 +290,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         rollCallBll.initView(bottomContent);
         //互动题和懂了吗
         questionBll.initView(bottomContent, true);
+        questionBll.getSpeechEndAction().initView(bottomContent);
         //红包
         redPackageBll.initView(bottomContent);
         //学习报告
@@ -453,6 +455,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         questionBll.initData();
         questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(questionBll.new LiveQuestionSwitchImpl()));
         questionBll.setBaseSpeechCreat(new LiveStandSpeechCreat(mLiveBll));
+        questionBll.setSpeechEndAction(new StandSpeechTop3Bll(mLiveBll));
 //        questionBll.setBaseSpeechCreat(new LiveSpeechCreat());
         englishH5CoursewareBll.setShareDataManager(mShareDataManager);
         englishH5CoursewareBll.setLiveType(liveType);
@@ -970,9 +973,9 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         redPackageBll.setHeadUrl(getInfo.getHeadImgPath());
         redPackageBll.setReceiveGold(new LiveReceiveGold(mLiveBll));
 
-        if (AppConfig.DEBUG) {
-            redPackageBll.onReadPackage(1);
-        }
+//        if (AppConfig.DEBUG) {
+//            redPackageBll.onReadPackage(1);
+//        }
         Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
     }
 
