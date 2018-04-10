@@ -445,6 +445,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                         }
                     });
                     mCourseNum.setText(mChoices.size() + "");
+                    mApplyNum.setText(Html.fromHtml("<font color='#333333'>正在报名中</font>"+ "<font color='#F13232'>" +"  " + mChoices.size() + "</font>"));
                     mAdvance.setVisibility(View.VISIBLE);
                 }else{
                     mAdvance.setVisibility(View.GONE);
