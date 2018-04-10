@@ -53,8 +53,23 @@ public class Top3FrameAnim {
 
     public void start(final FrameAnimation.AnimationListener animationListener, final ArrayList<GoldTeamStatus.Student> students) {
         String path = file15;
-        FrameAnimation btframeAnimation2 =
+        final FrameAnimation btframeAnimation2 =
                 FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, path, 50, false);
+        btframeAnimation2.setBitmapCreate(new FrameAnimation.BitmapCreate() {
+            @Override
+            public Bitmap onAnimationCreate(String file) {
+                int index = file.lastIndexOf("/");
+                String name = "";
+                if (index != -1) {
+                    name = file.substring(index + 1);
+                }
+                if (name.compareTo("package_rank_enter_00025") > 0) {
+                    return initTeamRankHeadAndGold(students, file, true, btframeAnimation2);
+                } else {
+                    return null;
+                }
+            }
+        });
         frameAnimations.add(btframeAnimation2);
         btframeAnimation2.setAnimationListener(new FrameAnimation.AnimationListener() {
             @Override
@@ -83,7 +98,7 @@ public class Top3FrameAnim {
                         btframeAnimation3.destory();
                         animationListener.onAnimationEnd();
                     }
-                }, 3000);
+                }, 63000);
             }
 
             @Override
