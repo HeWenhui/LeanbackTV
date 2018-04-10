@@ -91,8 +91,7 @@ public class LecAdvertPager extends BasePager {
 //                initViewStep2();
 //                LecAdvertLog.sno5(lecAdvertEntity, liveAndBackDebug);
                 // 04.09 直接跳转到订单支付页面
-                EventBus.getDefault().post(new MiniEvent("Order"));
-                OtherModulesEnter.intentToOrderConfirmActivity(mActivity,lecAdvertEntity.courseId+"-"+lecAdvertEntity.classId,100,"LectureLiveVideoActivity");
+                EventBus.getDefault().post(new MiniEvent("Order",lecAdvertEntity.courseId,lecAdvertEntity.classId));
                 lecAdvertBll.close();
             }
         });

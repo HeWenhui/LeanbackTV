@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.event.MiniEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.event.AppEvent;
@@ -565,7 +566,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
 
     }
 
-    private void createRealVideo(){
+    private void createRealVideo(String courseId,String classId){
         boolean isPermission = FloatPermissionManager.getInstance().applyFloatWindow(this);
         //有对应权限或者系统版本小于7.0
         if (isPermission || Build.VERSION.SDK_INT < 24) {
@@ -576,6 +577,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             //开启悬浮窗
 //            FloatActionController.getInstance().startMonkServer(this);
             FloatWindowManager.addView(this,videoView);
+            OtherModulesEnter.intentToOrderConfirmActivity(this,courseId+"-"+classId,100,"LectureLiveVideoActivity");
         }
     }
 
@@ -1240,7 +1242,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(MiniEvent event) {
         if("Order".equals(event.getMin())){
-            createRealVideo();
+            createRealVideo(event.getCourseId(),event.getClassId());
             onPauseNotStopVideo = true;
             Log.e("Duncan","Min");
         }
@@ -1260,16 +1262,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
 
     }
 
-    AbstractBusinessDataCallBack getDataCallBack = new AbstractBusinessDataCallBack(){
-        @Override
-        public void onDataSucess(Object... objData) {
-            // 04.04 获取到数据之后的逻辑处理
-            if(objData.length > 0){
-
-            }
-
-        }
-    };
 
     /**
      * 是否显示移动网络提示

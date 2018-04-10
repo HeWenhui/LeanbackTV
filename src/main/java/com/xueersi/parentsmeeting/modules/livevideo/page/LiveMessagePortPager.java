@@ -439,8 +439,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                         @Override
                         public void onClick(View view) {
                             if(mChoices.get(mChoices.size()-1).getLimit() > 0){
-                                EventBus.getDefault().post(new MiniEvent("Order"));
-                                OtherModulesEnter.intentToOrderConfirmActivity(liveVideoActivity,mChoices.get(mChoices.size()-1).getCourseId()+"-"+mChoices.get(mChoices.size()-1).getClassId(),100,"LectureLiveVideoActivity");
+                                EventBus.getDefault().post(new MiniEvent("Order",mChoices.get(mChoices.size()-1).getCourseId(),mChoices.get(mChoices.size()-1).getClassId()));
                             }
 
                         }
