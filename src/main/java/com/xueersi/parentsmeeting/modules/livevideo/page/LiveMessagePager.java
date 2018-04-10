@@ -298,7 +298,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 String msg = editable.toString();
                 if (!StringUtils.isSpace(msg)) {
                     if (getInfo != null && getInfo.getBlockChinese() && isChinese(msg)) {
-                        addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, MESSAGE_CHINESE);
+                        addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, MESSAGE_CHINESE, "");
                         onTitleShow(true);
                         return;
                     }
@@ -307,7 +307,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                             boolean send = liveBll.sendMessage(msg);
                             if (send) {
                                 etMessageContent.setText("");
-                                addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg);
+                                addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
                                 lastSendMsg = System.currentTimeMillis();
                                 onTitleShow(true);
                             } else {
@@ -322,7 +322,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                         XESToastUtils.showToast(mContext, "老师未开启聊天");
                     }
                 } else {
-                    addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, MESSAGE_EMPTY);
+                    addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, MESSAGE_EMPTY, "");
                 }
             }
         });
@@ -508,7 +508,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                         boolean send = liveBll.sendMessage(msg);
                         if (send) {
                             etMessageContent.setText("");
-                            addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg);
+                            addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
                             lastSendMsg = System.currentTimeMillis();
                             onTitleShow(true);
                             rl_livevideo_common_word.setVisibility(View.INVISIBLE);
@@ -694,11 +694,13 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 //                rlInfo.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
             }
-            params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
-            if (params.rightMargin != wradio) {
-                params.rightMargin = wradio;
+            if (cbMessageClock != null) {
+                params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
+                if (params.rightMargin != wradio) {
+                    params.rightMargin = wradio;
 //                cbMessageClock.setLayoutParams(params);
-                LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
+                    LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
+                }
             }
         }
         if (height > 0) {
@@ -760,7 +762,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mView.post(new Runnable() {
             @Override
             public void run() {
-                addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT);
+                addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT, "");
 //                if (BuildConfig.DEBUG) {
 //                    addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, getInfo.getTeacherId() + "_" + getInfo.getId());
 //                }
@@ -770,8 +772,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     // 03.16 设置模拟的聊天连接
-    public void onConnects(){
-        addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT);
+    public void onConnects() {
+        addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT, "");
         ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_online);
     }
 
@@ -792,7 +794,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 isRegister = false;
-                addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, DISCONNECT);
+                addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, DISCONNECT, "");
                 ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_offline);
             }
         });
@@ -813,8 +815,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     @Override
-    public void onMessage(String target, String sender, String login, String hostname, String text) {
-        addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text);
+    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
+        addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, "");
     }
 
     @Override
@@ -831,13 +833,13 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     int type = jsonObject.getInt("type");
                     if (type == XESCODE.TEACHER_MESSAGE) {
                         addMessage(jsonObject.getString("name"), LiveMessageEntity.MESSAGE_CLASS, jsonObject
-                                .getString("msg"));
+                                .getString("msg"), "");
                     } else if (type == XESCODE.FLOWERS) {
                         //{"ftype":2,"name":"林玉强","type":"110"}
                         addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"));
                     }
                 } catch (JSONException e) {
-                    addMessage(sender, LiveMessageEntity.MESSAGE_CLASS, message);
+                    addMessage(sender, LiveMessageEntity.MESSAGE_CLASS, message, "");
                 }
             }
         });
@@ -875,6 +877,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String
             recipientNick, String reason) {
 
+    }
+
+    public void setLiveTermId(String liveId, String termId) {
+        this.liveId = liveId;
+        this.termId = termId;
     }
 
     /** 被禁言 */
@@ -984,7 +991,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     /*添加聊天信息，超过120，移除60个*/
     @Override
-    public void addMessage(final String sender, final int type, final String text) {
+    public void addMessage(final String sender, final int type, final String text, String headUrl) {
         final Exception e = new Exception();
         pool.execute(new Runnable() {
             @Override
@@ -1022,13 +1029,13 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             }
         });
         // 03.22 体验课播放器统计用户的发送信息
-        if(liveAndBackDebug != null && type == LiveMessageEntity.MESSAGE_MINE){
+        if (liveAndBackDebug != null && type == LiveMessageEntity.MESSAGE_MINE) {
             StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayUserMsg");
             logHashMap.put("LiveFreePlayUserMsg", text);
-            logHashMap.put("eventid",LiveVideoConfig.LIVE_EXPERIENCE_IMMSG);
+            logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_IMMSG);
             liveAndBackDebug.umsAgentDebug2(LiveVideoConfig.LIVE_EXPERIENCE_IMMSG, logHashMap.getData());
         }
-        Log.e("Duncan","sender:" + sender);
+        Log.e("Duncan", "sender:" + sender);
 
     }
 
@@ -1109,7 +1116,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
 
     // 03.16 模拟显示聊天人数
-    public void showPeopleCount(int num){
+    public void showPeopleCount(int num) {
         tvMessageCount.setText(num + "人正在上课");
     }
 }

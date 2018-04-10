@@ -456,6 +456,38 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         });
     }
 
+    /**
+     * 领取红包-站立直播
+     *
+     * @param operateId
+     * @param callBack
+     */
+    public void getReceiveGoldTeamStatus(final int operateId, final AbstractBusinessDataCallBack callBack) {
+        mLogtf.d("sendReceiveGoldStand:operateId=" + operateId + ",liveId=" + mLiveId);
+        mHttpManager.getReceiveGoldTeamStatus(operateId, new HttpCallBack(false) {
+
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                mLogtf.d("getReceiveGoldTeamStatus:onPmSuccess=" + responseEntity.getJsonObject().toString() + ",operateId=" +
+                        operateId);
+                GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId());
+                callBack.onDataSucess(entity);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                mLogtf.d("getReceiveGoldTeamStatus:onPmFailure=" + msg + ",operateId=" + operateId);
+                callBack.onDataFail(0, msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                mLogtf.d("getReceiveGoldTeamStatus:onPmError=" + responseEntity.getErrorMsg() + ",operateId=" + operateId);
+                callBack.onDataFail(1, responseEntity.getErrorMsg());
+            }
+        });
+    }
+
     public void getReceiveGoldTeamRank(final int operateId, final AbstractBusinessDataCallBack callBack) {
         mLogtf.d("getReceiveGoldTeamRank:operateId=" + operateId + ",liveId=" + mLiveId);
         mHttpManager.getReceiveGoldTeamRank(operateId, new HttpCallBack(false) {
@@ -1221,13 +1253,20 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             String name;
                             if (sourceNick.startsWith("t")) {
                                 name = "主讲老师";
-                                mRoomAction.onMessage(target, name, "", "", object.getString("msg"));
+                                String teacherImg = "";
+                                try {
+                                    teacherImg = mGetInfo.getMainTeacherInfo().getTeacherImg();
+                                } catch (Exception e) {
+
+                                }
+                                mRoomAction.onMessage(target, name, "", "", object.getString("msg"),teacherImg);
                             } else {
                                 name = "辅导老师";
                                 String teamId = mGetInfo.getStudentLiveInfo().getTeamId();
                                 String to = object.optString("to", "All");
                                 if ("All".equals(to) || teamId.equals(to)) {
-                                    mRoomAction.onMessage(target, name, "", "", object.getString("msg"));
+                                    String teacherIMG = mGetInfo.getTeacherIMG();
+                                    mRoomAction.onMessage(target, name, "", "", object.getString("msg"), teacherIMG);
                                 }
                             }
                         }
@@ -1748,7 +1787,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         @Override
         public void onMessage(String target, String sender, String login, String hostname, String text) {
             if (mRoomAction != null) {
-                mRoomAction.onMessage(target, sender, login, hostname, text);
+                mRoomAction.onMessage(target, sender, login, hostname, text, "");
             }
         }
 

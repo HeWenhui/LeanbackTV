@@ -15,10 +15,10 @@ import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 public class LiveSpeechCreat implements BaseSpeechCreat {
     @Override
-    public BaseSpeechAssessmentPager create(Context context, String liveid, String testId, String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, String userName, String headUrl) {
+    public BaseSpeechAssessmentPager create(Context context, String liveid, String testId, String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, String userName, String headUrl, String learning_stage) {
         SpeechAssAutoPager speechAssAutoPager =
                 new SpeechAssAutoPager(context, liveid, testId, nonce,
-                        content, (int) time, haveAnswer, speechEvalAction);
+                        content, (int) time, haveAnswer, learning_stage, speechEvalAction);
         int screenWidth = ScreenUtils.getScreenWidth();
         int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
         lp.rightMargin = wradio;

@@ -11,7 +11,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPag
  */
 public interface BaseSpeechCreat {
     BaseSpeechAssessmentPager create(Context context, String liveid, String testId,
-                                     String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, String userName, String headUrl);
+                                     String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, String userName, String headUrl, String learning_stage);
 
     void setViewLayoutParams(BaseSpeechAssessmentPager baseVoiceAnswerPager, int rightMargin);
 }

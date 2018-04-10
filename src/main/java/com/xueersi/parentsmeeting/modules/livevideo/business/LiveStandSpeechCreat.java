@@ -22,7 +22,7 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
 
     @Override
     public BaseSpeechAssessmentPager create(Context context, String liveid, String testId, String nonce, String content,
-                                            int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, String userName, String headUrl) {
+                                            int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, String userName, String headUrl, String learning_stage) {
         speechEvalAction = new LiveStandSpeechEvalActionImpl(speechEvalAction);
         StandSpeechAssAutoPager speechAssAutoPager =
                 new StandSpeechAssAutoPager(context, liveid, testId, nonce,

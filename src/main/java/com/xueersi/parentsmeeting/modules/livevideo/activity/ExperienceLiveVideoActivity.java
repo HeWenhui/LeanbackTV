@@ -119,7 +119,7 @@ import static com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog.TITLE
  * 体验课播放器
  */
 
-public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implements BaseLiveMediaControllerBottom.MediaChildViewClick{
+public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implements BaseLiveMediaControllerBottom.MediaChildViewClick {
     QuestionBll questionBll;
     private RelativeLayout rlLiveMessageContent;
     LiveMessageBll liveMessageBll;
@@ -154,8 +154,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private Long lastPlayTime;
     /** 播放异常统计开始时间 */
     private Long errorPlayTime;
+
     // 03.17 定时获取聊天记录的任务
-    class ScanRunnable implements Runnable{
+    class ScanRunnable implements Runnable {
         HandlerThread handlerThread = new HandlerThread("ScanRunnable");
 
         ScanRunnable() {
@@ -167,15 +168,16 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         void exit() {
             handlerThread.quit();
         }
+
         @Override
         public void run() {
             if (isFinishing()) {
                 return;
             }
-            initOldMessage(mVideoEntity.getLiveId(),mVideoEntity.getCourseId(),timer + Long.parseLong(mVideoEntity.getVisitTimeKey()));
+            initOldMessage(mVideoEntity.getLiveId(), mVideoEntity.getCourseId(), timer + Long.parseLong(mVideoEntity.getVisitTimeKey()));
 //            initOldMessage(mVideoEntity.getLiveId(),mVideoEntity.getCourseId(),timer + 2970L);
             timer = timer + 10;
-            Log.e("Duncan","timer:" + timer);
+            Log.e("Duncan", "timer:" + timer);
             scanHandler.postDelayed(this, 10000);
 
 
@@ -190,7 +192,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 // 03.22 上传心跳时间
 //                lastPlayTime = System.currentTimeMillis();
 //                playTime += mPlayDurTime;
-                mLiveBll.uploadExperiencePlayTime(mVideoEntity.getLiveId(),mVideoEntity.getChapterId(),300L);
+                mLiveBll.uploadExperiencePlayTime(mVideoEntity.getLiveId(), mVideoEntity.getChapterId(), 300L);
                 mHandler.postDelayed(this, mPlayDurTime);
             }
         }
@@ -356,7 +358,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         if (liveMediaControllerBottom.getPaddingBottom() != paddingBottom) {
             liveMediaControllerBottom.setPadding(0, 0, 0, paddingBottom);
         }
-        mMediaController.setControllerBottom(liveMediaControllerBottom,false);
+        mMediaController.setControllerBottom(liveMediaControllerBottom, false);
 //        rlFirstBackgroundView = (RelativeLayout) findViewById(R.id.rl_course_video_first_backgroud);
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
 //        ivTeacherNotpresent.setImageResource(R.drawable.);
@@ -436,7 +438,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         bottomContent.addView(rlLiveMessageContent, params);
 
         long before = System.currentTimeMillis();
-        mLiveMessagePager = new LiveMessagePager(this, questionBll,ums, liveMediaControllerBottom, liveMessageLandEntities, null);
+        mLiveMessagePager = new LiveMessagePager(this, questionBll, ums, liveMediaControllerBottom, liveMessageLandEntities, null);
 //        mLiveMessagePager = liveMessagePager;
         Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
 
@@ -447,18 +449,18 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         mLiveMessagePager.setLiveBll(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
         // 03.08 设置假的聊天连接成功信号
-        if(!pause){
+        if (!pause) {
             mLiveMessagePager.onConnects();
         }
         mLiveMessagePager.setIsRegister(true);
         // 03.13 设置假的上课人数
-        if(mMessage != null && mMessage.getOnlineNum().size()!=0 && mMessage.getOnlineNum().get(0).getOnlineNum()!=null){
+        if (mMessage != null && mMessage.getOnlineNum().size() != 0 && mMessage.getOnlineNum().get(0).getOnlineNum() != null) {
             mLiveMessagePager.showPeopleCount(Integer.parseInt(mMessage.getOnlineNum().get(0).getOnlineNum()));
-        }else{
+        } else {
             mLiveMessagePager.showPeopleCount(3);
         }
         // 03.22 设置统计日志的公共参数
-        mLiveMessagePager.setLiveTermId(mVideoEntity.getLiveId(),mVideoEntity.getChapterId());
+        mLiveMessagePager.setLiveTermId(mVideoEntity.getLiveId(), mVideoEntity.getChapterId());
 //        if (mode != null) {
 //            mLiveMessagePager.onopenchat(openchat, mode, false);
 //        }
@@ -499,8 +501,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         void onPmFailure();
     }
 
-    private void initOldMessage(String liveId,String classId,Long start) {
-        lectureLivePlayBackBll.getExperienceMsgs(liveId,classId,start,new GetExperienceLiveMsgs(){
+    private void initOldMessage(String liveId, String classId, Long start) {
+        lectureLivePlayBackBll.getExperienceMsgs(liveId, classId, start, new GetExperienceLiveMsgs() {
             @Override
             public void getLiveExperienceMsgs(ExPerienceLiveMessage liveMessageGroupEntity) {
                 mMessage = liveMessageGroupEntity;
@@ -511,24 +513,24 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             public void onPmFailure() {
 
             }
-        } );
+        });
     }
 
     private void sendMessage() {
-        if(mMessage != null && mMessage.getMsg()!=null && mMessage.getMsg().size()>0){
+        if (mMessage != null && mMessage.getMsg() != null && mMessage.getMsg().size() > 0) {
             mMsgs = new ArrayList<>();
-            for(int i = 0 ; i < mMessage.getMsg().size() ; i++){
-                if("130".equals(mMessage.getMsg().get(i).getText().getType())){
+            for (int i = 0; i < mMessage.getMsg().size(); i++) {
+                if ("130".equals(mMessage.getMsg().get(i).getText().getType())) {
                     mMsgs.add(mMessage.getMsg().get(i));
                 }
             }
-            if(mMsgs.size() > 0){
+            if (mMsgs.size() > 0) {
                 send = true;
             }
         }
-        if(mMessage != null && mMessage.getOnlineNum().size()!=0 && mMessage.getOnlineNum().get(0).getOnlineNum()!=null){
+        if (mMessage != null && mMessage.getOnlineNum().size() != 0 && mMessage.getOnlineNum().get(0).getOnlineNum() != null) {
             mLiveMessagePager.showPeopleCount(Integer.parseInt(mMessage.getOnlineNum().get(0).getOnlineNum()));
-        }else{
+        } else {
             mLiveMessagePager.showPeopleCount(3);
         }
     }
@@ -551,23 +553,23 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     protected void onPlayOpenSuccess() {
         isPlay = true;
         mTotaltime = getDuration();
-        Log.e("mqtt","mTotaltime:"+ mTotaltime);
-        Log.e("mqtt","seekto:"+ mVideoEntity.getVisitTimeKey());
+        Log.e("mqtt", "mTotaltime:" + mTotaltime);
+        Log.e("mqtt", "seekto:" + mVideoEntity.getVisitTimeKey());
         // 03.22 统计用户进入体验播放器的时间
         StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayEnter");
-        logHashMap.put("liveid",mVideoEntity.getLiveId());
-        logHashMap.put("termid",mVideoEntity.getChapterId());
-        logHashMap.put("eventid",LiveVideoConfig.LIVE_EXPERIENCE_ENTER);
-        ums.umsAgentDebug2(LiveVideoConfig.LIVE_EXPERIENCE_ENTER,logHashMap.getData());
+        logHashMap.put("liveid", mVideoEntity.getLiveId());
+        logHashMap.put("termid", mVideoEntity.getChapterId());
+        logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_ENTER);
+        ums.umsAgentDebug2(LiveVideoConfig.LIVE_EXPERIENCE_ENTER, logHashMap.getData());
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(View.GONE);
             initView();
             initMessagePager(bottomContent);
-            if(firstTime){
+            if (firstTime) {
                 startTime = System.currentTimeMillis();
                 firstTime = false;
             }
-            if(mTotaltime < Long.parseLong(mVideoEntity.getVisitTimeKey())*1000){
+            if (mTotaltime < Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000) {
                 // 03.21 提示直播已结束
                 ivTeacherNotpresent.setVisibility(View.VISIBLE);
                 ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
@@ -575,7 +577,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 vPlayer.stop();
                 return;
             }
-            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey())*1000 +(System.currentTimeMillis() - startTime));
+            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
         }
         if (mQuestionEntity != null) {
             Loger.d(TAG, "onPlayOpenSuccess:showQuestion:isAnswered=" + mQuestionEntity.isAnswered() + "," +
@@ -590,7 +592,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     protected void onPlayOpenStart() {
         setFirstBackgroundVisible(View.VISIBLE);
         findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
-
 
 
     }
@@ -619,7 +620,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     }
 
 
-
     protected void updateLoadingImage() {
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
         if (footerIconEntity != null) {
@@ -639,17 +639,17 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         currentMsg = currentPosition;
         // 扫描互动题
         scanQuestion(currentPosition);
-        Log.e("Duncan","currentPosition:" + currentPosition);
+        Log.e("Duncan", "currentPosition:" + currentPosition);
         // 获取聊天记录
         if (scanRunnable == null) {
-                scanRunnable = new ScanRunnable();
-                scanHandler.post(scanRunnable);
-            }
+            scanRunnable = new ScanRunnable();
+            scanHandler.post(scanRunnable);
+        }
         //发送聊天记录
-        if(send && mMsgs.size() > 0){
-            for(int i = 0 ; i < mMsgs.size() ; i++){
-                if(currentMsg/1000 == mMsgs.get(i).getReleative_time() ){
-                    mLiveMessagePager.addMessage(mMsgs.get(i).getText().getName(),LiveMessageEntity.MESSAGE_TIP,mMsgs.get(i).getText().getMsg());
+        if (send && mMsgs.size() > 0) {
+            for (int i = 0; i < mMsgs.size(); i++) {
+                if (currentMsg / 1000 == mMsgs.get(i).getReleative_time()) {
+                    mLiveMessagePager.addMessage(mMsgs.get(i).getText().getName(), LiveMessageEntity.MESSAGE_TIP, mMsgs.get(i).getText().getMsg(), "");
                     mMsgs.remove(i);
                 }
             }
@@ -709,7 +709,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             }
         }
         // 有交互信息并且没有互动题
-        if (mQuestionEntity != null && !mQuestionEntity.isAnswered() && !mIsShowQuestion && !( mQuestionEntity.getvQuestionID() + mVideoEntity.getLiveId() ).equals(mShareDataManager.getString(testIdKey,"",1))) {
+        if (mQuestionEntity != null && !mQuestionEntity.isAnswered() && !mIsShowQuestion && !(mQuestionEntity.getvQuestionID() + mVideoEntity.getLiveId()).equals(mShareDataManager.getString(testIdKey, "", 1))) {
             // 互动题
             if (LocalCourseConfig.CATEGORY_QUESTION == mQuestionEntity.getvCategory()) {
                 if (!(mMediaController != null && mMediaController.isShow())) {
@@ -758,7 +758,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                         publicLiveCourseRedPacket();
                     } else {
                         BaseBll.postDataLoadEvent(loadEntity.beginLoading());
-                        lectureLivePlayBackBll.getLivePlayRedPackets(loadEntity,mRedPacketId,mVideoEntity.getLiveId(),mVideoEntity.getChapterId());
+                        lectureLivePlayBackBll.getLivePlayRedPackets(loadEntity, mRedPacketId, mVideoEntity.getLiveId(), mVideoEntity.getChapterId());
                     }
                     XesMobAgent.playVideoStatisticsMessage(MobEnumUtil.REDPACKET_LIVEPLAYBACK, MobEnumUtil.REDPACKET_GRAB,
                             XesMobAgent.XES_VIDEO_INTERACTIVE);
@@ -794,7 +794,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
      * @param playPosition
      */
     private void getPlayQuetion(int playPosition) {
-        Log.e("Duncan","getPlayQuetion:" + playPosition);
+        Log.e("Duncan", "getPlayQuetion:" + playPosition);
         List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
         if (lstVideoQuestion == null || lstVideoQuestion.size() == 0) {
             return;
@@ -804,9 +804,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         boolean hasQuestionShow = false;
         for (int i = 0; i < lstVideoQuestion.size(); i++) {
             VideoQuestionEntity videoQuestionEntity = null;
-            if(lstVideoQuestion.get(i) != null){
+            if (lstVideoQuestion.get(i) != null) {
                 videoQuestionEntity = lstVideoQuestion.get(i);
-            }else{
+            } else {
                 continue;
             }
 //            if (videoQuestionEntity.isAnswered()) {
@@ -1005,6 +1005,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         rlQuestionContent.setVisibility(View.VISIBLE);
     }
+
     /** 红包隐藏 */
     public void redPacketHide() {
         mRedPacketId = "";
@@ -1096,7 +1097,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         questionEntity.setAnswered(true);
         // 03.22 本地缓存答过题的testId
 //        mShareDataManager.put(questionEntity.getvQuestionID(),true,1);
-        mShareDataManager.put(testIdKey,questionEntity.getvQuestionID() + mVideoEntity.getLiveId(),1);
+        mShareDataManager.put(testIdKey, questionEntity.getvQuestionID() + mVideoEntity.getLiveId(), 1);
         questionViewGone();
         XesMobAgent.playVideoStatisticsMessage(MobEnumUtil.QUESTION_LIVEPLAYBACK, MobEnumUtil.QUESTION_ANSWER,
                 XesMobAgent.XES_VIDEO_INTERACTIVE);
@@ -1355,10 +1356,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }
         // 03.22 统计用户离开体验播放器的时间
         StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayExit");
-        logHashMap.put("liveid",mVideoEntity.getLiveId());
-        logHashMap.put("termid",mVideoEntity.getChapterId());
-        logHashMap.put("eventid",LiveVideoConfig.LIVE_EXPERIENCE_EXIT);
-        ums.umsAgentDebug2(LiveVideoConfig.LIVE_EXPERIENCE_EXIT,logHashMap.getData());
+        logHashMap.put("liveid", mVideoEntity.getLiveId());
+        logHashMap.put("termid", mVideoEntity.getChapterId());
+        logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_EXIT);
+        ums.umsAgentDebug2(LiveVideoConfig.LIVE_EXPERIENCE_EXIT, logHashMap.getData());
     }
 
 //    /** 刷新界面重新加载视频 */
