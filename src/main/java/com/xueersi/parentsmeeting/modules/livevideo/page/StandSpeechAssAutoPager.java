@@ -146,6 +146,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     private Bitmap headBitmap;
     private String userName;
     private String learning_stage;
+    Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(),
+            "fangzhengyouyuan.ttf");
 
     public StandSpeechAssAutoPager(Context context, String liveid, String testId,
                                    String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, String userName, String headUrl, String learning_stage) {
@@ -343,139 +345,11 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                             GoldTeamStatus entity = (GoldTeamStatus) objData[0];
                             ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
                             for (int i = 0; i < students.size(); i++) {
-                                final GoldTeamStatus.Student student = students.get(i);
-                                final LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
+                                GoldTeamStatus.Student student = students.get(i);
+                                LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
                                 String path = "live_stand_voice_team_right.json";
                                 lottieAnimationView.setImageAssetsFolder("Images/voice_answer/team_right");
-                                LottieComposition.Factory.fromAssetFileName(mContext, path, new OnCompositionLoadedListener() {
-
-                                    void updateName() {
-                                        InputStream inputStream = null;
-                                        try {
-                                            inputStream = mContext.getAssets().open("Images/voice_answer/team_right/img_1.png");
-                                            Bitmap headBack = BitmapFactory.decodeStream(inputStream);
-                                            Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
-                                            Canvas canvas = new Canvas(creatBitmap);
-                                            canvas.drawBitmap(headBack, 0, 0, null);
-                                            String name = student.getNickname();
-                                            Paint paint = new Paint();
-                                            paint.setTextSize(20);
-                                            paint.setColor(0xffA56202);
-                                            float width = paint.measureText(name);
-                                            canvas.drawText(name, headBack.getWidth() / 2 - width / 2, headBack.getHeight() / 2 + paint.measureText("a") / 2, paint);
-                                            lottieAnimationView.updateBitmap("image_1", creatBitmap);
-                                            headBack.recycle();
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        } finally {
-                                            if (inputStream != null) {
-                                                try {
-                                                    inputStream.close();
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    void updateHead() {
-                                        Activity activity = (Activity) mContext;
-                                        if (!activity.isFinishing()) {
-                                            ImageLoader.with(mContext).load(student.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
-                                                @Override
-                                                public void onSuccess(Drawable drawable) {
-                                                    Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                                                    InputStream inputStream = null;
-                                                    try {
-                                                        inputStream = mContext.getAssets().open("Images/voice_answer/team_right/img_2.png");
-                                                        Bitmap headBack = BitmapFactory.decodeStream(inputStream);
-                                                        Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
-                                                        Canvas canvas = new Canvas(creatBitmap);
-                                                        canvas.drawBitmap(headBack, 0, 0, null);
-                                                        int left = headBack.getWidth() / 2 - headBitmap.getWidth() / 2;
-                                                        canvas.drawBitmap(headBitmap, left, left, null);
-                                                        lottieAnimationView.updateBitmap("image_2", creatBitmap);
-                                                        headBack.recycle();
-                                                    } catch (IOException e) {
-                                                        e.printStackTrace();
-                                                    } finally {
-                                                        if (inputStream != null) {
-                                                            try {
-                                                                inputStream.close();
-                                                            } catch (IOException e) {
-                                                                e.printStackTrace();
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                                @Override
-                                                public void onFail() {
-
-                                                }
-                                            });
-                                        }
-                                    }
-
-                                    private void updateScore(Context context, LottieAnimationView lottieAnimationView, String score) {
-                                        String text = score;
-                                        AssetManager manager = context.getAssets();
-                                        Bitmap img_7Bitmap;
-                                        try {
-                                            img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/voice_answer/team_right/img_0.png"));
-                                            Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-                                            Canvas canvas = new Canvas(creatBitmap);
-                                            Paint paintInner = new Paint();
-                                            paintInner.setTextSize(25);
-                                            paintInner.setColor(0xffFE5C03);
-                                            paintInner.setTypeface(fontFace);
-
-                                            Paint paintOut = new Paint();
-                                            paintOut.setStyle(Paint.Style.STROKE);
-                                            paintOut.setTextSize(25);
-                                            paintOut.setStrokeWidth(3);
-                                            paintOut.setColor(0xffffffff);
-                                            paintOut.setTypeface(fontFace);
-
-                                            float widthOut = paintOut.measureText(text);
-
-                                            float x = (creatBitmap.getWidth() - widthOut) / 2;
-                                            float y = (creatBitmap.getHeight() + paintOut.measureText("a")) / 2;
-                                            Paint mPaint = paintOut;
-                                            int strokeSize = 3;
-                                            if (strokeSize > 0 && strokeSize < 4) {
-                                                canvas.drawText(text, x, y - strokeSize, mPaint);
-                                                canvas.drawText(text, x, y + strokeSize, mPaint);
-                                                canvas.drawText(text, x + strokeSize, y, mPaint);
-                                                canvas.drawText(text, x + strokeSize, y + strokeSize, mPaint);
-                                                canvas.drawText(text, x + strokeSize, y - strokeSize, mPaint);
-                                                canvas.drawText(text, x - strokeSize, y, mPaint);
-                                                canvas.drawText(text, x - strokeSize, y + strokeSize, mPaint);
-                                                canvas.drawText(text, x - strokeSize, y - strokeSize, mPaint);
-                                                canvas.drawText(text, x, y, paintInner);
-                                            }
-
-                                            img_7Bitmap.recycle();
-                                            img_7Bitmap = creatBitmap;
-                                        } catch (IOException e) {
-                                            Log.e(TAG, "updateScore", e);
-                                            return;
-                                        }
-                                        lottieAnimationView.updateBitmap("image_0", img_7Bitmap);
-                                    }
-
-                                    @Override
-                                    public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
-                                        if (lottieComposition == null) {
-                                            return;
-                                        }
-                                        lottieAnimationView.setComposition(lottieComposition);
-                                        lottieAnimationView.playAnimation();
-                                        updateHead();
-                                        updateName();
-                                        updateScore(mContext, lottieAnimationView, student.getScore());
-                                    }
-                                });
+                                LottieComposition.Factory.fromAssetFileName(mContext, path, new TeamOnCompositionLoadedListener(student, lottieAnimationView));
                                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                                 lp.weight = 1;
                                 int countLeft = ll_livevideo_voiceans_team_left.getChildCount();
@@ -824,6 +698,15 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         ImageView imageViewScore = new ImageView(mContext);
         imageViewScore.setImageResource(R.drawable.bg_livevideo_speecteval_result_number_unit);
         ll_livevideo_speecteval_result_mine.addView(imageViewScore);
+        resultMine.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                group.removeView(resultMine);
+                if (isEnd || !isLive) {
+                    speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, id);
+                }
+            }
+        });
         final ImageView lottieAnimationView = resultMine.findViewById(R.id.iv_livevideo_speecteval_result_mine);
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -853,28 +736,12 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
             @Override
             public void onAnimationEnd() {
-                final FrameAnimation frameAnimation2 = FrameAnimation.createFromAees(mContext, lottieAnimationView, "Images/speech/mine_score_loop", 50, false);
+                final FrameAnimation frameAnimation2 = FrameAnimation.createFromAees(mContext, lottieAnimationView, "Images/speech/mine_score_loop", 50, true);
                 frameAnimations.add(frameAnimation2);
                 frameAnimation2.setBitmapCreate(new FrameAnimation.BitmapCreate() {
                     @Override
                     public Bitmap onAnimationCreate(String file) {
                         return updateHead(frameAnimation2, resultEntity, file, true, gold);
-                    }
-                });
-                frameAnimation2.setAnimationListener(new FrameAnimation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart() {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd() {
-                        group.removeView(resultMine);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat() {
-
                     }
                 });
             }
@@ -904,7 +771,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (isEnd) {
+                group.removeView(resultMine);
+                if (isEnd || !isLive) {
                     speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, id);
                 }
             }
@@ -1007,141 +875,151 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
     private void onEvaluatorIng(ResultEntity resultEntity) {
         if (lav_livevideo_voiceans_team_mine.getVisibility() != View.GONE) {
+            TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = (TeamOnCompositionLoadedListener) lav_livevideo_voiceans_team_mine.getTag();
+            teamOnCompositionLoadedListener.updateScore(mContext, lav_livevideo_voiceans_team_mine, "" + resultEntity.getScore());
             return;
         }
         lav_livevideo_voiceans_team_mine.setVisibility(View.VISIBLE);
-        List<PhoneScore> lstPhonemeScore = resultEntity.getLstPhonemeScore();
-        if (!lstPhonemeScore.isEmpty()) {
-            String nbest = "";
-            int count90 = 0;
-            for (int i = 0; i < lstPhonemeScore.size(); i++) {
-                PhoneScore phoneScore = lstPhonemeScore.get(i);
-                nbest += phoneScore.getWord() + ":" + phoneScore.getScore();
-                if (i != lstPhonemeScore.size() - 1) {
-                    nbest += ",";
-                }
-                if (phoneScore.getScore() > encourageScore) {
-                    count90++;
-                }
-            }
-            if (count90 <= 3) {
-                logToFile.d("onEvaluatorIng:nbest=" + nbest);
-                return;
-            }
-            Point90 point90_6 = null;
-            Point90 point90_3 = null;
-            ArrayList<Point90> arrayList90_6 = new ArrayList<Point90>();
-            ArrayList<Point90> arrayList90_3 = new ArrayList<Point90>();
-            for (int i = 0; i < lstPhonemeScore.size(); i++) {
-                PhoneScore phoneScore = lstPhonemeScore.get(i);
-                if (phoneScore.getScore() > encourageScore && !point90WordArrayList.contains("" + i)) {
-                    if (point90_6 == null) {
-                        point90_6 = new Point90();
-                        point90_6.left = point90_6.right = i;
-                        point90_6.words.add(phoneScore.getWord());
-                    } else {
-                        point90_6.right = i;
-                        point90_6.words.add(phoneScore.getWord());
-                    }
-                } else {
-                    if (point90_6 != null) {
-                        Loger.d(TAG, "onEvaluatorIng:point90_61=" + point90_6);
-                        if (point90_6.right - point90_6.left >= 5) {
-                            arrayList90_6.add(point90_6);
-                        }
-                    }
-                    point90_6 = null;
-                }
-                if (i == lstPhonemeScore.size() - 1) {
-                    if (point90_6 != null) {
-                        Loger.d(TAG, "onEvaluatorIng:point90_62=" + point90_6);
-                        if (point90_6.right - point90_6.left >= 5) {
-                            arrayList90_6.add(point90_6);
-                        }
-                    }
-                }
-                if (phoneScore.getScore() > encourageScore && !point30WordArrayList.contains("" + i)) {
-                    if (point90_3 == null) {
-                        point90_3 = new Point90();
-                        point90_3.left = point90_3.right = i;
-                        point90_3.words.add(phoneScore.getWord());
-                    } else {
-                        point90_3.right = i;
-                        point90_3.words.add(phoneScore.getWord());
-                    }
-                } else {
-                    if (point90_3 != null) {
-                        Loger.d(TAG, "onEvaluatorIng:point90_31=" + point90_3);
-                        if (point90_3.right - point90_3.left >= 2 && point90_3.right - point90_3.left < 5) {
-                            arrayList90_3.add(point90_3);
-                        }
-                    }
-                    point90_3 = null;
-                }
-                if (i == lstPhonemeScore.size() - 1) {
-                    if (point90_3 != null) {
-                        Loger.d(TAG, "onEvaluatorIng:point90_32=" + point90_3);
-                        if (point90_3.right - point90_3.left >= 2 && point90_3.right - point90_3.left < 5) {
-                            arrayList90_3.add(point90_3);
-                        }
-                    }
-                }
-            }
-            Loger.d(TAG, "onResult:onEvaluatorIng:arrayList90_6=" + arrayList90_6.size() + ",arrayList90_3=" + arrayList90_3.size());
-//            ArrayList<Point90> point90_6s = new ArrayList<Point90>();
-//            ArrayList<Point90> point90_3s = new ArrayList<Point90>();
-            ArrayList<Point90> point90_6s = arrayList90_6;
-            ArrayList<Point90> point90_3s = arrayList90_3;
-//            for (int i = 0; i < arrayList90_6.size(); i++) {
-//                Point90 lstPhonemeScore902 = arrayList90_6.get(i);
-//                if (lstPhonemeScore902.right - lstPhonemeScore902.left >= 5) {
-//                    point90_6s.add(lstPhonemeScore902);
+        String path = "live_stand_voice_team_right.json";
+        lav_livevideo_voiceans_team_mine.setImageAssetsFolder("Images/voice_answer/team_right");
+        GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+        student.setNickname(userName);
+        student.setScore("" + resultEntity.getScore());
+        TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = new TeamOnCompositionLoadedListener(student, lav_livevideo_voiceans_team_mine);
+        LottieComposition.Factory.fromAssetFileName(mContext, path, teamOnCompositionLoadedListener);
+        lav_livevideo_voiceans_team_mine.setTag(teamOnCompositionLoadedListener);
+//        List<PhoneScore> lstPhonemeScore = resultEntity.getLstPhonemeScore();
+//        if (!lstPhonemeScore.isEmpty()) {
+//            String nbest = "";
+//            int count90 = 0;
+//            for (int i = 0; i < lstPhonemeScore.size(); i++) {
+//                PhoneScore phoneScore = lstPhonemeScore.get(i);
+//                nbest += phoneScore.getWord() + ":" + phoneScore.getScore();
+//                if (i != lstPhonemeScore.size() - 1) {
+//                    nbest += ",";
+//                }
+//                if (phoneScore.getScore() > encourageScore) {
+//                    count90++;
 //                }
 //            }
-//            for (int i = 0; i < arrayList90_6.size(); i++) {
-//                Point90 lstPhonemeScore902 = arrayList90_6.get(i);
-//                if (lstPhonemeScore902.right - lstPhonemeScore902.left >= 2) {
-//                    point90_3s.add(lstPhonemeScore902);
+//            if (count90 <= 3) {
+//                logToFile.d("onEvaluatorIng:nbest=" + nbest);
+//                return;
+//            }
+//            Point90 point90_6 = null;
+//            Point90 point90_3 = null;
+//            ArrayList<Point90> arrayList90_6 = new ArrayList<Point90>();
+//            ArrayList<Point90> arrayList90_3 = new ArrayList<Point90>();
+//            for (int i = 0; i < lstPhonemeScore.size(); i++) {
+//                PhoneScore phoneScore = lstPhonemeScore.get(i);
+//                if (phoneScore.getScore() > encourageScore && !point90WordArrayList.contains("" + i)) {
+//                    if (point90_6 == null) {
+//                        point90_6 = new Point90();
+//                        point90_6.left = point90_6.right = i;
+//                        point90_6.words.add(phoneScore.getWord());
+//                    } else {
+//                        point90_6.right = i;
+//                        point90_6.words.add(phoneScore.getWord());
+//                    }
+//                } else {
+//                    if (point90_6 != null) {
+//                        Loger.d(TAG, "onEvaluatorIng:point90_61=" + point90_6);
+//                        if (point90_6.right - point90_6.left >= 5) {
+//                            arrayList90_6.add(point90_6);
+//                        }
+//                    }
+//                    point90_6 = null;
+//                }
+//                if (i == lstPhonemeScore.size() - 1) {
+//                    if (point90_6 != null) {
+//                        Loger.d(TAG, "onEvaluatorIng:point90_62=" + point90_6);
+//                        if (point90_6.right - point90_6.left >= 5) {
+//                            arrayList90_6.add(point90_6);
+//                        }
+//                    }
+//                }
+//                if (phoneScore.getScore() > encourageScore && !point30WordArrayList.contains("" + i)) {
+//                    if (point90_3 == null) {
+//                        point90_3 = new Point90();
+//                        point90_3.left = point90_3.right = i;
+//                        point90_3.words.add(phoneScore.getWord());
+//                    } else {
+//                        point90_3.right = i;
+//                        point90_3.words.add(phoneScore.getWord());
+//                    }
+//                } else {
+//                    if (point90_3 != null) {
+//                        Loger.d(TAG, "onEvaluatorIng:point90_31=" + point90_3);
+//                        if (point90_3.right - point90_3.left >= 2 && point90_3.right - point90_3.left < 5) {
+//                            arrayList90_3.add(point90_3);
+//                        }
+//                    }
+//                    point90_3 = null;
+//                }
+//                if (i == lstPhonemeScore.size() - 1) {
+//                    if (point90_3 != null) {
+//                        Loger.d(TAG, "onEvaluatorIng:point90_32=" + point90_3);
+//                        if (point90_3.right - point90_3.left >= 2 && point90_3.right - point90_3.left < 5) {
+//                            arrayList90_3.add(point90_3);
+//                        }
+//                    }
 //                }
 //            }
-            if (!point90_6s.isEmpty()) {
-                for (int i = 0; i < point90_6s.size(); i++) {
-                    Point90 point901 = point90_6s.get(i);
-                    for (int j = point901.left; j <= point901.right; j++) {
-                        point90WordArrayList.add("" + j);
-                        point30WordArrayList.add("" + j);
-                    }
-                }
-                for (int i = 0; i < point90_3s.size(); i++) {
-                    Point90 point901 = point90_3s.get(i);
-                    for (int j = point901.left; j <= point901.right; j++) {
-                        point90WordArrayList.add("" + j);
-                        point30WordArrayList.add("" + j);
-                    }
-                }
-                rlSpeectevalEncourage.removeCallbacks(encourageRun);
-                rlSpeectevalEncourage.startAnimation(animSpeechEncourage);
-//                ivSpeectevalEncourage.setImageResource(R.drawable.bg_livevideo_speecteval_encourage90);
-                tvSpeectevalEncourage.setText("Perfect!");
-                rlSpeectevalEncourage.postDelayed(encourageRun, 3000);
-                logToFile.d("onEvaluatorIng(perfect):nbest=" + nbest);
-            } else if (!point90_3s.isEmpty()) {
-                for (int i = 0; i < point90_3s.size(); i++) {
-                    Point90 point901 = point90_3s.get(i);
-                    for (int j = point901.left; j <= point901.right; j++) {
-                        point30WordArrayList.add("" + j);
-//                        point90WordArrayList.add(lstPhonemeScore.get(j).getWord());
-                    }
-                }
-                rlSpeectevalEncourage.removeCallbacks(encourageRun);
-                rlSpeectevalEncourage.startAnimation(animSpeechEncourage);
-//                ivSpeectevalEncourage.setImageResource(R.drawable.bg_livevideo_speecteval_encourage60);
-                tvSpeectevalEncourage.setText("Great!");
-                rlSpeectevalEncourage.postDelayed(encourageRun, 3000);
-                logToFile.d("onEvaluatorIng(great):nbest=" + nbest);
-            }
-            Loger.d(TAG, "onEvaluatorIng:count90=" + count90 + ",point90WordArrayList=" + point90WordArrayList.size() + ",point90_6s=" + point90_6s.size() + ",point90_3s=" + point90_3s.size() + ",nbest=" + nbest);
-        }
+//            Loger.d(TAG, "onResult:onEvaluatorIng:arrayList90_6=" + arrayList90_6.size() + ",arrayList90_3=" + arrayList90_3.size());
+////            ArrayList<Point90> point90_6s = new ArrayList<Point90>();
+////            ArrayList<Point90> point90_3s = new ArrayList<Point90>();
+//            ArrayList<Point90> point90_6s = arrayList90_6;
+//            ArrayList<Point90> point90_3s = arrayList90_3;
+////            for (int i = 0; i < arrayList90_6.size(); i++) {
+////                Point90 lstPhonemeScore902 = arrayList90_6.get(i);
+////                if (lstPhonemeScore902.right - lstPhonemeScore902.left >= 5) {
+////                    point90_6s.add(lstPhonemeScore902);
+////                }
+////            }
+////            for (int i = 0; i < arrayList90_6.size(); i++) {
+////                Point90 lstPhonemeScore902 = arrayList90_6.get(i);
+////                if (lstPhonemeScore902.right - lstPhonemeScore902.left >= 2) {
+////                    point90_3s.add(lstPhonemeScore902);
+////                }
+////            }
+//            if (!point90_6s.isEmpty()) {
+//                for (int i = 0; i < point90_6s.size(); i++) {
+//                    Point90 point901 = point90_6s.get(i);
+//                    for (int j = point901.left; j <= point901.right; j++) {
+//                        point90WordArrayList.add("" + j);
+//                        point30WordArrayList.add("" + j);
+//                    }
+//                }
+//                for (int i = 0; i < point90_3s.size(); i++) {
+//                    Point90 point901 = point90_3s.get(i);
+//                    for (int j = point901.left; j <= point901.right; j++) {
+//                        point90WordArrayList.add("" + j);
+//                        point30WordArrayList.add("" + j);
+//                    }
+//                }
+//                rlSpeectevalEncourage.removeCallbacks(encourageRun);
+//                rlSpeectevalEncourage.startAnimation(animSpeechEncourage);
+////                ivSpeectevalEncourage.setImageResource(R.drawable.bg_livevideo_speecteval_encourage90);
+//                tvSpeectevalEncourage.setText("Perfect!");
+//                rlSpeectevalEncourage.postDelayed(encourageRun, 3000);
+//                logToFile.d("onEvaluatorIng(perfect):nbest=" + nbest);
+//            } else if (!point90_3s.isEmpty()) {
+//                for (int i = 0; i < point90_3s.size(); i++) {
+//                    Point90 point901 = point90_3s.get(i);
+//                    for (int j = point901.left; j <= point901.right; j++) {
+//                        point30WordArrayList.add("" + j);
+////                        point90WordArrayList.add(lstPhonemeScore.get(j).getWord());
+//                    }
+//                }
+//                rlSpeectevalEncourage.removeCallbacks(encourageRun);
+//                rlSpeectevalEncourage.startAnimation(animSpeechEncourage);
+////                ivSpeectevalEncourage.setImageResource(R.drawable.bg_livevideo_speecteval_encourage60);
+//                tvSpeectevalEncourage.setText("Great!");
+//                rlSpeectevalEncourage.postDelayed(encourageRun, 3000);
+//                logToFile.d("onEvaluatorIng(great):nbest=" + nbest);
+//            }
+//            Loger.d(TAG, "onEvaluatorIng:count90=" + count90 + ",point90WordArrayList=" + point90WordArrayList.size() + ",point90_6s=" + point90_6s.size() + ",point90_3s=" + point90_3s.size() + ",nbest=" + nbest);
+//        }
     }
 
     private Runnable encourageRun = new Runnable() {
@@ -1215,4 +1093,145 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //        speechEvalAction.stopSpeech(id);
     }
 
+    class TeamOnCompositionLoadedListener implements OnCompositionLoadedListener {
+        GoldTeamStatus.Student student;
+        LottieAnimationView lottieAnimationView;
+        String lastScore = "";
+
+        public TeamOnCompositionLoadedListener(GoldTeamStatus.Student student, LottieAnimationView lottieAnimationView) {
+            this.student = student;
+            this.lottieAnimationView = lottieAnimationView;
+        }
+
+        void updateName() {
+            InputStream inputStream = null;
+            try {
+                inputStream = mContext.getAssets().open("Images/voice_answer/team_right/img_1.png");
+                Bitmap headBack = BitmapFactory.decodeStream(inputStream);
+                Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(creatBitmap);
+                canvas.drawBitmap(headBack, 0, 0, null);
+                String name = student.getNickname();
+                Paint paint = new Paint();
+                paint.setTextSize(20);
+                paint.setColor(0xffA56202);
+                float width = paint.measureText(name);
+                canvas.drawText(name, headBack.getWidth() / 2 - width / 2, headBack.getHeight() / 2 + paint.measureText("a") / 2, paint);
+                lottieAnimationView.updateBitmap("image_1", creatBitmap);
+                headBack.recycle();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        void updateHead() {
+            Activity activity = (Activity) mContext;
+            if (!activity.isFinishing()) {
+                ImageLoader.with(mContext).load(student.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
+                    @Override
+                    public void onSuccess(Drawable drawable) {
+                        Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                        InputStream inputStream = null;
+                        try {
+                            inputStream = mContext.getAssets().open("Images/voice_answer/team_right/img_2.png");
+                            Bitmap headBack = BitmapFactory.decodeStream(inputStream);
+                            Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
+                            Canvas canvas = new Canvas(creatBitmap);
+                            canvas.drawBitmap(headBack, 0, 0, null);
+                            int left = headBack.getWidth() / 2 - headBitmap.getWidth() / 2;
+                            canvas.drawBitmap(headBitmap, left, left, null);
+                            lottieAnimationView.updateBitmap("image_2", creatBitmap);
+                            headBack.recycle();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } finally {
+                            if (inputStream != null) {
+                                try {
+                                    inputStream.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFail() {
+
+                    }
+                });
+            }
+        }
+
+        private void updateScore(Context context, LottieAnimationView lottieAnimationView, String score) {
+            if (lastScore.equals(score)) {
+                return;
+            }
+            lastScore = score;
+            String text = score;
+            AssetManager manager = context.getAssets();
+            Bitmap img_7Bitmap;
+            try {
+                img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/voice_answer/team_right/img_0.png"));
+                Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(creatBitmap);
+                Paint paintInner = new Paint();
+                paintInner.setTextSize(25);
+                paintInner.setColor(0xffFE5C03);
+                paintInner.setTypeface(fontFace);
+
+                Paint paintOut = new Paint();
+                paintOut.setStyle(Paint.Style.STROKE);
+                paintOut.setTextSize(25);
+                paintOut.setStrokeWidth(3);
+                paintOut.setColor(0xffffffff);
+                paintOut.setTypeface(fontFace);
+
+                float widthOut = paintOut.measureText(text);
+
+                float x = (creatBitmap.getWidth() - widthOut) / 2;
+                float y = (creatBitmap.getHeight() + paintOut.measureText("a")) / 2;
+                Paint mPaint = paintOut;
+                int strokeSize = 3;
+                if (strokeSize > 0 && strokeSize < 4) {
+                    canvas.drawText(text, x, y - strokeSize, mPaint);
+                    canvas.drawText(text, x, y + strokeSize, mPaint);
+                    canvas.drawText(text, x + strokeSize, y, mPaint);
+                    canvas.drawText(text, x + strokeSize, y + strokeSize, mPaint);
+                    canvas.drawText(text, x + strokeSize, y - strokeSize, mPaint);
+                    canvas.drawText(text, x - strokeSize, y, mPaint);
+                    canvas.drawText(text, x - strokeSize, y + strokeSize, mPaint);
+                    canvas.drawText(text, x - strokeSize, y - strokeSize, mPaint);
+                    canvas.drawText(text, x, y, paintInner);
+                }
+
+                img_7Bitmap.recycle();
+                img_7Bitmap = creatBitmap;
+            } catch (IOException e) {
+                Log.e(TAG, "updateScore", e);
+                return;
+            }
+            lottieAnimationView.updateBitmap("image_0", img_7Bitmap);
+        }
+
+        @Override
+        public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
+            if (lottieComposition == null) {
+                return;
+            }
+            lottieAnimationView.setComposition(lottieComposition);
+            lottieAnimationView.playAnimation();
+            updateHead();
+            updateName();
+            updateScore(mContext, lottieAnimationView, student.getScore());
+        }
+    }
 }
