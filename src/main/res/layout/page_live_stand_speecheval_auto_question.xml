@@ -92,12 +92,24 @@
         android:layout_height="70dp"
         android:layout_alignParentBottom="true">
 
+        <ImageView
+            android:id="@id/iv_livevideo_voiceans_team_mine"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@id/lav_livevideo_voiceans_team_mine"
+            android:layout_alignLeft="@id/lav_livevideo_voiceans_team_mine"
+            android:layout_alignRight="@id/lav_livevideo_voiceans_team_mine"
+            android:layout_alignTop="@id/lav_livevideo_voiceans_team_mine"
+            android:scaleType="fitXY"
+            android:src="@drawable/bg_live_stand_speect_mine_light"
+            android:visibility="invisible" />
+
         <com.airbnb.lottie.LottieAnimationView
             android:id="@id/lav_livevideo_voiceans_team_mine"
-            android:layout_width="70dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:visibility="gone" />
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@id/iv_livevideo_speecteval_wave"
@@ -122,9 +134,9 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_alignParentRight="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:layout_toRightOf="@id/iv_livevideo_speecteval_wave">
 
             <LinearLayout

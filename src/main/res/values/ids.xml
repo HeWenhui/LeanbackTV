@@ -388,6 +388,7 @@
     <item name="tv_livevideo_voiceans_title" type="id" />
     <item name="rl_livevideo_voiceans_content" type="id" />
     <item name="lav_livevideo_voiceans_team_mine" type="id" />
+    <item name="iv_livevideo_voiceans_team_mine" type="id" />
     <item name="ll_livevideo_voiceans_team_left" type="id" />
     <item name="ll_livevideo_voiceans_team_right" type="id" />
     <item name="rl_livevideo_voiceans_switch" type="id" />

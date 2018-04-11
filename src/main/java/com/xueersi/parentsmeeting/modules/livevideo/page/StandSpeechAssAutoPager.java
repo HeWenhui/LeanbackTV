@@ -6,6 +6,7 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -17,8 +18,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -82,6 +85,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     /** 提示和波浪线的外层 */
     RelativeLayout rlSpeectevalBg;
     LottieAnimationView lav_livevideo_voiceans_team_mine;
+    ImageView iv_livevideo_voiceans_team_mine;
     RelativeLayout rl_livevideo_voiceans_content;
     /** 组内战况-左边 */
     LinearLayout ll_livevideo_voiceans_team_left;
@@ -234,6 +238,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         View view = View.inflate(mContext, R.layout.page_live_stand_speecheval_auto_question, null);
         rgiv_livevideo_stand_readygo = view.findViewById(R.id.rgiv_livevideo_stand_readygo);
         lav_livevideo_voiceans_team_mine = view.findViewById(R.id.lav_livevideo_voiceans_team_mine);
+        iv_livevideo_voiceans_team_mine = view.findViewById(R.id.iv_livevideo_voiceans_team_mine);
         rl_livevideo_voiceans_content = view.findViewById(R.id.rl_livevideo_voiceans_content);
         ll_livevideo_voiceans_team_left = view.findViewById(R.id.ll_livevideo_voiceans_team_left);
         ll_livevideo_voiceans_team_right = view.findViewById(R.id.ll_livevideo_voiceans_team_right);
@@ -522,6 +527,10 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }, 500);
                 return;
             }
+        }
+        TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = (TeamOnCompositionLoadedListener) lav_livevideo_voiceans_team_mine.getTag();
+        if (teamOnCompositionLoadedListener != null) {
+            teamOnCompositionLoadedListener.updateScore(mContext, lav_livevideo_voiceans_team_mine, "" + resultEntity.getScore());
         }
         tvSpeectevalError.removeCallbacks(autoUploadRunnable);
         ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_upload);
@@ -874,18 +883,32 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     private void onEvaluatorIng(ResultEntity resultEntity) {
-        if (lav_livevideo_voiceans_team_mine.getVisibility() != View.GONE) {
+        if (lav_livevideo_voiceans_team_mine.getVisibility() == View.VISIBLE) {
             TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = (TeamOnCompositionLoadedListener) lav_livevideo_voiceans_team_mine.getTag();
             teamOnCompositionLoadedListener.updateScore(mContext, lav_livevideo_voiceans_team_mine, "" + resultEntity.getScore());
             return;
         }
         lav_livevideo_voiceans_team_mine.setVisibility(View.VISIBLE);
+        iv_livevideo_voiceans_team_mine.setVisibility(View.VISIBLE);
+        iv_livevideo_voiceans_team_mine.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                iv_livevideo_voiceans_team_mine.getViewTreeObserver().removeOnPreDrawListener(this);
+                Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_live_stand_speech_mine_light_rotate);
+                LinearInterpolator lin = new LinearInterpolator();
+                animation.setInterpolator(lin);
+                iv_livevideo_voiceans_team_mine.startAnimation(animation);
+                return false;
+            }
+        });
         String path = "live_stand_voice_team_right.json";
         lav_livevideo_voiceans_team_mine.setImageAssetsFolder("Images/voice_answer/team_right");
         GoldTeamStatus.Student student = new GoldTeamStatus.Student();
         student.setNickname(userName);
         student.setScore("" + resultEntity.getScore());
+        student.setAvatar_path(headUrl);
         TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = new TeamOnCompositionLoadedListener(student, lav_livevideo_voiceans_team_mine);
+        teamOnCompositionLoadedListener.isMe = true;
         LottieComposition.Factory.fromAssetFileName(mContext, path, teamOnCompositionLoadedListener);
         lav_livevideo_voiceans_team_mine.setTag(teamOnCompositionLoadedListener);
 //        List<PhoneScore> lstPhonemeScore = resultEntity.getLstPhonemeScore();
@@ -1097,6 +1120,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         GoldTeamStatus.Student student;
         LottieAnimationView lottieAnimationView;
         String lastScore = "";
+        boolean isMe = false;
 
         public TeamOnCompositionLoadedListener(GoldTeamStatus.Student student, LottieAnimationView lottieAnimationView) {
             this.student = student;
@@ -1106,7 +1130,11 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         void updateName() {
             InputStream inputStream = null;
             try {
-                inputStream = mContext.getAssets().open("Images/voice_answer/team_right/img_1.png");
+                if (isMe) {
+                    inputStream = mContext.getAssets().open("Images/voice_answer/team_right/img_11.png");
+                } else {
+                    inputStream = mContext.getAssets().open("Images/voice_answer/team_right/img_1.png");
+                }
                 Bitmap headBack = BitmapFactory.decodeStream(inputStream);
                 Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(creatBitmap);
@@ -1114,7 +1142,11 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 String name = student.getNickname();
                 Paint paint = new Paint();
                 paint.setTextSize(20);
-                paint.setColor(0xffA56202);
+                if (isMe) {
+                    paint.setColor(Color.WHITE);
+                } else {
+                    paint.setColor(0xffA56202);
+                }
                 float width = paint.measureText(name);
                 canvas.drawText(name, headBack.getWidth() / 2 - width / 2, headBack.getHeight() / 2 + paint.measureText("a") / 2, paint);
                 lottieAnimationView.updateBitmap("image_1", creatBitmap);
