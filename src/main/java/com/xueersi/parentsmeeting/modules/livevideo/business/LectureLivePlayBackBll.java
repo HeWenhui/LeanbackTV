@@ -9,6 +9,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideo
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExPerienceLiveMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
@@ -31,6 +32,7 @@ import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.view.layout.dataload.DataLoadEntity;
+import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -651,6 +653,8 @@ public class LectureLivePlayBackBll extends BaseBll {
                     lecAdvertEntity.limit = jsonObject.optString("limit");
                     lecAdvertEntity.signUpUrl = jsonObject.optString("signUpUrl");
                     lecAdvertEntity.saleName = jsonObject.optString("saleName");
+                    lecAdvertEntity.courseId = jsonObject.optString("courseId");
+                    lecAdvertEntity.classId = jsonObject.optString("classId");
                 }
                 callBack.onDataSucess();
             }
@@ -666,6 +670,21 @@ public class LectureLivePlayBackBll extends BaseBll {
                 ExPerienceLiveMessage livebackmsg = JsonUtil.getEntityFromJson(responseEntity.getJsonObject().toString(), ExPerienceLiveMessage.class);
                 getLiveLectureMsgs.getLiveExperienceMsgs(livebackmsg);
                 Log.e("Duncan","livebackmsgsize:" + livebackmsg.getMsg().size());
+            }
+        });
+
+    }
+
+    // 18.04.11 获取讲座直播回放中的更多课程的广告信息
+    public void getMoreCourseChoices(String liveId,final AbstractBusinessDataCallBack getDataCallBack){
+        mCourseHttpManager.getMoreCourseChoices(liveId,new HttpCallBack(false){
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                Log.e("Duncan","playbackresponseEntity:" + responseEntity);
+                MoreChoice choiceEntity = JsonUtil.getEntityFromJson(responseEntity.getJsonObject().toString(), MoreChoice.class);
+                if(choiceEntity != null){
+                    getDataCallBack.onDataSucess(choiceEntity);
+                }
             }
         });
 

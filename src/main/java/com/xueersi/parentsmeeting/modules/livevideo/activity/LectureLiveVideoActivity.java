@@ -576,8 +576,8 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             }
             //开启悬浮窗
 //            FloatActionController.getInstance().startMonkServer(this);
-            FloatWindowManager.addView(this,videoView);
             OtherModulesEnter.intentToOrderConfirmActivity(this,courseId+"-"+classId,100,"LectureLiveVideoActivity");
+            FloatWindowManager.addView(this,videoView);
         }
     }
 
@@ -1257,8 +1257,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 mParent.addView(videoView,params);
             }
         }
-
-
 
     }
 

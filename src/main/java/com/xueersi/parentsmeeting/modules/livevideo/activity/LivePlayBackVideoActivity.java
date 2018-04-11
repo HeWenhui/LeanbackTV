@@ -10,14 +10,17 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +31,10 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -47,9 +53,12 @@ import com.xueersi.parentsmeeting.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.event.AppEvent;
+import com.xueersi.parentsmeeting.event.MiniEvent;
 import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.item.MoreChoiceItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertPagerClose;
@@ -65,6 +74,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.RedPacketAlertDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -91,6 +101,8 @@ import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.widget.LivePlaybackMediaController;
+import com.xueersi.xesalib.adapter.AdapterItemInterface;
+import com.xueersi.xesalib.adapter.CommonAdapter;
 import com.xueersi.xesalib.umsagent.UmsAgentManager;
 import com.xueersi.xesalib.umsagent.UmsConstants;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
@@ -101,7 +113,9 @@ import com.xueersi.xesalib.utils.time.TimeUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
+import com.xueersi.xesalib.view.layout.dataload.DataErrorManager;
 import com.xueersi.xesalib.view.layout.dataload.DataLoadEntity;
+import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -111,10 +125,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import floatwindow.xishuang.float_lib.FloatWindowManager;
+import floatwindow.xishuang.float_lib.permission.FloatPermissionManager;
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /**
@@ -130,6 +147,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     String TAG = "LivePlayBackVideoActivityLog";
     /** 互动题的布局 */
     private RelativeLayout rlQuestionContent;
+    /** 更多课程广告的布局 */
+    private RelativeLayout rlAdvanceContent;
     /** 初始进入播放器时的预加载界面 */
     private RelativeLayout rlFirstBackgroundView;
     /** 是不是播放失败 */
@@ -215,9 +234,16 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
     private LiveRemarkBll mLiveRemarkBll;
     private RelativeLayout bottom;
-    // 03.29 临时测试(待删除)
     private View mFloatView;
     private PopupWindow mPopupWindows;
+    private ViewGroup mParent;
+    private MoreChoice mData;
+    private View mMoreChoice;
+    private TextView mApplyNumber;
+    private ListView mMorecourse;
+    private List<MoreChoice.Choice> mChoices = new ArrayList<>();
+    private CommonAdapter<MoreChoice.Choice> mCourseAdapter;
+
 
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
@@ -227,7 +253,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         createTime = System.currentTimeMillis();
         AppBll.getInstance().registerAppEvent(this);
         // 设置不可自动横竖屏
-        setAutoOrientation(false);
+        setAutoOrientation(true);
         Intent intent = getIntent();
         mVideoEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoliveplayback");
         islocal = intent.getBooleanExtra("islocal", false);
@@ -246,9 +272,24 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (mIsLand) {
             lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
             lp.addRule(RelativeLayout.BELOW, 0);
+            if(mPopupWindows != null){
+                mPopupWindows = null;
+            }
+            showPopupwindowboard();
+            rlAdvanceContent.setVisibility(View.GONE);
         } else {
             lp.height = RelativeLayout.LayoutParams.MATCH_PARENT;
             lp.addRule(RelativeLayout.BELOW, R.id.rl_course_video_content);
+            if(mPopupWindows != null){
+                mPopupWindows.dismiss();
+            }
+            // 04.11 获取更多课程信息
+            lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(),getDataCallBack);
+            // 04.11 展示更多课程报名的列表信息
+            rlAdvanceContent.setVisibility(View.VISIBLE);
+            rlAdvanceContent.setLayoutParams(lp);
+            rlAdvanceContent.removeAllViews();
+            rlAdvanceContent.addView(mMoreChoice);
         }
         rlQuestionContent.setLayoutParams(lp);
     }
@@ -365,6 +406,20 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         }
         // 加载横屏时互动题的列表布局
         rlQuestionContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_content);
+        // 加载竖屏时显示更多课程广告的布局
+        rlAdvanceContent = (RelativeLayout) findViewById(R.id.rl_livevideo_playback);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mMoreChoice = inflater.inflate(R.layout.layout_lecture_livevideoback,null);
+        mApplyNumber = (TextView)mMoreChoice.findViewById(R.id.tv_apply_number);
+        mMorecourse = (ListView)mMoreChoice.findViewById(R.id.morecourse_list);
+        ImageButton back = (ImageButton)mMoreChoice.findViewById(R.id.ib_back);
+        back.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 04.11 横竖屏的切换
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            }
+        });
 //        rlQuestionContent.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
 //            @Override
 //            public void onChildViewAdded(View parent, View child) {
@@ -493,7 +548,55 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 //            mQuestionEntity.setvEndTime(120);
 //            showExam();
         }
+
+        // 04.04 更多课程的数据加载
+        if (mCourseAdapter == null) {
+            mCourseAdapter = new CommonAdapter<MoreChoice.Choice>(mChoices) {
+                @Override
+                public AdapterItemInterface<MoreChoice.Choice> getItemView(Object type) {
+                    MoreChoiceItem morelistItem = new MoreChoiceItem(mContext,mData);
+                    return morelistItem;
+                }
+
+            };
+            mMorecourse.setAdapter(mCourseAdapter);
+        }
+
     }
+
+    AbstractBusinessDataCallBack getDataCallBack = new AbstractBusinessDataCallBack(){
+        @Override
+        public void onDataSucess(Object... objData) {
+            // 04.04 获取到数据之后的逻辑处理
+            if(objData.length > 0){
+                mData = (MoreChoice) objData[0];
+                Log.e("Duncan","mData:"+ mData);
+//                for(int i = 1 ; i < 11 ; i++){
+//                    MoreChoice.Choice choice = new MoreChoice.Choice();
+//                    choice.setIsLearn(0);
+//                    choice.setLimit(i);
+//                    choice.setSaleName("毛尖" + i);
+//                    mChoices.add(choice);
+//                }
+//                if(mChoices.size() > 0 && isExpand){
+//                    mFirstSight.setVisibility(View.GONE);
+//                    mSecondSight.setVisibility(View.VISIBLE);
+//                    mApplyNum.setText(Html.fromHtml("<font color='#333333'>正在报名中</font>"+ "<font color='#F13232'>" +"  " + mChoices.size() + "</font>"));
+//                    mCourseAdapter.updateData(mChoices);
+//                }else{
+//                    mFirstSight.setVisibility(View.VISIBLE);
+//                    mSecondSight.setVisibility(View.GONE);
+//                    mLimitnum.setText(Html.fromHtml("<font color='#999999'>剩余名额</font>"+ "<font color='#F13232'>" +"  " + mChoices.get(mChoices.size()-1)+ "</font>"));
+//                }
+                mChoices.clear();
+                mChoices.addAll(mData.getCases());
+                LiveVideoConfig.MORE_COURSE = mChoices.size();
+                mApplyNumber.setText(Html.fromHtml("<font color='#333333'>正在报名中</font>"+ "<font color='#F13232'>" +"  " + mChoices.size() + "</font>"));
+                mCourseAdapter.updateData(mChoices);
+            }
+
+        }
+    };
 
     @Override
     public void onResume() {
@@ -540,16 +643,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     "mIsShowQuestion=" + mIsShowQuestion);
 //            showQuestion(mQuestionEntity);
         }
-        // 03.29 测试报名的入口(临时测试，待删除)
-//        showPopupwindow();
-    }
-
-    private void showPopupwindow() {
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mFloatView = inflater.inflate(R.layout.livemessage_jumpboard, null);
-        mPopupWindows = new PopupWindow(mFloatView, 415, 100, false);
-        mPopupWindows.setOutsideTouchable(false);
-        mPopupWindows.showAtLocation(mFloatView, Gravity.BOTTOM | Gravity.LEFT, ScreenUtils.getScreenWidth()-450, 50);
     }
 
     @Override
@@ -856,8 +949,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 redPacketHide();
                 showExam();
             } else if (LocalCourseConfig.CATEGORY_LEC_ADVERT == mQuestionEntity.getvCategory()) {
-//                mQuestionEntity.setAnswered(true);
-//                showLecAdvertPager(mQuestionEntity);
+                mQuestionEntity.setAnswered(true);
+                showLecAdvertPager(mQuestionEntity);
             }
             // 互动题结束
         }
@@ -2632,4 +2725,63 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
         }
     }
+
+    /** 播放视频Activity最小化的测试 */
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void onEvent(MiniEvent event) {
+        if("Order".equals(event.getMin())){
+            createRealVideo(event.getCourseId(),event.getClassId());
+            Log.e("Duncan","LivePlayBackMin");
+        }
+        // 04.03 从支付页面跳转回来的重新加载
+        if("Back".equals(event.getMin())){
+            ViewGroup parents = (ViewGroup)videoView.getParent();
+            if(parents != null){
+                parents.removeView(videoView);
+                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+                mParent.addView(videoView,params);
+                attachMediaController();
+            }
+        }
+
+
+
+    }
+
+    private void createRealVideo(String courseId,String classId){
+        boolean isPermission = FloatPermissionManager.getInstance().applyFloatWindow(this);
+        //有对应权限或者系统版本小于7.0
+        if (isPermission || Build.VERSION.SDK_INT < 24) {
+            mParent = (ViewGroup)videoView.getParent();
+            if(mParent != null){
+                mParent.removeView(videoView);
+            }
+            //开启悬浮窗
+            OtherModulesEnter.intentToOrderConfirmActivity(this,courseId+"-"+classId,100,"LectureLiveVideoActivity");
+            FloatWindowManager.addView(this,videoView);
+        }
+    }
+
+    private void showPopupwindowboard() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mFloatView = inflater.inflate(R.layout.livemessage_jumpboard, null);
+        mPopupWindows = new PopupWindow(mFloatView, 415, 100, false);
+        mPopupWindows.setOutsideTouchable(false);
+        mPopupWindows.showAtLocation(mFloatView, Gravity.BOTTOM | Gravity.LEFT, ScreenUtils.getScreenWidth()-450, 50);
+        // 03.29 横竖屏的切换
+        mFloatView.findViewById(R.id.switch_orientation).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //判断当前屏幕方向
+                changeLOrP();
+            }
+        });
+        TextView totalnum = (TextView)mFloatView.findViewById(R.id.tv_apply_totalnum);
+        totalnum.setText(LiveVideoConfig.MORE_COURSE + "");
+
+    }
+
+
 }

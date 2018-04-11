@@ -450,7 +450,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                 }else{
                     mAdvance.setVisibility(View.GONE);
                 }
-
+                mCourseAdapter.updateData(mChoices);
             }
 
         }
@@ -695,13 +695,6 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
             };
             mMorecourse.setAdapter(mCourseAdapter);
         }
-//        if(havaAdvance){
-//            mAdvance.setVisibility(View.VISIBLE);
-//            mLimitnum.setText(Html.fromHtml("<font color='#999999'>剩余名额</font>"+ "<font color='#F13232'>" +"  " +12+ "</font>"));
-//        }else{
-//            mAdvance.setVisibility(View.GONE);
-//        }
-//        liveBll.getMoreChoice(mPageDataLoadEntity,getDataCallBack);
         mHandler.postDelayed(MoreChoice,1000);
     }
 
