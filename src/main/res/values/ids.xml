@@ -324,6 +324,8 @@
     <item name="rl_livevideo_speecteval_error" type="id" />
     <item name="iv_livevideo_speecteval_error" type="id" />
     <item name="tv_livevideo_speecteval_error" type="id" />
+    <item name="ll_livevideo_speecteval_result_mine" type="id" />
+    <item name="iv_livevideo_speecteval_result_mine" type="id" />
     <item name="v_live_star_result_out" type="id" />
     <item name="sp_live_star_result" type="id" />
     <item name="iv_live_star_result_light" type="id" />

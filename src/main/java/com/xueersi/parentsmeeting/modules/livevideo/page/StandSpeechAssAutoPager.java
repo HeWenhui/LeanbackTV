@@ -767,11 +767,25 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         rlSpeectevalBg.setVisibility(View.GONE);
         rlSpeectevalBg.removeAllViews();
         int score = resultEntity.getScore();
-        final ImageView lottieAnimationView = new ImageView(mContext);
         RelativeLayout group = (RelativeLayout) mView;
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
-        group.addView(lottieAnimationView, lp);
+        View resultMine = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_stand_speech_mine, group, false);
+        LinearLayout ll_livevideo_speecteval_result_mine = resultMine.findViewById(R.id.ll_livevideo_speecteval_result_mine);
+//        bg_livevideo_speecteval_result_number_0
+        for (int i = 0; i < ("" + score).length(); i++) {
+            char c = ("" + score).charAt(i);
+            ImageView imageView = new ImageView(mContext);
+            String name = "bg_livevideo_speecteval_result_number_" + c;
+            imageView.setImageResource(mContext.getResources().getIdentifier(name, "drawable", mContext.getPackageName()));
+            ll_livevideo_speecteval_result_mine.addView(imageView);
+        }
+        ImageView imageViewScore = new ImageView(mContext);
+        imageViewScore.setImageResource(R.drawable.bg_livevideo_speecteval_result_number_unit);
+        ll_livevideo_speecteval_result_mine.addView(imageViewScore);
+        final ImageView lottieAnimationView = resultMine.findViewById(R.id.iv_livevideo_speecteval_result_mine);
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        group.addView(resultMine, lp);
+
         final FrameAnimation frameAnimation = FrameAnimation.createFromAees(mContext, lottieAnimationView, "Images/speech/mine_score", 50, false);
         frameAnimations.add(frameAnimation);
         frameAnimation.setBitmapCreate(new FrameAnimation.BitmapCreate() {
