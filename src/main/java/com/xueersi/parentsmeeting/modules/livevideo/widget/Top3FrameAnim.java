@@ -5,7 +5,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
@@ -52,6 +55,15 @@ public class Top3FrameAnim {
     }
 
     public void start(final FrameAnimation.AnimationListener animationListener, final ArrayList<GoldTeamStatus.Student> students) {
+        final int size = students.size();
+        if (size < 3) {
+            for (int i = size; i < 3; i++) {
+                GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+                student.setAvatar_path("");
+                student.setNullEntity(true);
+                students.add(student);
+            }
+        }
         String path = file15;
         final FrameAnimation btframeAnimation2 =
                 FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, path, 50, false);
@@ -60,11 +72,60 @@ public class Top3FrameAnim {
             public Bitmap onAnimationCreate(String file) {
                 int index = file.lastIndexOf("/");
                 String name = "";
+                int nameInt = 0;
                 if (index != -1) {
-                    name = file.substring(index + 1);
+                    name = file.substring(index + 1, file.length() - 4);
+                    String split[] = name.split("_");
+                    try {
+                        nameInt = Integer.parseInt(split[split.length - 1]);
+                    } catch (Exception e) {
+
+                    }
                 }
-                if (name.compareTo("package_rank_enter_00025") > 0) {
-                    return initTeamRankHeadAndGold(students, file, true, btframeAnimation2);
+                if (nameInt > 21 && nameInt < 24) {
+                    GoldTeamStatus.Student student = students.get(0);
+                    if (!student.isNullEntity()) {
+                        student.setDrawName(false);
+                    }
+                    return initTeamRankHeadAndGold(students, file, btframeAnimation2);
+                } else if (nameInt > 23 && nameInt < 26) {
+                    for (int i = 0; i < 2; i++) {
+                        GoldTeamStatus.Student student = students.get(i);
+                        if (!student.isNullEntity()) {
+                            student.setDrawName(false);
+                        }
+                    }
+                    return initTeamRankHeadAndGold(students, file, btframeAnimation2);
+                } else if (nameInt > 25 && nameInt < 28) {
+                    for (int i = 0; i < students.size(); i++) {
+                        GoldTeamStatus.Student student = students.get(i);
+                        if (!student.isNullEntity()) {
+                            student.setDrawName(false);
+                        }
+                    }
+                    return initTeamRankHeadAndGold(students, file, btframeAnimation2);
+                } else if (nameInt == 28) {
+                    GoldTeamStatus.Student student = students.get(0);
+                    if (!student.isNullEntity()) {
+                        student.setDrawName(true);
+                    }
+                    return initTeamRankHeadAndGold(students, file, btframeAnimation2);
+                } else if (nameInt > 28 && nameInt < 32) {
+                    for (int i = 0; i < 2; i++) {
+                        GoldTeamStatus.Student student = students.get(i);
+                        if (!student.isNullEntity()) {
+                            student.setDrawName(true);
+                        }
+                    }
+                    return initTeamRankHeadAndGold(students, file, btframeAnimation2);
+                } else if (nameInt > 31) {
+                    for (int i = 0; i < students.size(); i++) {
+                        GoldTeamStatus.Student student = students.get(i);
+                        if (!student.isNullEntity()) {
+                            student.setDrawName(true);
+                        }
+                    }
+                    return initTeamRankHeadAndGold(students, file, btframeAnimation2);
                 } else {
                     return null;
                 }
@@ -83,15 +144,20 @@ public class Top3FrameAnim {
                 final FrameAnimation btframeAnimation3 =
                         FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, path, 50, true);
                 frameAnimations.add(btframeAnimation3);
-                btframeAnimation3.setBitmapCreate(new FrameAnimation.BitmapCreate() {
-                    @Override
-                    public Bitmap onAnimationCreate(String file) {
-                        if (students.isEmpty()) {
-                            return null;
+                if (!students.isEmpty()) {
+                    btframeAnimation3.setBitmapCreate(new FrameAnimation.BitmapCreate() {
+                        @Override
+                        public Bitmap onAnimationCreate(String file) {
+                            for (int i = 0; i < students.size(); i++) {
+                                GoldTeamStatus.Student student = students.get(i);
+                                if (!student.isNullEntity()) {
+                                    student.setDrawName(true);
+                                }
+                            }
+                            return initTeamRankHeadAndGold(students, file, btframeAnimation3);
                         }
-                        return initTeamRankHeadAndGold(students, file, true, btframeAnimation3);
-                    }
-                });
+                    });
+                }
                 rl_livevideo_redpackage_bg.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -108,7 +174,7 @@ public class Top3FrameAnim {
         });
     }
 
-    private Bitmap initTeamRankHeadAndGold(ArrayList<GoldTeamStatus.Student> students, final String file, boolean havename, final FrameAnimation upFrameAnimation) {
+    private Bitmap initTeamRankHeadAndGold(ArrayList<GoldTeamStatus.Student> students, final String file, final FrameAnimation upFrameAnimation) {
         InputStream inputStream = null;
         try {
             inputStream = mContext.getAssets().open(file);
@@ -117,12 +183,12 @@ public class Top3FrameAnim {
             Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             canvasBitmap.setDensity(160);
             Canvas canvas = new Canvas(canvasBitmap);
-            canvas.drawBitmap(bitmap, 0, 0, null);
-            float[] headWidth = {108f, 96f, 96f};
+            float[] headWidth = {110f, 98f, 98f};
             int mid = bitmap.getWidth() / 2;
             float[][] headLeftAndRights = {{mid - 20, 295}, {mid - 200, 382}, {mid + 170, 398}};
             float[] textTops = {408, 478, 492};
             int[] textColors = {0xffD45F19, 0xff0C719B, 0xffD04715};
+            int[] scalHeadWidth = new int[]{-1, -1, -1};
             for (int i = 0; i < students.size(); i++) {
                 Bitmap head;
                 final GoldTeamStatus.Student entity = students.get(i);
@@ -136,8 +202,7 @@ public class Top3FrameAnim {
                     head = stuHeadBitmap.get(entity.getStuId());
                 }
                 float[] leftAndRight = headLeftAndRights[i];
-                float left = leftAndRight[0];
-                int scalHeadWidth = -1;
+                float left;
                 if (head != null && !head.isRecycled()) {
                     float scaleWidth = headWidth[i] / head.getHeight();
                     Matrix matrix = new Matrix();
@@ -151,39 +216,73 @@ public class Top3FrameAnim {
                     } else {
                         left = mid + scalHeadBitmap.getWidth() / 2 + 150;
                     }
+                    leftAndRight[0] = left;
                     float top = leftAndRight[1];
                     canvas.drawBitmap(scalHeadBitmap, left, top, null);
-                    scalHeadWidth = scalHeadBitmap.getWidth();
+                    scalHeadWidth[i] = scalHeadBitmap.getWidth();
                     scalHeadBitmap.recycle();
                 } else {
-                    Activity activity = (Activity) mContext;
-                    if (!activity.isFinishing()) {
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ImageLoader.with(mContext).load(entity.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
-                                    @Override
-                                    public void onSuccess(Drawable drawable) {
-                                        Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                                        if (isMe) {
-                                            Top3FrameAnim.this.headBitmap = headBitmap;
+                    if (StringUtils.isEmpty(entity.getAvatar_path())) {
+                        if (i == 0) {
+                            left = mid - headWidth[i] / 2;
+                        } else if (i == 1) {
+                            left = mid - headWidth[i] - 206;
+                        } else {
+                            left = mid + headWidth[i] / 2 + 150;
+                        }
+                        leftAndRight[0] = left;
+                        float top = leftAndRight[1];
+//                        canvas.drawBitmap(scalHeadBitmap, left, top, null);
+                        Paint paint = new Paint();
+                        paint.setColor(Color.WHITE);
+                        float radius = headWidth[i] / 2;
+                        canvas.drawCircle(left + radius, top + radius, radius, paint);
+                    } else {
+                        Activity activity = (Activity) mContext;
+                        if (!activity.isFinishing()) {
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ImageLoader.with(mContext).load(entity.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
+                                        @Override
+                                        public void onSuccess(Drawable drawable) {
+                                            Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                                            if (isMe) {
+                                                Top3FrameAnim.this.headBitmap = headBitmap;
+                                            }
+                                            stuHeadBitmap.put(entity.getStuId(), headBitmap);
+                                            upFrameAnimation.removeBitmapCache(file);
                                         }
-                                        stuHeadBitmap.put(entity.getStuId(), headBitmap);
-                                        upFrameAnimation.removeBitmapCache(file);
-                                    }
 
-                                    @Override
-                                    public void onFail() {
+                                        @Override
+                                        public void onFail() {
 
-                                    }
-                                });
-                            }
-                        });
+                                        }
+                                    });
+                                }
+                            });
+                        }
                     }
                 }
-                bitmap.recycle();
+            }
+            canvas.drawBitmap(bitmap, 0, 0, null);
+            bitmap.recycle();
+            for (int i = 0; i < students.size(); i++) {
+                Bitmap head;
+                final GoldTeamStatus.Student entity = students.get(i);
+//                final boolean isMe = entity.isMe();
+//                if (isMe) {
+//                    head = headBitmap;
+//                    if (head == null) {
+//                        head = stuHeadBitmap.get(entity.getStuId());
+//                    }
+//                } else {
+//                    head = stuHeadBitmap.get(entity.getStuId());
+//                }
+                float[] leftAndRight = headLeftAndRights[i];
+                float left = leftAndRight[0];
                 //画名字和金币数量
-                if (havename) {
+                if (entity.isDrawName()) {
                     String gold = "+" + entity.getGold();
                     View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout.layout_live_stand_red_mine2, null);
                     ImageView iv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.iv_livevideo_redpackage_num);
@@ -211,8 +310,8 @@ public class Top3FrameAnim {
                     canvas.save();
                     float top = textTops[i];
                     float textLeft = left;
-                    if (scalHeadWidth != -1) {
-                        textLeft = left + scalHeadWidth / 2 - layout_live_stand_red_mine1.getMeasuredWidth() / 2;
+                    if (scalHeadWidth[i] != -1) {
+                        textLeft = left + scalHeadWidth[i] / 2 - layout_live_stand_red_mine1.getMeasuredWidth() / 2;
                     }
                     canvas.translate(textLeft, top);
                     layout_live_stand_red_mine1.draw(canvas);

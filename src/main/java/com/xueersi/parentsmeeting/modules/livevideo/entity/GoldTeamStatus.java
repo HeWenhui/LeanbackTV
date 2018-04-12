@@ -74,6 +74,10 @@ public class GoldTeamStatus {
         String en_name;// "rer",
         String avatar_path;// "http:\/\/xesfile.xesimg.com\/user\/h\/31203.jpg"
         boolean isRight = false;
+        /** 只绘制头像不绘制名字 */
+        boolean drawName;
+        /** 空对象 */
+        boolean nullEntity = false;
 
         public boolean isMe() {
             return isMe;
@@ -145,6 +149,22 @@ public class GoldTeamStatus {
 
         public void setRight(boolean right) {
             isRight = right;
+        }
+
+        public boolean isDrawName() {
+            return drawName;
+        }
+
+        public void setDrawName(boolean drawName) {
+            this.drawName = drawName;
+        }
+
+        public boolean isNullEntity() {
+            return nullEntity;
+        }
+
+        public void setNullEntity(boolean nullEntity) {
+            this.nullEntity = nullEntity;
         }
 
         @Override
