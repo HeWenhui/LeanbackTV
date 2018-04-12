@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -67,6 +69,8 @@ import com.xueersi.xesalib.view.button.CompoundButtonGroup;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -134,7 +138,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         nameColors[1] = resources.getColor(R.color.COLOR_E74C3C);
         nameColors[2] = resources.getColor(R.color.COLOR_20ABFF);
 
-        btMesOpen = liveMediaControllerBottom.getBtMesOpen();
+//        btMesOpen = liveMediaControllerBottom.getBtMesOpen();
         btMessageFlowers = liveMediaControllerBottom.getBtMessageFlowers();
 //        cbMessageClock = liveMediaControllerBottom.getCbMessageClock();
 
@@ -162,6 +166,25 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         switchFSPanelLinearLayout = (KPSwitchFSPanelLinearLayout) mView.findViewById(R.id
                 .rl_livevideo_message_panelroot);
         ivExpressionCancle = (ImageView) mView.findViewById(R.id.iv_livevideo_message_expression_cancle);
+        btMesOpen = mView.findViewById(R.id.bt_livevideo_message_open);
+        InputStream inputStream = null;
+        try {
+            inputStream = mContext.getAssets().open("Images/openmsg/message_open_00074.png");
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            bitmap.setDensity(160);
+            btMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 //        int screenWidth = ScreenUtils.getScreenWidth();
 //        int screenHeight = ScreenUtils.getScreenHeight();
 //        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
@@ -931,6 +954,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                 if (disable) {
                     XESToastUtils.showToast(mContext, "你被老师禁言了");
                     btMesOpen.setAlpha(0.4f);
+                    btMesOpen.setEnabled(false);
+                    ((ViewGroup) mView).getChildAt(0).setVisibility(View.GONE);
 //                    btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                 } else {
                     if (fromNotice) {
@@ -938,9 +963,13 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                     }
                     if (liveBll.openchat()) {
                         btMesOpen.setAlpha(1.0f);
+                        btMesOpen.setEnabled(true);
+                        ((ViewGroup) mView).getChildAt(0).setVisibility(View.VISIBLE);
 //                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     } else {
                         btMesOpen.setAlpha(0.4f);
+                        btMesOpen.setEnabled(false);
+                        ((ViewGroup) mView).getChildAt(0).setVisibility(View.GONE);
 //                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     }
                 }
@@ -955,13 +984,19 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             public void run() {
                 if (liveBll.isDisable()) {
                     btMesOpen.setAlpha(0.4f);
+                    btMesOpen.setEnabled(false);
+                    ((ViewGroup) mView).getChildAt(0).setVisibility(View.GONE);
 //                    btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                 } else {
                     if (openchat) {
                         btMesOpen.setAlpha(1.0f);
+                        btMesOpen.setEnabled(true);
+                        ((ViewGroup) mView).getChildAt(0).setVisibility(View.VISIBLE);
 //                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     } else {
                         btMesOpen.setAlpha(0.4f);
+                        btMesOpen.setEnabled(false);
+                        ((ViewGroup) mView).getChildAt(0).setVisibility(View.GONE);
 //                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     }
                     if (fromNotice) {
