@@ -67,6 +67,7 @@ public class LiveAutoNoticeBll {
     private String teacherImg;
     private String liveId;
     private LiveBll mLiveBll;
+    private Runnable mRunnable;
     String TAG = this.getClass().getSimpleName();
     Pattern pattern=Pattern.compile("#[0-9]#");
     String[] emojis={"\uD83D\uDE22","\uD83D\uDE44","\uD83D\uDE31","\uD83D\uDE02","\uD83D\uDE15"};
@@ -236,11 +237,19 @@ public class LiveAutoNoticeBll {
      * @param head
      */
     public void showNotice(String name, CharSequence s, String head) {
-         if (isShowing) {
-            return;
+//         if (isShowing) {
+//            return;
+//        }
+//        isShowing = true;
+        if(mRunnable==null){
+            mRunnable=new Runnable() {
+                @Override
+                public void run() {
+                    bottom.removeView(root);
+                    isShowing=false;
+                }
+            };
         }
-        isShowing = true;
-
         try {
             if (root == null) {
                 root = View.inflate(mContext, R.layout.layout_live_auto_notice, null);
@@ -262,7 +271,10 @@ public class LiveAutoNoticeBll {
             RelativeLayout.LayoutParams rootParam = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             rootParam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             rootParam.setMargins(0, 0, 0, 40);
-            bottom.addView(root, 1, rootParam);
+            if(!isShowing) {
+                bottom.addView(root, 1, rootParam);
+                isShowing = true;
+            }
             LinearLayout.LayoutParams svParam = new LinearLayout.LayoutParams(videoWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
             mSlowHorizontalScrollView.setLayoutParams(svParam);
             LinearLayout.LayoutParams vParam = new LinearLayout.LayoutParams(videoWidth, 1);
@@ -285,13 +297,8 @@ public class LiveAutoNoticeBll {
             mSlowHorizontalScrollView.scrollTo(0, 0);
             int last = Math.max(videoWidth, tvWidth) * 4;
             mSlowHorizontalScrollView.smoothScrollToSlow(videoWidth + tvWidth + 200, 0, last);
-            mSlowHorizontalScrollView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    bottom.removeView(root);
-                    isShowing = false;
-                }
-            }, last);
+            mSlowHorizontalScrollView.getHandler().removeCallbacks(mRunnable);
+            mSlowHorizontalScrollView.postDelayed(mRunnable, last);
         } catch (Exception e) {
             e.printStackTrace();
         }
