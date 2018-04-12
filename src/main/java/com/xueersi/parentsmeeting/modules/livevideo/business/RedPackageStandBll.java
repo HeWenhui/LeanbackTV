@@ -297,21 +297,35 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
                 onFinish();
+                if(errStatus==0){
+                    if (getCount.get()) {
+                        return;
+                    }
+                    RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
+                    if (redPackagePage != null) {
+                        redPackagePage.getRootView().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                getReceiveGoldTeamStatus(operateId, getCount);
+                            }
+                        }, 1000);
+                    }
+                }
             }
 
             void onFinish() {
-                if (getCount.get()) {
-                    return;
-                }
-                RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
-                if (redPackagePage != null) {
-                    redPackagePage.getRootView().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            getReceiveGoldTeamStatus(operateId, getCount);
-                        }
-                    }, 1000);
-                }
+//                if (getCount.get()) {
+//                    return;
+//                }
+//                RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
+//                if (redPackagePage != null) {
+//                    redPackagePage.getRootView().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            getReceiveGoldTeamStatus(operateId, getCount);
+//                        }
+//                    }, 1000);
+//                }
             }
         });
     }

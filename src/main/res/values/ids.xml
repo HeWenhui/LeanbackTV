@@ -302,6 +302,8 @@
     <item name="tv_livevideo_speecteval_cancle" type="id" />
     <item name="wv_livevideo_speecteval_web" type="id" />
     <item name="rl_course_video_contentview" type="id" />
+    <item name="vs_live_stand_update" type="id" />
+    <item name="rl_live_stand_update" type="id" />
     <!--直播-语音评测二期-->
     <item name="iv_livevideo_speecteval_time_emoji" type="id" />
     <item name="tv_livevideo_speecteval_time" type="id" />
@@ -476,7 +478,8 @@
     <item name="iv_live_stand_title_red" type="id" />
     <item name="tv_live_stand_title_time" type="id" />
     <item name="lav_livevideo_chievement" type="id" />
-
+    <item name="pb_live_stand_update" type="id" />
+    <item name="tv_live_stand_update_zip" type="id" />
     <!--RolePlayer-->
     <item name="ll_roleplayer_main" type="id" />
     <item name="rl_live_roleplayer_matchpager" type="id" />

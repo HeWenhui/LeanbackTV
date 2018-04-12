@@ -71,8 +71,6 @@ public class RedPackagePage extends BasePager {
     String file12 = "Images/redpackage/12_team_other";
     String file13 = "Images/redpackage/13_team_other_loop";
     String file14 = "Images/redpackage/14_transition";
-    String file15 = "Images/redpackage/15_rank_enter";
-    String file16 = "Images/redpackage/16_rank_looper";
 
     public RedPackagePage(Context context, int operateId, RedPackagePageAction redPackageAction, String userName, String headUrl, boolean isLive) {
         super(context);

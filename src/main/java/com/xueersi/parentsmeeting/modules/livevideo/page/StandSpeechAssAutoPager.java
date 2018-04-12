@@ -447,12 +447,14 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //                    resultEntity.setErrorNo(ResultCode.WEBSOCKET_TIME_OUT);
 //                    isSpeechError = true;
 //                    onEvaluatorError(resultEntity, this);
+                    onEvaluatorIng(resultEntity);
                 } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                     isSpeechError = true;
                     onEvaluatorError(resultEntity, this);
-                } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-                    onEvaluatorIng(resultEntity);
                 }
+//                else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
+//                    onEvaluatorIng(resultEntity);
+//                }
             }
 
             @Override
@@ -528,10 +530,10 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 return;
             }
         }
-        TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = (TeamOnCompositionLoadedListener) lav_livevideo_voiceans_team_mine.getTag();
-        if (teamOnCompositionLoadedListener != null) {
-            teamOnCompositionLoadedListener.updateScore(mContext, lav_livevideo_voiceans_team_mine, "" + resultEntity.getScore());
-        }
+//        TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = (TeamOnCompositionLoadedListener) lav_livevideo_voiceans_team_mine.getTag();
+//        if (teamOnCompositionLoadedListener != null) {
+//            teamOnCompositionLoadedListener.updateScore(mContext, lav_livevideo_voiceans_team_mine, "" + resultEntity.getScore());
+//        }
         tvSpeectevalError.removeCallbacks(autoUploadRunnable);
         ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_upload);
         errorSetVisible();

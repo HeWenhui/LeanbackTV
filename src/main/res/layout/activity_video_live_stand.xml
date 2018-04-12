@@ -183,6 +183,12 @@
             android:layout_alignParentBottom="true"
             android:visibility="gone"></RelativeLayout>
     </RelativeLayout>
+
+    <ViewStub
+        android:id="@id/vs_live_stand_update"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/activity_video_live_stand_check" />
     <!--<RelativeLayout-->
     <!--android:id="@+id/rl_speech_test"-->
     <!--android:layout_width="match_parent"-->

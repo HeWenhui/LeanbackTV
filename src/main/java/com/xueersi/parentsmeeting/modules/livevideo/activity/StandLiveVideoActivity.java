@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tal.speech.language.TalLanguage;
+import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.FooterIconEntity;
@@ -50,6 +51,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveReceiveGold;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandAchievementBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandVoiceAnswerCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoiceAnswerCreat;
@@ -103,16 +105,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /**
- * 直播
+ * 小英站立直播
  *
  * @author linyuqiang
  */
 public class StandLiveVideoActivity extends LiveVideoActivityBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest {
 
     private String TAG = "LiveVideoActivityLog";
-//    {
-//        mLayoutVideo = R.layout.activity_video_audit_live;
-//    }
+
+    {
+        mLayoutVideo = R.layout.activity_video_live_stand;
+    }
+
     /** 播放器同步 */
     private static final Object mIjkLock = new Object();
     private WeakHandler mHandler = new WeakHandler(null);
@@ -208,6 +212,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
     boolean onPauseNotStopVideo = false;
     LiveTextureView liveTextureView;
     String mode = LiveTopic.MODE_TRANING;
+    LiveStandFrameAnim liveStandFrameAnim;
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         long before = System.currentTimeMillis();
@@ -227,15 +232,29 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         Loger.d(TAG, "onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-        LiveGetInfo getInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
+        final LiveGetInfo getInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
         if (getInfo != null) {
             mode = getInfo.getMode();
         }
         initAllBll();
         Loger.d(TAG, "onVideoCreate:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        initView();
-        mLiveBll.getInfo(getInfo);
+        liveStandFrameAnim.check(mLiveBll, new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objData) {
+                View rl_live_stand_update = findViewById(R.id.vs_live_stand_update);
+                if (rl_live_stand_update != null) {
+                    ViewGroup group = (ViewGroup) rl_live_stand_update.getParent();
+                    group.removeView(rl_live_stand_update);
+                } else {
+                    rl_live_stand_update = findViewById(R.id.rl_live_stand_update);
+                    ViewGroup group = (ViewGroup) rl_live_stand_update.getParent();
+                    group.removeView(rl_live_stand_update);
+                }
+                initView();
+                mLiveBll.getInfo(getInfo);
+            }
+        });
         Loger.d(TAG, "onVideoCreate:time3=" + (System.currentTimeMillis() - before));
 //        SpeechAssessmentWebPager pager=new SpeechAssessmentWebPager(mContext,"","","",true,"",null);
 //        ((RelativeLayout)findViewById(R.id.rl_speech_test)).addView(pager.getRootView());
@@ -474,6 +493,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
 
         liveLazyBllCreat = new LiveLazyBllCreat(this, mLiveBll);
         mLiveBll.setLiveLazyBllCreat(liveLazyBllCreat);
+        liveStandFrameAnim = new LiveStandFrameAnim(this);
     }
 
     /**

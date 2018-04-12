@@ -31,8 +31,8 @@ import java.util.HashMap;
  * Created by linyuqiang on 2018/4/10.
  */
 public class Top3FrameAnim {
-    private String file15 = "Images/redpackage/15_rank_enter";
-    private String file16 = "Images/redpackage/16_rank_looper";
+    private String file15 = "live_stand/frame_anim/15_top3_enter";
+    private String file16 = "live_stand/frame_anim/16_top3_looper";
     private Context mContext;
     private View rl_livevideo_redpackage_bg;
     private Bitmap headBitmap;

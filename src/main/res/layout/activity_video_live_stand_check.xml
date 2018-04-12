@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/rl_live_stand_update"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/livevideo_zw_dengdaida_bg_before"
+    android:paddingBottom="10dp">
+
+    <TextView
+        android:id="@id/tv_live_stand_update_zip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/pb_live_stand_update"
+        android:layout_alignLeft="@id/pb_live_stand_update"
+        android:text="更新资源"
+        android:textColor="@color/white" />
+
+    <ProgressBar
+        android:id="@id/pb_live_stand_update"
+        style="@style/ProgressBar_live_english"
+        android:layout_width="match_parent"
+        android:layout_height="9dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:max="200" />
+
+</RelativeLayout>
