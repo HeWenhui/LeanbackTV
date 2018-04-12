@@ -2,8 +2,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -243,6 +245,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     private ListView mMorecourse;
     private List<MoreChoice.Choice> mChoices = new ArrayList<>();
     private CommonAdapter<MoreChoice.Choice> mCourseAdapter;
+    private BroadcastReceiver receiver;
+    private Handler mHandler;
 
 
     @Override
@@ -253,15 +257,27 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         createTime = System.currentTimeMillis();
         AppBll.getInstance().registerAppEvent(this);
         // 设置不可自动横竖屏
-        setAutoOrientation(true);
+        setAutoOrientation(false);
         Intent intent = getIntent();
         mVideoEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoliveplayback");
         islocal = intent.getBooleanExtra("islocal", false);
-
+        mHandler = new Handler();
         // 加载互动题和视频列表
         initView();
         // 请求相应数据
         initData();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("refreshadvertisementlist");
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // 04.12 弹出广告的时候，需要刷新广告列表
+                lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(),getDataCallBack);
+                Log.e("Duncan","PaySuccessfully");
+            }
+        };
+        registerReceiver(receiver, intentFilter);
+        Log.e("Duncan","oncreating");
     }
 
     @Override
@@ -272,17 +288,21 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (mIsLand) {
             lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
             lp.addRule(RelativeLayout.BELOW, 0);
-            if(mPopupWindows != null){
-                mPopupWindows = null;
-            }
-            showPopupwindowboard();
+//            if(mPopupWindows != null){
+//                mPopupWindows = null;
+//            }
+//            showPopupwindowboard();
+            Log.e("Duncan","横屏方法");
             rlAdvanceContent.setVisibility(View.GONE);
         } else {
             lp.height = RelativeLayout.LayoutParams.MATCH_PARENT;
             lp.addRule(RelativeLayout.BELOW, R.id.rl_course_video_content);
-            if(mPopupWindows != null){
-                mPopupWindows.dismiss();
-            }
+//            if(mPopupWindows != null){
+//                mPopupWindows.dismiss();
+//                mPopupWindows = null;
+//                Log.e("Duncan","竖屏方法0");
+//            }
+//            Log.e("Duncan","竖屏方法1");
             // 04.11 获取更多课程信息
             lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(),getDataCallBack);
             // 04.11 展示更多课程报名的列表信息
@@ -346,6 +366,23 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             mMediaController.setVideoQuestions("playback" + mVideoEntity.getvLivePlayBackType() + "-", lstVideoQuestion,
                     vPlayer.getDuration());
         }
+        // 04.12 重新创建面板抽屉
+        if(mIsLand){
+            if(mPopupWindows != null){
+                mPopupWindows.dismiss();
+                mPopupWindows = null;
+            }
+            showPopupwindowboard();
+        }else{
+            if(mPopupWindows != null) {
+                mPopupWindows.dismiss();
+                mPopupWindows = null;
+                Log.e("Duncan","竖屏方法2");
+            }
+            Log.e("Duncan","竖屏方法3");
+        }
+
+
     }
 
     @Override
@@ -562,6 +599,16 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             mMorecourse.setAdapter(mCourseAdapter);
         }
 
+        // 04.12 第一次进入的时候，就去请求回放的所有广告信息
+        lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(),getDataCallBack);
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                showPopupwindowboard();
+//                Log.e("Duncan","第一次加载");
+//            }
+//        },1000);
+
     }
 
     AbstractBusinessDataCallBack getDataCallBack = new AbstractBusinessDataCallBack(){
@@ -570,24 +617,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             // 04.04 获取到数据之后的逻辑处理
             if(objData.length > 0){
                 mData = (MoreChoice) objData[0];
-                Log.e("Duncan","mData:"+ mData);
-//                for(int i = 1 ; i < 11 ; i++){
-//                    MoreChoice.Choice choice = new MoreChoice.Choice();
-//                    choice.setIsLearn(0);
-//                    choice.setLimit(i);
-//                    choice.setSaleName("毛尖" + i);
-//                    mChoices.add(choice);
-//                }
-//                if(mChoices.size() > 0 && isExpand){
-//                    mFirstSight.setVisibility(View.GONE);
-//                    mSecondSight.setVisibility(View.VISIBLE);
-//                    mApplyNum.setText(Html.fromHtml("<font color='#333333'>正在报名中</font>"+ "<font color='#F13232'>" +"  " + mChoices.size() + "</font>"));
-//                    mCourseAdapter.updateData(mChoices);
-//                }else{
-//                    mFirstSight.setVisibility(View.VISIBLE);
-//                    mSecondSight.setVisibility(View.GONE);
-//                    mLimitnum.setText(Html.fromHtml("<font color='#999999'>剩余名额</font>"+ "<font color='#F13232'>" +"  " + mChoices.get(mChoices.size()-1)+ "</font>"));
-//                }
                 mChoices.clear();
                 mChoices.addAll(mData.getCases());
                 LiveVideoConfig.MORE_COURSE = mChoices.size();
@@ -1212,6 +1241,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                         (LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 rlQuestionContent.setVisibility(View.VISIBLE);
                 lecAdvertPager.initStep1();
+                // 04.12 更多课程的列表刷新
+                lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(),getDataCallBack);
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             }
         });
@@ -1827,6 +1858,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 }
             }
         }, 1000);
+
     }
 
     /**
@@ -2345,6 +2377,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
             }
         }
+        unregisterReceiver(receiver);
     }
 
     @Override
@@ -2742,7 +2775,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
                 mParent.addView(videoView,params);
-                attachMediaController();
             }
         }
 
@@ -2765,11 +2797,12 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     }
 
     private void showPopupwindowboard() {
+        Log.e("Duncan","创建board");
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mFloatView = inflater.inflate(R.layout.livemessage_jumpboard, null);
         mPopupWindows = new PopupWindow(mFloatView, 415, 100, false);
         mPopupWindows.setOutsideTouchable(false);
-        mPopupWindows.showAtLocation(mFloatView, Gravity.BOTTOM | Gravity.LEFT, ScreenUtils.getScreenWidth()-450, 50);
+        mPopupWindows.showAtLocation(mFloatView, Gravity.BOTTOM | Gravity.LEFT, ScreenUtils.getScreenWidth()-450, 160);
         // 03.29 横竖屏的切换
         mFloatView.findViewById(R.id.switch_orientation).setOnClickListener(new View.OnClickListener() {
             @Override

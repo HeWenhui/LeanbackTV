@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -90,6 +91,11 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                         bottomContent.addView(lecAdvertager.getRootView(), lp);
                         lecAdvertager.initStep1();
                         LecAdvertLog.sno4(lecAdvertEntity, liveBll);
+                        // 04.12 刷新广告列表
+                        Intent intent = new Intent();
+                        intent.setAction("refreshadvertisementlist");
+                        //发送广播
+                        context.sendBroadcast(intent);
                     }
                 });
             }

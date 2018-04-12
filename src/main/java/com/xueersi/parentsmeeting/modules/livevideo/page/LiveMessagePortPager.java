@@ -1,7 +1,10 @@
 package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -137,9 +140,9 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     private RelativeLayout mFirstSight;
     private LinearLayout mSecondSight;
     private LinearLayout mAdvance;
-    private Boolean isExpand = false;
     private TextView mLimitnum;
     private Handler mHandler;
+    private BroadcastReceiver receiver;
     public LiveMessagePortPager(Context context, QuestionBll questionBll,
                                 ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
         super(context);
@@ -150,6 +153,17 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
         mHandler = new Handler();
         initListener();
         initData();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("refreshadvertisementlist");
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // 04.12 弹出广告的时候，需要刷新广告列表
+                mHandler.postDelayed(MoreChoice,500);
+                Log.e("Duncan","PaySuccessful");
+            }
+        };
+        context.registerReceiver(receiver, intentFilter);
     }
 
     @Override
@@ -438,7 +452,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                     mApplyButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if(mChoices.get(mChoices.size()-1).getLimit() > 0){
+                            if(mChoices.get(mChoices.size()-1).getLimit() > 0 && mChoices.get(mChoices.size()-1).getIsLearn() == 0){
                                 EventBus.getDefault().post(new MiniEvent("Order",mChoices.get(mChoices.size()-1).getCourseId(),mChoices.get(mChoices.size()-1).getClassId()));
                             }
 
@@ -1106,5 +1120,11 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     @Override
     public void setOtherMessageAdapter(CommonAdapter<LiveMessageEntity> otherMessageAdapter) {
         this.otherMessageAdapter = otherMessageAdapter;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        liveVideoActivity.unregisterReceiver(receiver);
     }
 }
