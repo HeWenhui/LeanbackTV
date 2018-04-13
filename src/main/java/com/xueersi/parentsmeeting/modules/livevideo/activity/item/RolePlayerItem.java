@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity.item;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
@@ -29,20 +31,39 @@ public abstract class RolePlayerItem implements AdapterItemInterface<RolePlayerE
     protected int mPosition;
     protected Context mContext;
 
-    /**
-     * 聊天气泡占屏幕的比例
-     */
-    protected final float mBubbleWidth = 0.7f;
+    /** 评测的星星 */
+    private ImageView ivSpeechStart1;
+    /** 评测的星星 */
+    private ImageView ivSpeechStart2;
+    /** 评测的星星 */
+    private ImageView ivSpeechStart3;
+    /** 评测的星星 */
+    private ImageView ivSpeechStart4;
+    /** 评测的星星 */
+    private ImageView ivSpeechStart5;
+
 
     public RolePlayerItem(Context context) {
         this.mContext = context;
+    }
+
+    protected void initStartView(View root) {
+        ivSpeechStart1 = root.findViewById(R.id.iv_live_roleplayer_message_speech_start1);
+        ivSpeechStart2 = root.findViewById(R.id.iv_live_roleplayer_message_speech_start2);
+        ivSpeechStart3 = root.findViewById(R.id.iv_live_roleplayer_message_speech_start3);
+        ivSpeechStart4 = root.findViewById(R.id.iv_live_roleplayer_message_speech_start4);
+        ivSpeechStart5 = root.findViewById(R.id.iv_live_roleplayer_message_speech_start5);
     }
 
     @Override
     public void updateViews(RolePlayerEntity.RolePlayerMessage entity, int position, Object objTag) {
         mEntity = entity;
         mPosition = position;
-
+        ivSpeechStart1.setVisibility(View.GONE);
+        ivSpeechStart2.setVisibility(View.GONE);
+        ivSpeechStart3.setVisibility(View.GONE);
+        ivSpeechStart4.setVisibility(View.GONE);
+        ivSpeechStart5.setVisibility(View.GONE);
     }
 
     /**
@@ -64,6 +85,27 @@ public abstract class RolePlayerItem implements AdapterItemInterface<RolePlayerE
                 .ic_default_head_square)
                 .into(civHeadImage);
 
+    }
+
+    /**
+     * 显示评价星星
+     */
+    protected void showSpeechStar() {
+        if (mEntity.getSpeechScore() >= 1 && mEntity.getSpeechScore() < 40) {
+            ivSpeechStart1.setVisibility(View.VISIBLE);
+        }
+        if (mEntity.getSpeechScore() >= 40 && mEntity.getSpeechScore() < 60) {
+            ivSpeechStart2.setVisibility(View.VISIBLE);
+        }
+        if (mEntity.getSpeechScore() >= 60 && mEntity.getSpeechScore() < 75) {
+            ivSpeechStart3.setVisibility(View.VISIBLE);
+        }
+        if (mEntity.getSpeechScore() >= 75 && mEntity.getSpeechScore() < 90) {
+            ivSpeechStart4.setVisibility(View.VISIBLE);
+        }
+        if (mEntity.getSpeechScore() >= 90) {
+            ivSpeechStart5.setVisibility(View.VISIBLE);
+        }
     }
 
 }

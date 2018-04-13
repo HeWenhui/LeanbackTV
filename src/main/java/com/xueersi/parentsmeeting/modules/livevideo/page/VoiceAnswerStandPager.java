@@ -587,6 +587,11 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         @Override
         public void onVolumeUpdate(int volume) {
         }
+
+        @Override
+        public void onRecordPCMData(short[] shorts, int i) {
+
+        }
     }
 
     VoiceEvaluatorListener listener = new VoiceEvaluatorListener();

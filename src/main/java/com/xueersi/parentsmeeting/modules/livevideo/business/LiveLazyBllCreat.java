@@ -63,11 +63,16 @@ public class LiveLazyBllCreat {
         return praiseOrEncourageBll;
     }
 
-    AnswerRankBll createAnswerRankBll(){
-        return new AnswerRankBll(liveVideoActivity,bottomContent,liveBll);
+    AnswerRankBll createAnswerRankBll() {
+        return new AnswerRankBll(liveVideoActivity, bottomContent, liveBll);
     }
-    public LiveAutoNoticeBll createAutoNoticeBll(){
-        return new LiveAutoNoticeBll(liveVideoActivity,bottomContent);
+
+    public LiveAutoNoticeBll createAutoNoticeBll() {
+        return new LiveAutoNoticeBll(liveVideoActivity, bottomContent);
+    }
+
+    public RolePlayAction createRolePlayBll() {
+        return new RolePlayerBll(liveVideoActivity, bottomContent, liveBll);
     }
 
     PraiseListAction createPraiseListAction() {

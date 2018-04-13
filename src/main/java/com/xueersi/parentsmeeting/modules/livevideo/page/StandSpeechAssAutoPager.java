@@ -461,6 +461,11 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             public void onVolumeUpdate(final int volume) {
                 lastVolume = volume;
             }
+
+            @Override
+            public void onRecordPCMData(short[] shorts, int i) {
+
+            }
         });
         if (!isLive) {
             mView.postDelayed(new Runnable() {

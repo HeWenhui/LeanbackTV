@@ -510,4 +510,34 @@
     <item name="rl_live_roleplayer_speech_volumewave_main" type="id" />
     <item name="vwv_livevideo_roleplayer_speech_volumewave" type="id" />
     <item name="ll_roleplayer_message_self_head_main" type="id" />
+    <item name="iv_roleplayer_item_shadow" type="id" />
+    <item name="tv_live_roleplayer_match_tip2" type="id" />
+    <item name="tv_live_roleplayer_message_speech_tip" type="id" />
+    <item name="iv_live_roleplayer_message_speech_start1" type="id" />
+    <item name="iv_live_roleplayer_message_speech_start2" type="id" />
+    <item name="iv_live_roleplayer_message_speech_start3" type="id" />
+    <item name="iv_live_roleplayer_message_speech_start4" type="id" />
+    <item name="iv_live_roleplayer_message_speech_start5" type="id" />
+    <item name="lav_live_roleplayer_message_dz" type="id" />
+    <item name="rl_live_roleplayer_message_dz" type="id" />
+    <item name="iv_live_roleplayer_message_dz" type="id" />
+    <item name="rl_live_roleplayer_result_main" type="id" />
+    <item name="iv_live_roleplayer_result_star" type="id" />
+    <item name="rl_livevideo_roleplayer_result_qizhi" type="id" />
+    <item name="tv_livevideo_roleplayer_result_totalscore" type="id" />
+    <item name="tv_livevideo_roleplayer_result_head" type="id" />
+    <item name="rl_livevideo_roleplayer_result_role_1" type="id" />
+    <item name="rl_livevideo_roleplayer_result_role_2" type="id" />
+    <item name="rl_livevideo_roleplayer_result_role_3" type="id" />
+    <item name="civ_livevideo_roleplayer_result_role_head_1" type="id" />
+    <item name="civ_livevideo_roleplayer_result_role_head_2" type="id" />
+    <item name="civ_livevideo_roleplayer_result_role_head_3" type="id" />
+    <item name="tv_livevideo_roleplayer_result_role_nickname_1" type="id" />
+    <item name="tv_livevideo_roleplayer_result_role_score_1" type="id" />
+    <item name="tv_livevideo_roleplayer_result_role_score_2" type="id" />
+    <item name="tv_livevideo_roleplayer_result_role_nickname_2" type="id" />
+    <item name="tv_livevideo_roleplayer_result_role_score_3" type="id" />
+    <item name="tv_livevideo_roleplayer_result_role_nickname_3" type="id" />
+    <item name="rl_livevideo_roleplayer_bubble_dz" type="id" />
+    <item name="rl_live_roleplayer_message_main" type="id" />
 </resources>

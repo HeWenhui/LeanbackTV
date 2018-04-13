@@ -5,13 +5,17 @@ import android.graphics.Color;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,7 +35,6 @@ import com.xueersi.xesalib.adapter.AdapterItemInterface;
 import com.xueersi.xesalib.adapter.CommonAdapter;
 import com.xueersi.xesalib.utils.app.ContextManager;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.view.image.CircleImageView;
@@ -42,7 +45,7 @@ import java.util.List;
 
 
 /**
- * RolePlayer
+ * RolePlayer多人语音连麦
  * Created by zouhao on 2018/3/29.
  */
 
@@ -61,7 +64,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     /** 角色列表展示区 */
     private RelativeLayout rlMatchRoleList;
     /** 角色显示页 */
-    private LinearLayout llMatchLottie;
+    private RelativeLayout rlMatchLottie;
     /** 准备开始朗读前的提示文案 */
     private TextView tvBeginTipMsg;
     /** 倒计时器 */
@@ -76,11 +79,17 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     /** 测评音量波形 */
     private VolumeWaveView vwvSpeechVolume;
 
+    /** 结果页 */
+    private RelativeLayout rlResult;
+
     /** 角色展示区适配器 */
     private RolePlayerHeadShowAdapter mHeadShowAdapter;
 
     /** 对话区 */
     private ListView lvReadList;
+
+    /** 点赞区 */
+    private RelativeLayout rlDZBubbleMessage;
 
     /** 对话数据适配器 */
     private CommonAdapter<RolePlayerEntity.RolePlayerMessage> mRolePlayerAdapter;
@@ -107,7 +116,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     public View initView() {
         View view = View.inflate(mContext, R.layout.pager_roleplayer, null);
         rlMatchPager = view.findViewById(R.id.rl_live_roleplayer_matchpager);
-        llMatchLottie = view.findViewById(R.id.rl_live_roleplayer_match_lottie);
+        rlMatchLottie = view.findViewById(R.id.rl_live_roleplayer_match_lottie);
         rlMatchRoleList = view.findViewById(R.id.rl_live_roleplayer_rolelist);
         rlMatchPager.setVisibility(View.VISIBLE);
         tvCountTime = view.findViewById(R.id.tv_live_roleplayer_countdown);
@@ -118,6 +127,11 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         civMatchHead = view.findViewById(R.id.civ_live_roleplayer_match_head);
         rlSpeechVolumnMain = view.findViewById(R.id.rl_live_roleplayer_speech_volumewave_main);
         vwvSpeechVolume = view.findViewById(R.id.vwv_livevideo_roleplayer_speech_volumewave);
+        rlDZBubbleMessage = view.findViewById(R.id.rl_live_roleplayer_dz_message_bubble_main);
+        int colors[] = {0x1936BC9B, 0x3236BC9B, 0x6436BC9B, 0x9636BC9B, 0xFF36BC9B};
+        vwvSpeechVolume.setColors(colors);
+        vwvSpeechVolume.setBackColor(Color.TRANSPARENT);
+        rlResult = view.findViewById(R.id.rl_live_roleplayer_result_main);
         return view;
     }
 
@@ -126,30 +140,17 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         //默认MATCH_WAIT_SECOND 后，匹配页消失
         rlRoleReadMain.setVisibility(View.GONE);
         final HashMap<String, String> assetFolders = new HashMap<String, String>();
-//        final String fileName = "live_stand_roleplayer_match.json";
-//        assetFolders.put(fileName, "Images/roleplayer_match");
         civMatchHead.setBorderWidth(SizeUtils.Dp2Px(mContext, 3));
         civMatchHead.setBorderColor(Color.WHITE);
         ImageLoader.with(mContext).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg()).into(civMatchHead);
-//        LottieComposition.Factory.fromAssetFileName(mContext, fileName, new OnCompositionLoadedListener() {
-//            @Override
-//            public void onCompositionLoaded(@Nullable LottieComposition composition) {
-//                Log.d(TAG, "onCompositionLoaded:composition=" + composition);
-//                if (composition == null) {
-//                    return;
-//                }
-//                lavMatch.setImageAssetsFolder(assetFolders.get(fileName));
-//                lavMatch.setComposition(composition);
-//            }
-//        });
 
         rlMatchPager.setVisibility(View.VISIBLE);
-        llMatchLottie.setVisibility(View.VISIBLE);
+        rlMatchLottie.setVisibility(View.VISIBLE);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (mEntity.getLstRoleInfo().size() > 0 && mEntity.getLstRolePlayerMessage().size() > 0) {
-                    llMatchLottie.setVisibility(View.GONE);
+                    rlMatchLottie.setVisibility(View.GONE);
                     rlMatchRoleList.setVisibility(View.VISIBLE);
                     roleConfirmPage(); //确定角色开始RolePlayer
                 } else {
@@ -175,7 +176,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 //进入朗读页
                 waitRolePlayer();
             }
-        }, MATCH_WAIT_SECOND);
+        }, WAIT_ROLE_HEAD_SHOW);
     }
 
     /**
@@ -194,7 +195,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 public void run() {
                     tvBeginTipMsg.setBackgroundResource(R.drawable.shape_livevideo_roleplayer_ready_go_bg);
                     tvBeginTipMsg.setText("GO");
-                    tvBeginTipMsg.setPadding(70, 20, 70, 20);
+                    //tvBeginTipMsg.setPadding(60, 10, 60, 15);
                     tvBeginTipMsg.setGravity(Gravity.CENTER);
 
                 }
@@ -206,11 +207,10 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         tvCountTime.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mEntity.getCountDownSecond() == 0) {
-                    //倒计时结束，进入结束环节
-                    endRolePlayer();
-                    return;
-                }
+//                if (mEntity.getCountDownSecond() == 0) {
+//                    //倒计时结束，时钟正走
+//                    return;
+//                }
                 mEntity.setCountDownSecond(mEntity.getCountDownSecond() - 1);
                 tvCountTime.setText(getCountDownTime());
                 tvCountTime.postDelayed(this, 1000);
@@ -238,10 +238,10 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         lvReadList.setAdapter(mRolePlayerAdapter);
         lvReadList.setVisibility(View.VISIBLE);
 
-//        vHead = new View(mContext);
-//        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SizeUtils.Dp2Px(mContext, 100));
-//        vHead.setLayoutParams(lp);
-//        lvReadList.addHeaderView(vHead);
+        vHead = new View(mContext);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SizeUtils.Dp2Px(mContext, 50));
+        vHead.setLayoutParams(lp);
+        lvReadList.addFooterView(vHead);
 
 //        int rop = ScreenUtils.getScreenHeight() / 2;
 //        lvReadList.smoothScrollToPositionFromTop(0, -rop);
@@ -273,8 +273,11 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             if (msg.what == READ_MESSAGE) {
                 //恢复上一条的状态
                 if (mCurrentReadIndex > 0) {
+                    vwvSpeechVolume.stop();
                     RolePlayerEntity.RolePlayerMessage upMessage = mEntity.getLstRolePlayerMessage().get(mCurrentReadIndex - 1);
-                    upMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY);
+                    if (upMessage.getMsgStatus() != RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH) {
+                        upMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY);
+                    }
                     mRolePlayerAdapter.updataSingleRow(lvReadList, upMessage);
                     if (mIse != null) {
                         mIse.stop();
@@ -285,16 +288,16 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                     //已经对话完毕
                     endRolePlayer();
                     return;
+                } else {
+                    lvReadList.smoothScrollToPosition(mCurrentReadIndex + 1);
                 }
 
                 //取出当前这条的延时时间
                 RolePlayerEntity.RolePlayerMessage currentMessage = mEntity.getLstRolePlayerMessage().get(mCurrentReadIndex);
                 currentMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY);
                 mRolePlayerAdapter.updataSingleRow(lvReadList, currentMessage);
-                //speechReadMessage(currentMessage);
-                if ((mCurrentReadIndex + 1) < mEntity.getLstRolePlayerMessage().size()) {
-                    lvReadList.smoothScrollToPosition(mCurrentReadIndex + 2);
-                }
+                speechReadMessage(currentMessage);
+
                 mCurrentReadIndex++;
                 Message temp = mReadHandler.obtainMessage();
                 temp.what = READ_MESSAGE;
@@ -320,7 +323,17 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      * 结束RolePlayer
      */
     private void endRolePlayer() {
+        vwvSpeechVolume.stop();
+        rlSpeechVolumnMain.setVisibility(View.INVISIBLE);
+        vwvSpeechVolume.setVisibility(View.GONE);
         //XESToastUtils.showToast(mContext, "结束");
+        rlResult.setVisibility(View.VISIBLE);
+        rlResult.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                rlResult.setVisibility(View.GONE);
+            }
+        }, 3000);
     }
 
 
@@ -329,10 +342,16 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      *
      * @param message
      */
-    private void speechReadMessage(RolePlayerEntity.RolePlayerMessage message) {
-//        if(!message.getRolePlayer().isSelfRole()) {
-//            return;
-//        }
+    private void speechReadMessage(final RolePlayerEntity.RolePlayerMessage message) {
+        if (!message.getRolePlayer().isSelfRole()) {
+            //对方朗读则隐藏
+            rlSpeechVolumnMain.setVisibility(View.INVISIBLE);
+            vwvSpeechVolume.setVisibility(View.GONE);
+            return;
+        }
+
+        rlSpeechVolumnMain.setVisibility(View.VISIBLE);
+        vwvSpeechVolume.setVisibility(View.VISIBLE);
         String spechMsg = message.getReadMsg().replace("\n", "");
         if (mIse == null) {
             mIse = new SpeechEvaluatorUtils(true);
@@ -343,12 +362,15 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 new EvaluatorListener() {
                     @Override
                     public void onBeginOfSpeech() {
-
+                        vwvSpeechVolume.start();
                     }
 
                     @Override
                     public void onResult(ResultEntity resultEntity) {
                         if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+                            message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
+                            message.setSpeechScore(resultEntity.getScore());
+                            message.setLstPhoneScore(resultEntity.getLstPhonemeScore());
                             XESToastUtils.showToast(mContext, resultEntity.getScore() + "");
                             //提前开始下一条
                             nextReadMessage();
@@ -362,10 +384,54 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                     }
 
                     @Override
-                    public void onVolumeUpdate(int i) {
+                    public void onVolumeUpdate(int volume) {
+                        vwvSpeechVolume.setVolume(volume * 3);
+                    }
+
+                    @Override
+                    public void onRecordPCMData(short[] shorts, int i) {
+                        //通过声网走
                     }
                 });
     }
+
+
+    /**
+     * 收到点赞消息
+     */
+    public void showDZ() {
+        final View view = View.inflate(mContext, R.layout.layout_livevideo_roleplayer_bubble_message_dz, null);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, R.id.rl_live_roleplayer_dz_message_bubble_main);
+        lp.addRule(RelativeLayout.CENTER_HORIZONTAL, R.id.rl_live_roleplayer_dz_message_bubble_main);
+
+        Animation anim = AnimationUtils.loadAnimation(mContext, R.anim.slide_bubble_out_to_top);
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                view.setVisibility(View.GONE);
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        rlDZBubbleMessage.removeView(view);
+                    }
+                });
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        rlDZBubbleMessage.addView(view, lp);
+        view.startAnimation(anim);
+    }
+
 
     /**
      * 提前开始下一条
@@ -374,6 +440,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         mReadHandler.removeMessages(GO_SPEECH);
         mReadHandler.removeMessages(READ_MESSAGE);
         mReadHandler.sendEmptyMessage(READ_MESSAGE);
+        showDZ();
     }
 
     /**
@@ -411,6 +478,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 convertView = View.inflate(mContext, R.layout.item_live_roleplayer_rolehead, null);
                 holder.tvNickName = convertView.findViewById(R.id.tv_live_roleplayer_item_rolehead_nickname);
                 holder.civHeadImg = convertView.findViewById(R.id.civ_roleplayer_item_rolehead_img);
+                holder.ivHeadShadow = convertView.findViewById(R.id.iv_roleplayer_item_shadow);
                 holder.tvRoleName = convertView.findViewById(R.id.tv_live_roleplayer_item_rolename);
                 convertView.setTag(holder);
             } else {
@@ -429,12 +497,14 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 holder.civHeadImg.setBorderColor(Color.parseColor("#36BC9B"));
                 holder.civHeadImg.setBorderWidth(SizeUtils.Dp2Px(mContext, 3));
                 holder.tvRoleName.setTextColor(Color.parseColor("#36BC9B"));
+                holder.ivHeadShadow.setVisibility(View.VISIBLE);
 //
 //                holder.civHeadImg.setFinishBorderColor(Color.GRAY);
 //                holder.civHeadImg.setUnFinishBorderColor(Color.RED);
 //                holder.civHeadImg.startCountDown(10);
             } else {
                 holder.civHeadImg.setBorderColor(Color.WHITE);
+                holder.ivHeadShadow.setVisibility(View.INVISIBLE);
                 holder.civHeadImg.setBorderWidth(SizeUtils.Dp2Px(mContext, 3));
             }
         }
@@ -443,6 +513,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         class Holder {
             /** 昵称 */
             private TextView tvNickName;
+            /** 阴影 */
+            private ImageView ivHeadShadow;
             /** 头像 */
             private CircleImageView civHeadImg;
             /** 角色名 */
@@ -453,15 +525,33 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     /**
      * 返回当前的倒计时
      */
-    private String getCountDownTime() {
-        long min = mEntity.getCountDownSecond() / 60;
-        long sec = mEntity.getCountDownSecond() % 60;
+    private SpannableString getCountDownTime() {
+        long countTime;
+        boolean isFu = false;
+        if (mEntity.getCountDownSecond() < 0) {
+            isFu = true;
+            countTime = Math.abs(mEntity.getCountDownSecond());
+        } else {
+            countTime = mEntity.getCountDownSecond();
+        }
+        long min = countTime / 60;
+        long sec = countTime % 60;
         long hour = min / 60;
         min %= 60;
         if (hour == 0) {
-            return "时间: " + min + "分" + sec + "秒";
+            SpannableString span = new SpannableString(min + "分" + sec + "秒");
+            if (isFu) {
+                span.setSpan(new ForegroundColorSpan(Color.RED), 0, span.length(),
+                        Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            }
+            return span;
         } else {
-            return "时间:" + hour + "时" + min + "分" + sec + "秒";
+            SpannableString span = new SpannableString(hour + "时" + min + "分" + sec + "秒");
+            if (isFu) {
+                span.setSpan(new ForegroundColorSpan(Color.RED), 0, span.length(),
+                        Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            }
+            return span;
         }
     }
 
