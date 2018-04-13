@@ -57,6 +57,7 @@ public class RedPackagePage extends BasePager {
     private int clickPackage = 1;
     private boolean isLive;
     Top3FrameAnim top3FrameAnim;
+    boolean viewAttached = true;
     String file1 = "live_stand/frame_anim/redpackage/1_enter";
     String file2 = "live_stand/frame_anim/redpackage/2_loop";
     String file3 = "live_stand/frame_anim/redpackage/3_fly_up";
@@ -95,14 +96,17 @@ public class RedPackagePage extends BasePager {
             @Override
             public void onViewAttachedToWindow(View view) {
                 Loger.d(TAG, "onViewAttachedToWindow");
+                viewAttached = true;
             }
 
             @Override
             public void onViewDetachedFromWindow(View view) {
+                viewAttached = false;
                 Loger.d(TAG, "onViewDetachedFromWindow:frameAnimations=" + frameAnimations.size());
                 for (int i = 0; i < frameAnimations.size(); i++) {
                     FrameAnimation animation = frameAnimations.get(i);
-                    animation.destory();
+                    int destory = animation.destory();
+                    Loger.d(TAG, "onViewDetachedFromWindow:animation=" + animation.path + ",destory=" + destory);
                 }
             }
         });
@@ -160,9 +164,8 @@ public class RedPackagePage extends BasePager {
 
             @Override
             public void onAnimationEnd() {
-                FrameAnimation btframeAnimation2 = null;
-                btframeAnimation2 = createFromAees(file2, true);
-                frameAnimations.add(btframeAnimation1);
+                FrameAnimation btframeAnimation2 = createFromAees(file2, true);
+                frameAnimations.add(btframeAnimation2);
 //                        btMesOpenAnimation.setAnimationListener(null);
                 iv_livevideo_redpackage_bg.postDelayed(new Runnable() {
                     @Override

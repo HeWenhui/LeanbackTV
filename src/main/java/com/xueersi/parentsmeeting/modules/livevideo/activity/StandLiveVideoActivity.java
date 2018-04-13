@@ -77,6 +77,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.Play
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
@@ -1553,6 +1554,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         if (speechFeedBackAction != null) {
             speechFeedBackAction.stop();
         }
+        FrameAnimation.allRecycle();
         super.onDestroy();
     }
 

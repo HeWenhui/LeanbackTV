@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.widget;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Environment;
 import android.os.Handler;
@@ -46,6 +47,7 @@ public class FrameAnimation {
     private Handler handler = new Handler(Looper.getMainLooper());
     private int[] mFrameRess;
     private String[] files;
+    public String path;
     /**
      * 每帧动画的播放间隔数组
      */
@@ -80,6 +82,8 @@ public class FrameAnimation {
 
     private static final int SELECTED_D = 4;
     private HashMap<String, Bitmap> bitmapHashMap = new HashMap<>();
+    private static HashMap<String, Bitmap> allBitmapHashMap = new HashMap<>();
+    private String drawFile = "";
     private boolean destory = false;
     private ThreadPoolExecutor executor;
 
@@ -319,6 +323,7 @@ public class FrameAnimation {
                                             return;
                                         }
                                         bitmapHashMap.put(file, bitmap);
+                                        allBitmapHashMap.put(file, bitmap);
                                     }
                                 }
                                 if (bitmap == null) {
@@ -331,6 +336,7 @@ public class FrameAnimation {
                                             return;
                                         }
                                         bitmapHashMap.put(file, bitmap);
+                                        allBitmapHashMap.put(file, bitmap);
                                         bitmap.setDensity(160);
                                     }
                                 }
@@ -343,15 +349,37 @@ public class FrameAnimation {
                                                 finalBitmap.recycle();
                                                 return;
                                             }
-                                            mView.setBackgroundDrawable(new BitmapDrawable(finalBitmap));
-
-                                            if (!mIsRepeat) {
-                                                Set<String> keys = bitmapHashMap.keySet();
-                                                for (String k : keys) {
-                                                    if (!k.equals(file)) {
-                                                        bitmapHashMap.get(k).recycle();
+                                            drawFile = file;
+                                            mView.setBackgroundDrawable(new BitmapDrawable(finalBitmap) {
+                                                @Override
+                                                public void draw(Canvas canvas) {
+                                                    try {
+                                                        drawFile = file;
+                                                        super.draw(canvas);
+                                                    } catch (Exception e) {
+                                                        Loger.e(TAG, "setBackgroundDrawable:file=" + file + ",drawFile=" + drawFile);
                                                     }
                                                 }
+                                            });
+                                            if (!mIsRepeat) {
+                                                executor.execute(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        for (int index = 0; index < i - 2; index++) {
+                                                            String f = files[index];
+                                                            Bitmap bitmap1 = bitmapHashMap.get(f);
+                                                            if (bitmap1 != null) {
+                                                                bitmap1.recycle();
+                                                            }
+                                                        }
+//                                                        Set<String> keys = bitmapHashMap.keySet();
+//                                                        for (String k : keys) {
+//                                                            if (!k.equals(drawFile)) {
+//                                                                bitmapHashMap.get(k).recycle();
+//                                                            }
+//                                                        }
+                                                    }
+                                                });
                                             }
                                         }
                                     });
@@ -472,20 +500,28 @@ public class FrameAnimation {
     }
 
     public void removeBitmapCache(String file) {
-        bitmapHashMap.remove(file);
+        if (mIsRepeat) {
+            bitmapHashMap.remove(file);
+        }
     }
 
-    public void destory() {
+    public int destory() {
         destory = true;
         if (executor != null) {
             executor.shutdownNow();
         }
         pauseAnimation();
         Set<String> keys = bitmapHashMap.keySet();
+        int recycle = 0;
         for (String k : keys) {
-            bitmapHashMap.get(k).recycle();
+            Bitmap bitmap = bitmapHashMap.get(k);
+            if (!bitmap.isRecycled()) {
+                bitmapHashMap.get(k).recycle();
+                recycle++;
+            }
         }
         bitmapHashMap.clear();
+        return recycle;
     }
 
     public static FrameAnimation createFromAees(Context mContext, View iv, String path, int duration, boolean isRepeat) {
@@ -511,6 +547,7 @@ public class FrameAnimation {
                 }
             }
             FrameAnimation btframeAnimation1 = new FrameAnimation(iv, files, duration, isRepeat);
+            btframeAnimation1.path = path;
             return btframeAnimation1;
         } catch (IOException e) {
             e.printStackTrace();
@@ -526,5 +563,16 @@ public class FrameAnimation {
         }
         InputStream inputStream = context.getAssets().open(file);
         return inputStream;
+    }
+
+    public static void allRecycle() {
+        Set<String> keys = allBitmapHashMap.keySet();
+        for (String k : keys) {
+            Bitmap bitmap = allBitmapHashMap.get(k);
+            if (!bitmap.isRecycled()) {
+                Loger.d(TAG, "allRecycle:k=" + k);
+            }
+        }
+        allBitmapHashMap.clear();
     }
 }
