@@ -168,7 +168,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         btMesOpen = mView.findViewById(R.id.bt_livevideo_message_open);
         InputStream inputStream = null;
         try {
-            inputStream = mContext.getAssets().open("Images/openmsg/message_open_00074.png");
+            inputStream = mContext.getAssets().open("live_stand/frame_anim/openmsg/message_open_00074.png");
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             bitmap.setDensity(160);
             btMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
@@ -198,7 +198,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     }
 
     void initBtMesOpenAnimation() {
-        btMesOpenAnimation = FrameAnimation.createFromAees(mContext, btMesOpen, "Images/openmsg", 50, false);
+        btMesOpenAnimation = FrameAnimation.createFromAees(mContext, btMesOpen, "live_stand/frame_anim/openmsg", 50, false);
 //            btMesOpenAnimation.restartAnimation();
         btMesOpenAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
             @Override
