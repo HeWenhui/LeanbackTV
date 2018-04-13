@@ -362,7 +362,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                                 GoldTeamStatus.Student student = students.get(i);
                                 LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
                                 String path = "live_stand_voice_team_right.json";
-                                lottieAnimationView.setImageAssetsFolder("live_stand/frame_anim/voice_answer/team_right");
+                                lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/team_right");
                                 LottieComposition.Factory.fromAssetFileName(mContext, path, new TeamOnCompositionLoadedListener(student, lottieAnimationView));
                                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                                 lp.weight = 1;
@@ -918,7 +918,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             }
         });
         String path = "live_stand_voice_team_right.json";
-        lav_livevideo_voiceans_team_mine.setImageAssetsFolder("live_stand/frame_anim/voice_answer/team_right");
+        lav_livevideo_voiceans_team_mine.setImageAssetsFolder("live_stand/lottie/voice_answer/team_right");
         GoldTeamStatus.Student student = new GoldTeamStatus.Student();
         student.setNickname(userName);
         student.setScore("" + resultEntity.getScore());
@@ -1147,9 +1147,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             InputStream inputStream = null;
             try {
                 if (isMe) {
-                    inputStream = mContext.getAssets().open("live_stand/frame_anim/voice_answer/team_right/img_11.png");
+                    inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_11.png");
                 } else {
-                    inputStream = mContext.getAssets().open("live_stand/frame_anim/voice_answer/team_right/img_1.png");
+                    inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_1.png");
                 }
                 Bitmap headBack = BitmapFactory.decodeStream(inputStream);
                 Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
@@ -1189,7 +1189,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                         Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
                         InputStream inputStream = null;
                         try {
-                            inputStream = mContext.getAssets().open("live_stand/frame_anim/voice_answer/team_right/img_2.png");
+                            inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_2.png");
                             Bitmap headBack = BitmapFactory.decodeStream(inputStream);
                             Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
                             Canvas canvas = new Canvas(creatBitmap);
@@ -1228,7 +1228,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             AssetManager manager = context.getAssets();
             Bitmap img_7Bitmap;
             try {
-                img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/frame_anim/voice_answer/team_right/img_0.png"));
+                img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/voice_answer/team_right/img_0.png"));
                 Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(creatBitmap);
                 Paint paintInner = new Paint();

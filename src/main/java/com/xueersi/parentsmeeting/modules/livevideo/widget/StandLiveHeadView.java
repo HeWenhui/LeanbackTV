@@ -101,7 +101,7 @@ public class StandLiveHeadView extends LottieAnimationView {
         Bitmap img_7Bitmap;
         AssetManager manager = getContext().getAssets();
         try {
-            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/frame_anim/head/img_4.png"));
+            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/head/img_4.png"));
             updateBitmap("image_3", img_7Bitmap);
         } catch (IOException e) {
             e.printStackTrace();
@@ -118,11 +118,11 @@ public class StandLiveHeadView extends LottieAnimationView {
         Bitmap img_7Bitmap;
         try {
             if (isMine) {
-                img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/frame_anim/head/img_3.png"));
+                img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/head/img_3.png"));
             } else {
-                img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/frame_anim/head/img_4.png"));
+                img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/head/img_4.png"));
             }
-            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/frame_anim/head/img_1.png"));
+            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/head/img_1.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
             canvas.drawBitmap(img_7Bitmap, 0, 0, null);
@@ -147,7 +147,7 @@ public class StandLiveHeadView extends LottieAnimationView {
                 AssetManager manager = getContext().getAssets();
                 Bitmap img_7Bitmap;
                 try {
-                    img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/frame_anim/head/img_1.png"));
+                    img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/head/img_1.png"));
                     Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
                     Canvas canvas = new Canvas(creatBitmap);
                     canvas.drawBitmap(img_7Bitmap, 0, 0, null);

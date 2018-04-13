@@ -783,10 +783,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 @Override
                 public void run() {
                     if (speechAssessmentPager != null) {
-                        mLogtf.d("onStopQuestion:examSubmitAll:id=" + speechAssessmentPager.getId());
+                        String id = speechAssessmentPager.getId();
+                        mLogtf.d("onStopQuestion:examSubmitAll:id=" + id);
                         speechAssessmentPager.examSubmitAll();
                         if (speechEndAction != null) {
-                            speechEndAction.examSubmitAll(speechAssessmentPager.getId());
+                            speechEndAction.examSubmitAll(id);
                         }
                     }
                 }

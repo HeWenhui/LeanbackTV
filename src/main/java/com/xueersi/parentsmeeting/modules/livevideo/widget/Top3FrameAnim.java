@@ -66,9 +66,8 @@ public class Top3FrameAnim {
                 students.add(student);
             }
         }
-        String path = file15;
         final FrameAnimation btframeAnimation2 =
-                FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, path, 50, false);
+                FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, file15, 50, false);
         btframeAnimation2.setBitmapCreate(new FrameAnimation.BitmapCreate() {
             @Override
             public Bitmap onAnimationCreate(String file) {
@@ -142,9 +141,8 @@ public class Top3FrameAnim {
 
             @Override
             public void onAnimationEnd() {
-                String path = file16;
                 final FrameAnimation btframeAnimation3 =
-                        FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, path, 50, true);
+                        FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, file16, 50, true);
                 frameAnimations.add(btframeAnimation3);
                 if (!students.isEmpty()) {
                     btframeAnimation3.setBitmapCreate(new FrameAnimation.BitmapCreate() {

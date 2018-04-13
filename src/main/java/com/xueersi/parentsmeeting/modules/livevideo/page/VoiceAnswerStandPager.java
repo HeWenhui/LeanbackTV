@@ -219,17 +219,17 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                 String path;
                                 if (student.isRight()) {
                                     path = "live_stand_voice_team_right.json";
-                                    lottieAnimationView.setImageAssetsFolder("live_stand/frame_anim/voice_answer/team_right");
+                                    lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/team_right");
                                 } else {
                                     path = "live_stand_voice_team_wrong.json";
-                                    lottieAnimationView.setImageAssetsFolder("live_stand/frame_anim/voice_answer/team_wrong");
+                                    lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/team_wrong");
                                 }
                                 LottieComposition.Factory.fromAssetFileName(mContext, path, new OnCompositionLoadedListener() {
 
                                     void updateName() {
                                         InputStream inputStream = null;
                                         try {
-                                            inputStream = mContext.getAssets().open("live_stand/frame_anim/voice_answer/team_right/img_1.png");
+                                            inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_1.png");
                                             Bitmap headBack = BitmapFactory.decodeStream(inputStream);
                                             Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
                                             Canvas canvas = new Canvas(creatBitmap);
@@ -264,7 +264,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                                     Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
                                                     InputStream inputStream = null;
                                                     try {
-                                                        inputStream = mContext.getAssets().open("live_stand/frame_anim/voice_answer/team_right/img_2.png");
+                                                        inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_2.png");
                                                         Bitmap headBack = BitmapFactory.decodeStream(inputStream);
                                                         Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
                                                         Canvas canvas = new Canvas(creatBitmap);

@@ -474,7 +474,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                                     return;
                                 }
                                 mComposition = composition;
-                                standLiveHeadView.setImageAssetsFolder("live_stand/frame_anim/head");
+                                standLiveHeadView.setImageAssetsFolder("live_stand/lottie/head");
                                 standLiveHeadView.setComposition(composition);
                             }
                         });
