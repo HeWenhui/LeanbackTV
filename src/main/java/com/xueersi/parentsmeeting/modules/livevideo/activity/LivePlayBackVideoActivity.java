@@ -595,16 +595,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             };
             mMorecourse.setAdapter(mCourseAdapter);
         }
-
         // 04.12 第一次进入的时候，就去请求回放的所有广告信息
         lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(),getDataCallBack);
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                showPopupwindowboard();
-                Log.e("Duncan","第一次加载");
-            }
-        },500);
 
     }
 
@@ -669,6 +661,15 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     "mIsShowQuestion=" + mIsShowQuestion);
 //            showQuestion(mQuestionEntity);
         }
+        // 04.13 视频加载成功之后创建面板
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(LiveVideoConfig.MORE_COURSE > 0){
+                    showPopupwindowboard();
+                }
+            }
+        },1000);
     }
 
     @Override
@@ -2779,7 +2780,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     public void onEvent(MiniEvent event) {
         if("Order".equals(event.getMin())){
             createRealVideo(event.getCourseId(),event.getClassId());
-            Log.e("Duncan","LivePlayBackMin");
         }
         // 04.03 从支付页面跳转回来的重新加载
         if("Back".equals(event.getMin())){
@@ -2812,7 +2812,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     }
 
     private void showPopupwindowboard() {
-        Log.e("Duncan","创建board");
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mFloatView = inflater.inflate(R.layout.livemessage_jumpboard, null);
         mPopupWindows = new PopupWindow(mFloatView, 415, 100, false);

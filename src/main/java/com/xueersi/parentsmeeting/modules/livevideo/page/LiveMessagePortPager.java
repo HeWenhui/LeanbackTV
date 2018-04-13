@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.page;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -25,6 +27,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -389,8 +393,18 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
             @Override
             public void onClick(View view) {
                 liveBll.getMoreChoice(mPageDataLoadEntity,getDataCallBack);
-                mFirstSight.setVisibility(View.GONE);
-                mSecondSight.setVisibility(View.VISIBLE);
+                Animation animation = AnimationUtils.loadAnimation(
+                        liveVideoActivity, R.anim.anim_livevideo_lecture_morechoice);
+                mSecondSight.startAnimation(animation);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSecondSight.setVisibility(View.VISIBLE);
+                        mFirstSight.setVisibility(View.GONE);
+                    }
+                },200);
+
+
             }
         });
         // 04.04 关闭更多课程页面

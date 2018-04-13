@@ -1,6 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
     <RelativeLayout
         android:id="@+id/ll_all_content"
         android:layout_width="match_parent"
@@ -292,9 +292,10 @@
                 android:layout_marginRight="20dp"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/close"
-                android:layout_width="22dp"
-                android:layout_height="22dp"/>
+                android:scaleType="fitCenter"
+                android:background="@drawable/cy_main_guanbi_icon_normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
         </RelativeLayout>
         <View
