@@ -7,22 +7,16 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.airbnb.lottie.LottieComposition;
-import com.airbnb.lottie.OnCompositionLoadedListener;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandAchievementBll;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 /**
- * Created by lyqai on 2018/3/23.
+ * Created by linyuqiang on 2018/3/23.
+ * 站立直播背景Lottie动画，本场成就
  */
-
 public class StandLiveLottieAnimationView extends LottieAnimationView {
     int goldCount = -1;
     int starCount = -1;
@@ -51,8 +45,8 @@ public class StandLiveLottieAnimationView extends LottieAnimationView {
         AssetManager manager = getContext().getAssets();
         Bitmap img_7Bitmap;
         try {
-            img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_9.png"));
-            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
+            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/frame_anim/jindu/img_9.png"));
+            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/frame_anim/jindu/img_3.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
             canvas.drawBitmap(img_7Bitmap, 0, 0, null);
@@ -80,7 +74,7 @@ public class StandLiveLottieAnimationView extends LottieAnimationView {
         AssetManager manager = getContext().getAssets();
         Bitmap img_7Bitmap;
         try {
-            img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_4.png"));
+            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/frame_anim/jindu/img_4.png"));
 //            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);

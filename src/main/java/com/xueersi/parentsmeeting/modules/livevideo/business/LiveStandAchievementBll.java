@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -10,9 +9,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
@@ -20,8 +17,6 @@ import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LineEvaluator;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveLottieAnimationView;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -192,7 +187,7 @@ public class LiveStandAchievementBll implements StarInteractAction {
     private void initlottieAnim() {
         final String fileName = "live_stand_jindu.json";
         final HashMap<String, String> assetFolders = new HashMap<String, String>();
-        assetFolders.put(fileName, "Images/jindu");
+        assetFolders.put(fileName, "live_stand/frame_anim/jindu");
         LottieComposition.Factory.fromAssetFileName(activity, fileName, new OnCompositionLoadedListener() {
             @Override
             public void onCompositionLoaded(@Nullable LottieComposition composition) {

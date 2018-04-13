@@ -34,7 +34,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieComposition;
@@ -475,7 +474,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                                     return;
                                 }
                                 mComposition = composition;
-                                standLiveHeadView.setImageAssetsFolder("Images/head");
+                                standLiveHeadView.setImageAssetsFolder("live_stand/frame_anim/head");
                                 standLiveHeadView.setComposition(composition);
                             }
                         });

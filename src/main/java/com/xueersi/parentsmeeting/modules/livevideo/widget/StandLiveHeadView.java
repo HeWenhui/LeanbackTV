@@ -8,13 +8,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
@@ -28,9 +25,9 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Created by lyqai on 2018/3/23.
+ * Created by linyuqiang on 2018/3/23.
+ * 站立直播聊天消息头像Lottie动画
  */
-
 public class StandLiveHeadView extends LottieAnimationView {
     Paint paint;
     private String TAG = "StandLiveHeadView";
@@ -104,7 +101,7 @@ public class StandLiveHeadView extends LottieAnimationView {
         Bitmap img_7Bitmap;
         AssetManager manager = getContext().getAssets();
         try {
-            img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/head/img_4.png"));
+            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/frame_anim/head/img_4.png"));
             updateBitmap("image_3", img_7Bitmap);
         } catch (IOException e) {
             e.printStackTrace();
@@ -121,11 +118,11 @@ public class StandLiveHeadView extends LottieAnimationView {
         Bitmap img_7Bitmap;
         try {
             if (isMine) {
-                img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/head/img_3.png"));
+                img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/frame_anim/head/img_3.png"));
             } else {
-                img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/head/img_4.png"));
+                img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/frame_anim/head/img_4.png"));
             }
-            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/head/img_1.png"));
+            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/frame_anim/head/img_1.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
             canvas.drawBitmap(img_7Bitmap, 0, 0, null);
@@ -150,7 +147,7 @@ public class StandLiveHeadView extends LottieAnimationView {
                 AssetManager manager = getContext().getAssets();
                 Bitmap img_7Bitmap;
                 try {
-                    img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/head/img_1.png"));
+                    img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/frame_anim/head/img_1.png"));
                     Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
                     Canvas canvas = new Canvas(creatBitmap);
                     canvas.drawBitmap(img_7Bitmap, 0, 0, null);
