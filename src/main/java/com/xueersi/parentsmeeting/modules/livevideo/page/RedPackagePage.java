@@ -278,12 +278,6 @@ public class RedPackagePage extends BasePager {
     public void onGetPackage(VideoResultEntity entity) {
         if (clickPackage == 2) {
             initRightResult(entity);
-            mView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    redPackageAction.onPackageClose(operateId);
-                }
-            }, 3000);
         } else {
             ViewParent parent = rl_livevideo_redpackage_teams.getParent();
             if (parent == null) {
@@ -358,12 +352,28 @@ public class RedPackagePage extends BasePager {
      */
     private void initRightResult(final VideoResultEntity entity) {
         final FrameAnimation btframeAnimation1 = createFromAees(file5, false);
+//        final FrameAnimation btframeAnimation1 = FrameAnimation.createFromAees(mContext, iv_livevideo_redpackage_bg, file5, 650, false);
         frameAnimations.add(btframeAnimation1);
         btframeAnimation1.setBitmapCreate(new FrameAnimation.BitmapCreate() {
             @Override
             public Bitmap onAnimationCreate(String file) {
-                if (file.contains("0017")) {
-                    return initHeadAndGold(entity, file, btframeAnimation1);
+//                "package_shapeshift_00152"
+                int index = file.lastIndexOf("/");
+                String name = "";
+                int nameInt = 0;
+                if (index != -1) {
+                    name = file.substring(index + 1, file.length() - 4);
+                    String split[] = name.split("_");
+                    try {
+                        nameInt = Integer.parseInt(split[split.length - 1]);
+                    } catch (Exception e) {
+
+                    }
+                }
+                if (nameInt > 163 && nameInt < 170) {
+                    return initHeadAndGold(entity, file, btframeAnimation1, false);
+                } else if (nameInt > 169) {
+                    return initHeadAndGold(entity, file, btframeAnimation1, true);
                 }
                 return null;
             }
@@ -383,9 +393,15 @@ public class RedPackagePage extends BasePager {
                     public Bitmap onAnimationCreate(String file) {
                         Loger.d(TAG, "onAnimationCreate:file=" + file);
 //                        return headBitmap;
-                        return initHeadAndGold(entity, file, btframeAnimation2);
+                        return initHeadAndGold(entity, file, btframeAnimation2, true);
                     }
                 });
+                mView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        redPackageAction.onPackageClose(operateId);
+                    }
+                }, 23000);
             }
 
             @Override
@@ -401,9 +417,10 @@ public class RedPackagePage extends BasePager {
      * @param entity
      * @param file
      * @param btframeAnimation1
+     * @param drawName
      * @return
      */
-    private Bitmap initHeadAndGold(final VideoResultEntity entity, final String file, final FrameAnimation btframeAnimation1) {
+    private Bitmap initHeadAndGold(final VideoResultEntity entity, final String file, final FrameAnimation btframeAnimation1, boolean drawName) {
         InputStream inputStream = null;
         try {
             inputStream = mContext.getAssets().open(file);
@@ -412,7 +429,6 @@ public class RedPackagePage extends BasePager {
             Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             canvasBitmap.setDensity(160);
             Canvas canvas = new Canvas(canvasBitmap);
-            canvas.drawBitmap(bitmap, 0, 0, null);
 
             if (headBitmap != null && !headBitmap.isRecycled()) {
                 float scaleWidth = 61f / headBitmap.getHeight();
@@ -447,21 +463,24 @@ public class RedPackagePage extends BasePager {
                     });
                 }
             }
+            canvas.drawBitmap(bitmap, 0, 0, null);
             bitmap.recycle();
             //画名字和金币数量
-            String gold = "+" + entity.getGoldNum();
-            View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout.layout_live_stand_red_mine1, null);
-            TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_name);
-            tv_livevideo_redpackage_name.setText("" + userName);
-            TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
-            tv_livevideo_redpackage_num.setText(gold);
-            layout_live_stand_red_mine1.measure(canvasBitmap.getWidth(), canvasBitmap.getHeight());
-            layout_live_stand_red_mine1.layout(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight());
+            if (drawName) {
+                String gold = "+" + entity.getGoldNum();
+                View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout.layout_live_stand_red_mine1, null);
+                TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_name);
+                tv_livevideo_redpackage_name.setText("" + userName);
+                TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
+                tv_livevideo_redpackage_num.setText(gold);
+                layout_live_stand_red_mine1.measure(canvasBitmap.getWidth(), canvasBitmap.getHeight());
+                layout_live_stand_red_mine1.layout(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight());
 
-            canvas.save();
-            canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 160);
-            layout_live_stand_red_mine1.draw(canvas);
-            canvas.restore();
+                canvas.save();
+                canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 160);
+                layout_live_stand_red_mine1.draw(canvas);
+                canvas.restore();
+            }
             return canvasBitmap;
         } catch (IOException e) {
             e.printStackTrace();
@@ -1030,10 +1049,11 @@ public class RedPackagePage extends BasePager {
      * 第二个红包到了
      */
     public void onOtherPackage() {
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) iv_livevideo_redpackage_bg.getLayoutParams();
-        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        lp.bottomMargin = 100;
-        iv_livevideo_redpackage_bg.setLayoutParams(lp);
+//        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) iv_livevideo_redpackage_bg.getLayoutParams();
+//        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+//        lp.bottomMargin = 100;
+//        iv_livevideo_redpackage_bg.setLayoutParams(lp);
+        redPackageAction.onPackageClose(operateId);
     }
 
 

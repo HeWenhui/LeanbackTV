@@ -4,15 +4,23 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.xueersi.xesalib.utils.log.Loger;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by Ansen on 2015/5/14 23:30.
@@ -25,6 +33,7 @@ import java.util.Set;
  * @Description: TODO
  */
 public class FrameAnimation {
+    static String TAG = "FrameAnimation";
 
     private boolean mIsRepeat;
 
@@ -70,6 +79,7 @@ public class FrameAnimation {
     private static final int SELECTED_D = 4;
     private HashMap<String, Bitmap> bitmapHashMap = new HashMap<>();
     private boolean destory = false;
+    private ThreadPoolExecutor executor;
 
     /**
      * @param iv       播放动画的控件
@@ -94,6 +104,14 @@ public class FrameAnimation {
         this.mIsRepeat = isRepeat;
         if (files.length > 0) {
             play(0);
+            executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+            executor.setRejectedExecutionHandler(new RejectedExecutionHandler() {
+
+                @Override
+                public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+
+                }
+            });
         }
     }
 
@@ -282,7 +300,7 @@ public class FrameAnimation {
                 if (bitmap != null) {
                     mView.setBackgroundDrawable(new BitmapDrawable(bitmap));
                 } else {
-                    new Thread() {
+                    Thread thread = new Thread() {
                         @Override
                         public void run() {
                             if (destory) {
@@ -302,7 +320,8 @@ public class FrameAnimation {
                                     }
                                 }
                                 if (bitmap == null) {
-                                    inputStream = mView.getContext().getAssets().open(file);
+//                                    inputStream = mView.getContext().getAssets().open(file);
+                                    inputStream = getInputStream(mView.getContext(), file);
                                     bitmap = BitmapFactory.decodeStream(inputStream);
                                     if (bitmap != null) {
                                         if (destory) {
@@ -323,6 +342,15 @@ public class FrameAnimation {
                                                 return;
                                             }
                                             mView.setBackgroundDrawable(new BitmapDrawable(finalBitmap));
+
+                                            if (!mIsRepeat) {
+                                                Set<String> keys = bitmapHashMap.keySet();
+                                                for (String k : keys) {
+                                                    if (!k.equals(file)) {
+                                                        bitmapHashMap.get(k).recycle();
+                                                    }
+                                                }
+                                            }
                                         }
                                     });
                                 }
@@ -338,7 +366,8 @@ public class FrameAnimation {
                                 }
                             }
                         }
-                    }.start();
+                    };
+                    executor.execute(thread);
                 }
                 if (i == mLastFrame) {
 
@@ -446,6 +475,9 @@ public class FrameAnimation {
 
     public void destory() {
         destory = true;
+        if (executor != null) {
+            executor.shutdownNow();
+        }
         pauseAnimation();
         Set<String> keys = bitmapHashMap.keySet();
         for (String k : keys) {
@@ -456,9 +488,24 @@ public class FrameAnimation {
 
     public static FrameAnimation createFromAees(Context mContext, View iv, String path, int duration, boolean isRepeat) {
         try {
-            String[] files = mContext.getAssets().list(path);
-            for (int i = 0; i < files.length; i++) {
-                files[i] = path + "/" + files[i];
+            String[] files = {};
+            File externalFilesDir = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES), path);
+            if (externalFilesDir.exists()) {
+                files = externalFilesDir.list();
+                if (files != null) {
+                    Loger.d(TAG, "createFromAees:path=" + path + ",files=" + files.length);
+                    for (int i = 0; i < files.length; i++) {
+                        files[i] = new File(externalFilesDir, files[i]).getPath();
+                    }
+                } else {
+                    Loger.d(TAG, "createFromAees:path=" + path + ",files=null");
+                }
+            }
+            if (files == null || files.length == 0) {
+                files = mContext.getAssets().list(path);
+                for (int i = 0; i < files.length; i++) {
+                    files[i] = path + "/" + files[i];
+                }
             }
             FrameAnimation btframeAnimation1 = new FrameAnimation(iv, files, duration, isRepeat);
             return btframeAnimation1;
@@ -467,5 +514,14 @@ public class FrameAnimation {
         }
         FrameAnimation btframeAnimation1 = new FrameAnimation(iv, new String[0], duration, false);
         return btframeAnimation1;
+    }
+
+    public static InputStream getInputStream(Context context, String file) throws IOException {
+        if (file.contains("xueersi")) {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            return fileInputStream;
+        }
+        InputStream inputStream = context.getAssets().open(file);
+        return inputStream;
     }
 }

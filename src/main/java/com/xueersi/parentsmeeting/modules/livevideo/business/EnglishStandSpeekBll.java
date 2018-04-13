@@ -282,7 +282,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
                     Loger.d(TAG, "onError:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",result=" + result);
                     isDestory = true;
                     isDestory2 = true;
-                    rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
+//                    rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
                     if (onAudioRequest != null) {
                         onAudioRequest.requestSuccess();
                         onAudioRequest = null;

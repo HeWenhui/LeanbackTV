@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 
@@ -31,6 +32,7 @@ import java.util.HashMap;
  * Created by linyuqiang on 2018/4/10.
  */
 public class Top3FrameAnim {
+    String TAG = "Top3FrameAnim";
     private String file15 = "live_stand/frame_anim/15_top3_enter";
     private String file16 = "live_stand/frame_anim/16_top3_looper";
     private Context mContext;
@@ -177,15 +179,19 @@ public class Top3FrameAnim {
     private Bitmap initTeamRankHeadAndGold(ArrayList<GoldTeamStatus.Student> students, final String file, final FrameAnimation upFrameAnimation) {
         InputStream inputStream = null;
         try {
-            inputStream = mContext.getAssets().open(file);
+            inputStream = FrameAnimation.getInputStream(mContext, file);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            Loger.d(TAG, "initTeamRankHeadAndGold:file=" + file);
             bitmap.setDensity(160);
             Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             canvasBitmap.setDensity(160);
             Canvas canvas = new Canvas(canvasBitmap);
+            Paint paint = new Paint();
+            paint.setColor(Color.CYAN);
+            canvas.drawRect(0, 0, bitmap.getWidth(), bitmap.getHeight(), paint);
             float[] headWidth = {110f, 98f, 98f};
             int mid = bitmap.getWidth() / 2;
-            float[][] headLeftAndRights = {{mid - 20, 295}, {mid - 200, 382}, {mid + 170, 398}};
+            float[][] headLeftAndRights = {{mid - 20, 296}, {mid - 200, 382}, {mid + 170, 398}};
             float[] textTops = {408, 478, 492};
             int[] textColors = {0xffD45F19, 0xff0C719B, 0xffD04715};
             int[] scalHeadWidth = new int[]{-1, -1, -1};
@@ -210,7 +216,7 @@ public class Top3FrameAnim {
                     Bitmap scalHeadBitmap = Bitmap.createBitmap(head, 0, 0, head.getWidth(), head.getHeight(), matrix, true);
                     scalHeadBitmap.setDensity(160);
                     if (i == 0) {
-                        left = mid - scalHeadBitmap.getWidth() / 2;
+                        left = mid - scalHeadBitmap.getWidth() / 2 - 2;
                     } else if (i == 1) {
                         left = mid - scalHeadBitmap.getWidth() - 206;
                     } else {
@@ -223,20 +229,20 @@ public class Top3FrameAnim {
                     scalHeadBitmap.recycle();
                 } else {
                     if (StringUtils.isEmpty(entity.getAvatar_path())) {
-                        if (i == 0) {
-                            left = mid - headWidth[i] / 2;
-                        } else if (i == 1) {
-                            left = mid - headWidth[i] - 206;
-                        } else {
-                            left = mid + headWidth[i] / 2 + 150;
-                        }
-                        leftAndRight[0] = left;
-                        float top = leftAndRight[1];
-//                        canvas.drawBitmap(scalHeadBitmap, left, top, null);
-                        Paint paint = new Paint();
-                        paint.setColor(Color.WHITE);
-                        float radius = headWidth[i] / 2;
-                        canvas.drawCircle(left + radius, top + radius, radius, paint);
+//                        if (i == 0) {
+//                            left = mid - headWidth[i] / 2;
+//                        } else if (i == 1) {
+//                            left = mid - headWidth[i] - 206;
+//                        } else {
+//                            left = mid + headWidth[i] / 2 + 150;
+//                        }
+//                        leftAndRight[0] = left;
+//                        float top = leftAndRight[1];
+////                        canvas.drawBitmap(scalHeadBitmap, left, top, null);
+//                        Paint paint = new Paint();
+//                        paint.setColor(Color.WHITE);
+//                        float radius = headWidth[i] / 2;
+//                        canvas.drawCircle(left + radius, top + radius, radius, paint);
                     } else {
                         Activity activity = (Activity) mContext;
                         if (!activity.isFinishing()) {
@@ -321,6 +327,7 @@ public class Top3FrameAnim {
             return canvasBitmap;
         } catch (IOException e) {
             e.printStackTrace();
+            Loger.e(TAG, "initTeamRankHeadAndGold", e);
         } finally {
             if (inputStream != null) {
                 try {

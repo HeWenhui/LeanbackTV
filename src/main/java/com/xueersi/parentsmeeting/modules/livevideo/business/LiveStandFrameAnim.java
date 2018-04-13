@@ -33,16 +33,19 @@ public class LiveStandFrameAnim {
     }
 
     public void check(LiveBll liveBll, final AbstractBusinessDataCallBack callBack) {
-        final File externalFilesDir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        final File externalFilesDir = new File(activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "live_stand");
+        if (!externalFilesDir.exists()) {
+            externalFilesDir.mkdirs();
+        }
 
         Loger.d(TAG, "LiveStandFrameAnim:externalFilesDir=" + externalFilesDir);
         BaseHttp baseHttp = new BaseHttp(activity);
-//                "http://xesftp.oss-cn-beijing.aliyuncs.com/android_stand_live/frame_anim.zip"
         final File saveFileZip = new File(externalFilesDir, "frame_anim.zip");
         final File tempFileZip = new File(externalFilesDir, "frame_anim.zip.tmp");
         final File saveFile = new File(externalFilesDir, "frame_anim");
         final File saveFileTemp = new File(externalFilesDir, "frame_anim.temp");
 
+//        callBack.onDataSucess("");
         if (saveFileZip.exists()) {
             if (saveFile.exists()) {
                 callBack.onDataSucess("");
@@ -60,7 +63,8 @@ public class LiveStandFrameAnim {
             View view = vs_live_stand_update.inflate();
             final ProgressBar pb_live_stand_update = view.findViewById(R.id.pb_live_stand_update);
             final TextView tv_live_stand_update_zip = view.findViewById(R.id.tv_live_stand_update_zip);
-            baseHttp.download("http://client.xesimg.com/android_stand_live/frame_anim.zip", tempFileZip.getPath(), new DownloadCallBack() {
+            //"http://xesftp.oss-cn-beijing.aliyuncs.com/android_stand_live/2018041301/frame_anim.zip"
+            baseHttp.download("http://client.xesimg.com/android_stand_live/2018041301/frame_anim.zip", tempFileZip.getPath(), new DownloadCallBack() {
                 @Override
                 protected void onDownloadSuccess() {
                     tempFileZip.renameTo(saveFileZip);
