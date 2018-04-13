@@ -552,7 +552,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         mFloatView = inflater.inflate(R.layout.livemessage_jumpboard, null);
         mPopupWindows = new PopupWindow(mFloatView, 415, 100, false);
         mPopupWindows.setOutsideTouchable(false);
-        mPopupWindows.showAtLocation(mFloatView, Gravity.BOTTOM | Gravity.LEFT, ScreenUtils.getScreenWidth()-450, 50);
+        mPopupWindows.showAtLocation(mFloatView, Gravity.BOTTOM | Gravity.LEFT, ScreenUtils.getScreenWidth()-450, 160);
         // 03.29 横竖屏的切换
         mFloatView.findViewById(R.id.switch_orientation).setOnClickListener(new View.OnClickListener() {
             @Override

@@ -288,21 +288,18 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (mIsLand) {
             lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
             lp.addRule(RelativeLayout.BELOW, 0);
-//            if(mPopupWindows != null){
-//                mPopupWindows = null;
-//            }
-//            showPopupwindowboard();
-            Log.e("Duncan","横屏方法");
+            if(mPopupWindows != null){
+                mPopupWindows = null;
+            }
+            showPopupwindowboard();
             rlAdvanceContent.setVisibility(View.GONE);
         } else {
             lp.height = RelativeLayout.LayoutParams.MATCH_PARENT;
             lp.addRule(RelativeLayout.BELOW, R.id.rl_course_video_content);
-//            if(mPopupWindows != null){
-//                mPopupWindows.dismiss();
-//                mPopupWindows = null;
-//                Log.e("Duncan","竖屏方法0");
-//            }
-//            Log.e("Duncan","竖屏方法1");
+            if(mPopupWindows != null){
+                mPopupWindows.dismiss();
+                mPopupWindows = null;
+            }
             // 04.11 获取更多课程信息
             lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(),getDataCallBack);
             // 04.11 展示更多课程报名的列表信息
@@ -367,20 +364,20 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     vPlayer.getDuration());
         }
         // 04.12 重新创建面板抽屉
-        if(mIsLand){
-            if(mPopupWindows != null){
-                mPopupWindows.dismiss();
-                mPopupWindows = null;
-            }
-            showPopupwindowboard();
-        }else{
-            if(mPopupWindows != null) {
-                mPopupWindows.dismiss();
-                mPopupWindows = null;
-                Log.e("Duncan","竖屏方法2");
-            }
-            Log.e("Duncan","竖屏方法3");
-        }
+//        if(mIsLand){
+//            if(mPopupWindows != null){
+//                mPopupWindows.dismiss();
+//                mPopupWindows = null;
+//            }
+//            showPopupwindowboard();
+//        }else{
+//            if(mPopupWindows != null) {
+//                mPopupWindows.dismiss();
+//                mPopupWindows = null;
+//                Log.e("Duncan","竖屏方法2");
+//            }
+//            Log.e("Duncan","竖屏方法3");
+//        }
 
 
     }
@@ -601,13 +598,13 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
         // 04.12 第一次进入的时候，就去请求回放的所有广告信息
         lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(),getDataCallBack);
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                showPopupwindowboard();
-//                Log.e("Duncan","第一次加载");
-//            }
-//        },1000);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showPopupwindowboard();
+                Log.e("Duncan","第一次加载");
+            }
+        },500);
 
     }
 
@@ -1857,7 +1854,25 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     }
                 }
             }
-        }, 1000);
+        }, 500);
+        // 04.13 重新创建抽屉面板
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(mIsLand){
+                    if(mPopupWindows != null){
+                        mPopupWindows.dismiss();
+                        mPopupWindows = null;
+                    }
+                    showPopupwindowboard();
+                }else{
+                    if(mPopupWindows != null) {
+                        mPopupWindows.dismiss();
+                        mPopupWindows = null;
+                    }
+                }
+            }
+        },800);
 
     }
 
