@@ -1,11 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
-import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 
 /**
- * RolePlayer接口
+ * RolePlayer功能接口
  */
 public interface RolePlayAction {
 
@@ -13,7 +11,11 @@ public interface RolePlayAction {
     void teacherRead(String liveId, String stuCouId);
 
     /** 老师发题 */
-    void teacherPushTest();
+    void teacherPushTest(VideoQuestionLiveEntity videoQuestionLiveEntity);
 
+    /** 试题id */
+    String getQuestionId();
 
+    /** 老师停止发题 */
+    void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity);
 }

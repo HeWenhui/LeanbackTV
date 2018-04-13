@@ -453,6 +453,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         videoChatBll.setLiveBll(mLiveBll);
 
         liveLazyBllCreat = new LiveLazyBllCreat(this, mLiveBll);
+        liveLazyBllCreat.setQuestionBll(questionBll);
         mLiveBll.setLiveLazyBllCreat(liveLazyBllCreat);
     }
 
@@ -506,7 +507,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     protected void onPlayOpenStart() {
         setFirstBackgroundVisible(View.VISIBLE);
         findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
-        if(mGetInfo!=null&&mGetInfo.getIsShowMarkPoint().equals("1")) {
+        if (mGetInfo != null && mGetInfo.getIsShowMarkPoint().equals("1")) {
             if (liveRemarkBll == null) {
                 liveRemarkBll = new LiveRemarkBll(mContext, vPlayer);
                 if (mLiveBll != null && liveMediaControllerBottom != null) {
@@ -522,7 +523,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                     liveRemarkBll.setVideoView(videoView);
                     mLiveBll.setLiveRemarkBll(liveRemarkBll);
                 }
-            }else{
+            } else {
                 liveRemarkBll.initData();
             }
         }
@@ -901,15 +902,15 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         questionBll.setLiveVideoSAConfig(liveVideoSAConfig);
         englishH5CoursewareBll.setLiveVideoSAConfig(liveVideoSAConfig);
         liveMediaControllerBottom.setVisibility(View.VISIBLE);
-        if("1".equals(mGetInfo.getIsShowMarkPoint())){
+        if ("1".equals(mGetInfo.getIsShowMarkPoint())) {
             liveMediaControllerBottom.getBtMark().setVisibility(View.VISIBLE);
         }
         long before = System.currentTimeMillis();
         if (liveLazyBllCreat != null) {
             liveLazyBllCreat.setGetInfo(getInfo);
         }
-        if(mGetInfo.getStudentLiveInfo() != null
-                &&"1".equals(mGetInfo.getIsShowCounselorWhisper())) {
+        if (mGetInfo.getStudentLiveInfo() != null
+                && "1".equals(mGetInfo.getIsShowCounselorWhisper())) {
 
             LiveAutoNoticeBll liveAutoNoticeBll = liveLazyBllCreat.createAutoNoticeBll();
             liveAutoNoticeBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
@@ -918,10 +919,10 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             liveAutoNoticeBll.setLiveBll(mLiveBll);
             mLiveBll.setLiveAutoNoticeBll(liveAutoNoticeBll);
             //if (mQuestionAction instanceof QuestionBll) {
-                questionBll.setLiveAutoNoticeBll(liveAutoNoticeBll);
+            questionBll.setLiveAutoNoticeBll(liveAutoNoticeBll);
             //}
             //if (englishH5CoursewareAction instanceof EnglishH5CoursewareBll) {
-                englishH5CoursewareBll.setLiveAutoNoticeBll(liveAutoNoticeBll);
+            englishH5CoursewareBll.setLiveAutoNoticeBll(liveAutoNoticeBll);
             //}
         }
 

@@ -209,6 +209,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private long submitTime;
     private boolean hasSubmit;
     private String stuCouId;
+    private RolePlayAction rolePlayAction;
 
     public QuestionBll(Activity activity, String stuCouId) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -406,6 +407,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         return false;
     }
 
+    public void setRolePlayAction(RolePlayAction rolePlayAction) {
+        this.rolePlayAction = rolePlayAction;
+    }
+
     @Override
     public void showQuestion(final VideoQuestionLiveEntity videoQuestionLiveEntity) {
         if (videoQuestionLiveEntity == null) {
@@ -601,6 +606,16 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 //                            }
 //                        }, 3000);
                     } else {
+                        if ("1".equals(videoQuestionLiveEntity.multiRolePlay)) {
+                            if (rolePlayAction != null) {
+                                mQueAndBool.add(id);
+                                rolePlayAction.teacherPushTest(videoQuestionLiveEntity);
+                                return;
+                            }
+                        }
+                        if (rolePlayAction != null && id.equals(rolePlayAction.getQuestionId())) {
+                            return;
+                        }
                         speechAssessmentPager = new SpeechAssessmentWebPager(activity,
                                 liveGetInfo.getId(), id, liveGetInfo.getStuId(),
                                 true, videoQuestionLiveEntity.nonce, QuestionBll.this, stuCouId, false);
@@ -746,6 +761,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void onStopQuestion(String ptype, final String nonce) {
         Loger.i("=====questionbll  question stop");
         isAnaswer = false;
+        if (rolePlayAction != null && videoQuestionLiveEntity != null) {
+            if (videoQuestionLiveEntity.id.equals(rolePlayAction.getQuestionId())) {
+                rolePlayAction.onStopQuestion(videoQuestionLiveEntity);
+            }
+        }
         if (voiceAnswerPager != null) {
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override

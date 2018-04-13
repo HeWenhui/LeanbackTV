@@ -9,6 +9,7 @@ import com.xueersi.parentsmeeting.base.BaseBll;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpResponseParser;
 import com.xueersi.parentsmeeting.permission.PermissionCallback;
@@ -29,7 +30,7 @@ import java.util.Map;
  * RolePlayer业务类
  * Created by zouhao on 2018/4/12.
  */
-public class RolePlayerBll extends BaseBll implements RolePlayAction{
+public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
     /** 是否已经通过权限判断进入连接WebSocket */
     private boolean isBeginConnWebSocket;
@@ -47,7 +48,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction{
     private String mLiveId;
     /** 购课ID */
     private String mStuCouId;
-
+    VideoQuestionLiveEntity videoQuestionLiveEntity;
     /** 基础布局 */
     private RelativeLayout bottomContent;
     /** 直播基础BLL */
@@ -108,8 +109,20 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction{
      * 教师发题指令
      */
     @Override
-    public void teacherPushTest() {
+    public void teacherPushTest(VideoQuestionLiveEntity videoQuestionLiveEntity) {
+        this.videoQuestionLiveEntity = videoQuestionLiveEntity;
+    }
 
+    @Override
+    public String getQuestionId() {
+        if (videoQuestionLiveEntity != null) {
+            return videoQuestionLiveEntity.id;
+        }
+        return "";
+    }
+
+    @Override
+    public void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
 
     }
 

@@ -110,6 +110,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private PraiseListAction mPraiseListAction;
     private SpeechFeedBackAction speechFeedBackAction;
     private LecAdvertAction lecAdvertAction;
+    private RolePlayAction rolePlayAction;
     private LiveHttpManager mHttpManager;
     private LiveVideoSAConfig liveVideoSAConfig;
     private LiveHttpResponseParser mHttpResponseParser;
@@ -1150,6 +1151,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         videoQuestionLiveEntity.nonce = object.optString("nonce", "");
                         videoQuestionLiveEntity.isAllow42 = object.optString("isAllow42", "");
                         videoQuestionLiveEntity.speechContent = object.optString("answer", "");
+                        videoQuestionLiveEntity.multiRolePlay = object.optString("multiRolePlay", "0");
 //                        if (BuildConfig.DEBUG) {onget
 //                            videoQuestionLiveEntity.isTestUseH5 = true;
 //                        }
@@ -1617,6 +1619,16 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         msg += ",XCR_ROOM_DB_START";
                         if (englishSpeekAction != null) {
                             englishSpeekAction.onDBStart();
+                        }
+                        break;
+                    }
+                    case XESCODE.XCR_ROOM_ROLE_READ: {
+                        msg += ",XCR_ROOM_ROLE_READ";
+                        if (rolePlayAction == null && liveLazyBllCreat != null) {
+                            rolePlayAction = liveLazyBllCreat.createRolePlayBll();
+                        }
+                        if (rolePlayAction != null) {
+                            rolePlayAction.teacherRead(mLiveId, vStuCourseID);
                         }
                         break;
                     }

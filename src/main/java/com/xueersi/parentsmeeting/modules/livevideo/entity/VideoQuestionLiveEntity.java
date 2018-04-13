@@ -44,6 +44,8 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     public String questiontype;
     /** 语音答题,评测内容 */
     public String assess_ref;
+    /** 多人连麦 Notice */
+    public String multiRolePlay;
 
     public VideoQuestionLiveEntity() {
     }
