@@ -65,7 +65,7 @@ public class LiveStandFrameAnim {
             final ProgressBar pb_live_stand_update = view.findViewById(R.id.pb_live_stand_update);
             final TextView tv_live_stand_update_zip = view.findViewById(R.id.tv_live_stand_update_zip);
             //"http://xesftp.oss-cn-beijing.aliyuncs.com/android_stand_live/2018041301/frame_anim.zip"
-            baseHttp.download("http://client.xesimg.com/android_stand_live/" + version + "/frame_anim2.zip", tempFileZip.getPath(), new DownloadCallBack() {
+            baseHttp.download("http://client.xesimg.com/android_stand_live/" + version + "/frame_anim3.zip", tempFileZip.getPath(), new DownloadCallBack() {
                 @Override
                 protected void onDownloadSuccess() {
                     tempFileZip.renameTo(saveFileZip);

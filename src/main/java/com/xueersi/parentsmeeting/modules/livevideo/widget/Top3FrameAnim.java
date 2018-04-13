@@ -164,7 +164,7 @@ public class Top3FrameAnim {
                         btframeAnimation3.destory();
                         animationListener.onAnimationEnd();
                     }
-                }, 63000);
+                }, 3000);
             }
 
             @Override

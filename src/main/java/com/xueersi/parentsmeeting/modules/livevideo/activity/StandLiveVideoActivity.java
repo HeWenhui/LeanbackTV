@@ -1423,6 +1423,9 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
     }
 
     public void setFirstBackgroundVisible(int visible) {
+        if (rlFirstBackgroundView == null) {
+            return;
+        }
         rlFirstBackgroundView.setVisibility(visible);
         if (visible == View.GONE) {
             ivTeacherNotpresent.setVisibility(View.GONE);
