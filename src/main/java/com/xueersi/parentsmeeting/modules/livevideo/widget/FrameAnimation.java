@@ -10,12 +10,14 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.xesalib.utils.log.Loger;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -489,10 +491,11 @@ public class FrameAnimation {
     public static FrameAnimation createFromAees(Context mContext, View iv, String path, int duration, boolean isRepeat) {
         try {
             String[] files = {};
-            File externalFilesDir = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES), path);
+            File externalFilesDir = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/" + LiveStandFrameAnim.version), path);
             if (externalFilesDir.exists()) {
                 files = externalFilesDir.list();
                 if (files != null) {
+                    Arrays.sort(files);
                     Loger.d(TAG, "createFromAees:path=" + path + ",files=" + files.length);
                     for (int i = 0; i < files.length; i++) {
                         files[i] = new File(externalFilesDir, files[i]).getPath();

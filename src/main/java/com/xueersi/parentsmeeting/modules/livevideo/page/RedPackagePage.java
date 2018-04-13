@@ -57,20 +57,20 @@ public class RedPackagePage extends BasePager {
     private int clickPackage = 1;
     private boolean isLive;
     Top3FrameAnim top3FrameAnim;
-    String file1 = "Images/redpackage/1_enter";
-    String file2 = "Images/redpackage/2_loop";
-    String file3 = "Images/redpackage/3_fly_up";
-    String file4 = "Images/redpackage/4_ship_loop";
-    String file5 = "Images/redpackage/5_shapeshift";
-    String file6 = "Images/redpackage/6_narrow";
-    String file7 = "Images/redpackage/7_right_loop";
-    String file8 = "Images/redpackage/8_transition";
-    String file9 = "Images/redpackage/9_teams_bg";
-    String file10 = "Images/redpackage/10_team_mine";
-    String file11 = "Images/redpackage/11_team_mine_loop";
-    String file12 = "Images/redpackage/12_team_other";
-    String file13 = "Images/redpackage/13_team_other_loop";
-    String file14 = "Images/redpackage/14_transition";
+    String file1 = "live_stand/frame_anim/redpackage/1_enter";
+    String file2 = "live_stand/frame_anim/redpackage/2_loop";
+    String file3 = "live_stand/frame_anim/redpackage/3_fly_up";
+    String file4 = "live_stand/frame_anim/redpackage/4_ship_loop";
+    String file5 = "live_stand/frame_anim/redpackage/5_shapeshift";
+    String file6 = "live_stand/frame_anim/redpackage/6_narrow";
+    String file7 = "live_stand/frame_anim/redpackage/7_right_loop";
+    String file8 = "live_stand/frame_anim/redpackage/8_transition";
+    String file9 = "live_stand/frame_anim/redpackage/9_teams_bg";
+    String file10 = "live_stand/frame_anim/redpackage/10_team_mine";
+    String file11 = "live_stand/frame_anim/redpackage/11_team_mine_loop";
+    String file12 = "live_stand/frame_anim/redpackage/12_team_other";
+    String file13 = "live_stand/frame_anim/redpackage/13_team_other_loop";
+    String file14 = "live_stand/frame_anim/redpackage/14_transition";
 
     public RedPackagePage(Context context, int operateId, RedPackagePageAction redPackageAction, String userName, String headUrl, boolean isLive) {
         super(context);
@@ -401,7 +401,7 @@ public class RedPackagePage extends BasePager {
                     public void run() {
                         redPackageAction.onPackageClose(operateId);
                     }
-                }, 23000);
+                }, 3000);
             }
 
             @Override
@@ -423,7 +423,7 @@ public class RedPackagePage extends BasePager {
     private Bitmap initHeadAndGold(final VideoResultEntity entity, final String file, final FrameAnimation btframeAnimation1, boolean drawName) {
         InputStream inputStream = null;
         try {
-            inputStream = mContext.getAssets().open(file);
+            inputStream = FrameAnimation.getInputStream(mContext, file);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             bitmap.setDensity(160);
             Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
@@ -727,7 +727,7 @@ public class RedPackagePage extends BasePager {
     private Bitmap initTeamHeadAndGold(final GoldTeamStatus.Student entity, final String file, boolean havename, final FrameAnimation upFrameAnimation) {
         InputStream inputStream = null;
         try {
-            inputStream = mContext.getAssets().open(file);
+            inputStream = FrameAnimation.getInputStream(mContext, file);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             bitmap.setDensity(160);
             Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
@@ -922,7 +922,7 @@ public class RedPackagePage extends BasePager {
     private Bitmap initTeamRankHeadAndGold(ArrayList<GoldTeamStatus.Student> students, final String file, boolean havename, final FrameAnimation upFrameAnimation) {
         InputStream inputStream = null;
         try {
-            inputStream = mContext.getAssets().open(file);
+            inputStream = FrameAnimation.getInputStream(mContext, file);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             bitmap.setDensity(160);
             Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
