@@ -117,6 +117,10 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     ScoreAndIndex lastMaxScoreAndIndex = null;
     int netWorkType = NetWorkHelper.WIFI_STATE;
     private long entranceTime;
+    String file1 = "live_stand/frame_anim/voice_answer/1_enter";
+    String file2 = "live_stand/frame_anim/voice_answer/2_loop";
+    String file3 = "live_stand/frame_anim/voice_answer/3_switch_loop";
+    String file4 = "live_stand/frame_anim/voice_answer/4_switch";
 
     public VoiceAnswerStandPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch, LiveAndBackDebug liveAndBackDebug) {
         super(context);
@@ -165,11 +169,11 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
                     @Override
                     public void onAnimationEnd() {
-                        rgiv_livevideo_stand_readygo.destory();
                         ViewGroup group = (ViewGroup) rgiv_livevideo_stand_readygo.getParent();
                         if (group != null) {
                             group.removeView(rgiv_livevideo_stand_readygo);
                         }
+                        rgiv_livevideo_stand_readygo.destory();
                         rl_livevideo_voiceans_content.setVisibility(View.VISIBLE);
                         afterReadGo();
                         startEvaluator();
@@ -190,7 +194,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
      */
     private void afterReadGo() {
         switchFrameAnimation =
-                FrameAnimation.createFromAees(mContext, ivVoiceansSwitch, "Images/voice_answer/3_switch_loop", 50, true);
+                FrameAnimation.createFromAees(mContext, ivVoiceansSwitch, file3, 50, true);
         frameAnimations.add(switchFrameAnimation);
         if (questionSwitch instanceof LiveStandQuestionSwitch) {
             final LiveStandQuestionSwitch liveStandQuestionSwitch = (LiveStandQuestionSwitch) questionSwitch;
@@ -215,17 +219,17 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                 String path;
                                 if (student.isRight()) {
                                     path = "live_stand_voice_team_right.json";
-                                    lottieAnimationView.setImageAssetsFolder("Images/voice_answer/team_right");
+                                    lottieAnimationView.setImageAssetsFolder("live_stand/frame_anim/voice_answer/team_right");
                                 } else {
                                     path = "live_stand_voice_team_wrong.json";
-                                    lottieAnimationView.setImageAssetsFolder("Images/voice_answer/team_wrong");
+                                    lottieAnimationView.setImageAssetsFolder("live_stand/frame_anim/voice_answer/team_wrong");
                                 }
                                 LottieComposition.Factory.fromAssetFileName(mContext, path, new OnCompositionLoadedListener() {
 
                                     void updateName() {
                                         InputStream inputStream = null;
                                         try {
-                                            inputStream = mContext.getAssets().open("Images/voice_answer/team_right/img_1.png");
+                                            inputStream = mContext.getAssets().open("live_stand/frame_anim/voice_answer/team_right/img_1.png");
                                             Bitmap headBack = BitmapFactory.decodeStream(inputStream);
                                             Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
                                             Canvas canvas = new Canvas(creatBitmap);
@@ -260,7 +264,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                                     Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
                                                     InputStream inputStream = null;
                                                     try {
-                                                        inputStream = mContext.getAssets().open("Images/voice_answer/team_right/img_2.png");
+                                                        inputStream = mContext.getAssets().open("live_stand/frame_anim/voice_answer/team_right/img_2.png");
                                                         Bitmap headBack = BitmapFactory.decodeStream(inputStream);
                                                         Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
                                                         Canvas canvas = new Canvas(creatBitmap);
@@ -382,7 +386,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 logHashMap.addExY().addExpect("1").addSno("6").addStable("2");
                 liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
                 FrameAnimation frameAnimation1 =
-                        FrameAnimation.createFromAees(mContext, v, "Images/voice_answer/4_switch", 50, false);
+                        FrameAnimation.createFromAees(mContext, v, file4, 50, false);
                 if (frameAnimation1 != null) {
                     frameAnimations.add(frameAnimation1);
                     frameAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
@@ -451,7 +455,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         mView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                FrameAnimation frameAnimation1 = createFromAees("Images/voice_answer/1_enter", false);
+                FrameAnimation frameAnimation1 = createFromAees(file1, false);
                 frameAnimations.add(frameAnimation1);
                 frameAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
                     @Override
@@ -461,7 +465,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
                     @Override
                     public void onAnimationEnd() {
-                        FrameAnimation frameAnimation2 = createFromAees("Images/voice_answer/2_loop", true);
+                        FrameAnimation frameAnimation2 = createFromAees(file2, true);
                         frameAnimations.add(frameAnimation2);
                     }
 

@@ -104,7 +104,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                     }
                     final RelativeLayout group = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_livevideo_stand_voice_result, null);
                     LottieAnimationView lottieAnimationView = new LottieAnimationView(context);
-                    lottieAnimationView.setImageAssetsFolder("Images/voice_answer/my_right");
+                    lottieAnimationView.setImageAssetsFolder("live_stand/frame_anim/voice_answer/my_right");
                     lottieAnimationView.setComposition(lottieComposition);
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                     lp.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -144,7 +144,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                     }
                     final RelativeLayout group = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_livevideo_stand_voice_result, null);
                     LottieAnimationView lottieAnimationView = new LottieAnimationView(context);
-                    lottieAnimationView.setImageAssetsFolder("Images/voice_answer/my_wrong");
+                    lottieAnimationView.setImageAssetsFolder("live_stand/frame_anim/voice_answer/my_wrong");
                     lottieAnimationView.setComposition(lottieComposition);
                     lottieAnimationView.playAnimation();
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -170,7 +170,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         AssetManager manager = context.getAssets();
         Bitmap img_7Bitmap;
         try {
-            img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/voice_answer/my_right/img_22.png"));
+            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/frame_anim/voice_answer/my_right/img_22.png"));
 //            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
@@ -195,7 +195,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         AssetManager manager = context.getAssets();
         Bitmap img_7Bitmap;
         try {
-            img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/voice_answer/my_wrong/img_5.png"));
+            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/frame_anim/voice_answer/my_wrong/img_5.png"));
 //            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);

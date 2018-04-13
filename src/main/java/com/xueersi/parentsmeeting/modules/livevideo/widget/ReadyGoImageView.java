@@ -12,6 +12,7 @@ import android.widget.ImageView;
 public class ReadyGoImageView extends ImageView {
     FrameAnimation frameAnimation;
     FrameAnimation.AnimationListener animationListener;
+    String file1 = "live_stand/frame_anim/ready_go";
 
     public ReadyGoImageView(Context context) {
         super(context);
@@ -23,7 +24,7 @@ public class ReadyGoImageView extends ImageView {
 
     public void start() {
         if (frameAnimation == null) {
-            frameAnimation = FrameAnimation.createFromAees(getContext(), this, "Images/ready_go", 50, false);
+            frameAnimation = FrameAnimation.createFromAees(getContext(), this, file1, 50, false);
         }
         frameAnimation.setAnimationListener(animationListener);
     }

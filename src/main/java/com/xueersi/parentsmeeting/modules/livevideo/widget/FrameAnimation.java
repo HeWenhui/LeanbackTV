@@ -573,6 +573,7 @@ public class FrameAnimation {
                 Loger.d(TAG, "allRecycle:k=" + k);
             }
         }
+        Loger.d(TAG, "allRecycle:allBitmapHashMap=" + allBitmapHashMap.size());
         allBitmapHashMap.clear();
     }
 }

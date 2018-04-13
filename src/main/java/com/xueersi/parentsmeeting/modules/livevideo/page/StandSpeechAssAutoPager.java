@@ -152,6 +152,10 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     private String learning_stage;
     Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(),
             "fangzhengyouyuan.ttf");
+    String file1 = "live_stand/frame_anim/voice_answer/1_enter";
+    String file2 = "live_stand/frame_anim/voice_answer/2_loop";
+    String file3 = "live_stand/frame_anim/speech/mine_score";
+    String file4 = "live_stand/frame_anim/speech/mine_score_loop";
 
     public StandSpeechAssAutoPager(Context context, String liveid, String testId,
                                    String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, String userName, String headUrl, String learning_stage) {
@@ -302,9 +306,14 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
             @Override
             public void onAnimationEnd() {
+                ViewGroup group = (ViewGroup) rgiv_livevideo_stand_readygo.getParent();
+                if (group != null) {
+                    group.removeView(rgiv_livevideo_stand_readygo);
+                }
+                rgiv_livevideo_stand_readygo.destory();
                 isSpeechStart = true;
                 setAudioRequest();
-                FrameAnimation frameAnimation1 = createFromAees("Images/voice_answer/1_enter", false);
+                FrameAnimation frameAnimation1 = createFromAees(file1, false);
                 frameAnimations.add(frameAnimation1);
                 frameAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
                     @Override
@@ -314,7 +323,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
                     @Override
                     public void onAnimationEnd() {
-                        FrameAnimation frameAnimation2 = createFromAees("Images/voice_answer/2_loop", true);
+                        FrameAnimation frameAnimation2 = createFromAees(file2, true);
                         frameAnimations.add(frameAnimation2);
                     }
 
@@ -353,7 +362,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                                 GoldTeamStatus.Student student = students.get(i);
                                 LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
                                 String path = "live_stand_voice_team_right.json";
-                                lottieAnimationView.setImageAssetsFolder("Images/voice_answer/team_right");
+                                lottieAnimationView.setImageAssetsFolder("live_stand/frame_anim/voice_answer/team_right");
                                 LottieComposition.Factory.fromAssetFileName(mContext, path, new TeamOnCompositionLoadedListener(student, lottieAnimationView));
                                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                                 lp.weight = 1;
@@ -728,7 +737,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         group.addView(resultMine, lp);
 
-        final FrameAnimation frameAnimation = FrameAnimation.createFromAees(mContext, lottieAnimationView, "Images/speech/mine_score", 50, false);
+        final FrameAnimation frameAnimation = FrameAnimation.createFromAees(mContext, lottieAnimationView, file3, 50, false);
         frameAnimations.add(frameAnimation);
         frameAnimation.setBitmapCreate(new FrameAnimation.BitmapCreate() {
             @Override
@@ -752,7 +761,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
             @Override
             public void onAnimationEnd() {
-                final FrameAnimation frameAnimation2 = FrameAnimation.createFromAees(mContext, lottieAnimationView, "Images/speech/mine_score_loop", 50, true);
+                final FrameAnimation frameAnimation2 = FrameAnimation.createFromAees(mContext, lottieAnimationView, file4, 50, true);
                 frameAnimations.add(frameAnimation2);
                 frameAnimation2.setBitmapCreate(new FrameAnimation.BitmapCreate() {
                     @Override
@@ -909,7 +918,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             }
         });
         String path = "live_stand_voice_team_right.json";
-        lav_livevideo_voiceans_team_mine.setImageAssetsFolder("Images/voice_answer/team_right");
+        lav_livevideo_voiceans_team_mine.setImageAssetsFolder("live_stand/frame_anim/voice_answer/team_right");
         GoldTeamStatus.Student student = new GoldTeamStatus.Student();
         student.setNickname(userName);
         student.setScore("" + resultEntity.getScore());
@@ -1138,9 +1147,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             InputStream inputStream = null;
             try {
                 if (isMe) {
-                    inputStream = mContext.getAssets().open("Images/voice_answer/team_right/img_11.png");
+                    inputStream = mContext.getAssets().open("live_stand/frame_anim/voice_answer/team_right/img_11.png");
                 } else {
-                    inputStream = mContext.getAssets().open("Images/voice_answer/team_right/img_1.png");
+                    inputStream = mContext.getAssets().open("live_stand/frame_anim/voice_answer/team_right/img_1.png");
                 }
                 Bitmap headBack = BitmapFactory.decodeStream(inputStream);
                 Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
@@ -1180,7 +1189,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                         Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
                         InputStream inputStream = null;
                         try {
-                            inputStream = mContext.getAssets().open("Images/voice_answer/team_right/img_2.png");
+                            inputStream = mContext.getAssets().open("live_stand/frame_anim/voice_answer/team_right/img_2.png");
                             Bitmap headBack = BitmapFactory.decodeStream(inputStream);
                             Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
                             Canvas canvas = new Canvas(creatBitmap);
@@ -1219,7 +1228,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             AssetManager manager = context.getAssets();
             Bitmap img_7Bitmap;
             try {
-                img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/voice_answer/team_right/img_0.png"));
+                img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/frame_anim/voice_answer/team_right/img_0.png"));
                 Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(creatBitmap);
                 Paint paintInner = new Paint();
