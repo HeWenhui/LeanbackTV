@@ -2,16 +2,27 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.base.BaseBll;
+import com.xueersi.parentsmeeting.business.AppBll;
+import com.xueersi.parentsmeeting.cloud.XesCloudUploadBusiness;
+import com.xueersi.parentsmeeting.cloud.config.CloudDir;
+import com.xueersi.parentsmeeting.cloud.config.XesCloudConfig;
+import com.xueersi.parentsmeeting.cloud.entity.CloudUploadEntity;
+import com.xueersi.parentsmeeting.cloud.entity.XesCloudResult;
+import com.xueersi.parentsmeeting.cloud.listener.XesStsUploadListener;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayerPager;
+import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.permission.PermissionCallback;
 import com.xueersi.parentsmeeting.permission.XesPermission;
 import com.xueersi.parentsmeeting.permission.config.PermissionConfig;
@@ -53,6 +64,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     private RelativeLayout bottomContent;
     /** 直播基础BLL */
     private LiveBll mLiveBll;
+
+    private RolePlayerPager mRolePlayerPager;
 
     private RolePlayerHttpManager mRolePlayerHttpManager;
     private RolePlayerHttpResponseParser mRolePlayerHttpResponseParser;
@@ -111,6 +124,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     @Override
     public void teacherPushTest(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
+        mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this);
+        bottomContent.addView(mRolePlayerPager.getRootView());
     }
 
     @Override
@@ -137,12 +152,13 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
         if (mWebSocket == null) {
             mWebSocket = new WebSocketConn();
-            //webSocketUrl = String.format(webSocketUrl, UserBll.getInstance().getMyUserInfoEntity().getStuId(), AppBll.getInstance().getUserToken(), mLiveId);
-            webSocketUrl = String.format(webSocketUrl, "1237", "1111111", "1234");
+            webSocketUrl = String.format(webSocketUrl, UserBll.getInstance().getMyUserInfoEntity().getStuId(), AppBll.getInstance().getUserToken(), mLiveId);
+            //webSocketUrl = String.format(webSocketUrl, "1237", "1111111", "1234");
+            Loger.i("RolePlayerDemoTest", "websocket:" + webSocketUrl);
             mWebSocket.connect(webSocketUrl, new WebSocketConn.WebSocketCallBack() {
                 @Override
                 public void onOpen() {
-
+                    Loger.i("RolePlayerDemoTest", "open");
                 }
 
                 @Override
@@ -153,12 +169,12 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
                 @Override
                 public void onClose() {
-
+                    Loger.i("RolePlayerDemoTest", "close");
                 }
 
                 @Override
                 public void onError() {
-
+                    Loger.i("RolePlayerDemoTest", "onError");
                 }
             });
         }
@@ -166,7 +182,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
 
     private final int HERT_PING = 100;
-    Handler mHertHandler = new Handler() {
+    Handler mHertHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -225,7 +241,9 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         try {
             JSONObject jsonObject = new JSONObject(result);
             int acid = jsonObject.optInt("acid");
+            int from = jsonObject.optInt("from");
             JSONObject msgObj = jsonObject.getJSONObject("msg");
+
             switch (acid) {
                 case 1:
                     //边接成功，获取stuid
@@ -233,6 +251,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     if (selfRoleId != 0) {
                         mRolePlayerEntity = new RolePlayerEntity();
                         mRolePlayerEntity.setSelfRoleId(selfRoleId);
+                        mRolePlayerEntity.setLiveId(Integer.parseInt(mLiveId));
                         hertPing();
                     }
                     break;
@@ -241,6 +260,26 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     break;
                 case 4:
                     //用户自定义消息
+                    int type = msgObj.optInt("type");
+                    switch (type) {
+                        case 120:
+                            //收到对方的MP3文件地址
+                            String mp3Url = msgObj.optString("content");
+                            int index = msgObj.optInt("index");
+                            if (!TextUtils.isEmpty(mp3Url) && index >= 0 && index < mRolePlayerEntity.getLstRolePlayerMessage().size()) {
+                                mRolePlayerEntity.getLstRolePlayerMessage().get(index).setWebVoiceUrl(mp3Url);
+                            }
+                            break;
+                        case 100:
+                            //收到对方的点赞
+                            for (RolePlayerEntity.RolePlayerHead head : mRolePlayerEntity.getLstRoleInfo()) {
+                                if (head.getRoleId() == from) {
+                                    mRolePlayerPager.showDZ(head.getNickName());
+                                    break;
+                                }
+                            }
+                            break;
+                    }
                     break;
                 case 2000:
                     //分组结果
@@ -288,7 +327,89 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                 }
             });
         }
+    }
 
+    /**
+     * 提交结果
+     */
+    public void requestResult() {
+
+    }
+
+    /**
+     * 上传文件到阿里云,成功后发通知
+     */
+    public void uploadFileToAliCloud(String filePath, final RolePlayerEntity.RolePlayerMessage message) {
+        CloudUploadEntity uploadEntity = new CloudUploadEntity();
+        uploadEntity.setFilePath(filePath);
+        uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
+        uploadEntity.setCloudPath(CloudDir.MICROPHONE);
+        new XesCloudUploadBusiness(mContext).asyncUpload(uploadEntity, new XesStsUploadListener() {
+            @Override
+            public void onProgress(XesCloudResult result, int percent) {
+
+            }
+
+            @Override
+            public void onSuccess(XesCloudResult result) {
+                message.setWebVoiceUrl(result.getHttpPath());
+                JSONObject obj = new JSONObject();
+                try {
+                    obj.put("type", 120);
+                    obj.put("content", result.getHttpPath());
+                    obj.put("index", message.getPosition());
+                    sendWebSMessage(3, 1, obj);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
+            @Override
+            public void onError(XesCloudResult result) {
+            }
+        });
+    }
+
+    /**
+     * 自己朗读完毕
+     *
+     * @param stars
+     * @param totalScore
+     * @param fluency
+     * @param accuracy
+     */
+    public void selfReadEnd(int stars, int totalScore, int fluency, int accuracy) {
+
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("stars", stars);
+            obj.put("totalScore", totalScore);
+            obj.put("fluency", fluency);
+            obj.put("accuracy", accuracy);
+            sendWebSMessage(3, 1, obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 给他人点赞
+     *
+     * @param toId
+     * @param index
+     */
+    public void toOtherDZ(int toId, int index) {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("type", 100);
+            obj.put("content", "parise");
+            obj.put("index", index);
+            sendWebSMessage(3, toId, obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -540,4 +540,5 @@
     <item name="tv_livevideo_roleplayer_result_role_nickname_3" type="id" />
     <item name="rl_livevideo_roleplayer_bubble_dz" type="id" />
     <item name="rl_live_roleplayer_message_main" type="id" />
+    <item name="tv_livevideo_roleplayer_bubble_message" type="id" />
 </resources>

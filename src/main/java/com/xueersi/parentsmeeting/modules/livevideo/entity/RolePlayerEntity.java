@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
+import android.view.View;
+
 import com.tal.speech.speechrecognizer.PhoneScore;
 
 import java.lang.reflect.Array;
@@ -20,13 +22,18 @@ public class RolePlayerEntity {
     private String testId;
     /** 小组编号 */
     private int teamId;
+    /** 直播ID */
+    private int liveId;
 
     /** RolePlayer倒计时秒数 */
     private long countDownSecond;
+    /** 收到的点赞数 */
+    private int pullDZCount;
+
     /** 所有的角色信息 */
     private List<RolePlayerHead> lstRoleInfo = new ArrayList<>();
 
-    private Map<String,RolePlayerHead> mapRoleHeadInfo = new HashMap<>();
+    private Map<String, RolePlayerHead> mapRoleHeadInfo = new HashMap<>();
 
     /** 所有的对话信息 */
     private List<RolePlayerMessage> lstRolePlayerMessage = new ArrayList<>();
@@ -74,6 +81,22 @@ public class RolePlayerEntity {
 
     public Map<String, RolePlayerHead> getMapRoleHeadInfo() {
         return mapRoleHeadInfo;
+    }
+
+    public int getPullDZCount() {
+        return pullDZCount;
+    }
+
+    public void setPullDZCount(int pullDZCount) {
+        this.pullDZCount = pullDZCount;
+    }
+
+    public int getLiveId() {
+        return liveId;
+    }
+
+    public void setLiveId(int liveId) {
+        this.liveId = liveId;
     }
 
     /**
@@ -150,6 +173,10 @@ public class RolePlayerEntity {
         private boolean isFavour;
         /** 测评分数 */
         private int speechScore;
+        /** 流畅度 */
+        private int fluency;
+        /** 准确度 */
+        private int accuracy;
         /** 当前对话所处的状态 RolePlayerMessageStatus */
         private int msgStatus;
         /** 网络播放地址（用于回放） */
@@ -158,6 +185,8 @@ public class RolePlayerEntity {
         private boolean isDZ;
         /** 每个音素的分数 */
         private List<PhoneScore> lstPhoneScore = new ArrayList<>();
+        /** 下标 */
+        private int position;
 
         public RolePlayerMessage(RolePlayerHead head, String msg, int maxTime) {
             this.rolePlayer = head;
@@ -247,6 +276,54 @@ public class RolePlayerEntity {
 
         public void setLstPhoneScore(List<PhoneScore> lstPhoneScore) {
             this.lstPhoneScore = lstPhoneScore;
+        }
+
+        public int getPosition() {
+            return position;
+        }
+
+        public void setPosition(int position) {
+            this.position = position;
+        }
+
+        public int getFluency() {
+            return fluency;
+        }
+
+        public void setFluency(int fluency) {
+            this.fluency = fluency;
+        }
+
+        public int getAccuracy() {
+            return accuracy;
+        }
+
+        public void setAccuracy(int accuracy) {
+            this.accuracy = accuracy;
+        }
+
+        /**
+         * 返回星星数
+         *
+         * @return
+         */
+        public int getStars() {
+            if (speechScore >= 1 && speechScore < 40) {
+                return 1;
+            }
+            if (speechScore >= 40 && speechScore < 60) {
+                return 2;
+            }
+            if (speechScore >= 60 && speechScore < 75) {
+                return 3;
+            }
+            if (speechScore >= 75 && speechScore < 90) {
+                return 4;
+            }
+            if (speechScore >= 90) {
+                return 5;
+            }
+            return 0;
         }
     }
 

@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
@@ -49,8 +50,8 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 
     /** 测评 */
     //private TextView tvSpeechTip;
-    public RolePlayerSelfItem(Context context) {
-        super(context);
+    public RolePlayerSelfItem(Context context, RolePlayerBll bll) {
+        super(context, bll);
     }
 
     @Override
@@ -319,7 +320,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 int index = upText.indexOf(word);
                 int left = index + lastSub;
                 int right = left + word.length();
-                Log.i("RolePlayerTestDemo",word+" : "+mEntity.getLstPhoneScore().get(i).getScore());
+                Log.i("RolePlayerTestDemo", word + " : " + mEntity.getLstPhoneScore().get(i).getScore());
                 if (index != -1) {
                     subtemText = subtemText.substring(index);
                     upText = upText.substring(index);

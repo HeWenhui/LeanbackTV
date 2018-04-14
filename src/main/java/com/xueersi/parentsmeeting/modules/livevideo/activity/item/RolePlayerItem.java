@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
@@ -42,9 +43,12 @@ public abstract class RolePlayerItem implements AdapterItemInterface<RolePlayerE
     /** 评测的星星 */
     private ImageView ivSpeechStart5;
 
+    protected RolePlayerBll bllRolePlayerBll;
 
-    public RolePlayerItem(Context context) {
+
+    public RolePlayerItem(Context context, RolePlayerBll rolePlayerBll) {
         this.mContext = context;
+        this.bllRolePlayerBll = rolePlayerBll;
     }
 
     protected void initStartView(View root) {
@@ -91,19 +95,19 @@ public abstract class RolePlayerItem implements AdapterItemInterface<RolePlayerE
      * 显示评价星星
      */
     protected void showSpeechStar() {
-        if (mEntity.getSpeechScore() >= 1 && mEntity.getSpeechScore() < 40) {
+        if (mEntity.getStars() >= 1) {
             ivSpeechStart1.setVisibility(View.VISIBLE);
         }
-        if (mEntity.getSpeechScore() >= 40 && mEntity.getSpeechScore() < 60) {
+        if (mEntity.getStars() >= 2) {
             ivSpeechStart2.setVisibility(View.VISIBLE);
         }
-        if (mEntity.getSpeechScore() >= 60 && mEntity.getSpeechScore() < 75) {
+        if (mEntity.getStars() >= 3) {
             ivSpeechStart3.setVisibility(View.VISIBLE);
         }
-        if (mEntity.getSpeechScore() >= 75 && mEntity.getSpeechScore() < 90) {
+        if (mEntity.getStars() >= 4) {
             ivSpeechStart4.setVisibility(View.VISIBLE);
         }
-        if (mEntity.getSpeechScore() >= 90) {
+        if (mEntity.getStars() >= 5) {
             ivSpeechStart5.setVisibility(View.VISIBLE);
         }
     }

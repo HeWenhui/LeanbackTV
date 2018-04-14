@@ -40,6 +40,7 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
                 int maxTime = objMsg.optInt("time");
                 RolePlayerEntity.RolePlayerMessage msg = new RolePlayerEntity.RolePlayerMessage(rolePlayerEntity.getMapRoleHeadInfo().get(roleName), msgContent, maxTime);
                 //msg.setWebVoiceUrl(objMsg.optString("audio"));
+                msg.setPosition(i);
                 rolePlayerEntity.getLstRolePlayerMessage().add(msg);
             }
 

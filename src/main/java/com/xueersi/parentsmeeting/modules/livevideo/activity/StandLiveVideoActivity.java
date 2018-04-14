@@ -291,6 +291,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         //聊天
         long before = System.currentTimeMillis();
         liveLazyBllCreat.setBottomContent(bottomContent);
+
         liveLazyBllCreat.setPraiselistContent(praiselistContent);
         liveMessageBll.initViewLiveStand(bottomContent);
         Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));

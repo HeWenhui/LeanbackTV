@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
@@ -51,8 +52,9 @@ public class RolePlayerOtherItem extends RolePlayerItem {
     /** 点赞动图 */
     private LottieAnimationView lavMessageDZ;
 
-    public RolePlayerOtherItem(Context context) {
-        super(context);
+
+    public RolePlayerOtherItem(Context context, RolePlayerBll bll) {
+        super(context, bll);
     }
 
     @Override
@@ -201,6 +203,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
 
                         @Override
                         public void onClick(View view) {
+                            bllRolePlayerBll.toOtherDZ(mEntity.getRolePlayer().getRoleId(), mEntity.getPosition());
                             ivMessageDZ.setVisibility(View.GONE);
                             lavMessageDZ.setVisibility(View.VISIBLE);
                             entity.setDZ(true);

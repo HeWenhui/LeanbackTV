@@ -6,6 +6,7 @@
     android:background="@drawable/shape_livevideo_roleplayer_bubble_message_dz">
 
     <TextView
+        android:id="@id/tv_livevideo_roleplayer_bubble_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

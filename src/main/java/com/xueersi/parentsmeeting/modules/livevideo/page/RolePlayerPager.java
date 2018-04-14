@@ -24,10 +24,20 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.xueersi.parentsmeeting.base.BasePager;
+import com.xueersi.parentsmeeting.cloud.XesCloudUploadBusiness;
+import com.xueersi.parentsmeeting.cloud.config.CloudDir;
+import com.xueersi.parentsmeeting.cloud.config.XesCloudConfig;
+import com.xueersi.parentsmeeting.cloud.entity.CloudUploadEntity;
+import com.xueersi.parentsmeeting.cloud.entity.XesCloudResult;
+import com.xueersi.parentsmeeting.cloud.listener.XesStsUploadListener;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerSelfItem;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
@@ -35,6 +45,7 @@ import com.xueersi.xesalib.adapter.AdapterItemInterface;
 import com.xueersi.xesalib.adapter.CommonAdapter;
 import com.xueersi.xesalib.utils.app.ContextManager;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
+import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.view.image.CircleImageView;
@@ -42,6 +53,9 @@ import com.xueersi.xesalib.view.image.CircleImageView;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import io.agora.rtc.Constants;
 
 
 /**
@@ -99,17 +113,26 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
 
     private View vHead;
 
+    /** 角色业务 */
+    private RolePlayerBll mRolePlayBll;
+
     /** 语音评测 */
     protected SpeechEvaluatorUtils mIse;
     private SpeechEvaluatorInter speechEvaluatorInter;
     private File saveVideoFile, dir;
+    /** 声网 */
+    private WorkerThread mWorkerThread;
 
-    public RolePlayerPager(Context context, RolePlayerEntity obj, boolean isNewView) {
+    public RolePlayerPager(Context context, RolePlayerEntity obj, boolean isNewView, RolePlayerBll rolePlayerBll) {
         super(context, obj, isNewView);
+        this.mRolePlayBll = rolePlayerBll;
         dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/liveSpeech/");
         if (!dir.exists()) {
             dir.mkdirs();
         }
+        mWorkerThread = new WorkerThread(ContextManager.getApplication(), Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getStuId()), false);
+
+
     }
 
     @Override
@@ -223,10 +246,10 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             public AdapterItemInterface<RolePlayerEntity.RolePlayerMessage> getItemView(Object type) {
                 if ((boolean) type) {
                     //自己朗读的
-                    return new RolePlayerSelfItem(mContext);
+                    return new RolePlayerSelfItem(mContext, mRolePlayBll);
                 } else {
                     //他人朗读的
-                    return new RolePlayerOtherItem(mContext);
+                    return new RolePlayerOtherItem(mContext, mRolePlayBll);
                 }
             }
 
@@ -278,6 +301,10 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                     if (upMessage.getMsgStatus() != RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH) {
                         upMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY);
                     }
+                    if (upMessage.getRolePlayer().isSelfRole()) {
+                        //自己朗读完毕
+                        mRolePlayBll.selfReadEnd(upMessage.getStars(), upMessage.getSpeechScore(), upMessage.getFluency(), upMessage.getAccuracy());
+                    }
                     mRolePlayerAdapter.updataSingleRow(lvReadList, upMessage);
                     if (mIse != null) {
                         mIse.stop();
@@ -317,6 +344,19 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      */
     private void beginRolePlayer() {
         mReadHandler.sendEmptyMessage(READ_MESSAGE);
+
+        //开启声网连接
+        mWorkerThread.start();
+        mWorkerThread.waitForReady();
+        int vProfile = Constants.VIDEO_PROFILE_120P;
+        mWorkerThread.configEngine(Constants.CLIENT_ROLE_BROADCASTER, vProfile);
+        mWorkerThread.joinChannel(null, mEntity.getLiveId() + "_" + mEntity.getTestId() + "_" + mEntity.getTeamId(), Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getStuId()), new WorkerThread.OnJoinChannel() {
+            @Override
+            public void onJoinChannel(int joinChannel) {
+                mWorkerThread.getRtcEngine().setExternalAudioSource(true, 16000, 1);
+                Loger.i("RolePlayerDemoTest", "声网:" + joinChannel);
+            }
+        });
     }
 
     /**
@@ -334,6 +374,23 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 rlResult.setVisibility(View.GONE);
             }
         }, 3000);
+        mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLevelChannel() {
+            @Override
+            public void onLevelChannel(int leaveChannel) {
+                StableLogHashMap logHashMap = new StableLogHashMap("getLeaveChannel");
+                logHashMap.put("status", (leaveChannel == 0 ? "1" : "0"));
+                if (leaveChannel != 0) {
+                    logHashMap.put("errcode", "" + leaveChannel);
+                }
+            }
+        });
+        mWorkerThread.exit();
+        try {
+            mWorkerThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        mWorkerThread = null;
     }
 
 
@@ -350,12 +407,13 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             return;
         }
 
+
         rlSpeechVolumnMain.setVisibility(View.VISIBLE);
         vwvSpeechVolume.setVisibility(View.VISIBLE);
         String spechMsg = message.getReadMsg().replace("\n", "");
         if (mIse == null) {
             mIse = new SpeechEvaluatorUtils(true);
-            saveVideoFile = new File(dir, "roleplayer.mp3");
+            saveVideoFile = new File(dir, "roleplayer" + System.currentTimeMillis() + ".mp3");
         }
         mIse.cancel();
         speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(spechMsg, saveVideoFile.getAbsolutePath(), false,
@@ -363,6 +421,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                     @Override
                     public void onBeginOfSpeech() {
                         vwvSpeechVolume.start();
+
                     }
 
                     @Override
@@ -371,6 +430,10 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                             message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
                             message.setSpeechScore(resultEntity.getScore());
                             message.setLstPhoneScore(resultEntity.getLstPhonemeScore());
+                            message.setFluency(resultEntity.getContScore());
+                            message.setAccuracy(resultEntity.getPronScore());
+                            message.setWebVoiceUrl(saveVideoFile.getAbsolutePath());
+                            mRolePlayBll.uploadFileToAliCloud(saveVideoFile.getAbsolutePath(), message);
                             XESToastUtils.showToast(mContext, resultEntity.getScore() + "");
                             //提前开始下一条
                             nextReadMessage();
@@ -389,8 +452,15 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                     }
 
                     @Override
-                    public void onRecordPCMData(short[] shorts, int i) {
+                    public void onRecordPCMData(short[] shorts, int readSize) {
                         //通过声网走
+                        byte[] dest = new byte[readSize * 2];
+                        int count = readSize;
+                        for (int i = 0; i < count; i++) {
+                            dest[i * 2] = (byte) (shorts[i]);
+                            dest[i * 2 + 1] = (byte) (shorts[i] >> 8);
+                        }
+                        mWorkerThread.getRtcEngine().pushExternalAudioFrame(dest, readSize);
                     }
                 });
     }
@@ -399,12 +469,14 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     /**
      * 收到点赞消息
      */
-    public void showDZ() {
+    public void showDZ(String roleName) {
+        mEntity.setPullDZCount(mEntity.getPullDZCount() + 1);
         final View view = View.inflate(mContext, R.layout.layout_livevideo_roleplayer_bubble_message_dz, null);
+        TextView tvMessage = view.findViewById(R.id.tv_livevideo_roleplayer_bubble_message);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, R.id.rl_live_roleplayer_dz_message_bubble_main);
         lp.addRule(RelativeLayout.CENTER_HORIZONTAL, R.id.rl_live_roleplayer_dz_message_bubble_main);
-
+        tvMessage.setText(roleName + "给你点赞啦~");
         Animation anim = AnimationUtils.loadAnimation(mContext, R.anim.slide_bubble_out_to_top);
         anim.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -440,7 +512,6 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         mReadHandler.removeMessages(GO_SPEECH);
         mReadHandler.removeMessages(READ_MESSAGE);
         mReadHandler.sendEmptyMessage(READ_MESSAGE);
-        showDZ();
     }
 
     /**
