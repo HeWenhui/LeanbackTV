@@ -493,6 +493,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         videoChatBll.setLiveBll(mLiveBll);
 
         liveLazyBllCreat = new LiveLazyBllCreat(this, mLiveBll);
+        liveLazyBllCreat.setQuestionBll(questionBll);
         mLiveBll.setLiveLazyBllCreat(liveLazyBllCreat);
         liveStandFrameAnim = new LiveStandFrameAnim(this);
     }
