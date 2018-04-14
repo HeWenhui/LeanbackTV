@@ -40,7 +40,7 @@
                 android:id="@id/lv_livevideo_message"
                 style="@style/listview_common_style"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:divider="@null"

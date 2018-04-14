@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tal.speech.speechrecognizer.EvaluatorListener;
+import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.xueersi.parentsmeeting.base.BasePager;
@@ -417,11 +418,10 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         }
         mIse.cancel();
         speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(spechMsg, saveVideoFile.getAbsolutePath(), false,
-                new EvaluatorListener() {
+                new RoleEvaluatorListener() {
                     @Override
                     public void onBeginOfSpeech() {
                         vwvSpeechVolume.start();
-
                     }
 
                     @Override
@@ -464,7 +464,6 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                     }
                 });
     }
-
 
     /**
      * 收到点赞消息
@@ -633,5 +632,10 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             mIse.cancel();
         }
         mReadHandler.removeMessages(READ_MESSAGE);
+    }
+
+
+    interface RoleEvaluatorListener extends EvaluatorListenerWithPCM, EvaluatorListener {
+
     }
 }

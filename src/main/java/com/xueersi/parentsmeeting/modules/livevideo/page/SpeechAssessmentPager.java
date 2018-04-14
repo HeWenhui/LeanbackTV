@@ -529,11 +529,6 @@ public class SpeechAssessmentPager extends BasePager {
             rrpSpeectevalVideo.setProgress(volume);
         }
 
-        @Override
-        public void onRecordPCMData(short[] shorts, int i) {
-
-        }
-
         public void onEndOfSpeech() {
             // 此回调表示：检测到了语音的尾端点，已经进入识别过程，不再接受语音输入
             Loger.i(TAG, "onEndOfSpeech");

@@ -316,11 +316,6 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
 //            Loger.d(TAG, "onVolumeUpdate:volume=" + volume);
             vwvSpeectevalWave.setVolume(volume * 3);
         }
-
-        @Override
-        public void onRecordPCMData(short[] shorts, int i) {
-
-        }
     }
 
     VoiceEvaluatorListener listener = new VoiceEvaluatorListener();

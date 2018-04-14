@@ -418,11 +418,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 vwvSpeectevalWave.setVolume(volume * 3);
                 lastVolume = volume;
             }
-
-            @Override
-            public void onRecordPCMData(short[] shorts, int i) {
-
-            }
         });
         if (!isLive) {
             mView.postDelayed(new Runnable() {

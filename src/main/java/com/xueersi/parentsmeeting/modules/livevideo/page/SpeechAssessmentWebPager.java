@@ -468,10 +468,6 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
                                     jsUpdateVolume(i);
                                 }
 
-                                @Override
-                                public void onRecordPCMData(short[] shorts, int i) {
-
-                                }
                             });
                 } else {
                     mIse.startEnglishEvaluator(assessRef, saveVideoFile.getAbsolutePath(), false,
@@ -513,10 +509,6 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
                                     jsUpdateVolume(i);
                                 }
 
-                                @Override
-                                public void onRecordPCMData(short[] shorts, int i) {
-
-                                }
                             }, false, liveId);
                 }
             }
