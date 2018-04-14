@@ -150,8 +150,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     private Bitmap headBitmap;
     private String userName;
     private String learning_stage;
-    Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(),
-            "fangzhengyouyuan.ttf");
+    Typeface fontFace;
     String file1 = "live_stand/frame_anim/voice_answer/1_enter";
     String file2 = "live_stand/frame_anim/voice_answer/2_loop";
     String file3 = "live_stand/frame_anim/speech/mine_score";
@@ -278,7 +277,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         animSpeechEncourage = AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_speech_encourage);
         animSpeechEncourage.setInterpolator(new OvershootInterpolator());
         content2 = content.replace("\n", " ");
-        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(),
+        fontFace = Typeface.createFromAsset(mContext.getAssets(),
                 "fangzhengyouyuan.ttf");
         tvSpeectevalEncourage.setTypeface(fontFace);
         File dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/livevideo/");
@@ -346,10 +345,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 Runnable r = this;
                 Random random = new Random();
                 int leftOrRight = 0;
-                Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(),
-                        "fangzhengyouyuan.ttf");
-                int leftMaxChild = -1;
-                int rightMaxChild = -1;
+                ArrayList<View> leftView = new ArrayList<>();
+                ArrayList<View> rightView = new ArrayList<>();
 
                 @Override
                 public void run() {
@@ -365,31 +362,53 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                                 lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/team_right");
                                 LottieComposition.Factory.fromAssetFileName(mContext, path, new TeamOnCompositionLoadedListener(student, lottieAnimationView));
                                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                                lp.weight = 1;
+//                                lp.weight = 1;
                                 int countLeft = ll_livevideo_voiceans_team_left.getChildCount();
                                 int countRight = ll_livevideo_voiceans_team_right.getChildCount();
                                 if (leftOrRight % 2 == 1) {
+                                    boolean remove = false;
+                                    int index = 0;
                                     if (countRight > 0) {
                                         int rightWidth = ((View) ll_livevideo_voiceans_team_right.getParent()).getWidth();
                                         View child = ll_livevideo_voiceans_team_right.getChildAt(0);
                                         int childWidth = child.getWidth();
                                         while (childWidth * (countRight + 1) > rightWidth) {
                                             countRight--;
-                                            ll_livevideo_voiceans_team_right.removeViewAt(0);
+                                            View view = rightView.remove(0);
+                                            lp.width = childWidth;
+                                            index = ll_livevideo_voiceans_team_right.indexOfChild(view);
+                                            ll_livevideo_voiceans_team_right.removeViewInLayout(view);
+                                            remove = true;
                                         }
                                     }
-                                    ll_livevideo_voiceans_team_right.addView(lottieAnimationView, lp);
+                                    if (remove) {
+                                        ll_livevideo_voiceans_team_right.addView(lottieAnimationView, index, lp);
+                                    } else {
+                                        ll_livevideo_voiceans_team_right.addView(lottieAnimationView, lp);
+                                    }
+                                    rightView.add(lottieAnimationView);
                                 } else {
+                                    boolean remove = false;
+                                    int index = 0;
                                     if (countLeft > 0) {
                                         int leftWidth = ((View) ll_livevideo_voiceans_team_left.getParent()).getWidth();
                                         View child = ll_livevideo_voiceans_team_left.getChildAt(countLeft - 1);
                                         int childWidth = child.getWidth();
                                         while (childWidth * (countLeft + 1) > leftWidth) {
                                             countLeft--;
-                                            ll_livevideo_voiceans_team_left.removeViewAt(ll_livevideo_voiceans_team_left.getChildCount() - 1);
+                                            remove = true;
+                                            View view = leftView.remove(0);
+                                            lp.width = childWidth;
+                                            index = ll_livevideo_voiceans_team_left.indexOfChild(view);
+                                            ll_livevideo_voiceans_team_left.removeViewInLayout(view);
                                         }
                                     }
-                                    ll_livevideo_voiceans_team_left.addView(lottieAnimationView, 0, lp);
+                                    if (remove) {
+                                        ll_livevideo_voiceans_team_left.addView(lottieAnimationView, index, lp);
+                                    } else {
+                                        ll_livevideo_voiceans_team_left.addView(lottieAnimationView, 0, lp);
+                                    }
+                                    leftView.add(lottieAnimationView);
                                 }
                                 leftOrRight++;
                             }

@@ -483,7 +483,6 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         englishH5CoursewareBll.setVSectionID(mVSectionID);
         englishH5CoursewareBll.setLiveBll(mLiveBll);
         englishH5CoursewareBll.initData();
-        englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveStandVoiceAnswerCreat(englishH5CoursewareBll.new LiveStandQuestionSwitchImpl()));
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
             rankBll = new RankBll(this);
             rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
@@ -939,6 +938,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         if (liveLazyBllCreat != null) {
             liveLazyBllCreat.setGetInfo(getInfo);
         }
+        englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveStandVoiceAnswerCreat(englishH5CoursewareBll.new LiveStandQuestionSwitchImpl(), getInfo.getHeadImgPath(), getInfo.getStuName()));
         String mode = mGetInfo.getMode();
         this.mode = mode;
         liveMediaControllerBottom.onModeChange(mode);

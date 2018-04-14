@@ -5,13 +5,19 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -57,6 +63,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE1;
+import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE4;
+
 /**
  * 语音答题
  * Created by linyuqiang on 2017/12/5.
@@ -72,6 +81,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     /** 手动答题切换动画 */
     FrameAnimation switchFrameAnimation;
     ReadyGoImageView rgiv_livevideo_stand_readygo;
+    LottieAnimationView lav_livevideo_voiceans_team_mine;
+    ImageView iv_livevideo_voiceans_team_mine;
     RelativeLayout rl_livevideo_voiceans_content;
     /** 组内战况-左边 */
     LinearLayout ll_livevideo_voiceans_team_left;
@@ -116,19 +127,24 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     String type;
     ScoreAndIndex lastMaxScoreAndIndex = null;
     int netWorkType = NetWorkHelper.WIFI_STATE;
+    Typeface fontFace;
+    private String headUrl;
+    private String userName;
     private long entranceTime;
     String file1 = "live_stand/frame_anim/voice_answer/1_enter";
     String file2 = "live_stand/frame_anim/voice_answer/2_loop";
     String file3 = "live_stand/frame_anim/voice_answer/3_switch_loop";
     String file4 = "live_stand/frame_anim/voice_answer/4_switch";
 
-    public VoiceAnswerStandPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch, LiveAndBackDebug liveAndBackDebug) {
+    public VoiceAnswerStandPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch, LiveAndBackDebug liveAndBackDebug, String headUrl, String userName) {
         super(context);
         this.baseVideoQuestionEntity = baseVideoQuestionEntity;
         this.questionSwitch = questionSwitch;
         this.liveAndBackDebug = liveAndBackDebug;
         this.type = type;
         this.assess_ref = assess_ref;
+        this.headUrl = headUrl;
+        this.userName = userName;
         if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
             try {
                 answer = assess_ref.getJSONArray("answer").getString(0);
@@ -201,6 +217,9 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
             mView.postDelayed(new Runnable() {
                 Runnable r = this;
                 Random random = new Random();
+                int leftOrRight = 0;
+                ArrayList<View> leftView = new ArrayList<>();
+                ArrayList<View> rightView = new ArrayList<>();
 
                 @Override
                 public void run() {
@@ -214,6 +233,9 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                 if (addStudents.contains(student)) {
                                     continue;
                                 }
+                                if (student.isMe()) {
+                                    continue;
+                                }
                                 addStudents.add(student);
                                 final LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
                                 String path;
@@ -224,100 +246,57 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                     path = "live_stand_voice_team_wrong.json";
                                     lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/team_wrong");
                                 }
-                                LottieComposition.Factory.fromAssetFileName(mContext, path, new OnCompositionLoadedListener() {
-
-                                    void updateName() {
-                                        InputStream inputStream = null;
-                                        try {
-                                            inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_1.png");
-                                            Bitmap headBack = BitmapFactory.decodeStream(inputStream);
-                                            Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
-                                            Canvas canvas = new Canvas(creatBitmap);
-                                            canvas.drawBitmap(headBack, 0, 0, null);
-                                            String name = student.getNickname();
-                                            Paint paint = new Paint();
-                                            paint.setTextSize(20);
-                                            paint.setColor(0xffA56202);
-                                            float width = paint.measureText(name);
-                                            canvas.drawText(name, headBack.getWidth() / 2 - width / 2, headBack.getHeight() / 2 + paint.measureText("a") / 2, paint);
-                                            lottieAnimationView.updateBitmap("image_1", creatBitmap);
-                                            headBack.recycle();
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        } finally {
-                                            if (inputStream != null) {
-                                                try {
-                                                    inputStream.close();
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    void updateHead() {
-                                        Activity activity = (Activity) mContext;
-                                        if (!activity.isFinishing()) {
-                                            ImageLoader.with(mContext).load(student.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
-                                                @Override
-                                                public void onSuccess(Drawable drawable) {
-                                                    Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                                                    InputStream inputStream = null;
-                                                    try {
-                                                        inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_2.png");
-                                                        Bitmap headBack = BitmapFactory.decodeStream(inputStream);
-                                                        Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
-                                                        Canvas canvas = new Canvas(creatBitmap);
-                                                        canvas.drawBitmap(headBack, 0, 0, null);
-                                                        int left = headBack.getWidth() / 2 - headBitmap.getWidth() / 2;
-                                                        canvas.drawBitmap(headBitmap, left, left, null);
-                                                        lottieAnimationView.updateBitmap("image_2", creatBitmap);
-                                                        headBack.recycle();
-                                                    } catch (IOException e) {
-                                                        e.printStackTrace();
-                                                    } finally {
-                                                        if (inputStream != null) {
-                                                            try {
-                                                                inputStream.close();
-                                                            } catch (IOException e) {
-                                                                e.printStackTrace();
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                                @Override
-                                                public void onFail() {
-
-                                                }
-                                            });
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
-                                        if (lottieComposition == null) {
-                                            return;
-                                        }
-                                        lottieAnimationView.setComposition(lottieComposition);
-                                        lottieAnimationView.playAnimation();
-                                        updateHead();
-                                        updateName();
-                                    }
-                                });
+                                LottieComposition.Factory.fromAssetFileName(mContext, path, new TeamOnCompositionLoadedListener(student, lottieAnimationView));
                                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                                if (student.isRight()) {
-                                    int countLeft = ll_livevideo_voiceans_team_left.getChildCount();
-                                    if (countLeft > 4) {
-                                        ll_livevideo_voiceans_team_left.removeViewAt(countLeft - 1);
+//                                lp.weight = 1;
+                                int countLeft = ll_livevideo_voiceans_team_left.getChildCount();
+                                int countRight = ll_livevideo_voiceans_team_right.getChildCount();
+                                if (leftOrRight % 2 == 1) {
+                                    boolean remove = false;
+                                    int index = 0;
+                                    if (countRight > 0) {
+                                        int rightWidth = ((View) ll_livevideo_voiceans_team_right.getParent()).getWidth();
+                                        View child = ll_livevideo_voiceans_team_right.getChildAt(0);
+                                        int childWidth = child.getWidth();
+                                        while (childWidth * (countRight + 1) > rightWidth) {
+                                            countRight--;
+                                            View view = rightView.remove(0);
+                                            lp.width = childWidth;
+                                            index = ll_livevideo_voiceans_team_right.indexOfChild(view);
+                                            ll_livevideo_voiceans_team_right.removeViewInLayout(view);
+                                            remove = true;
+                                        }
                                     }
-                                    ll_livevideo_voiceans_team_left.addView(lottieAnimationView, 0, lp);
+                                    if (remove) {
+                                        ll_livevideo_voiceans_team_right.addView(lottieAnimationView, index, lp);
+                                    } else {
+                                        ll_livevideo_voiceans_team_right.addView(lottieAnimationView, lp);
+                                    }
+                                    rightView.add(lottieAnimationView);
                                 } else {
-                                    if (ll_livevideo_voiceans_team_right.getChildCount() > 4) {
-                                        ll_livevideo_voiceans_team_right.removeViewAt(0);
+                                    boolean remove = false;
+                                    int index = 0;
+                                    if (countLeft > 0) {
+                                        int leftWidth = ((View) ll_livevideo_voiceans_team_left.getParent()).getWidth();
+                                        View child = ll_livevideo_voiceans_team_left.getChildAt(countLeft - 1);
+                                        int childWidth = child.getWidth();
+                                        while (childWidth * (countLeft + 1) > leftWidth) {
+                                            countLeft--;
+                                            remove = true;
+                                            View view = leftView.remove(0);
+                                            lp.width = childWidth;
+                                            index = ll_livevideo_voiceans_team_left.indexOfChild(view);
+                                            ll_livevideo_voiceans_team_left.removeViewInLayout(view);
+                                        }
                                     }
-                                    ll_livevideo_voiceans_team_right.addView(lottieAnimationView, lp);
+                                    if (remove) {
+                                        ll_livevideo_voiceans_team_left.addView(lottieAnimationView, index, lp);
+                                    } else {
+                                        ll_livevideo_voiceans_team_left.addView(lottieAnimationView, 0, lp);
+                                    }
+                                    leftView.add(lottieAnimationView);
                                 }
+                                leftOrRight++;
                             }
                             onFinish();
                         }
@@ -345,6 +324,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_stand_voice_answer, null);
         rgiv_livevideo_stand_readygo = view.findViewById(R.id.rgiv_livevideo_stand_readygo);
+        lav_livevideo_voiceans_team_mine = view.findViewById(R.id.lav_livevideo_voiceans_team_mine);
+        iv_livevideo_voiceans_team_mine = view.findViewById(R.id.iv_livevideo_voiceans_team_mine);
         rl_livevideo_voiceans_content = view.findViewById(R.id.rl_livevideo_voiceans_content);
         ll_livevideo_voiceans_team_left = view.findViewById(R.id.ll_livevideo_voiceans_team_left);
         ll_livevideo_voiceans_team_right = view.findViewById(R.id.ll_livevideo_voiceans_team_right);
@@ -452,6 +433,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         entranceTime = System.currentTimeMillis();
         final String questionID = baseVideoQuestionEntity.getvQuestionID();
         Loger.d(TAG, "initData:questionID=" + questionID);
+        fontFace = Typeface.createFromAsset(mContext.getAssets(),
+                "fangzhengyouyuan.ttf");
         mView.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -748,6 +731,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                     entity.setYourAnswer(option);
                                     entity.setStandardAnswer(answer);
                                     iv_livevideo_speecteval_wave.setVisibility(View.INVISIBLE);
+                                    onCommit(entity);
                                 }
                             }
 
@@ -854,6 +838,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                             if (entity != null) {
                                 entity.setStandardAnswer(answer);
                                 iv_livevideo_speecteval_wave.setVisibility(View.INVISIBLE);
+                                onCommit(entity);
                             }
                         }
 
@@ -913,6 +898,158 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         @Override
         public String toString() {
             return "" + score;
+        }
+    }
+
+    private void onCommit(VideoResultEntity entity) {
+        boolean isRight;
+        if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
+            isRight = true;
+        } else {
+            isRight = false;
+        }
+        if (lav_livevideo_voiceans_team_mine.getVisibility() == View.VISIBLE) {
+            TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = (TeamOnCompositionLoadedListener) lav_livevideo_voiceans_team_mine.getTag();
+            return;
+        }
+        lav_livevideo_voiceans_team_mine.setVisibility(View.VISIBLE);
+        String path;
+        if (isRight) {
+            path = "live_stand_voice_team_right.json";
+            lav_livevideo_voiceans_team_mine.setImageAssetsFolder("live_stand/lottie/voice_answer/team_right");
+        } else {
+            path = "live_stand_voice_team_wrong.json";
+            lav_livevideo_voiceans_team_mine.setImageAssetsFolder("live_stand/lottie/voice_answer/team_wrong");
+        }
+        GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+        student.setNickname(userName);
+        student.setAvatar_path(headUrl);
+        TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = new TeamOnCompositionLoadedListener(student, lav_livevideo_voiceans_team_mine) {
+            @Override
+            public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
+                super.onCompositionLoaded(lottieComposition);
+                if (lottieComposition != null) {
+                    iv_livevideo_voiceans_team_mine.setVisibility(View.VISIBLE);
+                    iv_livevideo_voiceans_team_mine.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                        @Override
+                        public boolean onPreDraw() {
+                            iv_livevideo_voiceans_team_mine.getViewTreeObserver().removeOnPreDrawListener(this);
+                            iv_livevideo_voiceans_team_mine.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_live_stand_speech_mine_light_rotate);
+                                    LinearInterpolator lin = new LinearInterpolator();
+                                    animation.setInterpolator(lin);
+                                    iv_livevideo_voiceans_team_mine.startAnimation(animation);
+                                }
+                            }, 300);
+                            return false;
+                        }
+                    });
+                }
+            }
+        };
+        teamOnCompositionLoadedListener.isMe = true;
+        LottieComposition.Factory.fromAssetFileName(mContext, path, teamOnCompositionLoadedListener);
+        lav_livevideo_voiceans_team_mine.setTag(teamOnCompositionLoadedListener);
+    }
+
+    class TeamOnCompositionLoadedListener implements OnCompositionLoadedListener {
+        GoldTeamStatus.Student student;
+        LottieAnimationView lottieAnimationView;
+        String lastScore = "";
+        boolean isMe = false;
+
+        public TeamOnCompositionLoadedListener(GoldTeamStatus.Student student, LottieAnimationView lottieAnimationView) {
+            this.student = student;
+            this.lottieAnimationView = lottieAnimationView;
+        }
+
+        void updateName() {
+            InputStream inputStream = null;
+            try {
+                if (isMe) {
+                    inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_11.png");
+                } else {
+                    inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_1.png");
+                }
+                Bitmap headBack = BitmapFactory.decodeStream(inputStream);
+                Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(creatBitmap);
+                canvas.drawBitmap(headBack, 0, 0, null);
+                String name = student.getNickname();
+                Paint paint = new Paint();
+                paint.setTextSize(20);
+                if (isMe) {
+                    paint.setColor(Color.WHITE);
+                } else {
+                    paint.setColor(0xffA56202);
+                }
+                float width = paint.measureText(name);
+                canvas.drawText(name, headBack.getWidth() / 2 - width / 2, headBack.getHeight() / 2 + paint.measureText("a") / 2, paint);
+                lottieAnimationView.updateBitmap("image_1", creatBitmap);
+                headBack.recycle();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        void updateHead() {
+            Activity activity = (Activity) mContext;
+            if (!activity.isFinishing()) {
+                ImageLoader.with(mContext).load(student.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
+                    @Override
+                    public void onSuccess(Drawable drawable) {
+                        Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                        InputStream inputStream = null;
+                        try {
+                            inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_2.png");
+                            Bitmap headBack = BitmapFactory.decodeStream(inputStream);
+                            Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
+                            Canvas canvas = new Canvas(creatBitmap);
+                            canvas.drawBitmap(headBack, 0, 0, null);
+                            int left = headBack.getWidth() / 2 - headBitmap.getWidth() / 2;
+                            canvas.drawBitmap(headBitmap, left, left, null);
+                            lottieAnimationView.updateBitmap("image_2", creatBitmap);
+                            headBack.recycle();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } finally {
+                            if (inputStream != null) {
+                                try {
+                                    inputStream.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFail() {
+
+                    }
+                });
+            }
+        }
+
+        @Override
+        public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
+            if (lottieComposition == null) {
+                return;
+            }
+            lottieAnimationView.setComposition(lottieComposition);
+            lottieAnimationView.playAnimation();
+            updateHead();
+            updateName();
         }
     }
 

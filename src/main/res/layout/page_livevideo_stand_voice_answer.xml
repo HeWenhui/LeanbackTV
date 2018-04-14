@@ -32,24 +32,57 @@
         </RelativeLayout>
 
         <ImageView
+            android:id="@id/iv_livevideo_voiceans_team_mine"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@id/lav_livevideo_voiceans_team_mine"
+            android:layout_alignLeft="@id/lav_livevideo_voiceans_team_mine"
+            android:layout_alignRight="@id/lav_livevideo_voiceans_team_mine"
+            android:layout_alignTop="@id/lav_livevideo_voiceans_team_mine"
+            android:scaleType="fitXY"
+            android:src="@drawable/bg_live_stand_speect_mine_light"
+            android:visibility="invisible" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@id/lav_livevideo_voiceans_team_mine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:visibility="invisible" />
+
+        <ImageView
             android:id="@id/iv_livevideo_speecteval_wave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true" />
 
-        <LinearLayout
-            android:id="@id/ll_livevideo_voiceans_team_left"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/iv_livevideo_speecteval_wave"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" />
+            android:layout_toRightOf="@id/lav_livevideo_voiceans_team_mine">
 
-        <LinearLayout
-            android:id="@id/ll_livevideo_voiceans_team_right"
-            android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@id/ll_livevideo_voiceans_team_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:orientation="horizontal" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/iv_livevideo_speecteval_wave"
-            android:orientation="horizontal" />
+            android:layout_toLeftOf="@id/rl_livevideo_voiceans_switch"
+            android:layout_toRightOf="@id/iv_livevideo_speecteval_wave">
+
+            <LinearLayout
+                android:id="@id/ll_livevideo_voiceans_team_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </RelativeLayout>
 
     </RelativeLayout>
 

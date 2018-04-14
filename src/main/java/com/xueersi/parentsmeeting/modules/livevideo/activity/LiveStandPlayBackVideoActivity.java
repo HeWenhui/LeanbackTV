@@ -499,6 +499,8 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
             redPackageStandBll.setHeadUrl(mMyInfo.getHeadImg());
             redPackageStandBll.initView(rl_course_video_live_redpackage_content);
             liveStandVoiceAnswerCreat = new LiveStandVoiceAnswerCreat(questionSwitch);
+            liveStandVoiceAnswerCreat.setUserName(mMyInfo.getNickName());
+            liveStandVoiceAnswerCreat.setHeadUrl(mMyInfo.getHeadImg());
             if (AppConfig.DEBUG) {
 
 //                mRedPacketId = "2";
@@ -1252,7 +1254,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //        }
         rlQuestionContent.removeAllViews();
         rlQuestionContent.setVisibility(View.VISIBLE);
-        voiceAnswerPager = new VoiceAnswerStandPager(this, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.getVoiceQuestiontype(), questionSwitch, this);
+        voiceAnswerPager = new VoiceAnswerStandPager(this, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.getVoiceQuestiontype(), questionSwitch, this, "", "");
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT);
         rlQuestionContent.addView(voiceAnswerPager.getRootView(), params);

@@ -41,16 +41,32 @@ import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE4;
 public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     String TAG = "LiveStandVoiceAnswerCreat";
     QuestionSwitch questionSwitch;
+    private String headUrl;
+    private String userName;
 
     public LiveStandVoiceAnswerCreat(QuestionSwitch questionSwitch) {
         this.questionSwitch = questionSwitch;
+    }
+
+    public LiveStandVoiceAnswerCreat(QuestionSwitch questionSwitch, String headUrl, String userName) {
+        this.questionSwitch = questionSwitch;
+        this.headUrl = headUrl;
+        this.userName = userName;
+    }
+
+    public void setHeadUrl(String headUrl) {
+        this.headUrl = headUrl;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     @Override
     public BaseVoiceAnswerPager create(Context activity, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
                                        RelativeLayout rlQuestionContent, SpeechEvaluatorUtils mIse, LiveAndBackDebug liveAndBackDebug) {
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
-        VoiceAnswerStandPager voiceAnswerPager2 = new VoiceAnswerStandPager(activity, baseVideoQuestionEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch, liveAndBackDebug);
+        VoiceAnswerStandPager voiceAnswerPager2 = new VoiceAnswerStandPager(activity, baseVideoQuestionEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch, liveAndBackDebug, headUrl, userName);
         voiceAnswerPager2.setIse(mIse);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
