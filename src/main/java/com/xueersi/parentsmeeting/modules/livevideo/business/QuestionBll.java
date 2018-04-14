@@ -14,7 +14,6 @@ import com.alibaba.fastjson.JSON;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BasePager;
-import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
@@ -787,7 +786,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         mLogtf.d("onStopQuestion:examSubmitAll:id=" + id);
                         speechAssessmentPager.examSubmitAll();
                         if (speechEndAction != null) {
-                            speechEndAction.examSubmitAll(id);
+                            speechEndAction.examSubmitAll(speechAssessmentPager, id);
                         }
                     }
                 }
@@ -1125,7 +1124,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
             }
             if (speechEndAction != null) {
-                speechEndAction.onStopSpeech(num);
+                speechEndAction.onStopSpeech(speechAssessmentPager, num);
             }
             if (speechAssessmentPager.getId().equals(num)) {
                 setHaveSpeech(false);

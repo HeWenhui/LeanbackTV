@@ -919,4 +919,12 @@ public class LiveHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         sendPost(LiveVideoConfig.URL_EXPERIENCE_LIVE_ONLINETIME, params, callBack);
     }
+
+    /** roleplay组内排行榜 */
+    public void getRolePlayAnswerTeamRank(String testId, HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("testId", testId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_ROLE_TEAM, params, callBack);
+    }
 }

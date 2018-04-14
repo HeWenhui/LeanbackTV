@@ -994,18 +994,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     }
                 } else {
                     if (mQuestionAction != null) {
-//                        VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-//                        videoQuestionLiveEntity.id = "100382-1";
-//                        videoQuestionLiveEntity.speechContent = "how are you";
-//                        videoQuestionLiveEntity.isAllow42 = "1";
-//                        videoQuestionLiveEntity.type = LocalCourseConfig.QUESTION_TYPE_SPEECH;
-//                        mQuestionAction.showQuestion(videoQuestionLiveEntity);
-//                        mHandler.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                mQuestionAction.onStopQuestion("4", "");
-//                            }
-//                        }, 10000);
                         mQuestionAction.showQuestion(null);
                     }
                 }
@@ -3373,6 +3361,30 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 //                    callBack.onDataSucess();
 //                }
 //                PageDataLoadManager.newInstance().loadDataStyle(pageDataLoadEntity.webDataError());
+            }
+        });
+    }
+
+    /** roleplay组内排行榜 */
+    public void getRolePlayAnswerTeamRank(String testId, final AbstractBusinessDataCallBack callBack) {
+        mHttpManager.getRolePlayAnswerTeamRank(testId, new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                Loger.d(TAG, "getRolePlayAnswerTeamRank:responseEntity=" + responseEntity.getJsonObject());
+                GoldTeamStatus entity = mHttpResponseParser.parseRolePlayTeamRank(responseEntity, mGetInfo);
+                callBack.onDataSucess(entity);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                Loger.d(TAG, "getRolePlayAnswerTeamRank:onPmError=" + responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                Loger.d(TAG, "getRolePlayAnswerTeamRank:msg=" + msg);
             }
         });
     }

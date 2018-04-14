@@ -996,9 +996,9 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         redPackageBll.setHeadUrl(getInfo.getHeadImgPath());
         redPackageBll.setReceiveGold(new LiveReceiveGold(mLiveBll));
 
-//        if (AppConfig.DEBUG) {
-//            redPackageBll.onReadPackage(1);
-//        }
+        if (AppConfig.DEBUG) {
+            redPackageBll.onReadPackage(1);
+        }
         Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
     }
 

@@ -733,6 +733,49 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return entity;
     }
 
+    public GoldTeamStatus parseRolePlayTeamRank(ResponseEntity responseEntity, LiveGetInfo mGetInfo) {
+        GoldTeamStatus entity = new GoldTeamStatus();
+        try {
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            JSONArray stuList = jsonObject.optJSONArray("stuList");
+            String avatar_path = mGetInfo.getHeadImgPath();
+            if (stuList != null) {
+                for (int i = 0; i < stuList.length(); i++) {
+                    try {
+                        JSONObject stu = stuList.getJSONObject(i);
+                        GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+                        String stuId2 = stu.getString("stuId");
+                        student.setMe(mGetInfo.getStuId().equals(stuId2));
+                        student.setStuId(stuId2);
+                        student.setName(stu.optString("name"));
+                        student.setNickname(stu.getString("nickname"));
+                        student.setScore(stu.optString("score", "0"));
+                        student.setScore(stu.optString("gold"));
+                        avatar_path = stu.getString("avatar_path");
+                        student.setAvatar_path(avatar_path);
+                        entity.getStudents().add(student);
+                    } catch (Exception e) {
+                        MobAgent.httpResponseParserError(TAG, "parseSpeechTeamRank:i=" + i, e.getMessage());
+                    }
+                }
+            }
+//            if (AppConfig.DEBUG && lyqTest) {
+//                for (int i = 0; i < 3; i++) {
+//                    GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                    student.setStuId("12345" + testid++);
+//                    student.setName(student.getStuId());
+//                    student.setNickname("测试" + testid++);
+//                    student.setScore("" + (10 + i));
+//                    student.setGold("" + (10 + i));
+//                    student.setAvatar_path(avatar_path);
+//                    entity.getStudents().add(student);
+//                }
+//            }
+        } catch (Exception e) {
+            MobAgent.httpResponseParserError(TAG, "parseSpeechTeamRank", e.getMessage());
+        }
+        return entity;
+    }
 
     public StudyInfo parseStudyInfo(ResponseEntity responseEntity, String oldMode) {
         StudyInfo studyInfo = new StudyInfo();
