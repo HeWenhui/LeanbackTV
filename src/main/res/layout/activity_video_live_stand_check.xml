@@ -12,8 +12,36 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/pb_live_stand_update"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
         android:text="加载中，请耐心等待"
         android:textColor="@color/white" />
+
+    <RelativeLayout
+        android:id="@id/rl_live_stand_update_prog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/pb_live_stand_update"
+        android:layout_marginBottom="2dp">
+
+        <TextView
+            android:id="@id/tv_live_stand_update_prog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_live_stand_update_pro_bg"
+            android:paddingBottom="5dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="5dp"
+            android:textColor="@color/white" />
+
+        <ImageView
+            android:id="@id/iv_live_stand_update_prog_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_live_stand_update_prog"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/bg_livevideo_common_word_arrow" />
+    </RelativeLayout>
 
     <ProgressBar
         android:id="@id/pb_live_stand_update"
@@ -21,9 +49,9 @@
         android:layout_width="match_parent"
         android:layout_height="9dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:max="200" />
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:max="100" />
 
     <ImageView
         android:id="@id/iv_live_stand_update_back"

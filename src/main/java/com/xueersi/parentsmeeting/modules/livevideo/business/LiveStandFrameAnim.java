@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
@@ -57,6 +58,7 @@ public class LiveStandFrameAnim {
             if (saveFile.exists()) {
                 callBack.onDataSucess("");
             } else {
+                //activity_video_live_stand_check
                 ViewStub vs_live_stand_update = activity.findViewById(R.id.vs_live_stand_update);
                 View view = vs_live_stand_update.inflate();
                 view.findViewById(R.id.iv_live_stand_update_back).setOnClickListener(new View.OnClickListener() {
@@ -65,15 +67,15 @@ public class LiveStandFrameAnim {
                         activity.finish();
                     }
                 });
-                ProgressBar pb_live_stand_update = view.findViewById(R.id.pb_live_stand_update);
                 TextView tv_live_stand_update_zip = view.findViewById(R.id.tv_live_stand_update_zip);
                 tv_live_stand_update_zip.setText("解压中");
-                StandLiveZipExtractorTask zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, activity, pb_live_stand_update, callBack, saveFile, saveFileTemp);
+                StandLiveZipExtractorTask zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, activity, view, callBack, saveFile, saveFileTemp);
                 zipExtractorTask.execute();
             }
         } else {
+            //activity_video_live_stand_check
             ViewStub vs_live_stand_update = activity.findViewById(R.id.vs_live_stand_update);
-            View view = vs_live_stand_update.inflate();
+            final View view = vs_live_stand_update.inflate();
             view.findViewById(R.id.iv_live_stand_update_back).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -95,7 +97,7 @@ public class LiveStandFrameAnim {
                 cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        download(pb_live_stand_update, tv_live_stand_update_zip, saveFileZip, tempFileZip, saveFile, saveFileTemp);
+                        download(view, tv_live_stand_update_zip, saveFileZip, tempFileZip, saveFile, saveFileTemp);
                     }
                 });
                 pb_live_stand_update.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -108,18 +110,21 @@ public class LiveStandFrameAnim {
                     }
                 });
             } else {
-                download(pb_live_stand_update, tv_live_stand_update_zip, saveFileZip, tempFileZip, saveFile, saveFileTemp);
+                download(view, tv_live_stand_update_zip, saveFileZip, tempFileZip, saveFile, saveFileTemp);
             }
         }
     }
 
-    private void download(final ProgressBar pb_live_stand_update, final TextView tv_live_stand_update_zip, final File saveFileZip, final File tempFileZip, final File saveFile, final File saveFileTemp) {
+    private void download(final View view, final TextView tv_live_stand_update_zip, final File saveFileZip, final File tempFileZip, final File saveFile, final File saveFileTemp) {
         final BaseHttp baseHttp = new BaseHttp(activity);
         final AtomicInteger times = new AtomicInteger();
         String url = "/android_stand_live/" + version + "/frame_anim3.zip";
         final String aliyun = "http://xesftp.oss-cn-beijing.aliyuncs.com" + url;
         String xuersi = "http://client.xesimg.com" + url;
         final String[] urls = new String[]{aliyun, xuersi};
+        final ProgressBar pb_live_stand_update = view.findViewById(R.id.pb_live_stand_update);
+        final RelativeLayout rl_live_stand_update_prog = view.findViewById(R.id.rl_live_stand_update_prog);
+        final TextView tv_live_stand_update_prog = view.findViewById(R.id.tv_live_stand_update_prog);
         baseHttp.download(xuersi, tempFileZip.getPath(), new DownloadCallBack() {
             DownloadCallBack downloadCallBack = this;
 
@@ -127,7 +132,7 @@ public class LiveStandFrameAnim {
             protected void onDownloadSuccess() {
                 tempFileZip.renameTo(saveFileZip);
                 tv_live_stand_update_zip.setText("解压中");
-                StandLiveZipExtractorTask zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, activity, pb_live_stand_update, callBack, saveFile, saveFileTemp);
+                StandLiveZipExtractorTask zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, activity, view, callBack, saveFile, saveFileTemp);
                 zipExtractorTask.execute();
             }
 
@@ -135,7 +140,7 @@ public class LiveStandFrameAnim {
             protected void onDownloadFailed() {
                 if (times.get() < 3) {
                     times.getAndIncrement();
-                    pb_live_stand_update.postDelayed(new Runnable() {
+                    view.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             String url = urls[times.get() % urls.length];
@@ -145,7 +150,7 @@ public class LiveStandFrameAnim {
                     }, 1000);
                 } else {
                     XESToastUtils.showToast(activity, "下载失败，请检查您的网络或联络辅导老师");
-                    pb_live_stand_update.postDelayed(new Runnable() {
+                    view.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             callBack.onDataSucess("");
@@ -156,20 +161,31 @@ public class LiveStandFrameAnim {
 
             @Override
             protected void onDownloading(int progress) {
+                progress = progress / 2;
                 pb_live_stand_update.setProgress(progress);
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) pb_live_stand_update.getLayoutParams();
+                RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) rl_live_stand_update_prog.getLayoutParams();
+                int left = pb_live_stand_update.getWidth() * progress / 100;
+                lp2.leftMargin = left - rl_live_stand_update_prog.getWidth() / 2 + lp.leftMargin;
+                rl_live_stand_update_prog.setLayoutParams(lp2);
+                tv_live_stand_update_prog.setText(progress + "%");
             }
         });
     }
 
     static class StandLiveZipExtractorTask extends ZipExtractorTask {
-        ProgressBar pb_live_stand_update;
         AbstractBusinessDataCallBack callBack;
         File saveFile;
         File saveFileTemp;
+        ProgressBar pb_live_stand_update;
+        RelativeLayout rl_live_stand_update_prog;
+        TextView tv_live_stand_update_prog;
 
-        public StandLiveZipExtractorTask(File in, File out, Context context, ProgressBar pb_live_stand_update, AbstractBusinessDataCallBack callBack, File saveFile, File saveFileTemp) {
+        public StandLiveZipExtractorTask(File in, File out, Context context, View view, AbstractBusinessDataCallBack callBack, File saveFile, File saveFileTemp) {
             super(in, out, context, true);
-            this.pb_live_stand_update = pb_live_stand_update;
+            pb_live_stand_update = view.findViewById(R.id.pb_live_stand_update);
+            rl_live_stand_update_prog = view.findViewById(R.id.rl_live_stand_update_prog);
+            tv_live_stand_update_prog = view.findViewById(R.id.tv_live_stand_update_prog);
             this.callBack = callBack;
             this.saveFile = saveFile;
             this.saveFileTemp = saveFileTemp;
@@ -179,8 +195,15 @@ public class LiveStandFrameAnim {
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
             if (values.length == 1) {
+                float progress = (50 + (float) values[0] * 100f / (float) max / 2);
                 Loger.d(TAG, "onProgressUpdate:progress=" + ((float) values[0] * 100f / (float) max));
-                pb_live_stand_update.setProgress((int) (100 + ((float) values[0] * 100f / (float) max)));
+                pb_live_stand_update.setProgress((int) progress);
+                tv_live_stand_update_prog.setText(((int) progress) + "%");
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) pb_live_stand_update.getLayoutParams();
+                RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) rl_live_stand_update_prog.getLayoutParams();
+                int left = (int) (pb_live_stand_update.getWidth() * progress / 100);
+                lp2.leftMargin = left - rl_live_stand_update_prog.getWidth() / 2 + lp.leftMargin;
+                rl_live_stand_update_prog.setLayoutParams(lp2);
             }
         }
 
