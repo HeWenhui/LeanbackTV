@@ -447,6 +447,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         learnReportBll = new LearnReportBll(this);
         h5CoursewareBll = new H5CoursewareBll(this);
         englishH5CoursewareBll = new EnglishH5CoursewareBll(this);
+        englishH5CoursewareBll.registQuestionShow(liveMessageBll);
         questionBll.setShareDataManager(mShareDataManager);
 
         LogToFile.liveBll = mLiveBll;
@@ -996,9 +997,9 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         redPackageBll.setHeadUrl(getInfo.getHeadImgPath());
         redPackageBll.setReceiveGold(new LiveReceiveGold(mLiveBll));
 
-        if (AppConfig.DEBUG) {
-            redPackageBll.onReadPackage(1);
-        }
+//        if (AppConfig.DEBUG) {
+//            redPackageBll.onReadPackage(1);
+//        }
         Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
     }
 

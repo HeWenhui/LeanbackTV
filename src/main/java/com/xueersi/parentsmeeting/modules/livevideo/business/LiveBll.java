@@ -1053,7 +1053,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         }
                     }
                     englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
-
                 }
                 if (mLecLearnReportAction != null) {
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();

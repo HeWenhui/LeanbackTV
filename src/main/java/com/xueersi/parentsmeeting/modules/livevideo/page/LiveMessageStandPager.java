@@ -47,6 +47,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
@@ -1198,5 +1199,19 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     // 03.16 模拟显示聊天人数
     public void showPeopleCount(int num) {
         tvMessageCount.setText(num + "人正在上课");
+    }
+
+    @Override
+    public void onShow(final boolean isShow) {
+        mView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (isShow) {
+                    mView.setVisibility(View.GONE);
+                } else {
+                    mView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 }

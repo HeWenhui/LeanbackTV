@@ -70,7 +70,7 @@ import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
  * Created by linyuqiang on 2016/12/19.
  * 聊天信息一些基本方法
  */
-public abstract class BaseLiveMessagePager extends BasePager implements RoomAction {
+public abstract class BaseLiveMessagePager extends BasePager implements RoomAction, QuestionShowAction {
     protected ArrayList<LiveMessageEntity> liveMessageEntities = new ArrayList<>();
     /** 发送消息间隔 */
     protected final static long SEND_MSG_INTERVAL = 5000;
@@ -605,6 +605,11 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
             Loger.e(TAG, "startCourseDetail", e);
             return false;
         }
+    }
+
+    @Override
+    public void onShow(boolean isShow) {
+
     }
 
     @Override

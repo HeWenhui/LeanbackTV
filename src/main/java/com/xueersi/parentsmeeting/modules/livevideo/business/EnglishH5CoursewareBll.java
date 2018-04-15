@@ -92,6 +92,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     /** 智能私信业务 */
     private LiveAutoNoticeBll mLiveAutoNoticeBll;
     private boolean hasQuestion;
+    private boolean isAnaswer = false;
+    private ArrayList<QuestionShowAction> questionShowActions = new ArrayList<>();
     private long submitTime;
     private boolean hasSubmit;
     private LiveVideoSAConfig liveVideoSAConfig;
@@ -241,6 +243,12 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             @Override
             public void run() {
                 if ("on".equals(status)) {
+                    if (!isAnaswer) {
+                        for (QuestionShowAction questionShowAction : questionShowActions) {
+                            questionShowAction.onShow(true);
+                        }
+                    }
+                    isAnaswer = true;
                     if (!"1".equals(videoQuestionLiveEntity.getIsVoice()) || mErrorVoiceQue.contains(videoQuestionLiveEntity.url)) {
                         hasQuestion = true;
                         if (mAnswerRankBll != null) {
@@ -281,6 +289,12 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         showH5Paper(videoQuestionLiveEntity);
                     }
                 } else {
+                    if (isAnaswer) {
+                        for (QuestionShowAction questionShowAction : questionShowActions) {
+                            questionShowAction.onShow(false);
+                        }
+                    }
+                    isAnaswer = false;
                     if (voiceAnswerPager != null && !voiceAnswerPager.isEnd()) {
 //                        voiceAnswerPager = null;
 //                        rlVoiceQuestionContent = new RelativeLayout(liveVideoActivityBase);
@@ -652,6 +666,14 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 mLiveAutoNoticeBll.getAutoNotice(isForce, 5);
             }
         }, 10000);
+    }
+
+    public void registQuestionShow(QuestionShowAction questionShowAction) {
+        questionShowActions.add(questionShowAction);
+    }
+
+    public void unRegistQuestionShow(QuestionShowAction questionShowAction) {
+        questionShowActions.remove(questionShowAction);
     }
 
     public class LiveStandQuestionSwitchImpl extends LiveQuestionSwitchImpl implements LiveStandQuestionSwitch {

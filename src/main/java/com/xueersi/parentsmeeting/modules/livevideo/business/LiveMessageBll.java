@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by linyuqiang on 2016/9/23.
  * 聊天消息，一些进入房间状态的消息
  */
-public class LiveMessageBll implements RoomAction {
+public class LiveMessageBll implements RoomAction, QuestionShowAction {
     private String TAG = "LiveMessageBll";
     /** 消息 */
     private BaseLiveMessagePager mLiveMessagePager;
@@ -54,6 +54,7 @@ public class LiveMessageBll implements RoomAction {
 
     public void setQuestionBll(QuestionBll questionBll) {
         this.questionBll = questionBll;
+        questionBll.registQuestionShow(this);
         questionBll.setLiveMessageBll(this);
     }
 
@@ -154,7 +155,7 @@ public class LiveMessageBll implements RoomAction {
         }
 
         long before = System.currentTimeMillis();
-        LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll, null,baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+        LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
         mLiveMessagePager = liveMessagePager;
         Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
 
@@ -205,11 +206,11 @@ public class LiveMessageBll implements RoomAction {
 //            }
             if (liveType == LiveBll.LIVE_TYPE_LECTURE) {
                 LiveMessagePager liveMessagePager =
-                        new LiveMessagePager(activity, questionBll,null, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
+                        new LiveMessagePager(activity, questionBll, null, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
                 mLiveMessagePager = liveMessagePager;
             } else {
                 long before = System.currentTimeMillis();
-                LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll,null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
                 Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
             }
@@ -464,6 +465,13 @@ public class LiveMessageBll implements RoomAction {
     public void addMessage(String sender, int type, String text) {
         if (mLiveMessagePager != null) {
             mLiveMessagePager.addMessage(sender, type, text, "");
+        }
+    }
+
+    @Override
+    public void onShow(boolean isShow) {
+        if (mLiveMessagePager != null) {
+            mLiveMessagePager.onShow(isShow);
         }
     }
 }

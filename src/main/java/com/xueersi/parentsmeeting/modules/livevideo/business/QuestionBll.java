@@ -199,6 +199,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     boolean isLand;
     private LiveMessageBll liveMessageBll;
     private boolean isAnaswer = false;
+    private ArrayList<QuestionShowAction> questionShowActions = new ArrayList<>();
     private AnswerRankBll mAnswerRankBll;
     /** 智能私信业务 */
     private LiveAutoNoticeBll mLiveAutoNoticeBll;
@@ -414,6 +415,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void showQuestion(final VideoQuestionLiveEntity videoQuestionLiveEntity) {
         if (videoQuestionLiveEntity == null) {
             mLogtf.d("showQuestion:noQuestion");
+            if (isAnaswer) {
+                for (QuestionShowAction questionShowAction : questionShowActions) {
+                    questionShowAction.onShow(false);
+                }
+            }
             isAnaswer = false;
             if (voiceAnswerPager != null && !voiceAnswerPager.isEnd()) {
                 final BaseVoiceAnswerPager answerPager = voiceAnswerPager;
@@ -453,6 +459,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
         }
         mVideoQuestionLiveEntity = videoQuestionLiveEntity;
+        if (!isAnaswer) {
+            for (QuestionShowAction questionShowAction : questionShowActions) {
+                questionShowAction.onShow(true);
+            }
+        }
         isAnaswer = true;
         if (this.videoQuestionLiveEntity != null) {
             mLogtf.d("showQuestion:Entity=" + this.videoQuestionLiveEntity.id + "," + videoQuestionLiveEntity.id);
@@ -759,6 +770,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     @Override
     public void onStopQuestion(String ptype, final String nonce) {
         Loger.i("=====questionbll  question stop");
+        if (isAnaswer) {
+            for (QuestionShowAction questionShowAction : questionShowActions) {
+                questionShowAction.onShow(false);
+            }
+        }
         isAnaswer = false;
         if (rolePlayAction != null && videoQuestionLiveEntity != null) {
             if (videoQuestionLiveEntity.id.equals(rolePlayAction.getQuestionId())) {
@@ -1753,6 +1769,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mLiveAutoNoticeBll.getAutoNotice(isForce, 0);
             }
         }, 10000);
+    }
+
+    public void registQuestionShow(QuestionShowAction questionShowAction) {
+        questionShowActions.add(questionShowAction);
+    }
+
+    public void unRegistQuestionShow(QuestionShowAction questionShowAction) {
+        questionShowActions.remove(questionShowAction);
     }
 
     class LiveStandQuestionSwitchImpl extends LiveQuestionSwitchImpl implements LiveStandQuestionSwitch {
