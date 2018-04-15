@@ -346,7 +346,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 Loger.d(TAG, "onViewDetachedFromWindow:frameAnimations=" + frameAnimations.size());
                 for (int i = 0; i < frameAnimations.size(); i++) {
                     FrameAnimation animation = frameAnimations.get(i);
-                    animation.destory();
+                    int destory = animation.destory();
+                    Loger.d(TAG, "onViewDetachedFromWindow:animation=" + animation.path + ",destory=" + destory);
                 }
             }
         });

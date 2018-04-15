@@ -2,10 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.view.ViewStub;
 import android.view.ViewTreeObserver;
@@ -19,6 +16,7 @@ import com.xueersi.parentsmeeting.http.DownloadCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
+import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
@@ -33,7 +31,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class LiveStandFrameAnim {
     static String TAG = "LiveStandFrameAnim";
     Activity activity;
-    public static String version = "2018041301";
+    public static String version = "2018041501";
+    String filePath = "/android_stand_live/" + version + "/frame_anim4.zip";
+    /** 下载地址，阿里云 */
+    String aliyun = "http://xesftp.oss-cn-beijing.aliyuncs.com" + filePath;
+    /** 下载地址，网校 */
+    String xuersi = "http://client.xesimg.com" + filePath;
+    /** 更新回调 */
     AbstractBusinessDataCallBack callBack;
 
     public LiveStandFrameAnim(Activity activity) {
@@ -41,7 +45,17 @@ public class LiveStandFrameAnim {
     }
 
     public void check(LiveBll liveBll, final AbstractBusinessDataCallBack callBack) {
-        final File externalFilesDir = new File(activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/" + version), "live_stand");
+        File alldir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/live_stand");
+        File[] allcache = alldir.listFiles();
+        if (allcache != null) {
+            for (int i = 0; i < allcache.length; i++) {
+                File cache = allcache[i];
+                if (!cache.getPath().contains(version)) {
+                    FileUtils.deleteDir(cache);
+                }
+            }
+        }
+        final File externalFilesDir = new File(alldir, version + "/live_stand");
         if (!externalFilesDir.exists()) {
             externalFilesDir.mkdirs();
         }
@@ -118,9 +132,6 @@ public class LiveStandFrameAnim {
     private void download(final View view, final TextView tv_live_stand_update_zip, final File saveFileZip, final File tempFileZip, final File saveFile, final File saveFileTemp) {
         final BaseHttp baseHttp = new BaseHttp(activity);
         final AtomicInteger times = new AtomicInteger();
-        String url = "/android_stand_live/" + version + "/frame_anim3.zip";
-        final String aliyun = "http://xesftp.oss-cn-beijing.aliyuncs.com" + url;
-        String xuersi = "http://client.xesimg.com" + url;
         final String[] urls = new String[]{aliyun, xuersi};
         final ProgressBar pb_live_stand_update = view.findViewById(R.id.pb_live_stand_update);
         final RelativeLayout rl_live_stand_update_prog = view.findViewById(R.id.rl_live_stand_update_prog);

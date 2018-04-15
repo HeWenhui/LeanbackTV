@@ -1425,11 +1425,29 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         mHandler.postDelayed(r, delayMillis);
     }
 
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        Loger.d(TAG, "onLowMemory");
+    }
+
     public void setFirstBackgroundVisible(int visible) {
         if (rlFirstBackgroundView == null) {
             return;
         }
         rlFirstBackgroundView.setVisibility(visible);
+        if (visible == View.VISIBLE) {
+            if (rlFirstBackgroundView.getTag() == null) {
+                FrameAnimation frameAnimation = FrameAnimation.createFromAees(this, rlFirstBackgroundView, "live_stand/frame_anim/video_loading", 70, true);
+                rlFirstBackgroundView.setTag(frameAnimation);
+            }
+        } else {
+            if (rlFirstBackgroundView.getTag() instanceof FrameAnimation) {
+                FrameAnimation frameAnimation = (FrameAnimation) rlFirstBackgroundView.getTag();
+                frameAnimation.destory();
+                rlFirstBackgroundView.setTag(null);
+            }
+        }
         if (visible == View.GONE) {
             ivTeacherNotpresent.setVisibility(View.GONE);
         }

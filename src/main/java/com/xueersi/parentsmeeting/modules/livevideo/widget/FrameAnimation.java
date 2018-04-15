@@ -386,6 +386,8 @@ public class FrameAnimation {
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();
+                            } catch (OutOfMemoryError e) {
+                                Loger.d(TAG, "play:OutOfMemoryError:file=" + file);
                             } finally {
                                 if (inputStream != null) {
                                     try {
@@ -527,7 +529,7 @@ public class FrameAnimation {
     public static FrameAnimation createFromAees(Context mContext, View iv, String path, int duration, boolean isRepeat) {
         try {
             String[] files = {};
-            File externalFilesDir = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/" + LiveStandFrameAnim.version), path);
+            File externalFilesDir = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/live_stand/" + LiveStandFrameAnim.version), path);
             if (externalFilesDir.exists()) {
                 files = externalFilesDir.list();
                 if (files != null) {
