@@ -1438,7 +1438,31 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         rlFirstBackgroundView.setVisibility(visible);
         if (visible == View.VISIBLE) {
             if (rlFirstBackgroundView.getTag() == null) {
-                FrameAnimation frameAnimation = FrameAnimation.createFromAees(this, rlFirstBackgroundView, "live_stand/frame_anim/video_loading", 70, true);
+                FrameAnimation frameAnimation = FrameAnimation.createFromAees(this, rlFirstBackgroundView, "live_stand/frame_anim/video_loading", 70, false);
+                frameAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart() {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd() {
+                        if (rlFirstBackgroundView.getTag() instanceof FrameAnimation) {
+                            FrameAnimation frameAnimation = (FrameAnimation) rlFirstBackgroundView.getTag();
+                            frameAnimation.destory();
+                        }
+                        if (rlFirstBackgroundView.getVisibility() == View.VISIBLE) {
+                            FrameAnimation frameAnimation = FrameAnimation.createFromAees(StandLiveVideoActivity.this, rlFirstBackgroundView, "live_stand/frame_anim/video_loading", 70, false);
+                            frameAnimation.setAnimationListener(this);
+                            rlFirstBackgroundView.setTag(frameAnimation);
+                        }
+                    }
+
+                    @Override
+                    public void onAnimationRepeat() {
+
+                    }
+                });
                 rlFirstBackgroundView.setTag(frameAnimation);
             }
         } else {
