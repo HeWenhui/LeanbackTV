@@ -480,6 +480,7 @@
     <item name="lav_livevideo_chievement" type="id" />
     <item name="pb_live_stand_update" type="id" />
     <item name="tv_live_stand_update_zip" type="id" />
+    <item name="iv_live_stand_update_back" type="id" />
     <!--RolePlayer-->
     <item name="ll_roleplayer_main" type="id" />
     <item name="rl_live_roleplayer_matchpager" type="id" />

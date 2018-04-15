@@ -11,13 +11,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/pb_live_stand_update"
-        android:layout_alignLeft="@id/pb_live_stand_update"
-        android:text="更新资源"
+        android:layout_centerHorizontal="true"
+        android:text="加载中，请耐心等待"
         android:textColor="@color/white" />
 
     <ProgressBar
         android:id="@id/pb_live_stand_update"
-        style="@style/ProgressBar_live_english"
+        style="@style/ProgressBar_live_stand_update"
         android:layout_width="match_parent"
         android:layout_height="9dp"
         android:layout_alignParentBottom="true"
@@ -25,4 +25,14 @@
         android:layout_marginRight="5dp"
         android:max="200" />
 
+    <ImageView
+        android:id="@id/iv_live_stand_update_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/cy_bars_bockwite_icon_normal"
+        android:contentDescription="@string/content_desc_lock"
+        android:padding="3dp" />
 </RelativeLayout>
