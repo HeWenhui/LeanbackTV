@@ -40,6 +40,7 @@ public class Top3FrameAnim {
     private Bitmap headBitmap;
     private HashMap<String, Bitmap> stuHeadBitmap;
     private ArrayList<FrameAnimation> frameAnimations;
+    private boolean isGold = true;
 
     public Top3FrameAnim(Context mContext, View rl_livevideo_redpackage_bg, HashMap<String, Bitmap> stuHeadBitmap, ArrayList<FrameAnimation> frameAnimations) {
         this.mContext = mContext;
@@ -48,12 +49,12 @@ public class Top3FrameAnim {
         this.frameAnimations = frameAnimations;
     }
 
-    public Bitmap getHeadBitmap() {
-        return headBitmap;
-    }
-
     public void setHeadBitmap(Bitmap headBitmap) {
         this.headBitmap = headBitmap;
+    }
+
+    public void setGold(boolean gold) {
+        isGold = gold;
     }
 
     public void start(final FrameAnimation.AnimationListener animationListener, final ArrayList<GoldTeamStatus.Student> students) {
@@ -288,9 +289,16 @@ public class Top3FrameAnim {
                 //画名字和金币数量
                 if (entity.isDrawName()) {
                     String gold = "+" + entity.getGold();
+                    if (!isGold) {
+                        gold = entity.getScore() + "分";
+                    }
                     View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout.layout_live_stand_red_mine2, null);
                     ImageView iv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.iv_livevideo_redpackage_num);
-                    iv_livevideo_redpackage_num.setImageResource(R.drawable.bg_live_stand_red_gold_big);
+                    if (!isGold) {
+                        iv_livevideo_redpackage_num.setVisibility(View.GONE);
+                    } else {
+                        iv_livevideo_redpackage_num.setImageResource(R.drawable.bg_live_stand_red_gold_big);
+                    }
                     TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_name);
                     tv_livevideo_redpackage_name.setText("" + entity.getNickname());
                     TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);

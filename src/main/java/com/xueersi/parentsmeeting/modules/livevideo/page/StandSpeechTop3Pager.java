@@ -43,6 +43,7 @@ public class StandSpeechTop3Pager extends BasePager {
     @Override
     public void initData() {
         top3FrameAnim = new Top3FrameAnim(mContext, iv_livevideo_speecteval_result_top3, stuHeadBitmap, frameAnimations);
+        top3FrameAnim.setGold(false);
         top3FrameAnim.start(new FrameAnimation.AnimationListener() {
             @Override
             public void onAnimationStart() {
