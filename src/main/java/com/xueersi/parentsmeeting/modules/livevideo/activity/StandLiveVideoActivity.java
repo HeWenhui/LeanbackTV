@@ -300,7 +300,9 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
 
         //公开表扬,只有直播有
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
-            rankBll.initView(bottomContent, lp);
+            if (rankBll != null) {
+                rankBll.initView(bottomContent, lp);
+            }
         }
         videoChatBll.initView(bottomContent);
         //点名
@@ -432,9 +434,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
 //        liveMediaControllerBottom = new LiveMediaControllerBottom(this, mMediaController, this);
         liveMediaControllerBottom = new LiveStandMediaControllerBottom(this, mMediaController, this);
         liveMediaControllerBottom.setVisibility(View.INVISIBLE);
-        if (LiveTopic.MODE_CLASS.equals(mode)) {
-            liveMediaControllerBottom.onModeChange(mode);
-        }
+        liveMediaControllerBottom.onModeChange(mode);
         liveMessageBll = new LiveMessageBll(this, liveType);
         liveMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
         questionBll = new QuestionBll(this, vStuCourseID);
@@ -483,9 +483,9 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         englishH5CoursewareBll.setLiveBll(mLiveBll);
         englishH5CoursewareBll.initData();
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
-            rankBll = new RankBll(this);
-            rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
-            rankBll.setLiveBll(mLiveBll);
+//            rankBll = new RankBll(this);
+//            rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
+//            rankBll.setLiveBll(mLiveBll);
             englishH5Cache = new EnglishH5Cache(this, mLiveBll, mVSectionID);
 //            englishH5Cache = new EnglishH5CacheZip(this, mLiveBll, mVSectionID);
         }

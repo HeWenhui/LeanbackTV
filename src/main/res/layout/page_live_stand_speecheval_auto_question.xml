@@ -47,33 +47,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true">
 
-                <RelativeLayout
-                    android:id="@id/rl_livevideo_speecteval_error"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="18dp"
-                    android:gravity="center_horizontal"
-                    android:visibility="invisible">
-
-                    <ImageView
-                        android:id="@id/iv_livevideo_speecteval_error"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/bg_livevideo_speecteval_error" />
-
-                    <TextView
-                        android:id="@id/tv_livevideo_speecteval_error"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="5dp"
-                        android:layout_toRightOf="@id/iv_livevideo_speecteval_error"
-                        android:textColor="#ff3333"
-                        android:textSize="12sp" />
-                </RelativeLayout>
-
             </RelativeLayout>
 
         </RelativeLayout>

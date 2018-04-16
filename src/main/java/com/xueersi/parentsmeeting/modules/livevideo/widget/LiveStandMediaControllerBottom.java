@@ -63,7 +63,6 @@ public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBotto
         removeAllViews();
         inflateLayout();
         findViewItems();
-        getBtMessageFlowers().setVisibility(GONE);
     }
 
     @Override
