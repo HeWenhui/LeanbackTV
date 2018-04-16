@@ -89,44 +89,22 @@
     <RelativeLayout
         android:id="@id/rl_livevideo_speecteval_tip"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="48.2dp"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@id/iv_livevideo_speecteval_tip_pao"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/iv_livevideo_speecteval_tip"
-            android:layout_alignLeft="@id/iv_livevideo_speecteval_tip"
-            android:layout_alignRight="@id/tv_livevideo_speecteval_tip"
-            android:layout_marginBottom="29.3dp"
-            android:layout_marginLeft="50dp"
-            android:background="@drawable/bg_livevideo_speecteval_tip_paopao"
-            android:visibility="gone" />
+        android:layout_height="wrap_content"
+        android:layout_above="@id/rl_livevideo_voiceans_content"
+        android:layout_centerHorizontal="true"
+        android:visibility="visible">
 
         <TextView
             android:id="@id/tv_livevideo_speecteval_tip"
             style="@style/text_font12_ff4343_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/iv_livevideo_speecteval_tip_pao"
-            android:layout_alignTop="@id/iv_livevideo_speecteval_tip_pao"
-            android:layout_toRightOf="@id/iv_livevideo_speecteval_tip"
-            android:gravity="center_vertical"
-            android:paddingLeft="5dp"
+            android:background="@drawable/live_stand_answer_voice_caution"
+            android:gravity="center"
+            android:paddingLeft="15dp"
             android:paddingRight="7dp"
             android:text="语音输入有点小问题，请先手动答题哦（1131)"
-            android:visibility="gone" />
-
-        <ImageView
-            android:id="@id/iv_livevideo_speecteval_tip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="17dp"
-            android:src="@drawable/bg_livevideo_speecteval_tip2"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
     </RelativeLayout>
 

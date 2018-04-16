@@ -90,8 +90,6 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     LinearLayout ll_livevideo_voiceans_team_right;
     /** 错误提示 */
     RelativeLayout rlSpeectevalTip;
-    /** 错误提示-图片 */
-    ImageView ivSpeectevalTip;
     /** 错误提示-文字 */
     TextView tvSpeectevalTip;
     /** 波形 */
@@ -330,7 +328,6 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         ll_livevideo_voiceans_team_left = view.findViewById(R.id.ll_livevideo_voiceans_team_left);
         ll_livevideo_voiceans_team_right = view.findViewById(R.id.ll_livevideo_voiceans_team_right);
         rlSpeectevalTip = (RelativeLayout) view.findViewById(R.id.rl_livevideo_speecteval_tip);
-        ivSpeectevalTip = (ImageView) view.findViewById(R.id.iv_livevideo_speecteval_tip);
         tvSpeectevalTip = (TextView) view.findViewById(R.id.tv_livevideo_speecteval_tip);
         iv_livevideo_speecteval_wave = view.findViewById(R.id.iv_livevideo_speecteval_wave);
         ivVoiceansSwitch = view.findViewById(R.id.iv_livevideo_voiceans_switch);
@@ -537,7 +534,6 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
             questionSwitch.stopSpeech(VoiceAnswerStandPager.this, baseVideoQuestionEntity);
         } else {
             rlSpeectevalTip.setVisibility(View.VISIBLE);
-            ivSpeectevalTip.setImageResource(R.drawable.bg_livevideo_speecteval_tip3);
             tvSpeectevalTip.setText(count + "秒后自动提交");
             tvSpeectevalTip.setTag("200");
             tvSpeectevalTip.postDelayed(autoUploadRunnable, 1000);
@@ -609,7 +605,6 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
             return;
         } else if (resultEntity.getErrorNo() == ResultCode.NO_AUTHORITY) {
             rlSpeectevalTip.setVisibility(View.VISIBLE);
-            ivSpeectevalTip.setImageResource(R.drawable.bg_livevideo_speecteval_tip1);
             tvSpeectevalTip.setText("麦克风不可用，\n快去检查一下");
             tvSpeectevalTip.setTag("3");
 //            tvSpeectevalError.setText("好像没网了，快检查一下");
@@ -625,12 +620,10 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
             int netWorkType = NetWorkHelper.getNetWorkState(mContext);
             if (netWorkType == NetWorkHelper.NO_NETWORK) {
                 rlSpeectevalTip.setVisibility(View.VISIBLE);
-                ivSpeectevalTip.setImageResource(R.drawable.bg_livevideo_speecteval_tip1);
                 tvSpeectevalTip.setText("好像没网了，\n快检查一下");
                 tvSpeectevalTip.setTag("100");
             } else {
                 rlSpeectevalTip.setVisibility(View.VISIBLE);
-                ivSpeectevalTip.setImageResource(R.drawable.bg_livevideo_speecteval_tip1);
                 tvSpeectevalTip.setText("服务器连接不上，\n切换手动答题");
                 tvSpeectevalTip.setTag("4");
 //            tvSpeectevalError.setText("好像没网了，快检查一下");
@@ -645,7 +638,6 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
             }
         } else {
             rlSpeectevalTip.setVisibility(View.VISIBLE);
-            ivSpeectevalTip.setImageResource(R.drawable.bg_livevideo_speecteval_tip1);
             tvSpeectevalTip.setText("语音输入有点小问题，\n先手动答题哦（" + resultEntity.getErrorNo() + ")");
             tvSpeectevalTip.setTag("5");
             mView.postDelayed(new Runnable() {
@@ -885,6 +877,14 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         saveVideoFile = new File(dir, "ise" + System.currentTimeMillis() + ".mp3");
         listener.saveVideoFile = saveVideoFile;
         mIse.startEnglishEvaluatorOffline(assess_ref.toString(), saveVideoFile.getPath(), multRef, listener);
+    }
+
+    private void errorSetVisible() {
+        rlSpeectevalTip.setVisibility(View.VISIBLE);
+    }
+
+    private void errorSetGone() {
+        rlSpeectevalTip.setVisibility(View.GONE);
     }
 
     static class ScoreAndIndex {
