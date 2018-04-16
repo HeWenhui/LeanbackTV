@@ -206,7 +206,13 @@ public class LiveStandAchievementBll implements StarInteractAction {
     }
 
     private void setGoldCount() {
+        if (goldCount > 999) {
+            goldCount = 999;
+        }
         lottieAnimationView.setGoldCount(goldCount);
+        if (starCount > 999) {
+            starCount = 999;
+        }
         lottieAnimationView.setStarCount(starCount);
 //        String num = "" + goldCount;
 //        AssetManager manager = activity.getAssets();

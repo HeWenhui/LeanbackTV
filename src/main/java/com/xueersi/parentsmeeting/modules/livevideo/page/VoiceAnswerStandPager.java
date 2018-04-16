@@ -93,9 +93,9 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     /** 错误提示-文字 */
     TextView tvSpeectevalTip;
     /** 认真些，再来一次吧 */
-    int errorTip1 = R.drawable.live_stand_answer_voice_caution;
+    int errorTip1 = R.drawable.live_stand_answer_voice_caution_01;
     /** 声音有点小，再来一次哦！ */
-    int errorTip2 = R.drawable.live_stand_answer_voice_caution;
+    int errorTip2 = R.drawable.live_stand_answer_voice_caution_02;
     /** 波形 */
     ImageView iv_livevideo_speecteval_wave;
     /** 答题切换 */

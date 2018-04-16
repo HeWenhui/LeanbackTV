@@ -102,9 +102,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     /** 错误提示-文字 */
     TextView tvSpeectevalTip;
     /** 认真些，再来一次吧 */
-    private int errorTip1 = R.drawable.live_stand_answer_voice_caution;
+    private int errorTip1 = R.drawable.live_stand_answer_voice_caution_01;
     /** 声音有点小，再来一次哦！ */
-    private int errorTip2 = R.drawable.live_stand_answer_voice_caution;
+    private int errorTip2 = R.drawable.live_stand_answer_voice_caution_02;
     int timeCount = 1;
     /** 评测成功 */
     private boolean speechSuccess = false;

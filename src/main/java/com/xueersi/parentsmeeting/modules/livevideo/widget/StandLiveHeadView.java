@@ -154,6 +154,8 @@ public class StandLiveHeadView extends LottieAnimationView {
     }
 
     public void updateHeadUrl() {
+        Bitmap headBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+        updateHead(headBitmap);
         ImageLoader.with(getContext()).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
             @Override
             public void onSuccess(Drawable drawable) {

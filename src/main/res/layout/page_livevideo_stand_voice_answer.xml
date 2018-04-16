@@ -104,11 +104,9 @@
             style="@style/text_font12_ff4343_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/live_stand_answer_voice_caution"
             android:gravity="center"
             android:paddingLeft="35dp"
             android:paddingRight="7dp"
-            android:text="语音输入有点小问题，请先手动答题哦（1131)"
             android:visibility="visible" />
 
     </RelativeLayout>

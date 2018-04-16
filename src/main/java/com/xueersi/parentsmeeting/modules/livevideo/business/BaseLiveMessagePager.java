@@ -613,6 +613,11 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     }
 
     @Override
+    public void onOtherDisable(String id, String name, boolean disable) {
+
+    }
+
+    @Override
     public void videoStatus(final String status) {
         if (dvMessageDanmaku != null) {
             mView.post(new Runnable() {

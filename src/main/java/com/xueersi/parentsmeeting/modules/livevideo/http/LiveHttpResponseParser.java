@@ -89,6 +89,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     LiveGetInfo.MainTeacherInfo mainTeacherInfo = getInfo.getMainTeacherInfo();
                     mainTeacherInfo.setTeacherId(mainTeacherInfos.optString("teacherId"));
                     mainTeacherInfo.setTeacherImg(mainTeacherInfos.optString("teacherImg"));
+                    mainTeacherInfo.setTeacherName(mainTeacherInfos.optString("teacherName"));
                 } catch (Exception e) {
                     MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.mainTeacherInfos", e.getMessage());
                 }

@@ -552,6 +552,11 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
+        if (sender.startsWith("t")) {
+            sender = "主讲老师";
+        } else if (sender.startsWith("f")) {
+            sender = "辅导老师";
+        }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);
     }
 

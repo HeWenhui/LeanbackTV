@@ -1122,6 +1122,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             if (mRoomAction != null) {
                                 mRoomAction.onDisable(disable, true);
                             }
+                        } else {
+                            if (mRoomAction != null) {
+                                String name = object.optString("name");
+                                mRoomAction.onOtherDisable(id, name, disable);
+                            }
                         }
                         msg += ",disable=" + disable + ",id=" + id + "," + mIRCMessage.getNickname();
                     }
@@ -1262,14 +1267,14 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 } catch (Exception e) {
 
                                 }
-                                mRoomAction.onMessage(target, name, "", "", object.getString("msg"), teacherImg);
+                                mRoomAction.onMessage(target, sourceNick, "", "", object.getString("msg"), teacherImg);
                             } else {
                                 name = "辅导老师";
                                 String teamId = mGetInfo.getStudentLiveInfo().getTeamId();
                                 String to = object.optString("to", "All");
                                 if ("All".equals(to) || teamId.equals(to)) {
                                     String teacherIMG = mGetInfo.getTeacherIMG();
-                                    mRoomAction.onMessage(target, name, "", "", object.getString("msg"), teacherIMG);
+                                    mRoomAction.onMessage(target, sourceNick, "", "", object.getString("msg"), teacherIMG);
                                 }
                             }
                         }

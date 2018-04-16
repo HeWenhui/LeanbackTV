@@ -416,6 +416,13 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
     }
 
     @Override
+    public void onOtherDisable(String id, String name, boolean disable) {
+        if (mLiveMessagePager != null) {
+            mLiveMessagePager.onOtherDisable(id, name, disable);
+        }
+    }
+
+    @Override
     public void onopenchat(boolean openchat, String mode, boolean fromNotice) {
         this.openchat = openchat;
         this.mode = mode;

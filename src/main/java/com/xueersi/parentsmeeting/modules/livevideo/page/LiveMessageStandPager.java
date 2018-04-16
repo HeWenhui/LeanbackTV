@@ -243,6 +243,15 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         btMesOpen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!liveBll.openchat()) {
+                    XESToastUtils.showToast(mContext, "已关闭聊天区");
+                    return;
+                } else {
+                    if (liveBll.isDisable()) {
+                        addMessage("提示", LiveMessageEntity.MESSAGE_TIP, "你被老师禁言了，请联系老师解除禁言！", "");
+                        return;
+                    }
+                }
                 if (btMesOpenAnimation != null) {
                     btMesOpenAnimation.pauseAnimation();
                 }
@@ -317,7 +326,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                                 lastSendMsg = System.currentTimeMillis();
                                 onTitleShow(true);
                             } else {
-                                XESToastUtils.showToast(mContext, "你已被禁言!");
+//                                XESToastUtils.showToast(mContext, "你已被禁言!");
+                                addMessage("提示", LiveMessageEntity.MESSAGE_TIP, "你被老师禁言了，请联系老师解除禁言！", "");
                             }
                         } else {
                             //暂时去掉3秒发言，信息提示
@@ -887,6 +897,11 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
+        if (sender.startsWith("t")) {
+            sender = getInfo.getMainTeacherInfo().getTeacherName();
+        } else if (sender.startsWith("f")) {
+            sender = getInfo.getTeacherName();
+        }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);
     }
 
@@ -957,25 +972,42 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             public void run() {
                 if (disable) {
                     XESToastUtils.showToast(mContext, "你被老师禁言了");
-                    btMesOpen.setAlpha(0.4f);
-                    btMesOpen.setEnabled(false);
-                    ((ViewGroup) mView).getChildAt(0).setVisibility(View.GONE);
+//                    btMesOpen.setAlpha(0.4f);
+//                    btMesOpen.setEnabled(false);
+//                    ((ViewGroup) mView).getChildAt(0).setVisibility(View.GONE);
+                    addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, "你被老师禁言了，不能发言，请认真听课！", "");
 //                    btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                 } else {
                     if (fromNotice) {
-                        XESToastUtils.showToast(mContext, "老师解除了你的禁言");
+//                        XESToastUtils.showToast(mContext, "老师解除了你的禁言");
+                        addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, "老师解除了你的禁言，注意文明讨论！", "");
                     }
                     if (liveBll.openchat()) {
-                        btMesOpen.setAlpha(1.0f);
-                        btMesOpen.setEnabled(true);
-                        ((ViewGroup) mView).getChildAt(0).setVisibility(View.VISIBLE);
+//                        btMesOpen.setAlpha(1.0f);
+//                        btMesOpen.setEnabled(true);
+//                        ((ViewGroup) mView).getChildAt(0).setVisibility(View.VISIBLE);
 //                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     } else {
-                        btMesOpen.setAlpha(0.4f);
-                        btMesOpen.setEnabled(false);
-                        ((ViewGroup) mView).getChildAt(0).setVisibility(View.GONE);
+//                        btMesOpen.setAlpha(0.4f);
+//                        btMesOpen.setEnabled(false);
+//                        ((ViewGroup) mView).getChildAt(0).setVisibility(View.GONE);
 //                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onOtherDisable(String id, final String name, final boolean disable) {
+        mView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (disable) {
+                    addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, "老师禁言了" + name + "，请大家文明讨论！", "");
+//                    btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
+                } else {
+                    addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, "老师解除了" + name + "的禁言，请大家文明讨论！", "");
                 }
             }
         });
@@ -987,19 +1019,19 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (liveBll.isDisable()) {
-                    btMesOpen.setAlpha(0.4f);
-                    btMesOpen.setEnabled(false);
+//                    btMesOpen.setAlpha(0.4f);
+//                    btMesOpen.setEnabled(false);
                     ((ViewGroup) mView).getChildAt(0).setVisibility(View.GONE);
 //                    btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                 } else {
                     if (openchat) {
-                        btMesOpen.setAlpha(1.0f);
-                        btMesOpen.setEnabled(true);
+//                        btMesOpen.setAlpha(1.0f);
+//                        btMesOpen.setEnabled(true);
                         ((ViewGroup) mView).getChildAt(0).setVisibility(View.VISIBLE);
 //                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     } else {
-                        btMesOpen.setAlpha(0.4f);
-                        btMesOpen.setEnabled(false);
+//                        btMesOpen.setAlpha(0.4f);
+//                        btMesOpen.setEnabled(false);
                         ((ViewGroup) mView).getChildAt(0).setVisibility(View.GONE);
 //                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     }
@@ -1185,9 +1217,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     public void onGetMyGoldDataEvent(String goldNum) {
         this.goldNum = goldNum;
-        tvMessageGold.setText(goldNum);
-        tvMessageGold.setVisibility(View.VISIBLE);
-        tvMessageGoldLable.setVisibility(View.VISIBLE);
+//        tvMessageGold.setText(goldNum);
+//        tvMessageGold.setVisibility(View.VISIBLE);
+//        tvMessageGoldLable.setVisibility(View.VISIBLE);
     }
 
     // 03.16 模拟读取历史聊天记录
