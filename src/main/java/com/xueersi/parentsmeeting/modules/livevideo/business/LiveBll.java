@@ -52,7 +52,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
-import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.xesalib.umsagent.UmsAgent;
 import com.xueersi.xesalib.umsagent.UmsAgentManager;
@@ -182,7 +181,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /** 校准系统时间 */
     private long sysTimeOffset;
 
-    public LiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form) {
+    public LiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form, LiveGetInfo liveGetInfo) {
         super(context);
         this.vStuCourseID = vStuCourseID;
         this.courseId = courseId;
@@ -199,7 +198,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 + ".txt"));
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
-        mLiveTopic.setMode(LiveTopic.MODE_CLASS);
+        if (liveGetInfo != null) {
+            mLiveTopic.setMode(liveGetInfo.getMode());
+        }
     }
 
     public LiveBll(Context context, String vSectionID, int type, int form) {

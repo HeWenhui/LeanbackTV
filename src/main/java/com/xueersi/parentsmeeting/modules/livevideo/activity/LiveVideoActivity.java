@@ -55,7 +55,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackAction;
-import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBllOld;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
@@ -382,7 +381,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         from = intent.getIntExtra(ENTER_ROOM_FROM, 0);
         XesMobAgent.enterLiveRoomFrom(from);
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {// 直播
-            mLiveBll = new LiveBll(this, vStuCourseID, courseId, mVSectionID, from);
+            mLiveBll = new LiveBll(this, vStuCourseID, courseId, mVSectionID, from, null);
         } else if (liveType == LiveBll.LIVE_TYPE_LECTURE) {
             mLiveBll = new LiveBll(this, mVSectionID, liveType, from);
         } else if (liveType == LiveBll.LIVE_TYPE_TUTORIAL) {// 辅导

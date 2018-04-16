@@ -25,7 +25,6 @@ import android.widget.Toast;
 import com.tal.speech.language.TalLanguage;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.business.AppBll;
-import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.event.AppEvent;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
@@ -49,7 +48,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLazyBllCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveReceiveGold;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandSpeechCreat;
@@ -232,14 +230,13 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         }
         Loger.d(TAG, "onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-        final LiveGetInfo getInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
-        if (getInfo != null) {
-            mode = getInfo.getMode();
+        if (mGetInfo != null) {
+            mode = mGetInfo.getMode();
         }
         initAllBll();
         Loger.d(TAG, "onVideoCreate:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
+        initView();
         liveStandFrameAnim.check(mLiveBll, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
@@ -252,8 +249,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
                     ViewGroup group = (ViewGroup) rl_live_stand_update.getParent();
                     group.removeView(rl_live_stand_update);
                 }
-                initView();
-                mLiveBll.getInfo(getInfo);
+                mLiveBll.getInfo(mGetInfo);
             }
         });
         Loger.d(TAG, "onVideoCreate:time3=" + (System.currentTimeMillis() - before));
@@ -418,7 +414,9 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         from = intent.getIntExtra(ENTER_ROOM_FROM, 0);
         XesMobAgent.enterLiveRoomFrom(from);
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {// 直播
-            mLiveBll = new LiveBll(this, vStuCourseID, courseId, mVSectionID, from);
+            String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+            mGetInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
+            mLiveBll = new LiveBll(this, vStuCourseID, courseId, mVSectionID, from, mGetInfo);
         } else if (liveType == LiveBll.LIVE_TYPE_LECTURE) {
             mLiveBll = new LiveBll(this, mVSectionID, liveType, from);
         } else if (liveType == LiveBll.LIVE_TYPE_TUTORIAL) {// 辅导

@@ -75,6 +75,7 @@ public class LiveStandFrameAnim {
                 //activity_video_live_stand_check
                 ViewStub vs_live_stand_update = activity.findViewById(R.id.vs_live_stand_update);
                 View view = vs_live_stand_update.inflate();
+//                view.setVisibility(View.INVISIBLE);
                 view.findViewById(R.id.iv_live_stand_update_back).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -90,6 +91,7 @@ public class LiveStandFrameAnim {
             //activity_video_live_stand_check
             ViewStub vs_live_stand_update = activity.findViewById(R.id.vs_live_stand_update);
             final View view = vs_live_stand_update.inflate();
+//            view.setVisibility(View.INVISIBLE);
             view.findViewById(R.id.iv_live_stand_update_back).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -172,6 +174,9 @@ public class LiveStandFrameAnim {
 
             @Override
             protected void onDownloading(int progress) {
+                if (rl_live_stand_update_prog.getVisibility() != View.VISIBLE) {
+                    rl_live_stand_update_prog.setVisibility(View.VISIBLE);
+                }
                 progress = progress / 2;
                 pb_live_stand_update.setProgress(progress);
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) pb_live_stand_update.getLayoutParams();
@@ -206,6 +211,9 @@ public class LiveStandFrameAnim {
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
             if (values.length == 1) {
+                if (rl_live_stand_update_prog.getVisibility() != View.VISIBLE) {
+                    rl_live_stand_update_prog.setVisibility(View.VISIBLE);
+                }
                 float progress = (50 + (float) values[0] * 100f / (float) max / 2);
                 Loger.d(TAG, "onProgressUpdate:progress=" + ((float) values[0] * 100f / (float) max));
                 pb_live_stand_update.setProgress((int) progress);

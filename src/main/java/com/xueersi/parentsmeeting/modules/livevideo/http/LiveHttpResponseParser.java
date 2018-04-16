@@ -135,6 +135,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 getInfo.setStudentLiveInfo(studentLiveInfoEntity);
                 int mode = studentLiveInfo.optInt("mode", 0);
                 liveTopic.setMode(mode == 0 ? LiveTopic.MODE_TRANING : LiveTopic.MODE_CLASS);
+                getInfo.setMode(liveTopic.getMode());
             }
             if (liveType == LiveBll.LIVE_TYPE_LIVE) {
                 JSONArray teamStuIdArray = data.optJSONArray("teamStuIds");
