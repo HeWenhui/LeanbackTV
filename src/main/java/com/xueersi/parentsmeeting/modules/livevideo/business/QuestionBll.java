@@ -479,6 +479,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             mData.put("ish5test", "" + videoQuestionLiveEntity.isTestUseH5);
             umsAgentDebug(questionEventId, mData);
         }
+        this.videoQuestionLiveEntity = videoQuestionLiveEntity;
         if (IS_SCIENCE && !"4".equals(videoQuestionLiveEntity.type)) {//不是语音评测
             if (videoQuestionLiveEntity.isTestUseH5) {
                 mVPlayVideoControlHandler.post(new Runnable() {
@@ -497,7 +498,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 });
                 return;
             }
-            this.videoQuestionLiveEntity = videoQuestionLiveEntity;
         }
         mVPlayVideoControlHandler.post(new Runnable() {
 
@@ -1795,7 +1795,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             public void run() {
                 mLiveAutoNoticeBll.getAutoNotice(isForce, 0);
             }
-        }, (int)(7000+Math.random()*4000));
+        }, (int) (7000 + Math.random() * 4000));
 
     }
 }
