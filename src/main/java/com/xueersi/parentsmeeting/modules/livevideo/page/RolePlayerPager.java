@@ -156,6 +156,18 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         vwvSpeechVolume.setColors(colors);
         vwvSpeechVolume.setBackColor(Color.TRANSPARENT);
         rlResult = view.findViewById(R.id.rl_live_roleplayer_result_main);
+        view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View view) {
+
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View view) {
+                mReadHandler.removeMessages(READ_MESSAGE);
+                mRolePlayBll.realease();
+            }
+        });
         return view;
     }
 

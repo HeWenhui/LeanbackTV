@@ -125,6 +125,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     public void teacherPushTest(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
         mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this);
+        mRolePlayerPager.initData();
         bottomContent.addView(mRolePlayerPager.getRootView());
     }
 
@@ -138,7 +139,10 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
     @Override
     public void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
-
+        if (mWebSocket != null && mWebSocket.isOpen()) {
+            mWebSocket.close();
+            mWebSocket = null;
+        }
     }
 
     /**
@@ -149,6 +153,11 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             return;
         }
         isBeginConnWebSocket = true;
+
+        if (mWebSocket != null && mWebSocket.isOpen()) {
+            mWebSocket.close();
+        }
+        mWebSocket = null;
 
         if (mWebSocket == null) {
             mWebSocket = new WebSocketConn();
@@ -323,6 +332,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             mRolePlayerHttpManager.requestRolePlayTestInfos(mLiveId, mStuCouId, mRolePlayerEntity.getTestId(), new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                    Loger.i("RolePlayerDemoTest", responseEntity.getJsonObject().toString());
                     mRolePlayerHttpResponseParser.parserRolePlayTestInfos(responseEntity, mRolePlayerEntity);
                 }
             });
@@ -412,4 +422,9 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         }
     }
 
+    public void realease() {
+        if (mWebSocket != null && mWebSocket.isOpen()) {
+            mWebSocket.close();
+        }
+    }
 }
