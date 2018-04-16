@@ -3,6 +3,7 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
+        android:id="@id/rl_live_stand_message_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -67,11 +68,6 @@
             android:layout_below="@id/rl_livevideo_star_content"
             android:layout_toRightOf="@id/rl_livevideo_info"
             android:visibility="visible" />
-
-        <com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveLottieAnimationView
-            android:id="@id/lav_livevideo_chievement"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
 
         <RelativeLayout
             android:id="@id/rl_livevideo_message_panelcontent"
@@ -175,6 +171,11 @@
             android:layout_toLeftOf="@id/rl_livevideo_info" />
 
     </RelativeLayout>
+
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveLottieAnimationView
+        android:id="@id/lav_livevideo_chievement"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <Button
         android:id="@id/bt_livevideo_message_open"

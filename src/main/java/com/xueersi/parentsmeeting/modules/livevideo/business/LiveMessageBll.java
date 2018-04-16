@@ -469,9 +469,9 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
     }
 
     @Override
-    public void onShow(boolean isShow) {
+    public void onQuestionShow(boolean isShow) {
         if (mLiveMessagePager != null) {
-            mLiveMessagePager.onShow(isShow);
+            mLiveMessagePager.onQuestionShow(isShow);
         }
     }
 }

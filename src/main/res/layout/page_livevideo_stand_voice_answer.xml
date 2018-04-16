@@ -31,17 +31,22 @@
 
         </RelativeLayout>
 
-        <ImageView
-            android:id="@id/iv_livevideo_voiceans_team_mine"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignBottom="@id/lav_livevideo_voiceans_team_mine"
             android:layout_alignLeft="@id/lav_livevideo_voiceans_team_mine"
             android:layout_alignRight="@id/lav_livevideo_voiceans_team_mine"
-            android:layout_alignTop="@id/lav_livevideo_voiceans_team_mine"
-            android:scaleType="fitXY"
-            android:src="@drawable/bg_live_stand_speect_mine_light"
-            android:visibility="invisible" />
+            android:layout_alignTop="@id/lav_livevideo_voiceans_team_mine">
+
+            <ImageView
+                android:id="@id/iv_livevideo_voiceans_team_mine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/bg_live_stand_speect_mine_light"
+                android:visibility="invisible" />
+        </RelativeLayout>
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@id/lav_livevideo_voiceans_team_mine"
@@ -92,7 +97,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/rl_livevideo_voiceans_content"
         android:layout_centerHorizontal="true"
-        android:visibility="visible">
+        android:visibility="invisible">
 
         <TextView
             android:id="@id/tv_livevideo_speecteval_tip"
@@ -101,7 +106,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/live_stand_answer_voice_caution"
             android:gravity="center"
-            android:paddingLeft="15dp"
+            android:paddingLeft="35dp"
             android:paddingRight="7dp"
             android:text="语音输入有点小问题，请先手动答题哦（1131)"
             android:visibility="visible" />

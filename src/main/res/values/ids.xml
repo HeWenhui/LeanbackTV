@@ -475,6 +475,7 @@
     <item name="iv_live_mark_point_delete" type="id" />
     <item name="v_live_mark_point_sig" type="id" />
     <!--站立直播标题-->
+    <item name="rl_live_stand_message_content" type="id" />
     <item name="iv_live_stand_title_red" type="id" />
     <item name="tv_live_stand_title_time" type="id" />
     <item name="lav_livevideo_chievement" type="id" />

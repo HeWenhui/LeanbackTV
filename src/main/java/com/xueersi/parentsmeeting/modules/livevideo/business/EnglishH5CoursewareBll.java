@@ -31,7 +31,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
@@ -48,10 +47,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE1;
-import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE2;
-import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE4;
 
 /**
  * Created by linyuqiang on 2017/3/25.
@@ -245,7 +240,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 if ("on".equals(status)) {
                     if (!isAnaswer) {
                         for (QuestionShowAction questionShowAction : questionShowActions) {
-                            questionShowAction.onShow(true);
+                            questionShowAction.onQuestionShow(true);
                         }
                     }
                     isAnaswer = true;
@@ -291,7 +286,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 } else {
                     if (isAnaswer) {
                         for (QuestionShowAction questionShowAction : questionShowActions) {
-                            questionShowAction.onShow(false);
+                            questionShowAction.onQuestionShow(false);
                         }
                     }
                     isAnaswer = false;

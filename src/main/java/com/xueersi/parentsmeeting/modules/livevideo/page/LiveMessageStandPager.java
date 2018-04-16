@@ -1206,14 +1206,16 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     }
 
     @Override
-    public void onShow(final boolean isShow) {
+    public void onQuestionShow(final boolean isShow) {
         mView.post(new Runnable() {
             @Override
             public void run() {
                 if (isShow) {
-                    mView.setVisibility(View.GONE);
+                    mView.findViewById(R.id.rl_live_stand_message_content).setVisibility(View.GONE);
+                    btMesOpen.setVisibility(View.GONE);
                 } else {
-                    mView.setVisibility(View.VISIBLE);
+                    mView.findViewById(R.id.rl_live_stand_message_content).setVisibility(View.VISIBLE);
+                    btMesOpen.setVisibility(View.VISIBLE);
                 }
             }
         });

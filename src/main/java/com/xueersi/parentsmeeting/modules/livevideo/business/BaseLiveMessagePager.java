@@ -608,7 +608,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     }
 
     @Override
-    public void onShow(boolean isShow) {
+    public void onQuestionShow(boolean isShow) {
 
     }
 

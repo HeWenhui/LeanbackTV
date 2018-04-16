@@ -417,7 +417,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             mLogtf.d("showQuestion:noQuestion");
             if (isAnaswer) {
                 for (QuestionShowAction questionShowAction : questionShowActions) {
-                    questionShowAction.onShow(false);
+                    questionShowAction.onQuestionShow(false);
                 }
             }
             isAnaswer = false;
@@ -461,7 +461,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         mVideoQuestionLiveEntity = videoQuestionLiveEntity;
         if (!isAnaswer) {
             for (QuestionShowAction questionShowAction : questionShowActions) {
-                questionShowAction.onShow(true);
+                questionShowAction.onQuestionShow(true);
             }
         }
         isAnaswer = true;
@@ -772,7 +772,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         Loger.i("=====questionbll  question stop");
         if (isAnaswer) {
             for (QuestionShowAction questionShowAction : questionShowActions) {
-                questionShowAction.onShow(false);
+                questionShowAction.onQuestionShow(false);
             }
         }
         isAnaswer = false;

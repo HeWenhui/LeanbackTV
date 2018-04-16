@@ -5,5 +5,5 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
  * 互动题隐藏消失监听
  */
 public interface QuestionShowAction {
-    void onShow(boolean isShow);
+    void onQuestionShow(boolean isShow);
 }
