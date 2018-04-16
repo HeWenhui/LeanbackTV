@@ -293,7 +293,8 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         // 播放下一个按钮不显示
         mMediaController.setPlayNextVisable(false);
         // 设置速度按钮显示
-//        mMediaController.setSetSpeedVisable(true);
+        mMediaController.setSetSpeedVisable(true);
+        mMediaController.setShareVisible(false);
         setFileName(); // 设置视频显示名称
         showLongMediaController();
         if (mIsShowQuestion || mIsShowDialog) {
@@ -545,18 +546,18 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //                redPackageStandBll.onReadPackage(Integer.parseInt(mRedPacketId));
             }
         }
-        lectureLivePlayBackBll.getExperienceMsgs(mVideoEntity.getLiveId(), mVideoEntity.getClassId(), 0L, new ExperienceLiveVideoActivity.GetExperienceLiveMsgs() {
-
-            @Override
-            public void getLiveExperienceMsgs(ExPerienceLiveMessage liveMessageGroupEntity) {
-                Loger.d(TAG, "getLiveExperienceMsgs");
-            }
-
-            @Override
-            public void onPmFailure() {
-                Loger.d(TAG, "onPmFailure");
-            }
-        });
+//        lectureLivePlayBackBll.getExperienceMsgs(mVideoEntity.getLiveId(), mVideoEntity.getClassId(), 0L, new ExperienceLiveVideoActivity.GetExperienceLiveMsgs() {
+//
+//            @Override
+//            public void getLiveExperienceMsgs(ExPerienceLiveMessage liveMessageGroupEntity) {
+//                Loger.d(TAG, "getLiveExperienceMsgs");
+//            }
+//
+//            @Override
+//            public void onPmFailure() {
+//                Loger.d(TAG, "onPmFailure");
+//            }
+//        });
     }
 
     @Override

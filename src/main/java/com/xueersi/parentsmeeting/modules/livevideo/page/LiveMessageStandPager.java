@@ -89,6 +89,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     private String TAG = "LiveMessageStandPager";
     /** 聊天，默认开启 */
     private Button btMesOpen;
+    /** 左侧聊天区 */
+    private View rl_live_stand_message_content;
     FrameAnimation btMesOpenAnimation;
     /** 献花，默认关闭 */
     private Button btMessageFlowers;
@@ -167,6 +169,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                 .rl_livevideo_message_panelroot);
         ivExpressionCancle = (ImageView) mView.findViewById(R.id.iv_livevideo_message_expression_cancle);
         btMesOpen = mView.findViewById(R.id.bt_livevideo_message_open);
+        rl_live_stand_message_content = mView.findViewById(R.id.rl_live_stand_message_content);
         InputStream inputStream = null;
         try {
             inputStream = mContext.getAssets().open("live_stand/frame_anim/openmsg/message_open_00074.png");
@@ -974,7 +977,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                     XESToastUtils.showToast(mContext, "你被老师禁言了");
 //                    btMesOpen.setAlpha(0.4f);
 //                    btMesOpen.setEnabled(false);
-//                    ((ViewGroup) mView).getChildAt(0).setVisibility(View.GONE);
                     addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, "你被老师禁言了，不能发言，请认真听课！", "");
 //                    btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                 } else {
@@ -982,17 +984,15 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //                        XESToastUtils.showToast(mContext, "老师解除了你的禁言");
                         addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, "老师解除了你的禁言，注意文明讨论！", "");
                     }
-                    if (liveBll.openchat()) {
+//                    if (liveBll.openchat()) {
 //                        btMesOpen.setAlpha(1.0f);
 //                        btMesOpen.setEnabled(true);
-//                        ((ViewGroup) mView).getChildAt(0).setVisibility(View.VISIBLE);
 //                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
-                    } else {
+//                    } else {
 //                        btMesOpen.setAlpha(0.4f);
 //                        btMesOpen.setEnabled(false);
-//                        ((ViewGroup) mView).getChildAt(0).setVisibility(View.GONE);
 //                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
-                    }
+//                    }
                 }
             }
         });
@@ -1021,27 +1021,29 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                 if (liveBll.isDisable()) {
 //                    btMesOpen.setAlpha(0.4f);
 //                    btMesOpen.setEnabled(false);
-                    ((ViewGroup) mView).getChildAt(0).setVisibility(View.GONE);
+//                    rl_live_stand_message_content.setVisibility(View.GONE);
 //                    btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                 } else {
                     if (openchat) {
 //                        btMesOpen.setAlpha(1.0f);
 //                        btMesOpen.setEnabled(true);
-                        ((ViewGroup) mView).getChildAt(0).setVisibility(View.VISIBLE);
+                        rl_live_stand_message_content.setVisibility(View.VISIBLE);
+                        btMesOpen.setVisibility(View.VISIBLE);
 //                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     } else {
 //                        btMesOpen.setAlpha(0.4f);
 //                        btMesOpen.setEnabled(false);
-                        ((ViewGroup) mView).getChildAt(0).setVisibility(View.GONE);
+                        rl_live_stand_message_content.setVisibility(View.GONE);
+                        btMesOpen.setVisibility(View.GONE);
 //                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     }
-                    if (fromNotice) {
-                        if (LiveTopic.MODE_CLASS.equals(mode)) {
-                            XESToastUtils.showToast(mContext, "主讲老师" + (openchat ? "打开" : "关闭") + "了聊天区");
-                        } else {
-                            XESToastUtils.showToast(mContext, "辅导老师" + (openchat ? "打开" : "关闭") + "了聊天区");
-                        }
-                    }
+//                    if (fromNotice) {
+//                        if (LiveTopic.MODE_CLASS.equals(mode)) {
+//                            XESToastUtils.showToast(mContext, "主讲老师" + (openchat ? "打开" : "关闭") + "了聊天区");
+//                        } else {
+//                            XESToastUtils.showToast(mContext, "辅导老师" + (openchat ? "打开" : "关闭") + "了聊天区");
+//                        }
+//                    }
                 }
             }
         });
@@ -1243,10 +1245,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (isShow) {
-                    mView.findViewById(R.id.rl_live_stand_message_content).setVisibility(View.GONE);
+                    rl_live_stand_message_content.setVisibility(View.GONE);
                     btMesOpen.setVisibility(View.GONE);
                 } else {
-                    mView.findViewById(R.id.rl_live_stand_message_content).setVisibility(View.VISIBLE);
+                    rl_live_stand_message_content.setVisibility(View.VISIBLE);
                     btMesOpen.setVisibility(View.VISIBLE);
                 }
             }
