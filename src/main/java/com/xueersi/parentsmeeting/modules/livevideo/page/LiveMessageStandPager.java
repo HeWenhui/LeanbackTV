@@ -550,7 +550,11 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                         standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
 //                        entity.setHeadUrl(getInfo.getHeadImgPath());
                         standLiveHeadView.setName(entity.getSender());
-                        standLiveHeadView.setHead(entity.getHeadUrl());
+                        if (LiveMessageEntity.MESSAGE_TIP == entity.getType()) {
+                            standLiveHeadView.setHeadSys();
+                        } else {
+                            standLiveHeadView.setHead(entity.getHeadUrl());
+                        }
                         if (!entity.isPlayAnimation()) {
                             entity.setPlayAnimation(true);
                             standLiveHeadView.playAnimation();
