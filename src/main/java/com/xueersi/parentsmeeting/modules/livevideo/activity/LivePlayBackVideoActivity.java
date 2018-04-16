@@ -96,6 +96,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPage
 import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.FloatPermissionManager;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.business.VideoBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VideoActivity;
@@ -132,8 +134,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import floatwindow.xishuang.float_lib.FloatWindowManager;
-import floatwindow.xishuang.float_lib.permission.FloatPermissionManager;
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /**
@@ -2783,6 +2783,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         }
         // 04.03 从支付页面跳转回来的重新加载
         if("Back".equals(event.getMin())){
+            FloatWindowManager.hide();
             ViewGroup parents = (ViewGroup)videoView.getParent();
             if(parents != null){
                 parents.removeView(videoView);
@@ -2799,6 +2800,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
     private void createRealVideo(String courseId,String classId){
         boolean isPermission = FloatPermissionManager.getInstance().applyFloatWindow(this);
+
         //有对应权限或者系统版本小于7.0
         if (isPermission || Build.VERSION.SDK_INT < 24) {
             mParent = (ViewGroup)videoView.getParent();

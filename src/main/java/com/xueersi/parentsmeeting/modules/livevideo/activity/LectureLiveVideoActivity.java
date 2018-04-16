@@ -55,8 +55,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.FloatPermissionManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
@@ -78,8 +80,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import floatwindow.xishuang.float_lib.FloatWindowManager;
-import floatwindow.xishuang.float_lib.permission.FloatPermissionManager;
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile.liveBll;
@@ -1248,6 +1248,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         }
         // 04.03 从支付页面跳转回来的重新加载
         if("Back".equals(event.getMin())){
+            FloatWindowManager.hide();
             ViewGroup parents = (ViewGroup)videoView.getParent();
             if(parents != null){
                 parents.removeView(videoView);
