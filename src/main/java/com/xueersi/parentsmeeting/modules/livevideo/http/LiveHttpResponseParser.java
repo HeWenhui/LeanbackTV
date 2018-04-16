@@ -561,6 +561,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     GoldTeamStatus.Student student = new GoldTeamStatus.Student();
                     String stuId2 = stu.getString("stuId");
                     student.setMe(stuid.equals(stuId2));
+                    if (student.isMe()) {
+                        continue;
+                    }
                     student.setStuId(stuId2);
                     student.setName(stu.optString("name"));
                     student.setNickname(stu.getString("nickname"));
@@ -708,7 +711,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         student.setName(stu.optString("name"));
                         student.setNickname(stu.getString("nickname"));
                         student.setScore(stu.optString("score", "0"));
-                        student.setScore(stu.optString("gold"));
                         avatar_path = stu.getString("avatar_path");
                         student.setAvatar_path(avatar_path);
                         entity.getStudents().add(student);
@@ -752,7 +754,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         student.setName(stu.optString("name"));
                         student.setNickname(stu.getString("nickname"));
                         student.setScore(stu.optString("score", "0"));
-                        student.setScore(stu.optString("gold"));
                         avatar_path = stu.getString("avatar_path");
                         student.setAvatar_path(avatar_path);
                         entity.getStudents().add(student);

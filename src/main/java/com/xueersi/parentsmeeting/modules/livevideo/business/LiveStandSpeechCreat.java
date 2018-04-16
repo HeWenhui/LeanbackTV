@@ -4,7 +4,9 @@ import android.content.Context;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechAssAutoPager;
 
 import java.util.Map;
@@ -21,13 +23,24 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
     }
 
     @Override
-    public BaseSpeechAssessmentPager create(Context context, String liveid, String testId, String nonce, String content,
-                                            int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, String userName, String headUrl, String learning_stage) {
+    public BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String testId, String nonce, String content,
+                                                  int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, String userName, String headUrl, String learning_stage) {
         speechEvalAction = new LiveStandSpeechEvalActionImpl(speechEvalAction);
         StandSpeechAssAutoPager speechAssAutoPager =
                 new StandSpeechAssAutoPager(context, liveid, testId, nonce,
                         content, (int) time, haveAnswer, speechEvalAction, userName, headUrl, learning_stage);
         return speechAssAutoPager;
+    }
+
+    @Override
+    public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, String testId,
+                                                    String nonce,
+                                                    SpeechEvalAction speechEvalAction, String stuCouId) {
+        SpeechAssessmentWebPager speechAssessmentPager = new SpeechAssessmentWebPager(context,
+                liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
+                true, nonce, speechEvalAction, stuCouId, false);
+        speechAssessmentPager.setStandingLive(true);
+        return speechAssessmentPager;
     }
 
     @Override

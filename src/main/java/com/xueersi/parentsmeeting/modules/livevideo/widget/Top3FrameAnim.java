@@ -59,6 +59,7 @@ public class Top3FrameAnim {
 
     public void start(final FrameAnimation.AnimationListener animationListener, final ArrayList<GoldTeamStatus.Student> students) {
         final int size = students.size();
+        Loger.d(TAG, "start:size=" + size);
         if (size < 3) {
             for (int i = size; i < 3; i++) {
                 GoldTeamStatus.Student student = new GoldTeamStatus.Student();
@@ -186,7 +187,7 @@ public class Top3FrameAnim {
             canvasBitmap.setDensity(160);
             Canvas canvas = new Canvas(canvasBitmap);
             Paint paint = new Paint();
-            paint.setColor(Color.CYAN);
+            paint.setColor(Color.WHITE);
             canvas.drawRect(0, 0, bitmap.getWidth(), bitmap.getHeight(), paint);
             float[] headWidth = {110f, 98f, 98f};
             int mid = bitmap.getWidth() / 2;

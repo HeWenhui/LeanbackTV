@@ -106,6 +106,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
     private final int RECORD_WITE = 11000;
     String stuCouId;
     boolean IS_SCIENCE;
+    private boolean isStandingLive = false;
     // private AudioPlayerManager mAudioPlayerManager;
 
     public SpeechAssessmentWebPager(Context context, String liveid, String testId, String stuId, boolean isLive,
@@ -151,6 +152,10 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
         return view;
     }
 
+    public void setStandingLive(boolean standingLive) {
+        isStandingLive = standingLive;
+    }
+
     @Override
     public void initData() {
         addJavascriptInterface();
@@ -172,6 +177,9 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
             url += "&stuCouId=" + stuCouId;
         } else {
             url += "?stuCouId=" + stuCouId;
+        }
+        if (isStandingLive) {
+            url += "&isStandingLive=1";
         }
         wvSubjectWeb.loadUrl(url);
     }

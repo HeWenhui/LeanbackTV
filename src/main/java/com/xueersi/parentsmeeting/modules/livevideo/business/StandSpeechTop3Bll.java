@@ -62,10 +62,10 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
 
     @Override
     public void onStopSpeech(BaseSpeechAssessmentPager speechAssessmentPager, String num) {
+        stop = true;
         if (entity == null) {
             return;
         }
-        stop = true;
         initTop();
     }
 

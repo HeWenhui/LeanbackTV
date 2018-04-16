@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -1021,8 +1022,16 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                             Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
                             Canvas canvas = new Canvas(creatBitmap);
                             canvas.drawBitmap(headBack, 0, 0, null);
-                            int left = headBack.getWidth() / 2 - headBitmap.getWidth() / 2;
-                            canvas.drawBitmap(headBitmap, left, left, null);
+
+                            float scaleWidth = (float) (headBack.getWidth() - 10) / (float) headBitmap.getWidth();
+                            Matrix matrix = new Matrix();
+                            matrix.postScale(scaleWidth, scaleWidth);
+                            Bitmap scalHeadBitmap = Bitmap.createBitmap(headBitmap, 0, 0, headBitmap.getWidth(), headBitmap.getHeight(), matrix, true);
+
+                            int left = (creatBitmap.getWidth() - scalHeadBitmap.getWidth()) / 2;
+                            int top = (creatBitmap.getHeight() - scalHeadBitmap.getHeight()) / 2;
+                            canvas.drawBitmap(scalHeadBitmap, left, top, null);
+                            scalHeadBitmap.recycle();
                             lottieAnimationView.updateBitmap("image_2", creatBitmap);
                             headBack.recycle();
                         } catch (IOException e) {

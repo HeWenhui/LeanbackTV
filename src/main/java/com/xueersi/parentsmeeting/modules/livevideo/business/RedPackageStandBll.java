@@ -135,6 +135,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                         VideoResultEntity entity = (VideoResultEntity) objData[0];
                         RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
                         redPackagePage.onGetPackage(entity);
+                        receiveGold.onReceiveGold();
                         if (clickPackage == 1) {
                             //结果页增加自己数据
                             MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
@@ -297,7 +298,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
                 onFinish();
-                if(errStatus==0){
+                if (errStatus == 0) {
                     if (getCount.get()) {
                         return;
                     }
