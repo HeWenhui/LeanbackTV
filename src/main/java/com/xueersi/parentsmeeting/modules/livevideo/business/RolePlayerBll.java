@@ -124,6 +124,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     @Override
     public void teacherPushTest(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
+        //拉取试题
+        requestTestInfos();
         mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this);
         mRolePlayerPager.initData();
         bottomContent.addView(mRolePlayerPager.getRootView());
@@ -139,6 +141,15 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
     @Override
     public void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
+        if (mWebSocket != null && mWebSocket.isOpen()) {
+            mWebSocket.close();
+            mWebSocket = null;
+        }
+        bottomContent.removeView(mRolePlayerPager.getRootView());
+    }
+
+    @Override
+    public void onGoToRobot() {
         if (mWebSocket != null && mWebSocket.isOpen()) {
             mWebSocket.close();
             mWebSocket = null;
@@ -190,6 +201,9 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     }
 
 
+    /**
+     * 心跳每隔10秒发一次
+     */
     private final int HERT_PING = 100;
     Handler mHertHandler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -209,6 +223,9 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         }
     };
 
+    /**
+     * 发送心跳
+     */
     private void hertPing() {
         if (mWebSocket != null && mWebSocket.isOpen()) {
             mHertHandler.removeMessages(HERT_PING);
@@ -241,6 +258,18 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     }
 
     /**
+     * webSocket连接成功
+     */
+    public void connectSuccess(int suid) {
+        if (suid != 0) {
+            mRolePlayerEntity = new RolePlayerEntity();
+            mRolePlayerEntity.setSelfRoleId(suid);
+            mRolePlayerEntity.setLiveId(Integer.parseInt(mLiveId));
+            hertPing();
+        }
+    }
+
+    /**
      * 正常的消息解析
      *
      * @param result
@@ -256,13 +285,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             switch (acid) {
                 case 1:
                     //边接成功，获取stuid
-                    int selfRoleId = msgObj.optInt("suid");
-                    if (selfRoleId != 0) {
-                        mRolePlayerEntity = new RolePlayerEntity();
-                        mRolePlayerEntity.setSelfRoleId(selfRoleId);
-                        mRolePlayerEntity.setLiveId(Integer.parseInt(mLiveId));
-                        hertPing();
-                    }
+                    connectSuccess(msgObj.optInt("suid"));
                     break;
                 case 2:
                     //心跳返回
@@ -310,7 +333,6 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                                 mRolePlayerEntity.getMapRoleHeadInfo().put(head.getRoleName(), head);
                                 mRolePlayerEntity.getLstRoleInfo().add(head);
                             }
-                            requestTestInfos();
                         }
                     }
                     break;
@@ -323,6 +345,14 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         }
 
     }
+
+    /**
+     * 收到分组信息
+     */
+    public void onRolePlayGroup() {
+
+    }
+
 
     /**
      * 获取分组信息后去请求试题

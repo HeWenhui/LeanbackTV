@@ -18,4 +18,7 @@ public interface RolePlayAction {
 
     /** 老师停止发题 */
     void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity);
+
+    /** 走人机RolePlay */
+    void onGoToRobot();
 }

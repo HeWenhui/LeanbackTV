@@ -387,23 +387,25 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 rlResult.setVisibility(View.GONE);
             }
         }, 3000);
-        mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLevelChannel() {
-            @Override
-            public void onLevelChannel(int leaveChannel) {
-                StableLogHashMap logHashMap = new StableLogHashMap("getLeaveChannel");
-                logHashMap.put("status", (leaveChannel == 0 ? "1" : "0"));
-                if (leaveChannel != 0) {
-                    logHashMap.put("errcode", "" + leaveChannel);
+        if(mWorkerThread!=null) {
+            mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLevelChannel() {
+                @Override
+                public void onLevelChannel(int leaveChannel) {
+                    StableLogHashMap logHashMap = new StableLogHashMap("getLeaveChannel");
+                    logHashMap.put("status", (leaveChannel == 0 ? "1" : "0"));
+                    if (leaveChannel != 0) {
+                        logHashMap.put("errcode", "" + leaveChannel);
+                    }
                 }
+            });
+            mWorkerThread.exit();
+            try {
+                mWorkerThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        });
-        mWorkerThread.exit();
-        try {
-            mWorkerThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            mWorkerThread = null;
         }
-        mWorkerThread = null;
     }
 
 

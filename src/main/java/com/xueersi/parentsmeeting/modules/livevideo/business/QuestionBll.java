@@ -623,8 +623,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 return;
                             }
                         }
+
                         if (rolePlayAction != null && id.equals(rolePlayAction.getQuestionId())) {
                             return;
+                        }
+                        if (rolePlayAction != null) {
+                            //走人机也通知多人的关掉WebSocket
+                            rolePlayAction.onGoToRobot();
                         }
                         speechAssessmentPager = new SpeechAssessmentWebPager(activity,
                                 liveGetInfo.getId(), id, liveGetInfo.getStuId(),
@@ -776,9 +781,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
         }
         isAnaswer = false;
-        if (rolePlayAction != null && videoQuestionLiveEntity != null) {
-            if (videoQuestionLiveEntity.id.equals(rolePlayAction.getQuestionId())) {
-                rolePlayAction.onStopQuestion(videoQuestionLiveEntity);
+        if (rolePlayAction != null && mVideoQuestionLiveEntity != null) {
+            if (mVideoQuestionLiveEntity.id.equals(rolePlayAction.getQuestionId())) {
+                rolePlayAction.onStopQuestion(mVideoQuestionLiveEntity);
             }
         }
         if (voiceAnswerPager != null) {
