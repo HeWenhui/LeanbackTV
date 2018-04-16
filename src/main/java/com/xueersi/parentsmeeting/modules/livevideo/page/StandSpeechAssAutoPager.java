@@ -49,6 +49,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
+import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
@@ -100,6 +101,10 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     RelativeLayout rlSpeectevalTip;
     /** 错误提示-文字 */
     TextView tvSpeectevalTip;
+    /** 认真些，再来一次吧 */
+    private int errorTip1 = R.drawable.live_stand_answer_voice_caution;
+    /** 声音有点小，再来一次哦！ */
+    private int errorTip2 = R.drawable.live_stand_answer_voice_caution;
     int timeCount = 1;
     /** 评测成功 */
     private boolean speechSuccess = false;
@@ -498,8 +503,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         }
         Random random = new Random();
         if (haveAnswer) {
-            errorSetVisible();
-            tvSpeectevalTip.setText("题目已作答");
+//            errorSetVisible();
+//            tvSpeectevalTip.setText("题目已作答");
         } else {
             mView.postDelayed(new Runnable() {
                 @Override
@@ -508,10 +513,10 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                         @Override
                         public void isAnswer(boolean answer) {
                             StandSpeechAssAutoPager.this.haveAnswer = answer;
-                            if (answer) {
-                                errorSetVisible();
-                                tvSpeectevalTip.setText("题目已作答");
-                            }
+//                            if (answer) {
+//                                errorSetVisible();
+//                                tvSpeectevalTip.setText("题目已作答");
+//                            }
                         }
                     });
                 }
@@ -532,7 +537,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         if (!isEnd) {
             if (score == 1) {
                 errorSetVisible();
-                tvSpeectevalTip.setText("要认真些，再来一次哦！");
+//                tvSpeectevalTip.setText("要认真些，再来一次哦！");
+                tvSpeectevalTip.setBackgroundResource(errorTip1);
                 mView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -543,7 +549,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 return;
             } else if (score < 60) {
                 errorSetVisible();
-                tvSpeectevalTip.setText("你可以说的更好，再来一次哦！");
+//                tvSpeectevalTip.setText("你可以说的更好，再来一次哦！");
+                tvSpeectevalTip.setBackgroundResource(errorTip1);
                 mView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -559,9 +566,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //            teamOnCompositionLoadedListener.updateScore(mContext, lav_livevideo_voiceans_team_mine, "" + resultEntity.getScore());
 //        }
         tvSpeectevalTip.removeCallbacks(autoUploadRunnable);
-        errorSetVisible();
-        tvSpeectevalTip.setTextColor(mContext.getResources().getColor(R.color.COLOR_6462A2));
-        tvSpeectevalTip.setText("录音上传中");
+//        errorSetVisible();
+//        tvSpeectevalTip.setTextColor(mContext.getResources().getColor(R.color.COLOR_6462A2));
+//        tvSpeectevalTip.setText("录音上传中");
         speechSuccess = true;
         List<PhoneScore> lstPhonemeScore = resultEntity.getLstPhonemeScore();
         String nbest = "";
@@ -835,7 +842,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         if (resultEntity.getErrorNo() == ResultCode.MUTE_AUDIO || resultEntity.getErrorNo() == ResultCode
                 .MUTE) {
 //                            XESToastUtils.showToast(mContext, "声音有点小，大点声哦！");
-            tvSpeectevalTip.setText("声音有点小，再来一次哦！");
+//            tvSpeectevalTip.setText("声音有点小，再来一次哦！");
+            tvSpeectevalTip.setBackgroundResource(errorTip2);
             if (!isEnd) {
                 mView.postDelayed(new Runnable() {
                     @Override
@@ -847,10 +855,12 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 return;
             }
         } else if (resultEntity.getErrorNo() == ResultCode.NO_AUTHORITY) {
-            tvSpeectevalTip.setText("麦克风不可用，快去检查一下");
+//            tvSpeectevalTip.setText("麦克风不可用，快去检查一下");
+            XESToastUtils.showToast(mContext, "麦克风不可用，快去检查一下");
         } else if (resultEntity.getErrorNo() == ResultCode.WEBSOCKET_TIME_OUT || resultEntity.getErrorNo() == ResultCode.NETWORK_FAIL
                 || resultEntity.getErrorNo() == ResultCode.WEBSOCKET_CONN_REFUSE) {
-            tvSpeectevalTip.setText("好像没网了，快检查一下");
+//            tvSpeectevalTip.setText("好像没网了，快检查一下");
+            XESToastUtils.showToast(mContext, "好像没网了，快检查一下");
             if (!SpeechEvaluatorUtils.isOfflineFail()) {
                 if (speechEvaluatorInter instanceof TalSpeech) {
                     onLineError++;
@@ -869,7 +879,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }
             }
         } else {
-            tvSpeectevalTip.setText("测评君罢工了，程序员哥哥会尽快修复（" + resultEntity.getErrorNo() + "）");
+//            tvSpeectevalTip.setText("测评君罢工了，程序员哥哥会尽快修复（" + resultEntity.getErrorNo() + "）");
+            XESToastUtils.showToast(mContext, "测评君罢工了，程序员哥哥会尽快修复（" + resultEntity.getErrorNo() + "）");
             if (!SpeechEvaluatorUtils.isOfflineFail()) {
                 if (speechEvaluatorInter instanceof TalSpeech) {
                     onLineError++;
@@ -1101,7 +1112,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     private Runnable autoUploadRunnable = new Runnable() {
         @Override
         public void run() {
-            tvSpeectevalTip.setText(count + "秒后自动提交");
+//            tvSpeectevalTip.setText(count + "秒后自动提交");
+//            XESToastUtils.showToast(mContext, count + "秒后自动提交");
             if (count > 0) {
                 tvSpeectevalTip.postDelayed(this, 1000);
             } else {
@@ -1127,8 +1139,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         if (!isSpeechStart || isSpeechError || isSpeechSuccess) {
             speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, id);
         } else {
-            errorSetVisible();
-            tvSpeectevalTip.setText(count + "秒后自动提交");
+//            errorSetVisible();
+//            tvSpeectevalTip.setText(count + "秒后自动提交");
+//            XESToastUtils.showToast(mContext, count + "秒后自动提交");
             tvSpeectevalTip.postDelayed(autoUploadRunnable, 1000);
             count--;
         }
@@ -1289,4 +1302,15 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             updateScore(mContext, lottieAnimationView, student.getScore());
         }
     }
+//    一些提示
+//    声音有点小，再来一次哦！
+//    认真些，再来一次吧
+//    麦克风不可用，快去检查一下
+//    好像没网了，快检查一下
+//    服务器连接不上，切换手动答题
+//    语音输入有点小问题，先手动答题哦（" + resultEntity.getErrorNo() + ")");
+//    认真些，\n再来一次吧(" + resultEntity.getCurStatus() + ")
+//    提交失败，请重读
+//    count + "秒后自动提交
+
 }

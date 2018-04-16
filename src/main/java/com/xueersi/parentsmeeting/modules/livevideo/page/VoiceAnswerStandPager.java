@@ -92,6 +92,10 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     RelativeLayout rlSpeectevalTip;
     /** 错误提示-文字 */
     TextView tvSpeectevalTip;
+    /** 认真些，再来一次吧 */
+    int errorTip1 = R.drawable.live_stand_answer_voice_caution;
+    /** 声音有点小，再来一次哦！ */
+    int errorTip2 = R.drawable.live_stand_answer_voice_caution;
     /** 波形 */
     ImageView iv_livevideo_speecteval_wave;
     /** 答题切换 */
@@ -492,7 +496,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     private Runnable autoUploadRunnable = new Runnable() {
         @Override
         public void run() {
-            tvSpeectevalTip.setText(count + "秒后自动提交");
+//            tvSpeectevalTip.setText(count + "秒后自动提交");
+//            XESToastUtils.showToast(mContext, count + "秒后自动提交");
             if (count > 0) {
                 tvSpeectevalTip.setTag("200");
                 tvSpeectevalTip.postDelayed(this, 1000);
@@ -532,9 +537,10 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         if (isSpeechError || isSpeechSuccess) {
             questionSwitch.stopSpeech(VoiceAnswerStandPager.this, baseVideoQuestionEntity);
         } else {
-            errorSetVisible();
-            tvSpeectevalTip.setText(count + "秒后自动提交");
-            tvSpeectevalTip.setTag("200");
+//            errorSetVisible();
+//            tvSpeectevalTip.setText(count + "秒后自动提交");
+//            tvSpeectevalTip.setTag("200");
+//            XESToastUtils.showToast(mContext, count + "秒后自动提交");
             tvSpeectevalTip.postDelayed(autoUploadRunnable, 1000);
             count--;
         }
@@ -586,7 +592,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         if (resultEntity.getErrorNo() == ResultCode.MUTE_AUDIO || resultEntity.getErrorNo() == ResultCode
                 .MUTE) {
             errorSetVisible();
-            tvSpeectevalTip.setText("声音有点小，\n再来一次哦！");
+//            tvSpeectevalTip.setText("声音有点小，\n再来一次哦！");
+            tvSpeectevalTip.setBackgroundResource(errorTip2);
 //            tvSpeectevalTip.setTag("2");
             mView.postDelayed(new Runnable() {
                 @Override
@@ -603,9 +610,10 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
             }, 1500);
             return;
         } else if (resultEntity.getErrorNo() == ResultCode.NO_AUTHORITY) {
-            errorSetVisible();
-            tvSpeectevalTip.setText("麦克风不可用，\n快去检查一下");
-            tvSpeectevalTip.setTag("3");
+//            errorSetVisible();
+//            tvSpeectevalTip.setText("麦克风不可用，\n快去检查一下");
+//            tvSpeectevalTip.setTag("3");
+            XESToastUtils.showToast(mContext, "麦克风不可用，\n快去检查一下");
 //            tvSpeectevalError.setText("好像没网了，快检查一下");
 //            mView.postDelayed(new Runnable() {
 //                @Override
@@ -618,13 +626,15 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 || resultEntity.getErrorNo() == ResultCode.WEBSOCKET_CONN_REFUSE) {
             int netWorkType = NetWorkHelper.getNetWorkState(mContext);
             if (netWorkType == NetWorkHelper.NO_NETWORK) {
-                errorSetVisible();
-                tvSpeectevalTip.setText("好像没网了，\n快检查一下");
-                tvSpeectevalTip.setTag("100");
+//                errorSetVisible();
+//                tvSpeectevalTip.setText("好像没网了，\n快检查一下");
+//                tvSpeectevalTip.setTag("100");
+                XESToastUtils.showToast(mContext, "好像没网了，\n快检查一下");
             } else {
-                errorSetVisible();
-                tvSpeectevalTip.setText("服务器连接不上，\n切换手动答题");
-                tvSpeectevalTip.setTag("4");
+//                errorSetVisible();
+//                tvSpeectevalTip.setText("服务器连接不上，\n切换手动答题");
+//                tvSpeectevalTip.setTag("4");
+                XESToastUtils.showToast(mContext, "服务器连接不上，\n切换手动答题");
 //            tvSpeectevalError.setText("好像没网了，快检查一下");
                 mView.postDelayed(new Runnable() {
                     @Override
@@ -636,9 +646,10 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 }, 1500);
             }
         } else {
-            errorSetVisible();
-            tvSpeectevalTip.setText("语音输入有点小问题，\n先手动答题哦（" + resultEntity.getErrorNo() + ")");
-            tvSpeectevalTip.setTag("5");
+//            errorSetVisible();
+//            tvSpeectevalTip.setText("语音输入有点小问题，\n先手动答题哦（" + resultEntity.getErrorNo() + ")");
+//            tvSpeectevalTip.setTag("5");
+            XESToastUtils.showToast(mContext, "语音输入有点小问题，\n先手动答题哦（" + resultEntity.getErrorNo() + ")");
             mView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -674,7 +685,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 Loger.d(TAG, "onResult(SUCCESS):scores=" + sss + ",rightIndex=" + rightIndex + ",rightCount=" + rightCount + ",isEnd=" + isEnd);
                 if (rightCount > 1) {
                     errorSetVisible();
-                    tvSpeectevalTip.setText("认真些，\n再来一次吧（" + resultEntity.getCurStatus() + ")");
+//                    tvSpeectevalTip.setText("认真些，\n再来一次吧（" + resultEntity.getCurStatus() + ")");
+                    tvSpeectevalTip.setBackgroundResource(errorTip1);
                     tvSpeectevalTip.setTag("6");
                     mView.postDelayed(new Runnable() {
                         @Override
@@ -729,10 +741,10 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                     questionSwitch.stopSpeech(VoiceAnswerStandPager.this, baseVideoQuestionEntity);
                                 } else {
                                     ivVoiceansSwitch.setVisibility(View.VISIBLE);
-//                                        XESToastUtils.showToast(mContext, "提交失败，请重读");
-                                    errorSetVisible();
-                                    tvSpeectevalTip.setText("提交失败，请重读");
-                                    tvSpeectevalTip.setTag("7");
+//                                    errorSetVisible();
+//                                    tvSpeectevalTip.setText("提交失败，请重读");
+//                                    tvSpeectevalTip.setTag("7");
+                                    XESToastUtils.showToast(mContext, "提交失败，请重读");
                                     mView.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
@@ -758,7 +770,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                     } else {
 //                        XESToastUtils.showToast(mContext, "重读");
                         errorSetVisible();
-                        tvSpeectevalTip.setText("认真些，\n再来一次吧(" + resultEntity.getCurStatus() + ")");
+//                        tvSpeectevalTip.setText("认真些，\n再来一次吧(" + resultEntity.getCurStatus() + ")");
+                        tvSpeectevalTip.setBackgroundResource(errorTip1);
                         tvSpeectevalTip.setTag("8");
                         mView.postDelayed(new Runnable() {
                             @Override
@@ -781,7 +794,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 Loger.d(TAG, "onResult(SUCCESS):score=" + score);
                 if (!isEnd && !isRight && resultEntity.getCurStatus() == 5) {
                     errorSetVisible();
-                    tvSpeectevalTip.setText("认真些，\n再来一次吧");
+//                    tvSpeectevalTip.setText("认真些，\n再来一次吧");
+                    tvSpeectevalTip.setBackgroundResource(errorTip1);
                     tvSpeectevalTip.setTag("9");
                     mView.postDelayed(new Runnable() {
                         @Override
@@ -1226,4 +1240,13 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 //            }
 //        }
 //    }
+//    一些提示
+//    count + "秒后自动提交");
+//    声音有点小，再来一次哦！");
+//    麦克风不可用，快去检查一下");
+//    好像没网了，快检查一下");
+//    测评君罢工了，程序员哥哥会尽快修复（" + resultEntity.getErrorNo() + "）");
+//    你可以说的更好，再来一次哦！");
+//    录音上传中");
+//    题目已作答");
 }
