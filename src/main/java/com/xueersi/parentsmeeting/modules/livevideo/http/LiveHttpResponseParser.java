@@ -243,6 +243,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 totalOpeningLength.speakingNum = getTotalOpeningLength.optInt("speaking_num", 0);
             }
             getInfo.setTotalOpeningLength(totalOpeningLength);
+            getInfo.setPattern(data.optInt("pattern", 1));
             return getInfo;
         } catch (JSONException e) {
             Loger.e(TAG, "parseLiveGetInfo", e);

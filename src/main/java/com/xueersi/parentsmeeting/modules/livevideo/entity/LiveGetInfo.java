@@ -141,6 +141,8 @@ public class LiveGetInfo {
     private String isShowCounselorWhisper;
     /** 是否有标记点功能 */
     private String isShowMarkPoint;
+    /** 1-普通直播，2-全身直播 */
+    private int pattern = 1;
 
     public String getIsShowMarkPoint() {
         return isShowMarkPoint;
@@ -625,6 +627,14 @@ public class LiveGetInfo {
 
     public void setMode(String mode) {
         this.mode = mode;
+    }
+
+    public int getPattern() {
+        return pattern;
+    }
+
+    public void setPattern(int pattern) {
+        this.pattern = pattern;
     }
 
     public ArrayList<String> getTeamStuIds() {
