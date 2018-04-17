@@ -1981,6 +1981,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
             if (!StringUtils.isEmpty(studentLiveInfo.getCourseId())) {
                 courseId = studentLiveInfo.getCourseId();
+                mHttpManager.addBodyParam("courseId", courseId);
             }
             if (!StringUtils.isEmpty(studentLiveInfo.getTeamId()) && !"0".equals(studentLiveInfo.getTeamId())) {
                 haveTeam = true;
@@ -2783,7 +2784,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             jsonObject.put("id", mGetInfo.getStuId());
             jsonObject.put("name", mGetInfo.getStuName());
             jsonObject.put("img", mGetInfo.getStuImg());
-            jsonObject.put("courseId", courseId);
+            jsonObject.put("courseid", courseId);
             jsonObject.put("nonce", nonce);
             jsonObject.put("times", mGetInfo.getStuLinkMicNum());
             if ("t".equals(from)) {
