@@ -907,12 +907,16 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
                     long now = System.currentTimeMillis() / 1000;
                     if (now < mGetInfo.getsTime()) {
                         ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_before);
+                        Loger.d(TAG, "onTeacherNotPresent:before");
                     } else if (now > mGetInfo.geteTime()) {
                         ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_after);
+                        Loger.d(TAG, "onTeacherNotPresent:after");
                     } else {
                         ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_before_doing);
+                        Loger.d(TAG, "onTeacherNotPresent:doing");
                     }
                 } else {
+                    Loger.d(TAG, "onTeacherNotPresent:mode=training");
                     ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
                 }
                 findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);

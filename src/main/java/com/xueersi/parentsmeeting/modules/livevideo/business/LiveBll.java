@@ -1238,6 +1238,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         mLogtf.d("onNotice:oldmode=" + mLiveTopic.getMode() + ",newmode=" + mode);
                         if (!(mLiveTopic.getMode().equals(mode))) {
                             mLiveTopic.setMode(mode);
+                            mGetInfo.setMode(mode);
                             if (mVideoAction != null) {
                                 boolean isPresent = isPresent(mode);
                                 mVideoAction.onModeChange(mode, isPresent);
