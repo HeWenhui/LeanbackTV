@@ -41,13 +41,14 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
                     head.setRoleName("角色");
                     head.setNickName("昵称");
                 }
+                if (head.isSelfRole()) {
+                    rolePlayerEntity.setSelfLastIndex(i);
+                }
                 RolePlayerEntity.RolePlayerMessage msg = new RolePlayerEntity.RolePlayerMessage(head, msgContent, maxTime);
                 //msg.setWebVoiceUrl(objMsg.optString("audio"));
                 msg.setPosition(i);
                 rolePlayerEntity.getLstRolePlayerMessage().add(msg);
             }
-
-
         } catch (Exception e) {
             MobAgent.httpResponseParserError(TAG, "parserRolePlayTestInfos", e.getMessage());
         }

@@ -33,4 +33,23 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testId", testId);
         sendPost(LiveVideoConfig.URL_ROLEPLAY_TESTINFOS, params, requestCallBack);
     }
+
+    /**
+     * 结果请求
+     *
+     * @param liveId
+     * @param testId
+     * @param roler
+     * @param answer
+     * @param requestCallBack
+     */
+    public void requestResult(String liveId, String testId, String roler, String answer, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("testId", testId);
+        params.addBodyParam("roler", roler);
+        params.addBodyParam("answers", answer);
+        params.setWriteAndreadTimeOut(5);
+        sendPost(LiveVideoConfig.URL_ROLEPLAY_RESULT, params, requestCallBack);
+    }
 }

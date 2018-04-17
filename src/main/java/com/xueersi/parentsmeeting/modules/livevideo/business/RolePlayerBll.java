@@ -7,6 +7,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
+import com.tal.speech.speechrecognizer.PhoneScore;
 import com.xueersi.parentsmeeting.base.BaseBll;
 import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.cloud.XesCloudUploadBusiness;
@@ -33,8 +34,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.Call;
 
 
 /**
@@ -106,7 +110,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         if (isHasVideo) {
             beginConWebSocket();
         } else {
-            new Handler().postDelayed(new Runnable() {
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (XesPermission.checkPermissionNoAlert(mContext, PermissionConfig.PERMISSION_CODE_AUDIO)) {
@@ -145,7 +149,12 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             mWebSocket.close();
             mWebSocket = null;
         }
-        bottomContent.removeView(mRolePlayerPager.getRootView());
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                bottomContent.removeView(mRolePlayerPager.getRootView());
+            }
+        });
     }
 
     @Override
@@ -311,6 +320,19 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                                 }
                             }
                             break;
+                        case 110:
+                            int position = msgObj.optInt("index");
+                            JSONObject obj = msgObj.optJSONObject("data");
+                            int totalScore = obj.optInt("totalScore");
+                            int fluency = obj.optInt("fluency");
+                            int accuracy = obj.optInt("accuracy");
+                            if (totalScore > 0 && position >= 0 && position < mRolePlayerEntity.getLstRolePlayerMessage().size()) {
+                                mRolePlayerEntity.getLstRolePlayerMessage().get(position).setSpeechScore(totalScore);
+                                mRolePlayerEntity.getLstRolePlayerMessage().get(position).setFluency(fluency);
+                                mRolePlayerEntity.getLstRolePlayerMessage().get(position).setAccuracy(accuracy);
+                            }
+
+
                     }
                     break;
                 case 2000:
@@ -346,13 +368,6 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
     }
 
-    /**
-     * 收到分组信息
-     */
-    public void onRolePlayGroup() {
-
-    }
-
 
     /**
      * 获取分组信息后去请求试题
@@ -373,6 +388,64 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      * 提交结果
      */
     public void requestResult() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("type", 1);
+            obj.put("roler", mRolePlayerEntity.getSelfRoleHead().getRoleName());
+            JSONArray arrAnswer = new JSONArray();
+            int i = 1;
+            for (RolePlayerEntity.RolePlayerMessage message : mRolePlayerEntity.getLstRolePlayerMessage()) {
+                JSONObject objAn = new JSONObject();
+                objAn.put("sentenceNum", i);
+                objAn.put("entranceTime", message.getMaxReadTime());
+                objAn.put("score", message.getSpeechScore());
+
+                if (message.getRolePlayer().isSelfRole()) {
+                    JSONObject objData = new JSONObject();
+                    objData.put("cont_score", message.getFluency());
+                    objData.put("pron_score", message.getAccuracy());
+                    objData.put("total_score", message.getSpeechScore());
+                    objData.put("level", message.getLevel());
+
+
+                    StringBuilder builder = new StringBuilder();
+                    for (PhoneScore phoneScore : message.getLstPhoneScore()) {
+                        builder.append(phoneScore.getWord() + ":" + phoneScore.getScore() + ",");
+                    }
+                    JSONArray arrNbest = new JSONArray();
+                    arrNbest.put(builder.toString());
+                    objData.put("nbest", arrNbest);
+                    objAn.put("alldata", objData);
+                } else {
+                    objAn.put("alldata", "");
+                }
+                arrAnswer.put(objAn);
+                i++;
+            }
+            obj.put("answers", arrAnswer);
+
+            mRolePlayerHttpManager.requestResult(mLiveId, mRolePlayerEntity.getTestId(), mRolePlayerEntity.getSelfRoleHead().getRoleName(), obj.toString(), new HttpCallBack() {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    int star = jsonObject.optInt("star");
+                    mRolePlayerEntity.setGoldCount(star);
+                    mRolePlayerPager.showResult();
+                }
+
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    super.onFailure(call, e);
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    super.onPmError(responseEntity);
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
     }
 

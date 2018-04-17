@@ -17,6 +17,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
+import com.xueersi.xesalib.utils.app.ContextManager;
+import com.xueersi.xesalib.utils.audio.safeaudioplayer.AudioPlayerManager;
+import com.xueersi.xesalib.utils.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.xesalib.utils.listener.OnAlphaTouchListener;
 
 
@@ -93,6 +96,30 @@ public class RolePlayerOtherItem extends RolePlayerItem {
     }
 
     private void voiceClick() {
+
+        //播放
+        AudioPlayerManager.get(ContextManager.getApplication()).start(mEntity.getWebVoiceUrl(), new PlayerCallback() {
+            @Override
+            public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
+            }
+
+            @Override
+            public void onStop(Object dataSource, AudioPlayerManager manager) {
+                super.onStop(dataSource, manager);
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
+            }
+
+            @Override
+            public void onPreparing(Object dataSource, AudioPlayerManager manager) {
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_other_voice_white_anim);
+                AnimationDrawable animationDrawable = null;
+                animationDrawable = (AnimationDrawable) ivVoiceAnimtor.getBackground();
+                if (animationDrawable != null && !animationDrawable.isRunning()) {
+                    animationDrawable.start();
+                }
+            }
+        });
 
         //播放网络音频
 //        if(mEntity.isVoiceIsplay()){

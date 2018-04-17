@@ -546,4 +546,10 @@
     <item name="rl_livevideo_roleplayer_bubble_dz" type="id" />
     <item name="rl_live_roleplayer_message_main" type="id" />
     <item name="tv_livevideo_roleplayer_bubble_message" type="id" />
+    <item name="tv_livevideo_roleplayer_result_dz_count" type="id" />
+    <item name="tv_livevideo_roleplayer_result_fluency" type="id" />
+    <item name="tv_livevideo_roleplayer_result_gold_count" type="id" />
+    <item name="tv_livevideo_roleplayer_result_accuracy" type="id" />
+    <item name="civ_livevideo_roleplayer_result_headimg" type="id" />
+    <item name="tv_livevideo_roleplayer_result_msgtip" type="id" />
 </resources>

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +19,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
+import com.xueersi.xesalib.utils.app.ContextManager;
+import com.xueersi.xesalib.utils.audio.safeaudioplayer.AudioPlayerManager;
+import com.xueersi.xesalib.utils.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.xesalib.utils.listener.OnAlphaTouchListener;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
@@ -79,13 +83,38 @@ public class RolePlayerSelfItem extends RolePlayerItem {
         vVoiceMain.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                voiceClick();
+                if (!TextUtils.isEmpty(mEntity.getWebVoiceUrl())) {
+                    voiceClick();
+                }
             }
         });
         //vVoiceMain.setOnTouchListener(new OnAlphaTouchListener());
     }
 
     private void voiceClick() {
+        //播放
+        AudioPlayerManager.get(ContextManager.getApplication()).start(mEntity.getWebVoiceUrl(), new PlayerCallback() {
+            @Override
+            public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+            }
+
+            @Override
+            public void onStop(Object dataSource, AudioPlayerManager manager) {
+                super.onStop(dataSource, manager);
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+            }
+
+            @Override
+            public void onPreparing(Object dataSource, AudioPlayerManager manager) {
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_self_voice_white_anim);
+                AnimationDrawable selfVoiceAnimationDrawable = null;
+                selfVoiceAnimationDrawable = (AnimationDrawable) ivVoiceAnimtor.getBackground();
+                if (selfVoiceAnimationDrawable != null && !selfVoiceAnimationDrawable.isRunning()) {
+
+                }
+            }
+        });
 //        if (mEntity.isVoiceIsplay()) {
 //            AudioPlayerManager.get(ContextManager.getApplication()).stop();
 //            AudioPlayerManager.get(ContextManager.getApplication()).setDataSource("");
@@ -162,7 +191,8 @@ public class RolePlayerSelfItem extends RolePlayerItem {
     }
 
     @Override
-    public void updateViews(final RolePlayerEntity.RolePlayerMessage entity, int position, Object objTag) {
+    public void updateViews(final RolePlayerEntity.RolePlayerMessage entity,
+                            int position, Object objTag) {
         super.updateViews(entity, position, objTag);
         updateUserHeadImage(civUserHead, UserBll.getInstance().getMyUserInfoEntity()
                 .getHeadImg());
@@ -299,6 +329,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
     /**
      * 对音素分变色
      */
+
     private void speechPhoneScore() {
         String[] textArray;
         if (mEntity.getLstPhoneScore().isEmpty()) {
