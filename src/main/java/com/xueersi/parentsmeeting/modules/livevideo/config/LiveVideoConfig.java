@@ -130,6 +130,8 @@ public class LiveVideoConfig {
     public static String URL_LIVE_DELETE_MARK_POINTS = AppConfig.HTTP_HOST+"/science/LiveCourse/deleteMarkpoint";
     /**体验课播放器上传心跳时间*/
     public static String URL_EXPERIENCE_LIVE_ONLINETIME = AppConfig.HTTP_HOST+"/science/AutoLive/visitTime";
+    /** 讲座直播获取更多课程*/
+    public static String URL_LECTURELIVE_MORE_COURSE = AppConfig.HTTP_HOST+"/LiveLecture/getAdCase";
     /** 更多课程数量的记录 */
     public static int MORE_COURSE;
 }

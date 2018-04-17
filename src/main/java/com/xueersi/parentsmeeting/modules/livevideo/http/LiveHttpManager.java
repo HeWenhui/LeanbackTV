@@ -854,7 +854,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("termId", termId);
         params.addBodyParam("hbTime", hbTime.toString());
         params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
-        setDefaultParameter(params);
         sendPost(LiveVideoConfig.URL_EXPERIENCE_LIVE_ONLINETIME, params, callBack);
     }
 
@@ -864,7 +863,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         setDefaultParameter(params);
-        sendPost("http://laoshi.xueersi.com/LiveLecture/getAdCase", params, requestCallBack);
+        sendPost(LiveVideoConfig.URL_LECTURELIVE_MORE_COURSE, params, requestCallBack);
     }
 
 
