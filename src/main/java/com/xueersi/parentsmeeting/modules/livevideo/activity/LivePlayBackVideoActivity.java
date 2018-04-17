@@ -247,6 +247,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     private CommonAdapter<MoreChoice.Choice> mCourseAdapter;
     private BroadcastReceiver receiver;
     private Handler mHandler;
+    private Boolean picinpic = false;
 
 
     @Override
@@ -2783,7 +2784,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         }
         // 04.03 从支付页面跳转回来的重新加载
         if("Back".equals(event.getMin())){
-            FloatWindowManager.hide();
             ViewGroup parents = (ViewGroup)videoView.getParent();
             if(parents != null){
                 parents.removeView(videoView);
@@ -2798,6 +2798,38 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        ViewGroup parents = (ViewGroup)videoView.getParent();
+        if(parents != null) {
+            parents.removeView(videoView);
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+            mParent.addView(videoView, params);
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if(picinpic){
+            ViewGroup parents = (ViewGroup)videoView.getParent();
+            if(parents != null) {
+                parents.removeView(videoView);
+                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+                mParent.addView(videoView, params);
+            }
+            picinpic = !picinpic;
+        }
+    }
+
+    /** 重新打开播放器的监听 */
+
+
     private void createRealVideo(String courseId,String classId){
         boolean isPermission = FloatPermissionManager.getInstance().applyFloatWindow(this);
 
@@ -2809,8 +2841,10 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             }
             //开启悬浮窗
             OtherModulesEnter.intentToOrderConfirmActivity(this,courseId+"-"+classId,100,"LectureLiveVideoActivity");
-            FloatWindowManager.addView(this,videoView);
+            FloatWindowManager.addView(this,videoView,2);
+            picinpic = true;
         }
+
     }
 
     private void showPopupwindowboard() {

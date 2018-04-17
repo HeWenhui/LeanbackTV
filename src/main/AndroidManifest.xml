@@ -7,6 +7,7 @@
             android:name=".activity.LivePlayBackVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
         <activity
@@ -42,7 +43,6 @@
         </activity>
         <service android:name="ren.yale.android.cachewebviewlib.CachePreLoadService">
         </service>
-        <service android:name="floatwindow.xishuang.float_lib.service.FloatMonkService"/>
     </application>
 
 </manifest>

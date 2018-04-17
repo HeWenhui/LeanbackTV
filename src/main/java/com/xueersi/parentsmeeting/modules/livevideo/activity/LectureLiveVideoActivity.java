@@ -177,6 +177,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     H5CoursewareBll h5CoursewareBll;
     LecAdvertBll lecAdvertAction;
 //    StarInteractBll starBll;
+    private Boolean picinpic = false;
     /**
      * 视频宽度
      */
@@ -575,10 +576,11 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 mParent.removeView(videoView);
             }
             //开启悬浮窗
-//            FloatActionController.getInstance().startMonkServer(this);
             OtherModulesEnter.intentToOrderConfirmActivity(this,courseId+"-"+classId,100,"LectureLiveVideoActivity");
-            FloatWindowManager.addView(this,videoView);
+            FloatWindowManager.addView(this,videoView,1);
+            picinpic = true;
         }
+
     }
 
 
@@ -1244,7 +1246,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         if("Order".equals(event.getMin())){
             createRealVideo(event.getCourseId(),event.getClassId());
             onPauseNotStopVideo = true;
-            Log.e("Duncan","Min");
         }
         // 04.03 从支付页面跳转回来的重新加载
         if("Back".equals(event.getMin())){
@@ -1257,6 +1258,36 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                         ViewGroup.LayoutParams.MATCH_PARENT);
                 mParent.addView(videoView,params);
             }
+        }
+
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        ViewGroup parents = (ViewGroup)videoView.getParent();
+        if(parents != null) {
+            parents.removeView(videoView);
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+            mParent.addView(videoView, params);
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if(picinpic){
+            ViewGroup parents = (ViewGroup)videoView.getParent();
+            if(parents != null) {
+                parents.removeView(videoView);
+                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+                mParent.addView(videoView, params);
+            }
+            picinpic = !picinpic;
         }
 
     }

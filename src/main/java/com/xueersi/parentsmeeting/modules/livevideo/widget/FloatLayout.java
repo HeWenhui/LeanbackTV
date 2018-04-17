@@ -11,6 +11,8 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity;
 
 /**
  * Author:xishuang
@@ -27,10 +29,12 @@ public class FloatLayout extends FrameLayout {
     private Context mContext;
     private long endTime;
     private RelativeLayout rl;
+    private int mType;
 
-    public FloatLayout(Context context) {
+    public FloatLayout(Context context,int type) {
         this(context, null);
         mContext = context;
+        mType = type;
     }
 
     public FloatLayout(Context context, AttributeSet attrs) {
@@ -80,11 +84,19 @@ public class FloatLayout extends FrameLayout {
         //响应点击事件
         if (isclick) {
 //            Toast.makeText(mContext, "返回直播", Toast.LENGTH_SHORT).show();
-            //创建Intent
-            Intent intent = new Intent();
-            intent.setAction("clicking");
-            //发送广播
-            mContext.sendBroadcast(intent);
+//            //创建Intent
+//            Intent intent = new Intent();
+//            intent.setAction("clicking");
+//            //发送广播
+//            mContext.sendBroadcast(intent);
+            /** type为1代表直播 type为2代表回放*/
+            Intent intent = null;
+            if(mType == 1){
+                intent = new Intent(mContext, LectureLiveVideoActivity.class);
+            }else{
+                intent = new Intent(mContext, LivePlayBackVideoActivity.class);
+            }
+            mContext.startActivity(intent);
         }
         return true;
     }
