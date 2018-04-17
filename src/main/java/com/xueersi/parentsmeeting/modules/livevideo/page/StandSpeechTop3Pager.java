@@ -25,7 +25,8 @@ public class StandSpeechTop3Pager extends BasePager {
     private Top3FrameAnim top3FrameAnim;
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
     private HashMap<String, Bitmap> stuHeadBitmap = new HashMap<>();
-    GoldTeamStatus entity;
+    private GoldTeamStatus entity;
+    private String id;
 
     public StandSpeechTop3Pager(Context context, GoldTeamStatus entity) {
         super(context);
@@ -38,6 +39,14 @@ public class StandSpeechTop3Pager extends BasePager {
         mView = View.inflate(mContext, R.layout.page_live_stand_speecheval_top3, null);
         iv_livevideo_speecteval_result_top3 = mView.findViewById(R.id.iv_livevideo_speecteval_result_top3);
         return mView;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override

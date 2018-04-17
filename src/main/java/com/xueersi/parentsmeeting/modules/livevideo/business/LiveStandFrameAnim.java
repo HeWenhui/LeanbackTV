@@ -158,9 +158,10 @@ public class LiveStandFrameAnim {
                 } else {
                     bps = String.format("%.2f", dspeed / 1024.0d) + " KB/s";
                 }
-                Loger.d(TAG, "onDownloadSuccess:bps=" + bps);
+                Loger.d(TAG, "onDownloadSuccess:bps=" + bps + ",downTime=" + downTime);
                 StableLogHashMap logHashMap = new StableLogHashMap();
                 logHashMap.put("bps", bps);
+                logHashMap.put("downTime", "" + downTime);
                 logHashMap.put("times", "" + times.get());
                 logHashMap.put("version", "" + version);
                 logHashMap.put("downloadsize", "" + downloadSize);

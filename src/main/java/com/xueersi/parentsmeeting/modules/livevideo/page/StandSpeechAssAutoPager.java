@@ -76,6 +76,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     public static boolean DEBUG = false;
     String eventId = LiveVideoConfig.LIVE_SPEECH_TEST2;
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
+    private ArrayList<GoldTeamStatus.Student> addStudents = new ArrayList<>();
     /** 语音保存位置 */
     private String id;
     ReadyGoImageView rgiv_livevideo_stand_readygo;
@@ -359,6 +360,13 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                             ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
                             for (int i = 0; i < students.size(); i++) {
                                 GoldTeamStatus.Student student = students.get(i);
+                                if (student.isMe()) {
+                                    continue;
+                                }
+                                if (addStudents.contains(student)) {
+                                    continue;
+                                }
+                                addStudents.add(student);
                                 LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
                                 String path = "live_stand_voice_team_right.json";
                                 lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/team_right");
@@ -424,7 +432,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                         }
 
                         private void onFinish() {
-                            if (isSpeechSuccess) {
+                            if (mView.getParent() == null) {
                                 return;
                             }
                             mView.postDelayed(r, 3000);
@@ -477,7 +485,6 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //                    resultEntity.setErrorNo(ResultCode.WEBSOCKET_TIME_OUT);
 //                    isSpeechError = true;
 //                    onEvaluatorError(resultEntity, this);
-                    onEvaluatorIng(resultEntity);
                 } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                     isSpeechError = true;
                     onEvaluatorError(resultEntity, this);
@@ -534,6 +541,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
     private void onEvaluatorSuccess(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {
         final int score = resultEntity.getScore();
+        Loger.d(TAG, "onEvaluatorSuccess:score=" + score + ",isEnd=" + isEnd);
         if (!isEnd) {
             if (score == 1) {
                 errorSetVisible();
@@ -627,7 +635,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     }
                 });
             } catch (JSONException e) {
-                e.printStackTrace();
+                Loger.e(TAG, "sendSpeechEvalResult2", e);
             }
         }
         rlSpeectevalEncourage.setVisibility(View.INVISIBLE);
@@ -724,6 +732,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         iv_livevideo_speecteval_wave.setVisibility(View.INVISIBLE);
         rlSpeectevalBg.setVisibility(View.GONE);
         rlSpeectevalBg.removeAllViews();
+
+        onSpeechEvalSuccessMe(resultEntity);
+
         int score = resultEntity.getScore();
         final RelativeLayout group = (RelativeLayout) mView;
         final View resultMine = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_stand_speech_mine, group, false);
@@ -917,7 +928,12 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         return FrameAnimation.createFromAees(mContext, iv_livevideo_speecteval_wave, path, 50, isRepeat);
     }
 
-    private void onEvaluatorIng(ResultEntity resultEntity) {
+    /**
+     * 在左下角显示自己分数
+     *
+     * @param resultEntity
+     */
+    private void onSpeechEvalSuccessMe(ResultEntity resultEntity) {
         if (lav_livevideo_voiceans_team_mine.getVisibility() == View.VISIBLE) {
             TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = (TeamOnCompositionLoadedListener) lav_livevideo_voiceans_team_mine.getTag();
             teamOnCompositionLoadedListener.updateScore(mContext, lav_livevideo_voiceans_team_mine, "" + resultEntity.getScore());

@@ -66,13 +66,19 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
         if (entity == null) {
             return;
         }
-        initTop();
+        initTop(num);
     }
 
-    private void initTop() {
+    private void initTop(String num) {
+        if (standSpeechTop3Pager != null && num.equals(standSpeechTop3Pager.getId())) {
+            return;
+        }
         standSpeechTop3Pager = new StandSpeechTop3Pager(bottomContent.getContext(), entity);
+        standSpeechTop3Pager.setId(num);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         bottomContent.addView(standSpeechTop3Pager.getRootView(), lp);
+        entity = null;
+        stop = false;
     }
 
 }

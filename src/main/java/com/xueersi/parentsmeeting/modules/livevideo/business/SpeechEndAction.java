@@ -9,6 +9,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPag
  * 语音评测结束事件
  */
 public interface SpeechEndAction {
+
     void examSubmitAll(BaseSpeechAssessmentPager speechAssessmentPager, String num);
 
     void initView(RelativeLayout bottomContent);

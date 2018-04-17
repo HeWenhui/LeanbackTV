@@ -233,10 +233,10 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                             ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
                             for (int i = 0; i < students.size(); i++) {
                                 final GoldTeamStatus.Student student = students.get(i);
-                                if (addStudents.contains(student)) {
+                                if (student.isMe()) {
                                     continue;
                                 }
-                                if (student.isMe()) {
+                                if (addStudents.contains(student)) {
                                     continue;
                                 }
                                 addStudents.add(student);
@@ -311,6 +311,9 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                         }
 
                         private void onFinish() {
+                            if (mView.getParent() == null) {
+                                return;
+                            }
                             mView.postDelayed(r, 3000);
                         }
                     });
