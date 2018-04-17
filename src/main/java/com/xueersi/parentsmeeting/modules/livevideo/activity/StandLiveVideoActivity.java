@@ -1186,7 +1186,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
      * @param modechange
      */
     public void rePlay(boolean modechange) {
-        if (mGetInfo == null) {//上次初始化尚未完成
+        if (mLiveBll.getGetInfo() == null) {//上次初始化尚未完成
             return;
         }
         if (startRemote.get()) {

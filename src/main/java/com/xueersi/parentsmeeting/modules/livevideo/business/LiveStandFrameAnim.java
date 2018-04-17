@@ -14,6 +14,8 @@ import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.http.BaseHttp;
 import com.xueersi.parentsmeeting.http.DownloadCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.file.FileUtils;
@@ -29,16 +31,19 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 站立直播资源下载
  */
 public class LiveStandFrameAnim {
+    String eventId = LiveVideoConfig.LIVE_STAND_RES_UPDATE;
     static String TAG = "LiveStandFrameAnim";
     Activity activity;
     public static String version = "2018041501";
-    String filePath = "/android_stand_live/" + version + "/frame_anim4.zip";
+    final String filePath = "/android_stand_live/" + version + "/frame_anim4.zip";
     /** 下载地址，阿里云 */
-    String aliyun = "http://xesftp.oss-cn-beijing.aliyuncs.com" + filePath;
+    final String aliyun = "http://xesftp.oss-cn-beijing.aliyuncs.com" + filePath;
     /** 下载地址，网校 */
-    String xuersi = "http://client.xesimg.com" + filePath;
+    final String xuersi = "http://client.xesimg.com" + filePath;
     /** 更新回调 */
     AbstractBusinessDataCallBack callBack;
+    long downloadStart;
+    long downloadSize = 117780122;
 
     public LiveStandFrameAnim(Activity activity) {
         this.activity = activity;
@@ -138,12 +143,28 @@ public class LiveStandFrameAnim {
         final ProgressBar pb_live_stand_update = view.findViewById(R.id.pb_live_stand_update);
         final RelativeLayout rl_live_stand_update_prog = view.findViewById(R.id.rl_live_stand_update_prog);
         final TextView tv_live_stand_update_prog = view.findViewById(R.id.tv_live_stand_update_prog);
+        downloadStart = System.currentTimeMillis();
         baseHttp.download(xuersi, tempFileZip.getPath(), new DownloadCallBack() {
             DownloadCallBack downloadCallBack = this;
 
             @Override
             protected void onDownloadSuccess() {
                 tempFileZip.renameTo(saveFileZip);
+                long downTime = (System.currentTimeMillis() - downloadStart) / 1000;
+                double dspeed = downloadSize / downTime;
+                String bps;
+                if (dspeed >= 1024 * 1024) {
+                    bps = String.format("%.2f", dspeed / 1024.0d / 1024.0d) + " MB/s";
+                } else {
+                    bps = String.format("%.2f", dspeed / 1024.0d) + " KB/s";
+                }
+                Loger.d(TAG, "onDownloadSuccess:bps=" + bps);
+                StableLogHashMap logHashMap = new StableLogHashMap();
+                logHashMap.put("bps", bps);
+                logHashMap.put("times", "" + times.get());
+                logHashMap.put("version", "" + version);
+                logHashMap.put("downloadsize", "" + downloadSize);
+                Loger.d(activity, eventId, logHashMap.getData(), true);
                 tv_live_stand_update_zip.setText("解压中");
                 StandLiveZipExtractorTask zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, activity, view, callBack, saveFile, saveFileTemp);
                 zipExtractorTask.execute();
@@ -158,6 +179,7 @@ public class LiveStandFrameAnim {
                         public void run() {
                             String url = urls[times.get() % urls.length];
                             Loger.d(TAG, "onDownloadFailed:times=" + times.get() + ",url=" + url);
+                            downloadStart = System.currentTimeMillis();
                             baseHttp.download(url, tempFileZip.getPath(), downloadCallBack);
                         }
                     }, 1000);
