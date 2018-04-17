@@ -111,7 +111,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  */
 public class StandLiveVideoActivity extends LiveVideoActivityBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest {
 
-    private String TAG = "LiveVideoActivityLog";
+    private String TAG = "StandLiveVideoActivity";
 
     {
         mLayoutVideo = R.layout.activity_video_live_stand;
@@ -903,25 +903,30 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
                     }
                 }
                 ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                if (LiveTopic.MODE_CLASS.equals(mode)) {
-                    long now = System.currentTimeMillis() / 1000;
-                    if (now < mGetInfo.getsTime()) {
-                        ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_before);
-                        Loger.d(TAG, "onTeacherNotPresent:before");
-                    } else if (now > mGetInfo.geteTime()) {
-                        ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_after);
-                        Loger.d(TAG, "onTeacherNotPresent:after");
-                    } else {
-                        ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_before_doing);
-                        Loger.d(TAG, "onTeacherNotPresent:doing");
-                    }
-                } else {
-                    Loger.d(TAG, "onTeacherNotPresent:mode=training");
-                    ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
-                }
+                setTeacherNotpresent();
                 findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
             }
         });
+    }
+
+    /** 设置老师不在直播间背景 */
+    private void setTeacherNotpresent() {
+        if (LiveTopic.MODE_CLASS.equals(mode)) {
+            long now = System.currentTimeMillis() / 1000;
+            if (now < mGetInfo.getsTime()) {
+                ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_before);
+                Loger.d(TAG, "setTeacherNotpresent:before");
+            } else if (now > mGetInfo.geteTime()) {
+                ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_after);
+                Loger.d(TAG, "setTeacherNotpresent:after");
+            } else {
+                ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_before_doing);
+                Loger.d(TAG, "setTeacherNotpresent:doing");
+            }
+        } else {
+            Loger.d(TAG, "setTeacherNotpresent:mode=training");
+            ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
+        }
     }
 
     @Override
@@ -1004,6 +1009,12 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
 //            redPackageBll.onReadPackage(1);
 //        }
         Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
+        postDelayedIfNotFinish(new Runnable() {
+            @Override
+            public void run() {
+                setFirstBackgroundVisible(View.VISIBLE);
+            }
+        }, 100);
     }
 
     private void initAchievement(String mode) {
@@ -1477,6 +1488,10 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         }
         if (visible == View.GONE) {
             ivTeacherNotpresent.setVisibility(View.GONE);
+        } else {
+            if (ivTeacherNotpresent.getVisibility() == View.VISIBLE) {
+                setTeacherNotpresent();
+            }
         }
     }
 

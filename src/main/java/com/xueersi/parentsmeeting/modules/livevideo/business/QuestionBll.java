@@ -1075,7 +1075,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     if (haveExam) {
                         setHaveExam(false);
                     } else if (haveSpeech) {
+                        BaseSpeechAssessmentPager oldSpeechAssessmentPager = speechAssessmentPager;
                         setHaveSpeech(false);
+                        if (oldSpeechAssessmentPager != null && speechEndAction != null) {
+                            speechEndAction.onStopSpeech(oldSpeechAssessmentPager, oldSpeechAssessmentPager.getId());
+                        }
                     } else {
                         setHaveWebQuestion(false);
                     }

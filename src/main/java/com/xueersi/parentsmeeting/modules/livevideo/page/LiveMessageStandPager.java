@@ -1248,8 +1248,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                     rl_live_stand_message_content.setVisibility(View.GONE);
                     btMesOpen.setVisibility(View.GONE);
                 } else {
-                    rl_live_stand_message_content.setVisibility(View.VISIBLE);
-                    btMesOpen.setVisibility(View.VISIBLE);
+                    if (liveBll.openchat()) {
+                        rl_live_stand_message_content.setVisibility(View.VISIBLE);
+                        btMesOpen.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         });
