@@ -2232,7 +2232,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 
     @Override
     public void removeBaseVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager) {
-        stopVoiceAnswerPager();
+
     }
 
     /** 回答问题结果提示框延迟三秒消失 */
