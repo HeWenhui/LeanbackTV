@@ -203,7 +203,7 @@ public class LiveAutoNoticeBll {
             int i = ShareDataManager.getInstance().getInt("LiveAutoNotice_" + liveId, -1, ShareDataManager.SHAREDATA_USER);
             showNotice(name, notice[(i + 1) % 4], head);
             //showNotice(name,parseEmoji("不要#1#说#2#脏话哦#3###"),head);
-            umsAgent(2, true);
+            umsAgent(3, true);
             ShareDataManager.getInstance().put("LiveAutoNotice_" + liveId, i + 1, ShareDataManager.SHAREDATA_USER);
             mHttpManager.autoNoticeStatisc(classId, new HttpCallBack(false) {
                 @Override
@@ -375,7 +375,7 @@ public class LiveAutoNoticeBll {
             } else if (type == 0) {
                 map.put("actiontype", "whisperencourage");
                 map.put("whisperreq", "success");
-            } else if (type == 2) {
+            } else if (type == 3) {
                 map.put("actiontype", "whisperwarning");
                 map.put("whisperwarntime", "" + System.currentTimeMillis());
             }
