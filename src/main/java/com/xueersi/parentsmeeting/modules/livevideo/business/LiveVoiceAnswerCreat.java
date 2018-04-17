@@ -57,7 +57,7 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     }
 
     @Override
-    public boolean onAnswerReslut(Context context, AnswerRightResultVoice questionBll, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+    public boolean onAnswerReslut(Context context, AnswerRightResultVoice questionBll, BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
         boolean isSuccess = false;
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
         if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {

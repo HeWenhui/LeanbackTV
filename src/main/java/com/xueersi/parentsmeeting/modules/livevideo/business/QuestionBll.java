@@ -41,7 +41,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectPortLiveP
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSubjectivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssAutoPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
@@ -693,7 +692,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     XESToastUtils.showToast(activity, "您已经答过此题");
                 } else {
                     if (isVoice) {
-                        isSuccess = baseVoiceAnswerCreat.onAnswerReslut(activity, this, baseVideoQuestionEntity, entity);
+                        isSuccess = baseVoiceAnswerCreat.onAnswerReslut(activity, this, voiceAnswerPager, baseVideoQuestionEntity, entity);
                         StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
                         logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
                         logHashMap.put("sourcetype", "h5test").addNonce(baseVideoQuestionEntity.nonce);
@@ -1384,6 +1383,18 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     @Override
     public void removeQuestionAnswerReslut(View popupWindow_view) {
         rlQuestionResContent.removeView(popupWindow_view);
+    }
+
+    @Override
+    public void removeBaseVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager2) {
+        if (voiceAnswerPager2 == voiceAnswerPager) {
+            if (voiceAnswerPager.isEnd()) {
+                bottomContent.removeView(voiceAnswerPager2.getRootView());
+                voiceAnswerPager = null;
+            }
+        } else {
+            bottomContent.removeView(voiceAnswerPager2.getRootView());
+        }
     }
 
     /**

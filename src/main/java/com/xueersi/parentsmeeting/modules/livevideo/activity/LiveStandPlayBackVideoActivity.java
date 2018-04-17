@@ -62,7 +62,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageStandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ExPerienceLiveMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
@@ -1335,7 +1334,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 
         @Override
         public void onAnswerTimeOutError(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
-            liveStandVoiceAnswerCreat.onAnswerReslut(LiveStandPlayBackVideoActivity.this, LiveStandPlayBackVideoActivity.this, baseVideoQuestionEntity, entity);
+            liveStandVoiceAnswerCreat.onAnswerReslut(LiveStandPlayBackVideoActivity.this, LiveStandPlayBackVideoActivity.this, voiceAnswerPager, baseVideoQuestionEntity, entity);
         }
 
         @Override
@@ -2231,6 +2230,11 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         }
     }
 
+    @Override
+    public void removeBaseVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager) {
+        stopVoiceAnswerPager();
+    }
+
     /** 回答问题结果提示框延迟三秒消失 */
     public void disMissAnswerPopWindow() {
         new Handler() {
@@ -2434,7 +2438,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                     type = questionEntity.getvQuestionType();
                     sourcetype = "h5test";
                 }
-                liveStandVoiceAnswerCreat.onAnswerReslut(this, this, questionEntity, entity);
+                liveStandVoiceAnswerCreat.onAnswerReslut(this, this, voiceAnswerPager, questionEntity, entity);
 //                if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
 //                    initSelectAnswerRightResultVoice(entity);
 //                } else {
@@ -2457,7 +2461,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                 } else {
                     type = questionEntity.getvQuestionType();
                 }
-                liveStandVoiceAnswerCreat.onAnswerReslut(this, this, questionEntity, entity);
+                liveStandVoiceAnswerCreat.onAnswerReslut(this, this, voiceAnswerPager, questionEntity, entity);
 //                if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
 //                    initSelectAnswerWrongResultVoice(entity);
 //                } else {

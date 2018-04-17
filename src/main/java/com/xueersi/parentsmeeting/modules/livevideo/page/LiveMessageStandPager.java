@@ -126,6 +126,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     private QuestionBll questionBll;
     /** 竖屏的时候，也添加横屏的消息 */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
+    /** 是不是正在答题 */
+    private boolean isAnaswer = false;
 
     public LiveMessageStandPager(Context context, QuestionBll questionBll, BaseLiveMediaControllerBottom
             liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
@@ -1024,7 +1026,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //                    rl_live_stand_message_content.setVisibility(View.GONE);
 //                    btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                 } else {
-                    if (openchat) {
+                    if (openchat && !isAnaswer) {
 //                        btMesOpen.setAlpha(1.0f);
 //                        btMesOpen.setEnabled(true);
                         rl_live_stand_message_content.setVisibility(View.VISIBLE);
@@ -1241,6 +1243,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     @Override
     public void onQuestionShow(final boolean isShow) {
+        isAnaswer = isShow;
         mView.post(new Runnable() {
             @Override
             public void run() {

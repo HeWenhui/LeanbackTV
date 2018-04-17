@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerStandPager;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
+import com.xueersi.xesalib.utils.log.Loger;
 
 import org.json.JSONObject;
 
@@ -84,7 +85,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     }
 
     @Override
-    public boolean onAnswerReslut(final Context context, final AnswerRightResultVoice questionBll, BaseVideoQuestionEntity baseVideoQuestionEntity, final VideoResultEntity entity) {
+    public boolean onAnswerReslut(final Context context, final AnswerRightResultVoice questionBll, final BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseVideoQuestionEntity, final VideoResultEntity entity) {
         boolean isSuccess = false;
         final String type;
         if (baseVideoQuestionEntity instanceof VideoQuestionLiveEntity) {
@@ -134,6 +135,18 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                             questionBll.removeQuestionAnswerReslut(group);
                         }
                     });
+                    group.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                        @Override
+                        public void onViewAttachedToWindow(View v) {
+
+                        }
+
+                        @Override
+                        public void onViewDetachedFromWindow(View v) {
+                            Loger.d(TAG, "onViewDetachedFromWindow right");
+                            questionBll.removeBaseVoiceAnswerPager(baseVoiceAnswerPager);
+                        }
+                    });
                 }
             });
             isSuccess = true;
@@ -172,6 +185,18 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                         @Override
                         public void onClick(View v) {
                             questionBll.removeQuestionAnswerReslut(group);
+                        }
+                    });
+                    group.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                        @Override
+                        public void onViewAttachedToWindow(View v) {
+
+                        }
+
+                        @Override
+                        public void onViewDetachedFromWindow(View v) {
+                            Loger.d(TAG, "onViewDetachedFromWindow error");
+                            questionBll.removeBaseVoiceAnswerPager(baseVoiceAnswerPager);
                         }
                     });
                 }
