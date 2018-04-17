@@ -590,7 +590,15 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
             return;
         }
         if (isEnd) {
-            questionSwitch.stopSpeech(this, baseVideoQuestionEntity);
+            VideoResultEntity entity = new VideoResultEntity();
+            entity.setResultType(VideoResultEntity.QUE_RES_TYPE2);
+            questionSwitch.onAnswerTimeOutError(baseVideoQuestionEntity, entity);
+            mView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    questionSwitch.stopSpeech(VoiceAnswerStandPager.this, baseVideoQuestionEntity);
+                }
+            }, 3000);
             return;
         }
         if (resultEntity.getErrorNo() == ResultCode.MUTE_AUDIO || resultEntity.getErrorNo() == ResultCode

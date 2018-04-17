@@ -47,6 +47,14 @@ public interface QuestionSwitch {
     void stopSpeech(BaseVoiceAnswerPager answerPager, BaseVideoQuestionEntity baseVideoQuestionEntity);
 
     /**
+     * 语音答题强制提交，评测错误
+     *
+     * @param baseVideoQuestionEntity
+     * @param entity
+     */
+    void onAnswerTimeOutError(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity);
+
+    /**
      * 得到互动题，暂时没用
      */
     interface OnQuestionGet {

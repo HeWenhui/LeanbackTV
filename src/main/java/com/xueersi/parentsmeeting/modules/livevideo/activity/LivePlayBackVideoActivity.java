@@ -260,7 +260,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             mMediaController.setWindowLayoutType();
             mMediaController.release();
         }
-        if(mLiveRemarkBll!=null){
+        if (mLiveRemarkBll != null) {
             mLiveRemarkBll.hideMarkPoints();
         }
         // 设置当前是否为横屏
@@ -296,7 +296,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (lstVideoQuestion == null || lstVideoQuestion.size() == 0) {
             return;
         }
-        if(mVideoEntity.getIsAllowMarkpoint()!=1) {
+        if (mVideoEntity.getIsAllowMarkpoint() != 1) {
             mMediaController.setVideoQuestions("playback" + mVideoEntity.getvLivePlayBackType() + "-", lstVideoQuestion,
                     vPlayer.getDuration());
         }
@@ -1259,6 +1259,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 //            mLiveBll.liveSubmitTestAnswer((VideoQuestionLiveEntity) videoQuestionLiveEntity, mVSectionID, result, true, answerReslut);
             VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
             sendQuestionResultVoice(answer, result, sorce, mQuestionEntity, isSubmit, voiceTime, isRight, answerReslut);
+        }
+
+        @Override
+        public void onAnswerTimeOutError(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+
         }
 
         @Override

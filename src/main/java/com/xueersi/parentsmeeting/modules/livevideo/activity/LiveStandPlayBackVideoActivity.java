@@ -1334,6 +1334,11 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         }
 
         @Override
+        public void onAnswerTimeOutError(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+            liveStandVoiceAnswerCreat.onAnswerReslut(LiveStandPlayBackVideoActivity.this, LiveStandPlayBackVideoActivity.this, baseVideoQuestionEntity, entity);
+        }
+
+        @Override
         public void uploadVoiceFile(File file) {
 
         }

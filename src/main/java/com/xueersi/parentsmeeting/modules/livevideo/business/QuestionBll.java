@@ -1860,6 +1860,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
 
         @Override
+        public void onAnswerTimeOutError(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+
+        }
+
+        @Override
         public void uploadVoiceFile(File file) {
 
         }

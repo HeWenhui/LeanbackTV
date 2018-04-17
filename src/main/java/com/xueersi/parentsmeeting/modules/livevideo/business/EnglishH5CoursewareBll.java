@@ -679,6 +679,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             mLiveBll.getTestAnswerTeamStatus(videoQuestionLiveEntity1, callBack);
         }
 
+        @Override
+        public void onAnswerTimeOutError(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+            baseVoiceAnswerCreat.onAnswerReslut(context, EnglishH5CoursewareBll.this, baseVideoQuestionEntity, entity);
+        }
     }
 
     public class LiveQuestionSwitchImpl implements QuestionSwitch {
@@ -771,6 +775,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     answerReslut.onAnswerFailure();
                 }
             });
+        }
+
+        @Override
+        public void onAnswerTimeOutError(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+
         }
 
         @Override
