@@ -814,6 +814,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 reportPlayStarTime = System.currentTimeMillis();
             }
             mLiveBll.repair(true);
+            if(liveRemarkBll!=null){
+                liveRemarkBll.setVideoReady(false);
+            }
             mLiveBll.liveGetPlayServer(false);
         }
     };
