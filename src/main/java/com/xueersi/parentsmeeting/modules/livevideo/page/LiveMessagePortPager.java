@@ -426,23 +426,6 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                 Log.e("Duncan","mData:"+ mData);
                 mChoices.clear();
                 mChoices.addAll(mData.getCases());
-//                for(int i = 1 ; i < 11 ; i++){
-//                    MoreChoice.Choice choice = new MoreChoice.Choice();
-//                    choice.setIsLearn(0);
-//                    choice.setLimit(i);
-//                    choice.setSaleName("毛尖" + i);
-//                    mChoices.add(choice);
-//                }
-//                if(mChoices.size() > 0 && isExpand){
-//                    mFirstSight.setVisibility(View.GONE);
-//                    mSecondSight.setVisibility(View.VISIBLE);
-//                    mApplyNum.setText(Html.fromHtml("<font color='#333333'>正在报名中</font>"+ "<font color='#F13232'>" +"  " + mChoices.size() + "</font>"));
-//                    mCourseAdapter.updateData(mChoices);
-//                }else{
-//                    mFirstSight.setVisibility(View.VISIBLE);
-//                    mSecondSight.setVisibility(View.GONE);
-//                    mLimitnum.setText(Html.fromHtml("<font color='#999999'>剩余名额</font>"+ "<font color='#F13232'>" +"  " + mChoices.get(mChoices.size()-1)+ "</font>"));
-//                }
                 LiveVideoConfig.MORE_COURSE = mChoices.size();
                 if(mChoices.size() > 0){
                     mTvCoursename.setText(mChoices.get(mChoices.size()-1).getSaleName());

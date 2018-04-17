@@ -38,7 +38,7 @@
             android:name=".activity.LectureLiveVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="portrait"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustUnspecified|stateHidden">
         </activity>
         <service android:name="ren.yale.android.cachewebviewlib.CachePreLoadService">
