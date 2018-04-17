@@ -403,7 +403,7 @@ public class LiveAutoNoticeBll {
     /**脏词入库请求日志*/
     private void umsAgentReq(boolean isSuccess){
         HashMap<String,String> map=new HashMap<>();
-        map.put("chattexttype","11");
+        map.put("chattexttype","3");
         map.put("whisperwarningreq",isSuccess?"success":"fail");
         mLiveBll.umsAgentDebug3("sci_whisper_func",map);
     }
