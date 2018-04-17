@@ -241,7 +241,7 @@ public class VideoChatBll implements VideoChatAction {
         }
         AudioRequest audioRequest = activity;
         audioRequest.request(null);
-        if(mLiveRemarkBll!=null){
+        if (mLiveRemarkBll != null) {
             mLiveRemarkBll.setOnChat(true);
         }
         if (nativeLibLoaded != 2) {
@@ -760,7 +760,9 @@ public class VideoChatBll implements VideoChatAction {
             videoChatInter.stopRecord();
             AudioRequest audioRequest = activity;
             audioRequest.release();
-            mLiveRemarkBll.setOnChat(false);
+            if (mLiveRemarkBll != null) {
+                mLiveRemarkBll.setOnChat(false);
+            }
         }
     }
 
