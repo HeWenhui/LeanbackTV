@@ -765,7 +765,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     }
                     if (mLiveRemarkBll != null) {
                         //主讲
-                        if (!liveTopic.getMainRoomstatus().isOnbreak()&&liveTopic.getMode().equals(LiveTopic.MODE_CLASS)) {
+                        if (!liveTopic.getMainRoomstatus().isOnbreak() && liveTopic.getMode().equals(LiveTopic.MODE_CLASS)) {
                             mLiveRemarkBll.setClassReady(true);
                         } else {
                             mLiveRemarkBll.setClassReady(false);
@@ -1047,7 +1047,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         boolean begin = object.getBoolean("begin");
                         mLiveTopic.getMainRoomstatus().setClassbegin(begin);
                         msg += begin ? "CLASSBEGIN" : "CLASSEND";
-                        if (!mLiveTopic.getMainRoomstatus().isOnbreak()&&mLiveRemarkBll != null && LiveTopic.MODE_CLASS.equals(getMode())) {
+                        if (!mLiveTopic.getMainRoomstatus().isOnbreak() && mLiveRemarkBll != null && LiveTopic.MODE_CLASS.equals(getMode())) {
                             mLiveRemarkBll.setClassReady(true);
                         }
                     }
@@ -1979,7 +1979,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             }
         } else {
             StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
-            if (StringUtils.isEmpty(courseId)) {
+            if (!StringUtils.isEmpty(studentLiveInfo.getCourseId())) {
                 courseId = studentLiveInfo.getCourseId();
             }
             if (!StringUtils.isEmpty(studentLiveInfo.getTeamId()) && !"0".equals(studentLiveInfo.getTeamId())) {
@@ -2783,6 +2783,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             jsonObject.put("id", mGetInfo.getStuId());
             jsonObject.put("name", mGetInfo.getStuName());
             jsonObject.put("img", mGetInfo.getStuImg());
+            jsonObject.put("courseId", courseId);
             jsonObject.put("nonce", nonce);
             jsonObject.put("times", mGetInfo.getStuLinkMicNum());
             if ("t".equals(from)) {
@@ -3881,7 +3882,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         if (mGetInfo != null && !"1".equals(mGetInfo.getIsShowMarkPoint())) {
             mLiveRemarkBll.hideBtMark();
         }
-        if (!mLiveTopic.getMainRoomstatus().isOnbreak()&&mGetInfo.getStat() == 3 && LiveTopic.MODE_CLASS.equals(getMode())) {
+        if (!mLiveTopic.getMainRoomstatus().isOnbreak() && mGetInfo.getStat() == 3 && LiveTopic.MODE_CLASS.equals(getMode())) {
             mLiveRemarkBll.setClassReady(true);
         } else {
             mLiveRemarkBll.setClassReady(false);
@@ -3895,23 +3896,23 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     }
 
     // 03.22 上传体验课播放器的心跳时间
-    public void uploadExperiencePlayTime(String liveId,String termId,Long hbtime){
-        mHttpManager.uploadExperiencePlayingTime(liveId,termId, hbtime, new HttpCallBack(false) {
+    public void uploadExperiencePlayTime(String liveId, String termId, Long hbtime) {
+        mHttpManager.uploadExperiencePlayingTime(liveId, termId, hbtime, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Log.e("Duncan","uploadexperiencetime:" + responseEntity.getJsonObject());
+                Log.e("Duncan", "uploadexperiencetime:" + responseEntity.getJsonObject());
             }
         });
     }
 
     // 04.04 获取更多课程
-    public void getMoreChoice(final PageDataLoadEntity pageDataLoadEntity, final AbstractBusinessDataCallBack getDataCallBack){
-        mHttpManager.getMoreChoiceCount(mLiveId, new HttpCallBack(pageDataLoadEntity){
+    public void getMoreChoice(final PageDataLoadEntity pageDataLoadEntity, final AbstractBusinessDataCallBack getDataCallBack) {
+        mHttpManager.getMoreChoiceCount(mLiveId, new HttpCallBack(pageDataLoadEntity) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Log.e("Duncan","responseEntity:"+responseEntity);
+                Log.e("Duncan", "responseEntity:" + responseEntity);
                 MoreChoice choiceEntity = mHttpResponseParser.parseMoreChoice(responseEntity);
-                if(choiceEntity != null){
+                if (choiceEntity != null) {
                     getDataCallBack.onDataSucess(choiceEntity);
                 }
             }
