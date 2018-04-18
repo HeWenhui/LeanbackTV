@@ -171,7 +171,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                         }
                         return;
                     }
-                    final RelativeLayout group = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_livevideo_stand_voice_result, null);
+                    final RelativeLayout group = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_livevideo_stand_voice_result_wrong, null);
                     LottieAnimationView lottieAnimationView = new LottieAnimationView(context);
                     lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/my_wrong");
                     lottieAnimationView.setComposition(lottieComposition);
@@ -245,7 +245,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             paint.setTextSize(48);
             paint.setColor(0xffCC6E12);
             float width = paint.measureText(num);
-            canvas.drawText(num, (img_7Bitmap.getWidth() - width) / 2, 260 + (img_7Bitmap.getHeight() + paint.measureText("a")) / 2, paint);
+            canvas.drawText(num, (img_7Bitmap.getWidth() - width) / 2, (img_7Bitmap.getHeight() + paint.measureText("a")) / 2, paint);
             img_7Bitmap.recycle();
             img_7Bitmap = creatBitmap;
         } catch (IOException e) {
