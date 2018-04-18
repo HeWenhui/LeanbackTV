@@ -46,6 +46,7 @@ import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseBll;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.business.AppBll;
+import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.AnswerEntity;
 import com.xueersi.parentsmeeting.entity.AppInfoEntity;
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
@@ -110,6 +111,7 @@ import com.xueersi.xesalib.adapter.CommonAdapter;
 import com.xueersi.xesalib.umsagent.UmsAgentManager;
 import com.xueersi.xesalib.umsagent.UmsConstants;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
+import com.xueersi.xesalib.utils.audio.AudioPlayer;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.utils.string.StringUtils;
@@ -2811,6 +2813,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         }
     }
 
+    /** 重新打开播放器的监听 */
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -2827,9 +2830,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         }
     }
 
-    /** 重新打开播放器的监听 */
-
-
     private void createRealVideo(String courseId,String classId){
         boolean isPermission = FloatPermissionManager.getInstance().applyFloatWindow(this);
 
@@ -2842,17 +2842,24 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             //开启悬浮窗
             OtherModulesEnter.intentToOrderConfirmActivity(this,courseId+"-"+classId,100,"LectureLiveVideoActivity");
             FloatWindowManager.addView(this,videoView,2);
+            AppConfig.LECTURELIVEBACK = false;
             picinpic = true;
         }
 
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        AppConfig.LECTURELIVEBACK = true;
+    }
+
     private void showPopupwindowboard() {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mFloatView = inflater.inflate(R.layout.livemessage_jumpboard, null);
-        mPopupWindows = new PopupWindow(mFloatView, 415, 100, false);
+        mPopupWindows = new PopupWindow(mFloatView, 360, 90, false);
         mPopupWindows.setOutsideTouchable(false);
-        mPopupWindows.showAtLocation(mFloatView, Gravity.BOTTOM | Gravity.LEFT, ScreenUtils.getScreenWidth()-450, 160);
+        mPopupWindows.showAtLocation(mFloatView, Gravity.BOTTOM | Gravity.LEFT, ScreenUtils.getScreenWidth()-420, 160);
         // 03.29 横竖屏的切换
         mFloatView.findViewById(R.id.switch_orientation).setOnClickListener(new View.OnClickListener() {
             @Override

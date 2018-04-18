@@ -27,6 +27,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -60,6 +61,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.event.MiniEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
 import com.xueersi.xesalib.adapter.CommonAdapter;
@@ -73,6 +75,8 @@ import com.xueersi.xesalib.view.layout.dataload.DataErrorManager;
 import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -164,7 +168,6 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
             public void onReceive(Context context, Intent intent) {
                 // 04.12 弹出广告的时候，需要刷新广告列表
                 mHandler.postDelayed(MoreChoice,500);
-                Log.e("Duncan","PaySuccessful");
             }
         };
         context.registerReceiver(receiver, intentFilter);
@@ -462,6 +465,11 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                     mAdvance.setVisibility(View.GONE);
                 }
                 mCourseAdapter.updateData(mChoices);
+                if(LiveVideoConfig.isloading){
+                    mFirstSight.setVisibility(View.GONE);
+                    mSecondSight.setVisibility(View.VISIBLE);
+                    LiveVideoConfig.isloading = !LiveVideoConfig.isloading;
+                }
             }
 
         }
@@ -706,7 +714,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
             };
             mMorecourse.setAdapter(mCourseAdapter);
         }
-        mHandler.postDelayed(MoreChoice,1000);
+        mHandler.postDelayed(MoreChoice,600);
     }
 
     private Runnable MoreChoice = new Runnable() {

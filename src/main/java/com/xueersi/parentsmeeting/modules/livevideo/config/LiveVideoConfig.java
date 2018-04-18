@@ -134,4 +134,5 @@ public class LiveVideoConfig {
     public static String URL_LECTURELIVE_MORE_COURSE = AppConfig.HTTP_HOST+"/LiveLecture/getAdCase";
     /** 更多课程数量的记录 */
     public static int MORE_COURSE;
+    public static Boolean isloading = false;
 }

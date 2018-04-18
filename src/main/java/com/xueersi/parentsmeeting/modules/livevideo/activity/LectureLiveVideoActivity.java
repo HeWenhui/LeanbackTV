@@ -73,6 +73,7 @@ import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -551,15 +552,17 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     private void showPopupwindow() {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mFloatView = inflater.inflate(R.layout.livemessage_jumpboard, null);
-        mPopupWindows = new PopupWindow(mFloatView, 415, 100, false);
+        mPopupWindows = new PopupWindow(mFloatView, 360, 90, false);
         mPopupWindows.setOutsideTouchable(false);
-        mPopupWindows.showAtLocation(mFloatView, Gravity.BOTTOM | Gravity.LEFT, ScreenUtils.getScreenWidth()-450, 160);
+        mPopupWindows.showAtLocation(mFloatView, Gravity.BOTTOM | Gravity.LEFT, ScreenUtils.getScreenWidth()-420, 160);
         // 03.29 横竖屏的切换
         mFloatView.findViewById(R.id.switch_orientation).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //判断当前屏幕方向
                 changeLOrP();
+                LiveVideoConfig.isloading = true;
+//                EventBus.getDefault().post(new MiniEvent("Refresh","",""));
             }
         });
         TextView totalnum = (TextView)mFloatView.findViewById(R.id.tv_apply_totalnum);
@@ -630,7 +633,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 }
             }.start();
         }
-        Log.e("Duncan","onPause");
     }
 
     @Override
