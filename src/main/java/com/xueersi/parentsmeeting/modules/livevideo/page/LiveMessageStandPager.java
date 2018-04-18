@@ -976,10 +976,12 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (disable) {
-                    XESToastUtils.showToast(mContext, "你被老师禁言了");
+                    if (fromNotice) {
+                        XESToastUtils.showToast(mContext, "你被老师禁言了");
+                        addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, "你被老师禁言了，不能发言，请认真听课！", "");
+                    }
 //                    btMesOpen.setAlpha(0.4f);
 //                    btMesOpen.setEnabled(false);
-                    addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, "你被老师禁言了，不能发言，请认真听课！", "");
 //                    btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                 } else {
                     if (fromNotice) {
