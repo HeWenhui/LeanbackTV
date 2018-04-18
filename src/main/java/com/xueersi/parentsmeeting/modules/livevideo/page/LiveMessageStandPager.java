@@ -432,78 +432,179 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //            liveMessageEntities.add(liveMessageEntity);
 //        }
 
-        messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities) {
+        messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities, 2) {
             String fileName = "live_stand_head.json";
 
             @Override
+            public Object getItemViewType(LiveMessageEntity liveMessageEntity) {
+                return liveMessageEntity.getType();
+            }
+
+            @Override
             public AdapterItemInterface<LiveMessageEntity> getItemView(Object type) {
-                return new AdapterItemInterface<LiveMessageEntity>() {
-                    TextView tvMessageItem;
-                    StandLiveHeadView standLiveHeadView;
-                    LottieComposition mComposition;
+                int typeInt = (int) type;
+                if (typeInt == LiveMessageEntity.MESSAGE_TIP) {
+                    return new AdapterItemInterface<LiveMessageEntity>() {
+                        TextView tvMessageItem;
+                        StandLiveHeadView standLiveHeadView;
+                        LottieComposition mComposition;
 
-                    @Override
-                    public int getLayoutResId() {
-                        return R.layout.item_livevideo_stand_message;
-                    }
+                        @Override
+                        public int getLayoutResId() {
+                            return R.layout.item_livevideo_stand_message;
+                        }
 
-                    @Override
-                    public void initViews(View root) {
-                        Loger.d(TAG, "initViews");
-                        tvMessageItem = (TextView) root.findViewById(R.id.tv_livevideo_message_item);
-                        tvMessageItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
-                        standLiveHeadView = root.findViewById(R.id.slhv_livevideo_message_head);
-                        standLiveHeadView.addAnimatorListener(new Animator.AnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animator) {
+                        @Override
+                        public void initViews(View root) {
+                            Loger.d(TAG, "initViews");
+                            tvMessageItem = (TextView) root.findViewById(R.id.tv_livevideo_message_item);
+                            tvMessageItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
+                            standLiveHeadView = root.findViewById(R.id.slhv_livevideo_message_head);
+                            standLiveHeadView.setHeadSys();
+                            standLiveHeadView.addAnimatorListener(new Animator.AnimatorListener() {
+                                @Override
+                                public void onAnimationStart(Animator animator) {
 
-                            }
+                                }
 
-                            @Override
-                            public void onAnimationEnd(Animator animator) {
-                                Log.d(TAG, "onAnimationEnd:progerss=" + standLiveHeadView.getProgress());
+                                @Override
+                                public void onAnimationEnd(Animator animator) {
+                                    Log.d(TAG, "onAnimationEnd:progerss=" + standLiveHeadView.getProgress());
 //                                standLiveHeadView.setProgress(1.0f);
-                            }
-
-                            @Override
-                            public void onAnimationCancel(Animator animator) {
-
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animator animator) {
-
-                            }
-                        });
-                        initlottieAnim();
-                    }
-
-                    private void initlottieAnim() {
-                        LottieComposition.Factory.fromAssetFileName(mContext, fileName, new OnCompositionLoadedListener() {
-                            @Override
-                            public void onCompositionLoaded(@Nullable LottieComposition composition) {
-                                Log.d(TAG, "onCompositionLoaded:composition=" + composition);
-                                if (composition == null) {
-                                    return;
                                 }
-                                if (mComposition != null) {
-                                    return;
+
+                                @Override
+                                public void onAnimationCancel(Animator animator) {
+
                                 }
-                                mComposition = composition;
-                                standLiveHeadView.setImageAssetsFolder("live_stand/lottie/head");
-                                standLiveHeadView.setComposition(composition);
+
+                                @Override
+                                public void onAnimationRepeat(Animator animator) {
+
+                                }
+                            });
+                            initlottieAnim();
+                        }
+
+                        private void initlottieAnim() {
+                            LottieComposition.Factory.fromAssetFileName(mContext, fileName, new OnCompositionLoadedListener() {
+                                @Override
+                                public void onCompositionLoaded(@Nullable LottieComposition composition) {
+                                    Log.d(TAG, "onCompositionLoaded:composition=" + composition);
+                                    if (composition == null) {
+                                        return;
+                                    }
+                                    if (mComposition != null) {
+                                        return;
+                                    }
+                                    mComposition = composition;
+                                    standLiveHeadView.setImageAssetsFolder("live_stand/lottie/head");
+                                    standLiveHeadView.setComposition(composition);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void bindListener() {
+
+                        }
+
+                        @Override
+                        public void updateViews(LiveMessageEntity entity, int position, Object objTag) {
+                            String sender = entity.getSender();
+                            if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
+                                tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
+                                tvMessageItem.setText(entity.getText());
+                                urlClick(tvMessageItem);
+                                CharSequence text = tvMessageItem.getText();
+                                tvMessageItem.setText(text);
+                            } else {
+                                tvMessageItem.setAutoLinkMask(0);
+                                tvMessageItem.setText(entity.getText());
                             }
-                        });
-                    }
+                            boolean deng = standLiveHeadView.getEntity() == entity;
+                            Loger.d(TAG, "updateViews:deng=" + deng + ",progress=" + standLiveHeadView.getProgress() + ",standLiveHeadView=" + standLiveHeadView.getEntity() + ",text=" + entity.getText());
+                            standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
+//                        entity.setHeadUrl(getInfo.getHeadImgPath());
+                            standLiveHeadView.setName(entity.getSender());
+                            if (!entity.isPlayAnimation()) {
+                                entity.setPlayAnimation(true);
+                                standLiveHeadView.playAnimation();
+                            } else {
+                                standLiveHeadView.setProgress(1.0f);
+                            }
+                            entity.setStandLiveHeadView(standLiveHeadView);
+                            standLiveHeadView.setEntity(entity);
+                        }
+                    };
+                } else {
+                    return new AdapterItemInterface<LiveMessageEntity>() {
+                        TextView tvMessageItem;
+                        StandLiveHeadView standLiveHeadView;
+                        LottieComposition mComposition;
 
-                    @Override
-                    public void bindListener() {
+                        @Override
+                        public int getLayoutResId() {
+                            return R.layout.item_livevideo_stand_message;
+                        }
 
-                    }
+                        @Override
+                        public void initViews(View root) {
+                            Loger.d(TAG, "initViews");
+                            tvMessageItem = (TextView) root.findViewById(R.id.tv_livevideo_message_item);
+                            tvMessageItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
+                            standLiveHeadView = root.findViewById(R.id.slhv_livevideo_message_head);
+                            standLiveHeadView.addAnimatorListener(new Animator.AnimatorListener() {
+                                @Override
+                                public void onAnimationStart(Animator animator) {
 
-                    @Override
-                    public void updateViews(LiveMessageEntity entity, int position, Object objTag) {
-                        String sender = entity.getSender();
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animator animator) {
+                                    Log.d(TAG, "onAnimationEnd:progerss=" + standLiveHeadView.getProgress());
+//                                standLiveHeadView.setProgress(1.0f);
+                                }
+
+                                @Override
+                                public void onAnimationCancel(Animator animator) {
+
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animator animator) {
+
+                                }
+                            });
+                            initlottieAnim();
+                        }
+
+                        private void initlottieAnim() {
+                            LottieComposition.Factory.fromAssetFileName(mContext, fileName, new OnCompositionLoadedListener() {
+                                @Override
+                                public void onCompositionLoaded(@Nullable LottieComposition composition) {
+                                    Log.d(TAG, "onCompositionLoaded:composition=" + composition);
+                                    if (composition == null) {
+                                        return;
+                                    }
+                                    if (mComposition != null) {
+                                        return;
+                                    }
+                                    mComposition = composition;
+                                    standLiveHeadView.setImageAssetsFolder("live_stand/lottie/head");
+                                    standLiveHeadView.setComposition(composition);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void bindListener() {
+
+                        }
+
+                        @Override
+                        public void updateViews(LiveMessageEntity entity, int position, Object objTag) {
+                            String sender = entity.getSender();
 //                        switch (entity.getType()) {
 //                            case LiveMessageEntity.MESSAGE_MINE:
 //                            case LiveMessageEntity.MESSAGE_TEACHER:
@@ -515,16 +616,16 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //                                color = nameColors[0];
 //                                break;
 //                        }
-                        if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
-                            tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
-                            tvMessageItem.setText(entity.getText());
-                            urlClick(tvMessageItem);
-                            CharSequence text = tvMessageItem.getText();
-                            tvMessageItem.setText(text);
-                        } else {
-                            tvMessageItem.setAutoLinkMask(0);
-                            tvMessageItem.setText(entity.getText());
-                        }
+                            if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
+                                tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
+                                tvMessageItem.setText(entity.getText());
+                                urlClick(tvMessageItem);
+                                CharSequence text = tvMessageItem.getText();
+                                tvMessageItem.setText(text);
+                            } else {
+                                tvMessageItem.setAutoLinkMask(0);
+                                tvMessageItem.setText(entity.getText());
+                            }
 //                        boolean deng = standLiveHeadView.getEntity() == entity;
 //                        Loger.d(TAG, "updateViews:deng=" + deng + ",text=" + entity.getText());
 //                        if (!deng) {
@@ -560,26 +661,29 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 ////                                standLiveHeadView.resumeAnimation();
 //                            }
 //                        }
-                        boolean deng = standLiveHeadView.getEntity() == entity;
-                        Loger.d(TAG, "updateViews:deng=" + deng + ",progress=" + standLiveHeadView.getProgress() + ",standLiveHeadView=" + standLiveHeadView.getEntity() + ",text=" + entity.getText());
-                        standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
+                            boolean deng = standLiveHeadView.getEntity() == entity;
+                            Loger.d(TAG, "updateViews:deng=" + deng + ",progress=" + standLiveHeadView.getProgress() + ",standLiveHeadView=" + standLiveHeadView.getEntity() + ",text=" + entity.getText());
+                            standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
 //                        entity.setHeadUrl(getInfo.getHeadImgPath());
-                        standLiveHeadView.setName(entity.getSender());
-                        if (LiveMessageEntity.MESSAGE_TIP == entity.getType()) {
-                            standLiveHeadView.setHeadSys();
-                        } else {
+                            standLiveHeadView.setName(entity.getSender());
                             standLiveHeadView.setHead(entity.getHeadUrl());
+                            if (!entity.isPlayAnimation()) {
+                                entity.setPlayAnimation(true);
+                                standLiveHeadView.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        standLiveHeadView.playAnimation();
+                                    }
+                                }, 20);
+                            } else {
+                                standLiveHeadView.setProgress(1.0f);
+                            }
+                            entity.setStandLiveHeadView(standLiveHeadView);
+                            standLiveHeadView.setEntity(entity);
                         }
-                        if (!entity.isPlayAnimation()) {
-                            entity.setPlayAnimation(true);
-                            standLiveHeadView.playAnimation();
-                        } else {
-                            standLiveHeadView.setProgress(1.0f);
-                        }
-                        entity.setStandLiveHeadView(standLiveHeadView);
-                        standLiveHeadView.setEntity(entity);
-                    }
-                };
+                    };
+                }
+
             }
         };
         lvMessage.setAdapter(messageAdapter);
