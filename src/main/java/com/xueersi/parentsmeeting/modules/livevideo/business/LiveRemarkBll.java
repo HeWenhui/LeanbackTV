@@ -348,11 +348,11 @@ public class LiveRemarkBll {
 
     }
     private void startCountDown(){
-        CountDownTimer timer=new CountDownTimer(15000,1000) {
+        CountDownTimer timer=new CountDownTimer(16000,1000) {
             @Override
             public void onTick(long millisUntilFinished) {
 
-                mLiveMediaControllerBottom.getBtMark().setText(millisUntilFinished/1000+"");
+                mLiveMediaControllerBottom.getBtMark().setText((millisUntilFinished/1000)+"");
                 mLiveMediaControllerBottom.getBtMark().setBackgroundResource(R.drawable.shape_oval_black);
             }
 
@@ -363,6 +363,8 @@ public class LiveRemarkBll {
                 setVideoReady(true);
             }
         };
+        //mLiveMediaControllerBottom.getBtMark().setText("15");
+        mLiveMediaControllerBottom.getBtMark().setBackgroundResource(R.drawable.shape_oval_black);
         setVideoReady(false);
         timer.start();
     }

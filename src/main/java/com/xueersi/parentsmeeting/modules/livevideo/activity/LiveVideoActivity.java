@@ -1032,6 +1032,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
 
             @Override
             public void run() {
+                if(liveRemarkBll!=null){
+                    liveRemarkBll.setVideoReady(false);
+                }
                 mLogtf.d("onModeChange:isInitialized=" + isInitialized());
                 if (isInitialized()) {
                     mHandler.removeCallbacks(mPlayDuration);
