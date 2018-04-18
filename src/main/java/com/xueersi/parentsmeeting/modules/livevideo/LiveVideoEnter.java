@@ -318,8 +318,12 @@ public class LiveVideoEnter {
      * @param bundle
      */
     public static boolean intentTo(Activity context, Bundle bundle, String where) {
-//        LivePlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
-        LiveStandPlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+        int pattern = bundle.getInt("pattern", 1);
+        if (pattern == 2) {
+            LiveStandPlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+        } else {
+            LivePlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+        }
         return true;
     }
 
