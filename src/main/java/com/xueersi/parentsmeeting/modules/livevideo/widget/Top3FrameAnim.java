@@ -301,7 +301,7 @@ public class Top3FrameAnim {
                         iv_livevideo_redpackage_num.setImageResource(R.drawable.bg_live_stand_red_gold_big);
                     }
                     TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_name);
-                    tv_livevideo_redpackage_name.setText("" + entity.getNickname());
+                    tv_livevideo_redpackage_name.setText("" + entity.getShowName());
                     TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
                     tv_livevideo_redpackage_num.setText(gold);
 //                    if (i == 0) {

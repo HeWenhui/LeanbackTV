@@ -13,7 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPag
 public interface BaseSpeechCreat {
     /** 创建原生语音评测 */
     BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String testId,
-                                           String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, String userName, String headUrl, String learning_stage);
+                                           String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String learning_stage);
 
     /** 创建roleplay */
     BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, String testId,

@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
+import com.tencent.cos.xml.utils.StringUtils;
+
 import java.util.ArrayList;
 
 /**
@@ -70,8 +72,11 @@ public class GoldTeamStatus {
         String gold;// 15,
         String score;// 15,
         String name;// "lyq2@qq.com",
+        String realname;
         String nickname;// "ssss",
         String en_name;// "rer",
+        /**显示的名字*/
+        String showName;
         String avatar_path;// "http:\/\/xesfile.xesimg.com\/user\/h\/31203.jpg"
         boolean isRight = false;
         /** 只绘制头像不绘制名字 */
@@ -119,6 +124,14 @@ public class GoldTeamStatus {
             this.name = name;
         }
 
+        public String getRealname() {
+            return realname;
+        }
+
+        public void setRealname(String realname) {
+            this.realname = realname;
+        }
+
         public String getNickname() {
             return nickname;
         }
@@ -133,6 +146,25 @@ public class GoldTeamStatus {
 
         public void setEn_name(String en_name) {
             this.en_name = en_name;
+        }
+
+        public String getShowName() {
+            if (StringUtils.isEmpty(showName)) {
+                createShowName();
+            }
+            return showName;
+        }
+
+        public void createShowName() {
+            if (!StringUtils.isEmpty(en_name)) {
+                this.showName = en_name;
+            } else if (!StringUtils.isEmpty(realname)) {
+                this.showName = realname;
+            } else if (!StringUtils.isEmpty(nickname)) {
+                this.showName = nickname;
+            } else {
+                this.showName = name;
+            }
         }
 
         public String getAvatar_path() {

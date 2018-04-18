@@ -592,6 +592,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         if (isEnd) {
             VideoResultEntity entity = new VideoResultEntity();
             entity.setResultType(VideoResultEntity.QUE_RES_TYPE2);
+            entity.setStandardAnswer(answer);
             questionSwitch.onAnswerTimeOutError(baseVideoQuestionEntity, entity);
             mView.postDelayed(new Runnable() {
                 @Override
@@ -994,7 +995,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(creatBitmap);
                 canvas.drawBitmap(headBack, 0, 0, null);
-                String name = student.getNickname();
+                String name = student.getShowName();
                 Paint paint = new Paint();
                 paint.setTextSize(20);
                 if (isMe) {

@@ -460,7 +460,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                             tvMessageItem = (TextView) root.findViewById(R.id.tv_livevideo_message_item);
                             tvMessageItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
                             standLiveHeadView = root.findViewById(R.id.slhv_livevideo_message_head);
-                            standLiveHeadView.setHeadSys();
                             standLiveHeadView.addAnimatorListener(new Animator.AnimatorListener() {
                                 @Override
                                 public void onAnimationStart(Animator animator) {
@@ -527,6 +526,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                             standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
 //                        entity.setHeadUrl(getInfo.getHeadImgPath());
                             standLiveHeadView.setName(entity.getSender());
+                            standLiveHeadView.setHeadSys();
                             if (!entity.isPlayAnimation()) {
                                 entity.setPlayAnimation(true);
                                 standLiveHeadView.playAnimation();

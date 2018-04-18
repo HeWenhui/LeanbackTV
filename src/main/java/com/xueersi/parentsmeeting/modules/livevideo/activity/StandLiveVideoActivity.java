@@ -947,7 +947,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         if (liveLazyBllCreat != null) {
             liveLazyBllCreat.setGetInfo(getInfo);
         }
-        englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveStandVoiceAnswerCreat(englishH5CoursewareBll.new LiveStandQuestionSwitchImpl(), getInfo.getHeadImgPath(), getInfo.getStuName()));
+        englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveStandVoiceAnswerCreat(englishH5CoursewareBll.new LiveStandQuestionSwitchImpl(), getInfo.getHeadImgPath(), getInfo.getStandLiveName()));
         String mode = mGetInfo.getMode();
         this.mode = mode;
         liveMediaControllerBottom.onModeChange(mode);
@@ -1001,7 +1001,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         rollCallBll.onLiveInit(getInfo);
         questionBll.setUserName(getInfo);
         videoChatBll.onLiveInit(getInfo);
-        redPackageBll.setUserName(getInfo.getStuName());
+        redPackageBll.setUserName(getInfo.getStandLiveName());
         redPackageBll.setHeadUrl(getInfo.getHeadImgPath());
         redPackageBll.setReceiveGold(new LiveReceiveGold(mLiveBll));
 

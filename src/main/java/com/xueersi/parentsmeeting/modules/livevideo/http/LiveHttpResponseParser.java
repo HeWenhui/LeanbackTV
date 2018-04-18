@@ -61,6 +61,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setIs_show_ranks(data.optString("is_show_ranks"));
             //getInfo.setIs_show_ranks("1");
             getInfo.setName(data.getString("name"));
+            getInfo.setEn_name(data.optString("en_name"));
             getInfo.setInstructions(data.getString("instructions"));
             getInfo.setNotice(data.getString("notice"));
             getInfo.setLiveType(data.getInt("liveType"));
@@ -484,7 +485,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     student.setMe(stuid.equals(stuId2));
                     student.setStuId(stuId2);
                     student.setName(stu.optString("name"));
+                    student.setRealname(stu.optString("realname"));
                     student.setNickname(stu.getString("nickname"));
+                    student.setEn_name(stu.getString("en_name"));
+                    student.createShowName();
                     student.setGold(stu.optString("gold"));
                     avatar_path = stu.getString("avatar_path");
                     student.setAvatar_path(avatar_path);
@@ -524,7 +528,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     student.setMe(stuid.equals(stuId2));
                     student.setStuId(stuId2);
                     student.setName(stu.optString("name"));
+                    student.setRealname(stu.optString("realname"));
                     student.setNickname(stu.getString("nickname"));
+                    student.setEn_name(stu.getString("en_name"));
+                    student.createShowName();
                     student.setRight(stu.optInt("isRight") == 1);
                     avatar_path = stu.getString("avatar_path");
                     student.setAvatar_path(avatar_path);
@@ -567,7 +574,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     }
                     student.setStuId(stuId2);
                     student.setName(stu.optString("name"));
+                    student.setRealname(stu.optString("realname"));
                     student.setNickname(stu.getString("nickname"));
+                    student.setEn_name(stu.getString("en_name"));
+                    student.createShowName();
                     student.setScore(stu.optString("score", "0"));
                     avatar_path = stu.getString("avatar_path");
                     student.setAvatar_path(avatar_path);
@@ -710,7 +720,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         student.setMe(mGetInfo.getStuId().equals(stuId2));
                         student.setStuId(stuId2);
                         student.setName(stu.optString("name"));
+                        student.setRealname(stu.optString("realname"));
                         student.setNickname(stu.getString("nickname"));
+                        student.setEn_name(stu.getString("en_name"));
+                        student.createShowName();
                         student.setScore(stu.optString("score", "0"));
                         avatar_path = stu.getString("avatar_path");
                         student.setAvatar_path(avatar_path);

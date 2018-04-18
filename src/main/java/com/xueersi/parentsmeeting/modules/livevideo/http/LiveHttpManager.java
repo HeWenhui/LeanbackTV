@@ -553,6 +553,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42, params, requestCallBack);
     }
 
+    /** 语音评测排行榜 */
     public void getSpeechEvalAnswerTeamRank(String id, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("testId", id);

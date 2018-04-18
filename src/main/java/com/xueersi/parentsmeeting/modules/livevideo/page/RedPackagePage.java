@@ -795,7 +795,7 @@ public class RedPackagePage extends BasePager {
                 String gold = "+" + entity.getGold();
                 View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout.layout_live_stand_red_mine2, null);
                 TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_name);
-                tv_livevideo_redpackage_name.setText("" + entity.getNickname());
+                tv_livevideo_redpackage_name.setText("" + entity.getShowName());
                 TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
                 tv_livevideo_redpackage_num.setText(gold);
                 if (!isMe) {
@@ -1003,7 +1003,7 @@ public class RedPackagePage extends BasePager {
                     ImageView iv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.iv_livevideo_redpackage_num);
                     iv_livevideo_redpackage_num.setImageResource(R.drawable.bg_live_stand_red_gold_big);
                     TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_name);
-                    tv_livevideo_redpackage_name.setText("" + entity.getNickname());
+                    tv_livevideo_redpackage_name.setText("" + entity.getShowName());
                     TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
                     tv_livevideo_redpackage_num.setText(gold);
 //                    if (i == 0) {

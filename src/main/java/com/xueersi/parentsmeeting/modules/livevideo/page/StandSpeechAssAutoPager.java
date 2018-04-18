@@ -1191,7 +1191,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(creatBitmap);
                 canvas.drawBitmap(headBack, 0, 0, null);
-                String name = student.getNickname();
+                String name = student.getShowName();
                 Paint paint = new Paint();
                 paint.setTextSize(20);
                 if (isMe) {

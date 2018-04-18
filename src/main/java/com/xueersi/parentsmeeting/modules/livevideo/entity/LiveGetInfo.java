@@ -37,6 +37,8 @@ public class LiveGetInfo {
     private String stuId;
     /** 用户拼音，现阶段取用户名 */
     private String uname;
+    /** 用户英文名 */
+    private String en_name;
     /** 用户性别 */
     private String stuSex;
     /** 用户头像 */
@@ -350,6 +352,22 @@ public class LiveGetInfo {
 
     public String getUname() {
         return uname;
+    }
+
+    /**站立直播名字*/
+    public String getStandLiveName() {
+        if (!StringUtils.isEmpty(en_name)) {
+            return en_name;
+        }
+        return uname;
+    }
+
+    public String getEn_name() {
+        return en_name;
+    }
+
+    public void setEn_name(String en_name) {
+        this.en_name = en_name;
     }
 
     public String getStuSex() {

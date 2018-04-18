@@ -17,7 +17,7 @@ import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 public class LiveSpeechCreat implements BaseSpeechCreat {
     @Override
-    public BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String testId, String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, String userName, String headUrl, String learning_stage) {
+    public BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String testId, String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String learning_stage) {
         SpeechAssAutoPager speechAssAutoPager =
                 new SpeechAssAutoPager(context, liveid, testId, nonce,
                         content, (int) time, haveAnswer, learning_stage, speechEvalAction);

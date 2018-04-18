@@ -415,9 +415,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         if (videoQuestionLiveEntity == null) {
             mLogtf.d("showQuestion:noQuestion");
             if (isAnaswer) {
-                for (QuestionShowAction questionShowAction : questionShowActions) {
-                    questionShowAction.onQuestionShow(false);
-                }
+                onQuestionShow(false);
             }
             isAnaswer = false;
             if (voiceAnswerPager != null && !voiceAnswerPager.isEnd()) {
@@ -459,9 +457,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         mVideoQuestionLiveEntity = videoQuestionLiveEntity;
         if (!isAnaswer) {
-            for (QuestionShowAction questionShowAction : questionShowActions) {
-                questionShowAction.onQuestionShow(true);
-            }
+            onQuestionShow(true);
         }
         isAnaswer = true;
         if (this.videoQuestionLiveEntity != null) {
@@ -597,7 +593,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         }
                         BaseSpeechAssessmentPager speechAssAutoPager = baseSpeechCreat.createSpeech(activity, liveGetInfo.getId(), id, videoQuestionLiveEntity.nonce,
                                 videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time, haveAnswer, QuestionBll.
-                                        this, lp, liveGetInfo.getStuName(), liveGetInfo.getHeadImgPath(), learning_stage);
+                                        this, lp, liveGetInfo, learning_stage);
                         speechAssessmentPager = speechAssAutoPager;
                         speechAssessmentPager.setIse(mIse);
 //                        if (speechAssAutoPager instanceof SpeechAssAutoPager) {
@@ -775,9 +771,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void onStopQuestion(String ptype, final String nonce) {
         Loger.i("=====questionbll  question stop");
         if (isAnaswer) {
-            for (QuestionShowAction questionShowAction : questionShowActions) {
-                questionShowAction.onQuestionShow(false);
-            }
+            onQuestionShow(false);
         }
         isAnaswer = false;
         if (rolePlayAction != null && mVideoQuestionLiveEntity != null) {
@@ -1897,6 +1891,17 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 //                    audioRequest.release();
 //                }
 //            }
+        }
+    }
+
+    /**
+     * 试题隐藏显示
+     *
+     * @param isShow true显示
+     */
+    private void onQuestionShow(boolean isShow) {
+        for (QuestionShowAction questionShowAction : questionShowActions) {
+            questionShowAction.onQuestionShow(isShow);
         }
     }
 }

@@ -1344,7 +1344,9 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 
         @Override
         public void stopSpeech(BaseVoiceAnswerPager answerPager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
-            rlQuestionContent.removeView(answerPager.getRootView());
+            if (voiceAnswerPager != null) {
+                stopVoiceAnswerPager();
+            }
         }
     };
 

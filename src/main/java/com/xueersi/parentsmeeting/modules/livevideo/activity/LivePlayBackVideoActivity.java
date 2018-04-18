@@ -1273,7 +1273,9 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
         @Override
         public void stopSpeech(BaseVoiceAnswerPager answerPager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
-            rlQuestionContent.removeView(answerPager.getRootView());
+            if (voiceAnswerPager != null) {
+                stopVoiceAnswerPager();
+            }
         }
     };
 
