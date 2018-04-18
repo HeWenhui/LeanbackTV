@@ -695,7 +695,16 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         questionShowActions.remove(questionShowAction);
     }
 
+    /** 直播收到答题切换 */
     public class LiveStandQuestionSwitchImpl extends LiveQuestionSwitchImpl implements LiveStandQuestionSwitch {
+        @Override
+        public BasePager questionSwitch(BaseVideoQuestionEntity baseQuestionEntity) {
+            EnglishH5CoursewarePager h5CoursewarePager = (EnglishH5CoursewarePager) super.questionSwitch(baseQuestionEntity);
+            if (h5CoursewarePager != null) {
+                h5CoursewarePager.setWebBackgroundColor(0);
+            }
+            return h5CoursewarePager;
+        }
 
         @Override
         public void getTestAnswerTeamStatus(BaseVideoQuestionEntity videoQuestionLiveEntity, AbstractBusinessDataCallBack callBack) {
@@ -709,6 +718,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         }
     }
 
+    /** 直播收到答题切换 */
     public class LiveQuestionSwitchImpl implements QuestionSwitch {
 
         @Override

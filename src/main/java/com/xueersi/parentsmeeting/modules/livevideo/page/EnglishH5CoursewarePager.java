@@ -215,6 +215,15 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         });
     }
 
+    /**
+     * 设置webview透明
+     *
+     * @param color
+     */
+    public void setWebBackgroundColor(int color) {
+        wvSubjectWeb.setBackgroundColor(color);
+    }
+
     private void newWebView() {
         rl_livevideo_subject_web.removeView(wvSubjectWeb);
         wvSubjectWeb = (WebView) View.inflate(mContext, R.layout.page_livevideo_h5_courseware_cacheweb, null);
