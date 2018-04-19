@@ -540,4 +540,9 @@
     <item name="tv_teampk_member_name" type="id"/>
     <item name="iv_teampk_finish_team_select" type="id"/>
 
+    <!--分队进行中-->
+    <item name="iv_teampk_enter_teamselect"  type="id"/>
+    <item name="iv_teampk_enter_teamselect_anim" type="id"/>
+
+
 </resources>

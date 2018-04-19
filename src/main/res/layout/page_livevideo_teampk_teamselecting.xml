@@ -1,0 +1,55 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@id/rl_teampk_team_selecteing"
+        android:layout_width="133dp"
+        android:layout_height="167dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/shape_corners_7dp_b3000000">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="71dp"
+            android:src="@drawable/livevideo_team_icon"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            />
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="70dp"
+            android:src="@drawable/anim_livevido_teampk_back_teamselect"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:id="@id/iv_teampk_enter_teamselect_anim"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="分队仪式进行中..."
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/iv_teampk_enter_teamselect_anim"
+            android:layout_marginTop="7dp"
+            android:textSize="13sp"
+            />
+
+        <ImageView
+            android:id="@id/iv_teampk_enter_teamselect"
+            android:layout_width="66dp"
+            android:layout_height="24dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="19dp"
+            android:src="@drawable/livevideo_list_clickenter_bth_normal" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

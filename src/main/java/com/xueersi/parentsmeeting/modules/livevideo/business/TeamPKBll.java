@@ -10,6 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkAwardGetPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkTeamSelectPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkTeamSelectingPager;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 import java.io.BufferedReader;
@@ -53,6 +54,22 @@ public class TeamPKBll {
         rlTeamPkContent.addView(teamSelectPager.getRootView(), params);
     }
 
+    /**
+     * 中途进入战斗选择
+     */
+    public void enterTeamSelectScene(){
+        TeamPkTeamSelectPager teamSelectPager = new TeamPkTeamSelectPager(activity,this);
+        rlTeamPkContent.removeAllViews();
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        int screenWidth = ScreenUtils.getScreenWidth();
+        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
+        params.rightMargin = wradio;
+        rlTeamPkContent.addView(teamSelectPager.getRootView(), params);
+
+        teamSelectPager.showTeamSelectedScene();
+    }
+
 
     /**
      * 显示获奖 场景
@@ -68,6 +85,22 @@ public class TeamPKBll {
         rlTeamPkContent.addView(awardGetPager.getRootView(), params);
     }
 
+
+    /**
+     * 显示分队进行中
+     */
+    public void showTeamSelecting(){
+
+        TeamPkTeamSelectingPager selectingPager = new TeamPkTeamSelectingPager(activity,this);
+        rlTeamPkContent.removeAllViews();
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        int screenWidth = ScreenUtils.getScreenWidth();
+        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
+        params.rightMargin = wradio;
+        rlTeamPkContent.addView(selectingPager.getRootView(), params);
+
+    }
 
     /**
      * 展示pk 结果场景

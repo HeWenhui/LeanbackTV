@@ -5,9 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,19 +20,15 @@ import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.view.animation.GridLayoutAnimationController;
 import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
-import com.airbnb.lottie.LottieImageAsset;
 import com.airbnb.lottie.OnCompositionLoadedListener;
-import com.airbnb.lottie.PerformanceTracker;
-import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
@@ -42,9 +36,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.InputEffectTextView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
-import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
-import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
-import com.xueersi.xesalib.utils.uikit.imageloader.transformation.RoundedCornersTransformation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,10 +49,8 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
     private TeamPKBll mPKBll;
     private ImageView ivBg;
     private ImageView ivBgMask;
-    private RelativeLayout rlTeamSelecting;
     private LottieAnimationView lavTeamSelectAnimView;    // 分队仪式 特效展示 主 lottie view
-    private LottieAnimationView lavTeamSelectingAnimView; // 分队仪式进行中 lottie view
-    private static final long MARQUEE_DURATION = 1800;    // 跑马灯展示时间
+    private static final long MARQUEE_DURATION = 1800 *2;    // 跑马灯展示时间
     private final float LAST_ANIMPUASE_FRACTION = 0.32f;    // 最后一次lottie 动画 暂停位置
     private final  float TEAMINFOUI_HIDE_FRACTION = 0.57f;
     private final float  LAST_ANIM_RESUME_FRACTION = 0.55f; // 最后一次 lottie 暂停后 复播位置
@@ -90,9 +79,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         View view = View.inflate(mContext, R.layout.page_livevideo_teampk_teamselect, null);
         ivBg = view.findViewById(R.id.iv_teampk_team_select_bg);
         ivBgMask = view.findViewById(R.id.iv_teampk_bgmask);
-        rlTeamSelecting = view.findViewById(R.id.rl_teampk_team_selecteing);
         lavTeamSelectAnimView = view.findViewById(R.id.lav_teampk_team_select);
-        lavTeamSelectingAnimView = view.findViewById(R.id.lav_teampk_team_selecting);
         rlTeamIntroduceRoot = view.findViewById(R.id.rl_teampk_teaminfo_root);
 
         view.findViewById(R.id.btn_test).setOnClickListener(new View.OnClickListener() {
@@ -108,12 +95,6 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         return view;
     }
 
-    /**
-     * 展示分队进行中UI
-     */
-    public void showTeamSelecting() {
-
-    }
 
 
     /**
@@ -121,7 +102,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
      */
     boolean paused = false;
     boolean teamInfoUiReaMoved = false;
-    private void showTeamSelectedScene() {
+    public  void showTeamSelectedScene() {
        String  lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR +"team_selected/images";
        String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR +"team_selected/data.json";
         lavTeamSelectAnimView.setVisibility(View.VISIBLE);
