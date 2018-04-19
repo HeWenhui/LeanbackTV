@@ -518,6 +518,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (mVideoEntity != null && mVideoEntity.getIsAllowMarkpoint() == 1) {
             mLiveRemarkBll = new LiveRemarkBll(this, vPlayer);
             mLiveRemarkBll.setBottom(bottom);
+            mLiveRemarkBll.setLiveAndBackDebug(this);
             mLiveRemarkBll.setHttpManager(new LiveHttpManager(mContext));
             mLiveRemarkBll.setList(mVideoEntity.getLstPoint());
             mLiveRemarkBll.setLiveId(mVideoEntity.getLiveId());

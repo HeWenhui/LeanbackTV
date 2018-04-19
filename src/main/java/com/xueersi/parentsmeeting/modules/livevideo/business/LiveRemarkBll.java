@@ -47,7 +47,9 @@ import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ImageUtils;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
+import com.xueersi.xesalib.view.alertdialog.BaseAlertDialog;
 import com.xueersi.xesalib.view.alertdialog.ChooseListAlertDialog;
+import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -56,6 +58,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -103,11 +106,13 @@ public class LiveRemarkBll {
     private int englishH5Num=0;
     private int redPackNum=0;
     private int examNum=0;
-    private ChooseListAlertDialog mDialog;
+    private VerifyCancelAlertDialog mDialog;
     private boolean isVideoReady;
     private boolean isClassReady;
     private boolean isOnChat;
     private boolean isMarking;
+    private LiveBll mLiveBll;
+    private LiveAndBackDebug mLiveAndBackDebug;
 
     public LiveRemarkBll(Context context, PlayerService playerService){
         mContext=context;
@@ -221,6 +226,7 @@ public class LiveRemarkBll {
     }
     public void markFail(){
         XESToastUtils.showToast(mContext,"标记失败");
+        umsAgentMark(false);
         isMarking=false;
     }
 
@@ -264,6 +270,14 @@ public class LiveRemarkBll {
     public void setList(List<VideoPointEntity> list) {
         mList = list;
         setEntityNum(mList);
+    }
+
+    public void setLiveBll(LiveBll liveBll) {
+        mLiveBll = liveBll;
+    }
+
+    public void setLiveAndBackDebug(LiveAndBackDebug liveAndBackDebug) {
+        mLiveAndBackDebug = liveAndBackDebug;
     }
 
     public void setHttpManager(LiveHttpManager httpManager) {
@@ -320,6 +334,7 @@ public class LiveRemarkBll {
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                             XESToastUtils.showToast(mContext, "标记成功");
                             isMarking=false;
+                            umsAgentMark(true);
                             startCountDown();
                         }
 
@@ -499,6 +514,7 @@ public class LiveRemarkBll {
         rlMask.setVisibility(View.VISIBLE);
         mController.release();
         mAdapter.notifyDataSetChanged();
+        umsAgentMarkButton();
     }
 
     public void hideMarkPoints() {
@@ -586,7 +602,7 @@ public class LiveRemarkBll {
         private ImageView ivShot;
         private ImageView ivPlay;
         private TextView tvText;
-        private ChooseListAlertDialog mDialog;
+        private VerifyCancelAlertDialog mDialog;
         private View vDelete;
         private View root;
         private View vSig;
@@ -635,17 +651,9 @@ public class LiveRemarkBll {
             root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mPlayerService.seekTo((mEntity.getRelativeTime()>=5?mEntity.getRelativeTime()-5:0)*1000);
-                    /*if(!mEntity.isPlaying()){
-                        //ivPlay.setVisibility(View.GONE);
-
-                        for(int j=0;j<mList.size();j++){
-                            mList.get(j).setPlaying(false);
-
-                        }
-                        mEntity.setPlaying(true);
-                        mAdapter.notifyDataSetChanged();
-                    }*/
+                    mPlayerService.seekTo(((mEntity.getRelativeTime()>=5&&mEntity.getType()==999)?
+                            mEntity.getRelativeTime()-5:mEntity.getRelativeTime())*1000);
+                    umsAgentPlay(mEntity.getType());
                     if(LiveRemarkBll.this.mCallBack!=null){
                         LiveRemarkBll.this.mCallBack.onDataSucess();
                     }
@@ -654,18 +662,16 @@ public class LiveRemarkBll {
             vDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mDialog==null){
-                        mDialog=new ChooseListAlertDialog(mContext, ContextManager.getApplication(),false);
-                        mDialog.initInfo(new ChooseListAlertDialog.OnChooseItemClickImpl() {
+                    if(mDialog==null) {
+                        mDialog = new VerifyCancelAlertDialog(mContext, ContextManager.getApplication(), false,VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
+                        mDialog.initInfo("删除标记点", "是否删除标记点？");
+                        mDialog.setVerifyBtnListener(new View.OnClickListener() {
                             @Override
-                            public void onItemClick(int ii) {
-                                if(ii==R.string.live_mark_point_long_click_tip) {
-                                    deletPoint(mEntity);
-                                }else{
-                                    mDialog.cancelDialog();
-                                }
+                            public void onClick(View v) {
+                                deletPoint(mEntity);
+                                umsAgentDelete();
                             }
-                        },R.string.live_mark_point_long_click_tip,R.string.live_mark_point_long_click_cancel);
+                        });
                     }
                     LiveRemarkBll.this.mDialog=mDialog;
                     mDialog.showDialog();
@@ -720,5 +726,46 @@ public class LiveRemarkBll {
             tvText.setText(sb.toString());
             //tvText.setText("疑问点" + (i + 1));
         }
+    }
+    private void umsAgentMark(boolean success){
+        HashMap<String,String> map=new HashMap<>();
+        map.put("logtype","clickMark");
+        map.put("ex",success?"Y":"N");
+        mLiveBll.umsAgentDebug2("live_mark",map);
+    }
+    private void umsAgentMarkButton(){
+        HashMap<String,String> map=new HashMap<>();
+        map.put("logtype","clickMarkTag");
+        mLiveAndBackDebug.umsAgentDebug2("replay_mark",map);
+    }
+    private void umsAgentPlay(int type){
+        HashMap<String,String> map=new HashMap<>();
+        map.put("logtype","clickMarkPlay");
+        String markType="";
+        switch (type){
+            case CATEGORY_QUESTION:
+                markType="interact";
+                break;
+            case CATEGORY_REDPACKET:
+                markType="redPacket";
+                break;
+            case CATEGORY_EXAM:
+                markType="exam";
+                break;
+            case CATEGORY_H5COURSE_WARE:
+            case CATEGORY_ENGLISH_H5COURSE_WARE:
+                markType="other";
+                break;
+            default:
+                markType="query";
+                break;
+        }
+        map.put("marktype",markType);
+        mLiveAndBackDebug.umsAgentDebug2("replay_mark",map);
+    }
+    private void umsAgentDelete(){
+        HashMap<String,String> map=new HashMap<>();
+        map.put("logtype","clickMarkDelete");
+        mLiveAndBackDebug.umsAgentDebug2("replay_mark",map);
     }
 }
