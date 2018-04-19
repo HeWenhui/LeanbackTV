@@ -506,4 +506,38 @@
     <item name="rl_live_roleplayer_speech_volumewave_main" type="id" />
     <item name="vwv_livevideo_roleplayer_speech_volumewave" type="id" />
     <item name="ll_roleplayer_message_self_head_main" type="id" />
+
+    <!--战队pk-->
+    <item name="cad_livevideo_teampk_coinaward" type="id"/>
+    <item name="iv_teampk_team_select_bg" type="id"/>
+    <item name="rl_teampk_team_selecteing" type="id"/>
+    <item name="lav_teampk_team_select" type="id"/>
+    <item name="iv_teampk_bgmask" type="id"/>
+    <item name="lav_teampk_team_selecting" type="id"/>
+    <item name="rcl_teampk_teams" type="id"/>
+    <item name="rl_teampk_teaminfo_root" type="id"/>
+    <item name="rl_teampk_team_introduce" type="id"/>
+    <item name="rl_teampk_rule" type="id"/>
+    <item name="tv_teampk_team_name" type="id"/>
+    <item name="itv_teampk_team_info" type="id"/>
+    <item name="tv_teampk_rule_title" type="id"/>
+
+    <item name="rl_teampk_rule_1" type="id"/>
+    <item name="tv_teampk_rule_1" type="id"/>
+    <item name="tv_teampk_award_1" type="id"/>
+    <item name="rl_teampk_rule_2" type="id"/>
+    <item name="tv_teampk_rule_2" type="id"/>
+    <item name="tv_teampk_award_2" type="id"/>
+    <item name="rl_teampk_rule_3" type="id"/>
+    <item name="tv_teampk_rule_3" type="id"/>
+    <item name="tv_teampk_award_3" type="id"/>
+
+   <item name="tv_teampk_team_ready" type="id"/>
+    <item name="iv_teampk_btn_ok" type="id"/>
+    <item name="rcl_teampk_team" type="id"/>
+    <item name="rcl_teampk_teammember" type="id"/>
+    <item name="iv_teampk_member_head" type="id"/>
+    <item name="tv_teampk_member_name" type="id"/>
+    <item name="iv_teampk_finish_team_select" type="id"/>
+
 </resources>

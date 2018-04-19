@@ -1,0 +1,27 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/livevideo_zhandui_beijing_img_disable"
+    >
+
+
+     <com.xueersi.parentsmeeting.modules.livevideo.widget.CoinAwardDisplayer
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@id/cad_livevideo_teampk_coinaward"
+        android:layout_centerInParent="true"
+        />
+
+
+   <RelativeLayout
+        android:layout_width="133dp"
+        android:layout_height="167dp"
+        android:background="@drawable/shape_corners_7dp_b3000000"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        />
+
+
+
+
+</RelativeLayout>
