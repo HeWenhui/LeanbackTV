@@ -55,6 +55,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.FloatPermissionManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
@@ -562,7 +563,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 //判断当前屏幕方向
                 changeLOrP();
                 LiveVideoConfig.isloading = true;
-//                EventBus.getDefault().post(new MiniEvent("Refresh","",""));
             }
         });
         TextView totalnum = (TextView)mFloatView.findViewById(R.id.tv_apply_totalnum);
@@ -1242,24 +1242,41 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         Toast.makeText(this, "没有wifi", Toast.LENGTH_SHORT).show();
         onUserBackPressed();
     }
-    /*播放视频Activity最小化的测试*/
+
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(MiniEvent event) {
         if("Order".equals(event.getMin())){
             createRealVideo(event.getCourseId(),event.getClassId());
             onPauseNotStopVideo = true;
+            // 添加点击立即报名的日志
+            StableLogHashMap logHashMap = new StableLogHashMap("clickEnroll");
+            logHashMap.put("adsid", "" + event.getAdId());
+            logHashMap.addSno("5").addStable("2");
+            logHashMap.put("extra","点击了立即报名");
+            liveBll.umsAgentDebug(LiveVideoConfig.LEC_ADS, logHashMap.getData());
+            LiveVideoConfig.LECTUREADID = event.getAdId();
         }
-        // 04.03 从支付页面跳转回来的重新加载
-        if("Back".equals(event.getMin())){
-            FloatWindowManager.hide();
-            ViewGroup parents = (ViewGroup)videoView.getParent();
-            if(parents != null){
-                parents.removeView(videoView);
-                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT);
-                mParent.addView(videoView,params);
+        if("Invisible".equals(event.getMin())){
+            if(mPopupWindows != null){
+                mPopupWindows.dismiss();
             }
+        }
+        if("ConfirmClick".equals(event.getMin())){
+            // 添加用户点击提交订单日志
+            StableLogHashMap logHashMap = new StableLogHashMap("clickSubmitOrder");
+            logHashMap.put("adsid", "" + LiveVideoConfig.LECTUREADID);
+            logHashMap.addSno("6").addStable("2");
+            logHashMap.put("extra","点击了立即支付");
+            liveBll.umsAgentDebug(LiveVideoConfig.LEC_ADS, logHashMap.getData());
+        }
+        if("OrderPaySuccess".equals(event.getMin())){
+            // 添加用户购买成功的日志
+            StableLogHashMap logHashMap = new StableLogHashMap("purchaseSucceed");
+            logHashMap.put("adsid", "" + LiveVideoConfig.LECTUREADID);
+            logHashMap.addSno("7").addStable("2");
+            logHashMap.put("orderid",event.getCourseId());
+            logHashMap.put("extra","用户支付成功");
+            liveBll.umsAgentDebug(LiveVideoConfig.LEC_ADS, logHashMap.getData());
         }
 
     }

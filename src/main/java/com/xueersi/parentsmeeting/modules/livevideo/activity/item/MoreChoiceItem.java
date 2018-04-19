@@ -79,7 +79,7 @@ public class MoreChoiceItem implements AdapterItemInterface<MoreChoice.Choice> {
             @Override
             public void onClick(View view) {
                 if(mDetail.getLimit() > 0 && mDetail.getIsLearn() == 0){
-                    EventBus.getDefault().post(new MiniEvent("Order",mDetail.getCourseId(),mDetail.getClassId()));
+                    EventBus.getDefault().post(new MiniEvent("Order",mDetail.getCourseId(),mDetail.getClassId(),mDetail.getAdId()));
                 }
             }
         });

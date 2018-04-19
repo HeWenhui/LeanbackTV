@@ -135,4 +135,6 @@ public class LiveVideoConfig {
     /** 更多课程数量的记录 */
     public static int MORE_COURSE;
     public static Boolean isloading = false;
+    /** 讲座直播广告Id */
+    public static String LECTUREADID;
 }

@@ -154,7 +154,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private Long lastPlayTime;
     /** 播放异常统计开始时间 */
     private Long errorPlayTime;
-    // 03.17 定时获取聊天记录的任务
+    // 定时获取聊天记录的任务
     class ScanRunnable implements Runnable{
         HandlerThread handlerThread = new HandlerThread("ScanRunnable");
 
@@ -196,7 +196,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }
     };
 
-    // 03.22 日志的埋点
+    // 日志的埋点
     LiveAndBackDebug ums = new LiveAndBackDebug() {
         @Override
         public void umsAgentDebug(String eventId, Map<String, String> mData) {

@@ -453,7 +453,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                         @Override
                         public void onClick(View view) {
                             if(mChoices.get(mChoices.size()-1).getLimit() > 0 && mChoices.get(mChoices.size()-1).getIsLearn() == 0){
-                                EventBus.getDefault().post(new MiniEvent("Order",mChoices.get(mChoices.size()-1).getCourseId(),mChoices.get(mChoices.size()-1).getClassId()));
+                                EventBus.getDefault().post(new MiniEvent("Order",mChoices.get(mChoices.size()-1).getCourseId(),mChoices.get(mChoices.size()-1).getClassId(),mChoices.get(mChoices.size()-1).getAdId()));
                             }
 
                         }
@@ -470,6 +470,8 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                     mSecondSight.setVisibility(View.VISIBLE);
                     LiveVideoConfig.isloading = !LiveVideoConfig.isloading;
                 }
+                // 双重校验去除竖屏时抽屉面板的影藏
+                EventBus.getDefault().post(new MiniEvent("Invisible","","",""));
             }
 
         }
