@@ -39,6 +39,8 @@ public class LiveGetInfo {
     private String uname;
     /** 用户英文名 */
     private String en_name;
+    /** 用户昵称 */
+    private String nickname;
     /** 用户性别 */
     private String stuSex;
     /** 用户头像 */
@@ -354,10 +356,14 @@ public class LiveGetInfo {
         return uname;
     }
 
-    /**站立直播名字*/
+    /** 站立直播名字 */
     public String getStandLiveName() {
         if (!StringUtils.isEmpty(en_name)) {
             return en_name;
+        } else if (!StringUtils.isEmpty(stuName)) {
+            return stuName;
+        } else if (!StringUtils.isEmpty(nickname)) {
+            return nickname;
         }
         return uname;
     }
@@ -368,6 +374,14 @@ public class LiveGetInfo {
 
     public void setEn_name(String en_name) {
         this.en_name = en_name;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getStuSex() {

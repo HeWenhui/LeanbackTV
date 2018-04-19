@@ -62,6 +62,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             //getInfo.setIs_show_ranks("1");
             getInfo.setName(data.getString("name"));
             getInfo.setEn_name(data.optString("en_name"));
+            getInfo.setNickname(data.optString("nickname"));
             getInfo.setInstructions(data.getString("instructions"));
             getInfo.setNotice(data.getString("notice"));
             getInfo.setLiveType(data.getInt("liveType"));
