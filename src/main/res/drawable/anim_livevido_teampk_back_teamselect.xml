@@ -4,66 +4,114 @@
 
     <item
         android:drawable="@drawable/back_team_select_1"
-        android:duration="200" />
+        android:duration="80" />
 
     <item
         android:drawable="@drawable/back_team_select_2"
-        android:duration="200" />
+        android:duration="80" />
 
     <item
         android:drawable="@drawable/back_team_select_3"
-        android:duration="200" />
+        android:duration="80" />
 
 
     <item
         android:drawable="@drawable/back_team_select_4"
-        android:duration="200" />
+        android:duration="80" />
 
 
     <item
         android:drawable="@drawable/back_team_select_5"
-        android:duration="200" />
+        android:duration="80" />
 
 
     <item
         android:drawable="@drawable/back_team_select_6"
-        android:duration="200" />
+        android:duration="80" />
 
     <item
         android:drawable="@drawable/back_team_select_7"
-        android:duration="200" />
+        android:duration="80" />
 
     <item
         android:drawable="@drawable/back_team_select_8"
-        android:duration="200" />
+        android:duration="80" />
 
     <item
         android:drawable="@drawable/back_team_select_9"
-        android:duration="200" />
+        android:duration="80" />
 
     <item
         android:drawable="@drawable/back_team_select_10"
-        android:duration="200" />
+        android:duration="80" />
 
     <item
         android:drawable="@drawable/back_team_select_11"
-        android:duration="200" />
+        android:duration="80" />
 
     <item
         android:drawable="@drawable/back_team_select_12"
-        android:duration="200" />
+        android:duration="80" />
 
     <item
         android:drawable="@drawable/back_team_select_13"
-        android:duration="200" />
+        android:duration="80" />
 
     <item
         android:drawable="@drawable/back_team_select_14"
-        android:duration="200" />
-
+        android:duration="80" />
     <item
         android:drawable="@drawable/back_team_select_15"
-        android:duration="200" />
+        android:duration="80" />
+
+
+    <item
+        android:drawable="@drawable/back_team_select_16"
+        android:duration="80" />
+
+    <item
+        android:drawable="@drawable/back_team_select_17"
+        android:duration="80" />
+
+    <item
+        android:drawable="@drawable/back_team_select_18"
+        android:duration="80" />
+    <item
+        android:drawable="@drawable/back_team_select_19"
+        android:duration="80" />
+    <item
+        android:drawable="@drawable/back_team_select_20"
+        android:duration="80" />
+    <item
+        android:drawable="@drawable/back_team_select_21"
+        android:duration="80" />
+    <item
+        android:drawable="@drawable/back_team_select_22"
+        android:duration="80" />
+    <item
+        android:drawable="@drawable/back_team_select_23"
+        android:duration="80" />
+    <item
+        android:drawable="@drawable/back_team_select_24"
+        android:duration="80" />
+    <item
+        android:drawable="@drawable/back_team_select_25"
+        android:duration="80" />
+    <item
+        android:drawable="@drawable/back_team_select_26"
+        android:duration="80" />
+    <item
+        android:drawable="@drawable/back_team_select_27"
+        android:duration="80" />
+    <item
+        android:drawable="@drawable/back_team_select_28"
+        android:duration="80" />
+    <item
+        android:drawable="@drawable/back_team_select_29"
+        android:duration="80" />
+    <item
+        android:drawable="@drawable/back_team_select_30"
+        android:duration="80" />
 
 
 </animation-list>

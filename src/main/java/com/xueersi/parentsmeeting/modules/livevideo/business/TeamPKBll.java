@@ -90,7 +90,6 @@ public class TeamPKBll {
      * 显示分队进行中
      */
     public void showTeamSelecting(){
-
         TeamPkTeamSelectingPager selectingPager = new TeamPkTeamSelectingPager(activity,this);
         rlTeamPkContent.removeAllViews();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -99,14 +98,13 @@ public class TeamPKBll {
         int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
         params.rightMargin = wradio;
         rlTeamPkContent.addView(selectingPager.getRootView(), params);
-
     }
 
     /**
      * 展示pk 结果场景
      */
     public void showPkResultScene(){
-        TeamPkResultPager resultPager =  new TeamPkResultPager(activity);
+        TeamPkResultPager resultPager =  new TeamPkResultPager(activity,this);
         rlTeamPkContent.removeAllViews();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
@@ -117,15 +115,6 @@ public class TeamPKBll {
     }
 
 
-    public void showTeamPkView() {
-       /* rlTeamPkContent.removeAllViews();
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        int screenWidth = ScreenUtils.getScreenWidth();
-        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
-        params.rightMargin = wradio;
-        rlTeamPkContent.addView(teamPkPager.getRootView(), params);*/
-    }
 
 
     /**

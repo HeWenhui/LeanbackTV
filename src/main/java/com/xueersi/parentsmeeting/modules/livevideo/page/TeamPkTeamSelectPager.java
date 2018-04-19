@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.InputEffectTextView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamMemberGridlayoutManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
@@ -160,7 +161,8 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         Log.e(TAG,"=====>showTeamMembers called");
         rclTeamMember = mView.findViewById(R.id.rcl_teampk_teammember);
         rclTeamMember.setVisibility(View.VISIBLE);
-        rclTeamMember.setLayoutManager(new GridLayoutManager(mContext,5,LinearLayoutManager.VERTICAL,false));
+        rclTeamMember.setLayoutManager(new TeamMemberGridlayoutManager(mContext,5,
+                LinearLayoutManager.VERTICAL,false));
         //测试 队员UI
         ((ViewGroup)mView).setClipChildren(true);
         teamMemberAdapter = new TeamAdapter(ADAPTER_TYPE_TEAM_MEMBER);

@@ -544,5 +544,8 @@
     <item name="iv_teampk_enter_teamselect"  type="id"/>
     <item name="iv_teampk_enter_teamselect_anim" type="id"/>
 
+    <!--pk 结果-->
+    <item name="lav_teampk_pkresult_praise" type="id"/>
+
 
 </resources>
