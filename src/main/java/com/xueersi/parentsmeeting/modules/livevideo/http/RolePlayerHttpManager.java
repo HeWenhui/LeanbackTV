@@ -43,8 +43,9 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
      * @param answer
      * @param requestCallBack
      */
-    public void requestResult(String liveId, String testId, String roler, String answer, HttpCallBack requestCallBack) {
+    public void requestResult(String stuCouId, String liveId, String testId, String roler, String answer, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuCouId", stuCouId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", testId);
         params.addBodyParam("roler", roler);

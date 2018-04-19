@@ -166,7 +166,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        mWorkerThread = new WorkerThread(ContextManager.getApplication(), Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getStuId()), false);
+        mWorkerThread = new WorkerThread(ContextManager.getApplication(), Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getStuId()), false, true);
 
 
     }
@@ -382,7 +382,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                         }
                         if (upMessage.getRolePlayer().isSelfRole()) {
                             //自己朗读完毕
-                            mRolePlayBll.selfReadEnd(upMessage.getStars(), upMessage.getSpeechScore(), upMessage.getFluency(), upMessage.getAccuracy());
+                            mRolePlayBll.selfReadEnd(upMessage.getStars(), upMessage.getSpeechScore(), upMessage.getFluency(), upMessage.getAccuracy(), upMessage.getPosition());
                         }
                         mRolePlayerAdapter.updataSingleRow(lvReadList, upMessage);
 
@@ -443,7 +443,6 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         mWorkerThread.joinChannel(null, mEntity.getLiveId() + "_" + mEntity.getTestId() + "_" + mEntity.getTeamId(), Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getStuId()), new WorkerThread.OnJoinChannel() {
             @Override
             public void onJoinChannel(int joinChannel) {
-                mWorkerThread.getRtcEngine().setExternalAudioSource(true, 16000, 1);
                 Loger.i("RolePlayerDemoTest", "声网:" + joinChannel);
             }
         });
@@ -560,7 +559,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      * 结束RolePlayer
      */
     private void endRolePlayer() {
-        if (mEntity.getGoldCount() <= 0) {
+        if (!mEntity.isResult()) {
             mRolePlayBll.requestResult();
         } else {
             showResult();
@@ -635,7 +634,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                             dest[i * 2] = (byte) (shorts[i]);
                             dest[i * 2 + 1] = (byte) (shorts[i] >> 8);
                         }
-                        mWorkerThread.getRtcEngine().pushExternalAudioFrame(dest, readSize * 2);
+                        mWorkerThread.getRtcEngine().pushExternalAudioFrame(dest, System.currentTimeMillis());
                     }
                 });
     }
@@ -827,7 +826,20 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         mReadHandler.removeMessages(READ_MESSAGE);
     }
 
+    /**
+     * 更新指定对话的数据样式
+     *
+     * @param entity
+     */
+    public void updateRolePlayList(RolePlayerEntity.RolePlayerMessage entity) {
+        if (mRolePlayerAdapter != null && lvReadList != null) {
+            mRolePlayerAdapter.updataSingleRow(lvReadList, entity);
+        }
+    }
 
+    /**
+     * 带PCM音频数据的回调
+     */
     interface RoleEvaluatorListener extends EvaluatorListenerWithPCM, EvaluatorListener {
 
     }

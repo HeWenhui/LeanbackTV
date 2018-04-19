@@ -313,26 +313,50 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                             break;
                         case 100:
                             //收到对方的点赞
+
                             for (RolePlayerEntity.RolePlayerHead head : mRolePlayerEntity.getLstRoleInfo()) {
                                 if (head.getRoleId() == from) {
-                                    mRolePlayerPager.showDZ(head.getNickName());
+                                    final RolePlayerEntity.RolePlayerHead mHead = head;
+                                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (mHead != null) {
+                                                mRolePlayerPager.showDZ(mHead.getNickName());
+                                            }
+                                        }
+                                    });
                                     break;
                                 }
                             }
+
+
                             break;
                         case 110:
+                            //收到对方读完的消息
                             int position = msgObj.optInt("index");
                             JSONObject obj = msgObj.optJSONObject("data");
                             int totalScore = obj.optInt("totalScore");
                             int fluency = obj.optInt("fluency");
                             int accuracy = obj.optInt("accuracy");
+
                             if (totalScore > 0 && position >= 0 && position < mRolePlayerEntity.getLstRolePlayerMessage().size()) {
-                                mRolePlayerEntity.getLstRolePlayerMessage().get(position).setSpeechScore(totalScore);
-                                mRolePlayerEntity.getLstRolePlayerMessage().get(position).setFluency(fluency);
-                                mRolePlayerEntity.getLstRolePlayerMessage().get(position).setAccuracy(accuracy);
+                                final RolePlayerEntity.RolePlayerMessage message = mRolePlayerEntity.getMessageByIndex(position);
+                                if (message != null) {
+                                    message.setSpeechScore(totalScore);
+                                    message.setFluency(fluency);
+                                    message.setAccuracy(accuracy);
+                                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mRolePlayerPager.updateRolePlayList(message);
+                                        }
+                                    });
+
+                                }
                             }
-
-
+                            break;
+                        default:
+                            break;
                     }
                     break;
                 case 2000:
@@ -388,6 +412,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      * 提交结果
      */
     public void requestResult() {
+        mRolePlayerEntity.setResult(true);
         JSONObject obj = new JSONObject();
         try {
             obj.put("type", 1);
@@ -400,21 +425,12 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                 objAn.put("entranceTime", message.getMaxReadTime());
                 objAn.put("score", message.getSpeechScore());
 
-                if (message.getRolePlayer().isSelfRole()) {
+                if (message.getRolePlayer().isSelfRole() && message.getRolePlayer().getSpeechScore() > 1) {
                     JSONObject objData = new JSONObject();
                     objData.put("cont_score", message.getFluency());
                     objData.put("pron_score", message.getAccuracy());
                     objData.put("total_score", message.getSpeechScore());
                     objData.put("level", message.getLevel());
-
-
-                    StringBuilder builder = new StringBuilder();
-                    for (PhoneScore phoneScore : message.getLstPhoneScore()) {
-                        builder.append(phoneScore.getWord() + ":" + phoneScore.getScore() + ",");
-                    }
-                    JSONArray arrNbest = new JSONArray();
-                    arrNbest.put(builder.toString());
-                    objData.put("nbest", arrNbest);
                     objAn.put("alldata", objData);
                 } else {
                     objAn.put("alldata", "");
@@ -424,13 +440,13 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             }
             obj.put("answers", arrAnswer);
 
-            mRolePlayerHttpManager.requestResult(mLiveId, mRolePlayerEntity.getTestId(), mRolePlayerEntity.getSelfRoleHead().getRoleName(), obj.toString(), new HttpCallBack() {
+            mRolePlayerHttpManager.requestResult(mStuCouId, mLiveId, mRolePlayerEntity.getTestId(), mRolePlayerEntity.getSelfRoleHead().getRoleName(), obj.toString(), new HttpCallBack() {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                    int star = jsonObject.optInt("star");
-                    mRolePlayerEntity.setGoldCount(star);
-                    mRolePlayerPager.showResult();
+                    int gold = jsonObject.optInt("gold");
+
+                    mRolePlayerEntity.setGoldCount(gold);
                 }
 
                 @Override
@@ -493,14 +509,19 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      * @param fluency
      * @param accuracy
      */
-    public void selfReadEnd(int stars, int totalScore, int fluency, int accuracy) {
+    public void selfReadEnd(int stars, int totalScore, int fluency, int accuracy, int index) {
 
         JSONObject obj = new JSONObject();
         try {
-            obj.put("stars", stars);
-            obj.put("totalScore", totalScore);
-            obj.put("fluency", fluency);
-            obj.put("accuracy", accuracy);
+            obj.put("type", 110);
+            obj.put("content", "finish");
+            obj.put("index", index);
+            JSONObject data = new JSONObject();
+            data.put("stars", stars);
+            data.put("totalScore", totalScore);
+            data.put("fluency", fluency);
+            data.put("accuracy", accuracy);
+            obj.put("data", data);
             sendWebSMessage(3, 1, obj);
         } catch (JSONException e) {
             e.printStackTrace();

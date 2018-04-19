@@ -35,6 +35,9 @@ public class RolePlayerEntity {
     /** 自己最后一段话的index */
     private int selfLastIndex;
 
+    /** 已提交取得结果 */
+    private boolean isResult;
+
     /** 所有的角色信息 */
     private List<RolePlayerHead> lstRoleInfo = new ArrayList<>();
 
@@ -118,6 +121,14 @@ public class RolePlayerEntity {
 
     public void setSelfLastIndex(int selfLastIndex) {
         this.selfLastIndex = selfLastIndex;
+    }
+
+    public boolean isResult() {
+        return isResult;
+    }
+
+    public void setResult(boolean result) {
+        isResult = result;
     }
 
     /**
@@ -491,4 +502,17 @@ public class RolePlayerEntity {
         public static final int EMPTY = 5;
     }
 
+    /**
+     * 通过预埋的Index号来找对应的消息
+     *
+     * @return
+     */
+    public RolePlayerMessage getMessageByIndex(int index) {
+        for (RolePlayerMessage message : lstRolePlayerMessage) {
+            if (message.getPosition() == index) {
+                return message;
+            }
+        }
+        return null;
+    }
 }

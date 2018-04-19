@@ -37,6 +37,9 @@ public class WorkerThread extends Thread {
 
     private static final int ACTION_WORKER_PREVIEW = 0X2014;
 
+    /** 是否使用自采集音频 */
+    private boolean isExternalAudio;
+
     private static final class WorkerThreadHandler extends Handler {
 
         private WorkerThread mWorkerThread;
@@ -294,8 +297,10 @@ public class WorkerThread extends Thread {
             }
             mRtcEngine.setLogFile(new File(dir, "agora-rtc.log").getPath());
             mRtcEngine.enableDualStreamMode(true);
-            mRtcEngine.setRecordingAudioFrameParameters(16000,1,RAW_AUDIO_FRAME_OP_MODE_READ_WRITE,1024);
-            mRtcEngine.setExternalAudioSource(true, 16000, 1);
+            if (isExternalAudio) {
+                mRtcEngine.setRecordingAudioFrameParameters(16000, 1, RAW_AUDIO_FRAME_OP_MODE_READ_WRITE, 1024);
+                mRtcEngine.setExternalAudioSource(true, 16000, 1);
+            }
         }
         return mRtcEngine;
     }
@@ -339,5 +344,16 @@ public class WorkerThread extends Thread {
         this.mEngineConfig = new EngineConfig();
         this.mEngineConfig.mUid = mUid;
         this.mEngineEventHandler = new MyEngineEventHandler(mContext, this.mEngineConfig, feadback);
+    }
+
+    /**
+     * @param context
+     * @param mUid
+     * @param feadback
+     * @param isExternalAudio 是否使用自采集音频数据
+     */
+    public WorkerThread(Context context, int mUid, boolean feadback, boolean isExternalAudio) {
+        this(context, mUid, feadback);
+        this.isExternalAudio = isExternalAudio;
     }
 }
