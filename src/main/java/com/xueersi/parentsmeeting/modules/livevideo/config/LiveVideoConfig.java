@@ -135,5 +135,5 @@ public class LiveVideoConfig {
     /** RolePlay请求对话信息 */
     public static String URL_ROLEPLAY_TESTINFOS = AppConfig.HTTP_HOST + "/libarts/LiveCourse/getRolePlay";
     /** 提交接口 */
-    public static String URL_ROLEPLAY_RESULT = AppConfig.HTTP_HOST + "/libarts/LiveCourses/submitRolePlay";
+    public static String URL_ROLEPLAY_RESULT = AppConfig.HTTP_HOST + "/libarts/LiveCourse/submitRolePlay";
 }

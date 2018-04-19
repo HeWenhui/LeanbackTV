@@ -48,7 +48,7 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", testId);
         params.addBodyParam("roler", roler);
-        params.addBodyParam("answers", answer);
+        params.addBodyParam("data", answer);
         params.setWriteAndreadTimeOut(5);
         sendPost(LiveVideoConfig.URL_ROLEPLAY_RESULT, params, requestCallBack);
     }

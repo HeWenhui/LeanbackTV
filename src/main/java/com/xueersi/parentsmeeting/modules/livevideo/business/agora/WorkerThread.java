@@ -19,6 +19,9 @@ import io.agora.rtc.Constants;
 import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
 
+import static io.agora.rtc.Constants.RAW_AUDIO_FRAME_OP_MODE_READ_WRITE;
+import static io.agora.rtc.Constants.RAW_AUDIO_FRAME_OP_MODE_WRITE_ONLY;
+
 public class WorkerThread extends Thread {
     private final static String TAG = "WorkerThread";
 
@@ -291,6 +294,8 @@ public class WorkerThread extends Thread {
             }
             mRtcEngine.setLogFile(new File(dir, "agora-rtc.log").getPath());
             mRtcEngine.enableDualStreamMode(true);
+            mRtcEngine.setRecordingAudioFrameParameters(16000,1,RAW_AUDIO_FRAME_OP_MODE_READ_WRITE,1024);
+            mRtcEngine.setExternalAudioSource(true, 16000, 1);
         }
         return mRtcEngine;
     }

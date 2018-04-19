@@ -635,7 +635,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                             dest[i * 2] = (byte) (shorts[i]);
                             dest[i * 2 + 1] = (byte) (shorts[i] >> 8);
                         }
-                        mWorkerThread.getRtcEngine().pushExternalAudioFrame(dest, readSize);
+                        mWorkerThread.getRtcEngine().pushExternalAudioFrame(dest, readSize * 2);
                     }
                 });
     }
@@ -764,10 +764,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 holder.civHeadImg.setBorderWidth(SizeUtils.Dp2Px(mContext, 3));
                 holder.tvRoleName.setTextColor(Color.parseColor("#36BC9B"));
                 holder.ivHeadShadow.setVisibility(View.VISIBLE);
-//
-//                holder.civHeadImg.setFinishBorderColor(Color.GRAY);
-//                holder.civHeadImg.setUnFinishBorderColor(Color.RED);
-//                holder.civHeadImg.startCountDown(10);
+
             } else {
                 holder.civHeadImg.setBorderColor(Color.WHITE);
                 holder.ivHeadShadow.setVisibility(View.INVISIBLE);
