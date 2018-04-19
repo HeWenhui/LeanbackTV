@@ -44,12 +44,14 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     QuestionSwitch questionSwitch;
     private String headUrl;
     private String userName;
+    private LiveBll liveBll;
 
     public LiveStandVoiceAnswerCreat(QuestionSwitch questionSwitch) {
         this.questionSwitch = questionSwitch;
     }
 
-    public LiveStandVoiceAnswerCreat(QuestionSwitch questionSwitch, String headUrl, String userName) {
+    public LiveStandVoiceAnswerCreat(LiveBll liveBll, QuestionSwitch questionSwitch, String headUrl, String userName) {
+        this.liveBll = liveBll;
         this.questionSwitch = questionSwitch;
         this.headUrl = headUrl;
         this.userName = userName;
@@ -150,6 +152,9 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                 }
             });
             isSuccess = true;
+            if (liveBll != null) {
+                liveBll.getStuGoldCount();
+            }
             // 回答错误提示
         } else if (entity.getResultType() == QUE_RES_TYPE2) {
             String path;

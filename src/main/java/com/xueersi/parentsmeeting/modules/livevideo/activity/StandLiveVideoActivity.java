@@ -25,7 +25,6 @@ import android.widget.Toast;
 import com.tal.speech.language.TalLanguage;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.business.AppBll;
-import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.event.AppEvent;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
@@ -947,7 +946,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         if (liveLazyBllCreat != null) {
             liveLazyBllCreat.setGetInfo(getInfo);
         }
-        englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveStandVoiceAnswerCreat(englishH5CoursewareBll.new LiveStandQuestionSwitchImpl(), getInfo.getHeadImgPath(), getInfo.getStandLiveName()));
+        englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveStandVoiceAnswerCreat(mLiveBll, englishH5CoursewareBll.new LiveStandQuestionSwitchImpl(), getInfo.getHeadImgPath(), getInfo.getStandLiveName()));
         String mode = mGetInfo.getMode();
         this.mode = mode;
         liveMediaControllerBottom.onModeChange(mode);

@@ -776,8 +776,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
                     answerReslut.onAnswerReslut(baseVideoQuestionEntity, entity);
                     if (entity != null) {
-                        VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
-                        int type = entity.getResultType();
                         if (entity.getIsAnswer() == 1) {
                             XESToastUtils.showToast(context, "您已经答过此题");
                         } else {
