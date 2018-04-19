@@ -296,7 +296,9 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             if(mPopupWindows != null){
                 mPopupWindows = null;
             }
-            showPopupwindowboard();
+            if(LiveVideoConfig.MORE_COURSE > 0){
+                showPopupwindowboard();
+            }
             rlAdvanceContent.setVisibility(View.GONE);
         } else {
             lp.height = RelativeLayout.LayoutParams.MATCH_PARENT;
@@ -1870,7 +1872,9 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                         mPopupWindows.dismiss();
                         mPopupWindows = null;
                     }
-                    showPopupwindowboard();
+                    if(LiveVideoConfig.MORE_COURSE > 0){
+                        showPopupwindowboard();
+                    }
                 }else{
                     if(mPopupWindows != null) {
                         mPopupWindows.dismiss();

@@ -535,7 +535,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     protected void onPlayOpenStart() {
         setFirstBackgroundVisible(View.VISIBLE);
         findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
-        if(mIsLand){
+        if(mIsLand && LiveVideoConfig.MORE_COURSE > 0){
             showPopupwindow();
         }
     }
@@ -1389,7 +1389,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
         //关闭悬浮窗
-//        FloatActionController.getInstance().stopMonkServer(this);
         FloatWindowManager.hide();
     }
 

@@ -149,6 +149,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     private LinearLayout mSecondSight;
     private LinearLayout mAdvance;
     private TextView mLimitnum;
+    private ImageView mUnapplyed;
     private Handler mHandler;
     private BroadcastReceiver receiver;
     public LiveMessagePortPager(Context context, QuestionBll questionBll,
@@ -186,6 +187,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
         mApplyNum = (TextView)mView.findViewById(R.id.tv_apply_number);
         mShutDowm = (ImageButton)mView.findViewById(R.id.ib_back);
         mLimitnum = (TextView)mView.findViewById(R.id.tv_limitnum);
+        mUnapplyed = (ImageView)mView.findViewById(R.id.iv_unapply);
         mMorecourse = (ListView)mView.findViewById(R.id.morecourse_list);
         tvMessageCount = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
         lvMessage = (ListView) mView.findViewById(R.id.lv_livevideo_message);
@@ -444,9 +446,11 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                         mApplyButton.setBackgroundResource(R.drawable.bg_apply);
                     }
                     if(mChoices.get(mChoices.size()-1).getLimit() == 0){
-                        mApplyButton.setText("");
-                        mApplyButton.setTextColor(Color.parseColor("#999999"));
-                        mApplyButton.setBackgroundResource(R.drawable.cannotapply);
+                        mApplyButton.setVisibility(View.GONE);
+                        mUnapplyed.setVisibility(View.VISIBLE);
+                    }else{
+                        mApplyButton.setVisibility(View.VISIBLE);
+                        mUnapplyed.setVisibility(View.GONE);
                     }
                     // 04.09 跳转支付页面
                     mApplyButton.setOnClickListener(new View.OnClickListener() {

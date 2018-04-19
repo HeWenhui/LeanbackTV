@@ -20,7 +20,7 @@
                     android:layout_height="wrap_content"/>
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="40dp">
+                    android:layout_height="wrap_content">
                     <TextView
                         android:id="@+id/tv_limit_num"
                         android:text="剩余名额"
@@ -37,10 +37,18 @@
                         android:textColor="#F13232"
                         android:background="@drawable/bg_apply"
                         android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
+                        android:layout_marginTop="8dp"
                         android:layout_width="75dp"
                         android:layout_marginRight="20dp"
                         android:layout_height="27dp"/>
+                    <ImageView
+                        android:visibility="gone"
+                        android:id="@+id/iv_unapply"
+                        android:background="@drawable/cannotapply"
+                        android:layout_alignParentRight="true"
+                        android:layout_width="wrap_content"
+                        android:layout_marginRight="20dp"
+                        android:layout_height="wrap_content"/>
 
                 </RelativeLayout>
 

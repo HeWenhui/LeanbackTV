@@ -7,6 +7,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
@@ -28,6 +29,7 @@ public class MoreChoiceItem implements AdapterItemInterface<MoreChoice.Choice> {
     private TextView mCourseName;
     private TextView mLimitNum;
     private Button mToApply;
+    private ImageView mUnapplyed;
     private Activity mActivity;
 
     public MoreChoiceItem(Context context, MoreChoice entity) {
@@ -46,6 +48,7 @@ public class MoreChoiceItem implements AdapterItemInterface<MoreChoice.Choice> {
         mCourseName = (TextView)view.findViewById(R.id.tv_course_name);
         mLimitNum = (TextView)view.findViewById(R.id.tv_limit_num);
         mToApply = (Button)view.findViewById(R.id.bt_to_apply);
+        mUnapplyed = (ImageView)view.findViewById(R.id.iv_unapply);
     }
 
     @Override
@@ -70,9 +73,11 @@ public class MoreChoiceItem implements AdapterItemInterface<MoreChoice.Choice> {
             mToApply.setBackgroundResource(R.drawable.bg_apply);
         }
         if(mDetail.getLimit() == 0){
-            mToApply.setText("");
-            mToApply.setTextColor(Color.parseColor("#999999"));
-            mToApply.setBackgroundResource(R.drawable.cannotapply);
+            mToApply.setVisibility(View.GONE);
+            mUnapplyed.setVisibility(View.VISIBLE);
+        }else{
+            mToApply.setVisibility(View.VISIBLE);
+            mUnapplyed.setVisibility(View.GONE);
         }
 
         mToApply.setOnClickListener(new View.OnClickListener() {

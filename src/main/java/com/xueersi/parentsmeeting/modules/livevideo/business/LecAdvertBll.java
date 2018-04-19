@@ -93,6 +93,16 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                             liveBll.umsAgentDebug(eventid, logHashMap.getData());
                             return;
                         }
+                        if("0".equals(lecAdvertEntity.limit)){
+                            // 已报满的情况也不弹出广告
+                            StableLogHashMap logHashMap = new StableLogHashMap("interactiveAdsShown");
+                            logHashMap.put("adsid", "" + lecAdvertEntity.id);
+                            logHashMap.addSno("4").addStable("1").addExN();
+                            logHashMap.addNonce("" + lecAdvertEntity.nonce);
+                            logHashMap.put("extra","此广告已报满");
+                            liveBll.umsAgentDebug(eventid, logHashMap.getData());
+                            return;
+                        }
                         lecAdvertager = new LecAdvertPager(context, lecAdvertEntity, LecAdvertBll.this, liveid, liveBll);
                         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                         bottomContent.addView(lecAdvertager.getRootView(), lp);
