@@ -307,7 +307,7 @@ public class LiveRemarkBll {
         try {
             final long pkt = ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo().pkt / 1000;
             final long cache = ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration() / 1000;
-            final long time = pkt - cache + offSet;
+            final long time = pkt - cache + offSet-8;
             Loger.i(TAG, "frameTime:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo().pkt / 1000);
             Loger.i(TAG, "cacheTime:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration() / 1000);
             Loger.i(TAG, "offset:" + offSet + "  time:" + time + "   sysTime:" + System.currentTimeMillis());
@@ -655,8 +655,7 @@ public class LiveRemarkBll {
             root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mPlayerService.seekTo(((mEntity.getRelativeTime() >= 8 && mEntity.getType() == 999) ?
-                            mEntity.getRelativeTime() - 8 : mEntity.getRelativeTime()) * 1000);
+                    mPlayerService.seekTo((mEntity.getRelativeTime() <0?0:mEntity.getRelativeTime()) * 1000);
                     umsAgentPlay(mEntity.getType());
                     if (LiveRemarkBll.this.mCallBack != null) {
                         LiveRemarkBll.this.mCallBack.onDataSucess();
