@@ -6,12 +6,15 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
+import com.xueersi.parentsmeeting.event.MiniEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.LecAdvertLog;
 import com.xueersi.xesalib.utils.log.Loger;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
@@ -84,6 +87,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                         Intent intent = new Intent();
                         intent.setAction("refreshadvertisementlist");
                         context.sendBroadcast(intent);
+                        EventBus.getDefault().post(new MiniEvent("Advertisement","","",""));
                         if (lecAdvertager != null) {
                             return;
                         }

@@ -1289,6 +1289,12 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             logHashMap.put("extra","用户支付成功");
             liveBll.umsAgentDebug(LiveVideoConfig.LEC_ADS, logHashMap.getData());
         }
+        if("Advertisement".equals(event.getMin())){
+            // 收到广告指令就弹出面板抽屉
+            if(mIsLand && LiveVideoConfig.MORE_COURSE > 0){
+                showPopupwindow();
+            }
+        }
 
     }
 
