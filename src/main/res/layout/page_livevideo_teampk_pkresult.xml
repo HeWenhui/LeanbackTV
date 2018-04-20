@@ -267,6 +267,8 @@
                android:id="@id/rcl_teampk_pkresult_contribution_rank"
                android:layout_alignLeft="@id/rl_teampk_pkresult_bottom_pb_container"
                android:layout_below="@id/rl_teampk_pkresult_bottom_pb_container"
+               android:scrollbars="none"
+               android:overScrollMode="never"
                />
 
            <ImageView
