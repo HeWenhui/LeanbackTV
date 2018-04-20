@@ -151,67 +151,28 @@ public class LiveRemarkBll {
                     return;
                 }
                 if (Math.round(vdfps) == 12) {
-                    //mTimer.cancel();
-                    Loger.i(TAG, "dfps   " + vdfps);
-                    FrameInfo frameInfo = ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo();
-                    offSet = System.currentTimeMillis() / 1000 + sysTimeOffset - frameInfo.pkt / 1000;
-                    Loger.i(TAG, "nowtime  " + frameInfo.nowTime + "   dts     " + frameInfo.pkt_dts
-                            + "   pkt   " + frameInfo.pkt + "  cache:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration());
-                    //setBtEnable(true);
-                    setVideoReady(true);
-                    mTimer.cancel();
-                    mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
+                    mHttpManager.getCurTime(new HttpCallBack(false) {
                         @Override
-                        public void onClick(final View v) {
-                            if (isMarking) {
-                                return;
-                            }
-                            final LiveTextureView liveTextureView = (LiveTextureView) ((Activity) mContext).findViewById(R.id.ltv_course_video_video_texture);
-                            if (liveTextureView == null) {
-                                return;
-                            }
-                            if (mPlayerService.getPlayer() == null) {
-                                XESToastUtils.showToast(mContext, "标记失败");
-                                return;
-                            }
-                            isMarking = true;
-                            final LiveVideoView liveVideoView = (LiveVideoView) ((Activity) mContext).findViewById(R.id.vv_course_video_video);
-//                liveVideoView.setVisibility(View.INVISIBLE);
-                            ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
-                            v.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
-                                    v.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
-                                            v.postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    Bitmap bitmap = liveTextureView.getBitmap();
-                                                    if (bitmap == null) {
-                                                        markFail();
-                                                        return;
-                                                    }
-                                                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, (int) videoWidth, displayHeight);
-                                                    bitmap = Bitmap.createScaledBitmap(bitmap, 320, 240, true);
-                                                    File saveDir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/save");
-                                                    if (!saveDir.exists()) {
-                                                        saveDir.mkdirs();
-                                                    }
-                                                    File file = new File(saveDir, "" + System.currentTimeMillis() + ".png");
-                                                    ImageUtils.save(bitmap, file, Bitmap.CompressFormat.JPEG);
-                                                    reMark(file);
-                                                    ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
-                                                }
-                                            }, 100);
-                                        }
-                                    }, 100);
-                                }
-                            }, 100);
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            Loger.i(TAG,responseEntity.getJsonObject().toString());
+                            long time=((JSONObject)responseEntity.getJsonObject()).optLong("time");
+                            setVideoOffset(time);
+                        }
+
+                        @Override
+                        public void onPmFailure(Throwable error, String msg) {
+                            super.onPmFailure(error, msg);
+                            setVideoOffset(0);
+                        }
+
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            super.onPmError(responseEntity);
+                            setVideoOffset(0);
                         }
                     });
+                    //mTimer.cancel();
+
 
                 }
 
@@ -223,6 +184,72 @@ public class LiveRemarkBll {
         mTimer = new Timer();
         mTimer.schedule(task, 1000, 1000);
         mCloudUploadBusiness = new XesCloudUploadBusiness(mContext);
+    }
+    private void setVideoOffset(long time){
+        FrameInfo frameInfo = ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo();
+        if(time==0) {
+            offSet = System.currentTimeMillis() / 1000 + sysTimeOffset - frameInfo.pkt / 1000;
+        }else{
+            offSet=time-frameInfo.pkt / 1000;
+        }
+        Loger.i(TAG, "nowtime  " + frameInfo.nowTime + "   dts     " + frameInfo.pkt_dts
+                + "   pkt   " + frameInfo.pkt + "  cache:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration()
+        +" systime:"+(System.currentTimeMillis() / 1000 + sysTimeOffset)+"   nettime:"+time);
+        //setBtEnable(true);
+        setVideoReady(true);
+        mTimer.cancel();
+        mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                if (isMarking) {
+                    return;
+                }
+                final LiveTextureView liveTextureView = (LiveTextureView) ((Activity) mContext).findViewById(R.id.ltv_course_video_video_texture);
+                if (liveTextureView == null) {
+                    return;
+                }
+                if (mPlayerService.getPlayer() == null) {
+                    XESToastUtils.showToast(mContext, "标记失败");
+                    return;
+                }
+                isMarking = true;
+                final LiveVideoView liveVideoView = (LiveVideoView) ((Activity) mContext).findViewById(R.id.vv_course_video_video);
+//                liveVideoView.setVisibility(View.INVISIBLE);
+                ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
+                v.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
+                        v.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
+                                v.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Bitmap bitmap = liveTextureView.getBitmap();
+                                        if (bitmap == null) {
+                                            markFail();
+                                            return;
+                                        }
+                                        bitmap = Bitmap.createBitmap(bitmap, 0, 0, (int) videoWidth, displayHeight);
+                                        bitmap = Bitmap.createScaledBitmap(bitmap, 320, 240, true);
+                                        File saveDir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/save");
+                                        if (!saveDir.exists()) {
+                                            saveDir.mkdirs();
+                                        }
+                                        File file = new File(saveDir, "" + System.currentTimeMillis() + ".png");
+                                        ImageUtils.save(bitmap, file, Bitmap.CompressFormat.JPEG);
+                                        reMark(file);
+                                        ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
+                                    }
+                                }, 100);
+                            }
+                        }, 100);
+                    }
+                }, 100);
+            }
+        });
     }
 
     public void markFail() {

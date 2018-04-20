@@ -865,6 +865,9 @@ public class LiveHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         sendPost(LiveVideoConfig.URL_LECTURELIVE_MORE_COURSE, params, requestCallBack);
     }
+    public void getCurTime(HttpCallBack callBack){
+        sendGetNoBusiness(LiveVideoConfig.URL_LIVE_GET_CURTIME,new HttpRequestParams(),callBack);
+    }
 
 
 }
