@@ -21,7 +21,9 @@ import android.widget.TextView;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.Top3FrameAnim;
@@ -56,6 +58,7 @@ public class RedPackagePage extends BasePager {
     /** 获取金币，点击的位置，1.在中间，2.在右边 */
     private int clickPackage = 1;
     private boolean isLive;
+    LiveAndBackDebug liveAndBackDebug;
     Top3FrameAnim top3FrameAnim;
     boolean viewAttached = true;
     String file1 = "live_stand/frame_anim/redpackage/1_enter";
@@ -73,7 +76,7 @@ public class RedPackagePage extends BasePager {
     String file13 = "live_stand/frame_anim/redpackage/13_team_other_loop";
     String file14 = "live_stand/frame_anim/redpackage/14_transition";
 
-    public RedPackagePage(Context context, int operateId, RedPackagePageAction redPackageAction, String userName, String headUrl, boolean isLive) {
+    public RedPackagePage(Context context, int operateId, RedPackagePageAction redPackageAction, String userName, String headUrl, boolean isLive, LiveAndBackDebug liveAndBackDebug) {
         super(context);
         this.operateId = operateId;
         this.redPackageAction = redPackageAction;
@@ -83,6 +86,7 @@ public class RedPackagePage extends BasePager {
         if (isLive) {
             top3FrameAnim = new Top3FrameAnim(context, rl_livevideo_redpackage_bg, stuHeadBitmap, frameAnimations);
         }
+        this.liveAndBackDebug = liveAndBackDebug;
         initData();
     }
 
@@ -204,6 +208,7 @@ public class RedPackagePage extends BasePager {
                                         }
                                         clickPackage = 2;
                                         redPackageAction.onPackageClick(operateId, clickPackage);
+                                        RedPackageStandLog.sno2_2(liveAndBackDebug, "" + operateId);
                                     }
                                 });
                             }
@@ -231,6 +236,7 @@ public class RedPackagePage extends BasePager {
                     @Override
                     public void onClick(View view) {
                         click.set(true);
+                        RedPackageStandLog.sno2(liveAndBackDebug, "" + operateId);
                         iv_livevideo_redpackage_bg.setOnClickListener(null);
                         if (finalBtframeAnimation != null) {
                             finalBtframeAnimation.pauseAnimation();
@@ -536,6 +542,7 @@ public class RedPackagePage extends BasePager {
             goldTeamStatus = entity;
             return;
         }
+        RedPackageStandLog.sno3(liveAndBackDebug, "" + operateId);
         goldTeamStatus = entity;
         ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
         if (rl_livevideo_redpackage_teams.getChildCount() == students.size()) {//没有新数据了
@@ -874,6 +881,7 @@ public class RedPackagePage extends BasePager {
 
                     }
                 }, students);
+                RedPackageStandLog.sno4(liveAndBackDebug, "" + operateId);
 //                String path = file15;
 //                FrameAnimation btframeAnimation2 =
 //                        FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, path, 50, false);

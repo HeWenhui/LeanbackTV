@@ -503,7 +503,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                 showName = mMyInfo.getNickName();
             }
             headUrl = mMyInfo.getHeadImg();
-            redPackageStandBll = new RedPackageStandBll(this, false);
+            redPackageStandBll = new RedPackageStandBll(this, false, this);
             redPackageStandBll.setVSectionID(mVideoEntity.getLiveId());
             redPackageStandBll.setUserName(showName);
             redPackageStandBll.setHeadUrl(headUrl);

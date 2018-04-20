@@ -441,7 +441,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         liveMessageBll.setQuestionBll(questionBll);
         videoChatBll = new VideoChatBll(this);
         rollCallBll = new RollCallBll(this);
-        redPackageBll = new RedPackageStandBll(this, true);
+        redPackageBll = new RedPackageStandBll(this, true, mLiveBll);
         learnReportBll = new LearnReportBll(this);
         h5CoursewareBll = new H5CoursewareBll(this);
         englishH5CoursewareBll = new EnglishH5CoursewareBll(this);

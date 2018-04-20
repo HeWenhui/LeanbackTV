@@ -9,12 +9,12 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
-import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RedPackagePage;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 
 import java.io.File;
@@ -41,13 +41,15 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     private String headUrl;
     private String userName;
     private boolean isLive;
+    LiveAndBackDebug liveAndBackDebug;
 
-    public RedPackageStandBll(Activity activity, boolean isLive) {
+    public RedPackageStandBll(Activity activity, boolean isLive, LiveAndBackDebug liveAndBackDebug) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
         this.activity = activity;
         this.isLive = isLive;
+        this.liveAndBackDebug = liveAndBackDebug;
     }
 
     public void setReceiveGold(ReceiveGold receiveGold) {
@@ -124,6 +126,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     private void showRedPacket(final int operateId) {
         mLogtf.d("showRedPacket:operateId=" + operateId);
 //        rlRedpacketContent.removeAllViews();
+        RedPackageStandLog.sno1(liveAndBackDebug, "" + operateId);
         final RedPackagePage oldRedPackagePage = redPackagePage;
         redPackagePage = new RedPackagePage(activity, operateId, new RedPackagePage.RedPackagePageAction() {
 
@@ -264,7 +267,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                     oldRedPackagePage.onOtherPackage();
                 }
             }
-        }, userName, headUrl, isLive);
+        }, userName, headUrl, isLive, liveAndBackDebug);
         View view = redPackagePage.getRootView();
         packagePageHashMap.put("" + operateId, redPackagePage);
 //        view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
