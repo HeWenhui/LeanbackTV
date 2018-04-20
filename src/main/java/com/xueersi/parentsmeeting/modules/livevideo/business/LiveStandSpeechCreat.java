@@ -60,18 +60,18 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         }
 
         @Override
-        public void umsAgentDebug(String eventId, Map<String, String> mData) {
-            action.umsAgentDebug(eventId, mData);
+        public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
+            action.umsAgentDebugSys(eventId, mData);
         }
 
         @Override
-        public void umsAgentDebug2(String eventId, Map<String, String> mData) {
-            action.umsAgentDebug2(eventId, mData);
+        public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
+            action.umsAgentDebugInter(eventId, mData);
         }
 
         @Override
-        public void umsAgentDebug3(String eventId, Map<String, String> mData) {
-            action.umsAgentDebug3(eventId, mData);
+        public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
+            action.umsAgentDebugPv(eventId, mData);
         }
 
         @Override

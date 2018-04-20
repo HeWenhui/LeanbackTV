@@ -2,17 +2,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.media.Image;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.text.style.TextAppearanceSpan;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +23,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SlowHorizontalScrollView;
-import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 
@@ -361,13 +355,13 @@ public class LiveAutoNoticeBll {
         } else {
             map.put("whisperreq", "fail");
         }
-        mLiveBll.umsAgentDebug3("sci_whisper_func", map);
+        mLiveBll.umsAgentDebugPv("sci_whisper_func", map);
     }
     /**脏词入库请求日志*/
     private void umsAgentReq(boolean isSuccess){
         HashMap<String,String> map=new HashMap<>();
         map.put("chattexttype","11");
         map.put("whisperwarningreq",isSuccess?"success":"fail");
-        mLiveBll.umsAgentDebug3("sci_whisper_func",map);
+        mLiveBll.umsAgentDebugPv("sci_whisper_func",map);
     }
 }

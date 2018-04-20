@@ -563,7 +563,7 @@ public class AnswerRankBll {
                 eventId = "";
                 break;
         }
-        mLiveBll.umsAgentDebug3(eventId, map);
+        mLiveBll.umsAgentDebugPv(eventId, map);
     }
 
     /**

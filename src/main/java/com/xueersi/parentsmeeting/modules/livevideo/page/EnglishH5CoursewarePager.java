@@ -100,7 +100,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         StableLogHashMap logHashMap = new StableLogHashMap("coursewareEnd");
         logHashMap.put("coursewareid", id);
         logHashMap.put("coursewaretype", courseware_type);
-        liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
     @Override
@@ -113,7 +113,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         logHashMap.put("coursewaretype", courseware_type);
         logHashMap.put("status", "success");
         logHashMap.put("loadurl", url);
-        liveAndBackDebug.umsAgentDebug(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
     }
 
     @Override
@@ -125,7 +125,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         logHashMap.put("status", "fail");
         logHashMap.put("loadurl", url);
         logHashMap.put("msg", description);
-        liveAndBackDebug.umsAgentDebug(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
     }
 
     public void onBack() {
@@ -134,7 +134,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         logHashMap.put("coursewaretype", courseware_type);
         logHashMap.put("closetype", "clickBackButton");
         logHashMap.put("isFinish", "" + isFinish);
-        liveAndBackDebug.umsAgentDebug(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
     }
 
     public void close() {
@@ -153,7 +153,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
             logHashMap.put("coursewareid", id);
             logHashMap.put("coursewaretype", courseware_type);
             logHashMap.put("closetype", "clickWebCloseButton");
-            liveAndBackDebug.umsAgentDebug(eventId, logHashMap.getData());
+            liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
             return true;
         }
         if (url.contains("https://submit.com")) {

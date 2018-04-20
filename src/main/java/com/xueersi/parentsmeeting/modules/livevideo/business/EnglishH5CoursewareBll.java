@@ -336,7 +336,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         logHashMap.put("coursewareid", videoQuestionH5Entity.id);
         logHashMap.put("coursewaretype", videoQuestionH5Entity.courseware_type);
         logHashMap.put("loadurl", videoQuestionH5Entity.url);
-        mLiveBll.umsAgentDebug2(eventId, logHashMap.getData());
+        mLiveBll.umsAgentDebugInter(eventId, logHashMap.getData());
         h5CoursewarePager = new EnglishH5CoursewarePager(context, false, mVSectionID, videoQuestionH5Entity.url, videoQuestionH5Entity.id,
                 videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, new OnH5ResultClose() {
             @Override
@@ -531,18 +531,18 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     }
 
     @Override
-    public void umsAgentDebug(String eventId, Map<String, String> mData) {
-        mLiveBll.umsAgentDebug(eventId, mData);
+    public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
+        mLiveBll.umsAgentDebugSys(eventId, mData);
     }
 
     @Override
-    public void umsAgentDebug2(String eventId, Map<String, String> mData) {
-        mLiveBll.umsAgentDebug2(eventId, mData);
+    public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
+        mLiveBll.umsAgentDebugInter(eventId, mData);
     }
 
     @Override
-    public void umsAgentDebug3(String eventId, Map<String, String> mData) {
-        mLiveBll.umsAgentDebug3(eventId, mData);
+    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
+        mLiveBll.umsAgentDebugPv(eventId, mData);
     }
 
     public interface OnH5ResultClose {
@@ -784,7 +784,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                             logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
                             logHashMap.put("sourcetype", "h5ware").addNonce(baseVideoQuestionEntity.nonce);
                             logHashMap.addExY().addExpect("0").addSno("5").addStable("1");
-                            umsAgentDebug3(voicequestionEventId, logHashMap.getData());
+                            umsAgentDebugPv(voicequestionEventId, logHashMap.getData());
                         }
                     }
                     if (voiceAnswerPager instanceof VoiceAnswerPager) {

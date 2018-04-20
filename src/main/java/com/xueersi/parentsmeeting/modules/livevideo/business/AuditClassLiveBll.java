@@ -811,7 +811,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                         logHashMap.put("playurl", playUrl);
                         String nonce = jsonObject.optString("nonce");
                         logHashMap.addSno("4").addNonce(nonce).addExY().addStable("1");
-                        umsAgentDebug(liveListenEventid, logHashMap.getData());
+                        umsAgentDebugSys(liveListenEventid, logHashMap.getData());
                     }
                     break;
                     case XESCODE.STUDENT_MODECHANGE: {
@@ -1963,7 +1963,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
      * @param mData
      */
     @Override
-    public void umsAgentDebug(String eventId, final Map<String, String> mData) {
+    public void umsAgentDebugSys(String eventId, final Map<String, String> mData) {
         mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getUname());
         StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
@@ -1988,7 +1988,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
      * @param mData
      */
     @Override
-    public void umsAgentDebug2(String eventId, final Map<String, String> mData) {
+    public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
         mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getStuName());
         StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
@@ -2013,7 +2013,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
      * @param mData
      */
     @Override
-    public void umsAgentDebug3(String eventId, final Map<String, String> mData) {
+    public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
         mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getStuName());
         StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();

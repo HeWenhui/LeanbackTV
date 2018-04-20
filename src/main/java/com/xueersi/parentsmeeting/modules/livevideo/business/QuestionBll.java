@@ -486,14 +486,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             logHashMap.put("testtype", "" + videoQuestionLiveEntity.type);
             logHashMap.put("testid", "" + videoQuestionLiveEntity.id);
             logHashMap.put("stable", "2");
-            umsAgentDebug(voicequestionEventId, logHashMap.getData());
+            umsAgentDebugSys(voicequestionEventId, logHashMap.getData());
         } else {
             Map<String, String> mData = new HashMap<>();
             mData.put("testtype", "" + videoQuestionLiveEntity.type);
             mData.put("testid", "" + videoQuestionLiveEntity.id);
             mData.put("logtype", "receiveInteractTest");
             mData.put("ish5test", "" + videoQuestionLiveEntity.isTestUseH5);
-            umsAgentDebug(questionEventId, mData);
+            umsAgentDebugSys(questionEventId, mData);
         }
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
         if (IS_SCIENCE && !"4".equals(videoQuestionLiveEntity.type)) {//不是语音评测
@@ -693,7 +693,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
                         logHashMap.put("sourcetype", "h5test").addNonce(baseVideoQuestionEntity.nonce);
                         logHashMap.addExY().addExpect("0").addSno("5").addStable("1");
-                        umsAgentDebug3(voicequestionEventId, logHashMap.getData());
+                        umsAgentDebugPv(voicequestionEventId, logHashMap.getData());
                     } else {
                         // 回答正确提示
                         if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
@@ -896,7 +896,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void understand(final String nonce) {
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "understandReceive");
-        umsAgentDebug(understandEventId, mData);
+        umsAgentDebugSys(understandEventId, mData);
         Runnable runnable = new Runnable() {
 
             @Override
@@ -928,7 +928,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         mData.put("nonce", "" + nonce);
                         mData.put("sno", "3");
                         mData.put("stable", "1");
-                        umsAgentDebug2(understandEventId, mData);
+                        umsAgentDebugInter(understandEventId, mData);
                     }
                 };
                 activity.findViewById(R.id.tv_livevideo_understand_donotunderstand).setOnClickListener(listener);
@@ -938,7 +938,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         if (mIsShowUnderstand) {
                             Map<String, String> mData = new HashMap<>();
                             mData.put("logtype", "understandTimeout");
-                            umsAgentDebug(understandEventId, mData);
+                            umsAgentDebugSys(understandEventId, mData);
                             removeQuestionViews();
                             mVPlayVideoControlHandler.sendEmptyMessage(NO_UNDERSTAND);
                         }
@@ -952,7 +952,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mData.put("ex", "Y");
                 mData.put("sno", "2");
                 mData.put("stable", "1");
-                umsAgentDebug3(understandEventId, mData);
+                umsAgentDebugPv(understandEventId, mData);
             }
         };
         mVPlayVideoControlHandler.post(runnable);
@@ -978,7 +978,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 Map<String, String> mData = new HashMap<>();
                 mData.put("logtype", "receiveExam");
                 mData.put("examid", num);
-                umsAgentDebug(examQuestionEventId, mData);
+                umsAgentDebugSys(examQuestionEventId, mData);
                 examQuestionPager = new ExamQuestionPager(activity, mLiveBll, QuestionBll.this, liveGetInfo.getStuId
                         (), liveGetInfo.getUname(), liveid, num, nonce, mAnswerRankBll == null ? "0" : mAnswerRankBll.getIsShow(), IS_SCIENCE, stuCouId);
                 rlQuestionContent.addView(examQuestionPager.getRootView());
@@ -1032,7 +1032,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         mData.put("logtype", "examClose");
                         mData.put("examid", examQuestionPager.getNum());
                         mData.put("closetype", "clickBackButton");
-                        umsAgentDebug(examQuestionEventId, mData);
+                        umsAgentDebugSys(examQuestionEventId, mData);
                     }
                     if (speechAssessmentPager != null) {
                         rlQuestionContent.removeView(speechAssessmentPager.getRootView());
@@ -1049,7 +1049,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         mData.put("testid", "" + questionWebPager.getTestId());
                         mData.put("closetype", "clickBackButton");
                         mData.put("logtype", "interactTestClose");
-                        umsAgentDebug(questionEventId, mData);
+                        umsAgentDebugSys(questionEventId, mData);
                     }
                     if (subjectResultPager != null) {
                         rlQuestionContent.removeView(subjectResultPager.getRootView());
@@ -1609,16 +1609,16 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
-    public void umsAgentDebug(String eventId, final Map<String, String> mData) {
-        mLiveBll.umsAgentDebug(eventId, mData);
+    public void umsAgentDebugSys(String eventId, final Map<String, String> mData) {
+        mLiveBll.umsAgentDebugSys(eventId, mData);
     }
 
-    public void umsAgentDebug2(String eventId, final Map<String, String> mData) {
-        mLiveBll.umsAgentDebug2(eventId, mData);
+    public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
+        mLiveBll.umsAgentDebugInter(eventId, mData);
     }
 
-    public void umsAgentDebug3(String eventId, final Map<String, String> mData) {
-        mLiveBll.umsAgentDebug3(eventId, mData);
+    public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
+        mLiveBll.umsAgentDebugPv(eventId, mData);
     }
 
     @Override

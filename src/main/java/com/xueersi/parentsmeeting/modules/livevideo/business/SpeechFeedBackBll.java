@@ -325,7 +325,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         map.put("command",cmd);
         map.put("status",""+micStatus);
         map.put("channelname",roomId);
-        liveBll.umsAgentDebug("live_voice",map);
+        liveBll.umsAgentDebugSys("live_voice",map);
     }
 
     /**
@@ -339,7 +339,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         map.put("ex","Y");
         map.put("logtype","joinChannelSuccess");
         map.put("channelname",roomId);
-        liveBll.umsAgentDebug("live_voice",map);
+        liveBll.umsAgentDebugSys("live_voice",map);
     }
 
     /**
@@ -354,7 +354,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         map.put("logtype","leaveChannel");
         map.put("channelname",roomId);
         map.put("duration",""+(System.currentTimeMillis()-joinTime)/1000);
-        liveBll.umsAgentDebug("live_voice",map);
+        liveBll.umsAgentDebugSys("live_voice",map);
     }
 
     /**
@@ -367,6 +367,6 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         map.put("stable","2");
         map.put("logtype","voiceInterationError");
         map.put("errcode",""+errCode);
-        liveBll.umsAgentDebug("live_voice",map);
+        liveBll.umsAgentDebugSys("live_voice",map);
     }
 }

@@ -17,7 +17,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.List;
-import java.util.UUID;
 import java.util.Vector;
 
 /**
@@ -170,7 +169,7 @@ public class AuditIRCMessage {
                                         logHashMap.put("nickname", sender);
                                         logHashMap.put("status", status);
                                         logHashMap.addSno("5").addNonce(nonce).addExY().addStable("1");
-                                        liveAndBackDebug.umsAgentDebug(eventid, logHashMap.getData());
+                                        liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
                                         return;
                                     } else {
                                         stuPushSuccess = true;
@@ -401,7 +400,7 @@ public class AuditIRCMessage {
                 logHashMap.put("status", "on");
                 logHashMap.put("nickname", mNickname);
                 logHashMap.addSno("1").addNonce(nonce).addExpect("1").addStable("1");
-                liveAndBackDebug.umsAgentDebug(eventid, logHashMap.getData());
+                liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -532,7 +531,7 @@ public class AuditIRCMessage {
             logHashMap.put("nickname", mNickname);
             logHashMap.put("time", "" + (System.currentTimeMillis() - enterTime) / 1000);
             logHashMap.addNonce(nonce).addSno("6").addExpect("1").addStable("1");
-            liveAndBackDebug.umsAgentDebug(eventid, logHashMap.getData());
+            liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -156,7 +156,7 @@ public class QuestionWebPager extends BasePager {
         Map<String, String> mData = new HashMap<>();
         mData.put("testid", "" + testId);
         mData.put("logtype", "interactTestEnd");
-        questionBll.umsAgentDebug(questionEventId, mData);
+        questionBll.umsAgentDebugSys(questionEventId, mData);
 //        wvSubjectWeb.loadUrl(String.format("javascript:examSubmitAll(" + code + ")"));
         isEnd = true;
         wvSubjectWeb.loadUrl(jsExamSubmitAll);
@@ -225,7 +225,7 @@ public class QuestionWebPager extends BasePager {
             mData.put("logtype", "interactTestDidLoad");
             mData.put("status", "success");
             mData.put("loadurl", url);
-            questionBll.umsAgentDebug(questionEventId, mData);
+            questionBll.umsAgentDebugSys(questionEventId, mData);
 //            super.onPageFinished(view, url);
         }
 
@@ -255,7 +255,7 @@ public class QuestionWebPager extends BasePager {
             mData.put("status", "fail");
             mData.put("loadurl", failingUrl);
             mData.put("msg", description);
-            questionBll.umsAgentDebug(questionEventId, mData);
+            questionBll.umsAgentDebugSys(questionEventId, mData);
         }
 
         @Override
@@ -277,7 +277,7 @@ public class QuestionWebPager extends BasePager {
                 mData.put("testid", "" + testId);
                 mData.put("closetype", "clickWebCloseButton");
                 mData.put("logtype", "interactTestClose");
-                questionBll.umsAgentDebug(questionEventId, mData);
+                questionBll.umsAgentDebugSys(questionEventId, mData);
             } else {
                 if (url.contains("xueersi.com")) {
                     view.loadUrl(url);
@@ -290,6 +290,6 @@ public class QuestionWebPager extends BasePager {
     public interface StopWebQuestion {
         void stopWebQuestion(BasePager pager, String testId);
 
-        void umsAgentDebug(String eventId, final Map<String, String> mData);
+        void umsAgentDebugSys(String eventId, final Map<String, String> mData);
     }
 }

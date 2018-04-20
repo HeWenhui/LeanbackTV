@@ -3727,7 +3727,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * @param mData
      */
     @Override
-    public void umsAgentDebug(String eventId, final Map<String, String> mData) {
+    public void umsAgentDebugSys(String eventId, final Map<String, String> mData) {
         mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getUname());
         StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
@@ -3753,7 +3753,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * @param mData
      */
     @Override
-    public void umsAgentDebug2(String eventId, final Map<String, String> mData) {
+    public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
         mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getStuName());
         StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
@@ -3779,7 +3779,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * @param mData
      */
     @Override
-    public void umsAgentDebug3(String eventId, final Map<String, String> mData) {
+    public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
         mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getStuName());
         StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
@@ -3806,7 +3806,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      */
     public void umsAgentSystemWithTeacherRole(String eventId, Map<String, String> data) {
         data.put("teacherrole", getMode().equals(LiveTopic.MODE_CLASS) ? "1" : "4");
-        umsAgentDebug(eventId, data);
+        umsAgentDebugSys(eventId, data);
     }
 
     /**
@@ -3817,7 +3817,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      */
     public void umsAgentInteractionWithTeacherRole(String eventId, Map<String, String> data) {
         data.put("teacherrole", getMode().equals(LiveTopic.MODE_CLASS) ? "1" : "4");
-        umsAgentDebug2(eventId, data);
+        umsAgentDebugInter(eventId, data);
     }
 
     /**
@@ -3828,7 +3828,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      */
     public void umsAgentShowWithTeacherRole(String eventId, Map<String, String> data) {
         data.put("teacherrole", getMode().equals(LiveTopic.MODE_CLASS) ? "1" : "4");
-        umsAgentDebug2(eventId, data);
+        umsAgentDebugInter(eventId, data);
     }
 
     /**

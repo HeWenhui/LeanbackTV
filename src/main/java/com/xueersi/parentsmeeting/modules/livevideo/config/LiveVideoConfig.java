@@ -114,6 +114,8 @@ public class LiveVideoConfig {
     public static String LEC_ADS = "lecture_ads";
     /** 直播-站立直播资源更新 */
     public static String LIVE_STAND_RES_UPDATE = "live_stand_res_update";
+    /** 直播-站立直播红包事件 */
+    public static String STAND_LIVE_GRANT = "standlive_grant";
 
     /** 直播时间-当天据算，live_expe_time按单个场次计算 */
     public static String LIVE_EXPE_TIME = "live_expe_time_all";

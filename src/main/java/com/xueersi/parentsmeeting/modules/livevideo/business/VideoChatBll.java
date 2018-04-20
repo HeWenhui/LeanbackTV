@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -395,7 +394,7 @@ public class VideoChatBll implements VideoChatAction {
 //                        mData.put("log_type", "getKick");
 //                        mData.put("teacher_type", from);
 //                        mData.put("status", finalContain ? "on" : "off");
-//                        liveBll.umsAgentDebug(eventId, mData);
+//                        liveBll.umsAgentDebugSys(eventId, mData);
                         micTipDialog.showDialog();
                     }
                     if (finalContain) {
@@ -572,7 +571,7 @@ public class VideoChatBll implements VideoChatAction {
                 } else {
                     StableLogHashMap logHashMap = new StableLogHashMap("getStopRaiseHand");
                     logHashMap.put("teacher_type", from);
-                    liveBll.umsAgentDebug(eventId, logHashMap.getData());
+                    liveBll.umsAgentDebugSys(eventId, logHashMap.getData());
                     isSuccess = false;
                     if (raiseHandDialog != null) {
                         raiseHandDialog.cancelDialog();
@@ -617,7 +616,7 @@ public class VideoChatBll implements VideoChatAction {
         mLogtf.d("requestAccept");
         StableLogHashMap logHashMap = new StableLogHashMap("getSelection");
         logHashMap.put("teacher_type", from);
-        liveBll.umsAgentDebug(eventId, logHashMap.getData());
+        liveBll.umsAgentDebugSys(eventId, logHashMap.getData());
         btRaiseHands.post(new Runnable() {
             @Override
             public void run() {
@@ -714,7 +713,7 @@ public class VideoChatBll implements VideoChatAction {
         StableLogHashMap logHashMap = new StableLogHashMap("getKick");
         logHashMap.put("teacher_type", from);
         logHashMap.put("status", status);
-        liveBll.umsAgentDebug(eventId, logHashMap.getData());
+        liveBll.umsAgentDebugSys(eventId, logHashMap.getData());
         if ("on".equals(status)) {
             startMicro("on", "", true, room, from);
             return;

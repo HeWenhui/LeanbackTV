@@ -2331,7 +2331,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 logHashMap.put("testid", "" + questionEntity.getvQuestionID());
                 logHashMap.put("sourcetype", sourcetype).addNonce(questionEntity.nonce);
                 logHashMap.addExY().addExpect("0").addSno("5").addStable("1");
-                umsAgentDebug3(voicequestionEventId, logHashMap.getData());
+                umsAgentDebugPv(voicequestionEventId, logHashMap.getData());
             } else {
                 initAnswerRightResult(entity.getGoldNum());
             }
@@ -2512,7 +2512,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     }
 
     @Override
-    public void umsAgentDebug(String eventId, Map<String, String> mData) {
+    public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
         MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         mData.put("uid", userInfoEntity.getStuId());
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
@@ -2528,7 +2528,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         UmsAgentManager.umsAgentDebug(this, appID, eventId, mData);
     }
 
-    public void umsAgentDebug2(String eventId, final Map<String, String> mData) {
+    public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
         MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         mData.put("uid", userInfoEntity.getStuId());
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
@@ -2544,7 +2544,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         UmsAgentManager.umsAgentOtherBusiness(this, appID, UmsConstants.uploadBehavior, mData);
     }
 
-    public void umsAgentDebug3(String eventId, final Map<String, String> mData) {
+    public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
         MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         mData.put("uid", userInfoEntity.getStuId());
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());

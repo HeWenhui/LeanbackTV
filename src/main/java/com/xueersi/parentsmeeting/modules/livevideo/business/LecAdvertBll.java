@@ -66,7 +66,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
         logHashMap.put("adsid", "" + lecAdvertEntity.id);
         logHashMap.addSno("3").addStable("2");
         logHashMap.addNonce("" + lecAdvertEntity.nonce);
-        liveBll.umsAgentDebug(eventid, logHashMap.getData());
+        liveBll.umsAgentDebugSys(eventid, logHashMap.getData());
         bottomContent.post(new Runnable() {
             @Override
             public void run() {

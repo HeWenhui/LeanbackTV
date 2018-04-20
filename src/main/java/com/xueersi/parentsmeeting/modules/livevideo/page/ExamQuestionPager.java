@@ -182,7 +182,7 @@ public class ExamQuestionPager extends BasePager {
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "examEnd");
         mData.put("examid", num);
-        mLiveBll.umsAgentDebug(examQuestionEventId, mData);
+        mLiveBll.umsAgentDebugSys(examQuestionEventId, mData);
     }
 
     public class MyWebChromeClient extends android.webkit.WebChromeClient {
@@ -248,7 +248,7 @@ public class ExamQuestionPager extends BasePager {
             mData.put("examid", num);
             mData.put("status", "success");
             mData.put("loadurl", url);
-            mLiveBll.umsAgentDebug(examQuestionEventId, mData);
+            mLiveBll.umsAgentDebugSys(examQuestionEventId, mData);
 //            super.onPageFinished(view, url);
         }
 
@@ -278,7 +278,7 @@ public class ExamQuestionPager extends BasePager {
             mData.put("status", "fail");
             mData.put("msg", description);
             mData.put("loadurl", failingUrl);
-            mLiveBll.umsAgentDebug(examQuestionEventId, mData);
+            mLiveBll.umsAgentDebugSys(examQuestionEventId, mData);
         }
 
         @Override
@@ -300,7 +300,7 @@ public class ExamQuestionPager extends BasePager {
                 mData.put("logtype", "examClose");
                 mData.put("examid", num);
                 mData.put("closetype", "clickWebCloseButton");
-                mLiveBll.umsAgentDebug(examQuestionEventId, mData);
+                mLiveBll.umsAgentDebugSys(examQuestionEventId, mData);
             } else {
                 if (url.contains("xueersi.com")) {
                     view.loadUrl(url);

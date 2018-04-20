@@ -189,7 +189,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mData.put("testid", id);
         mData.put("answer", content);
         mData.put("answertime", "" + time);
-        speechEvalAction.umsAgentDebug3(eventId, mData);
+        speechEvalAction.umsAgentDebugPv(eventId, mData);
     }
 
     public StandSpeechAssAutoPager(Context context, String liveid, String testId,
@@ -220,7 +220,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mData.put("testid", id);
         mData.put("answer", content);
         mData.put("answertime", "" + time);
-        speechEvalAction.umsAgentDebug3(eventId, mData);
+        speechEvalAction.umsAgentDebugPv(eventId, mData);
     }
 
     public String getId() {
@@ -457,7 +457,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mData.put("logtype", "startRecord");
         mData.put("testid", id);
         mData.put("islive", "" + isLive);
-        speechEvalAction.umsAgentDebug2(eventId, mData);
+        speechEvalAction.umsAgentDebugInter(eventId, mData);
         speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, learning_stage, new EvaluatorListener() {
             int lastVolume = 0;
 
@@ -477,7 +477,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     mData.put("logtype", "voiceTestClose");
                     mData.put("islive", "" + isLive);
                     mData.put("testid", "" + id);
-                    speechEvalAction.umsAgentDebug2(eventId, mData);
+                    speechEvalAction.umsAgentDebugInter(eventId, mData);
                     onEvaluatorSuccess(resultEntity, this);
 
 //                    resultEntity.setStatus(ResultEntity.ERROR);
@@ -843,7 +843,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         } else {
             mData.put("state", isEnd ? "endPublish" : "autoSubmit");
         }
-        speechEvalAction.umsAgentDebug3(eventId, mData);
+        speechEvalAction.umsAgentDebugPv(eventId, mData);
     }
 
     private void onEvaluatorError(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {
