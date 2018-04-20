@@ -102,6 +102,7 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         @Override
         public void onSpeechSuccess(String num) {
             action.onSpeechSuccess(num);
+            liveBll.getStuGoldCount();
         }
 
         @Override
