@@ -527,6 +527,8 @@ public class LiveRemarkBll {
     }
 
     public void setBtEnable(final boolean enable) {
+        Loger.i(TAG,"setBtEnable  "+"video:"+isVideoReady+"   class:"+isClassReady
+        +"   onchat:"+isOnChat);
         if (mLiveMediaControllerBottom == null) {
             return;
         }

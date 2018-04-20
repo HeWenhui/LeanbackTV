@@ -765,6 +765,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     }
                     if (mLiveRemarkBll != null) {
                         //主讲
+                        Loger.i("LiveRemarkBll","ontopic____onbreak:"+mLiveTopic.getMainRoomstatus().isOnbreak()
+                                +"   mode:"+getMode());
                         if (!liveTopic.getMainRoomstatus().isOnbreak() && liveTopic.getMode().equals(LiveTopic.MODE_CLASS)) {
                             mLiveRemarkBll.setClassReady(true);
                         } else {
@@ -1047,6 +1049,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         boolean begin = object.getBoolean("begin");
                         mLiveTopic.getMainRoomstatus().setClassbegin(begin);
                         msg += begin ? "CLASSBEGIN" : "CLASSEND";
+                        Loger.i("LiveRemarkBll","classBegin____onbreak:"+mLiveTopic.getMainRoomstatus().isOnbreak()
+                                +"   mode:"+getMode());
                         if (!mLiveTopic.getMainRoomstatus().isOnbreak() && mLiveRemarkBll != null && LiveTopic.MODE_CLASS.equals(getMode())) {
                             mLiveRemarkBll.setClassReady(true);
                         }
@@ -3883,7 +3887,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         if (mGetInfo != null && !"1".equals(mGetInfo.getIsShowMarkPoint())) {
             mLiveRemarkBll.hideBtMark();
         }
-        if (!mLiveTopic.getMainRoomstatus().isOnbreak() && mGetInfo.getStat() == 3 && LiveTopic.MODE_CLASS.equals(getMode())) {
+        Loger.i("LiveRemarkBll","setlivebll____onbreak:"+mLiveTopic.getMainRoomstatus().isOnbreak()
+        +"   stat:"+mGetInfo.getStat()+"   mode:"+getMode());
+        if (!mLiveTopic.getMainRoomstatus().isOnbreak() && LiveTopic.MODE_CLASS.equals(getMode())) {
             mLiveRemarkBll.setClassReady(true);
         } else {
             mLiveRemarkBll.setClassReady(false);
