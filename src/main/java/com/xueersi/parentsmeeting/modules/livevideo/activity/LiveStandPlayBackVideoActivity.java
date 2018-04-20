@@ -223,6 +223,8 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
     String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
     //    private LiveRemarkBll mLiveRemarkBll;
     private RelativeLayout bottom;
+    String showName = "";
+    String headUrl = "";
 
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
@@ -493,14 +495,22 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //            mQuestionEntity.setvEndTime(120);
 //            showExam();
             MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
+            if (!StringUtils.isEmpty(mMyInfo.getEnglishName())) {
+                showName = mMyInfo.getEnglishName();
+            } else if (!StringUtils.isEmpty(mMyInfo.getRealName())) {
+                showName = mMyInfo.getRealName();
+            } else if (!StringUtils.isEmpty(mMyInfo.getNickName())) {
+                showName = mMyInfo.getNickName();
+            }
+            headUrl = mMyInfo.getHeadImg();
             redPackageStandBll = new RedPackageStandBll(this, false);
             redPackageStandBll.setVSectionID(mVideoEntity.getLiveId());
-            redPackageStandBll.setUserName(mMyInfo.getNickName());
-            redPackageStandBll.setHeadUrl(mMyInfo.getHeadImg());
+            redPackageStandBll.setUserName(showName);
+            redPackageStandBll.setHeadUrl(headUrl);
             redPackageStandBll.initView(rl_course_video_live_redpackage_content);
             liveStandVoiceAnswerCreat = new LiveStandVoiceAnswerCreat(questionSwitch);
-            liveStandVoiceAnswerCreat.setUserName(mMyInfo.getNickName());
-            liveStandVoiceAnswerCreat.setHeadUrl(mMyInfo.getHeadImg());
+            liveStandVoiceAnswerCreat.setUserName(showName);
+            liveStandVoiceAnswerCreat.setHeadUrl(headUrl);
             if (AppConfig.DEBUG) {
 
 //                mRedPacketId = "2";
@@ -1073,7 +1083,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                                 mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(),
                                 "", mQuestionEntity.getSpeechContent(), mQuestionEntity.getEstimatedTime(),
                                 mQuestionEntity.getvEndTime() - mQuestionEntity.getvQuestionInsretTime(),
-                                LiveStandPlayBackVideoActivity.this, mMyInfo.getNickName(), mMyInfo.getHeadImg(), learning_stage);
+                                LiveStandPlayBackVideoActivity.this, showName, headUrl, learning_stage);
 //                        int screenWidth = ScreenUtils.getScreenWidth();
 //                        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
 //                        lp.rightMargin = wradio;
@@ -1254,7 +1264,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //        }
         rlQuestionContent.removeAllViews();
         rlQuestionContent.setVisibility(View.VISIBLE);
-        voiceAnswerPager = new VoiceAnswerStandPager(this, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.getVoiceQuestiontype(), questionSwitch, this, "", "");
+        voiceAnswerPager = new VoiceAnswerStandPager(this, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.getVoiceQuestiontype(), questionSwitch, this, headUrl, showName);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT);
         rlQuestionContent.addView(voiceAnswerPager.getRootView(), params);
