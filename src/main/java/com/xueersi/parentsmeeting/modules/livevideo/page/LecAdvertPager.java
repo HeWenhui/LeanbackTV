@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertPagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.LecAdvertLog;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
@@ -70,6 +71,7 @@ public class LecAdvertPager extends BasePager {
             @Override
             public void onClick(View v) {
                 lecAdvertBll.close();
+                EventBus.getDefault().post(new MiniEvent("Advertisement","","",""));
             }
         });
         TextView tv_livelec_advert_step1_name = (TextView) step1.findViewById(R.id.tv_livelec_advert_step1_name);

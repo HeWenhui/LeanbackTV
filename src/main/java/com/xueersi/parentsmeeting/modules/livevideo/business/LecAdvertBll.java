@@ -87,7 +87,6 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                         Intent intent = new Intent();
                         intent.setAction("refreshadvertisementlist");
                         context.sendBroadcast(intent);
-                        EventBus.getDefault().post(new MiniEvent("Advertisement","","",""));
                         if (lecAdvertager != null) {
                             return;
                         }

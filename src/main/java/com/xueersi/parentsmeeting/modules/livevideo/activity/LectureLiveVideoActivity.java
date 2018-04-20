@@ -1257,7 +1257,19 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(MiniEvent event) {
         if("Order".equals(event.getMin())){
-            createRealVideo(event.getCourseId(),event.getClassId());
+            final String courseId = event.getCourseId();
+            final String classId = event.getClassId();
+            if(mIsLand){
+                changeLOrP();
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        createRealVideo(courseId,classId);
+                    }
+                },500);
+            }else{
+                createRealVideo(event.getCourseId(),event.getClassId());
+            }
             onPauseNotStopVideo = true;
             // 添加点击立即报名的日志
             StableLogHashMap logHashMap = new StableLogHashMap("clickEnroll");
@@ -1292,7 +1304,16 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         if("Advertisement".equals(event.getMin())){
             // 收到广告指令就弹出面板抽屉
             if(mIsLand && LiveVideoConfig.MORE_COURSE > 0){
-                showPopupwindow();
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(mPopupWindows != null){
+                            mPopupWindows.dismiss();
+                            mPopupWindows = null;
+                        }
+                        showPopupwindow();
+                    }
+                },1000);
             }
         }
 

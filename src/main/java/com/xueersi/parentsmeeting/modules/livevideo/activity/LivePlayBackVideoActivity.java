@@ -2788,7 +2788,19 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(MiniEvent event) {
         if("Order".equals(event.getMin())){
-            createRealVideo(event.getCourseId(),event.getClassId());
+            if(mIsLand){
+                final String courseId = event.getCourseId();
+                final String classId = event.getClassId();
+                changeLOrP();
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        createRealVideo(courseId,classId);
+                    }
+                },500);
+            }else{
+                createRealVideo(event.getCourseId(),event.getClassId());
+            }
             // 添加点击立即报名的日志
             StableLogHashMap logHashMap = new StableLogHashMap("clickEnroll");
             logHashMap.put("adsid", "" + event.getAdId());
