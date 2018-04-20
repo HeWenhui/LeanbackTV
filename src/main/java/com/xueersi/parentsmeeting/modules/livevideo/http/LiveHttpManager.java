@@ -917,7 +917,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("termId", termId);
         params.addBodyParam("hbTime", hbTime.toString());
         params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
-        setDefaultParameter(params);
         sendPost(LiveVideoConfig.URL_EXPERIENCE_LIVE_ONLINETIME, params, callBack);
     }
 
