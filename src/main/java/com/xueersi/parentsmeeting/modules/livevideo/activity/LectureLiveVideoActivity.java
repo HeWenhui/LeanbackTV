@@ -381,8 +381,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         }else {
             if(mPopupWindows != null && mPopupWindows.isShowing()){
                 mPopupWindows.dismiss();
-                mPopupWindows = null;
-                Log.e("mqtt","popConfigchangeInvisible");
             }
 
         }
@@ -494,6 +492,17 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                     setFirstParamPort();
                 }
             });
+            if(mPopupWindows != null && mPopupWindows.isShowing()){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPopupWindows.dismiss();
+                    }
+                });
+
+            }
+
+
         }
     }
 
@@ -1261,8 +1270,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         if("Invisible".equals(event.getMin())){
             if(mPopupWindows != null && mPopupWindows.isShowing()){
                 mPopupWindows.dismiss();
-                mPopupWindows = null;
-                Log.e("mqtt","popInvisible");
             }
         }
         if("ConfirmClick".equals(event.getMin())){
