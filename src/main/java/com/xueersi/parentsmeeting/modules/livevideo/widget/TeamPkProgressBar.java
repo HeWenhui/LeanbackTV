@@ -34,12 +34,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 public class TeamPkProgressBar extends View {
 
+
     private Paint borderPaint;          //边框 画笔
     private float strokeWidth = 5;      //边线 宽度
     private Paint currentProgressPaint;
     private Paint totalProgressPaint;
 
-    private static final long ANIM_DURATION = 1000; // 进度增加默认时间
+    private static final long ANIM_DURATION = 1500; // 进度增加默认时间
 
     private int mHeight;          // 整个控件的高度
 
@@ -98,7 +99,7 @@ public class TeamPkProgressBar extends View {
             sliderBg = BitmapFactory.decodeResource(getResources(), sliderBgResId);
             sliderBgWidth = sliderBg.getWidth();
             sliderBgHeight = sliderBg.getHeight();
-            animExtraSpace = (int) (sliderBgWidth * MAX_SCALE_RATIO);
+            //animExtraSpace = (int) (sliderBgWidth * MAX_SCALE_RATIO);
             Log.e("teamPk", "=====>init:animExtraSpace=" + animExtraSpace + ":" + sliderBgWidth);
         }
 

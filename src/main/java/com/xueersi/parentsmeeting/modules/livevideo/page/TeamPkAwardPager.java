@@ -12,10 +12,10 @@ import com.xueersi.xesalib.utils.log.Loger;
  * Created by chenkun on 2018/4/12
  * 获奖页面
  */
-public class TeamPkAwardGetPager extends BasePager{
-    private static final String TAG = "TeamPkAwardGetPager";
+public class TeamPkAwardPager extends BasePager{
+    private static final String TAG = "TeamPkAwardPager";
 
-    public TeamPkAwardGetPager(Context context){
+    public TeamPkAwardPager(Context context){
         super(context);
     }
 

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkAwardGetPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkAwardPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkTeamSelectPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkTeamSelectingPager;
@@ -75,7 +75,7 @@ public class TeamPKBll {
      * 显示获奖 场景
      */
     public void showAwardGetScene(){
-       TeamPkAwardGetPager  awardGetPager = new TeamPkAwardGetPager(activity);
+       TeamPkAwardPager awardGetPager = new TeamPkAwardPager(activity);
         rlTeamPkContent.removeAllViews();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);

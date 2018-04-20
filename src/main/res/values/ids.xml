@@ -545,7 +545,40 @@
     <item name="iv_teampk_enter_teamselect_anim" type="id"/>
 
     <!--pk 结果-->
-    <item name="lav_teampk_pkresult_praise" type="id"/>
+    <item name="lav_teampk_pkresult" type="id"/>
+    <item name="ll_teampk_pkresult_myteam" type="id"/>
+    <item name="ll_teampk_pkresult_vs" type="id"/>
+    <item name="ll_teampk_pkresult_othreteam" type="id"/>
+    <item name="tpb_teampk_pkresult_pbbar" type="id"/>
+    <item name="rl_teampk_pk_result" type="id"/>
+
+    <item name="tv_teampk_myteam_energy" type="id"/>
+    <item name="tv_teampk_myteam_add_energy" type="id"/>
+    <item name="tv_teampk_otherteam_energy" type="id"/>
+    <item name="rl_teampk_pkresult_bottom_pb_container" type="id"/>
+    <item name="rcl_teampk_pkresult_contribution_rank" type="id"/>
+    <item name="iv_teampk_pkresult_myteam_logo" type="id"/>
+    <item name="iv_teampk_pkresult_otherteam_logo" type="id"/>
+
+    <item name="iv_teampk_pkresult_myteam_teacher_head" type="id"/>
+    <item name="iv_teampk_pkresult_myteam_slogan" type="id"/>
+    <item name="iv_teampk_pkresult_otherteam_slogan" type="id"/>
+
+    <item name="iv_teampk_pkresult_otherteam_teacher_head" type="id"/>
+    <item name="tv_teampk_pkresult_myteacher_name" type="id"/>
+    <item name="tv_teampk_pkresult_otherteacher_name" type="id"/>
+    <item name="rl_teampk_pkresult_root" type="id"/>
+
+    <item name="iv_teampk_pkresult_myteam_state" type="id"/>
+    <item name="iv_teampk_pkresult_otherteam_state" type="id"/>
+
+    <item name="iv_teampk_pkresult_student_head" type="id"/>
+    <item name="iv_teampk_pkresult_student_name" type="id"/>
+    <item name="iv_teampk_pkresult_student_energy" type="id"/>
+
+    <item name="tv_teampk_student_add_energy" type="id"/>
+
+
 
 
 </resources>
