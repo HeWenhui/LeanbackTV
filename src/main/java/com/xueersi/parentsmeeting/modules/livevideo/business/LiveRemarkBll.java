@@ -111,6 +111,7 @@ public class LiveRemarkBll {
     private boolean isClassReady;
     private boolean isOnChat;
     private boolean isMarking;
+    private boolean isCounting;
     private LiveAndBackDebug mLiveAndBackDebug;
 
     public LiveRemarkBll(Context context, PlayerService playerService) {
@@ -235,20 +236,24 @@ public class LiveRemarkBll {
             mLiveMediaControllerBottom.getBtMark().setVisibility(View.GONE);
         }
     }
+    private void setIsCounting(boolean counting){
+        isCounting=counting;
+        setBtEnable(!isCounting&&isClassReady && isVideoReady && !isOnChat);
+    }
 
     public void setVideoReady(boolean videoReady) {
         isVideoReady = videoReady;
-        setBtEnable(isClassReady && isVideoReady && !isOnChat);
+        setBtEnable(!isCounting&&isClassReady && isVideoReady && !isOnChat);
     }
 
     public void setClassReady(boolean classReady) {
         isClassReady = classReady;
-        setBtEnable(isClassReady && isVideoReady && !isOnChat);
+        setBtEnable(!isCounting&&isClassReady && isVideoReady && !isOnChat);
     }
 
     public void setOnChat(boolean onChat) {
         isOnChat = onChat;
-        setBtEnable(isClassReady && isVideoReady && !isOnChat);
+        setBtEnable(!isCounting&&isClassReady && isVideoReady && !isOnChat);
     }
 
     public void setBottom(RelativeLayout bottom) {
@@ -376,12 +381,12 @@ public class LiveRemarkBll {
                 Loger.i(TAG, "onFinish");
                 mLiveMediaControllerBottom.getBtMark().setBackgroundResource(R.drawable.bg_bt_live_mark);
                 mLiveMediaControllerBottom.getBtMark().setText("");
-                setVideoReady(true);
+                setIsCounting(false);
             }
         };
         //mLiveMediaControllerBottom.getBtMark().setText("15");
         mLiveMediaControllerBottom.getBtMark().setBackgroundResource(R.drawable.shape_oval_black);
-        setVideoReady(false);
+        setIsCounting(true);
         timer.start();
     }
 
