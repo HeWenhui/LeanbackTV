@@ -526,7 +526,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                     liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
                     liveRemarkBll.setVideoView(videoView);
                     mLiveBll.setLiveRemarkBll(liveRemarkBll);
-                    liveRemarkBll.setLiveBll(mLiveBll);
+                    liveRemarkBll.setLiveAndBackDebug(mLiveBll);
                 }
             }else{
                 liveRemarkBll.initData();

@@ -111,7 +111,6 @@ public class LiveRemarkBll {
     private boolean isClassReady;
     private boolean isOnChat;
     private boolean isMarking;
-    private LiveBll mLiveBll;
     private LiveAndBackDebug mLiveAndBackDebug;
 
     public LiveRemarkBll(Context context, PlayerService playerService){
@@ -272,9 +271,6 @@ public class LiveRemarkBll {
         setEntityNum(mList);
     }
 
-    public void setLiveBll(LiveBll liveBll) {
-        mLiveBll = liveBll;
-    }
 
     public void setLiveAndBackDebug(LiveAndBackDebug liveAndBackDebug) {
         mLiveAndBackDebug = liveAndBackDebug;
@@ -731,7 +727,7 @@ public class LiveRemarkBll {
         HashMap<String,String> map=new HashMap<>();
         map.put("logtype","clickMark");
         map.put("ex",success?"Y":"N");
-        mLiveBll.umsAgentDebug2("live_mark",map);
+        mLiveAndBackDebug.umsAgentDebug2("live_mark",map);
     }
     private void umsAgentMarkButton(){
         HashMap<String,String> map=new HashMap<>();
