@@ -474,9 +474,9 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                     mSecondSight.setVisibility(View.VISIBLE);
                     LiveVideoConfig.isloading = !LiveVideoConfig.isloading;
                 }
-                // 双重校验去除竖屏时抽屉面板的影藏
-                EventBus.getDefault().post(new MiniEvent("Invisible","","",""));
             }
+            // 双重校验去除竖屏时抽屉面板的影藏
+            EventBus.getDefault().post(new MiniEvent("Invisible","","",""));
 
         }
     };
@@ -708,7 +708,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                 return false;
             }
         });
-        // 04.04 更多课程的数据加载
+        // 更多课程的数据加载
         if (mCourseAdapter == null) {
             mCourseAdapter = new CommonAdapter<MoreChoice.Choice>(mChoices) {
                 @Override

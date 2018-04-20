@@ -379,8 +379,10 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 showPopupwindow();
             }
         }else {
-            if(mPopupWindows != null){
+            if(mPopupWindows != null && mPopupWindows.isShowing()){
                 mPopupWindows.dismiss();
+                mPopupWindows = null;
+                Log.e("mqtt","popConfigchangeInvisible");
             }
 
         }
@@ -1257,8 +1259,10 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             LiveVideoConfig.LECTUREADID = event.getAdId();
         }
         if("Invisible".equals(event.getMin())){
-            if(mPopupWindows != null){
+            if(mPopupWindows != null && mPopupWindows.isShowing()){
                 mPopupWindows.dismiss();
+                mPopupWindows = null;
+                Log.e("mqtt","popInvisible");
             }
         }
         if("ConfirmClick".equals(event.getMin())){

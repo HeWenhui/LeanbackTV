@@ -80,6 +80,10 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                 liveBll.getAdOnLL(lecAdvertEntity, new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
+                        // 刷新广告列表数据
+                        Intent intent = new Intent();
+                        intent.setAction("refreshadvertisementlist");
+                        context.sendBroadcast(intent);
                         if (lecAdvertager != null) {
                             return;
                         }
@@ -91,9 +95,6 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                             logHashMap.addNonce("" + lecAdvertEntity.nonce);
                             logHashMap.put("extra","此广告已报名");
                             liveBll.umsAgentDebug(eventid, logHashMap.getData());
-                            Intent intent = new Intent();
-                            intent.setAction("refreshadvertisementlist");
-                            context.sendBroadcast(intent);
                             return;
                         }
                         if("0".equals(lecAdvertEntity.limit)){
@@ -104,9 +105,6 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                             logHashMap.addNonce("" + lecAdvertEntity.nonce);
                             logHashMap.put("extra","此广告已报满");
                             liveBll.umsAgentDebug(eventid, logHashMap.getData());
-                            Intent intent = new Intent();
-                            intent.setAction("refreshadvertisementlist");
-                            context.sendBroadcast(intent);
                             return;
                         }
                         lecAdvertager = new LecAdvertPager(context, lecAdvertEntity, LecAdvertBll.this, liveid, liveBll);
@@ -114,9 +112,6 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                         bottomContent.addView(lecAdvertager.getRootView(), lp);
                         lecAdvertager.initStep1();
                         LecAdvertLog.sno4(lecAdvertEntity, liveBll);
-                        Intent intent = new Intent();
-                        intent.setAction("refreshadvertisementlist");
-                        context.sendBroadcast(intent);
                         // 添加成功弹出广告的日志
                         StableLogHashMap logHashMap = new StableLogHashMap("interactiveAdsShown");
                         logHashMap.put("adsid", "" + lecAdvertEntity.id);
