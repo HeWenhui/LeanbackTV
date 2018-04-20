@@ -123,6 +123,7 @@ public class TeamPkResultPager extends BasePager{
         tvAddEnergy.setVisibility(View.VISIBLE);
         tvAddEnergy.startAnimation(animation);
         smoothAddEnergy(20);
+
     }
 
     int duration = 1500;
