@@ -1,14 +1,16 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPKAQResultPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPKMessageTestPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkAwardPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkTeamSelectPager;
@@ -127,10 +129,11 @@ public class TeamPKBll {
         params.rightMargin = wradio;
         rlTeamPkContent.addView(resultPager.getRootView(), params);
 
-        addMessageView();
+        //addMessageView();
     }
 
     //测试聊天区域UI
+/*
     private void addMessageView(){
         TeamPKMessageTestPager testPager = new TeamPKMessageTestPager(activity);
         rlTeamPkContent.addView(testPager.getRootView());
@@ -138,6 +141,8 @@ public class TeamPKBll {
         //  testPager.
         showPkStateLayout();
     }
+    */
+
 
     /**
      * 展示聊天 区域上方 战队pk 状态UI
@@ -147,7 +152,7 @@ public class TeamPKBll {
         ViewGroup viewGroup = (ViewGroup) activity.getWindow().getDecorView();
         View pkStateRootView = viewGroup.findViewById(R.id.tpkL_teampk_pkstate_root);
         pkStateRootView.setVisibility(View.VISIBLE);
-        // step 2
+
     }
 
 
@@ -164,7 +169,7 @@ public class TeamPKBll {
         int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
         params.rightMargin = wradio;
         rlTeamPkContent.addView(aqAwardPager.getRootView(), params);
-        addMessageView();
+       // addMessageView();
     }
 
 
