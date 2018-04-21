@@ -7,4 +7,13 @@
        <attr name="sliderHeader" format="reference"></attr>
        <attr name="sliderHeaderBg" format="reference"></attr>
    </declare-styleable>
+
+    <declare-styleable name="SmoothAddNumTextView">
+        <!--动画持续时间-->
+        <attr name="anim_duration" format="string"></attr>
+        <!--最大增加次数-->
+        <attr name="max_add_count" format="integer"></attr>
+    </declare-styleable>
+
+
 </resources>

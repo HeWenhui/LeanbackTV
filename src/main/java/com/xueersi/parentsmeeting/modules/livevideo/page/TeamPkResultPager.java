@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ContributionRankLayoutManager;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
 import com.xueersi.xesalib.utils.log.Loger;
 
@@ -50,7 +51,7 @@ public class TeamPkResultPager extends BasePager{
     private TextView tvOtherTeacherName;
     private TextView tvMyTeamSlogan;
     private TextView tvOtherTeamSlogan;
-    private TextView tvMyTeamEnergy;
+    private SmoothAddNumTextView tvMyTeamEnergy;
     private TextView tvOtherTeamEnergy;
     private TextView tvAddEnergy;
     private TeamPkProgressBar tpbEnergyBar;
@@ -102,7 +103,7 @@ public class TeamPkResultPager extends BasePager{
             @Override
             public void onClick(View v) {
                 startAddEnergyEffect();
-                tpbEnergyBar.smoothAddProgress(25);
+                tpbEnergyBar.smoothAddProgress(20);
             }
         });
 
@@ -122,54 +123,11 @@ public class TeamPkResultPager extends BasePager{
         animation.setFillAfter(true);
         tvAddEnergy.setVisibility(View.VISIBLE);
         tvAddEnergy.startAnimation(animation);
-        smoothAddEnergy(20);
-
-    }
-
-    int duration = 1500;
-    int maxAddCount = 30;
-    int timeGap ;
-    int addTimes;
-    int increment;
-    private int currentEnergy = 0;
-    class IncrementTask implements Runnable{
-        int startNum;
-        int endNum;
-        int addNum;
-        long timeGap;
-        int increment;
-        int currentNum;
-        IncrementTask(int startNum,int addNum,int increment ,long timeGap){
-            this.startNum = startNum;
-            this.addNum = addNum;
-            this.timeGap = timeGap;
-            this.increment = increment;
-            this.endNum = startNum + addNum;
-            this.currentNum = startNum;
-        }
-        @Override
-        public void run() {
-            if(currentNum <= endNum){
-                tvMyTeamEnergy.setText(currentNum+"");
-                currentNum += increment;
-                tvMyTeamEnergy.postDelayed(this,timeGap);
-            }
-        }
+        tvMyTeamEnergy.smoothAddNum(15);
     }
 
 
-    private void smoothAddEnergy(int num) {
 
-        if(!TextUtils.isEmpty(tvMyTeamEnergy.getText().toString())){
-            currentEnergy = Integer.parseInt(tvMyTeamEnergy.getText().toString());
-            addTimes = num > maxAddCount?maxAddCount:num;
-            timeGap = duration/addTimes;
-            increment = num/addTimes;
-            IncrementTask task = new IncrementTask(currentEnergy,num,increment,timeGap);
-            tvMyTeamEnergy.post(task);
-        }
-
-    }
 
 
     private void initRecycleView(RecyclerView rclContributionRank) {

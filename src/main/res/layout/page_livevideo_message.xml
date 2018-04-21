@@ -1,6 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+    >
+
 
     <RelativeLayout
         android:id="@id/rl_livevideo_info"
@@ -26,11 +28,19 @@
             android:visibility="gone">
         </RelativeLayout>
 
+        <!--战队pk-->
+
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPKStateLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@id/tpkL_teampk_pkstate_root"
+            android:visibility="gone"
+            />
         <RelativeLayout
             android:id="@id/rl_livevideo_message_status"
             android:layout_width="match_parent"
             android:layout_height="25dp"
-            android:layout_below="@id/rl_livevideo_english_content"
+            android:layout_below="@id/tpkL_teampk_pkstate_root"
             android:background="@color/COLOR_333333">
 
             <TextView

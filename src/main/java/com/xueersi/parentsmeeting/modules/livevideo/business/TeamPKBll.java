@@ -7,17 +7,20 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPKAQResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPKMessageTestPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkAwardPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkTeamSelectPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkTeamSelectingPager;
+import com.xueersi.parentsmeeting.modules.videoplayer.media.VideoView;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 /**
  * Created by chenkun on 2018/4/12
  * 战队PK 相关业务处理
@@ -26,9 +29,11 @@ public class TeamPKBll {
     private Activity activity;
     //战队PK rootView
     private RelativeLayout rlTeamPkContent;
+    private final VideoView videoView1;
 
-    public  TeamPKBll(Activity activity) {
+    public  TeamPKBll(Activity activity , VideoView videoView) {
         this.activity = activity;
+        videoView1 = videoView;
     }
 
     public void initView(RelativeLayout bottomContent) {
@@ -37,6 +42,11 @@ public class TeamPKBll {
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         bottomContent.addView(rlTeamPkContent, params);
 //        Log.e("ck","=======>initView sss:"+teamSelectPager.getRootView());
+
+        // 聊天区域测试
+
+       // LiveMessagePager mLiveMessagePager = new LiveMessagePager();
+
     }
 
 
@@ -86,6 +96,10 @@ public class TeamPKBll {
     }
 
 
+
+
+
+
     /**
      * 显示分队进行中
      */
@@ -112,6 +126,45 @@ public class TeamPKBll {
         int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
         params.rightMargin = wradio;
         rlTeamPkContent.addView(resultPager.getRootView(), params);
+
+        addMessageView();
+    }
+
+    //测试聊天区域UI
+    private void addMessageView(){
+        TeamPKMessageTestPager testPager = new TeamPKMessageTestPager(activity);
+        rlTeamPkContent.addView(testPager.getRootView());
+        testPager.setVideoWidthAndHeight( 1920,1080);
+        //  testPager.
+        showPkStateLayout();
+    }
+
+    /**
+     * 展示聊天 区域上方 战队pk 状态UI
+     */
+    private void showPkStateLayout(){
+        // step 1
+        ViewGroup viewGroup = (ViewGroup) activity.getWindow().getDecorView();
+        View pkStateRootView = viewGroup.findViewById(R.id.tpkL_teampk_pkstate_root);
+        pkStateRootView.setVisibility(View.VISIBLE);
+        // step 2
+    }
+
+
+    /**
+     * 显示实时答题 奖励
+     */
+    public void showAnswerQuestionAward(){
+
+        TeamPKAQResultPager aqAwardPager =  new TeamPKAQResultPager(activity);
+        rlTeamPkContent.removeAllViews();
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        int screenWidth = ScreenUtils.getScreenWidth();
+        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
+        params.rightMargin = wradio;
+        rlTeamPkContent.addView(aqAwardPager.getRootView(), params);
+        addMessageView();
     }
 
 

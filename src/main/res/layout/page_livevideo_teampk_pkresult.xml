@@ -205,7 +205,7 @@
             android:id="@id/rl_teampk_pkresult_bottom_pb_container"
             >
 
-          <TextView
+          <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:textSize="16sp"

@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.support.annotation.Nullable;
@@ -40,7 +41,7 @@ public class TeamPkProgressBar extends View {
     private Paint currentProgressPaint;
     private Paint totalProgressPaint;
 
-    private static final long ANIM_DURATION = 1500; // 进度增加默认时间
+    private static final long ANIM_DURATION = 1000; // 进度增加默认时间
 
     private int mHeight;          // 整个控件的高度
 
@@ -99,7 +100,7 @@ public class TeamPkProgressBar extends View {
             sliderBg = BitmapFactory.decodeResource(getResources(), sliderBgResId);
             sliderBgWidth = sliderBg.getWidth();
             sliderBgHeight = sliderBg.getHeight();
-            //animExtraSpace = (int) (sliderBgWidth * MAX_SCALE_RATIO);
+            animExtraSpace = (int) (sliderBgWidth * MAX_SCALE_RATIO);
             Log.e("teamPk", "=====>init:animExtraSpace=" + animExtraSpace + ":" + sliderBgWidth);
         }
 
@@ -379,6 +380,11 @@ public class TeamPkProgressBar extends View {
                 if (startX > (getMeasuredWidth() - animExtraSpace / 2 - mSliderWidth)) {
                     startX = (getMeasuredWidth() - animExtraSpace / 2 - mSliderWidth);
                 }
+
+                // 记录当前滑动头的位置
+                mSbOffsetX = (int) startX;
+                mSbOffsetY = (int) startY;
+
                 canvas.drawBitmap(mSlidHeader, startX, startY, currentProgressPaint);
             }
 
@@ -387,6 +393,32 @@ public class TeamPkProgressBar extends View {
         }
 
     }
+
+
+    private int mSbOffsetX;
+    private int mSbOffsetY;
+    /**
+     * 返回 滑动头在屏幕上的的绘制区域
+     * @return
+     */
+    public Rect getSliderDrawRect(){
+
+        Rect rect = null;
+
+        if(mSlidHeader != null){
+            rect = new Rect();
+            int [] location = new int[2];
+            this.getLocationInWindow(location);
+
+            rect.left = location[0] + mSbOffsetX;
+            rect.top = location[1] + mSbOffsetY;
+            rect.right =  rect.left+ mSlidHeader.getWidth();
+            rect.bottom =  rect.top+mSlidHeader.getHeight();
+        }
+
+        return  rect;
+    }
+
 
 }
 
