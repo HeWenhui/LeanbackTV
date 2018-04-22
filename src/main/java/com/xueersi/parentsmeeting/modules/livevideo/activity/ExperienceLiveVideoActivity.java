@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Rect;
@@ -16,6 +17,7 @@ import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +75,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
@@ -184,7 +187,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }
     };
 
-    // 03.22 日志的埋点
+    // 体验课相关日志的埋点
     LiveAndBackDebug ums = new LiveAndBackDebug() {
         @Override
         public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
@@ -570,8 +573,20 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                     "mIsShowQuestion=" + mIsShowQuestion);
 //            showQuestion(mQuestionEntity);
         }
-        // 03.22 心跳时间的统计
+        // 心跳时间的统计
         mHandler.postDelayed(mPlayDuration, mPlayDurTime);
+        // 测试体验课播放器的结果页面
+        showPopupwinResult();
+    }
+
+    private void showPopupwinResult() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View result = inflater.inflate(R.layout.pop_experience_livevideo_result, null);
+        PopupWindow popupWindow = new PopupWindow(result, 360, 90, false);
+        popupWindow.setOutsideTouchable(false);
+        popupWindow.showAtLocation(result, Gravity.BOTTOM | Gravity.LEFT, ScreenUtils.getScreenWidth()/2, ScreenUtils.getScreenHeight()/2);
+        RoundProgressBar progressbar = (RoundProgressBar)result.findViewById(R.id.roundProgressBar);
+        progressbar.setMax(92);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -16,7 +17,9 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
+import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -25,6 +28,8 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -82,6 +87,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPage
 import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.business.VideoBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VideoActivity;
@@ -213,6 +219,9 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
     private LiveRemarkBll mLiveRemarkBll;
     private RelativeLayout bottom;
+    private int progress = 0;
+    private RoundProgressBar mProgressbar;
+    private PopupWindow mWindow;
 
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
@@ -535,6 +544,46 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     "mIsShowQuestion=" + mIsShowQuestion);
 //            showQuestion(mQuestionEntity);
         }
+        // 测试体验课播放器的结果页面
+        showPopupwinResult();
+    }
+    private void showPopupwinResult() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View result = inflater.inflate(R.layout.pop_experience_livevideo_result, null);
+        mWindow = new PopupWindow(result, dp2px(this,295), dp2px(this,343), false);
+        mWindow.setOutsideTouchable(false);
+        mWindow.showAtLocation(result, Gravity.CENTER, 0, 0);
+        mProgressbar = (RoundProgressBar)result.findViewById(R.id.roundProgressBar);
+        mProgressbar.setMax(100);
+        mProgressbar.setProgress(92);
+//        new Thread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//                while(progress <= 92){
+//                    progress += 2;
+//                    mProgressbar.setProgress(progress);
+//                    try {
+//                        Thread.sleep(50);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//            }
+//        }).start();
+        ImageButton shut = (ImageButton)result.findViewById(R.id.ib_shut);
+        shut.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mWindow.dismiss();
+            }
+        });
+    }
+
+    public static int dp2px(Context context, int dp)
+    {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
     @Override
