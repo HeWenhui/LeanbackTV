@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Build;
 import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
@@ -143,6 +144,9 @@ public class QuestionWebPager extends BasePager {
         webSetting.setDomStorageEnabled(true);
         webSetting.setLoadWithOverviewMode(true);
         webSetting.setBuiltInZoomControls(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webSetting.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
 //        int scale = DeviceUtils.getScreenWidth(mContext) * 100 / 878;
 //        wvSubjectWeb.setInitialScale(scale);
 //        // 设置可以支持缩放

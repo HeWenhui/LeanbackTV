@@ -105,7 +105,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
     }
 
     public void initView(final RelativeLayout bottomContent) {
-        bottomContent.post(new Runnable() {
+        mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
                 int screenWidth = ScreenUtils.getScreenWidth();

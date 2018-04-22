@@ -322,13 +322,23 @@ public class IRCMessage {
             mLogtf.d("connect(NO_NETWORK):method=" + method);
             return;
         }
+
+        IRCConnection old = mConnection;
+        mConnection = new IRCConnection(privMsg);
+        mConnection.setCallback(old.getCallback());
+        old.setCallback(null);
+        old.disconnect();
+
         // connection.setLogin2(login);
         mConnection.setLogin2(mNickname);
         mConnection.setNickname(mNickname);
         int index = mSelectTalk++ % mNewTalkConf.size();
         NewTalkConfEntity talkConfEntity = mNewTalkConf.get(index);
+        //是不是连接错误
+        boolean connectError = true;
         try {
             String NICKKey = mConnection.connect(talkConfEntity.getHost(), Integer.parseInt(talkConfEntity.getPort()), "" + talkConfEntity.getPwd());
+            connectError = false;
             //mConnection.joinChannel("#" + mChannel);
             mLogtf.d("connect:method=" + method + ",index=" + index + ",NICKKey=" + NICKKey + ",name=" + mConnection.getName()
                     + ",server=" + mConnection.getServer() + ",port=" + talkConfEntity.getPort());
@@ -337,18 +347,19 @@ public class IRCMessage {
                 mConnection.setLogin2("w" + mNickname);
                 mConnection.setNickname("w" + mNickname);
                 String NICKKey = mConnection.connect(talkConfEntity.getHost(), Integer.parseInt(talkConfEntity.getPort()), "" + talkConfEntity.getPwd());
+                connectError = false;
                 //mConnection.joinChannel("#" + mChannel);
                 mLogtf.d("connect2:method=" + method + ",index=" + index + ",NICKKey=" + NICKKey + ",name=" + mConnection.getName() +
                         ",server=" + mConnection.getServer() + ",port=" + talkConfEntity.getPort());
             } catch (NickAlreadyInUseException e1) {
-                Loger.d(TAG, "connect2-1", e1);
+                mLogtf.e("connect2-1", e1);
             } catch (Exception e1) {
-                Loger.d(TAG, "connect2-2", e1);
+                mLogtf.e("connecte2:method=" + method + ",name=" + mConnection.getName() + ",server=" + talkConfEntity.getHost() + "," + e.getMessage(), e);
             }
         } catch (Exception e) {
-            mLogtf.e("connecte:name=" + mConnection.getName() + ",server=" + talkConfEntity.getHost() + "," + e.getMessage(), e);
+            mLogtf.e("connecte:method=" + method + ",name=" + mConnection.getName() + ",server=" + talkConfEntity.getHost() + "," + e.getMessage(), e);
         }
-        if (!mConnection.isConnected()) {
+        if (connectError || !mConnection.isConnected()) {
             new Thread() {
                 public void run() {
                     try {
@@ -356,7 +367,7 @@ public class IRCMessage {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    connect("connect");
+                    connect("connect2");
                 }
             }.start();
         }
