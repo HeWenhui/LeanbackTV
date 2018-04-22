@@ -360,6 +360,7 @@ public class IRCMessage {
             mLogtf.e("connecte:method=" + method + ",name=" + mConnection.getName() + ",server=" + talkConfEntity.getHost() + "," + e.getMessage(), e);
         }
         if (connectError || !mConnection.isConnected()) {
+            mLogtf.d("connect:method=" + method + ",connectError=" + connectError);
             new Thread() {
                 public void run() {
                     try {
