@@ -690,7 +690,7 @@ public class LiveRemarkBll {
                 @Override
                 public void onClick(View v) {
                     mPlayerService.seekTo((mEntity.getRelativeTime() <0?0:mEntity.getRelativeTime()) * 1000);
-                    umsAgentPlay(mEntity.getType());
+                    umsAgentPlay(mEntity.getType(),mEntity.getRelativeTime());
                     if (LiveRemarkBll.this.mCallBack != null) {
                         LiveRemarkBll.this.mCallBack.onDataSucess();
                     }
@@ -784,9 +784,10 @@ public class LiveRemarkBll {
         mLiveAndBackDebug.umsAgentDebug2("replay_mark", map);
     }
 
-    private void umsAgentPlay(int type) {
+    private void umsAgentPlay(int type,long time) {
         HashMap<String, String> map = new HashMap<>();
         map.put("logtype", "clickMarkPlay");
+        map.put("time",time+"");
         String markType = "";
         switch (type) {
             case CATEGORY_QUESTION:
