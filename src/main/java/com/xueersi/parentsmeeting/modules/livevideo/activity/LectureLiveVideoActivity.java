@@ -1276,7 +1276,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             logHashMap.put("adsid", "" + event.getAdId());
             logHashMap.addSno("5").addStable("2");
             logHashMap.put("extra","点击了立即报名");
-            liveBll.umsAgentDebug(LiveVideoConfig.LEC_ADS, logHashMap.getData());
+            liveBll.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
             LiveVideoConfig.LECTUREADID = event.getAdId();
         }
         if("Invisible".equals(event.getMin())){
@@ -1290,7 +1290,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             logHashMap.put("adsid", "" + LiveVideoConfig.LECTUREADID);
             logHashMap.addSno("6").addStable("2");
             logHashMap.put("extra","点击了立即支付");
-            liveBll.umsAgentDebug(LiveVideoConfig.LEC_ADS, logHashMap.getData());
+            liveBll.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
         }
         if("OrderPaySuccess".equals(event.getMin())){
             // 添加用户购买成功的日志
@@ -1299,7 +1299,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             logHashMap.addSno("7").addStable("2");
             logHashMap.put("orderid",event.getCourseId());
             logHashMap.put("extra","用户支付成功");
-            liveBll.umsAgentDebug(LiveVideoConfig.LEC_ADS, logHashMap.getData());
+            liveBll.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
         }
         if("Advertisement".equals(event.getMin())){
             // 收到广告指令就弹出面板抽屉

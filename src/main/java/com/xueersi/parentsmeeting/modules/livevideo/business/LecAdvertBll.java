@@ -97,7 +97,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                             logHashMap.addSno("4").addStable("1").addExN();
                             logHashMap.addNonce("" + lecAdvertEntity.nonce);
                             logHashMap.put("extra","此广告已报名");
-                            liveBll.umsAgentDebug(eventid, logHashMap.getData());
+                            liveBll.umsAgentDebugSys(eventid, logHashMap.getData());
                             return;
                         }
                         if("0".equals(lecAdvertEntity.limit)){
@@ -107,7 +107,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                             logHashMap.addSno("4").addStable("1").addExN();
                             logHashMap.addNonce("" + lecAdvertEntity.nonce);
                             logHashMap.put("extra","此广告已报满");
-                            liveBll.umsAgentDebug(eventid, logHashMap.getData());
+                            liveBll.umsAgentDebugSys(eventid, logHashMap.getData());
                             return;
                         }
                         lecAdvertager = new LecAdvertPager(context, lecAdvertEntity, LecAdvertBll.this, liveid, liveBll);
@@ -121,7 +121,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                         logHashMap.addSno("4").addStable("1").addExY();
                         logHashMap.addNonce("" + lecAdvertEntity.nonce);
                         logHashMap.put("extra","成功弹出广告");
-                        liveBll.umsAgentDebug(eventid, logHashMap.getData());
+                        liveBll.umsAgentDebugSys(eventid, logHashMap.getData());
                     }
 
                     @Override
@@ -132,7 +132,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                         logHashMap.addSno("4").addStable("1").addExN();
                         logHashMap.addNonce("" + lecAdvertEntity.nonce);
                         logHashMap.put("extra","接口返回数据失败");
-                        liveBll.umsAgentDebug(eventid, logHashMap.getData());
+                        liveBll.umsAgentDebugSys(eventid, logHashMap.getData());
                     }
                 });
             }

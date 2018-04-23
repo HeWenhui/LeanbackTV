@@ -1278,7 +1278,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                     url = "rtmp://" + entity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
                 } else {
                     final PlayserverEntity finalEntity = entity;
-                    mLiveBll.dns_resolve_stream(entity, mGetInfo.getChannelname(), mServer.getAppname(), new AbstractBusinessDataCallBack() {
+                    mLiveBll.dns_resolve_stream(entity, mServer, mGetInfo.getChannelname(), new AbstractBusinessDataCallBack() {
                         @Override
                         public void onDataSucess(Object... objData) {
                             if (finalEntity != lastPlayserverEntity) {

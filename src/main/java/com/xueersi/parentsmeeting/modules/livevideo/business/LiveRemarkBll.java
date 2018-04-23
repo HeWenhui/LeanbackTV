@@ -775,13 +775,13 @@ public class LiveRemarkBll {
             map.put("offset",offSet+"");
             map.put("systime",(System.currentTimeMillis()/1000+sysTimeOffset)+"");
         }
-        mLiveAndBackDebug.umsAgentDebug2("live_mark", map);
+        mLiveAndBackDebug.umsAgentDebugInter("live_mark", map);
     }
 
     private void umsAgentMarkButton() {
         HashMap<String, String> map = new HashMap<>();
         map.put("logtype", "clickMarkTag");
-        mLiveAndBackDebug.umsAgentDebug2("replay_mark", map);
+        mLiveAndBackDebug.umsAgentDebugInter("replay_mark", map);
     }
 
     private void umsAgentPlay(int type,long time) {
@@ -808,12 +808,12 @@ public class LiveRemarkBll {
                 break;
         }
         map.put("marktype", markType);
-        mLiveAndBackDebug.umsAgentDebug2("replay_mark", map);
+        mLiveAndBackDebug.umsAgentDebugInter("replay_mark", map);
     }
 
     private void umsAgentDelete() {
         HashMap<String, String> map = new HashMap<>();
         map.put("logtype", "clickMarkDelete");
-        mLiveAndBackDebug.umsAgentDebug2("replay_mark", map);
+        mLiveAndBackDebug.umsAgentDebugInter("replay_mark", map);
     }
 }

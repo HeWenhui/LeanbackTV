@@ -3738,15 +3738,37 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     }
 
     //    dns_resolve_stream?host=liveali.xescdn.com&stream=x_3_55873&app=live_server
-    public void dns_resolve_stream(final PlayServerEntity.PlayserverEntity playserverEntity, String channelname, String appname, final AbstractBusinessDataCallBack callBack) {
+
+    /** 使用第三方视频提供商提供的调度接口获得第三方播放域名对应的包括ip地址的播放地址 */
+    public void dns_resolve_stream(final PlayServerEntity.PlayserverEntity playserverEntity, PlayServerEntity mServer, String channelname, final AbstractBusinessDataCallBack callBack) {
         if (StringUtils.isEmpty(playserverEntity.getIp_gslb_addr())) {
             return;
         }
-        final String url = "http://" + playserverEntity.getIp_gslb_addr() + "/dns_resolve_stream";
+        final StringBuilder url;
+        final String provide = playserverEntity.getProvide();
+        if ("wangsu".equals(provide)) {
+            url = new StringBuilder("http://" + playserverEntity.getIp_gslb_addr());
+        } else if ("ali".equals(provide)) {
+            url = new StringBuilder("http://" + playserverEntity.getIp_gslb_addr() + "/dns_resolve_stream");
+        } else {
+            callBack.onDataFail(3, "other");
+            return;
+        }
         HttpRequestParams entity = new HttpRequestParams();
-        entity.addBodyParam("host", playserverEntity.getAddress());
-        entity.addBodyParam("stream", channelname);
-        entity.addBodyParam("app", appname);
+//        curl -v ip_gslb_addr里的地址 -H "WS_URL:livewangsu.xescdn.com/live_server/x_3_55873" -H "WS_RETIP_NUM:1" -H "WS_URL_TYPE:3"
+        if ("wangsu".equals(provide)) {
+            String WS_URL = playserverEntity.getAddress() + "/" + mServer.getAppname() + "/" + channelname;
+            entity.addHeaderParam("WS_URL", WS_URL);
+            entity.addHeaderParam("WS_RETIP_NUM", "1");
+            entity.addHeaderParam("WS_URL_TYPE", "3");
+        } else {
+            url.append("?host=" + playserverEntity.getAddress());
+            url.append("&stream=" + channelname);
+            url.append("&app=" + mServer.getAppname());
+        }
+//        entity.addBodyParam("host", playserverEntity.getAddress());
+//        entity.addBodyParam("stream", channelname);
+//        entity.addBodyParam("app", mServer.getAppname());
         final AtomicBoolean haveCall = new AtomicBoolean();
         final AbstractBusinessDataCallBack dataCallBack = new AbstractBusinessDataCallBack() {
             @Override
@@ -3773,7 +3795,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 dataCallBack.onDataFail(0, "timeout");
             }
         }, 2000);
-        mHttpManager.sendGetNoBusiness(url, entity, new okhttp3.Callback() {
+        mHttpManager.sendGetNoBusiness(url.toString(), entity, new okhttp3.Callback() {
 
             @Override
             public void onFailure(Call call, IOException e) {
@@ -3787,16 +3809,20 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 String r = response.body().string();
                 Loger.i(TAG, "dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
                 if (response.code() >= 200 && response.code() <= 300) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(r);
-                        String host = jsonObject.getString("host");
-                        JSONArray ipArray = jsonObject.optJSONArray("ips");
-                        String ip = ipArray.getString(0);
-                        dataCallBack.onDataSucess(host, ip);
-                        mLogtf.d("dns_resolve_stream:ip_gslb_addr=" + playserverEntity.getIp_gslb_addr() + ",ip=" + ip);
-                        return;
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    if ("wangsu".equals(provide)) {
+                        dataCallBack.onDataSucess(r);
+                    } else {
+                        try {
+                            JSONObject jsonObject = new JSONObject(r);
+                            String host = jsonObject.getString("host");
+                            JSONArray ipArray = jsonObject.optJSONArray("ips");
+                            String ip = ipArray.getString(0);
+                            dataCallBack.onDataSucess(host, ip);
+                            mLogtf.d("dns_resolve_stream:ip_gslb_addr=" + playserverEntity.getIp_gslb_addr() + ",ip=" + ip);
+                            return;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
                 dataCallBack.onDataFail(1, r);
