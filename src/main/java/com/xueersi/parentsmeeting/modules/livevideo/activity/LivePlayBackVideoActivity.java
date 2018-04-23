@@ -22,8 +22,8 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
-import android.util.TypedValue;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -99,9 +99,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPage
 import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideo.util.FloatPermissionManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.business.VideoBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VideoActivity;
@@ -243,9 +243,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
     private LiveRemarkBll mLiveRemarkBll;
     private RelativeLayout bottom;
-    private int progress = 0;
-    private RoundProgressBar mProgressbar;
-    private PopupWindow mWindow;
     private View mFloatView;
     private PopupWindow mPopupWindows;
     private ViewGroup mParent;
@@ -258,6 +255,10 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     private BroadcastReceiver receiver;
     private Handler mHandler;
     private Boolean picinpic = false;
+    private int progress = 0;
+    private RoundProgressBar mProgressbar;
+    private PopupWindow mWindow;
+
 
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
@@ -335,7 +336,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             mMediaController.setWindowLayoutType();
             mMediaController.release();
         }
-        if (mLiveRemarkBll != null) {
+        if(mLiveRemarkBll!=null){
             mLiveRemarkBll.hideMarkPoints();
         }
         // 设置当前是否为横屏
@@ -371,7 +372,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (lstVideoQuestion == null || lstVideoQuestion.size() == 0) {
             return;
         }
-        if (mVideoEntity.getIsAllowMarkpoint() != 1) {
+        if(mVideoEntity.getIsAllowMarkpoint()!=1) {
             mMediaController.setVideoQuestions("playback" + mVideoEntity.getvLivePlayBackType() + "-", lstVideoQuestion,
                     vPlayer.getDuration());
         }
@@ -714,15 +715,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     public static int dp2px(Context context, int dp)
     {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
-        // 04.13 视频加载成功之后创建面板
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(LiveVideoConfig.MORE_COURSE > 0){
-                    showPopupwindowboard();
-                }
-            }
-        },1000);
     }
 
     @Override
@@ -2815,7 +2807,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
      * @param requestCode
      */
     public static void intentTo(Activity context, Bundle bundle, String where, int requestCode) {
-//        Intent intent = new Intent(context, LiveStandPlayBackVideoActivity.class);
         Intent intent = new Intent(context, LivePlayBackVideoActivity.class);
         intent.putExtras(bundle);
         intent.putExtra("where", where);
