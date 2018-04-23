@@ -507,9 +507,22 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     protected void onPlayOpenStart() {
         setFirstBackgroundVisible(View.VISIBLE);
         findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
-        if (mGetInfo != null && mGetInfo.getIsShowMarkPoint().equals("1")) {
+    }
+
+    @Override
+    protected void onPlayOpenSuccess() {
+        TextView tvFail = (TextView) findViewById(R.id.tv_course_video_loading_fail);
+        if (tvFail != null) {
+            tvFail.setVisibility(View.INVISIBLE);
+        }
+        setFirstBackgroundVisible(View.GONE);
+        rollCallBll.onPlayOpenSuccess(videoView.getLayoutParams());
+        if(mGetInfo!=null&&mGetInfo.getIsShowMarkPoint().equals("1")) {
             if (liveRemarkBll == null) {
                 liveRemarkBll = new LiveRemarkBll(mContext, vPlayer);
+                if(videoChatBll!=null){
+                    videoChatBll.setLiveRemarkBll(liveRemarkBll);
+                }
                 if (mLiveBll != null && liveMediaControllerBottom != null) {
                     if (liveTextureView == null) {
                         ViewStub viewStub = (ViewStub) findViewById(R.id.vs_course_video_video_texture);
@@ -522,21 +535,12 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                     liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
                     liveRemarkBll.setVideoView(videoView);
                     mLiveBll.setLiveRemarkBll(liveRemarkBll);
+                    liveRemarkBll.setLiveAndBackDebug(mLiveBll);
                 }
             } else {
                 liveRemarkBll.initData();
             }
         }
-    }
-
-    @Override
-    protected void onPlayOpenSuccess() {
-        TextView tvFail = (TextView) findViewById(R.id.tv_course_video_loading_fail);
-        if (tvFail != null) {
-            tvFail.setVisibility(View.INVISIBLE);
-        }
-        setFirstBackgroundVisible(View.GONE);
-        rollCallBll.onPlayOpenSuccess(videoView.getLayoutParams());
     }
 
     @Override
@@ -820,6 +824,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 reportPlayStarTime = System.currentTimeMillis();
             }
             mLiveBll.repair(true);
+            if(liveRemarkBll!=null){
+                liveRemarkBll.setVideoReady(false);
+            }
             mLiveBll.liveGetPlayServer(false);
         }
     };
@@ -1035,6 +1042,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
 
             @Override
             public void run() {
+                if(liveRemarkBll!=null){
+                    liveRemarkBll.setVideoReady(false);
+                }
                 mLogtf.d("onModeChange:isInitialized=" + isInitialized());
                 if (isInitialized()) {
                     mHandler.removeCallbacks(mPlayDuration);
@@ -1362,6 +1372,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             }
         }
         if (liveRemarkBll != null) {
+            Loger.i("liveremarkbll","video fail");
             liveRemarkBll.setVideoReady(false);
         }
         mHandler.post(new Runnable() {
