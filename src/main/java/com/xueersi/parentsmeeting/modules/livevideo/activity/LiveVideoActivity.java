@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.event.AppEvent;
@@ -1161,6 +1162,22 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             mLiveBll.setPlayserverEntity(null);
         } else {
             List<PlayserverEntity> playservers = mServer.getPlayserver();
+//            for (int i = 0; i < playservers.size(); i++) {
+//                final PlayserverEntity playserverEntity = playservers.get(i);
+//                mLiveBll.dns_resolve_stream(playserverEntity, mGetInfo.getChannelname(), mServer.getAppname(), new AbstractBusinessDataCallBack() {
+//                    @Override
+//                    public void onDataSucess(Object... objData) {
+//                        String ip = (String) objData[0];
+//                        mLogtf.d("dns_resolve_stream:ip=" + ip);
+//                    }
+//
+//                    @Override
+//                    public void onDataFail(int errStatus, String failMsg) {
+//                        mLogtf.d("dns_resolve_stream:onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
+//                        super.onDataFail(errStatus, failMsg);
+//                    }
+//                });
+//            }
             msg += "playservers=" + playservers.size();
             PlayserverEntity entity = null;
             boolean useFlv = false;
@@ -1247,40 +1264,79 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             if (useFlv) {
                 url = "http://" + entity.getAddress() + ":" + entity.getHttpport() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname() + entity.getFlvpostfix();
             } else {
-                url = "rtmp://" + entity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+                if (StringUtils.isEmpty(entity.getIp_gslb_addr())) {
+                    url = "rtmp://" + entity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+                } else {
+                    final PlayserverEntity finalEntity = entity;
+                    mLiveBll.dns_resolve_stream(entity, mGetInfo.getChannelname(), mServer.getAppname(), new AbstractBusinessDataCallBack() {
+                        @Override
+                        public void onDataSucess(Object... objData) {
+                            if (finalEntity != lastPlayserverEntity) {
+                                return;
+                            }
+                            String host = (String) objData[0];
+                            String ip = (String) objData[1];
+                            mLogtf.d("dns_resolve_stream:ip=" + ip);
+                            String url = "rtmp://" + ip + "/" + host + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+                            StringBuilder stringBuilder = new StringBuilder(url);
+                            addBody("Sucess", stringBuilder);
+                            playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
+                        }
+
+                        @Override
+                        public void onDataFail(int errStatus, String failMsg) {
+                            if (finalEntity != lastPlayserverEntity) {
+                                return;
+                            }
+                            String url = "rtmp://" + finalEntity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+                            StringBuilder stringBuilder = new StringBuilder(url);
+                            addBody("Fail", stringBuilder);
+                            playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
+                        }
+                    });
+                    return;
+                }
             }
             msg += ",entity=" + entity.getIcode();
         }
+        StringBuilder stringBuilder = new StringBuilder(url);
+        msg += addBody("rePlay", stringBuilder);
+        msg += ",url=" + stringBuilder;
+        mLogtf.d(msg);
+        playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
+    }
+
+    private String addBody(String method, StringBuilder url) {
+        String msg = "";
         if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
             if (lastPlayserverEntity != null && !StringUtils.isSpace(lastPlayserverEntity.getRtmpkey())) {
-                url += "?" + lastPlayserverEntity.getRtmpkey() + "&cfrom=android";
+                url.append("?" + lastPlayserverEntity.getRtmpkey() + "&cfrom=android");
                 msg += ",t1";
             } else {
                 if (!StringUtils.isSpace(mGetInfo.getSkeyPlayT())) {
-                    url += "?" + mGetInfo.getSkeyPlayT() + "&cfrom=android";
+                    url.append("?" + mGetInfo.getSkeyPlayT() + "&cfrom=android");
                     msg += ",t2";
                 } else {
-                    url += "?cfrom=android";
+                    url.append("?cfrom=android");
                     msg += ",t3";
                 }
             }
         } else {
             if (lastPlayserverEntity != null && !StringUtils.isSpace(lastPlayserverEntity.getRtmpkey())) {
-                url += "?" + lastPlayserverEntity.getRtmpkey() + "&cfrom=android";
+                url.append("?" + lastPlayserverEntity.getRtmpkey() + "&cfrom=android");
                 msg += ",f1";
             } else {
                 if (!StringUtils.isSpace(mGetInfo.getSkeyPlayF())) {
-                    url += "?" + mGetInfo.getSkeyPlayF() + "&cfrom=android";
+                    url.append("?" + mGetInfo.getSkeyPlayF() + "&cfrom=android");
                     msg += ",f2";
                 } else {
-                    url += "?cfrom=android";
+                    url.append("?cfrom=android");
                     msg += ",f3";
                 }
             }
         }
-        msg += ",url=" + url;
-        mLogtf.d(msg);
-        playNewVideo(Uri.parse(url), mGetInfo.getName());
+        Loger.d(TAG, "addBody:method=" + method + ",url=" + url);
+        return msg;
     }
 
     public void stopPlay() {

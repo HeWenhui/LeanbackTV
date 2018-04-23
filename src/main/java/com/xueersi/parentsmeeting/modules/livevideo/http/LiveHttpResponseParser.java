@@ -37,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
+import com.xueersi.xesalib.utils.string.StringUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -280,6 +281,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 entity.setRtmpkey(object.optString("rtmpkey"));
                 entity.setHttpport(object.optString("httpport"));
                 entity.setFlvpostfix(object.optString("flvpostfix"));
+                entity.setIp_gslb_addr(object.optString("ip_gslb_addr"));
+//                if (AppConfig.DEBUG && StringUtils.isEmpty(entity.getIp_gslb_addr())) {
+//                    continue;
+//                }
                 playserver.add(entity);
             }
             server.setPlayserver(playserver);

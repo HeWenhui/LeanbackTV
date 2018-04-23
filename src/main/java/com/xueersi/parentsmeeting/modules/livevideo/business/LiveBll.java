@@ -79,6 +79,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.Call;
@@ -3654,6 +3655,73 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     public void setAnswerRankBll(AnswerRankBll bll) {
         mAnswerRankBll = bll;
         mAnswerRankBll.setLiveHttpManager(mHttpManager);
+    }
+
+    //    dns_resolve_stream?host=liveali.xescdn.com&stream=x_3_55873&app=live_server
+    public void dns_resolve_stream(final PlayServerEntity.PlayserverEntity playserverEntity, String channelname, String appname, final AbstractBusinessDataCallBack callBack) {
+        if (StringUtils.isEmpty(playserverEntity.getIp_gslb_addr())) {
+            return;
+        }
+        final String url = "http://" + playserverEntity.getIp_gslb_addr() + "/dns_resolve_stream";
+        HttpRequestParams entity = new HttpRequestParams();
+        entity.addBodyParam("host", playserverEntity.getAddress());
+        entity.addBodyParam("stream", channelname);
+        entity.addBodyParam("app", appname);
+        final AtomicBoolean haveCall = new AtomicBoolean();
+        final AbstractBusinessDataCallBack dataCallBack = new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objData) {
+                Loger.d(TAG, "dns_resolve_stream:onDataSucess:haveCall=" + haveCall.get() + ",objData=" + objData[0]);
+                if (!haveCall.get()) {
+                    haveCall.set(true);
+                    callBack.onDataSucess(objData);
+                }
+            }
+
+            @Override
+            public void onDataFail(int errStatus, String failMsg) {
+                Loger.d(TAG, "dns_resolve_stream:onDataFail:haveCall=" + haveCall.get() + ",errStatus=" + errStatus + ",failMsg=" + failMsg);
+                if (!haveCall.get()) {
+                    haveCall.set(true);
+                    callBack.onDataFail(errStatus, failMsg);
+                }
+            }
+        };
+        postDelayedIfNotFinish(new Runnable() {
+            @Override
+            public void run() {
+                dataCallBack.onDataFail(0, "timeout");
+            }
+        }, 2000);
+        mHttpManager.sendGetNoBusiness(url, entity, new okhttp3.Callback() {
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Loger.i(TAG, "dns_resolve_stream:onFailure=", e);
+                dataCallBack.onDataFail(0, "onFailure");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                int code = response.code();
+                String r = response.body().string();
+                Loger.i(TAG, "dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
+                if (response.code() >= 200 && response.code() <= 300) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(r);
+                        String host = jsonObject.getString("host");
+                        JSONArray ipArray = jsonObject.optJSONArray("ips");
+                        String ip = ipArray.getString(0);
+                        dataCallBack.onDataSucess(host, ip);
+                        mLogtf.d("dns_resolve_stream:ip_gslb_addr=" + playserverEntity.getIp_gslb_addr() + ",ip=" + ip);
+                        return;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                dataCallBack.onDataFail(1, r);
+            }
+        });
     }
 
     public void streamReport(MegId msgid, String channelname, long connsec) {
