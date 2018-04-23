@@ -3740,7 +3740,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     //    dns_resolve_stream?host=liveali.xescdn.com&stream=x_3_55873&app=live_server
 
     /** 使用第三方视频提供商提供的调度接口获得第三方播放域名对应的包括ip地址的播放地址 */
-    public void dns_resolve_stream(final PlayServerEntity.PlayserverEntity playserverEntity, PlayServerEntity mServer, String channelname, final AbstractBusinessDataCallBack callBack) {
+    public void dns_resolve_stream(final PlayServerEntity.PlayserverEntity playserverEntity, final PlayServerEntity mServer, String channelname, final AbstractBusinessDataCallBack callBack) {
         if (StringUtils.isEmpty(playserverEntity.getIp_gslb_addr())) {
             return;
         }
@@ -3810,14 +3810,16 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 Loger.i(TAG, "dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
                 if (response.code() >= 200 && response.code() <= 300) {
                     if ("wangsu".equals(provide)) {
-                        dataCallBack.onDataSucess(r);
+                        String url = r.replace("\n", "");
+                        dataCallBack.onDataSucess(provide, url);
                     } else {
                         try {
                             JSONObject jsonObject = new JSONObject(r);
                             String host = jsonObject.getString("host");
                             JSONArray ipArray = jsonObject.optJSONArray("ips");
                             String ip = ipArray.getString(0);
-                            dataCallBack.onDataSucess(host, ip);
+                            String url = "rtmp://" + ip + "/" + host + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+                            dataCallBack.onDataSucess(provide, url);
                             mLogtf.d("dns_resolve_stream:ip_gslb_addr=" + playserverEntity.getIp_gslb_addr() + ",ip=" + ip);
                             return;
                         } catch (Exception e) {

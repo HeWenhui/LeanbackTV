@@ -283,9 +283,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 entity.setHttpport(object.optString("httpport"));
                 entity.setFlvpostfix(object.optString("flvpostfix"));
                 entity.setIp_gslb_addr(object.optString("ip_gslb_addr"));
-                if (AppConfig.DEBUG && StringUtils.isEmpty(entity.getIp_gslb_addr())) {
-                    continue;
-                }
+//                if (AppConfig.DEBUG && StringUtils.isEmpty(entity.getIp_gslb_addr())) {
+//                    continue;
+//                }
                 playserver.add(entity);
             }
             server.setPlayserver(playserver);

@@ -61,6 +61,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -91,7 +92,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
@@ -517,10 +520,10 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         }
         setFirstBackgroundVisible(View.GONE);
         rollCallBll.onPlayOpenSuccess(videoView.getLayoutParams());
-        if(mGetInfo!=null&&mGetInfo.getIsShowMarkPoint().equals("1")) {
+        if (mGetInfo != null && mGetInfo.getIsShowMarkPoint().equals("1")) {
             if (liveRemarkBll == null) {
                 liveRemarkBll = new LiveRemarkBll(mContext, vPlayer);
-                if(videoChatBll!=null){
+                if (videoChatBll != null) {
                     videoChatBll.setLiveRemarkBll(liveRemarkBll);
                 }
                 if (mLiveBll != null && liveMediaControllerBottom != null) {
@@ -824,7 +827,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 reportPlayStarTime = System.currentTimeMillis();
             }
             mLiveBll.repair(true);
-            if(liveRemarkBll!=null){
+            if (liveRemarkBll != null) {
                 liveRemarkBll.setVideoReady(false);
             }
             mLiveBll.liveGetPlayServer(false);
@@ -1042,7 +1045,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
 
             @Override
             public void run() {
-                if(liveRemarkBll!=null){
+                if (liveRemarkBll != null) {
                     liveRemarkBll.setVideoReady(false);
                 }
                 mLogtf.d("onModeChange:isInitialized=" + isInitialized());
@@ -1284,13 +1287,23 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                             if (finalEntity != lastPlayserverEntity) {
                                 return;
                             }
-                            String host = (String) objData[0];
-                            String ip = (String) objData[1];
-                            mLogtf.d("dns_resolve_stream:ip=" + ip);
-                            String url = "rtmp://" + ip + "/" + host + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
-                            StringBuilder stringBuilder = new StringBuilder(url);
-                            addBody("Sucess", stringBuilder);
-                            playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
+                            String provide = (String) objData[0];
+                            String url;
+                            if ("wangsu".equals(provide)) {
+                                url = objData[1] + "&username=" + mGetInfo.getUname() + "&cfrom=android";
+                                playNewVideo(Uri.parse(url), mGetInfo.getName());
+                            } else if ("ali".equals(provide)) {
+                                url = (String) objData[1];
+                                StringBuilder stringBuilder = new StringBuilder(url);
+                                addBody("Sucess", stringBuilder);
+                                url = stringBuilder + "&username=" + mGetInfo.getUname();
+                                playNewVideo(Uri.parse(url), mGetInfo.getName());
+                            } else {
+                                return;
+                            }
+                            Map<String, String> mData = new HashMap<>();
+                            mData.put("message", "" + url);
+                            mLiveBll.umsAgentDebugSys(LiveVideoConfig.LIVE_GSLB, mData);
                         }
 
                         @Override
@@ -1372,7 +1385,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             }
         }
         if (liveRemarkBll != null) {
-            Loger.i("liveremarkbll","video fail");
+            Loger.i("liveremarkbll", "video fail");
             liveRemarkBll.setVideoReady(false);
         }
         mHandler.post(new Runnable() {
