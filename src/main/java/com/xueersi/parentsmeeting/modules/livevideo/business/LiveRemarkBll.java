@@ -796,11 +796,11 @@ public class LiveRemarkBll {
                 markType = "redPacket";
                 break;
             case CATEGORY_EXAM:
-                markType = "exam";
+                markType = "exampaper";
                 break;
             case CATEGORY_H5COURSE_WARE:
             case CATEGORY_ENGLISH_H5COURSE_WARE:
-                markType = "other";
+                markType = "interactware";
                 break;
             default:
                 markType = "query";
