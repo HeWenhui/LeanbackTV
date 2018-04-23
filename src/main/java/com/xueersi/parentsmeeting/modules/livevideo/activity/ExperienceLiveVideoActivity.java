@@ -143,9 +143,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private Long lastPlayTime;
     /** 播放异常统计开始时间 */
     private Long errorPlayTime;
-
-    // 03.17 定时获取聊天记录的任务
-    class ScanRunnable implements Runnable {
+    // 定时获取聊天记录的任务
+    class ScanRunnable implements Runnable{
         HandlerThread handlerThread = new HandlerThread("ScanRunnable");
 
         ScanRunnable() {

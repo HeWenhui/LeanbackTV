@@ -312,7 +312,7 @@ public class LiveVideoEnter {
     public static final int VIDEO_REQUEST = 210;
 
     /**
-     * 跳转到播放器
+     * 跳转到播放器(直播回放)
      *
      * @param context
      * @param bundle
@@ -339,7 +339,7 @@ public class LiveVideoEnter {
     }
 
     /**
-     * 跳转到直播回放
+     * 跳转到直播回放(已废弃)
      *
      * @param context
      * @param bundle

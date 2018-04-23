@@ -124,7 +124,7 @@ public class LiveVideoConfig {
     /** 英语能量条提示 */
     public static String LEC_LEARN_REPORT = "lec_learn_report";
 
-    // 03.16 体验课互动题提交答案
+    //  体验课互动题提交答案
     public static String LIVE_EXPE_SUBMIT = AppConfig.HTTP_HOST + "/science/AutoLive/submitTestAnswer";
     /** 获取标记点列表 */
     public static String URL_LIVE_GET_MARK_POINTS = AppConfig.HTTP_HOST + "/science/LiveCourse/getMarkpoint";
@@ -138,4 +138,13 @@ public class LiveVideoConfig {
     public static String URL_ROLEPLAY_TESTINFOS = AppConfig.HTTP_HOST + "/libarts/LiveCourse/getRolePlay";
     /** 提交接口 */
     public static String URL_ROLEPLAY_RESULT = AppConfig.HTTP_HOST + "/libarts/LiveCourse/submitRolePlay";
+    /** 讲座直播获取更多课程*/
+    public static String URL_LECTURELIVE_MORE_COURSE = AppConfig.HTTP_HOST+"/LiveLecture/getAdCase";
+    /**获取时时间戳*/
+    public static String URL_LIVE_GET_CURTIME=AppConfig.HTTP_HOST+"/science/LiveCourse/getCurTimestamp";
+    /** 更多课程数量的记录 */
+    public static int MORE_COURSE;
+    public static Boolean isloading = false;
+    /** 讲座直播广告Id */
+    public static String LECTUREADID;
 }

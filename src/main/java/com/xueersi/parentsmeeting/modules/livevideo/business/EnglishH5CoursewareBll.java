@@ -153,7 +153,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 if (mVSectionID.equals(vSectionID)) {
                     String url = jsonObject.optString("url");
                     if (!StringUtils.isSpace(url)) {
-//                        mH5AndBool.add(url);
+                        mH5AndBool.add(url);
                     }
                 }
             }
@@ -682,9 +682,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mLiveAutoNoticeBll.getAutoNotice(isForce, 5);
+                mLiveAutoNoticeBll.getAutoNotice(0, 5);
             }
-        }, 10000);
+        }, (int) (7000 + Math.random() * 4000));
     }
 
     public void registQuestionShow(QuestionShowAction questionShowAction) {

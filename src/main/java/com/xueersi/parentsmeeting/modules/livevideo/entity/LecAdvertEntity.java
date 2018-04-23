@@ -12,4 +12,6 @@ public class LecAdvertEntity {
     public String saleName;
     public String limit;
     public String signUpUrl;
+    public String courseId;
+    public String classId;
 }

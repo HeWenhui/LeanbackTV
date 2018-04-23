@@ -14,6 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -70,8 +71,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setsTime(data.optLong("stime"));
             getInfo.seteTime(data.optLong("etime"));
             getInfo.setNowTime(data.getDouble("nowTime"));
-            //getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));
-            getInfo.setIsShowMarkPoint("0");
+            getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));
+            //getInfo.setIsShowMarkPoint("0");
             getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
             //getInfo.setIsShowCounselorWhisper("1");
             if (data.has("followType")) {
@@ -1030,5 +1031,31 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             MobAgent.httpResponseParserError(TAG, "parseThumbsUpProbability", e.getMessage());
         }
         return thumbsUpProbabilityEntity;
+    }
+
+    /*
+    * 解析更多课程的数据
+    * */
+    public MoreChoice parseMoreChoice(ResponseEntity responseEntity){
+        JSONObject data = (JSONObject) responseEntity.getJsonObject();
+        MoreChoice moreChoice = new MoreChoice();
+        JSONArray casesjson = data.optJSONArray("cases");
+        List<MoreChoice.Choice> choices = new ArrayList<>();
+        for(int i = 0 ; i < casesjson.length() ; i++){
+            JSONObject jsonObject = casesjson.optJSONObject(i);
+            MoreChoice.Choice choice = new MoreChoice.Choice();
+            choice.setSaleName(jsonObject.optString("saleName"));
+            choice.setLimit(jsonObject.optInt("limit"));
+            choice.setSignUpUrl(jsonObject.optString("signUpUrl"));
+            choice.setIsLearn(jsonObject.optInt("isLearn"));
+            choice.setCourseId(jsonObject.optString("courseId"));
+            choice.setAdId(jsonObject.optString("adId"));
+            choice.setClassId(jsonObject.optString("classId"));
+            choices.add(choice);
+        }
+        moreChoice.setCases(choices);
+        moreChoice.setRows(data.optString("rows"));
+        return moreChoice;
+
     }
 }

@@ -1,13 +1,18 @@
 package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +20,15 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.entity.FooterIconEntity;
+import com.xueersi.parentsmeeting.event.MiniEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.event.AppEvent;
@@ -40,13 +49,17 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.util.FloatPermissionManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
@@ -61,6 +74,7 @@ import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -69,6 +83,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
+
+import static com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile.liveBll;
 
 /**
  * 直播
@@ -163,6 +179,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     H5CoursewareBll h5CoursewareBll;
     LecAdvertBll lecAdvertAction;
 //    StarInteractBll starBll;
+    private Boolean picinpic = false;
     /**
      * 视频宽度
      */
@@ -178,6 +195,12 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     long openStartTime;
     /** onPause状态不暂停视频 */
     boolean onPauseNotStopVideo = false;
+    private View mFloatView;
+    private PopupWindow mPopupWindows;
+    private View mInflate;
+    private static WindowManager mWindowManager;
+    private static WindowManager.LayoutParams wmParams;
+    private ViewGroup mParent;
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -288,6 +311,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
 //                }
             }
         });
+
     }
 
     protected boolean initData() {
@@ -308,7 +332,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             Toast.makeText(this, "直播类型不支持", Toast.LENGTH_SHORT).show();
             return false;
         }
-        LogToFile.liveBll = mLiveBll;
+        liveBll = mLiveBll;
         mPlayStatistics = mLiveBll.getVideoListener();
         mLiveBll.setQuestionAction(questionBll);
         mLiveBll.setRollCallAction(rollCallBll);
@@ -347,6 +371,20 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
 //            starBll.initView(questionContent);
 //            starBll.onConfigurationChanged(mIsLand);
 //        }
+        if(mIsLand){
+            if(mPopupWindows != null){
+                mPopupWindows = null;
+            }
+            if(LiveVideoConfig.MORE_COURSE > 0){
+                showPopupwindow();
+            }
+        }else {
+            if(mPopupWindows != null && mPopupWindows.isShowing()){
+                mPopupWindows.dismiss();
+            }
+
+        }
+
     }
 
     /**
@@ -454,6 +492,17 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                     setFirstParamPort();
                 }
             });
+            if(mPopupWindows != null && mPopupWindows.isShowing()){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPopupWindows.dismiss();
+                    }
+                });
+
+            }
+
+
         }
     }
 
@@ -479,6 +528,8 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         //Loger.e(TAG, "setFirstParamLand:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
     }
 
+
+
     private void setFirstParamPort() {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
         if (params.rightMargin != RelativeLayout.LayoutParams.MATCH_PARENT || params.bottomMargin != RelativeLayout.LayoutParams.MATCH_PARENT) {
@@ -495,6 +546,9 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     protected void onPlayOpenStart() {
         setFirstBackgroundVisible(View.VISIBLE);
         findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
+        if(mIsLand && LiveVideoConfig.MORE_COURSE > 0){
+            showPopupwindow();
+        }
     }
 
     @Override
@@ -506,6 +560,43 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         setFirstBackgroundVisible(View.GONE);
         rollCallBll.onPlayOpenSuccess(videoView.getLayoutParams());
     }
+
+    private void showPopupwindow() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mFloatView = inflater.inflate(R.layout.livemessage_jumpboard, null);
+        mPopupWindows = new PopupWindow(mFloatView, 360, 90, false);
+        mPopupWindows.setOutsideTouchable(false);
+        mPopupWindows.showAtLocation(mFloatView, Gravity.BOTTOM | Gravity.LEFT, ScreenUtils.getScreenWidth()-420, 160);
+        // 03.29 横竖屏的切换
+        mFloatView.findViewById(R.id.switch_orientation).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //判断当前屏幕方向
+                changeLOrP();
+                LiveVideoConfig.isloading = true;
+            }
+        });
+        TextView totalnum = (TextView)mFloatView.findViewById(R.id.tv_apply_totalnum);
+        totalnum.setText(LiveVideoConfig.MORE_COURSE + "");
+
+    }
+
+    private void createRealVideo(String courseId,String classId){
+        boolean isPermission = FloatPermissionManager.getInstance().applyFloatWindow(this);
+        //有对应权限或者系统版本小于7.0
+        if (isPermission || Build.VERSION.SDK_INT < 24) {
+            mParent = (ViewGroup)videoView.getParent();
+            if(mParent != null){
+                mParent.removeView(videoView);
+            }
+            //开启悬浮窗
+            OtherModulesEnter.intentToOrderConfirmActivity(this,courseId+"-"+classId,100,"LectureLiveVideoActivity");
+            FloatWindowManager.addView(this,videoView,1);
+            picinpic = true;
+        }
+
+    }
+
 
     @Override
     public void onResume() {
@@ -1163,6 +1254,102 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         onUserBackPressed();
     }
 
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void onEvent(MiniEvent event) {
+        if("Order".equals(event.getMin())){
+            final String courseId = event.getCourseId();
+            final String classId = event.getClassId();
+            if(mIsLand){
+                changeLOrP();
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        createRealVideo(courseId,classId);
+                    }
+                },500);
+            }else{
+                createRealVideo(event.getCourseId(),event.getClassId());
+            }
+            onPauseNotStopVideo = true;
+            // 添加点击立即报名的日志
+            StableLogHashMap logHashMap = new StableLogHashMap("clickEnroll");
+            logHashMap.put("adsid", "" + event.getAdId());
+            logHashMap.addSno("5").addStable("2");
+            logHashMap.put("extra","点击了立即报名");
+            liveBll.umsAgentDebug(LiveVideoConfig.LEC_ADS, logHashMap.getData());
+            LiveVideoConfig.LECTUREADID = event.getAdId();
+        }
+        if("Invisible".equals(event.getMin())){
+            if(mPopupWindows != null && mPopupWindows.isShowing()){
+                mPopupWindows.dismiss();
+            }
+        }
+        if("ConfirmClick".equals(event.getMin())){
+            // 添加用户点击提交订单日志
+            StableLogHashMap logHashMap = new StableLogHashMap("clickSubmitOrder");
+            logHashMap.put("adsid", "" + LiveVideoConfig.LECTUREADID);
+            logHashMap.addSno("6").addStable("2");
+            logHashMap.put("extra","点击了立即支付");
+            liveBll.umsAgentDebug(LiveVideoConfig.LEC_ADS, logHashMap.getData());
+        }
+        if("OrderPaySuccess".equals(event.getMin())){
+            // 添加用户购买成功的日志
+            StableLogHashMap logHashMap = new StableLogHashMap("purchaseSucceed");
+            logHashMap.put("adsid", "" + LiveVideoConfig.LECTUREADID);
+            logHashMap.addSno("7").addStable("2");
+            logHashMap.put("orderid",event.getCourseId());
+            logHashMap.put("extra","用户支付成功");
+            liveBll.umsAgentDebug(LiveVideoConfig.LEC_ADS, logHashMap.getData());
+        }
+        if("Advertisement".equals(event.getMin())){
+            // 收到广告指令就弹出面板抽屉
+            if(mIsLand && LiveVideoConfig.MORE_COURSE > 0){
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(mPopupWindows != null){
+                            mPopupWindows.dismiss();
+                            mPopupWindows = null;
+                        }
+                        showPopupwindow();
+                    }
+                },1000);
+            }
+        }
+
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        ViewGroup parents = (ViewGroup)videoView.getParent();
+        if(parents != null) {
+            parents.removeView(videoView);
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+            mParent.addView(videoView, params);
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if(picinpic){
+            ViewGroup parents = (ViewGroup)videoView.getParent();
+            if(parents != null) {
+                parents.removeView(videoView);
+                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+                mParent.addView(videoView, params);
+            }
+            picinpic = !picinpic;
+        }
+
+    }
+
+
     /**
      * 是否显示移动网络提示
      */
@@ -1239,6 +1426,8 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         }.start();
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
+        //关闭悬浮窗
+        FloatWindowManager.hide();
     }
 
     /**

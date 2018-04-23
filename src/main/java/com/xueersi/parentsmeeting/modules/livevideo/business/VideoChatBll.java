@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VP;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
+import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
@@ -93,6 +94,7 @@ public class VideoChatBll implements VideoChatAction {
     WiredHeadsetReceiver wiredHeadsetReceiver;
     String openhandsStatus = "off";
     String onmicStatus = "off";
+    private LiveRemarkBll mLiveRemarkBll;
 
     public VideoChatBll(LiveVideoActivityBase activity) {
         this.activity = activity;
@@ -168,6 +170,10 @@ public class VideoChatBll implements VideoChatAction {
         }
     }
 
+    public void setLiveRemarkBll(LiveRemarkBll liveRemarkBll) {
+        mLiveRemarkBll = liveRemarkBll;
+    }
+
     private int isHasPermission() {
         int sampleRate = 48000;
         int channels = 1;
@@ -236,6 +242,9 @@ public class VideoChatBll implements VideoChatAction {
         if (activity instanceof AudioRequest) {
             AudioRequest audioRequest = (AudioRequest) activity;
             audioRequest.request(null);
+        }
+        if (mLiveRemarkBll != null) {
+            mLiveRemarkBll.setOnChat(true);
         }
         if (nativeLibLoaded != 2) {
             activity.setVolume(0, 0);
@@ -754,6 +763,9 @@ public class VideoChatBll implements VideoChatAction {
             if (activity instanceof AudioRequest) {
                 AudioRequest audioRequest = (AudioRequest) activity;
                 audioRequest.release();
+            }
+            if (mLiveRemarkBll != null) {
+                mLiveRemarkBll.setOnChat(false);
             }
         }
     }

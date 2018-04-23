@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Build;
 import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
@@ -143,6 +144,9 @@ public class QuestionWebPager extends BasePager {
         webSetting.setDomStorageEnabled(true);
         webSetting.setLoadWithOverviewMode(true);
         webSetting.setBuiltInZoomControls(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webSetting.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
 //        int scale = DeviceUtils.getScreenWidth(mContext) * 100 / 878;
 //        wvSubjectWeb.setInitialScale(scale);
 //        // 设置可以支持缩放
@@ -261,7 +265,7 @@ public class QuestionWebPager extends BasePager {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             logToFile.i("shouldOverrideUrlLoading:url=" + url);
-            if (url.contains("/Live/getMultiTestResult")) {
+            if (url.contains("science/Live/getMultiTestResult")) {
                 if (questionBll instanceof QuestionBll) {
                     ((QuestionBll) questionBll).onSubmit(XESCODE.STOPQUESTION, url.contains("submitType=force"));
                 }

@@ -249,6 +249,15 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
 
     }
 
+    // 04.11 获取讲座直播回放中更多课程的广告信息
+    public void getMoreCourseChoices(String liveId, HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        setDefaultParameter(params);
+        sendPost("http://laoshi.xueersi.com/LiveLecture/getAdCase", params, requestCallBack);
+
+    }
+
     /**
      * 提交互动题
      *

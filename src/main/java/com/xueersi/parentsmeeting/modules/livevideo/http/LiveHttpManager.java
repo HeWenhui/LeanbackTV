@@ -927,4 +927,15 @@ public class LiveHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_ROLE_TEAM, params, callBack);
     }
+    /** 直播讲座获取更多课程的信息*/
+    public void getMoreChoiceCount(String liveId, HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        setDefaultParameter(params);
+        sendPost(LiveVideoConfig.URL_LECTURELIVE_MORE_COURSE, params, requestCallBack);
+    }
+    public void getCurTime(HttpCallBack callBack){
+        sendGetNoBusiness(LiveVideoConfig.URL_LIVE_GET_CURTIME,new HttpRequestParams(),callBack);
+    }
 }
