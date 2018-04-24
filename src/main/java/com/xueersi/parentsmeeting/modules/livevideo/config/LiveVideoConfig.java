@@ -90,6 +90,8 @@ public class LiveVideoConfig {
     public static String LIVE_SPEECH_TEST = "live_speechtest";
     /** 直播-语音评测-二期 */
     public static String LIVE_SPEECH_TEST2 = "live_speechtest_2";
+    /** 站立直播-语音评测 */
+    public static String LIVE_STAND_SPEECH_TEST = "standlive_voiceTest";
     /** 直播-NB实验 */
     public static String LIVE_H5_EXPERIMENT = "live_h5experiment";
     /** 直播-星星互动 */

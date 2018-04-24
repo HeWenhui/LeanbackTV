@@ -45,6 +45,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
+import com.xueersi.parentsmeeting.permission.PermissionCallback;
+import com.xueersi.parentsmeeting.permission.XesPermission;
+import com.xueersi.parentsmeeting.permission.config.PermissionConfig;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
@@ -196,7 +199,6 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                         rgiv_livevideo_stand_readygo.destory();
                         rl_livevideo_voiceans_content.setVisibility(View.VISIBLE);
                         afterReadGo();
-                        startEvaluator();
                     }
 
                     @Override
@@ -210,9 +212,37 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     }
 
     /**
-     * readygo 以后。加载布局
+     * readygo 以后。检查权限
      */
     private void afterReadGo() {
+        boolean have = XesPermission.checkPermission(mContext, new PermissionCallback() {
+
+            @Override
+            public void onFinish() {
+
+            }
+
+            @Override
+            public void onDeny(String permission, int position) {
+
+            }
+
+            @Override
+            public void onGuarantee(String permission, int position) {
+                startVoice();
+            }
+        }, PermissionConfig.PERMISSION_CODE_AUDIO);
+        VoiceAnswerStandLog.sno3(liveAndBackDebug, baseVideoQuestionEntity.getvQuestionID(), have);
+        if (have) {
+            startVoice();
+        }
+    }
+
+    /**
+     * 权限申请后，开始语音
+     */
+    private void startVoice() {
+        startEvaluator();
         switchFrameAnimation =
                 FrameAnimation.createFromAees(mContext, ivVoiceansSwitch, file3, 50, true);
         frameAnimations.add(switchFrameAnimation);
@@ -232,6 +262,9 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                         public void onDataSucess(Object... objData) {
                             GoldTeamStatus entity = (GoldTeamStatus) objData[0];
                             ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
+                            if (addStudents.isEmpty()) {
+                                VoiceAnswerStandLog.sno4(liveAndBackDebug, baseVideoQuestionEntity.getvQuestionID());
+                            }
                             for (int i = 0; i < students.size(); i++) {
                                 final GoldTeamStatus.Student student = students.get(i);
                                 if (student.isMe()) {

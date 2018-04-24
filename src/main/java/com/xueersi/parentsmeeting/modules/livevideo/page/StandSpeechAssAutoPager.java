@@ -46,8 +46,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
+import com.xueersi.parentsmeeting.permission.PermissionCallback;
+import com.xueersi.parentsmeeting.permission.XesPermission;
+import com.xueersi.parentsmeeting.permission.config.PermissionConfig;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.file.FileUtils;
@@ -74,7 +78,7 @@ import java.util.Random;
  */
 public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     public static boolean DEBUG = false;
-    String eventId = LiveVideoConfig.LIVE_SPEECH_TEST2;
+    String eventId = LiveVideoConfig.LIVE_STAND_SPEECH_TEST;
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
     private ArrayList<GoldTeamStatus.Student> addStudents = new ArrayList<>();
     /** 语音保存位置 */
@@ -160,6 +164,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     String file3 = "live_stand/frame_anim/speech/mine_score";
     String file4 = "live_stand/frame_anim/speech/mine_score_loop";
 
+    /** 语音答题直播 */
     public StandSpeechAssAutoPager(Context context, String liveid, String testId,
                                    String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, String userName, String headUrl, String learning_stage) {
         super(context);
@@ -192,6 +197,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         speechEvalAction.umsAgentDebugPv(eventId, mData);
     }
 
+    /** 语音答题回放 */
     public StandSpeechAssAutoPager(Context context, String liveid, String testId,
                                    String nonce, String content, int time, int examSubmit, SpeechEvalAction speechEvalAction, String userName, String headUrl, String learning_stage) {
         super(context);
@@ -313,27 +319,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     group.removeView(rgiv_livevideo_stand_readygo);
                 }
                 rgiv_livevideo_stand_readygo.destory();
-                isSpeechStart = true;
-                setAudioRequest();
-                FrameAnimation frameAnimation1 = createFromAees(file1, false);
-                frameAnimations.add(frameAnimation1);
-                frameAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart() {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd() {
-                        FrameAnimation frameAnimation2 = createFromAees(file2, true);
-                        frameAnimations.add(frameAnimation2);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat() {
-
-                    }
-                });
+                afterReadyGo();
             }
 
             @Override
@@ -358,6 +344,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                         public void onDataSucess(Object... objData) {
                             GoldTeamStatus entity = (GoldTeamStatus) objData[0];
                             ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
+                            if (addStudents.isEmpty()) {
+                                SpeechStandLog.sno4(speechEvalAction, id);
+                            }
                             for (int i = 0; i < students.size(); i++) {
                                 GoldTeamStatus.Student student = students.get(i);
                                 if (student.isMe()) {
@@ -442,6 +431,60 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             }, 3000);
 
         }
+    }
+
+    /**
+     * readygo 以后。检查权限
+     */
+    private void afterReadyGo() {
+        boolean have = XesPermission.checkPermission(mContext, new PermissionCallback() {
+
+            @Override
+            public void onFinish() {
+
+            }
+
+            @Override
+            public void onDeny(String permission, int position) {
+
+            }
+
+            @Override
+            public void onGuarantee(String permission, int position) {
+                startVoice();
+            }
+        }, PermissionConfig.PERMISSION_CODE_AUDIO);
+        SpeechStandLog.sno3(speechEvalAction, id, have);
+        if (have) {
+            startVoice();
+        }
+    }
+
+    /**
+     * 权限申请后，开始语音
+     */
+    private void startVoice() {
+        isSpeechStart = true;
+        setAudioRequest();
+        FrameAnimation frameAnimation1 = createFromAees(file1, false);
+        frameAnimations.add(frameAnimation1);
+        frameAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
+            @Override
+            public void onAnimationStart() {
+
+            }
+
+            @Override
+            public void onAnimationEnd() {
+                FrameAnimation frameAnimation2 = createFromAees(file2, true);
+                frameAnimations.add(frameAnimation2);
+            }
+
+            @Override
+            public void onAnimationRepeat() {
+
+            }
+        });
     }
 
     private void setAudioRequest() {
@@ -830,20 +873,13 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             }
         }, 3000);
         speechEvalAction.onSpeechSuccess(id);
-        Map<String, String> mData = new HashMap<>();
-        mData.put("logtype", "voiceTestResult");
-        mData.put("islive", "" + isLive);
-        mData.put("testid", id);
-        mData.put("goldnum", "" + gold);
-        mData.put("starnum", "" + progress);
-        mData.put("totalscore", "" + score);
-        mData.put("speaktime", "" + resultEntity.getSpeechDuration());
+        String state;
         if (haveAnswer) {
-            mData.put("state", "noSubmit");
+            state = "noSubmit";
         } else {
-            mData.put("state", isEnd ? "endPublish" : "autoSubmit");
+            state = isEnd ? "endPublish" : "autoSubmit";
         }
-        speechEvalAction.umsAgentDebugPv(eventId, mData);
+        SpeechStandLog.sno5(speechEvalAction, id, state, gold, progress, score, resultEntity.getSpeechDuration());
     }
 
     private void onEvaluatorError(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {

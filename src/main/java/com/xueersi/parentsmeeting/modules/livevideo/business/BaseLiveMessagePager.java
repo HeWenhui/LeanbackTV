@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -115,6 +117,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     public LiveGetInfo getInfo;
     /** 聊天线程池 */
     public ThreadPoolExecutor pool;
+    protected Handler maniHandler = new Handler(Looper.getMainLooper());
 
     public BaseLiveMessagePager(Context context) {
         super(context);

@@ -412,18 +412,18 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     // region 生命周期及系统调用
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
-        final Thread.UncaughtExceptionHandler defaultUncaughtHandler = Thread.getDefaultUncaughtExceptionHandler();
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread thread, Throwable ex) {
-                finish(VIDEO_CRASH);
-                if (defaultUncaughtHandler != null) {
-                    defaultUncaughtHandler.uncaughtException(thread, ex);
-                } else {
-                    MobclickAgent.reportError(LiveVideoActivityBase.this, ex);
-                }
-            }
-        });
+//        final Thread.UncaughtExceptionHandler defaultUncaughtHandler = Thread.getDefaultUncaughtExceptionHandler();
+//        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+//            @Override
+//            public void uncaughtException(Thread thread, Throwable ex) {
+//                finish(VIDEO_CRASH);
+//                if (defaultUncaughtHandler != null) {
+//                    defaultUncaughtHandler.uncaughtException(thread, ex);
+//                } else {
+//                    MobclickAgent.reportError(LiveVideoActivityBase.this, ex);
+//                }
+//            }
+//        });
         FileLogger.runActivity = this;
         super.onCreate(savedInstanceState);
         // 统计视频点击某个视频

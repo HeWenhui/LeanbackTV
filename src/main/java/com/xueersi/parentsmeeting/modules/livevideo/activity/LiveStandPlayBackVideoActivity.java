@@ -81,7 +81,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPage
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerStandPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandPlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.business.VideoBll;
@@ -1079,6 +1081,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                     if ("1".equals(mQuestionEntity.getIsAllow42())) {
                         MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
                         String learning_stage = mVideoEntity.getLearning_stage();
+                        SpeechStandLog.sno2(LiveStandPlayBackVideoActivity.this, mQuestionEntity.getvQuestionID());
                         speechQuestionPlaybackPager = new StandSpeechAssAutoPager(LiveStandPlayBackVideoActivity.this,
                                 mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(),
                                 "", mQuestionEntity.getSpeechContent(), mQuestionEntity.getEstimatedTime(),
@@ -1264,6 +1267,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //        }
         rlQuestionContent.removeAllViews();
         rlQuestionContent.setVisibility(View.VISIBLE);
+        VoiceAnswerStandLog.sno2(this, videoQuestionLiveEntity);
         voiceAnswerPager = new VoiceAnswerStandPager(this, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.getVoiceQuestiontype(), questionSwitch, this, headUrl, showName);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT);
