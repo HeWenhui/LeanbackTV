@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.base.BaseBll;
 import com.xueersi.parentsmeeting.http.CommonRequestCallBack;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
@@ -44,6 +45,7 @@ import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.utils.string.StringUtils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.xutils.common.Callback;
@@ -55,6 +57,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.Call;
@@ -1952,6 +1955,99 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Loger.i(TAG, "streamReport:onResponse:response=" + response.message());
+            }
+        });
+    }
+
+    /** 使用第三方视频提供商提供的调度接口获得第三方播放域名对应的包括ip地址的播放地址 */
+    public void dns_resolve_stream(final PlayServerEntity.PlayserverEntity playserverEntity, final PlayServerEntity mServer, String channelname, final AbstractBusinessDataCallBack callBack) {
+        if (StringUtils.isEmpty(playserverEntity.getIp_gslb_addr())) {
+            return;
+        }
+        final StringBuilder url;
+        final String provide = playserverEntity.getProvide();
+        if ("wangsu".equals(provide)) {
+            url = new StringBuilder("http://" + playserverEntity.getIp_gslb_addr());
+        } else if ("ali".equals(provide)) {
+            url = new StringBuilder("http://" + playserverEntity.getIp_gslb_addr() + "/dns_resolve_stream");
+        } else {
+            callBack.onDataFail(3, "other");
+            return;
+        }
+        HttpRequestParams entity = new HttpRequestParams();
+//        curl -v ip_gslb_addr里的地址 -H "WS_URL:livewangsu.xescdn.com/live_server/x_3_55873" -H "WS_RETIP_NUM:1" -H "WS_URL_TYPE:3"
+        if ("wangsu".equals(provide)) {
+            String WS_URL = playserverEntity.getAddress() + "/" + mServer.getAppname() + "/" + channelname;
+            entity.addHeaderParam("WS_URL", WS_URL);
+            entity.addHeaderParam("WS_RETIP_NUM", "1");
+            entity.addHeaderParam("WS_URL_TYPE", "3");
+        } else {
+            url.append("?host=" + playserverEntity.getAddress());
+            url.append("&stream=" + channelname);
+            url.append("&app=" + mServer.getAppname());
+        }
+//        entity.addBodyParam("host", playserverEntity.getAddress());
+//        entity.addBodyParam("stream", channelname);
+//        entity.addBodyParam("app", mServer.getAppname());
+        final AtomicBoolean haveCall = new AtomicBoolean();
+        final AbstractBusinessDataCallBack dataCallBack = new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objData) {
+                Loger.d(TAG, "dns_resolve_stream:onDataSucess:haveCall=" + haveCall.get() + ",objData=" + objData[0]);
+                if (!haveCall.get()) {
+                    haveCall.set(true);
+                    callBack.onDataSucess(objData);
+                }
+            }
+
+            @Override
+            public void onDataFail(int errStatus, String failMsg) {
+                Loger.d(TAG, "dns_resolve_stream:onDataFail:haveCall=" + haveCall.get() + ",errStatus=" + errStatus + ",failMsg=" + failMsg);
+                if (!haveCall.get()) {
+                    haveCall.set(true);
+                    callBack.onDataFail(errStatus, failMsg);
+                }
+            }
+        };
+        postDelayedIfNotFinish(new Runnable() {
+            @Override
+            public void run() {
+                dataCallBack.onDataFail(0, "timeout");
+            }
+        }, 2000);
+        mHttpManager.sendGetNoBusiness(url.toString(), entity, new okhttp3.Callback() {
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Loger.i(TAG, "dns_resolve_stream:onFailure=", e);
+                dataCallBack.onDataFail(0, "onFailure");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                int code = response.code();
+                String r = response.body().string();
+                Loger.i(TAG, "dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
+                if (response.code() >= 200 && response.code() <= 300) {
+                    if ("wangsu".equals(provide)) {
+                        String url = r.replace("\n", "");
+                        dataCallBack.onDataSucess(provide, url);
+                    } else {
+                        try {
+                            JSONObject jsonObject = new JSONObject(r);
+                            String host = jsonObject.getString("host");
+                            JSONArray ipArray = jsonObject.optJSONArray("ips");
+                            String ip = ipArray.getString(0);
+                            String url = "rtmp://" + ip + "/" + host + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+                            dataCallBack.onDataSucess(provide, url);
+                            mLogtf.d("dns_resolve_stream:ip_gslb_addr=" + playserverEntity.getIp_gslb_addr() + ",ip=" + ip);
+                            return;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                dataCallBack.onDataFail(1, r);
             }
         });
     }

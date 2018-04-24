@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.base.BaseCacheData;
 import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.entity.FooterIconEntity;
@@ -66,7 +67,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
@@ -1142,40 +1145,85 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             if (useFlv) {
                 url = "http://" + entity.getAddress() + ":" + entity.getHttpport() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname() + entity.getFlvpostfix();
             } else {
-                url = "rtmp://" + entity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+                final PlayserverEntity finalEntity = entity;
+                mLiveBll.dns_resolve_stream(entity, mServer, mGetInfo.getChannelname(), new AbstractBusinessDataCallBack() {
+                    @Override
+                    public void onDataSucess(Object... objData) {
+                        if (finalEntity != lastPlayserverEntity) {
+                            return;
+                        }
+                        String provide = (String) objData[0];
+                        String url;
+                        if ("wangsu".equals(provide)) {
+                            url = objData[1] + "&username=" + mGetInfo.getUname() + "&cfrom=android";
+                            playNewVideo(Uri.parse(url), mGetInfo.getName());
+                        } else if ("ali".equals(provide)) {
+                            url = (String) objData[1];
+                            StringBuilder stringBuilder = new StringBuilder(url);
+                            addBody("Sucess", stringBuilder);
+                            url = stringBuilder + "&username=" + mGetInfo.getUname();
+                            playNewVideo(Uri.parse(url), mGetInfo.getName());
+                        } else {
+                            return;
+                        }
+                        Map<String, String> mData = new HashMap<>();
+                        mData.put("message", "" + url);
+                        mLiveBll.umsAgentDebugSys(LiveVideoConfig.LIVE_GSLB, mData);
+                    }
+
+                    @Override
+                    public void onDataFail(int errStatus, String failMsg) {
+                        if (finalEntity != lastPlayserverEntity) {
+                            return;
+                        }
+                        String url = "rtmp://" + finalEntity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+                        StringBuilder stringBuilder = new StringBuilder(url);
+                        addBody("Fail", stringBuilder);
+                        playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
+                    }
+                });
+                return;
             }
             msg += ",entity=" + entity.getIcode();
         }
+        StringBuilder stringBuilder = new StringBuilder(url);
+        msg += addBody("rePlay", stringBuilder);
+        msg += ",url=" + stringBuilder;
+        mLogtf.d(msg);
+        playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
+    }
+
+    protected String addBody(String method, StringBuilder url) {
+        String msg = "";
         if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
             if (lastPlayserverEntity != null && !StringUtils.isSpace(lastPlayserverEntity.getRtmpkey())) {
-                url += "?" + lastPlayserverEntity.getRtmpkey() + "&cfrom=android";
+                url.append("?" + lastPlayserverEntity.getRtmpkey() + "&cfrom=android");
                 msg += ",t1";
             } else {
                 if (!StringUtils.isSpace(mGetInfo.getSkeyPlayT())) {
-                    url += "?" + mGetInfo.getSkeyPlayT() + "&cfrom=android";
+                    url.append("?" + mGetInfo.getSkeyPlayT() + "&cfrom=android");
                     msg += ",t2";
                 } else {
-                    url += "?cfrom=android";
+                    url.append("?cfrom=android");
                     msg += ",t3";
                 }
             }
         } else {
             if (lastPlayserverEntity != null && !StringUtils.isSpace(lastPlayserverEntity.getRtmpkey())) {
-                url += "?" + lastPlayserverEntity.getRtmpkey() + "&cfrom=android";
+                url.append("?" + lastPlayserverEntity.getRtmpkey() + "&cfrom=android");
                 msg += ",f1";
             } else {
                 if (!StringUtils.isSpace(mGetInfo.getSkeyPlayF())) {
-                    url += "?" + mGetInfo.getSkeyPlayF() + "&cfrom=android";
+                    url.append("?" + mGetInfo.getSkeyPlayF() + "&cfrom=android");
                     msg += ",f2";
                 } else {
-                    url += "?cfrom=android";
+                    url.append("?cfrom=android");
                     msg += ",f3";
                 }
             }
         }
-        msg += ",url=" + url;
-        mLogtf.d(msg);
-        playNewVideo(Uri.parse(url), mGetInfo.getName());
+        Loger.d(TAG, "addBody:method=" + method + ",url=" + url);
+        return msg;
     }
 
     public void rePlayStudent() {

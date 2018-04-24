@@ -1303,7 +1303,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                             }
                             Map<String, String> mData = new HashMap<>();
                             mData.put("message", "" + url);
-                            mLiveBll.umsAgentDebugSys(LiveVideoConfig.LIVE_GSLB, mData);
+                            Loger.e(LiveVideoActivity.this, LiveVideoConfig.LIVE_GSLB, mData, true);
                         }
 
                         @Override
@@ -1329,7 +1329,14 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
     }
 
-    private String addBody(String method, StringBuilder url) {
+    /**
+     * 直播地址的一些通用参数
+     *
+     * @param method
+     * @param url
+     * @return
+     */
+    protected String addBody(String method, StringBuilder url) {
         String msg = "";
         if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
             if (lastPlayserverEntity != null && !StringUtils.isSpace(lastPlayserverEntity.getRtmpkey())) {
