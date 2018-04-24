@@ -144,7 +144,7 @@ public class LiveStandFrameAnim {
         final RelativeLayout rl_live_stand_update_prog = view.findViewById(R.id.rl_live_stand_update_prog);
         final TextView tv_live_stand_update_prog = view.findViewById(R.id.tv_live_stand_update_prog);
         downloadStart = System.currentTimeMillis();
-        baseHttp.download(xuersi, tempFileZip.getPath(), new DownloadCallBack() {
+        baseHttp.downloadRenew(xuersi, tempFileZip, new DownloadCallBack() {
             DownloadCallBack downloadCallBack = this;
 
             @Override
@@ -172,6 +172,11 @@ public class LiveStandFrameAnim {
             }
 
             @Override
+            public boolean isCancle() {
+                return activity.isFinishing();
+            }
+
+            @Override
             protected void onDownloadFailed() {
                 if (times.get() < 3) {
                     times.getAndIncrement();
@@ -181,7 +186,7 @@ public class LiveStandFrameAnim {
                             String url = urls[times.get() % urls.length];
                             Loger.d(TAG, "onDownloadFailed:times=" + times.get() + ",url=" + url);
                             downloadStart = System.currentTimeMillis();
-                            baseHttp.download(url, tempFileZip.getPath(), downloadCallBack);
+                            baseHttp.downloadRenew(url, tempFileZip, downloadCallBack);
                         }
                     }, 1000);
                 } else {
