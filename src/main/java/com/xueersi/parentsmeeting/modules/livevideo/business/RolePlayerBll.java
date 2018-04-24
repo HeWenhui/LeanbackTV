@@ -54,7 +54,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     private WebSocketConn mWebSocket;
 
     /** 连接地址 */
-    private String webSocketUrl = "ws://10.99.1.206:9590/roleplay/index?userId=%1$s&role=1&cookie=%2$s&liveId=%3$s";
+    private String webSocketUrl = "ws://wsarts.xueersi.com:9590/roleplay/index?userId=%1$s&role=1&cookie=%2$s&liveId=%3$s";
 
     /** RolePlayer数据实体 */
     private RolePlayerEntity mRolePlayerEntity;
