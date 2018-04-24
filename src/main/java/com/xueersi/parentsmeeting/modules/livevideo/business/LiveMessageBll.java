@@ -153,6 +153,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
             isHaveFlowers = mLiveMessagePager.isHaveFlowers();
             isCloseChat = mLiveMessagePager.isCloseChat();
             mLiveMessagePager.pool.shutdown();
+            mLiveMessagePager.onDestroy();
         }
 
         long before = System.currentTimeMillis();
@@ -300,6 +301,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
     public void onDestroy() {
         if (mLiveMessagePager != null) {
             mLiveMessagePager.pool.shutdown();
+            mLiveMessagePager.onDestroy();
         }
     }
 
