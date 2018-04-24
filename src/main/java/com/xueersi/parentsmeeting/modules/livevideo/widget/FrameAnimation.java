@@ -365,7 +365,7 @@ public class FrameAnimation {
                                                 executor.execute(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        for (int index = 0; index < i - 2; index++) {
+                                                        for (int index = 0; index < i - 1; index++) {
                                                             String f = files[index];
                                                             Bitmap bitmap1 = bitmapHashMap.get(f);
                                                             if (bitmap1 != null) {

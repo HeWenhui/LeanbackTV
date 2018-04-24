@@ -522,6 +522,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                                 tvMessageItem.setText(entity.getText());
                             }
                             boolean deng = standLiveHeadView.getEntity() == entity;
+//                            if (deng) {
+//                                return;
+//                            }
                             Loger.d(TAG, "updateViews:deng=" + deng + ",progress=" + standLiveHeadView.getProgress() + ",standLiveHeadView=" + standLiveHeadView.getEntity() + ",text=" + entity.getText());
                             standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
 //                        entity.setHeadUrl(getInfo.getHeadImgPath());
@@ -529,7 +532,12 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                             standLiveHeadView.setHeadSys();
                             if (!entity.isPlayAnimation()) {
                                 entity.setPlayAnimation(true);
-                                standLiveHeadView.playAnimation();
+                                standLiveHeadView.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        standLiveHeadView.playAnimation();
+                                    }
+                                }, 10);
                             } else {
                                 standLiveHeadView.setProgress(1.0f);
                             }
@@ -662,6 +670,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //                            }
 //                        }
                             boolean deng = standLiveHeadView.getEntity() == entity;
+//                            if (deng) {
+//                                return;
+//                            }
                             Loger.d(TAG, "updateViews:deng=" + deng + ",progress=" + standLiveHeadView.getProgress() + ",standLiveHeadView=" + standLiveHeadView.getEntity() + ",text=" + entity.getText());
                             standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
 //                        entity.setHeadUrl(getInfo.getHeadImgPath());
@@ -674,7 +685,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                                     public void run() {
                                         standLiveHeadView.playAnimation();
                                     }
-                                }, 20);
+                                }, 10);
                             } else {
                                 standLiveHeadView.setProgress(1.0f);
                             }
@@ -949,7 +960,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     /** 聊天连上 */
     public void onConnect() {
-        mView.post(new Runnable() {
+        maniHandler.post(new Runnable() {
             @Override
             public void run() {
                 addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT, "");
@@ -969,7 +980,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     /** 聊天进入房间 */
     public void onRegister() {
-        mView.post(new Runnable() {
+        maniHandler.post(new Runnable() {
             @Override
             public void run() {
                 isRegister = true;
@@ -980,7 +991,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     /** 聊天断开 */
     public void onDisconnect() {
-        mView.post(new Runnable() {
+        maniHandler.post(new Runnable() {
             @Override
             public void run() {
                 isRegister = false;
@@ -992,7 +1003,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     @Override
     public void onUserList(String channel, final User[] users) {
-        mView.post(new Runnable() {
+        maniHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (liveBll.isHaveTeam()) {

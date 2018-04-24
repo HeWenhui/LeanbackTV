@@ -145,7 +145,10 @@ public class StandLiveHeadView extends LottieAnimationView {
             paint.setColor(Color.WHITE);
             float width = paint.measureText(num);
             canvas.drawText(num, img_3Bitmap.getWidth() / 2 + 5, img_7Bitmap.getHeight() / 2 + paint.measureText("a") / 2, paint);
+            Bitmap oldBitmap = img_7Bitmap;
             img_7Bitmap = creatBitmap;
+            oldBitmap.recycle();
+            img_3Bitmap.recycle();
         } catch (IOException e) {
 //            e.printStackTrace();
             return;
@@ -196,7 +199,12 @@ public class StandLiveHeadView extends LottieAnimationView {
             canvas.drawBitmap(scalHeadBitmap, left, left, null);
             scalHeadBitmap.recycle();
 //                    headBitmap.recycle();
+            Bitmap oldBitmap = img_7Bitmap;
             img_7Bitmap = creatBitmap;
+            oldBitmap.recycle();
+//            if (!isSystem) {
+                headBitmap.recycle();
+//            }
         } catch (IOException e) {
             Loger.e(TAG, "updateHead", e);
 //            e.printStackTrace();

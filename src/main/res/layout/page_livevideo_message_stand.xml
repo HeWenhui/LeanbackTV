@@ -41,15 +41,15 @@
                 android:id="@id/lv_livevideo_message"
                 style="@style/listview_common_style"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
+                android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:divider="@null"
                 android:listSelector="@color/transparent"
                 android:paddingLeft="4dp"
                 android:paddingRight="4dp"
                 android:paddingTop="10dp"
-                android:scrollbars="none" />
+                android:scrollbars="none"
+                android:stackFromBottom="true" />
 
         </RelativeLayout>
 
