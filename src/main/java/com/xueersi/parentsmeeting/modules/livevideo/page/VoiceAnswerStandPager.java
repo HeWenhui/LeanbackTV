@@ -42,6 +42,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
@@ -73,7 +74,7 @@ import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE4;
  */
 
 public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
-    String eventId = LiveVideoConfig.LIVE_TEST_VOICE;
+    String eventId = LiveVideoConfig.LIVE_STAND_TEST_VOICE;
     private SpeechEvaluatorUtils mIse;
     BaseVideoQuestionEntity baseVideoQuestionEntity;
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
@@ -365,13 +366,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
             @Override
             public void onClick(View v) {
                 ivVoiceansSwitch.setClickable(false);
-                String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
-                StableLogHashMap logHashMap = new StableLogHashMap("changAnswerType");
-                logHashMap.put("testtype", "" + type);
-                logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
-                logHashMap.put("sourcetype", sourcetype).put("clicktime", "" + (System.currentTimeMillis() - entranceTime) / 1000);
-                logHashMap.addExY().addExpect("1").addSno("6").addStable("2");
-                liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
+                VoiceAnswerStandLog.sno7(liveAndBackDebug, baseVideoQuestionEntity.getvQuestionID(), "" + (System.currentTimeMillis() - entranceTime) / 1000);
                 FrameAnimation frameAnimation1 =
                         FrameAnimation.createFromAees(mContext, v, file4, 50, false);
                 if (frameAnimation1 != null) {
@@ -743,7 +738,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                     entity.setYourAnswer(option);
                                     entity.setStandardAnswer(answer);
                                     iv_livevideo_speecteval_wave.setVisibility(View.INVISIBLE);
-                                    onCommit(entity);
+                                    onCommit(entity, resultEntity.getSpeechDuration());
                                 }
                             }
 
@@ -849,7 +844,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                             if (entity != null) {
                                 entity.setStandardAnswer(answer);
                                 iv_livevideo_speecteval_wave.setVisibility(View.INVISIBLE);
-                                onCommit(entity);
+                                onCommit(entity, resultEntity.getSpeechDuration());
                             }
                         }
 
@@ -919,7 +914,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         }
     }
 
-    private void onCommit(VideoResultEntity entity) {
+    private void onCommit(VideoResultEntity entity, double speechDuration) {
         boolean isRight;
         if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
             isRight = true;
@@ -970,6 +965,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         teamOnCompositionLoadedListener.isMe = true;
         LottieComposition.Factory.fromAssetFileName(mContext, path, teamOnCompositionLoadedListener);
         lav_livevideo_voiceans_team_mine.setTag(teamOnCompositionLoadedListener);
+        VoiceAnswerStandLog.sno5(liveAndBackDebug, baseVideoQuestionEntity.getvQuestionID(), isEnd ? "endPublish" : "autoSubmit", entity.getGoldNum(), isRight, speechDuration);
     }
 
     class TeamOnCompositionLoadedListener implements OnCompositionLoadedListener {

@@ -104,6 +104,8 @@ public class LiveVideoConfig {
     public static String LIVE_H5_CACHE = "live_h5_cache";
     /** 直播-语音答题 */
     public static String LIVE_TEST_VOICE = "live_test_voice";
+    /** 站立直播-语音答题 */
+    public static String LIVE_STAND_TEST_VOICE = "standlive_voiceAnswer";
     /** 直播-投票 */
     public static String LIVE_VOTE = "live_vote";
     /** 直播-旁听 */
