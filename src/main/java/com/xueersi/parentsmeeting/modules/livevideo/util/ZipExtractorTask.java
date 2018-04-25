@@ -28,6 +28,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
     private final Context mContext;
     private boolean mReplaceAll;
     protected int max;
+    private boolean cancle = false;
 
     public ZipExtractorTask(File in, File out, Context context, boolean replaceAll) {
         mInput = in;
@@ -58,6 +59,10 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
 
     }
 
+    public void setCancle(boolean cancle) {
+        this.cancle = cancle;
+    }
+
     @Override
     protected void onProgressUpdate(Integer... values) {
         if (values.length > 1) {
@@ -79,7 +84,12 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
             long uncompressedSize = getOriginalSize(zip);
             publishProgress(0, (int) uncompressedSize);
             entries = (Enumeration<ZipEntry>) zip.getEntries();
+            boolean isBreak = false;
             while (entries.hasMoreElements()) {
+                if (cancle) {
+                    isBreak = true;
+                    break;
+                }
                 ZipEntry entry = entries.nextElement();
                 if (entry.isDirectory() || entry.getSize() == 0) {
                     continue;
@@ -92,7 +102,11 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
                 extractedSize += copy(zip.getInputStream(entry), outStream);
                 outStream.close();
             }
-            return null;
+            if (isBreak) {
+                return new Exception("cancle");
+            } else {
+                return null;
+            }
         } catch (ZipException e) {
             exception = e;
             e.printStackTrace();

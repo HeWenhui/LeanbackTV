@@ -1675,6 +1675,9 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
             speechFeedBackAction.stop();
         }
         FrameAnimation.allRecycle();
+        if (liveStandFrameAnim != null) {
+            liveStandFrameAnim.onDestory();
+        }
         super.onDestroy();
     }
 

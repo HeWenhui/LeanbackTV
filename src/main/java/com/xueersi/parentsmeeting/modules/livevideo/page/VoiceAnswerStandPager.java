@@ -224,7 +224,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
             @Override
             public void onDeny(String permission, int position) {
-
+                isSpeechError = true;
+                VoiceAnswerStandLog.sno3(liveAndBackDebug, baseVideoQuestionEntity.getvQuestionID(), false);
             }
 
             @Override
@@ -232,7 +233,6 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 startVoice();
             }
         }, PermissionConfig.PERMISSION_CODE_AUDIO);
-        VoiceAnswerStandLog.sno3(liveAndBackDebug, baseVideoQuestionEntity.getvQuestionID(), have);
         if (have) {
             startVoice();
         }
@@ -242,6 +242,31 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
      * 权限申请后，开始语音
      */
     private void startVoice() {
+        mView.post(new Runnable() {
+            @Override
+            public void run() {
+                FrameAnimation frameAnimation1 = createFromAees(file1, false);
+                frameAnimations.add(frameAnimation1);
+                frameAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart() {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd() {
+                        FrameAnimation frameAnimation2 = createFromAees(file2, true);
+                        frameAnimations.add(frameAnimation2);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat() {
+
+                    }
+                });
+            }
+        });
+        VoiceAnswerStandLog.sno3(liveAndBackDebug, baseVideoQuestionEntity.getvQuestionID(), true);
         startEvaluator();
         switchFrameAnimation =
                 FrameAnimation.createFromAees(mContext, ivVoiceansSwitch, file3, 50, true);
@@ -469,30 +494,6 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         Loger.d(TAG, "initData:questionID=" + questionID);
         fontFace = Typeface.createFromAsset(mContext.getAssets(),
                 "fangzhengyouyuan.ttf");
-        mView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                FrameAnimation frameAnimation1 = createFromAees(file1, false);
-                frameAnimations.add(frameAnimation1);
-                frameAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart() {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd() {
-                        FrameAnimation frameAnimation2 = createFromAees(file2, true);
-                        frameAnimations.add(frameAnimation2);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat() {
-
-                    }
-                });
-            }
-        }, 1000);
         dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/voice/");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {

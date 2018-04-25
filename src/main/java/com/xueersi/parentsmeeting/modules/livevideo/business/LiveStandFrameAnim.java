@@ -42,7 +42,13 @@ public class LiveStandFrameAnim {
     final String xuersi = "http://client.xesimg.com" + filePath;
     /** 更新回调 */
     AbstractBusinessDataCallBack callBack;
+    /** 解压任务 */
+    StandLiveZipExtractorTask zipExtractorTask;
+    /** 是不是取消 */
+    boolean cancle = false;
+    /** 下载开始时间 */
     long downloadStart;
+    /** 下载文件大小 */
     long downloadSize = 117780122;
 
     public LiveStandFrameAnim(Activity activity) {
@@ -89,7 +95,7 @@ public class LiveStandFrameAnim {
                 });
                 TextView tv_live_stand_update_zip = view.findViewById(R.id.tv_live_stand_update_zip);
                 tv_live_stand_update_zip.setText("解压中");
-                StandLiveZipExtractorTask zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, activity, view, callBack, saveFile, saveFileTemp);
+                zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, activity, view, callBack, saveFile, saveFileTemp);
                 zipExtractorTask.execute();
             }
         } else {
@@ -166,14 +172,19 @@ public class LiveStandFrameAnim {
                 logHashMap.put("version", "" + version);
                 logHashMap.put("downloadsize", "" + downloadSize);
                 Loger.d(activity, eventId, logHashMap.getData(), true);
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) pb_live_stand_update.getLayoutParams();
+                RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) rl_live_stand_update_prog.getLayoutParams();
+                int left = (int) (pb_live_stand_update.getWidth() / 2);
+                lp2.leftMargin = left - rl_live_stand_update_prog.getWidth() / 2 + lp.leftMargin;
+                rl_live_stand_update_prog.setLayoutParams(lp2);
                 tv_live_stand_update_zip.setText("解压中");
-                StandLiveZipExtractorTask zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, activity, view, callBack, saveFile, saveFileTemp);
+                zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, activity, view, callBack, saveFile, saveFileTemp);
                 zipExtractorTask.execute();
             }
 
             @Override
             public boolean isCancle() {
-                return activity.isFinishing();
+                return cancle;
             }
 
             @Override
@@ -224,6 +235,7 @@ public class LiveStandFrameAnim {
         ProgressBar pb_live_stand_update;
         RelativeLayout rl_live_stand_update_prog;
         TextView tv_live_stand_update_prog;
+        boolean cancle = false;
 
         public StandLiveZipExtractorTask(File in, File out, Context context, View view, AbstractBusinessDataCallBack callBack, File saveFile, File saveFileTemp) {
             super(in, out, context, true);
@@ -233,10 +245,17 @@ public class LiveStandFrameAnim {
             this.callBack = callBack;
             this.saveFile = saveFile;
             this.saveFileTemp = saveFileTemp;
+            //解压开始，要删除以前旧的
+            FileUtils.deleteDir(saveFileTemp);
         }
 
         @Override
         protected void onProgressUpdate(Integer... values) {
+            if (cancle) {
+                setCancle(true);
+                Loger.d(TAG, "onProgressUpdate:cancle");
+                return;
+            }
             super.onProgressUpdate(values);
             if (values.length == 1) {
                 if (rl_live_stand_update_prog.getVisibility() != View.VISIBLE) {
@@ -257,13 +276,38 @@ public class LiveStandFrameAnim {
         @Override
         protected void onPostExecute(Exception exception) {
             super.onPostExecute(exception);
-            saveFileTemp.renameTo(saveFile);
-            pb_live_stand_update.post(new Runnable() {
-                @Override
-                public void run() {
-                    callBack.onDataSucess("");
+            if (exception == null) {
+                saveFileTemp.renameTo(saveFile);
+                pb_live_stand_update.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callBack.onDataSucess("");
+                    }
+                });
+            } else {
+                if (!cancle) {
+                    pb_live_stand_update.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            XESToastUtils.showToast(pb_live_stand_update.getContext(), "解压失败，请联络辅导老师");
+                            pb_live_stand_update.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    callBack.onDataSucess("");
+                                }
+                            }, 1000);
+                        }
+                    });
                 }
-            });
+            }
+        }
+    }
+
+    public void onDestory() {
+        cancle = true;
+        if (zipExtractorTask != null) {
+            Loger.d(TAG, "onDestory:cancle");
+            zipExtractorTask.cancle = true;
         }
     }
 }

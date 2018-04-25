@@ -446,7 +446,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
             @Override
             public void onDeny(String permission, int position) {
-
+                isSpeechError = true;
+                SpeechStandLog.sno3(speechEvalAction, id, false);
             }
 
             @Override
@@ -454,7 +455,6 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 startVoice();
             }
         }, PermissionConfig.PERMISSION_CODE_AUDIO);
-        SpeechStandLog.sno3(speechEvalAction, id, have);
         if (have) {
             startVoice();
         }
@@ -465,6 +465,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
      */
     private void startVoice() {
         isSpeechStart = true;
+        SpeechStandLog.sno3(speechEvalAction, id, true);
         setAudioRequest();
         FrameAnimation frameAnimation1 = createFromAees(file1, false);
         frameAnimations.add(frameAnimation1);
