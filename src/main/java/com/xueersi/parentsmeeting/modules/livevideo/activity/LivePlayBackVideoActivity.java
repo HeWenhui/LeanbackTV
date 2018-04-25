@@ -675,30 +675,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     "mIsShowQuestion=" + mIsShowQuestion);
 //            showQuestion(mQuestionEntity);
         }
-        // 测试体验课播放器的结果页面
-        showPopupwinResult();
-    }
-    private void showPopupwinResult() {
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View result = inflater.inflate(R.layout.pop_experience_livevideo_result, null);
-        mWindow = new PopupWindow(result, dp2px(this,295), dp2px(this,343), false);
-        mWindow.setOutsideTouchable(false);
-        mWindow.showAtLocation(result, Gravity.CENTER, 0, 0);
-        mProgressbar = (RoundProgressBar)result.findViewById(R.id.roundProgressBar);
-        mProgressbar.setMax(100);
-        mProgressbar.setProgress(92);
-        ImageButton shut = (ImageButton)result.findViewById(R.id.ib_shut);
-        shut.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mWindow.dismiss();
-            }
-        });
-    }
-
-    public static int dp2px(Context context, int dp)
-    {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
     @Override

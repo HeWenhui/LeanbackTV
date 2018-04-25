@@ -576,7 +576,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 vPlayer.releaseSurface();
                 vPlayer.stop();
                 // 测试体验课播放器的结果页面
-//                lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(),mVideoEntity.getLiveId(),getDataCallBack);
+                lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(),mVideoEntity.getLiveId(),getDataCallBack);
                 return;
             }
             seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
@@ -597,7 +597,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             if(objData.length > 0){
                 mData = (ExperienceResult)objData[0];
                 // 测试体验课播放器的结果页面
-                showPopupwinResult();
+                if(mData != null){
+                    showPopupwinResult();
+                }
+
             }
 
         }
