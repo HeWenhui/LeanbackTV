@@ -687,22 +687,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mProgressbar = (RoundProgressBar)result.findViewById(R.id.roundProgressBar);
         mProgressbar.setMax(100);
         mProgressbar.setProgress(92);
-//        new Thread(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                while(progress <= 92){
-//                    progress += 2;
-//                    mProgressbar.setProgress(progress);
-//                    try {
-//                        Thread.sleep(50);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//
-//            }
-//        }).start();
         ImageButton shut = (ImageButton)result.findViewById(R.id.ib_shut);
         shut.setOnClickListener(new OnClickListener() {
             @Override

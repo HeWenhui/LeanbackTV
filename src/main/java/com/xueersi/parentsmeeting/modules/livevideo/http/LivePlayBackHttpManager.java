@@ -258,6 +258,14 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
 
     }
 
+    // 获取体验课学习报告
+    public void getExperienceResult(String termId,String liveId,HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("orderId", termId);
+        params.addBodyParam("liveId", liveId);
+        sendPost("http://laoshi.xueersi.com/science/AutoLive/learnFeedback", params, requestCallBack);
+    }
+
     /**
      * 提交互动题
      *

@@ -85,6 +85,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <Button
+            android:id="@+id/bt_chat"
             android:gravity="center"
             android:text="咨询老师"
             android:textColor="#F13232"
@@ -93,6 +94,7 @@
             android:layout_width="110dp"
             android:layout_height="38dp"/>
         <Button
+            android:id="@+id/bt_apply"
             android:gravity="center"
             android:text="立即报名"
             android:textSize="16sp"
