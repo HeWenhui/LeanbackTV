@@ -1132,44 +1132,48 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             if (useFlv) {
                 url = "http://" + entity.getAddress() + ":" + entity.getHttpport() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname() + entity.getFlvpostfix();
             } else {
-                final PlayserverEntity finalEntity = entity;
-                mLiveBll.dns_resolve_stream(entity, mServer, mGetInfo.getChannelname(), new AbstractBusinessDataCallBack() {
-                    @Override
-                    public void onDataSucess(Object... objData) {
-                        if (finalEntity != lastPlayserverEntity) {
-                            return;
+                if (StringUtils.isEmpty(entity.getIp_gslb_addr())) {
+                    url = "rtmp://" + entity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+                }else {
+                    final PlayserverEntity finalEntity = entity;
+                    mLiveBll.dns_resolve_stream(entity, mServer, mGetInfo.getChannelname(), new AbstractBusinessDataCallBack() {
+                        @Override
+                        public void onDataSucess(Object... objData) {
+                            if (finalEntity != lastPlayserverEntity) {
+                                return;
+                            }
+                            String provide = (String) objData[0];
+                            String url;
+                            if ("wangsu".equals(provide)) {
+                                url = objData[1] + "&username=" + mGetInfo.getUname() + "&cfrom=android";
+                                playNewVideo(Uri.parse(url), mGetInfo.getName());
+                            } else if ("ali".equals(provide)) {
+                                url = (String) objData[1];
+                                StringBuilder stringBuilder = new StringBuilder(url);
+                                addBody("Sucess", stringBuilder);
+                                url = stringBuilder + "&username=" + mGetInfo.getUname();
+                                playNewVideo(Uri.parse(url), mGetInfo.getName());
+                            } else {
+                                return;
+                            }
+                            Map<String, String> mData = new HashMap<>();
+                            mData.put("message", "" + url);
+                            Loger.e(LectureLiveVideoActivity.this, LiveVideoConfig.LIVE_GSLB, mData, true);
                         }
-                        String provide = (String) objData[0];
-                        String url;
-                        if ("wangsu".equals(provide)) {
-                            url = objData[1] + "&username=" + mGetInfo.getUname() + "&cfrom=android";
-                            playNewVideo(Uri.parse(url), mGetInfo.getName());
-                        } else if ("ali".equals(provide)) {
-                            url = (String) objData[1];
-                            StringBuilder stringBuilder = new StringBuilder(url);
-                            addBody("Sucess", stringBuilder);
-                            url = stringBuilder + "&username=" + mGetInfo.getUname();
-                            playNewVideo(Uri.parse(url), mGetInfo.getName());
-                        } else {
-                            return;
-                        }
-                        Map<String, String> mData = new HashMap<>();
-                        mData.put("message", "" + url);
-                        Loger.e(LectureLiveVideoActivity.this, LiveVideoConfig.LIVE_GSLB, mData, true);
-                    }
 
-                    @Override
-                    public void onDataFail(int errStatus, String failMsg) {
-                        if (finalEntity != lastPlayserverEntity) {
-                            return;
+                        @Override
+                        public void onDataFail(int errStatus, String failMsg) {
+                            if (finalEntity != lastPlayserverEntity) {
+                                return;
+                            }
+                            String url = "rtmp://" + finalEntity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+                            StringBuilder stringBuilder = new StringBuilder(url);
+                            addBody("Fail", stringBuilder);
+                            playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
                         }
-                        String url = "rtmp://" + finalEntity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
-                        StringBuilder stringBuilder = new StringBuilder(url);
-                        addBody("Fail", stringBuilder);
-                        playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
-                    }
-                });
-                return;
+                    });
+                    return;
+                }
             }
             msg += ",entity=" + entity.getIcode();
         }
