@@ -37,6 +37,7 @@ public class StandLiveHeadView extends LottieAnimationView {
     int sysHeadId = R.drawable.bg_live_stand_message_sys;
     boolean isMine = true;
     LiveMessageEntity entity;
+    LiveMessageEntity lastEntity;
     boolean isSystem = false;
 
     public StandLiveHeadView(Context context, AttributeSet attrs) {
@@ -51,6 +52,7 @@ public class StandLiveHeadView extends LottieAnimationView {
     }
 
     public void setEntity(LiveMessageEntity entity) {
+        lastEntity = this.entity;
         this.entity = entity;
     }
 
@@ -157,13 +159,20 @@ public class StandLiveHeadView extends LottieAnimationView {
     }
 
     public void updateHeadUrl() {
-        Bitmap headBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-        updateHead(headBitmap);
+        if ((entity != null && lastEntity != null) && (!("" + entity.getHeadUrl()).equals(lastEntity.getHeadUrl()))) {
+            Bitmap headBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+            updateHead(headBitmap);
+        }
+        final String finalHeadUrl = headUrl;
         ImageLoader.with(getContext()).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
             @Override
             public void onSuccess(Drawable drawable) {
-                Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                updateHead(headBitmap);
+                if (("" + headUrl).equals(finalHeadUrl)) {
+                    Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                    updateHead(headBitmap);
+                } else {
+                    Loger.d(TAG, "updateHeadUrl2:headUrl=" + headUrl + ",finalHeadUrl=" + finalHeadUrl);
+                }
             }
 
             @Override
@@ -203,7 +212,7 @@ public class StandLiveHeadView extends LottieAnimationView {
             img_7Bitmap = creatBitmap;
             oldBitmap.recycle();
 //            if (!isSystem) {
-                headBitmap.recycle();
+            headBitmap.recycle();
 //            }
         } catch (IOException e) {
             Loger.e(TAG, "updateHead", e);

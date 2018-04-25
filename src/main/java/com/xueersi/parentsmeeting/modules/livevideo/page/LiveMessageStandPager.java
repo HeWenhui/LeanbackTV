@@ -432,7 +432,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //            liveMessageEntities.add(liveMessageEntity);
 //        }
 
-        messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities, 2) {
+        messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities, 5) {
             String fileName = "live_stand_head.json";
 
             @Override
