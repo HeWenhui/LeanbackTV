@@ -132,7 +132,9 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         requestTestInfos();
         mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this);
         mRolePlayerPager.initData();
-        bottomContent.addView(mRolePlayerPager.getRootView());
+        if (bottomContent != null) {
+            bottomContent.addView(mRolePlayerPager.getRootView());
+        }
     }
 
     @Override
@@ -152,7 +154,9 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                bottomContent.removeView(mRolePlayerPager.getRootView());
+                if (bottomContent != null) {
+                    bottomContent.removeView(mRolePlayerPager.getRootView());
+                }
             }
         });
     }
@@ -550,5 +554,18 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         if (mWebSocket != null && mWebSocket.isOpen()) {
             mWebSocket.close();
         }
+    }
+
+    /**
+     * 方便测试
+     *
+     * @param entity
+     */
+    public void setRolePlayEntity(RolePlayerEntity entity) {
+        this.mRolePlayerEntity = entity;
+    }
+
+    public void setRolePlayPager(RolePlayerPager pager){
+        this.mRolePlayerPager = pager;
     }
 }
