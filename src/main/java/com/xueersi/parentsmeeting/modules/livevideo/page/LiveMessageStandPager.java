@@ -45,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -1016,9 +1017,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-        if (sender.startsWith("t")) {
+        if (sender.startsWith(LiveBll.TEACHER_PREFIX)) {
             sender = getInfo.getMainTeacherInfo().getTeacherName();
-        } else if (sender.startsWith("f")) {
+        } else if (sender.startsWith(LiveBll.COUNTTEACHER_PREFIX)) {
             sender = getInfo.getTeacherName();
         }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);

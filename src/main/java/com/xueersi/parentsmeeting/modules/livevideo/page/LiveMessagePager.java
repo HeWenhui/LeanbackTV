@@ -47,6 +47,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -817,12 +818,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-        if (sender.startsWith("t")) {
+        if (sender.startsWith(LiveBll.TEACHER_PREFIX)) {
             sender = "主讲老师";
-        } else if (sender.startsWith("f")) {
+        } else if (sender.startsWith(LiveBll.COUNTTEACHER_PREFIX)) {
             sender = "辅导老师";
         }
-        addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, "");
+        addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);
     }
 
     @Override
@@ -997,7 +998,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     /*添加聊天信息，超过120，移除60个*/
     @Override
-    public void addMessage(final String sender, final int type, final String text, String headUrl) {
+    public void addMessage(final String sender, final int type, final String text, final String headUrl) {
         final Exception e = new Exception();
         pool.execute(new Runnable() {
             @Override
@@ -1011,7 +1012,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                         if (liveMessageEntities.size() > 29) {
                             liveMessageEntities.remove(0);
                         }
-                        LiveMessageEntity entity = new LiveMessageEntity(sender, type, sBuilder);
+                        LiveMessageEntity entity = new LiveMessageEntity(sender, type, sBuilder, headUrl);
                         liveMessageEntities.add(entity);
                         if (otherLiveMessageEntities != null) {
                             if (otherLiveMessageEntities.size() > 29) {
