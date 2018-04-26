@@ -1463,17 +1463,17 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
                     if (error != null) {
                         errorMsg = error.getNum() + " (" + error.getTag() + ")";
                     }
-                    TextView tvFail = (TextView) findViewById(R.id.tv_course_video_loading_fail);
-                    if (errorMsg != null) {
-                        if (tvFail != null) {
-                            tvFail.setVisibility(View.VISIBLE);
-                            tvFail.setText(errorMsg);
-                        }
-                    } else {
-                        if (tvFail != null) {
-                            tvFail.setVisibility(View.INVISIBLE);
-                        }
-                    }
+//                    TextView tvFail = (TextView) findViewById(R.id.tv_course_video_loading_fail);
+//                    if (errorMsg != null) {
+//                        if (tvFail != null) {
+//                            tvFail.setVisibility(View.VISIBLE);
+//                            tvFail.setText(errorMsg);
+//                        }
+//                    } else {
+//                        if (tvFail != null) {
+//                            tvFail.setVisibility(View.INVISIBLE);
+//                        }
+//                    }
                     mLogtf.d("onFail:arg2=" + arg2 + ",errorMsg=" + errorMsg + ",isPresent=" + mLiveBll.isPresent());
                     if (mLiveBll.isPresent()) {
                         if (liveType != LiveBll.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
