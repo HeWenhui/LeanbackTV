@@ -168,7 +168,7 @@ public class LiveVideoEnter {
                 String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                 getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
                 if (mGetInfo.getPattern() == 2) {
-                    LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+                    StandLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
                 } else {
                     LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
                 }
