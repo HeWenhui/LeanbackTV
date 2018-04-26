@@ -107,7 +107,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
         }
 
         long before = System.currentTimeMillis();
-//        liveMessageLandEntities.clear();
+        liveMessageLandEntities.clear();
         LiveMessageStandPager liveMessagePager = new LiveMessageStandPager(activity, questionBll, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
         mLiveMessagePager = liveMessagePager;
         Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
@@ -156,9 +156,9 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
             isCloseChat = mLiveMessagePager.isCloseChat();
             mLiveMessagePager.pool.shutdown();
             mLiveMessagePager.onDestroy();
-//            if (mLiveMessagePager instanceof LiveMessageStandPager) {
-//                liveMessageLandEntities.clear();
-//            }
+            if (mLiveMessagePager instanceof LiveMessageStandPager) {
+                liveMessageLandEntities.clear();
+            }
         }
 
         long before = System.currentTimeMillis();
