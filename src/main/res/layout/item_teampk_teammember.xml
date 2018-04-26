@@ -6,11 +6,18 @@
 
     <ImageView
         android:layout_width="50dp"
-        android:layout_height="58dp"
-        android:src="@drawable/livevideo_list_headportrait_ic_disable"
+        android:layout_height="50dp"
+        android:id="@id/iv_teampk_member_head"
+        android:scaleType="centerCrop"
+        android:layout_centerHorizontal="true"
+        />
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/live_video_teampk_headmask"
         android:layout_centerHorizontal="true"
         android:scaleType="centerCrop"
-        android:id="@id/iv_teampk_member_head"
+        android:id="@id/iv_teampk_member_head_mask"
         />
 
     <TextView

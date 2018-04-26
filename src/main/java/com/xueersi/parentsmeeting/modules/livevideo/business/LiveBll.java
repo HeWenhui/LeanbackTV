@@ -180,6 +180,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private LiveRemarkBll mLiveRemarkBll;
     /** 校准系统时间 */
     private long sysTimeOffset;
+    /** 战队pk业务 */
+    private TeamPKBll mTeamPKBll;
 
     public LiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form) {
         super(context);
@@ -2169,7 +2171,25 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             }
         }
         mLogtf.d("onGetInfoSuccess:mode=" + mLiveTopic.getMode());
-        liveGetPlayServerFirst();
+        if(isTeamPkRoom(getInfo) && mTeamPKBll != null){
+            mTeamPKBll.setHttpManager(mHttpManager);
+            mTeamPKBll.setLiveBll(this);
+            mTeamPKBll.setRoomInitInfo(mGetInfo);
+            mTeamPKBll.attachToRootView();
+        }
+    }
+
+    /**
+     * 是否是Pk 直播间
+     * @param getInfo
+     * @return
+     */
+    private boolean isTeamPkRoom(LiveGetInfo getInfo) {
+        boolean result = false;
+        if(getInfo.getIsAllowTeamPk() != null){
+            result = getInfo.getIsAllowTeamPk().equals("1");
+        }
+        return result;
     }
 
     public LiveAutoNoticeBll getLiveAutoNoticeBll() {
@@ -4079,4 +4099,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             }
         });
     }
+
+    public void setTeamPkBll(TeamPKBll teamPkBll){
+        this.mTeamPKBll = teamPkBll;
+    }
+
 }

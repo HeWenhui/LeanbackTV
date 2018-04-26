@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@id/rl_teampk_pkresult_root"
+        android:visibility="gone"
         >
 
         <RelativeLayout
@@ -282,6 +283,22 @@
                />
 
     </RelativeLayout>
+
+
+
+
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:id="@id/tv_teampk_pkresult_time_countdow"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        />
 
     <Button
         android:layout_width="wrap_content"

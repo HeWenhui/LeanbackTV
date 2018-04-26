@@ -8,7 +8,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.media.Image;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -21,10 +22,13 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.SoundInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPKStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
+
+import java.util.HashMap;
 
 /**
  * 战队pk 实时答题
@@ -43,13 +47,14 @@ public class TeamPKAQResultPager extends BasePager {
     private int controloffsetX;
     private int controloffsetY;
     private ScaleAnimation scaleAnimation;
-
+    private SoundPool soundPool;
+    private static final int SOUND_TYPE_COIN_GET = 1; //获得金币音效
+    private HashMap<Integer,SoundInfo> mSoundInfoMap;
+    private static final int DEFAULT_VOLUME = 5;  //默认音量大小
 
     public TeamPKAQResultPager(Context context){
         super(context);
     }
-
-
 
     @Override
     public View initView() {
@@ -69,10 +74,39 @@ public class TeamPKAQResultPager extends BasePager {
                 showAwardAnim();
             }
         });
+
         return  view;
     }
 
 
+    /**
+     *
+     * @param soundType
+     * @param volume
+     * @param loop
+     */
+    private void playMusic(final int soundType, final int volume, final boolean loop){
+        if (soundPool == null) {
+            soundPool = new SoundPool(1,AudioManager.STREAM_MUSIC, 0);
+        }
+        if (mSoundInfoMap == null) {
+            mSoundInfoMap = new HashMap<Integer, SoundInfo>();
+        }
+        soundPool.load(mContext,R.raw.coin_get,1);
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                int streamId = soundPool.play(sampleId,volume,volume,0,loop?-1:0,1);
+                SoundInfo soundInfo = mSoundInfoMap.get(soundType);
+                if(soundInfo == null){
+                    soundInfo = new SoundInfo(sampleId,streamId);
+                    mSoundInfoMap.put(soundType,soundInfo);
+                }else{
+                    soundInfo.setStreamId(streamId);
+                }
+            }
+        });
+    }
 
     /**
      * 展示  答题奖励动画
@@ -207,7 +241,8 @@ public class TeamPKAQResultPager extends BasePager {
 
 
     private void doAnimEnd() {
-
+        // 0 播发音效
+          playMusic(SOUND_TYPE_COIN_GET, DEFAULT_VOLUME,false);
         // 1 聊天区域状态更新
          if(teamPKStateLayout != null){
              teamPKStateLayout.updateData(15,10);
@@ -222,12 +257,11 @@ public class TeamPKAQResultPager extends BasePager {
      * 清除资源
      */
     private void releaseRes() {
-
-
-
-
+        if(soundPool != null){
+            soundPool.release();
+            soundPool =null;
+        }
     }
-
 
     /**
      * 贝塞尔曲线（二阶抛物线）

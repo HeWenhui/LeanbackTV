@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.http.HttpResponseParser;
 import com.xueersi.parentsmeeting.logerhelper.MobAgent;
@@ -14,6 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -56,6 +59,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     /** 解析getInfo */
     public LiveGetInfo parseLiveGetInfo(JSONObject data, LiveTopic liveTopic, int liveType, int from) {
         try {
+            Log.e("teamPk","=====>parseLiveGetInfo:"+data.toString());
+
             LiveGetInfo getInfo = new LiveGetInfo(liveTopic);
             getInfo.setId(data.getString("id"));
             getInfo.setIs_show_ranks(data.optString("is_show_ranks"));
@@ -68,7 +73,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setsTime(data.optLong("stime"));
             getInfo.seteTime(data.optLong("etime"));
             getInfo.setNowTime(data.getDouble("nowTime"));
-            //getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));
+            //getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));\
+            if(data.has("isAllowTeamPk")){
+                getInfo.setIsAllowTeamPk(data.getString("isAllowTeamPk"));
+            }
             getInfo.setIsShowMarkPoint("0");
             getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
             //getInfo.setIsShowCounselorWhisper("1");
@@ -966,4 +974,61 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         }
         return thumbsUpProbabilityEntity;
     }
+
+
+    /**解析分队仪式信息*/
+    public TeamPkTeamInfoEntity parseTeamInfo(ResponseEntity responseEntity){
+        TeamPkTeamInfoEntity teamInfoEntity = new TeamPkTeamInfoEntity();
+        JSONObject data = (JSONObject) responseEntity.getJsonObject();
+        try {
+            if(data.has("students")){
+                JSONArray jsonArray = data.getJSONArray("students");
+                TeamPkTeamInfoEntity.StudentEntity studentEntity;
+                JSONObject jsonObject;
+                List<TeamPkTeamInfoEntity.StudentEntity> teamMembers = new ArrayList<TeamPkTeamInfoEntity.StudentEntity>();
+                for(int i= 0;i<jsonArray.length();i++){
+                    jsonObject = (JSONObject) jsonArray.get(i);
+                    studentEntity = new TeamPkTeamInfoEntity.StudentEntity();
+                    studentEntity.setUserId(jsonObject.getString("userId"));
+                    studentEntity.setUserName(jsonObject.getString("name"));
+                    studentEntity.setImg(jsonObject.getString("img"));
+                    teamMembers.add(studentEntity);
+                }
+                teamInfoEntity.setTeamMembers(teamMembers);
+            }
+
+
+            if(data.has("imgs")){
+                 JSONObject jsonObject  = (JSONObject) data.get("imgs");
+                 if(jsonObject.has("key")){
+                     teamInfoEntity.setKey(jsonObject.getInt("key"));
+                 }
+                 if(jsonObject.has("imgs")){
+                      JSONArray jsonArray = jsonObject.getJSONArray("imgs");
+                      List<String> imgList = new ArrayList<String>();
+                     for (int i = 0; i < jsonArray.length(); i++) {
+                         imgList.add(jsonArray.getString(i));
+                     }
+                     teamInfoEntity.setTeamLogoList(imgList);
+                 }
+            }
+
+            if(data.has("teamInfo")){
+                JSONObject jsonObject  = (JSONObject) data.get("teamInfo");
+                TeamPkTeamInfoEntity.TeamInfoEntity  teamInfo = new TeamPkTeamInfoEntity.TeamInfoEntity();
+                teamInfo.setImg(jsonObject.getString("img"));
+                teamInfo.setTeamName(jsonObject.getString("teamName"));
+                teamInfo.setTeamMateName(jsonObject.getString("teamMateName"));
+                teamInfo.setSlogon(jsonObject.getString("slogon"));
+                teamInfo.setBackGroud(jsonObject.getString("backGroud"));
+                teamInfoEntity.setTeamInfo(teamInfo);
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return  teamInfoEntity;
+    }
+
 }

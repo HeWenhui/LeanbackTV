@@ -1,14 +1,69 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00ff44"
     >
 
-  <TextView
+
+  <ImageView
+      android:id="@id/iv_teampk_open_box_bg"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:scaleType="fitXY"
+      android:src="@drawable/livevideo_zhandui_beijing_img_disable" />
+
+  <ImageView
+      android:id="@id/iv_teampk_open_box_bg_mask"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/COLOR_99000000"
+      android:visibility="gone" />
+
+
+  <com.airbnb.lottie.LottieAnimationView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:id="@id/lav_teampk_open_box"
+      />
+
+  <com.xueersi.parentsmeeting.modules.livevideo.widget.CoinAwardDisplayer
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="获取奖励"
-      android:layout_centerInParent="true"
+      android:id="@id/cad_teampk_open_box_my_coin"
+      android:layout_centerHorizontal="true"
+      android:layout_alignParentBottom="true"
+      android:layout_marginBottom="55dp"
+      android:visibility="gone"
       />
+
+
+  <com.xueersi.parentsmeeting.modules.livevideo.widget.CoinAwardDisplayer
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@id/cad_teampk_open_box_team_coin"
+      android:layout_centerHorizontal="true"
+      android:layout_marginTop="130dp"
+      android:visibility="gone"
+      />
+  <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:id="@id/rcl_teampk_open_box_rank"
+      android:layout_below="@id/cad_teampk_open_box_team_coin"
+      android:layout_marginLeft="36dp"
+      android:layout_marginRight="36dp"
+      android:layout_marginTop="14dp"
+      android:scrollbars="none"
+      android:overScrollMode="never"
+      android:visibility="gone"
+      />
+
+
+  <Button
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/btn_test"
+      android:text="Anim_test"
+      />
+
 
 </RelativeLayout>

@@ -919,4 +919,21 @@ public class LiveHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         sendPost(LiveVideoConfig.URL_EXPERIENCE_LIVE_ONLINETIME, params, callBack);
     }
+
+    /**战队pk 相关*/
+
+    /**
+     * 获取分队信息
+     * @param classId
+     * @param teamId
+     * @param requestCallBack
+     */
+    public void getTeamInfo(String id,String classId, String teamId,  HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_TEMPK_PKTEAMINFO, params, requestCallBack);
+    }
+
 }

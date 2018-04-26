@@ -142,6 +142,17 @@ public class LiveGetInfo {
     /** 是否有标记点功能 */
     private String isShowMarkPoint;
 
+    /**是否是 teampk 直播间*/
+    private String  isAllowTeamPk;  // 1 :是pk 直播间  0 :非pk直播间
+
+    public void setIsAllowTeamPk(String isAllowTeamPk) {
+        this.isAllowTeamPk = isAllowTeamPk;
+    }
+
+    public String getIsAllowTeamPk() {
+        return isAllowTeamPk;
+    }
+
     public String getIsShowMarkPoint() {
         return isShowMarkPoint;
     }

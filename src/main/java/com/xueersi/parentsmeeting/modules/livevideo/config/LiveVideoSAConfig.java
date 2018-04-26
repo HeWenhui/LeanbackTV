@@ -121,6 +121,28 @@ public class LiveVideoSAConfig {
         /** 语文主观题结果页地址 */
         public String subjectiveTestAnswerResult = "https://live.xueersi.com/" + ShareBusinessConfig.LIVE_LIBARTS
                 + "/Live/subjectiveTestAnswerResult/";
+
+
+        /**战队pk 相关接口*/
+
+        /** 获取分队信息*/
+        public   String URL_TEMPK_PKTEAMINFO= HTTP_HOST+"/LiveCourse/getTeamNameAndMembers";
+        /** pk对手信息*/
+        public    String URL_TEMPK_MATCHTEAM = HTTP_HOST+"/LiveCourse/getMatchResult";
+        /**获取本场次 金币，能量信息*/
+        public   String URL_TEMPK_LIVESTUGOLDANDTOTALENERGY =HTTP_HOST+"/LiveCourse/liveStuGoldAndTotalEnergy";
+        /**添加能能量值接口*/
+        public   String URL_TEMPK_ADDPERSONANDTEAMENERGY = HTTP_HOST+"/LiveCourse/addPersonAndTeamEnergyUrl";
+        /**学生开宝箱*/
+        public   String URL_TEMPK_GETSTUCHESTURL = HTTP_HOST+"/LiveCourse/getStuChest";
+        /**班级宝箱结果*/
+        public   String URL_TEMPK_GETCLASSCHESTRESULT = HTTP_HOST+"/LiveCourse/getClassChestResult";
+        /**战队pk结果*/
+        public   String URL_TEMPK_STUPKRESULT = HTTP_HOST+"/LiveCourse/stuPKResult";
+        /**贡献之星结果*/
+        public  String URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR = HTTP_HOST+"/LiveCourse/teamEnergyNumAndContributionStar";
+
+
     }
 
 }

@@ -537,8 +537,11 @@
     <item name="rcl_teampk_team" type="id"/>
     <item name="rcl_teampk_teammember" type="id"/>
     <item name="iv_teampk_member_head" type="id"/>
+    <item name="iv_teampk_member_head_mask" type="id"/>
     <item name="tv_teampk_member_name" type="id"/>
     <item name="iv_teampk_finish_team_select" type="id"/>
+    <item name="tv_teampk_team_select_timecoutdown" type="id"/>
+
 
     <!--分队进行中-->
     <item name="iv_teampk_enter_teamselect"  type="id"/>
@@ -575,6 +578,7 @@
     <item name="iv_teampk_pkresult_student_head" type="id"/>
     <item name="iv_teampk_pkresult_student_name" type="id"/>
     <item name="iv_teampk_pkresult_student_energy" type="id"/>
+    <item name="tv_teampk_pkresult_time_countdow" type="id"/>
 
     <item name="tv_teampk_student_add_energy" type="id"/>
     <item name="iv_teampk_pkstate_coin" type="id"/>
@@ -595,6 +599,23 @@
 
     <item name="iv_answer_question_coin" type="id"/>
     <item name="tv_answer_question_coin" type="id"/>
+    <item name="tv_answer_question_state" type="id"/>
+
+    <!--开宝箱-->
+    <item name="lav_teampk_open_box"     type="id"/>
+    <item name="cad_teampk_open_box_team_coin" type="id"/>
+
+    <item name="cad_teampk_open_box_my_coin" type="id"/>
+
+
+    <item name="rcl_teampk_open_box_rank" type="id"/>
+    <item name="iv_teampk_open_box_bg" type="id"/>
+    <item name="iv_teampk_open_box_bg_mask" type="id"/>
+
+    <item name="iv_teampk_open_box_winner_head" type="id"/>
+    <item name="tv_teampk_open_box_winner_name" type="id"/>
+    <item name="tv_teampk_open_box_winner_coin" type="id"/>
+    <item name="iv_teampk_open_box_lucky_guy" type="id"/>
 
 
 </resources>

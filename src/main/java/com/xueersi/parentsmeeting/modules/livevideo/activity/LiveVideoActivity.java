@@ -57,6 +57,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBllOld;
+import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
@@ -181,6 +182,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     SpeechEvaluatorUtils mIse;
     RankBll rankBll;
     EnglishH5CacheAction englishH5Cache;
+    TeamPKBll teamPKBll; //战队pk
     private LiveRemarkBll liveRemarkBll;
     /** 视频宽度 */
     public static final float VIDEO_WIDTH = 1280f;
@@ -288,6 +290,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
 
         setFirstParam(lp);
         liveMessageBll.setVideoLayout(lp.width, lp.height);
+        teamPKBll.setRootView(bottomContent);
 
         Loger.d(TAG, "initView:time2=" + (System.currentTimeMillis() - before));
         final View contentView = findViewById(android.R.id.content);
@@ -454,6 +457,11 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
 
         liveLazyBllCreat = new LiveLazyBllCreat(this, mLiveBll);
         mLiveBll.setLiveLazyBllCreat(liveLazyBllCreat);
+
+        // 初始战队pk
+        teamPKBll = new TeamPKBll(this);
+        mLiveBll.setTeamPkBll(teamPKBll);
+
     }
 
     /**

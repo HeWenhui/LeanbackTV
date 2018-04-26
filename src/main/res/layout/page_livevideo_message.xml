@@ -29,7 +29,6 @@
         </RelativeLayout>
 
         <!--战队pk-->
-
         <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPKStateLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

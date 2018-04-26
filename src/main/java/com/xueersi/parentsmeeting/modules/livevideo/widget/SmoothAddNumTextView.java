@@ -30,7 +30,7 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.SmoothAddNumTextView);
             if(typedArray != null){
                 String durationStr = typedArray.getString(R.styleable.SmoothAddNumTextView_anim_duration);
-                if(TextUtils.isEmpty(durationStr)){
+                if(!TextUtils.isEmpty(durationStr)){
                     duration = Long.parseLong(durationStr);
                 }
                 maxAddCount = typedArray.getInteger(R.styleable.SmoothAddNumTextView_max_add_count, 30);
