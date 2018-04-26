@@ -47,7 +47,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
@@ -146,7 +145,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         btMessageFlowers = liveMediaControllerBottom.getBtMessageFlowers();
 //        cbMessageClock = liveMediaControllerBottom.getCbMessageClock();
 
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 initListener();
@@ -928,7 +927,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     /** 聊天开始连接 */
     public void onStartConnect() {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_offline);
@@ -960,7 +959,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     /** 聊天连上 */
     public void onConnect() {
-        maniHandler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT, "");
@@ -980,7 +979,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     /** 聊天进入房间 */
     public void onRegister() {
-        maniHandler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 isRegister = true;
@@ -991,7 +990,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     /** 聊天断开 */
     public void onDisconnect() {
-        maniHandler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 isRegister = false;
@@ -1003,7 +1002,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     @Override
     public void onUserList(String channel, final User[] users) {
-        maniHandler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (liveBll.isHaveTeam()) {

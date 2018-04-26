@@ -6,8 +6,6 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -156,7 +154,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         cbMessageClock = liveMediaControllerBottom.getCbMessageClock();
         lvCommonWord = liveMediaControllerBottom.getLvCommonWord();
 
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 initListener();
@@ -557,7 +555,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mFlowerWindow = flowerWindow;
         for (int i = 0; i < flowerEntities.size(); i++) {
             final int index = i;
-            maniHandler.postDelayed(new Runnable() {
+            mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     final FlowerEntity entity = flowerEntities.get(index);
@@ -728,7 +726,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     /** 聊天开始连接 */
     public void onStartConnect() {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_offline);
@@ -760,7 +758,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     /** 聊天连上 */
     public void onConnect() {
-        maniHandler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT, "");
@@ -782,7 +780,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     /** 聊天进入房间 */
     public void onRegister() {
-        maniHandler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 isRegister = true;
@@ -793,7 +791,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     /** 聊天断开 */
     public void onDisconnect() {
-        maniHandler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 isRegister = false;
@@ -805,7 +803,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void onUserList(String channel, final User[] users) {
-        maniHandler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (liveBll.isHaveTeam()) {
@@ -833,7 +831,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         if (isCloseChat()) {
             return;
         }
-        maniHandler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -855,7 +853,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void onJoin(String target, String sender, String login, String hostname) {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (liveBll.isHaveTeam()) {
@@ -869,7 +867,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (liveBll.isHaveTeam()) {
@@ -894,7 +892,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     /** 被禁言 */
     public void onDisable(final boolean disable, final boolean fromNotice) {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (disable) {
@@ -919,7 +917,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     /** 关闭开启聊天 */
     public void onopenchat(final boolean openchat, final String mode, final boolean fromNotice) {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (liveBll.isDisable()) {
@@ -947,7 +945,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void onModeChange(final String mode) {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
 
             @Override
             public void run() {
@@ -973,7 +971,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     /** 关闭开启弹幕 */
     public void onOpenbarrage(final boolean openbarrage, final boolean fromNotice) {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (LiveTopic.MODE_CLASS.equals(liveBll.getMode())) {

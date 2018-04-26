@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.xesalib.utils.log.Loger;
 
 import java.io.File;
@@ -37,7 +38,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class FrameAnimation {
     static String TAG = "FrameAnimation";
-
+    String eventId = LiveVideoConfig.LIVE_FRAME_ANIM;
     private boolean mIsRepeat;
 
     private AnimationListener mAnimationListener;
@@ -86,6 +87,7 @@ public class FrameAnimation {
     private String drawFile = "";
     private boolean destory = false;
     private ThreadPoolExecutor executor;
+    long beginTime;
 
     /**
      * @param iv       播放动画的控件
@@ -299,12 +301,28 @@ public class FrameAnimation {
                     if (mAnimationListener != null) {
                         mAnimationListener.onAnimationStart();
                     }
+                    beginTime = System.currentTimeMillis();
                 }
 //                mImageView.setBackgroundResource(mFrameRess[i]);
                 final String file = files[i];
                 Bitmap bitmap = bitmapHashMap.get(file);
                 if (bitmap != null) {
-                    mView.setBackgroundDrawable(new BitmapDrawable(bitmap));
+                    mView.setBackgroundDrawable(new FrameBitmapDrawable(bitmap, mView, file, i));
+                    if (i == mLastFrame) {
+                        if (mIsRepeat) {
+                            if (mAnimationListener != null) {
+                                mAnimationListener.onAnimationRepeat();
+                            }
+                            play(0);
+                        } else {
+                            if (mAnimationListener != null) {
+                                mAnimationListener.onAnimationEnd();
+                                mPause = true;
+                            }
+                        }
+                    } else {
+                        play(i + 1);
+                    }
                 } else {
                     Thread thread = new Thread() {
                         @Override
@@ -349,37 +367,53 @@ public class FrameAnimation {
                                                 finalBitmap.recycle();
                                                 return;
                                             }
-                                            drawFile = file;
-                                            mView.setBackgroundDrawable(new BitmapDrawable(finalBitmap) {
-                                                @Override
-                                                public void draw(Canvas canvas) {
-                                                    try {
-                                                        drawFile = file;
-                                                        super.draw(canvas);
-                                                    } catch (Exception e) {
-                                                        Loger.e(TAG, "setBackgroundDrawable:file=" + file + ",drawFile=" + drawFile);
-                                                    }
-                                                }
-                                            });
+                                            mView.setBackgroundDrawable(new FrameBitmapDrawable(finalBitmap, mView, file, i));
                                             if (!mIsRepeat) {
-                                                executor.execute(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        for (int index = 0; index < i - 1; index++) {
-                                                            String f = files[index];
-                                                            Bitmap bitmap1 = bitmapHashMap.get(f);
-                                                            if (bitmap1 != null) {
-                                                                bitmap1.recycle();
+                                                if (i > 0) {
+                                                    mView.post(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            for (int index = 0; index < i - 1; index++) {
+                                                                String f = files[index];
+                                                                Bitmap bitmap1 = bitmapHashMap.get(f);
+                                                                if (f.equals(drawFile)) {
+                                                                    Loger.d(TAG, "setBackgroundDrawable:recycle");
+                                                                }
+                                                                if (bitmap1 != null) {
+                                                                    bitmap1.recycle();
+                                                                }
                                                             }
                                                         }
-//                                                        Set<String> keys = bitmapHashMap.keySet();
-//                                                        for (String k : keys) {
-//                                                            if (!k.equals(drawFile)) {
-//                                                                bitmapHashMap.get(k).recycle();
-//                                                            }
-//                                                        }
+                                                    });
+                                                }
+                                            }
+                                            if (i == mLastFrame) {
+                                                HashMap<String, String> map = new HashMap<>();
+                                                long totaltime = (System.currentTimeMillis() - beginTime);
+                                                map.put("totaltime", "" + totaltime);
+                                                map.put("totaltime2", "" + (mDuration * files.length));
+                                                map.put("frames", "" + files.length);
+                                                map.put("fps", "" + (files.length * 1000 / totaltime));
+                                                map.put("path", "" + path);
+                                                Runtime runtime = Runtime.getRuntime();
+                                                map.put("totalMemory", "" + (runtime.totalMemory() / 1024 / 1024));
+                                                map.put("freeMemory", "" + (runtime.freeMemory() / 1024 / 1024));
+                                                Loger.d(mView.getContext(), eventId, map, true);
+                                            }
+                                            if (i == mLastFrame) {
+                                                if (mIsRepeat) {
+                                                    if (mAnimationListener != null) {
+                                                        mAnimationListener.onAnimationRepeat();
                                                     }
-                                                });
+                                                    play(0);
+                                                } else {
+                                                    if (mAnimationListener != null) {
+                                                        mAnimationListener.onAnimationEnd();
+                                                        mPause = true;
+                                                    }
+                                                }
+                                            } else {
+                                                play(i + 1);
                                             }
                                         }
                                     });
@@ -400,24 +434,6 @@ public class FrameAnimation {
                         }
                     };
                     executor.execute(thread);
-                }
-                if (i == mLastFrame) {
-
-                    if (mIsRepeat) {
-                        if (mAnimationListener != null) {
-                            mAnimationListener.onAnimationRepeat();
-                        }
-                        play(0);
-                    } else {
-                        if (mAnimationListener != null) {
-                            mAnimationListener.onAnimationEnd();
-                            mPause = true;
-                        }
-                    }
-
-                } else {
-
-                    play(i + 1);
                 }
             }
         }, mDuration);
@@ -524,6 +540,33 @@ public class FrameAnimation {
         }
         bitmapHashMap.clear();
         return recycle;
+    }
+
+    class FrameBitmapDrawable extends BitmapDrawable {
+        String file;
+        int index;
+        View view;
+
+        public FrameBitmapDrawable(Bitmap bitmap, View view, String file, int index) {
+            super(bitmap);
+            this.file = file;
+            this.index = index;
+            this.view = view;
+        }
+
+        @Override
+        public void draw(Canvas canvas) {
+            drawFile = file;
+            try {
+                if (getBitmap().isRecycled()) {
+                    Loger.e(TAG, "setBackgroundDrawable:file=" + file + ",index=" + index);
+                    return;
+                }
+                super.draw(canvas);
+            } catch (Exception e) {
+                Loger.e(TAG, "setBackgroundDrawable:file=" + file);
+            }
+        }
     }
 
     public static FrameAnimation createFromAees(Context mContext, View iv, String path, int duration, boolean isRepeat) {

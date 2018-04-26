@@ -819,7 +819,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
 
     /** 聊天连上 */
     public void onConnect() {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT, "");
@@ -829,7 +829,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
 
     /** 聊天进入房间 */
     public void onRegister() {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 isRegister = true;
@@ -839,7 +839,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
 
     /** 聊天断开 */
     public void onDisconnect() {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 isRegister = false;

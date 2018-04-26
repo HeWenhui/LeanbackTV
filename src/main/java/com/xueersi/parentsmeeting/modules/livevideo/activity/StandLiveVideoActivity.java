@@ -906,29 +906,30 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
                     }
                 }
                 ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                setTeacherNotpresent();
+                setTeacherNotpresent(ivTeacherNotpresent);
                 findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
             }
         });
     }
 
-    /** 设置老师不在直播间背景 */
-    private void setTeacherNotpresent() {
+    /** 设置老师不在直播间背景
+     * @param view*/
+    private void setTeacherNotpresent(View view) {
         if (LiveTopic.MODE_CLASS.equals(mode)) {
             long now = System.currentTimeMillis() / 1000;
             if (now < mGetInfo.getsTime()) {
-                ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_before);
+                view.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_before);
                 Loger.d(TAG, "setTeacherNotpresent:before");
             } else if (now > mGetInfo.geteTime()) {
-                ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_after);
+                view.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_after);
                 Loger.d(TAG, "setTeacherNotpresent:after");
             } else {
-                ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_before_doing);
+                view.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_before_doing);
                 Loger.d(TAG, "setTeacherNotpresent:doing");
             }
         } else {
             Loger.d(TAG, "setTeacherNotpresent:mode=training");
-            ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
+            view.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
         }
     }
 
@@ -1510,46 +1511,13 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         }
         rlFirstBackgroundView.setVisibility(visible);
         if (visible == View.VISIBLE) {
-            if (rlFirstBackgroundView.getTag() == null) {
-                FrameAnimation frameAnimation = FrameAnimation.createFromAees(this, rlFirstBackgroundView, "live_stand/frame_anim/video_loading", 70, false);
-                frameAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart() {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd() {
-                        if (rlFirstBackgroundView.getTag() instanceof FrameAnimation) {
-                            FrameAnimation frameAnimation = (FrameAnimation) rlFirstBackgroundView.getTag();
-                            frameAnimation.destory();
-                        }
-                        if (rlFirstBackgroundView.getVisibility() == View.VISIBLE) {
-                            FrameAnimation frameAnimation = FrameAnimation.createFromAees(StandLiveVideoActivity.this, rlFirstBackgroundView, "live_stand/frame_anim/video_loading", 70, false);
-                            frameAnimation.setAnimationListener(this);
-                            rlFirstBackgroundView.setTag(frameAnimation);
-                        }
-                    }
-
-                    @Override
-                    public void onAnimationRepeat() {
-
-                    }
-                });
-                rlFirstBackgroundView.setTag(frameAnimation);
-            }
-        } else {
-            if (rlFirstBackgroundView.getTag() instanceof FrameAnimation) {
-                FrameAnimation frameAnimation = (FrameAnimation) rlFirstBackgroundView.getTag();
-                frameAnimation.destory();
-                rlFirstBackgroundView.setTag(null);
-            }
+            setTeacherNotpresent(rlFirstBackgroundView);
         }
         if (visible == View.GONE) {
             ivTeacherNotpresent.setVisibility(View.GONE);
         } else {
             if (ivTeacherNotpresent.getVisibility() == View.VISIBLE) {
-                setTeacherNotpresent();
+                setTeacherNotpresent(ivTeacherNotpresent);
             }
         }
     }

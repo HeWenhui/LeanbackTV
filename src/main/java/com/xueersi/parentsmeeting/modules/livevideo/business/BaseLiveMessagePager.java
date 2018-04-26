@@ -116,8 +116,8 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     public int urlclick;
     public LiveGetInfo getInfo;
     /** 聊天线程池 */
-    public ThreadPoolExecutor pool;
-    protected Handler maniHandler = new Handler(Looper.getMainLooper());
+    protected ThreadPoolExecutor pool;
+    protected Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public BaseLiveMessagePager(Context context) {
         super(context);

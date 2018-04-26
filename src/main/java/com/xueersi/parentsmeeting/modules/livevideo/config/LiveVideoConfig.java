@@ -122,7 +122,8 @@ public class LiveVideoConfig {
     public static String STAND_LIVE_GRANT = "standlive_grant";
     /** 直播-包括ip地址的播放地址 https://wiki.xesv5.com/pages/viewpage.action?pageId=11403335 */
     public static String LIVE_GSLB = "live_gslb";
-
+    /** 站立直播-帧动画 */
+    public static String LIVE_FRAME_ANIM = "live_frame_anim";
     /** 直播时间-当天据算，live_expe_time按单个场次计算 */
     public static String LIVE_EXPE_TIME = "live_expe_time_all";
     /** 英语能量条提示 */
@@ -144,10 +145,10 @@ public class LiveVideoConfig {
     public static String URL_ROLEPLAY_TESTINFOS = AppConfig.HTTP_HOST + "/libarts/LiveCourse/getRolePlay";
     /** 提交接口 */
     public static String URL_ROLEPLAY_RESULT = AppConfig.HTTP_HOST + "/libarts/LiveCourse/submitRolePlay";
-    /** 讲座直播获取更多课程*/
-    public static String URL_LECTURELIVE_MORE_COURSE = AppConfig.HTTP_HOST+"/LiveLecture/getAdCase";
-    /**获取时时间戳*/
-    public static String URL_LIVE_GET_CURTIME=AppConfig.HTTP_HOST+"/science/LiveCourse/getCurTimestamp";
+    /** 讲座直播获取更多课程 */
+    public static String URL_LECTURELIVE_MORE_COURSE = AppConfig.HTTP_HOST + "/LiveLecture/getAdCase";
+    /** 获取时时间戳 */
+    public static String URL_LIVE_GET_CURTIME = AppConfig.HTTP_HOST + "/science/LiveCourse/getCurTimestamp";
     /** 更多课程数量的记录 */
     public static int MORE_COURSE;
     public static Boolean isloading = false;

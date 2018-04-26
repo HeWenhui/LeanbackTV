@@ -144,7 +144,7 @@ public class Top3FrameAnim {
             @Override
             public void onAnimationEnd() {
                 final FrameAnimation btframeAnimation3 =
-                        FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, file16, 50, true);
+                        FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, file16, 50, false);
                 frameAnimations.add(btframeAnimation3);
                 if (!students.isEmpty()) {
                     btframeAnimation3.setBitmapCreate(new FrameAnimation.BitmapCreate() {
@@ -160,13 +160,35 @@ public class Top3FrameAnim {
                         }
                     });
                 }
-                rl_livevideo_redpackage_bg.postDelayed(new Runnable() {
+                btframeAnimation3.setAnimationListener(new FrameAnimation.AnimationListener() {
                     @Override
-                    public void run() {
+                    public void onAnimationStart() {
+                        rl_livevideo_redpackage_bg.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                btframeAnimation2.destory();
+                            }
+                        }, 30);
+                    }
+
+                    @Override
+                    public void onAnimationEnd() {
                         btframeAnimation3.destory();
                         animationListener.onAnimationEnd();
                     }
-                }, 3000);
+
+                    @Override
+                    public void onAnimationRepeat() {
+
+                    }
+                });
+//                rl_livevideo_redpackage_bg.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        btframeAnimation3.destory();
+//                        animationListener.onAnimationEnd();
+//                    }
+//                }, 3000);
             }
 
             @Override
