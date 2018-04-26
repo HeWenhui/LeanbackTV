@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.graphics.Bitmap;
+import android.os.Environment;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
@@ -9,6 +11,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPage
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechTop3Pager;
 import com.xueersi.xesalib.utils.log.Loger;
+
+import java.io.File;
+import java.util.HashMap;
 
 /**
  * Created by linyuqiang on 2018/4/10.
@@ -21,9 +26,13 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
     RelativeLayout bottomContent;
     GoldTeamStatus entity;
     boolean stop = false;
+    HashMap<String, GoldTeamStatus> goldTeamStatusHashMap = new HashMap<>();
+    LogToFile logToFile;
 
     public StandSpeechTop3Bll(LiveBll liveBll) {
         this.liveBll = liveBll;
+        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+                + ".txt"));
     }
 
     public void initView(RelativeLayout bottomContent) {
@@ -41,6 +50,8 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
                         @Override
                         public void onDataSucess(Object... objData) {
                             entity = (GoldTeamStatus) objData[0];
+                            entity.setId(num);
+                            goldTeamStatusHashMap.put(num, entity);
                             Loger.d(TAG, "getSpeechEvalAnswerTeamRank:stop=" + stop);
                             if (stop) {
                                 onStopSpeech(speechAssessmentPager, num);
@@ -53,6 +64,8 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
                         @Override
                         public void onDataSucess(Object... objData) {
                             entity = (GoldTeamStatus) objData[0];
+                            entity.setId(num);
+                            goldTeamStatusHashMap.put(num, entity);
                             Loger.d(TAG, "getRolePlayAnswerTeamRank:stop=" + stop);
                             if (stop) {
                                 onStopSpeech(speechAssessmentPager, num);
@@ -67,14 +80,19 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
     @Override
     public void onStopSpeech(BaseSpeechAssessmentPager speechAssessmentPager, String num) {
         stop = true;
-        Loger.d(TAG, "onStopSpeech:entity=" + (entity == null));
+        if (entity != null) {
+            logToFile.d("onStopSpeech:entity=" + entity.getId() + ",num=" + num + ",size=" + goldTeamStatusHashMap.size());
+        } else {
+            logToFile.d("onStopSpeech:entity=null" + ",num=" + num + ",size=" + goldTeamStatusHashMap.size());
+        }
+        GoldTeamStatus entity = goldTeamStatusHashMap.get(num);
         if (entity == null) {
             return;
         }
-        initTop(num);
+        initTop(num, entity);
     }
 
-    private void initTop(String num) {
+    private void initTop(String num, GoldTeamStatus entity) {
         if (standSpeechTop3Pager != null && num.equals(standSpeechTop3Pager.getId())) {
             Loger.d(TAG, "initTop:num=" + num);
             return;
@@ -83,7 +101,8 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
         standSpeechTop3Pager.setId(num);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         bottomContent.addView(standSpeechTop3Pager.getRootView(), lp);
-        entity = null;
+        StandSpeechTop3Bll.this.entity = null;
+        goldTeamStatusHashMap.remove(num);
         stop = false;
     }
 

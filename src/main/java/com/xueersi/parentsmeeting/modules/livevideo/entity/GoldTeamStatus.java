@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 
 public class GoldTeamStatus {
-
+    private String id;
     private String myScore;//学生本人分数
     private String myName;//"学生本人姓名
     private String myNickName;//"学生本人昵称
@@ -17,6 +17,14 @@ public class GoldTeamStatus {
     private String myAvatarPath;//":"http://xesfile.xesimg.com/user/h/def10002.png"
 
     private ArrayList<Student> students = new ArrayList<>();
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getMyScore() {
         return myScore;
@@ -75,7 +83,7 @@ public class GoldTeamStatus {
         String realname;
         String nickname;// "ssss",
         String en_name;// "rer",
-        /**显示的名字*/
+        /** 显示的名字 */
         String showName;
         String avatar_path;// "http:\/\/xesfile.xesimg.com\/user\/h\/31203.jpg"
         boolean isRight = false;
