@@ -92,9 +92,12 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         if (frames.isEmpty()) {
             return;
         }
-        String vdownload = "";
+        StringBuilder vdownload = new StringBuilder();
         for (int i = 0; i < frames.size(); i++) {
-            vdownload = frames.get(i) + ",";
+            vdownload.append(frames.get(i));
+            if (i != frames.size() - 1) {
+                vdownload.append(",");
+            }
         }
         frames.clear();
         Map<String, String> mData = new HashMap<>();

@@ -3814,7 +3814,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         String url = r.replace("\n", "");
                         int index1 = url.substring(7).indexOf("/");
                         if (index1 != -1) {
-                            String host = url.substring(0, index1);
+                            String host = url.substring(7, 7 + index1);
                             playserverEntity.setAddress(host);
                         }
                         dataCallBack.onDataSucess(provide, url);
