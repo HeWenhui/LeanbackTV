@@ -5,7 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLiveVideoActivity;
+import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService;
@@ -19,15 +19,17 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 /**
  * Created by linyuqiang on 2018/4/24.
- *  帧数统计
+ * 帧数统计
  */
 public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
+    private String TAG = "TotalFrameStat";
     LiveBll liveBll;
     PlayerService vPlayer;
     ArrayList<String> frames = new ArrayList<>();
     Activity activity;
     private PlayServerEntity.PlayserverEntity lastPlayserverEntity;
-    private String TAG = "TotalFrameStat";
+    /** 是不是开始统计 */
+    private boolean isStat = true;
 
     public TotalFrameStat(Activity activity) {
         this.activity = activity;
@@ -37,28 +39,55 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         this.vPlayer = vPlayer;
     }
 
+    /**
+     * 设置播放地址
+     *
+     * @param lastPlayserverEntity
+     */
     public void setLastPlayserverEntity(PlayServerEntity.PlayserverEntity lastPlayserverEntity) {
         this.lastPlayserverEntity = lastPlayserverEntity;
     }
 
+    public boolean isStat() {
+        return isStat;
+    }
+
+    public void setStat(boolean stat) {
+        isStat = stat;
+    }
+
     Handler handler = new Handler(Looper.getMainLooper()) {
+        float lastFps = 0;
+
         @Override
         public void handleMessage(Message msg) {
-            if (vPlayer.isInitialized() && lastPlayserverEntity != null) {
-                if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
-                    IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
-                    float fps = ijkMediaPlayer.getVideoDecodeFramesPerSecond();
-                    frames.add("" + ((int) (fps * 5)));
-                    if (frames.size() == 12) {
-                        send();
+//            if (!isStat) {
+//                return;
+//            }
+            try {
+                if (vPlayer.isInitialized() && lastPlayserverEntity != null) {
+                    if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
+                        IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
+                        float fps = ijkMediaPlayer.getVideoDecodeFramesPerSecond();
+                        if (lastFps != 0) {
+                            frames.add("" + ((int) ((lastFps + lastFps) * 5 / 2)));
+                        } else {
+                            frames.add("" + ((int) (fps * 5)));
+                        }
+                        lastFps = fps;
+                        if (frames.size() == 12) {
+                            send("frames12");
+                        }
                     }
                 }
+            } catch (Exception e) {
+                Loger.e(BaseApplication.getContext(), TAG, "handleMessage", e, true);
             }
             handler.sendEmptyMessageDelayed(1, 5000);
         }
     };
 
-    private void send() {
+    private void send(String method) {
         Loger.d(TAG, "send:frames=" + frames.size());
         if (frames.isEmpty()) {
             return;
@@ -69,18 +98,26 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         }
         frames.clear();
         Map<String, String> mData = new HashMap<>();
-        mData.put("message", "server: " + lastPlayserverEntity.getAddress() + "vdownload:" + vdownload);
+        mData.put("activity", activity.getClass().getSimpleName());
+        mData.put("method", method);
+        mData.put("message", "server: " + lastPlayserverEntity.getAddress() + " vdownload:" + vdownload);
         Loger.e(activity, LiveVideoConfig.LIVE_GSLB, mData, true);
+    }
+
+    public void onPause() {
+        handler.removeMessages(1);
+        send("onPause");
     }
 
     public void onReplay() {
         handler.removeMessages(1);
-        send();
+        send("onReplay");
     }
 
     @Override
     public void onOpenStart() {
         super.onOpenStart();
+        handler.sendEmptyMessage(1);
     }
 
     @Override
@@ -93,25 +130,25 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     public void onOpenFailed(int arg1, int arg2) {
         super.onOpenFailed(arg1, arg2);
         handler.removeMessages(1);
-        send();
+        send("onOpenFailed");
     }
 
     @Override
     public void onPlaybackComplete() {
         super.onPlaybackComplete();
         handler.removeMessages(1);
-        send();
+        send("onPlaybackComplete");
     }
 
     @Override
     public void onPlayError() {
         super.onPlayError();
         handler.removeMessages(1);
-        send();
+        send("onPlayError");
     }
 
     public void destory() {
         handler.removeMessages(1);
-        send();
+        send("destory");
     }
 }

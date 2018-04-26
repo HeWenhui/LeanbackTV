@@ -57,8 +57,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBllOld;
-import com.xueersi.parentsmeeting.modules.livevideo.business.TotalFrameStat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
@@ -143,7 +141,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     private ArrayList<PlayserverEntity> failFlvPlayserverEntity = new ArrayList<>();
     /** 直播服务器选择 */
     private PlayserverEntity lastPlayserverEntity;
-    TotalFrameStat totalFrameStat;
     private int lastIndex;
     private LiveTopic mLiveTopic;
     private String vStuCourseID;
@@ -706,7 +703,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 playTime += (System.currentTimeMillis() - lastPlayTime);
             }
             openSuccess = false;
-            totalFrameStat.onPlaybackComplete();
         }
 
         @Override
@@ -720,7 +716,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 playTime += (System.currentTimeMillis() - lastPlayTime);
             }
             openSuccess = false;
-            totalFrameStat.onPlayError();
         }
 
         @Override
@@ -738,7 +733,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             mLogtf.d("onOpenSuccess:playTime=" + playTime);
             mHandler.postDelayed(mPlayDuration, mPlayDurTime);
             mHandler.postDelayed(getVideoCachedDurationRun, 10000);
-            totalFrameStat.onOpenSuccess();
         }
 
         @Override
@@ -767,7 +761,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 mLiveBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "fail reconnect");
                 reportPlayStarTime = System.currentTimeMillis();
             }
-            totalFrameStat.onOpenFailed(arg1, arg2);
         }
 
         @Override
@@ -1135,10 +1128,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         }
         if (startRemote.get()) {
             return;
-        }
-        if (totalFrameStat == null) {
-            totalFrameStat = new TotalFrameStat(this);
-            totalFrameStat.setvPlayer(vPlayer);
         }
         totalFrameStat.onReplay();
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
@@ -1586,9 +1575,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         }
         if (speechFeedBackAction != null) {
             speechFeedBackAction.stop();
-        }
-        if (totalFrameStat != null) {
-            totalFrameStat.destory();
         }
         super.onDestroy();
     }

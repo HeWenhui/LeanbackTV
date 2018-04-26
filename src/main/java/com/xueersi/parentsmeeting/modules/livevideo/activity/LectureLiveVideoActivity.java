@@ -180,7 +180,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     LecLearnReportBll learnReportBll;
     H5CoursewareBll h5CoursewareBll;
     LecAdvertBll lecAdvertAction;
-//    StarInteractBll starBll;
+    //    StarInteractBll starBll;
     private Boolean picinpic = false;
     /**
      * 视频宽度
@@ -373,15 +373,15 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
 //            starBll.initView(questionContent);
 //            starBll.onConfigurationChanged(mIsLand);
 //        }
-        if(mIsLand){
-            if(mPopupWindows != null){
+        if (mIsLand) {
+            if (mPopupWindows != null) {
                 mPopupWindows = null;
             }
-            if(LiveVideoConfig.MORE_COURSE > 0){
+            if (LiveVideoConfig.MORE_COURSE > 0) {
                 showPopupwindow();
             }
-        }else {
-            if(mPopupWindows != null && mPopupWindows.isShowing()){
+        } else {
+            if (mPopupWindows != null && mPopupWindows.isShowing()) {
                 mPopupWindows.dismiss();
             }
 
@@ -494,7 +494,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                     setFirstParamPort();
                 }
             });
-            if(mPopupWindows != null && mPopupWindows.isShowing()){
+            if (mPopupWindows != null && mPopupWindows.isShowing()) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -531,7 +531,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     }
 
 
-
     private void setFirstParamPort() {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
         if (params.rightMargin != RelativeLayout.LayoutParams.MATCH_PARENT || params.bottomMargin != RelativeLayout.LayoutParams.MATCH_PARENT) {
@@ -548,7 +547,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     protected void onPlayOpenStart() {
         setFirstBackgroundVisible(View.VISIBLE);
         findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
-        if(mIsLand && LiveVideoConfig.MORE_COURSE > 0){
+        if (mIsLand && LiveVideoConfig.MORE_COURSE > 0) {
             showPopupwindow();
         }
     }
@@ -568,7 +567,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         mFloatView = inflater.inflate(R.layout.livemessage_jumpboard, null);
         mPopupWindows = new PopupWindow(mFloatView, 360, 90, false);
         mPopupWindows.setOutsideTouchable(false);
-        mPopupWindows.showAtLocation(mFloatView, Gravity.BOTTOM | Gravity.LEFT, ScreenUtils.getScreenWidth()-420, 160);
+        mPopupWindows.showAtLocation(mFloatView, Gravity.BOTTOM | Gravity.LEFT, ScreenUtils.getScreenWidth() - 420, 160);
         // 03.29 横竖屏的切换
         mFloatView.findViewById(R.id.switch_orientation).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -578,22 +577,22 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 LiveVideoConfig.isloading = true;
             }
         });
-        TextView totalnum = (TextView)mFloatView.findViewById(R.id.tv_apply_totalnum);
+        TextView totalnum = (TextView) mFloatView.findViewById(R.id.tv_apply_totalnum);
         totalnum.setText(LiveVideoConfig.MORE_COURSE + "");
 
     }
 
-    private void createRealVideo(String courseId,String classId){
+    private void createRealVideo(String courseId, String classId) {
         boolean isPermission = FloatPermissionManager.getInstance().applyFloatWindow(this);
         //有对应权限或者系统版本小于7.0
         if (isPermission || Build.VERSION.SDK_INT < 24) {
-            mParent = (ViewGroup)videoView.getParent();
-            if(mParent != null){
+            mParent = (ViewGroup) videoView.getParent();
+            if (mParent != null) {
                 mParent.removeView(videoView);
             }
             //开启悬浮窗
-            OtherModulesEnter.intentToOrderConfirmActivity(this,courseId+"-"+classId,100,"LectureLiveVideoActivity");
-            FloatWindowManager.addView(this,videoView,1);
+            OtherModulesEnter.intentToOrderConfirmActivity(this, courseId + "-" + classId, 100, "LectureLiveVideoActivity");
+            FloatWindowManager.addView(this, videoView, 1);
             picinpic = true;
         }
 
@@ -1016,6 +1015,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         if (mGetInfo == null) {//上次初始化尚未完成
             return;
         }
+        totalFrameStat.onReplay();
         new Thread() {
             @Override
             public void run() {
@@ -1052,6 +1052,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             url = rtmpUrl + "/" + mGetInfo.getChannelname();
             msg += "mServer=null";
             mLiveBll.setPlayserverEntity(null);
+            totalFrameStat.setLastPlayserverEntity(null);
         } else {
             List<PlayserverEntity> playservers = mServer.getPlayserver();
             msg += "playservers=" + playservers.size();
@@ -1129,12 +1130,13 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             }
             lastPlayserverEntity = entity;
             mLiveBll.setPlayserverEntity(entity);
+            totalFrameStat.setLastPlayserverEntity(entity);
             if (useFlv) {
                 url = "http://" + entity.getAddress() + ":" + entity.getHttpport() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname() + entity.getFlvpostfix();
             } else {
                 if (StringUtils.isEmpty(entity.getIp_gslb_addr())) {
                     url = "rtmp://" + entity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
-                }else {
+                } else {
                     final PlayserverEntity finalEntity = entity;
                     mLiveBll.dns_resolve_stream(entity, mServer, mGetInfo.getChannelname(), new AbstractBusinessDataCallBack() {
                         @Override
@@ -1314,64 +1316,64 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(MiniEvent event) {
-        if("Order".equals(event.getMin())){
+        if ("Order".equals(event.getMin())) {
             final String courseId = event.getCourseId();
             final String classId = event.getClassId();
-            if(mIsLand){
+            if (mIsLand) {
                 changeLOrP();
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        createRealVideo(courseId,classId);
+                        createRealVideo(courseId, classId);
                     }
-                },500);
-            }else{
-                createRealVideo(event.getCourseId(),event.getClassId());
+                }, 500);
+            } else {
+                createRealVideo(event.getCourseId(), event.getClassId());
             }
             onPauseNotStopVideo = true;
             // 添加点击立即报名的日志
             StableLogHashMap logHashMap = new StableLogHashMap("clickEnroll");
             logHashMap.put("adsid", "" + event.getAdId());
             logHashMap.addSno("5").addStable("2");
-            logHashMap.put("extra","点击了立即报名");
+            logHashMap.put("extra", "点击了立即报名");
             liveBll.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
             LiveVideoConfig.LECTUREADID = event.getAdId();
         }
-        if("Invisible".equals(event.getMin())){
-            if(mPopupWindows != null && mPopupWindows.isShowing()){
+        if ("Invisible".equals(event.getMin())) {
+            if (mPopupWindows != null && mPopupWindows.isShowing()) {
                 mPopupWindows.dismiss();
             }
         }
-        if("ConfirmClick".equals(event.getMin())){
+        if ("ConfirmClick".equals(event.getMin())) {
             // 添加用户点击提交订单日志
             StableLogHashMap logHashMap = new StableLogHashMap("clickSubmitOrder");
             logHashMap.put("adsid", "" + LiveVideoConfig.LECTUREADID);
             logHashMap.addSno("6").addStable("2");
-            logHashMap.put("extra","点击了立即支付");
+            logHashMap.put("extra", "点击了立即支付");
             liveBll.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
         }
-        if("OrderPaySuccess".equals(event.getMin())){
+        if ("OrderPaySuccess".equals(event.getMin())) {
             // 添加用户购买成功的日志
             StableLogHashMap logHashMap = new StableLogHashMap("purchaseSucceed");
             logHashMap.put("adsid", "" + LiveVideoConfig.LECTUREADID);
             logHashMap.addSno("7").addStable("2");
-            logHashMap.put("orderid",event.getCourseId());
-            logHashMap.put("extra","用户支付成功");
+            logHashMap.put("orderid", event.getCourseId());
+            logHashMap.put("extra", "用户支付成功");
             liveBll.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
         }
-        if("Advertisement".equals(event.getMin())){
+        if ("Advertisement".equals(event.getMin())) {
             // 收到广告指令就弹出面板抽屉
-            if(mIsLand && LiveVideoConfig.MORE_COURSE > 0){
+            if (mIsLand && LiveVideoConfig.MORE_COURSE > 0) {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if(mPopupWindows != null){
+                        if (mPopupWindows != null) {
                             mPopupWindows.dismiss();
                             mPopupWindows = null;
                         }
                         showPopupwindow();
                     }
-                },1000);
+                }, 1000);
             }
         }
 
@@ -1380,8 +1382,8 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        ViewGroup parents = (ViewGroup)videoView.getParent();
-        if(parents != null) {
+        ViewGroup parents = (ViewGroup) videoView.getParent();
+        if (parents != null) {
             parents.removeView(videoView);
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -1393,9 +1395,9 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     @Override
     protected void onRestart() {
         super.onRestart();
-        if(picinpic){
-            ViewGroup parents = (ViewGroup)videoView.getParent();
-            if(parents != null) {
+        if (picinpic) {
+            ViewGroup parents = (ViewGroup) videoView.getParent();
+            if (parents != null) {
                 parents.removeView(videoView);
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -1514,7 +1516,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
 
     protected void updateLoadingImage() {
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
-        if (footerIconEntity != null ){
+        if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
             if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
                 ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);

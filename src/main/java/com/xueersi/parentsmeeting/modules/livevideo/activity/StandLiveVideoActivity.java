@@ -912,8 +912,11 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         });
     }
 
-    /** 设置老师不在直播间背景
-     * @param view*/
+    /**
+     * 设置老师不在直播间背景
+     *
+     * @param view
+     */
     private void setTeacherNotpresent(View view) {
         if (LiveTopic.MODE_CLASS.equals(mode)) {
             long now = System.currentTimeMillis() / 1000;
@@ -1207,6 +1210,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         if (startRemote.get()) {
             return;
         }
+        totalFrameStat.onReplay();
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
             if (LiveTopic.MODE_TRANING.endsWith(mGetInfo.getLiveTopic().getMode()) && mGetInfo.getStudentLiveInfo().isExpe()) {
                 tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
@@ -1251,6 +1255,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
             url = rtmpUrl + "/" + mGetInfo.getChannelname();
             msg += "mServer=null";
             mLiveBll.setPlayserverEntity(null);
+            totalFrameStat.setLastPlayserverEntity(null);
         } else {
             List<PlayserverEntity> playservers = mServer.getPlayserver();
             msg += "playservers=" + playservers.size();
@@ -1336,6 +1341,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
             }
             lastPlayserverEntity = entity;
             mLiveBll.setPlayserverEntity(entity);
+            totalFrameStat.setLastPlayserverEntity(entity);
             if (useFlv) {
                 url = "http://" + entity.getAddress() + ":" + entity.getHttpport() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname() + entity.getFlvpostfix();
             } else {
