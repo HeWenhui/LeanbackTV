@@ -22,9 +22,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.AGEventHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
+import com.xueersi.xesalib.umsagent.DeviceInfo;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
@@ -72,6 +74,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
     File saveVideoFile;
     private String roomId;
     private long joinTime;
+    long startTime;
 
     private void initAudioRecorder() throws IOException {
         mBufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLING_RATE,
@@ -268,6 +271,12 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
             } catch (IOException e) {
                 Loger.d(TAG, "stop:close", e);
             }
+            outputStream = null;
+            long time = System.currentTimeMillis() - startTime;
+            StableLogHashMap hashMap = new StableLogHashMap("uploadfile");
+            hashMap.put("time", "" + time);
+            hashMap.put("length", "" + saveVideoFile.length());
+            liveBll.umsAgentDebugSys("live_voice", hashMap.getData());
             final File finalFile = saveVideoFile;
             XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(activity);
             CloudUploadEntity uploadEntity = new CloudUploadEntity();
@@ -284,7 +293,8 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                 public void onSuccess(XesCloudResult result) {
                     finalFile.delete();
                     Loger.d(TAG, "asyncUpload:onSuccess=" + result.getHttpPath());
-                    liveBll.saveStuTalkSource(result.getHttpPath());
+                    String service = DeviceInfo.getDeviceName();
+                    liveBll.saveStuTalkSource(result.getHttpPath(), service);
 //                    http://testmv.xesimg.com/app/live_feed_back/2018/04/27/31203_1524811986079_ise1524811975319.mp3
                 }
 
@@ -293,7 +303,6 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                     Loger.d(TAG, "asyncUpload:onError=" + result);
                 }
             });
-            outputStream = null;
         }
         isStart = false;
         if (mAudioRecord != null) {
