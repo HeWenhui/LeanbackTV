@@ -3480,6 +3480,31 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         });
     }
 
+    /**
+     * 存储学生语音反馈音源
+     * @param talkSourcePath
+     */
+    public void saveStuTalkSource(String talkSourcePath) {
+        mHttpManager.saveStuTalkSource(mGetInfo.getStuId(), talkSourcePath, "", new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                Loger.d(TAG, "saveStuTalkSource:onPmSuccess" + responseEntity.getJsonObject());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                Loger.d(TAG, "saveStuTalkSource:onPmFailure" + msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                Loger.d(TAG, "saveStuTalkSource:onPmError" + responseEntity.getErrorMsg());
+            }
+        });
+    }
+
     public Call download(final String url, final String saveDir, DownloadCallBack downloadCallBack) {
         return mHttpManager.download(url, saveDir, downloadCallBack);
     }

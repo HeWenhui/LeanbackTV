@@ -2031,6 +2031,11 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                 if (response.code() >= 200 && response.code() <= 300) {
                     if ("wangsu".equals(provide)) {
                         String url = r.replace("\n", "");
+                        int index1 = url.substring(7).indexOf("/");
+                        if (index1 != -1) {
+                            String host = url.substring(7, 7 + index1);
+                            playserverEntity.setAddress(host);
+                        }
                         dataCallBack.onDataSucess(provide, url);
                     } else {
                         try {
@@ -2039,6 +2044,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                             JSONArray ipArray = jsonObject.optJSONArray("ips");
                             String ip = ipArray.getString(0);
                             String url = "rtmp://" + ip + "/" + host + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+                            playserverEntity.setAddress(host);
                             dataCallBack.onDataSucess(provide, url);
                             mLogtf.d("dns_resolve_stream:ip_gslb_addr=" + playserverEntity.getIp_gslb_addr() + ",ip=" + ip);
                             return;

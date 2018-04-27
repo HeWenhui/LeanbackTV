@@ -115,6 +115,8 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_GET_AUTO_NOTICE = HTTP_HOST + "/LiveCourse/counselorWhisper";
         /** 智能私信警告统计 */
         public String URL_LIVE_STATISTICS_AUTO_NOTICE = HTTP_HOST + "/LiveCourse/whisperStatisc";
+        /** 语音反馈保存录音地址 */
+        public String URL_LIVE_SAVESTU_TALK = HTTP_HOST + "/LiveCourse/saveStuTalkSource";
 
         /** h5课件地址 */
         public String coursewareH5 = "https://live.xueersi.com/" +

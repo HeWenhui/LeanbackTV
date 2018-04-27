@@ -39,6 +39,7 @@ public class WorkerThread extends Thread {
 
     /** 是否使用自采集音频 */
     private boolean isExternalAudio;
+    private OnEngineCreate onEngineCreate;
 
     private static final class WorkerThreadHandler extends Handler {
 
@@ -301,6 +302,9 @@ public class WorkerThread extends Thread {
                 mRtcEngine.setRecordingAudioFrameParameters(16000, 1, RAW_AUDIO_FRAME_OP_MODE_READ_WRITE, 1024);
                 mRtcEngine.setExternalAudioSource(true, 16000, 1);
             }
+            if (onEngineCreate != null) {
+                onEngineCreate.onEngineCreate(mRtcEngine);
+            }
         }
         return mRtcEngine;
     }
@@ -355,5 +359,13 @@ public class WorkerThread extends Thread {
     public WorkerThread(Context context, int mUid, boolean feadback, boolean isExternalAudio) {
         this(context, mUid, feadback);
         this.isExternalAudio = isExternalAudio;
+    }
+
+    public void setOnEngineCreate(OnEngineCreate onEngineCreate) {
+        this.onEngineCreate = onEngineCreate;
+    }
+
+    public interface OnEngineCreate {
+        void onEngineCreate(RtcEngine mRtcEngine);
     }
 }

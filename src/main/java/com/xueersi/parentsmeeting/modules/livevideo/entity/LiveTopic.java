@@ -126,7 +126,7 @@ public class LiveTopic {
         private String mode = MODE_TRANING;
         /** 当前的表扬榜模式 */
         private int listStatus;
-        /**是否课间休息*/
+        /** 是否课间休息 */
         private boolean isOnbreak;
 
         private boolean haveExam = false;
