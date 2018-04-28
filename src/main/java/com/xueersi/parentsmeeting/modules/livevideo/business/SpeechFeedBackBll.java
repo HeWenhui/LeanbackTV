@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.xesalib.umsagent.DeviceInfo;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 import java.io.File;
@@ -273,8 +274,10 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
             }
             outputStream = null;
             long time = System.currentTimeMillis() - startTime;
+            int netWorkType = NetWorkHelper.getNetWorkState(activity);
             StableLogHashMap hashMap = new StableLogHashMap("uploadfile");
             hashMap.put("time", "" + time);
+            hashMap.put("networktype", "" + netWorkType);
             hashMap.put("length", "" + saveVideoFile.length());
             liveBll.umsAgentDebugSys("live_voice", hashMap.getData());
             final File finalFile = saveVideoFile;
@@ -283,26 +286,28 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
             uploadEntity.setFilePath(finalFile.getPath());
             uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
             uploadEntity.setCloudPath(CloudDir.LIVE_FEED_BACK);
-            xesCloudUploadBusiness.asyncUpload(uploadEntity, new XesStsUploadListener() {
-                @Override
-                public void onProgress(XesCloudResult result, int percent) {
+            if (netWorkType == NetWorkHelper.WIFI_STATE) {
+                xesCloudUploadBusiness.asyncUpload(uploadEntity, new XesStsUploadListener() {
+                    @Override
+                    public void onProgress(XesCloudResult result, int percent) {
 
-                }
+                    }
 
-                @Override
-                public void onSuccess(XesCloudResult result) {
-                    finalFile.delete();
-                    Loger.d(TAG, "asyncUpload:onSuccess=" + result.getHttpPath());
-                    String service = DeviceInfo.getDeviceName();
-                    liveBll.saveStuTalkSource(result.getHttpPath(), service);
+                    @Override
+                    public void onSuccess(XesCloudResult result) {
+                        finalFile.delete();
+                        Loger.d(TAG, "asyncUpload:onSuccess=" + result.getHttpPath());
+                        String service = DeviceInfo.getDeviceName();
+                        liveBll.saveStuTalkSource(result.getHttpPath(), service);
 //                    http://testmv.xesimg.com/app/live_feed_back/2018/04/27/31203_1524811986079_ise1524811975319.mp3
-                }
+                    }
 
-                @Override
-                public void onError(XesCloudResult result) {
-                    Loger.d(TAG, "asyncUpload:onError=" + result);
-                }
-            });
+                    @Override
+                    public void onError(XesCloudResult result) {
+                        Loger.d(TAG, "asyncUpload:onError=" + result);
+                    }
+                });
+            }
         }
         isStart = false;
         if (mAudioRecord != null) {
