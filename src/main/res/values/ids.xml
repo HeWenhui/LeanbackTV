@@ -46,6 +46,7 @@
     <item name="iv_livevideo_english_remind" type="id" />
     <item name="tv_livevideo_english_tip" type="id" />
     <item name="bt_livevideo_english_tip_ok" type="id" />
+    <item name="lav_live_stand_english_gold" type="id" />
     <!--直播排名-->
     <item name="rl_livevideo_rank_mygroup" type="id" />
     <item name="tv_livevideo_rank_mygroup" type="id" />

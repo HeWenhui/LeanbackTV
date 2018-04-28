@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieComposition;
+import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.tal.speech.asr.talAsrJni;
 import com.tal.speech.language.LanguageEncodeThread;
 import com.tal.speech.language.LanguageListener;
@@ -45,6 +48,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by lyqai on 2017/10/31.
@@ -69,7 +73,9 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
     private ViewGroup myView;
     private View rl_livevideo_english_speak_error;
     private ProgressBar tv_livevideo_english_prog;
-    private LottieAnimationView lottieAnimationView;
+    private LottieAnimationView starLottieAnimationView;
+    private LottieAnimationView goldLottieAnimationView;
+    AtomicBoolean haveGold = new AtomicBoolean(false);
     int praiseWidth;
     File s_language;
     TalLanguage talLanguage;
@@ -169,10 +175,11 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
         myView.setVisibility(View.VISIBLE);
         final View layout_livevideo_stat_gold = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_stand_english_speek, myView, false);
         myView.addView(layout_livevideo_stat_gold);
+        goldLottieAnimationView = layout_livevideo_stat_gold.findViewById(R.id.lav_live_stand_english_gold);
         rl_livevideo_english_speak_error = layout_livevideo_stat_gold.findViewById(R.id.rl_livevideo_english_speak_error);
 //        tv_livevideo_english_prog = (ProgressBar) layout_livevideo_stat_gold.findViewById(R.id.tv_livevideo_english_prog);
         tv_livevideo_english_prog = (ProgressBar) activity.findViewById(R.id.tv_livevideo_english_prog);
-        lottieAnimationView = activity.findViewById(R.id.lav_livevideo_chievement);
+        starLottieAnimationView = activity.findViewById(R.id.lav_livevideo_chievement);
         layout_livevideo_stat_gold.findViewById(R.id.bt_livevideo_english_speak_set).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -203,7 +210,12 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
 //            tv_livevideo_english_prog.setVisibility(View.VISIBLE);
             start();
         }
-        lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
+        initlottieAnim();
+        return true;
+    }
+
+    private void initlottieAnim() {
+        starLottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
                 Log.d(TAG, "onCompositionLoaded:onAnimationStart");
@@ -212,7 +224,8 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
             @Override
             public void onAnimationEnd(Animator animator) {
                 Log.d(TAG, "onCompositionLoaded:onAnimationEnd");
-                lottieAnimationView.setProgress(0);
+                starLottieAnimationView.setProgress(0);
+                haveGold.set(false);
             }
 
             @Override
@@ -225,7 +238,31 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
 
             }
         });
-        return true;
+        starLottieAnimationView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float fraction = animation.getAnimatedFraction();
+                if (!haveGold.get() && fraction > 0.32f) {
+                    goldLottieAnimationView.playAnimation();
+                    haveGold.set(true);
+                }
+            }
+        });
+        final String fileName = "live_stand/lottie/live_stand_jindu_gold.json";
+        final HashMap<String, String> assetFolders = new HashMap<String, String>();
+        assetFolders.put(fileName, "live_stand/lottie/jindu_gold");
+        LottieComposition.Factory.fromAssetFileName(activity, fileName, new OnCompositionLoadedListener() {
+            @Override
+            public void onCompositionLoaded(@Nullable LottieComposition composition) {
+                Log.d(TAG, "onCompositionLoaded:composition=" + composition);
+                if (composition == null) {
+//                    Toast.makeText(activity, "加载失败", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                goldLottieAnimationView.setImageAssetsFolder(assetFolders.get(fileName));
+                goldLottieAnimationView.setComposition(composition);
+            }
+        });
     }
 
     @Override
@@ -342,8 +379,8 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
                                         float progress = newProgress / 45 * 0.32f;
                                         Loger.d(TAG, "onProcessData:second=" + second + ",oldProgress=" + oldProgress + ",newProgress=" + newProgress + ",progress=" + progress);
                                         if (newProgress < 45) {
-                                            lottieAnimationView.cancelAnimation();
-                                            lottieAnimationView.setProgress(progress);
+                                            starLottieAnimationView.cancelAnimation();
+                                            starLottieAnimationView.setProgress(progress);
                                             final ValueAnimator valueAnimator = ValueAnimator.ofFloat(startProgress, newProgress);
                                             final float finalNewProgress = newProgress;
                                             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -385,8 +422,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
                                             valueAnimator.start();
                                             lastValueAnimator = valueAnimator;
                                         } else {
-                                            lottieAnimationView.resumeAnimation();
-//                                            lottieAnimationView.setProgress(0);
+                                            starLottieAnimationView.resumeAnimation();
                                             if (lastValueAnimator != null) {
                                                 lastValueAnimator.cancel();
                                                 lastValueAnimator = null;
