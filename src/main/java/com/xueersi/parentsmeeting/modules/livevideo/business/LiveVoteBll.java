@@ -103,7 +103,8 @@ public class LiveVoteBll implements LiveVoteAction {
                 rado = result.getPople() * 100 / voteEntity.getTotal();
             }
             TextView tv_livevideo_vote_result_count = (TextView) convertView.findViewById(R.id.tv_livevideo_vote_result_count);
-            tv_livevideo_vote_result_count.setText(Math.round(rado) + "% " + result.getPople() + "人");
+//            tv_livevideo_vote_result_count.setText(Math.round(rado) + "% " + result.getPople() + "人");
+            tv_livevideo_vote_result_count.setText(Math.round(rado) + "% ");
 //            Drawable drawable = context.getResources().getDrawable(R.drawable.shape_live_vote_prog_max);
 //            pb_livevideo_vote_result_item.setProgressDrawable(drawable);
             final ProgressBar pb_livevideo_vote_result_item = (ProgressBar) convertView.findViewById(R.id.pb_livevideo_vote_result_item);
