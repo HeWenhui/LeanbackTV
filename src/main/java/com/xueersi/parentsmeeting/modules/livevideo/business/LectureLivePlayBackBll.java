@@ -8,7 +8,9 @@ import com.xueersi.parentsmeeting.base.BaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExPerienceLiveMessage;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
@@ -31,6 +33,7 @@ import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.view.layout.dataload.DataLoadEntity;
+import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -38,8 +41,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
 
 
 /**
@@ -679,13 +685,15 @@ public class LectureLivePlayBackBll extends BaseBll {
                     lecAdvertEntity.limit = jsonObject.optString("limit");
                     lecAdvertEntity.signUpUrl = jsonObject.optString("signUpUrl");
                     lecAdvertEntity.saleName = jsonObject.optString("saleName");
+                    lecAdvertEntity.courseId = jsonObject.optString("courseId");
+                    lecAdvertEntity.classId = jsonObject.optString("classId");
                 }
                 callBack.onDataSucess();
             }
         });
     }
 
-    // 18.03.14 获取体验课的聊天记录
+    // 获取体验课的聊天记录
     public void getExperienceMsgs(String liveId, String classId, Long start, final ExperienceLiveVideoActivity.GetExperienceLiveMsgs
             getLiveLectureMsgs) {
         mCourseHttpManager.getExperiencenMsgs(liveId, classId, start, new HttpCallBack(false) {
@@ -697,6 +705,48 @@ public class LectureLivePlayBackBll extends BaseBll {
             }
         });
 
+    }
+
+    // 18.04.11 获取讲座直播回放中的更多课程的广告信息
+    public void getMoreCourseChoices(String liveId,final AbstractBusinessDataCallBack getDataCallBack){
+        mCourseHttpManager.getMoreCourseChoices(liveId,new HttpCallBack(false){
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                Log.e("Duncan","playbackresponseEntity:" + responseEntity);
+                MoreChoice choiceEntity = JsonUtil.getEntityFromJson(responseEntity.getJsonObject().toString(), MoreChoice.class);
+                if(choiceEntity != null){
+                    getDataCallBack.onDataSucess(choiceEntity);
+                }
+            }
+        });
+
+    }
+
+    // 获取体验学习报告
+    public void getExperienceResult(String termId,String liveId,final AbstractBusinessDataCallBack getDataCallBack){
+        mCourseHttpManager.getExperienceResult(termId, liveId, new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                ExperienceResult learn = JsonUtil.getEntityFromJson(responseEntity.getJsonObject().toString(), ExperienceResult.class);
+                if(learn != null){
+                    getDataCallBack.onDataSucess(learn);
+                }
+                Log.e("Duncan","playbackresponseEntity:" + responseEntity);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                Log.e("Duncan","playbackerrorEntity:" + error);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                Log.e("Duncan","playbackerrorEntity:" + responseEntity);
+            }
+
+
+        });
     }
 
     /**

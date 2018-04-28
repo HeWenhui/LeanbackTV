@@ -90,6 +90,8 @@ public class LiveVideoConfig {
     public static String LIVE_SPEECH_TEST = "live_speechtest";
     /** 直播-语音评测-二期 */
     public static String LIVE_SPEECH_TEST2 = "live_speechtest_2";
+    /** 站立直播-语音评测 */
+    public static String LIVE_STAND_SPEECH_TEST = "standlive_voiceTest";
     /** 直播-NB实验 */
     public static String LIVE_H5_EXPERIMENT = "live_h5experiment";
     /** 直播-星星互动 */
@@ -104,6 +106,8 @@ public class LiveVideoConfig {
     public static String LIVE_H5_CACHE = "live_h5_cache";
     /** 直播-语音答题 */
     public static String LIVE_TEST_VOICE = "live_test_voice";
+    /** 站立直播-语音答题 */
+    public static String LIVE_STAND_TEST_VOICE = "standlive_voiceAnswer";
     /** 直播-投票 */
     public static String LIVE_VOTE = "live_vote";
     /** 直播-旁听 */
@@ -112,7 +116,14 @@ public class LiveVideoConfig {
     public static String LIVE_PRAISE_LIST = "live_praise_list";
     /** 直播讲座-（互动广告）https://wiki.xesv5.com/pages/viewpage.action?pageId=10684534 */
     public static String LEC_ADS = "lecture_ads";
-
+    /** 直播-站立直播资源更新 */
+    public static String LIVE_STAND_RES_UPDATE = "live_stand_res_update";
+    /** 直播-站立直播红包事件 */
+    public static String STAND_LIVE_GRANT = "standlive_grant";
+    /** 直播-包括ip地址的播放地址 https://wiki.xesv5.com/pages/viewpage.action?pageId=11403335 */
+    public static String LIVE_GSLB = "live_gslb";
+    /** 站立直播-帧动画 */
+    public static String LIVE_FRAME_ANIM = "live_frame_anim";
     /** 直播时间-当天据算，live_expe_time按单个场次计算 */
     public static String LIVE_EXPE_TIME = "live_expe_time_all";
     /** 英语能量条提示 */
@@ -120,14 +131,27 @@ public class LiveVideoConfig {
     /** 英语能量条提示 */
     public static String LEC_LEARN_REPORT = "lec_learn_report";
 
-    // 03.16 体验课互动题提交答案
+    //  体验课互动题提交答案
     public static String LIVE_EXPE_SUBMIT = AppConfig.HTTP_HOST + "/science/AutoLive/submitTestAnswer";
-    /**获取标记点列表*/
-    public static String URL_LIVE_GET_MARK_POINTS = AppConfig.HTTP_HOST+"/science/LiveCourse/getMarkpoint";
-    /**保存标记点*/
-    public static String URL_LIVE_SET_MARK_POINTS = AppConfig.HTTP_HOST+"/science/LiveCourse/setMarkpoint";
-    /**删除标记点*/
-    public static String URL_LIVE_DELETE_MARK_POINTS = AppConfig.HTTP_HOST+"/science/LiveCourse/deleteMarkpoint";
-    /**体验课播放器上传心跳时间*/
-    public static String URL_EXPERIENCE_LIVE_ONLINETIME = AppConfig.HTTP_HOST+"/science/AutoLive/visitTime";
+    /** 获取标记点列表 */
+    public static String URL_LIVE_GET_MARK_POINTS = AppConfig.HTTP_HOST + "/science/LiveCourse/getMarkpoint";
+    /** 保存标记点 */
+    public static String URL_LIVE_SET_MARK_POINTS = AppConfig.HTTP_HOST + "/science/LiveCourse/setMarkpoint";
+    /** 删除标记点 */
+    public static String URL_LIVE_DELETE_MARK_POINTS = AppConfig.HTTP_HOST + "/science/LiveCourse/deleteMarkpoint";
+    /** 体验课播放器上传心跳时间 */
+    public static String URL_EXPERIENCE_LIVE_ONLINETIME = AppConfig.HTTP_HOST + "/science/AutoLive/visitTime";
+    /** RolePlay请求对话信息 */
+    public static String URL_ROLEPLAY_TESTINFOS = AppConfig.HTTP_HOST + "/libarts/LiveCourse/getRolePlay";
+    /** 提交接口 */
+    public static String URL_ROLEPLAY_RESULT = AppConfig.HTTP_HOST + "/libarts/LiveCourse/submitRolePlay";
+    /** 讲座直播获取更多课程 */
+    public static String URL_LECTURELIVE_MORE_COURSE = AppConfig.HTTP_HOST + "/LiveLecture/getAdCase";
+    /** 获取时时间戳 */
+    public static String URL_LIVE_GET_CURTIME = AppConfig.HTTP_HOST + "/science/LiveCourse/getCurTimestamp";
+    /** 更多课程数量的记录 */
+    public static int MORE_COURSE;
+    public static Boolean isloading = false;
+    /** 讲座直播广告Id */
+    public static String LECTUREADID;
 }

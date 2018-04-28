@@ -23,8 +23,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerStandPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
+import com.xueersi.xesalib.utils.log.Loger;
 
 import org.json.JSONObject;
 
@@ -41,16 +43,35 @@ import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE4;
 public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     String TAG = "LiveStandVoiceAnswerCreat";
     QuestionSwitch questionSwitch;
+    private String headUrl;
+    private String userName;
+    private LiveBll liveBll;
 
     public LiveStandVoiceAnswerCreat(QuestionSwitch questionSwitch) {
         this.questionSwitch = questionSwitch;
+    }
+
+    public LiveStandVoiceAnswerCreat(LiveBll liveBll, QuestionSwitch questionSwitch, String headUrl, String userName) {
+        this.liveBll = liveBll;
+        this.questionSwitch = questionSwitch;
+        this.headUrl = headUrl;
+        this.userName = userName;
+    }
+
+    public void setHeadUrl(String headUrl) {
+        this.headUrl = headUrl;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     @Override
     public BaseVoiceAnswerPager create(Context activity, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
                                        RelativeLayout rlQuestionContent, SpeechEvaluatorUtils mIse, LiveAndBackDebug liveAndBackDebug) {
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
-        VoiceAnswerStandPager voiceAnswerPager2 = new VoiceAnswerStandPager(activity, baseVideoQuestionEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch, liveAndBackDebug);
+        VoiceAnswerStandLog.sno2(liveBll,videoQuestionLiveEntity);
+        VoiceAnswerStandPager voiceAnswerPager2 = new VoiceAnswerStandPager(activity, baseVideoQuestionEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch, liveAndBackDebug, headUrl, userName);
         voiceAnswerPager2.setIse(mIse);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
@@ -68,7 +89,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     }
 
     @Override
-    public boolean onAnswerReslut(final Context context, final AnswerRightResultVoice questionBll, BaseVideoQuestionEntity baseVideoQuestionEntity, final VideoResultEntity entity) {
+    public boolean onAnswerReslut(final Context context, final AnswerRightResultVoice questionBll, final BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseVideoQuestionEntity, final VideoResultEntity entity) {
         boolean isSuccess = false;
         final String type;
         if (baseVideoQuestionEntity instanceof VideoQuestionLiveEntity) {
@@ -104,7 +125,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                     }
                     final RelativeLayout group = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_livevideo_stand_voice_result, null);
                     LottieAnimationView lottieAnimationView = new LottieAnimationView(context);
-                    lottieAnimationView.setImageAssetsFolder("Images/voice_answer/my_right");
+                    lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/my_right");
                     lottieAnimationView.setComposition(lottieComposition);
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                     lp.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -118,9 +139,24 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                             questionBll.removeQuestionAnswerReslut(group);
                         }
                     });
+                    group.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                        @Override
+                        public void onViewAttachedToWindow(View v) {
+
+                        }
+
+                        @Override
+                        public void onViewDetachedFromWindow(View v) {
+                            Loger.d(TAG, "onViewDetachedFromWindow right");
+                            questionBll.removeBaseVoiceAnswerPager(baseVoiceAnswerPager);
+                        }
+                    });
                 }
             });
             isSuccess = true;
+            if (liveBll != null) {
+                liveBll.getStuGoldCount();
+            }
             // 回答错误提示
         } else if (entity.getResultType() == QUE_RES_TYPE2) {
             String path;
@@ -142,9 +178,9 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                         }
                         return;
                     }
-                    final RelativeLayout group = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_livevideo_stand_voice_result, null);
+                    final RelativeLayout group = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_livevideo_stand_voice_result_wrong, null);
                     LottieAnimationView lottieAnimationView = new LottieAnimationView(context);
-                    lottieAnimationView.setImageAssetsFolder("Images/voice_answer/my_wrong");
+                    lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/my_wrong");
                     lottieAnimationView.setComposition(lottieComposition);
                     lottieAnimationView.playAnimation();
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -156,6 +192,18 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                         @Override
                         public void onClick(View v) {
                             questionBll.removeQuestionAnswerReslut(group);
+                        }
+                    });
+                    group.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                        @Override
+                        public void onViewAttachedToWindow(View v) {
+
+                        }
+
+                        @Override
+                        public void onViewDetachedFromWindow(View v) {
+                            Loger.d(TAG, "onViewDetachedFromWindow error");
+                            questionBll.removeBaseVoiceAnswerPager(baseVoiceAnswerPager);
                         }
                     });
                 }
@@ -170,7 +218,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         AssetManager manager = context.getAssets();
         Bitmap img_7Bitmap;
         try {
-            img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/voice_answer/my_right/img_22.png"));
+            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/voice_answer/my_right/img_22.png"));
 //            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
@@ -195,7 +243,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         AssetManager manager = context.getAssets();
         Bitmap img_7Bitmap;
         try {
-            img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/voice_answer/my_wrong/img_5.png"));
+            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/voice_answer/my_wrong/img_5.png"));
 //            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
@@ -204,7 +252,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             paint.setTextSize(48);
             paint.setColor(0xffCC6E12);
             float width = paint.measureText(num);
-            canvas.drawText(num, (img_7Bitmap.getWidth() - width) / 2, 260 + (img_7Bitmap.getHeight() + paint.measureText("a")) / 2, paint);
+            canvas.drawText(num, (img_7Bitmap.getWidth() - width) / 2, (img_7Bitmap.getHeight() + paint.measureText("a")) / 2, paint);
             img_7Bitmap.recycle();
             img_7Bitmap = creatBitmap;
         } catch (IOException e) {

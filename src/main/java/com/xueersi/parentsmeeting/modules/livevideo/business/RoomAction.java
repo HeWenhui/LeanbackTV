@@ -49,6 +49,15 @@ public interface RoomAction {
     void onDisable(boolean disable, boolean fromNotice);
 
     /**
+     * 其他学生被禁言
+     *
+     * @param id
+     * @param name
+     * @param disable
+     */
+    void onOtherDisable(String id, String name, boolean disable);
+
+    /**
      * 关闭开启聊天
      *
      * @param openchat 是否开启聊天

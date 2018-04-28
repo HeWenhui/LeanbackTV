@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RedPackagePage;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 
 import java.io.File;
@@ -41,13 +42,15 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     private String headUrl;
     private String userName;
     private boolean isLive;
+    LiveAndBackDebug liveAndBackDebug;
 
-    public RedPackageStandBll(Activity activity, boolean isLive) {
+    public RedPackageStandBll(Activity activity, boolean isLive, LiveAndBackDebug liveAndBackDebug) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
         this.activity = activity;
         this.isLive = isLive;
+        this.liveAndBackDebug = liveAndBackDebug;
     }
 
     public void setReceiveGold(ReceiveGold receiveGold) {
@@ -90,10 +93,10 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     }
 
     private void onGetPackageError(int operateId) {
-//        RedPackagePage redPackagePage = packagePageHashMap.remove("" + operateId);
-//        if (redPackagePage != null) {
-//            rlRedpacketContent.removeView(redPackagePage.getRootView());
-//        }
+        RedPackagePage redPackagePage = packagePageHashMap.remove("" + operateId);
+        if (redPackagePage != null) {
+            rlRedpacketContent.removeView(redPackagePage.getRootView());
+        }
     }
 
     public void initView(RelativeLayout bottomContent) {
@@ -124,6 +127,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     private void showRedPacket(final int operateId) {
         mLogtf.d("showRedPacket:operateId=" + operateId);
 //        rlRedpacketContent.removeAllViews();
+        RedPackageStandLog.sno1(liveAndBackDebug, "" + operateId);
         final RedPackagePage oldRedPackagePage = redPackagePage;
         redPackagePage = new RedPackagePage(activity, operateId, new RedPackagePage.RedPackagePageAction() {
 
@@ -135,6 +139,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                         VideoResultEntity entity = (VideoResultEntity) objData[0];
                         RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
                         redPackagePage.onGetPackage(entity);
+                        receiveGold.onReceiveGold();
                         if (clickPackage == 1) {
                             //结果页增加自己数据
                             MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
@@ -192,59 +197,59 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                         } else {
                             onGetPackageError(operateId);
                         }
-                        if (AppConfig.DEBUG) {
-                            VideoResultEntity entity = new VideoResultEntity();
-                            entity.setGoldNum(12);
-                            RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
-                            redPackagePage.onGetPackage(entity);
-                            if (clickPackage == 1) {
-                                MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
-                                GoldTeamStatus goldTeamStatus = new GoldTeamStatus();
-                                GoldTeamStatus.Student student = new GoldTeamStatus.Student();
-                                student.setNickname(userName);
-                                student.setAvatar_path(headUrl);
-                                student.setStuId(mMyInfo.getStuId());
-                                student.setGold("99");
-                                student.setMe(true);
-                                goldTeamStatus.getStudents().add(student);
-                                redPackagePage.onGetTeamPackage(goldTeamStatus);
-                                //直播获得小组数据，回放隔几秒就消失
-                                if (isLive) {
-                                    final AtomicBoolean stop = new AtomicBoolean(false);
-                                    getReceiveGoldTeamStatus(operateId, stop);
-                                    rlRedpacketContent.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            stop.set(true);
-                                            final AtomicInteger tryTime = new AtomicInteger();
-                                            receiveGold.getReceiveGoldTeamRank(operateId, new AbstractBusinessDataCallBack() {
-                                                @Override
-                                                public void onDataSucess(Object... objData) {
-                                                    GoldTeamStatus entity = (GoldTeamStatus) objData[0];
-                                                    RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
-                                                    redPackagePage.onGetTeamRank(entity);
-                                                }
-
-                                                @Override
-                                                public void onDataFail(int errStatus, String failMsg) {
-                                                    super.onDataFail(errStatus, failMsg);
-                                                    if (errStatus == 0) {
-                                                        if (tryTime.get() == 0) {
-                                                            receiveGold.getReceiveGoldTeamRank(operateId, this);
-                                                            tryTime.getAndIncrement();
-                                                        } else {
-                                                            onPackageClose(operateId);
-                                                        }
-                                                    } else if (errStatus == 1) {
-                                                        onPackageClose(operateId);
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    }, 14000);
-                                }
-                            }
-                        }
+//                        if (AppConfig.DEBUG) {
+//                            VideoResultEntity entity = new VideoResultEntity();
+//                            entity.setGoldNum(12);
+//                            RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
+//                            redPackagePage.onGetPackage(entity);
+//                            if (clickPackage == 1) {
+//                                MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
+//                                GoldTeamStatus goldTeamStatus = new GoldTeamStatus();
+//                                GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                                student.setNickname(userName);
+//                                student.setAvatar_path(headUrl);
+//                                student.setStuId(mMyInfo.getStuId());
+//                                student.setGold("99");
+//                                student.setMe(true);
+//                                goldTeamStatus.getStudents().add(student);
+//                                redPackagePage.onGetTeamPackage(goldTeamStatus);
+//                                //直播获得小组数据，回放隔几秒就消失
+//                                if (isLive) {
+//                                    final AtomicBoolean stop = new AtomicBoolean(false);
+//                                    getReceiveGoldTeamStatus(operateId, stop);
+//                                    rlRedpacketContent.postDelayed(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            stop.set(true);
+//                                            final AtomicInteger tryTime = new AtomicInteger();
+//                                            receiveGold.getReceiveGoldTeamRank(operateId, new AbstractBusinessDataCallBack() {
+//                                                @Override
+//                                                public void onDataSucess(Object... objData) {
+//                                                    GoldTeamStatus entity = (GoldTeamStatus) objData[0];
+//                                                    RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
+//                                                    redPackagePage.onGetTeamRank(entity);
+//                                                }
+//
+//                                                @Override
+//                                                public void onDataFail(int errStatus, String failMsg) {
+//                                                    super.onDataFail(errStatus, failMsg);
+//                                                    if (errStatus == 0) {
+//                                                        if (tryTime.get() == 0) {
+//                                                            receiveGold.getReceiveGoldTeamRank(operateId, this);
+//                                                            tryTime.getAndIncrement();
+//                                                        } else {
+//                                                            onPackageClose(operateId);
+//                                                        }
+//                                                    } else if (errStatus == 1) {
+//                                                        onPackageClose(operateId);
+//                                                    }
+//                                                }
+//                                            });
+//                                        }
+//                                    }, 14000);
+//                                }
+//                            }
+//                        }
                     }
                 });
             }
@@ -263,7 +268,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                     oldRedPackagePage.onOtherPackage();
                 }
             }
-        }, userName, headUrl, isLive);
+        }, userName, headUrl, isLive, liveAndBackDebug);
         View view = redPackagePage.getRootView();
         packagePageHashMap.put("" + operateId, redPackagePage);
 //        view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
@@ -297,21 +302,35 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
                 onFinish();
+                if (errStatus == 0) {
+                    if (getCount.get()) {
+                        return;
+                    }
+                    RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
+                    if (redPackagePage != null) {
+                        redPackagePage.getRootView().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                getReceiveGoldTeamStatus(operateId, getCount);
+                            }
+                        }, 1000);
+                    }
+                }
             }
 
             void onFinish() {
-                if (getCount.get()) {
-                    return;
-                }
-                RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
-                if (redPackagePage != null) {
-                    redPackagePage.getRootView().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            getReceiveGoldTeamStatus(operateId, getCount);
-                        }
-                    }, 1000);
-                }
+//                if (getCount.get()) {
+//                    return;
+//                }
+//                RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
+//                if (redPackagePage != null) {
+//                    redPackagePage.getRootView().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            getReceiveGoldTeamStatus(operateId, getCount);
+//                        }
+//                    }, 1000);
+//                }
             }
         });
     }

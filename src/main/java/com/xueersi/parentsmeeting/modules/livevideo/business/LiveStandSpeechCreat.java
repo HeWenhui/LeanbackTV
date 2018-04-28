@@ -4,8 +4,11 @@ import android.content.Context;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechAssAutoPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 
 import java.util.Map;
 
@@ -21,13 +24,25 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
     }
 
     @Override
-    public BaseSpeechAssessmentPager create(Context context, String liveid, String testId, String nonce, String content,
-                                            int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, String userName, String headUrl, String learning_stage) {
+    public BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String testId, String nonce, String content,
+                                                  int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String learning_stage) {
+        SpeechStandLog.sno2(liveBll, testId);
         speechEvalAction = new LiveStandSpeechEvalActionImpl(speechEvalAction);
         StandSpeechAssAutoPager speechAssAutoPager =
                 new StandSpeechAssAutoPager(context, liveid, testId, nonce,
-                        content, (int) time, haveAnswer, speechEvalAction, userName, headUrl, learning_stage);
+                        content, (int) time, haveAnswer, speechEvalAction, getInfo.getStandLiveName(), getInfo.getHeadImgPath(), learning_stage);
         return speechAssAutoPager;
+    }
+
+    @Override
+    public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, String testId,
+                                                    String nonce,
+                                                    SpeechEvalAction speechEvalAction, String stuCouId) {
+        SpeechAssessmentWebPager speechAssessmentPager = new SpeechAssessmentWebPager(context,
+                liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
+                true, nonce, speechEvalAction, stuCouId, false);
+        speechAssessmentPager.setStandingLive(true);
+        return speechAssessmentPager;
     }
 
     @Override
@@ -47,18 +62,18 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         }
 
         @Override
-        public void umsAgentDebug(String eventId, Map<String, String> mData) {
-            action.umsAgentDebug(eventId, mData);
+        public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
+            action.umsAgentDebugSys(eventId, mData);
         }
 
         @Override
-        public void umsAgentDebug2(String eventId, Map<String, String> mData) {
-            action.umsAgentDebug2(eventId, mData);
+        public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
+            action.umsAgentDebugInter(eventId, mData);
         }
 
         @Override
-        public void umsAgentDebug3(String eventId, Map<String, String> mData) {
-            action.umsAgentDebug3(eventId, mData);
+        public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
+            action.umsAgentDebugPv(eventId, mData);
         }
 
         @Override
@@ -89,6 +104,7 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         @Override
         public void onSpeechSuccess(String num) {
             action.onSpeechSuccess(num);
+            liveBll.getStuGoldCount();
         }
 
         @Override

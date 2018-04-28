@@ -31,69 +31,83 @@
 
         </RelativeLayout>
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/lav_livevideo_voiceans_team_mine"
+            android:layout_alignLeft="@id/lav_livevideo_voiceans_team_mine"
+            android:layout_alignRight="@id/lav_livevideo_voiceans_team_mine"
+            android:layout_alignTop="@id/lav_livevideo_voiceans_team_mine">
+
+            <ImageView
+                android:id="@id/iv_livevideo_voiceans_team_mine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/bg_live_stand_speect_mine_light"
+                android:visibility="invisible" />
+        </RelativeLayout>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@id/lav_livevideo_voiceans_team_mine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:visibility="invisible" />
+
         <ImageView
             android:id="@id/iv_livevideo_speecteval_wave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true" />
 
-        <LinearLayout
-            android:id="@id/ll_livevideo_voiceans_team_left"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/iv_livevideo_speecteval_wave"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" />
+            android:layout_toRightOf="@id/lav_livevideo_voiceans_team_mine">
 
-        <LinearLayout
-            android:id="@id/ll_livevideo_voiceans_team_right"
-            android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@id/ll_livevideo_voiceans_team_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:orientation="horizontal" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/iv_livevideo_speecteval_wave"
-            android:orientation="horizontal" />
+            android:layout_toLeftOf="@id/rl_livevideo_voiceans_switch"
+            android:layout_toRightOf="@id/iv_livevideo_speecteval_wave">
+
+            <LinearLayout
+                android:id="@id/ll_livevideo_voiceans_team_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </RelativeLayout>
 
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@id/rl_livevideo_speecteval_tip"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="48.2dp"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@id/iv_livevideo_speecteval_tip_pao"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/iv_livevideo_speecteval_tip"
-            android:layout_alignLeft="@id/iv_livevideo_speecteval_tip"
-            android:layout_alignRight="@id/tv_livevideo_speecteval_tip"
-            android:layout_marginBottom="29.3dp"
-            android:layout_marginLeft="50dp"
-            android:background="@drawable/bg_livevideo_speecteval_tip_paopao"
-            android:visibility="gone" />
+        android:layout_height="wrap_content"
+        android:layout_above="@id/rl_livevideo_voiceans_content"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible">
 
         <TextView
             android:id="@id/tv_livevideo_speecteval_tip"
             style="@style/text_font12_ff4343_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/iv_livevideo_speecteval_tip_pao"
-            android:layout_alignTop="@id/iv_livevideo_speecteval_tip_pao"
-            android:layout_toRightOf="@id/iv_livevideo_speecteval_tip"
-            android:gravity="center_vertical"
-            android:paddingLeft="5dp"
+            android:gravity="center"
+            android:paddingLeft="35dp"
             android:paddingRight="7dp"
-            android:text="语音输入有点小问题，请先手动答题哦（1131)"
-            android:visibility="gone" />
-
-        <ImageView
-            android:id="@id/iv_livevideo_speecteval_tip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="17dp"
-            android:src="@drawable/bg_livevideo_speecteval_tip2"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
     </RelativeLayout>
 

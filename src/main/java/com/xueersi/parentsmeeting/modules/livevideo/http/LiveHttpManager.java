@@ -553,6 +553,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42, params, requestCallBack);
     }
 
+    /** 语音评测排行榜 */
     public void getSpeechEvalAnswerTeamRank(String id, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("testId", id);
@@ -916,7 +917,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("termId", termId);
         params.addBodyParam("hbTime", hbTime.toString());
         params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
-        setDefaultParameter(params);
         sendPost(LiveVideoConfig.URL_EXPERIENCE_LIVE_ONLINETIME, params, callBack);
     }
 
@@ -936,4 +936,34 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_TEMPK_PKTEAMINFO, params, requestCallBack);
     }
 
+    /** roleplay组内排行榜 */
+    public void getRolePlayAnswerTeamRank(String testId, HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("testId", testId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_ROLE_TEAM, params, callBack);
+    }
+
+    /** 直播讲座获取更多课程的信息 */
+    public void getMoreChoiceCount(String liveId, HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        setDefaultParameter(params);
+        sendPost(LiveVideoConfig.URL_LECTURELIVE_MORE_COURSE, params, requestCallBack);
+    }
+
+    public void getCurTime(HttpCallBack callBack) {
+        sendGetNoBusiness(LiveVideoConfig.URL_LIVE_GET_CURTIME, new HttpRequestParams(), callBack);
+    }
+
+    /** 存储学生语音反馈音源 */
+    public void saveStuTalkSource(String stuId, String talkSourcePath, String service, HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("talkSourcePath", talkSourcePath);
+        params.addBodyParam("service", service);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_SAVESTU_TALK, params, callBack);
+    }
 }

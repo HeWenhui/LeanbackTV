@@ -97,6 +97,8 @@ public class PlayServerEntity {
         private String rtmpkey;
         private String httpport;
         private String flvpostfix;
+        /** https://wiki.xesv5.com/pages/viewpage.action?pageId=11403335 */
+        private String ip_gslb_addr;
 
         @Override
         public boolean equals(Object obj) {
@@ -202,6 +204,14 @@ public class PlayServerEntity {
 
         public void setFlvpostfix(String flvpostfix) {
             this.flvpostfix = flvpostfix;
+        }
+
+        public String getIp_gslb_addr() {
+            return ip_gslb_addr;
+        }
+
+        public void setIp_gslb_addr(String ip_gslb_addr) {
+            this.ip_gslb_addr = ip_gslb_addr;
         }
     }
 }

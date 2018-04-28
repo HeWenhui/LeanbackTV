@@ -77,6 +77,9 @@ public abstract class BaseWebviewPager extends BasePager {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webSetting.setMediaPlaybackRequiresUserGesture(false);
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webSetting.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
     }
 
     public void loadUrl(String url) {

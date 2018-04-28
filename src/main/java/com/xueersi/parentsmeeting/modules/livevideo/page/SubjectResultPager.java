@@ -191,7 +191,7 @@ public class SubjectResultPager extends BasePager {
             mData.put("logtype", "interactTestDidLoad");
             mData.put("status", "success");
             mData.put("loadurl", url);
-            questionBll.umsAgentDebug(questionEventId, mData);
+            questionBll.umsAgentDebugSys(questionEventId, mData);
 //            super.onPageFinished(view, url);
         }
 
@@ -221,7 +221,7 @@ public class SubjectResultPager extends BasePager {
             mData.put("status", "fail");
             mData.put("loadurl", failingUrl);
             mData.put("msg", description);
-            questionBll.umsAgentDebug(questionEventId, mData);
+            questionBll.umsAgentDebugSys(questionEventId, mData);
         }
 
         @Override
@@ -237,7 +237,7 @@ public class SubjectResultPager extends BasePager {
                 mData.put("testid", "" + testId);
                 mData.put("closetype", "clickWebCloseButton");
                 mData.put("logtype", "interactTestClose");
-                questionBll.umsAgentDebug(questionEventId, mData);
+                questionBll.umsAgentDebugSys(questionEventId, mData);
             } else {
                 if (url.contains("xueersi.com")) {
                     view.loadUrl(url);

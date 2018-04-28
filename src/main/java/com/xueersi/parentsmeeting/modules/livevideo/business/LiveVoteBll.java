@@ -293,14 +293,14 @@ public class LiveVoteBll implements LiveVoteAction {
     }
 
     public void umsAgentDebug(String eventId, final Map<String, String> mData) {
-        liveBll.umsAgentDebug(eventId, mData);
+        liveBll.umsAgentDebugSys(eventId, mData);
     }
 
     public void umsAgentDebug2(String eventId, final Map<String, String> mData) {
-        liveBll.umsAgentDebug2(eventId, mData);
+        liveBll.umsAgentDebugInter(eventId, mData);
     }
 
     public void umsAgentDebug3(String eventId, final Map<String, String> mData) {
-        liveBll.umsAgentDebug3(eventId, mData);
+        liveBll.umsAgentDebugPv(eventId, mData);
     }
 }

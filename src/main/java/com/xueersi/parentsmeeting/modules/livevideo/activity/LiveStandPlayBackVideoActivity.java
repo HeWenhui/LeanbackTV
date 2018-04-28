@@ -62,7 +62,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageStandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ExPerienceLiveMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
@@ -82,7 +81,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPage
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerStandPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandPlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.business.VideoBll;
@@ -224,6 +225,8 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
     String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
     //    private LiveRemarkBll mLiveRemarkBll;
     private RelativeLayout bottom;
+    String showName = "";
+    String headUrl = "";
 
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
@@ -293,7 +296,8 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         // 播放下一个按钮不显示
         mMediaController.setPlayNextVisable(false);
         // 设置速度按钮显示
-//        mMediaController.setSetSpeedVisable(true);
+        mMediaController.setSetSpeedVisable(true);
+        mMediaController.setShareVisible(false);
         setFileName(); // 设置视频显示名称
         showLongMediaController();
         if (mIsShowQuestion || mIsShowDialog) {
@@ -493,12 +497,22 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //            mQuestionEntity.setvEndTime(120);
 //            showExam();
             MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
-            redPackageStandBll = new RedPackageStandBll(this, false);
+            if (!StringUtils.isEmpty(mMyInfo.getEnglishName())) {
+                showName = mMyInfo.getEnglishName();
+            } else if (!StringUtils.isEmpty(mMyInfo.getRealName())) {
+                showName = mMyInfo.getRealName();
+            } else if (!StringUtils.isEmpty(mMyInfo.getNickName())) {
+                showName = mMyInfo.getNickName();
+            }
+            headUrl = mMyInfo.getHeadImg();
+            redPackageStandBll = new RedPackageStandBll(this, false, this);
             redPackageStandBll.setVSectionID(mVideoEntity.getLiveId());
-            redPackageStandBll.setUserName(mMyInfo.getNickName());
-            redPackageStandBll.setHeadUrl(mMyInfo.getHeadImg());
+            redPackageStandBll.setUserName(showName);
+            redPackageStandBll.setHeadUrl(headUrl);
             redPackageStandBll.initView(rl_course_video_live_redpackage_content);
             liveStandVoiceAnswerCreat = new LiveStandVoiceAnswerCreat(questionSwitch);
+            liveStandVoiceAnswerCreat.setUserName(showName);
+            liveStandVoiceAnswerCreat.setHeadUrl(headUrl);
             if (AppConfig.DEBUG) {
 
 //                mRedPacketId = "2";
@@ -543,18 +557,18 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //                redPackageStandBll.onReadPackage(Integer.parseInt(mRedPacketId));
             }
         }
-        lectureLivePlayBackBll.getExperienceMsgs(mVideoEntity.getLiveId(), mVideoEntity.getClassId(), 0L, new ExperienceLiveVideoActivity.GetExperienceLiveMsgs() {
-
-            @Override
-            public void getLiveExperienceMsgs(ExPerienceLiveMessage liveMessageGroupEntity) {
-                Loger.d(TAG, "getLiveExperienceMsgs");
-            }
-
-            @Override
-            public void onPmFailure() {
-                Loger.d(TAG, "onPmFailure");
-            }
-        });
+//        lectureLivePlayBackBll.getExperienceMsgs(mVideoEntity.getLiveId(), mVideoEntity.getClassId(), 0L, new ExperienceLiveVideoActivity.GetExperienceLiveMsgs() {
+//
+//            @Override
+//            public void getLiveExperienceMsgs(ExPerienceLiveMessage liveMessageGroupEntity) {
+//                Loger.d(TAG, "getLiveExperienceMsgs");
+//            }
+//
+//            @Override
+//            public void onPmFailure() {
+//                Loger.d(TAG, "onPmFailure");
+//            }
+//        });
     }
 
     @Override
@@ -1067,11 +1081,12 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                     if ("1".equals(mQuestionEntity.getIsAllow42())) {
                         MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
                         String learning_stage = mVideoEntity.getLearning_stage();
+                        SpeechStandLog.sno2(LiveStandPlayBackVideoActivity.this, mQuestionEntity.getvQuestionID());
                         speechQuestionPlaybackPager = new StandSpeechAssAutoPager(LiveStandPlayBackVideoActivity.this,
                                 mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(),
                                 "", mQuestionEntity.getSpeechContent(), mQuestionEntity.getEstimatedTime(),
                                 mQuestionEntity.getvEndTime() - mQuestionEntity.getvQuestionInsretTime(),
-                                LiveStandPlayBackVideoActivity.this, mMyInfo.getNickName(), mMyInfo.getHeadImg(), learning_stage);
+                                LiveStandPlayBackVideoActivity.this, showName, headUrl, learning_stage);
 //                        int screenWidth = ScreenUtils.getScreenWidth();
 //                        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
 //                        lp.rightMargin = wradio;
@@ -1252,7 +1267,8 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //        }
         rlQuestionContent.removeAllViews();
         rlQuestionContent.setVisibility(View.VISIBLE);
-        voiceAnswerPager = new VoiceAnswerStandPager(this, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.getVoiceQuestiontype(), questionSwitch, this);
+        VoiceAnswerStandLog.sno2(this, videoQuestionLiveEntity);
+        voiceAnswerPager = new VoiceAnswerStandPager(this, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.getVoiceQuestiontype(), questionSwitch, this, headUrl, showName);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT);
         rlQuestionContent.addView(voiceAnswerPager.getRootView(), params);
@@ -1331,13 +1347,20 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         }
 
         @Override
+        public void onAnswerTimeOutError(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+            liveStandVoiceAnswerCreat.onAnswerReslut(LiveStandPlayBackVideoActivity.this, LiveStandPlayBackVideoActivity.this, voiceAnswerPager, baseVideoQuestionEntity, entity);
+        }
+
+        @Override
         public void uploadVoiceFile(File file) {
 
         }
 
         @Override
         public void stopSpeech(BaseVoiceAnswerPager answerPager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
-            rlQuestionContent.removeView(answerPager.getRootView());
+            if (voiceAnswerPager != null) {
+                stopVoiceAnswerPager();
+            }
         }
     };
 
@@ -2223,6 +2246,11 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         }
     }
 
+    @Override
+    public void removeBaseVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager) {
+
+    }
+
     /** 回答问题结果提示框延迟三秒消失 */
     public void disMissAnswerPopWindow() {
         new Handler() {
@@ -2426,7 +2454,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                     type = questionEntity.getvQuestionType();
                     sourcetype = "h5test";
                 }
-                liveStandVoiceAnswerCreat.onAnswerReslut(this, this, questionEntity, entity);
+                liveStandVoiceAnswerCreat.onAnswerReslut(this, this, voiceAnswerPager, questionEntity, entity);
 //                if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
 //                    initSelectAnswerRightResultVoice(entity);
 //                } else {
@@ -2436,7 +2464,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                 logHashMap.put("testid", "" + questionEntity.getvQuestionID());
                 logHashMap.put("sourcetype", sourcetype).addNonce(questionEntity.nonce);
                 logHashMap.addExY().addExpect("0").addSno("5").addStable("1");
-                umsAgentDebug3(voicequestionEventId, logHashMap.getData());
+                umsAgentDebugPv(voicequestionEventId, logHashMap.getData());
             } else {
                 initAnswerRightResult(entity.getGoldNum());
             }
@@ -2449,7 +2477,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                 } else {
                     type = questionEntity.getvQuestionType();
                 }
-                liveStandVoiceAnswerCreat.onAnswerReslut(this, this, questionEntity, entity);
+                liveStandVoiceAnswerCreat.onAnswerReslut(this, this, voiceAnswerPager, questionEntity, entity);
 //                if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
 //                    initSelectAnswerWrongResultVoice(entity);
 //                } else {
@@ -2618,7 +2646,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
     }
 
     @Override
-    public void umsAgentDebug(String eventId, Map<String, String> mData) {
+    public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
         MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         mData.put("uid", userInfoEntity.getStuId());
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
@@ -2634,7 +2662,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         UmsAgentManager.umsAgentDebug(this, appID, eventId, mData);
     }
 
-    public void umsAgentDebug2(String eventId, final Map<String, String> mData) {
+    public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
         MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         mData.put("uid", userInfoEntity.getStuId());
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
@@ -2650,7 +2678,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         UmsAgentManager.umsAgentOtherBusiness(this, appID, UmsConstants.uploadBehavior, mData);
     }
 
-    public void umsAgentDebug3(String eventId, final Map<String, String> mData) {
+    public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
         MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         mData.put("uid", userInfoEntity.getStuId());
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());

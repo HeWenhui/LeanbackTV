@@ -282,7 +282,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
                     Loger.d(TAG, "onError:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",result=" + result);
                     isDestory = true;
                     isDestory2 = true;
-                    rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
+//                    rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
                     if (onAudioRequest != null) {
                         onAudioRequest.requestSuccess();
                         onAudioRequest = null;
@@ -512,7 +512,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
             sendDbDuration = 0;
             Map<String, String> mData = new HashMap<>();
             mData.put("logtype", "start");
-            liveBll.umsAgentDebug(eventId, mData);
+            liveBll.umsAgentDebugSys(eventId, mData);
         }
     }
 
@@ -534,7 +534,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
             mData.put("duration", "" + dbDuration);
             mData.put("speakNum", "" + (lastEnSegNum - dbStartEnSegNum));
             mData.put("logtype", "stop");
-            liveBll.umsAgentDebug(eventId, mData);
+            liveBll.umsAgentDebugSys(eventId, mData);
         }
     }
 
@@ -587,7 +587,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
             mData.put("logtype", "sendPraise");
             mData.put("answer", "" + answer);
             mData.put("duration", "" + sendDbDuration);
-            liveBll.umsAgentDebug(eventId, mData);
+            liveBll.umsAgentDebugSys(eventId, mData);
             bottomContent.post(new Runnable() {
                 @Override
                 public void run() {
@@ -617,7 +617,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
             mData.put("logtype", "sendRemind");
             mData.put("answer", "" + answer);
             mData.put("duration", "" + sendDbDuration);
-            liveBll.umsAgentDebug(eventId, mData);
+            liveBll.umsAgentDebugSys(eventId, mData);
             bottomContent.post(new Runnable() {
                 @Override
                 public void run() {

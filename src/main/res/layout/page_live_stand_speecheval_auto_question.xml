@@ -47,33 +47,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true">
 
-                <RelativeLayout
-                    android:id="@id/rl_livevideo_speecteval_error"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="18dp"
-                    android:gravity="center_horizontal"
-                    android:visibility="invisible">
-
-                    <ImageView
-                        android:id="@id/iv_livevideo_speecteval_error"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/bg_livevideo_speecteval_error" />
-
-                    <TextView
-                        android:id="@id/tv_livevideo_speecteval_error"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="5dp"
-                        android:layout_toRightOf="@id/iv_livevideo_speecteval_error"
-                        android:textColor="#ff3333"
-                        android:textSize="12sp" />
-                </RelativeLayout>
-
             </RelativeLayout>
 
         </RelativeLayout>
@@ -92,12 +65,29 @@
         android:layout_height="70dp"
         android:layout_alignParentBottom="true">
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/lav_livevideo_voiceans_team_mine"
+            android:layout_alignLeft="@id/lav_livevideo_voiceans_team_mine"
+            android:layout_alignRight="@id/lav_livevideo_voiceans_team_mine"
+            android:layout_alignTop="@id/lav_livevideo_voiceans_team_mine">
+
+            <ImageView
+                android:id="@id/iv_livevideo_voiceans_team_mine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/bg_live_stand_speect_mine_light"
+                android:visibility="invisible" />
+        </RelativeLayout>
+
         <com.airbnb.lottie.LottieAnimationView
             android:id="@id/lav_livevideo_voiceans_team_mine"
-            android:layout_width="70dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:visibility="gone" />
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@id/iv_livevideo_speecteval_wave"
@@ -122,9 +112,9 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_alignParentRight="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:layout_toRightOf="@id/iv_livevideo_speecteval_wave">
 
             <LinearLayout
@@ -134,6 +124,26 @@
                 android:orientation="horizontal" />
 
         </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_speecteval_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/rl_livevideo_voiceans_content"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible">
+
+        <TextView
+            android:id="@id/tv_livevideo_speecteval_tip"
+            style="@style/text_font12_ff4343_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingLeft="35dp"
+            android:paddingRight="7dp"
+            android:visibility="visible" />
 
     </RelativeLayout>
 

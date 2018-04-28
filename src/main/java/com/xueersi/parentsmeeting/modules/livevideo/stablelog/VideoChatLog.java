@@ -19,7 +19,7 @@ public class VideoChatLog {
 //        if (LiveVideoConfig.IS_SCIENCE) {
             logHashMap.addSno("2").addExY().addNonce(nonce).addStable("1");
 //        }
-        liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
     /** 接麦第3步，学生检查麦克风 */
@@ -30,7 +30,7 @@ public class VideoChatLog {
 //        if (LiveVideoConfig.IS_SCIENCE) {
             logHashMap.addSno("3").addExY().addNonce(nonce).addStable("2");
 //        }
-        liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
     /** 接麦第四步，举手 */
@@ -44,7 +44,7 @@ public class VideoChatLog {
 //            logHashMap.addSno("1").addStable("1");
 //        }
         logHashMap.addExpect("1").addExY().addNonce(nonce);
-        liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
     /** 接麦第六步，学生收到上麦指令 */
@@ -56,7 +56,7 @@ public class VideoChatLog {
             logHashMap.addSno("7").addStable("1");
 //        }
         logHashMap.addExY().addNonce(nonce);
-        liveAndBackDebug.umsAgentDebug2(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
     /** 接麦第七步，加入房间 */
@@ -78,6 +78,6 @@ public class VideoChatLog {
         if (joinChannel != 0) {
             logHashMap.put("errcode", "" + joinChannel);
         }
-        liveAndBackDebug.umsAgentDebug3(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
     }
 }

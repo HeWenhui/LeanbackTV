@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -24,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by linyuqiang on 2016/9/23.
  * 聊天消息，一些进入房间状态的消息
  */
-public class LiveMessageBll implements RoomAction {
+public class LiveMessageBll implements RoomAction, QuestionShowAction {
     private String TAG = "LiveMessageBll";
     /** 消息 */
     private BaseLiveMessagePager mLiveMessagePager;
@@ -54,6 +55,7 @@ public class LiveMessageBll implements RoomAction {
 
     public void setQuestionBll(QuestionBll questionBll) {
         this.questionBll = questionBll;
+        questionBll.registQuestionShow(this);
         questionBll.setLiveMessageBll(this);
     }
 
@@ -101,9 +103,11 @@ public class LiveMessageBll implements RoomAction {
             isHaveFlowers = mLiveMessagePager.isHaveFlowers();
             isCloseChat = mLiveMessagePager.isCloseChat();
             mLiveMessagePager.pool.shutdown();
+            mLiveMessagePager.onDestroy();
         }
 
         long before = System.currentTimeMillis();
+        liveMessageLandEntities.clear();
         LiveMessageStandPager liveMessagePager = new LiveMessageStandPager(activity, questionBll, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
         mLiveMessagePager = liveMessagePager;
         Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
@@ -151,10 +155,14 @@ public class LiveMessageBll implements RoomAction {
             isHaveFlowers = mLiveMessagePager.isHaveFlowers();
             isCloseChat = mLiveMessagePager.isCloseChat();
             mLiveMessagePager.pool.shutdown();
+            mLiveMessagePager.onDestroy();
+            if (mLiveMessagePager instanceof LiveMessageStandPager) {
+                liveMessageLandEntities.clear();
+            }
         }
 
         long before = System.currentTimeMillis();
-        LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll, null,baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+        LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
         mLiveMessagePager = liveMessagePager;
         Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
 
@@ -196,6 +204,7 @@ public class LiveMessageBll implements RoomAction {
             isHaveFlowers = mLiveMessagePager.isHaveFlowers();
             isCloseChat = mLiveMessagePager.isCloseChat();
             mLiveMessagePager.pool.shutdown();
+            mLiveMessagePager.onDestroy();
         }
         if (isLand) {
 //            if (liveType == LiveBll.LIVE_TYPE_LECTURE) {
@@ -205,11 +214,11 @@ public class LiveMessageBll implements RoomAction {
 //            }
             if (liveType == LiveBll.LIVE_TYPE_LECTURE) {
                 LiveMessagePager liveMessagePager =
-                        new LiveMessagePager(activity, questionBll,null, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
+                        new LiveMessagePager(activity, questionBll, null, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
                 mLiveMessagePager = liveMessagePager;
             } else {
                 long before = System.currentTimeMillis();
-                LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll,null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
                 Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
             }
@@ -298,6 +307,7 @@ public class LiveMessageBll implements RoomAction {
     public void onDestroy() {
         if (mLiveMessagePager != null) {
             mLiveMessagePager.pool.shutdown();
+            mLiveMessagePager.onDestroy();
         }
     }
 
@@ -415,6 +425,13 @@ public class LiveMessageBll implements RoomAction {
     }
 
     @Override
+    public void onOtherDisable(String id, String name, boolean disable) {
+        if (mLiveMessagePager != null) {
+            mLiveMessagePager.onOtherDisable(id, name, disable);
+        }
+    }
+
+    @Override
     public void onopenchat(boolean openchat, String mode, boolean fromNotice) {
         this.openchat = openchat;
         this.mode = mode;
@@ -464,6 +481,13 @@ public class LiveMessageBll implements RoomAction {
     public void addMessage(String sender, int type, String text) {
         if (mLiveMessagePager != null) {
             mLiveMessagePager.addMessage(sender, type, text, "");
+        }
+    }
+
+    @Override
+    public void onQuestionShow(boolean isShow) {
+        if (mLiveMessagePager != null) {
+            mLiveMessagePager.onQuestionShow(isShow);
         }
     }
 }

@@ -21,7 +21,9 @@ import android.widget.TextView;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.Top3FrameAnim;
@@ -56,25 +58,25 @@ public class RedPackagePage extends BasePager {
     /** 获取金币，点击的位置，1.在中间，2.在右边 */
     private int clickPackage = 1;
     private boolean isLive;
+    LiveAndBackDebug liveAndBackDebug;
     Top3FrameAnim top3FrameAnim;
-    String file1 = "Images/redpackage/1_enter";
-    String file2 = "Images/redpackage/2_loop";
-    String file3 = "Images/redpackage/3_fly_up";
-    String file4 = "Images/redpackage/4_ship_loop";
-    String file5 = "Images/redpackage/5_shapeshift";
-    String file6 = "Images/redpackage/6_narrow";
-    String file7 = "Images/redpackage/7_right_loop";
-    String file8 = "Images/redpackage/8_transition";
-    String file9 = "Images/redpackage/9_teams_bg";
-    String file10 = "Images/redpackage/10_team_mine";
-    String file11 = "Images/redpackage/11_team_mine_loop";
-    String file12 = "Images/redpackage/12_team_other";
-    String file13 = "Images/redpackage/13_team_other_loop";
-    String file14 = "Images/redpackage/14_transition";
-    String file15 = "Images/redpackage/15_rank_enter";
-    String file16 = "Images/redpackage/16_rank_looper";
+    boolean viewAttached = true;
+    String file1 = "live_stand/frame_anim/redpackage/1_enter";
+    String file2 = "live_stand/frame_anim/redpackage/2_loop";
+    String file3 = "live_stand/frame_anim/redpackage/3_fly_up";
+    String file4 = "live_stand/frame_anim/redpackage/4_ship_loop";
+    String file5 = "live_stand/frame_anim/redpackage/5_shapeshift";
+    String file6 = "live_stand/frame_anim/redpackage/6_narrow";
+    String file7 = "live_stand/frame_anim/redpackage/7_right_loop";
+    String file8 = "live_stand/frame_anim/redpackage/8_transition";
+    String file9 = "live_stand/frame_anim/redpackage/9_teams_bg";
+    String file10 = "live_stand/frame_anim/redpackage/10_team_mine";
+    String file11 = "live_stand/frame_anim/redpackage/11_team_mine_loop";
+    String file12 = "live_stand/frame_anim/redpackage/12_team_other";
+    String file13 = "live_stand/frame_anim/redpackage/13_team_other_loop";
+    String file14 = "live_stand/frame_anim/redpackage/14_transition";
 
-    public RedPackagePage(Context context, int operateId, RedPackagePageAction redPackageAction, String userName, String headUrl, boolean isLive) {
+    public RedPackagePage(Context context, int operateId, RedPackagePageAction redPackageAction, String userName, String headUrl, boolean isLive, LiveAndBackDebug liveAndBackDebug) {
         super(context);
         this.operateId = operateId;
         this.redPackageAction = redPackageAction;
@@ -84,6 +86,7 @@ public class RedPackagePage extends BasePager {
         if (isLive) {
             top3FrameAnim = new Top3FrameAnim(context, rl_livevideo_redpackage_bg, stuHeadBitmap, frameAnimations);
         }
+        this.liveAndBackDebug = liveAndBackDebug;
         initData();
     }
 
@@ -97,14 +100,17 @@ public class RedPackagePage extends BasePager {
             @Override
             public void onViewAttachedToWindow(View view) {
                 Loger.d(TAG, "onViewAttachedToWindow");
+                viewAttached = true;
             }
 
             @Override
             public void onViewDetachedFromWindow(View view) {
+                viewAttached = false;
                 Loger.d(TAG, "onViewDetachedFromWindow:frameAnimations=" + frameAnimations.size());
                 for (int i = 0; i < frameAnimations.size(); i++) {
                     FrameAnimation animation = frameAnimations.get(i);
-                    animation.destory();
+                    int destory = animation.destory();
+                    Loger.d(TAG, "onViewDetachedFromWindow:animation=" + animation.path + ",destory=" + destory);
                 }
             }
         });
@@ -162,9 +168,8 @@ public class RedPackagePage extends BasePager {
 
             @Override
             public void onAnimationEnd() {
-                FrameAnimation btframeAnimation2 = null;
-                btframeAnimation2 = createFromAees(file2, true);
-                frameAnimations.add(btframeAnimation1);
+                FrameAnimation btframeAnimation2 = createFromAees(file2, true);
+                frameAnimations.add(btframeAnimation2);
 //                        btMesOpenAnimation.setAnimationListener(null);
                 iv_livevideo_redpackage_bg.postDelayed(new Runnable() {
                     @Override
@@ -203,6 +208,7 @@ public class RedPackagePage extends BasePager {
                                         }
                                         clickPackage = 2;
                                         redPackageAction.onPackageClick(operateId, clickPackage);
+                                        RedPackageStandLog.sno2_2(liveAndBackDebug, "" + operateId);
                                     }
                                 });
                             }
@@ -230,6 +236,7 @@ public class RedPackagePage extends BasePager {
                     @Override
                     public void onClick(View view) {
                         click.set(true);
+                        RedPackageStandLog.sno2(liveAndBackDebug, "" + operateId);
                         iv_livevideo_redpackage_bg.setOnClickListener(null);
                         if (finalBtframeAnimation != null) {
                             finalBtframeAnimation.pauseAnimation();
@@ -280,12 +287,6 @@ public class RedPackagePage extends BasePager {
     public void onGetPackage(VideoResultEntity entity) {
         if (clickPackage == 2) {
             initRightResult(entity);
-            mView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    redPackageAction.onPackageClose(operateId);
-                }
-            }, 3000);
         } else {
             ViewParent parent = rl_livevideo_redpackage_teams.getParent();
             if (parent == null) {
@@ -360,12 +361,28 @@ public class RedPackagePage extends BasePager {
      */
     private void initRightResult(final VideoResultEntity entity) {
         final FrameAnimation btframeAnimation1 = createFromAees(file5, false);
+//        final FrameAnimation btframeAnimation1 = FrameAnimation.createFromAees(mContext, iv_livevideo_redpackage_bg, file5, 650, false);
         frameAnimations.add(btframeAnimation1);
         btframeAnimation1.setBitmapCreate(new FrameAnimation.BitmapCreate() {
             @Override
             public Bitmap onAnimationCreate(String file) {
-                if (file.contains("0017")) {
-                    return initHeadAndGold(entity, file, btframeAnimation1);
+//                "package_shapeshift_00152"
+                int index = file.lastIndexOf("/");
+                String name = "";
+                int nameInt = 0;
+                if (index != -1) {
+                    name = file.substring(index + 1, file.length() - 4);
+                    String split[] = name.split("_");
+                    try {
+                        nameInt = Integer.parseInt(split[split.length - 1]);
+                    } catch (Exception e) {
+
+                    }
+                }
+                if (nameInt > 163 && nameInt < 170) {
+                    return initHeadAndGold(entity, file, btframeAnimation1, false);
+                } else if (nameInt > 169) {
+                    return initHeadAndGold(entity, file, btframeAnimation1, true);
                 }
                 return null;
             }
@@ -385,9 +402,15 @@ public class RedPackagePage extends BasePager {
                     public Bitmap onAnimationCreate(String file) {
                         Loger.d(TAG, "onAnimationCreate:file=" + file);
 //                        return headBitmap;
-                        return initHeadAndGold(entity, file, btframeAnimation2);
+                        return initHeadAndGold(entity, file, btframeAnimation2, true);
                     }
                 });
+                mView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        redPackageAction.onPackageClose(operateId);
+                    }
+                }, 3000);
             }
 
             @Override
@@ -403,18 +426,18 @@ public class RedPackagePage extends BasePager {
      * @param entity
      * @param file
      * @param btframeAnimation1
+     * @param drawName
      * @return
      */
-    private Bitmap initHeadAndGold(final VideoResultEntity entity, final String file, final FrameAnimation btframeAnimation1) {
+    private Bitmap initHeadAndGold(final VideoResultEntity entity, final String file, final FrameAnimation btframeAnimation1, boolean drawName) {
         InputStream inputStream = null;
         try {
-            inputStream = mContext.getAssets().open(file);
+            inputStream = FrameAnimation.getInputStream(mContext, file);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             bitmap.setDensity(160);
             Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             canvasBitmap.setDensity(160);
             Canvas canvas = new Canvas(canvasBitmap);
-            canvas.drawBitmap(bitmap, 0, 0, null);
 
             if (headBitmap != null && !headBitmap.isRecycled()) {
                 float scaleWidth = 61f / headBitmap.getHeight();
@@ -449,21 +472,24 @@ public class RedPackagePage extends BasePager {
                     });
                 }
             }
+            canvas.drawBitmap(bitmap, 0, 0, null);
             bitmap.recycle();
             //画名字和金币数量
-            String gold = "+" + entity.getGoldNum();
-            View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout.layout_live_stand_red_mine1, null);
-            TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_name);
-            tv_livevideo_redpackage_name.setText("" + userName);
-            TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
-            tv_livevideo_redpackage_num.setText(gold);
-            layout_live_stand_red_mine1.measure(canvasBitmap.getWidth(), canvasBitmap.getHeight());
-            layout_live_stand_red_mine1.layout(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight());
+            if (drawName) {
+                String gold = "+" + entity.getGoldNum();
+                View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout.layout_live_stand_red_mine1, null);
+                TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_name);
+                tv_livevideo_redpackage_name.setText("" + userName);
+                TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
+                tv_livevideo_redpackage_num.setText(gold);
+                layout_live_stand_red_mine1.measure(canvasBitmap.getWidth(), canvasBitmap.getHeight());
+                layout_live_stand_red_mine1.layout(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight());
 
-            canvas.save();
-            canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 160);
-            layout_live_stand_red_mine1.draw(canvas);
-            canvas.restore();
+                canvas.save();
+                canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 160);
+                layout_live_stand_red_mine1.draw(canvas);
+                canvas.restore();
+            }
             return canvasBitmap;
         } catch (IOException e) {
             e.printStackTrace();
@@ -516,6 +542,7 @@ public class RedPackagePage extends BasePager {
             goldTeamStatus = entity;
             return;
         }
+        RedPackageStandLog.sno3(liveAndBackDebug, "" + operateId);
         goldTeamStatus = entity;
         ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
         if (rl_livevideo_redpackage_teams.getChildCount() == students.size()) {//没有新数据了
@@ -710,7 +737,7 @@ public class RedPackagePage extends BasePager {
     private Bitmap initTeamHeadAndGold(final GoldTeamStatus.Student entity, final String file, boolean havename, final FrameAnimation upFrameAnimation) {
         InputStream inputStream = null;
         try {
-            inputStream = mContext.getAssets().open(file);
+            inputStream = FrameAnimation.getInputStream(mContext, file);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             bitmap.setDensity(160);
             Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
@@ -775,7 +802,7 @@ public class RedPackagePage extends BasePager {
                 String gold = "+" + entity.getGold();
                 View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout.layout_live_stand_red_mine2, null);
                 TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_name);
-                tv_livevideo_redpackage_name.setText("" + entity.getNickname());
+                tv_livevideo_redpackage_name.setText("" + entity.getShowName());
                 TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
                 tv_livevideo_redpackage_num.setText(gold);
                 if (!isMe) {
@@ -854,6 +881,7 @@ public class RedPackagePage extends BasePager {
 
                     }
                 }, students);
+                RedPackageStandLog.sno4(liveAndBackDebug, "" + operateId);
 //                String path = file15;
 //                FrameAnimation btframeAnimation2 =
 //                        FrameAnimation.createFromAees(mContext, rl_livevideo_redpackage_bg, path, 50, false);
@@ -905,7 +933,7 @@ public class RedPackagePage extends BasePager {
     private Bitmap initTeamRankHeadAndGold(ArrayList<GoldTeamStatus.Student> students, final String file, boolean havename, final FrameAnimation upFrameAnimation) {
         InputStream inputStream = null;
         try {
-            inputStream = mContext.getAssets().open(file);
+            inputStream = FrameAnimation.getInputStream(mContext, file);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             bitmap.setDensity(160);
             Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
@@ -983,7 +1011,7 @@ public class RedPackagePage extends BasePager {
                     ImageView iv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.iv_livevideo_redpackage_num);
                     iv_livevideo_redpackage_num.setImageResource(R.drawable.bg_live_stand_red_gold_big);
                     TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_name);
-                    tv_livevideo_redpackage_name.setText("" + entity.getNickname());
+                    tv_livevideo_redpackage_name.setText("" + entity.getShowName());
                     TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
                     tv_livevideo_redpackage_num.setText(gold);
 //                    if (i == 0) {
@@ -1032,10 +1060,11 @@ public class RedPackagePage extends BasePager {
      * 第二个红包到了
      */
     public void onOtherPackage() {
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) iv_livevideo_redpackage_bg.getLayoutParams();
-        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        lp.bottomMargin = 100;
-        iv_livevideo_redpackage_bg.setLayoutParams(lp);
+//        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) iv_livevideo_redpackage_bg.getLayoutParams();
+//        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+//        lp.bottomMargin = 100;
+//        iv_livevideo_redpackage_bg.setLayoutParams(lp);
+        redPackageAction.onPackageClose(operateId);
     }
 
 

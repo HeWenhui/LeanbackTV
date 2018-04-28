@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.event.AppEvent;
@@ -62,6 +63,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -92,7 +94,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
@@ -385,7 +389,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         from = intent.getIntExtra(ENTER_ROOM_FROM, 0);
         XesMobAgent.enterLiveRoomFrom(from);
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {// 直播
-            mLiveBll = new LiveBll(this, vStuCourseID, courseId, mVSectionID, from);
+            mLiveBll = new LiveBll(this, vStuCourseID, courseId, mVSectionID, from, null);
         } else if (liveType == LiveBll.LIVE_TYPE_LECTURE) {
             mLiveBll = new LiveBll(this, mVSectionID, liveType, from);
         } else if (liveType == LiveBll.LIVE_TYPE_TUTORIAL) {// 辅导
@@ -456,6 +460,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         videoChatBll.setLiveBll(mLiveBll);
 
         liveLazyBllCreat = new LiveLazyBllCreat(this, mLiveBll);
+        liveLazyBllCreat.setQuestionBll(questionBll);
         mLiveBll.setLiveLazyBllCreat(liveLazyBllCreat);
 
         // 初始战队pk
@@ -514,9 +519,22 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     protected void onPlayOpenStart() {
         setFirstBackgroundVisible(View.VISIBLE);
         findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
-        if(mGetInfo!=null&&mGetInfo.getIsShowMarkPoint().equals("1")) {
+    }
+
+    @Override
+    protected void onPlayOpenSuccess() {
+        TextView tvFail = (TextView) findViewById(R.id.tv_course_video_loading_fail);
+        if (tvFail != null) {
+            tvFail.setVisibility(View.INVISIBLE);
+        }
+        setFirstBackgroundVisible(View.GONE);
+        rollCallBll.onPlayOpenSuccess(videoView.getLayoutParams());
+        if (mGetInfo != null && mGetInfo.getIsShowMarkPoint().equals("1")) {
             if (liveRemarkBll == null) {
                 liveRemarkBll = new LiveRemarkBll(mContext, vPlayer);
+                if (videoChatBll != null) {
+                    videoChatBll.setLiveRemarkBll(liveRemarkBll);
+                }
                 if (mLiveBll != null && liveMediaControllerBottom != null) {
                     if (liveTextureView == null) {
                         ViewStub viewStub = (ViewStub) findViewById(R.id.vs_course_video_video_texture);
@@ -529,21 +547,12 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                     liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
                     liveRemarkBll.setVideoView(videoView);
                     mLiveBll.setLiveRemarkBll(liveRemarkBll);
+                    liveRemarkBll.setLiveAndBackDebug(mLiveBll);
                 }
-            }else{
+            } else {
                 liveRemarkBll.initData();
             }
         }
-    }
-
-    @Override
-    protected void onPlayOpenSuccess() {
-        TextView tvFail = (TextView) findViewById(R.id.tv_course_video_loading_fail);
-        if (tvFail != null) {
-            tvFail.setVisibility(View.INVISIBLE);
-        }
-        setFirstBackgroundVisible(View.GONE);
-        rollCallBll.onPlayOpenSuccess(videoView.getLayoutParams());
     }
 
     @Override
@@ -827,6 +836,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 reportPlayStarTime = System.currentTimeMillis();
             }
             mLiveBll.repair(true);
+            if (liveRemarkBll != null) {
+                liveRemarkBll.setVideoReady(false);
+            }
             mLiveBll.liveGetPlayServer(false);
         }
     };
@@ -909,15 +921,15 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         questionBll.setLiveVideoSAConfig(liveVideoSAConfig);
         englishH5CoursewareBll.setLiveVideoSAConfig(liveVideoSAConfig);
         liveMediaControllerBottom.setVisibility(View.VISIBLE);
-        if("1".equals(mGetInfo.getIsShowMarkPoint())){
+        if ("1".equals(mGetInfo.getIsShowMarkPoint())) {
             liveMediaControllerBottom.getBtMark().setVisibility(View.VISIBLE);
         }
         long before = System.currentTimeMillis();
         if (liveLazyBllCreat != null) {
             liveLazyBllCreat.setGetInfo(getInfo);
         }
-        if(mGetInfo.getStudentLiveInfo() != null
-                &&"1".equals(mGetInfo.getIsShowCounselorWhisper())) {
+        if (mGetInfo.getStudentLiveInfo() != null
+                && "1".equals(mGetInfo.getIsShowCounselorWhisper())) {
 
             LiveAutoNoticeBll liveAutoNoticeBll = liveLazyBllCreat.createAutoNoticeBll();
             liveAutoNoticeBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
@@ -926,10 +938,10 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             liveAutoNoticeBll.setLiveBll(mLiveBll);
             mLiveBll.setLiveAutoNoticeBll(liveAutoNoticeBll);
             //if (mQuestionAction instanceof QuestionBll) {
-                questionBll.setLiveAutoNoticeBll(liveAutoNoticeBll);
+            questionBll.setLiveAutoNoticeBll(liveAutoNoticeBll);
             //}
             //if (englishH5CoursewareAction instanceof EnglishH5CoursewareBll) {
-                englishH5CoursewareBll.setLiveAutoNoticeBll(liveAutoNoticeBll);
+            englishH5CoursewareBll.setLiveAutoNoticeBll(liveAutoNoticeBll);
             //}
         }
 
@@ -949,9 +961,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 englishH5Cache.getCourseWareUrl();
             }
             if (IS_SCIENCE) {
-                //SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(this, mLiveBll);
-                //speechFeedBackBll.setGetInfo(getInfo);
-                SpeechFeedBackBllOld speechFeedBackBll = new SpeechFeedBackBllOld(this, mLiveBll);
+                SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(this, mLiveBll);
+                speechFeedBackBll.setGetInfo(getInfo);
+                //SpeechFeedBackBllOld speechFeedBackBll = new SpeechFeedBackBllOld(this, mLiveBll);
                 speechFeedBackBll.setBottomContent(bottomContent);
                 speechFeedBackAction = speechFeedBackBll;
                 mLiveBll.setSpeechFeedBackAction(speechFeedBackBll);
@@ -1042,6 +1054,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
 
             @Override
             public void run() {
+                if (liveRemarkBll != null) {
+                    liveRemarkBll.setVideoReady(false);
+                }
                 mLogtf.d("onModeChange:isInitialized=" + isInitialized());
                 if (isInitialized()) {
                     mHandler.removeCallbacks(mPlayDuration);
@@ -1123,6 +1138,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         if (startRemote.get()) {
             return;
         }
+        totalFrameStat.onReplay();
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
             if (LiveTopic.MODE_TRANING.endsWith(mGetInfo.getLiveTopic().getMode()) && mGetInfo.getStudentLiveInfo().isExpe()) {
                 tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
@@ -1156,6 +1172,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         String url;
         String msg = "rePlay:";
         if (mServer == null) {
+            totalFrameStat.setLastPlayserverEntity(null);
             String rtmpUrl = null;
             String[] rtmpUrls = mGetInfo.getRtmpUrls();
             if (rtmpUrls != null) {
@@ -1169,6 +1186,22 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             mLiveBll.setPlayserverEntity(null);
         } else {
             List<PlayserverEntity> playservers = mServer.getPlayserver();
+//            for (int i = 0; i < playservers.size(); i++) {
+//                final PlayserverEntity playserverEntity = playservers.get(i);
+//                mLiveBll.dns_resolve_stream(playserverEntity, mGetInfo.getChannelname(), mServer.getAppname(), new AbstractBusinessDataCallBack() {
+//                    @Override
+//                    public void onDataSucess(Object... objData) {
+//                        String ip = (String) objData[0];
+//                        mLogtf.d("dns_resolve_stream:ip=" + ip);
+//                    }
+//
+//                    @Override
+//                    public void onDataFail(int errStatus, String failMsg) {
+//                        mLogtf.d("dns_resolve_stream:onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
+//                        super.onDataFail(errStatus, failMsg);
+//                    }
+//                });
+//            }
             msg += "playservers=" + playservers.size();
             PlayserverEntity entity = null;
             boolean useFlv = false;
@@ -1252,43 +1285,100 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             }
             lastPlayserverEntity = entity;
             mLiveBll.setPlayserverEntity(entity);
+            totalFrameStat.setLastPlayserverEntity(entity);
             if (useFlv) {
                 url = "http://" + entity.getAddress() + ":" + entity.getHttpport() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname() + entity.getFlvpostfix();
             } else {
-                url = "rtmp://" + entity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+                if (StringUtils.isEmpty(entity.getIp_gslb_addr())) {
+                    url = "rtmp://" + entity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+                } else {
+                    final PlayserverEntity finalEntity = entity;
+                    mLiveBll.dns_resolve_stream(entity, mServer, mGetInfo.getChannelname(), new AbstractBusinessDataCallBack() {
+                        @Override
+                        public void onDataSucess(Object... objData) {
+                            if (finalEntity != lastPlayserverEntity) {
+                                return;
+                            }
+                            String provide = (String) objData[0];
+                            String url;
+                            if ("wangsu".equals(provide)) {
+                                url = objData[1] + "&username=" + mGetInfo.getUname() + "&cfrom=android";
+                                playNewVideo(Uri.parse(url), mGetInfo.getName());
+                            } else if ("ali".equals(provide)) {
+                                url = (String) objData[1];
+                                StringBuilder stringBuilder = new StringBuilder(url);
+                                addBody("Sucess", stringBuilder);
+                                url = stringBuilder + "&username=" + mGetInfo.getUname();
+                                playNewVideo(Uri.parse(url), mGetInfo.getName());
+                            } else {
+                                return;
+                            }
+                            Map<String, String> mData = new HashMap<>();
+                            mData.put("message", "" + url);
+                            Loger.e(LiveVideoActivity.this, LiveVideoConfig.LIVE_GSLB, mData, true);
+                        }
+
+                        @Override
+                        public void onDataFail(int errStatus, String failMsg) {
+                            if (finalEntity != lastPlayserverEntity) {
+                                return;
+                            }
+                            String url = "rtmp://" + finalEntity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+                            StringBuilder stringBuilder = new StringBuilder(url);
+                            addBody("Fail", stringBuilder);
+                            playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
+                        }
+                    });
+                    return;
+                }
             }
             msg += ",entity=" + entity.getIcode();
         }
+        StringBuilder stringBuilder = new StringBuilder(url);
+        msg += addBody("rePlay", stringBuilder);
+        msg += ",url=" + stringBuilder;
+        mLogtf.d(msg);
+        playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
+    }
+
+    /**
+     * 直播地址的一些通用参数
+     *
+     * @param method
+     * @param url
+     * @return
+     */
+    protected String addBody(String method, StringBuilder url) {
+        String msg = "";
         if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
             if (lastPlayserverEntity != null && !StringUtils.isSpace(lastPlayserverEntity.getRtmpkey())) {
-                url += "?" + lastPlayserverEntity.getRtmpkey() + "&cfrom=android";
+                url.append("?" + lastPlayserverEntity.getRtmpkey() + "&cfrom=android");
                 msg += ",t1";
             } else {
                 if (!StringUtils.isSpace(mGetInfo.getSkeyPlayT())) {
-                    url += "?" + mGetInfo.getSkeyPlayT() + "&cfrom=android";
+                    url.append("?" + mGetInfo.getSkeyPlayT() + "&cfrom=android");
                     msg += ",t2";
                 } else {
-                    url += "?cfrom=android";
+                    url.append("?cfrom=android");
                     msg += ",t3";
                 }
             }
         } else {
             if (lastPlayserverEntity != null && !StringUtils.isSpace(lastPlayserverEntity.getRtmpkey())) {
-                url += "?" + lastPlayserverEntity.getRtmpkey() + "&cfrom=android";
+                url.append("?" + lastPlayserverEntity.getRtmpkey() + "&cfrom=android");
                 msg += ",f1";
             } else {
                 if (!StringUtils.isSpace(mGetInfo.getSkeyPlayF())) {
-                    url += "?" + mGetInfo.getSkeyPlayF() + "&cfrom=android";
+                    url.append("?" + mGetInfo.getSkeyPlayF() + "&cfrom=android");
                     msg += ",f2";
                 } else {
-                    url += "?cfrom=android";
+                    url.append("?cfrom=android");
                     msg += ",f3";
                 }
             }
         }
-        msg += ",url=" + url;
-        mLogtf.d(msg);
-        playNewVideo(Uri.parse(url), mGetInfo.getName());
+        Loger.d(TAG, "addBody:method=" + method + ",url=" + url);
+        return msg;
     }
 
     public void stopPlay() {
@@ -1314,6 +1404,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
             }
         }
         if (liveRemarkBll != null) {
+            Loger.i("liveremarkbll", "video fail");
             liveRemarkBll.setVideoReady(false);
         }
         mHandler.post(new Runnable() {

@@ -20,6 +20,7 @@ public class LiveLazyBllCreat {
     private PraiseOrEncourageBll praiseOrEncourageBll;
     private LiveGetInfo liveGetInfo;
     private PraiseListBll praiseListBll;
+    private QuestionBll questionBll;
 
     public LiveLazyBllCreat(Activity liveVideoActivity, LiveBll liveBll) {
         this.liveVideoActivity = liveVideoActivity;
@@ -32,6 +33,10 @@ public class LiveLazyBllCreat {
 
     public void setPraiselistContent(RelativeLayout praiselistContent) {
         this.praiselistContent = praiselistContent;
+    }
+
+    public void setQuestionBll(QuestionBll questionBll) {
+        this.questionBll = questionBll;
     }
 
     public void setGetInfo(LiveGetInfo getInfo) {
@@ -63,11 +68,18 @@ public class LiveLazyBllCreat {
         return praiseOrEncourageBll;
     }
 
-    AnswerRankBll createAnswerRankBll(){
-        return new AnswerRankBll(liveVideoActivity,bottomContent,liveBll);
+    AnswerRankBll createAnswerRankBll() {
+        return new AnswerRankBll(liveVideoActivity, bottomContent, liveBll);
     }
-    public LiveAutoNoticeBll createAutoNoticeBll(){
-        return new LiveAutoNoticeBll(liveVideoActivity,bottomContent);
+
+    public LiveAutoNoticeBll createAutoNoticeBll() {
+        return new LiveAutoNoticeBll(liveVideoActivity, bottomContent);
+    }
+
+    RolePlayAction createRolePlayBll() {
+        RolePlayerBll rolePlayerBll = new RolePlayerBll(liveVideoActivity, bottomContent, liveBll);
+        questionBll.setRolePlayAction(rolePlayerBll);
+        return rolePlayerBll;
     }
 
     PraiseListAction createPraiseListAction() {

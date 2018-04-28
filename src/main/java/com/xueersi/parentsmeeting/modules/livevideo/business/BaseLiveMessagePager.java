@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -70,7 +72,7 @@ import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
  * Created by linyuqiang on 2016/12/19.
  * 聊天信息一些基本方法
  */
-public abstract class BaseLiveMessagePager extends BasePager implements RoomAction {
+public abstract class BaseLiveMessagePager extends BasePager implements RoomAction, QuestionShowAction {
     protected ArrayList<LiveMessageEntity> liveMessageEntities = new ArrayList<>();
     /** 发送消息间隔 */
     protected final static long SEND_MSG_INTERVAL = 5000;
@@ -114,7 +116,8 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     public int urlclick;
     public LiveGetInfo getInfo;
     /** 聊天线程池 */
-    public ThreadPoolExecutor pool;
+    protected ThreadPoolExecutor pool;
+    protected Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public BaseLiveMessagePager(Context context) {
         super(context);
@@ -605,6 +608,16 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
             Loger.e(TAG, "startCourseDetail", e);
             return false;
         }
+    }
+
+    @Override
+    public void onQuestionShow(boolean isShow) {
+
+    }
+
+    @Override
+    public void onOtherDisable(String id, String name, boolean disable) {
+
     }
 
     @Override

@@ -7,5 +7,8 @@
         android:id="@id/iv_livevideo_speecteval_result_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="11dp"
+        android:layout_marginTop="11dp"
+        android:src="@drawable/bg_live_stand_result_cancel_normal" />
 </RelativeLayout>

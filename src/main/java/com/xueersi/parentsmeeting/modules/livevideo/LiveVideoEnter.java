@@ -167,7 +167,7 @@ public class LiveVideoEnter {
                 }
                 String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                 getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
-                if (mGetInfo.getIsArts() == 1) {
+                if (mGetInfo.getPattern() == 2) {
                     StandLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
                 } else {
                     LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
@@ -312,14 +312,18 @@ public class LiveVideoEnter {
     public static final int VIDEO_REQUEST = 210;
 
     /**
-     * 跳转到播放器
+     * 跳转到播放器(直播回放)
      *
      * @param context
      * @param bundle
      */
     public static boolean intentTo(Activity context, Bundle bundle, String where) {
-//        LivePlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
-        LiveStandPlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+        int pattern = bundle.getInt("pattern", 1);
+        if (pattern == 2) {
+            LiveStandPlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+        } else {
+            LivePlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+        }
         return true;
     }
 
@@ -335,7 +339,7 @@ public class LiveVideoEnter {
     }
 
     /**
-     * 跳转到直播回放
+     * 跳转到直播回放(已废弃)
      *
      * @param context
      * @param bundle

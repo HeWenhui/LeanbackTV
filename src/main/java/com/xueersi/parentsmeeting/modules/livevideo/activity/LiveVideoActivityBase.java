@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.XesActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.TotalFrameStat;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
@@ -168,7 +169,8 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 
     /** 播放器核心服务 */
     protected PlayerService vPlayer;
-
+    /** 直播帧数统计 */
+    TotalFrameStat totalFrameStat;
     /** 是否可以自动横竖屏转换 */
     protected boolean mIsAutoOrientation = true;
 
@@ -412,18 +414,18 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     // region 生命周期及系统调用
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
-        final Thread.UncaughtExceptionHandler defaultUncaughtHandler = Thread.getDefaultUncaughtExceptionHandler();
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread thread, Throwable ex) {
-                finish(VIDEO_CRASH);
-                if (defaultUncaughtHandler != null) {
-                    defaultUncaughtHandler.uncaughtException(thread, ex);
-                } else {
-                    MobclickAgent.reportError(LiveVideoActivityBase.this, ex);
-                }
-            }
-        });
+//        final Thread.UncaughtExceptionHandler defaultUncaughtHandler = Thread.getDefaultUncaughtExceptionHandler();
+//        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+//            @Override
+//            public void uncaughtException(Thread thread, Throwable ex) {
+//                finish(VIDEO_CRASH);
+//                if (defaultUncaughtHandler != null) {
+//                    defaultUncaughtHandler.uncaughtException(thread, ex);
+//                } else {
+//                    MobclickAgent.reportError(LiveVideoActivityBase.this, ex);
+//                }
+//            }
+//        });
         FileLogger.runActivity = this;
         super.onCreate(savedInstanceState);
         // 统计视频点击某个视频
@@ -572,6 +574,8 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         // 设置当前是否为横屏
         setFileName(); // 设置视频显示名称
         showLongMediaController();
+        totalFrameStat = new TotalFrameStat(this);
+        totalFrameStat.setvPlayer(vPlayer);
     }
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -629,6 +633,9 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                 stopPlayer();
             }
         }
+        if (totalFrameStat != null) {
+            totalFrameStat.onPause();
+        }
     }
 
     @Override
@@ -664,6 +671,9 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         if (isInitialized() && !vPlayer.isPlaying()) {
             // 释放播放器资源
             release();
+        }
+        if (totalFrameStat != null) {
+            totalFrameStat.destory();
         }
         // 注销事件
         EventBus.getDefault().unregister(this);
@@ -1089,6 +1099,9 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             if (wrapListener != null) {
                 wrapListener.onOpenStart();
             }
+            if (totalFrameStat != null) {
+                totalFrameStat.onOpenStart();
+            }
         }
 
         /** 视频预处理完毕可以随时播放了 */
@@ -1108,6 +1121,9 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             if (isInitialized()) {
                 vPlayer.setVolume(leftVolume, rightVolume);
             }
+            if (totalFrameStat != null) {
+                totalFrameStat.onOpenSuccess();
+            }
         }
 
         /** 视频打开失败 */
@@ -1117,6 +1133,9 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onOpenFailed(arg1, arg2);
+            }
+            if (totalFrameStat != null) {
+                totalFrameStat.onOpenFailed(arg1, arg2);
             }
         }
 
@@ -1165,6 +1184,9 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onPlaybackComplete();
+            }
+            if (totalFrameStat != null) {
+                totalFrameStat.onPlaybackComplete();
             }
         }
 
@@ -1230,6 +1252,9 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onPlayError();
+            }
+            if (totalFrameStat != null) {
+                totalFrameStat.onPlayError();
             }
         }
     };

@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -32,7 +34,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieComposition;
@@ -44,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -67,6 +69,8 @@ import com.xueersi.xesalib.view.button.CompoundButtonGroup;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -85,6 +89,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     private String TAG = "LiveMessageStandPager";
     /** 聊天，默认开启 */
     private Button btMesOpen;
+    /** 左侧聊天区 */
+    private View rl_live_stand_message_content;
     FrameAnimation btMesOpenAnimation;
     /** 献花，默认关闭 */
     private Button btMessageFlowers;
@@ -120,6 +126,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     private QuestionBll questionBll;
     /** 竖屏的时候，也添加横屏的消息 */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
+    /** 是不是正在答题 */
+    private boolean isAnaswer = false;
 
     public LiveMessageStandPager(Context context, QuestionBll questionBll, BaseLiveMediaControllerBottom
             liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
@@ -134,11 +142,11 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         nameColors[1] = resources.getColor(R.color.COLOR_E74C3C);
         nameColors[2] = resources.getColor(R.color.COLOR_20ABFF);
 
-        btMesOpen = liveMediaControllerBottom.getBtMesOpen();
+//        btMesOpen = liveMediaControllerBottom.getBtMesOpen();
         btMessageFlowers = liveMediaControllerBottom.getBtMessageFlowers();
 //        cbMessageClock = liveMediaControllerBottom.getCbMessageClock();
 
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 initListener();
@@ -162,6 +170,26 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         switchFSPanelLinearLayout = (KPSwitchFSPanelLinearLayout) mView.findViewById(R.id
                 .rl_livevideo_message_panelroot);
         ivExpressionCancle = (ImageView) mView.findViewById(R.id.iv_livevideo_message_expression_cancle);
+        btMesOpen = mView.findViewById(R.id.bt_livevideo_message_open);
+        rl_live_stand_message_content = mView.findViewById(R.id.rl_live_stand_message_content);
+        InputStream inputStream = null;
+        try {
+            inputStream = mContext.getAssets().open("live_stand/frame_anim/openmsg/message_open_00074.png");
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            bitmap.setDensity(160);
+            btMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 //        int screenWidth = ScreenUtils.getScreenWidth();
 //        int screenHeight = ScreenUtils.getScreenHeight();
 //        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
@@ -176,7 +204,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     }
 
     void initBtMesOpenAnimation() {
-        btMesOpenAnimation = FrameAnimation.createFromAees(mContext, btMesOpen, "Images/openmsg", 50, false);
+        btMesOpenAnimation = FrameAnimation.createFromAees(mContext, btMesOpen, "live_stand/frame_anim/openmsg", 50, false);
 //            btMesOpenAnimation.restartAnimation();
         btMesOpenAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
             @Override
@@ -220,6 +248,15 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         btMesOpen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!liveBll.openchat()) {
+                    XESToastUtils.showToast(mContext, "已关闭聊天区");
+                    return;
+                } else {
+                    if (liveBll.isDisable()) {
+                        addMessage("提示", LiveMessageEntity.MESSAGE_TIP, "你被老师禁言了，请联系老师解除禁言！", "");
+                        return;
+                    }
+                }
                 if (btMesOpenAnimation != null) {
                     btMesOpenAnimation.pauseAnimation();
                 }
@@ -294,7 +331,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                                 lastSendMsg = System.currentTimeMillis();
                                 onTitleShow(true);
                             } else {
-                                XESToastUtils.showToast(mContext, "你已被禁言!");
+//                                XESToastUtils.showToast(mContext, "你已被禁言!");
+                                addMessage("提示", LiveMessageEntity.MESSAGE_TIP, "你被老师禁言了，请联系老师解除禁言！", "");
                             }
                         } else {
                             //暂时去掉3秒发言，信息提示
@@ -394,78 +432,187 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //            liveMessageEntities.add(liveMessageEntity);
 //        }
 
-        messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities) {
+        messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities, 5) {
             String fileName = "live_stand_head.json";
 
             @Override
+            public Object getItemViewType(LiveMessageEntity liveMessageEntity) {
+                return liveMessageEntity.getType();
+            }
+
+            @Override
             public AdapterItemInterface<LiveMessageEntity> getItemView(Object type) {
-                return new AdapterItemInterface<LiveMessageEntity>() {
-                    TextView tvMessageItem;
-                    StandLiveHeadView standLiveHeadView;
-                    LottieComposition mComposition;
+                int typeInt = (int) type;
+                if (typeInt == LiveMessageEntity.MESSAGE_TIP) {
+                    return new AdapterItemInterface<LiveMessageEntity>() {
+                        TextView tvMessageItem;
+                        StandLiveHeadView standLiveHeadView;
+                        LottieComposition mComposition;
 
-                    @Override
-                    public int getLayoutResId() {
-                        return R.layout.item_livevideo_stand_message;
-                    }
+                        @Override
+                        public int getLayoutResId() {
+                            return R.layout.item_livevideo_stand_message;
+                        }
 
-                    @Override
-                    public void initViews(View root) {
-                        Loger.d(TAG, "initViews");
-                        tvMessageItem = (TextView) root.findViewById(R.id.tv_livevideo_message_item);
-                        tvMessageItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
-                        standLiveHeadView = root.findViewById(R.id.slhv_livevideo_message_head);
-                        standLiveHeadView.addAnimatorListener(new Animator.AnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animator) {
+                        @Override
+                        public void initViews(View root) {
+                            Loger.d(TAG, "initViews");
+                            tvMessageItem = (TextView) root.findViewById(R.id.tv_livevideo_message_item);
+                            tvMessageItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
+                            standLiveHeadView = root.findViewById(R.id.slhv_livevideo_message_head);
+                            standLiveHeadView.addAnimatorListener(new Animator.AnimatorListener() {
+                                @Override
+                                public void onAnimationStart(Animator animator) {
 
-                            }
+                                }
 
-                            @Override
-                            public void onAnimationEnd(Animator animator) {
-                                Log.d(TAG, "onAnimationEnd:progerss=" + standLiveHeadView.getProgress());
+                                @Override
+                                public void onAnimationEnd(Animator animator) {
+                                    Log.d(TAG, "onAnimationEnd:progerss=" + standLiveHeadView.getProgress());
 //                                standLiveHeadView.setProgress(1.0f);
-                            }
-
-                            @Override
-                            public void onAnimationCancel(Animator animator) {
-
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animator animator) {
-
-                            }
-                        });
-                        initlottieAnim();
-                    }
-
-                    private void initlottieAnim() {
-                        LottieComposition.Factory.fromAssetFileName(mContext, fileName, new OnCompositionLoadedListener() {
-                            @Override
-                            public void onCompositionLoaded(@Nullable LottieComposition composition) {
-                                Log.d(TAG, "onCompositionLoaded:composition=" + composition);
-                                if (composition == null) {
-                                    return;
                                 }
-                                if (mComposition != null) {
-                                    return;
+
+                                @Override
+                                public void onAnimationCancel(Animator animator) {
+
                                 }
-                                mComposition = composition;
-                                standLiveHeadView.setImageAssetsFolder("Images/head");
-                                standLiveHeadView.setComposition(composition);
+
+                                @Override
+                                public void onAnimationRepeat(Animator animator) {
+
+                                }
+                            });
+                            initlottieAnim();
+                        }
+
+                        private void initlottieAnim() {
+                            LottieComposition.Factory.fromAssetFileName(mContext, fileName, new OnCompositionLoadedListener() {
+                                @Override
+                                public void onCompositionLoaded(@Nullable LottieComposition composition) {
+                                    Log.d(TAG, "onCompositionLoaded:composition=" + composition);
+                                    if (composition == null) {
+                                        return;
+                                    }
+                                    if (mComposition != null) {
+                                        return;
+                                    }
+                                    mComposition = composition;
+                                    standLiveHeadView.setImageAssetsFolder("live_stand/lottie/head");
+                                    standLiveHeadView.setComposition(composition);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void bindListener() {
+
+                        }
+
+                        @Override
+                        public void updateViews(LiveMessageEntity entity, int position, Object objTag) {
+                            String sender = entity.getSender();
+                            if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
+                                tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
+                                tvMessageItem.setText(entity.getText());
+                                urlClick(tvMessageItem);
+                                CharSequence text = tvMessageItem.getText();
+                                tvMessageItem.setText(text);
+                            } else {
+                                tvMessageItem.setAutoLinkMask(0);
+                                tvMessageItem.setText(entity.getText());
                             }
-                        });
-                    }
+                            boolean deng = standLiveHeadView.getEntity() == entity;
+//                            if (deng) {
+//                                return;
+//                            }
+                            Loger.d(TAG, "updateViews:deng=" + deng + ",progress=" + standLiveHeadView.getProgress() + ",standLiveHeadView=" + standLiveHeadView.getEntity() + ",text=" + entity.getText());
+                            standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
+//                        entity.setHeadUrl(getInfo.getHeadImgPath());
+                            standLiveHeadView.setName(entity.getSender());
+                            standLiveHeadView.setHeadSys();
+                            if (!entity.isPlayAnimation()) {
+                                entity.setPlayAnimation(true);
+                                standLiveHeadView.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        standLiveHeadView.playAnimation();
+                                    }
+                                }, 10);
+                            } else {
+                                standLiveHeadView.setProgress(1.0f);
+                            }
+                            entity.setStandLiveHeadView(standLiveHeadView);
+                            standLiveHeadView.setEntity(entity);
+                        }
+                    };
+                } else {
+                    return new AdapterItemInterface<LiveMessageEntity>() {
+                        TextView tvMessageItem;
+                        StandLiveHeadView standLiveHeadView;
+                        LottieComposition mComposition;
 
-                    @Override
-                    public void bindListener() {
+                        @Override
+                        public int getLayoutResId() {
+                            return R.layout.item_livevideo_stand_message;
+                        }
 
-                    }
+                        @Override
+                        public void initViews(View root) {
+                            Loger.d(TAG, "initViews");
+                            tvMessageItem = (TextView) root.findViewById(R.id.tv_livevideo_message_item);
+                            tvMessageItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
+                            standLiveHeadView = root.findViewById(R.id.slhv_livevideo_message_head);
+                            standLiveHeadView.addAnimatorListener(new Animator.AnimatorListener() {
+                                @Override
+                                public void onAnimationStart(Animator animator) {
 
-                    @Override
-                    public void updateViews(LiveMessageEntity entity, int position, Object objTag) {
-                        String sender = entity.getSender();
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animator animator) {
+                                    Log.d(TAG, "onAnimationEnd:progerss=" + standLiveHeadView.getProgress());
+//                                standLiveHeadView.setProgress(1.0f);
+                                }
+
+                                @Override
+                                public void onAnimationCancel(Animator animator) {
+
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animator animator) {
+
+                                }
+                            });
+                            initlottieAnim();
+                        }
+
+                        private void initlottieAnim() {
+                            LottieComposition.Factory.fromAssetFileName(mContext, fileName, new OnCompositionLoadedListener() {
+                                @Override
+                                public void onCompositionLoaded(@Nullable LottieComposition composition) {
+                                    Log.d(TAG, "onCompositionLoaded:composition=" + composition);
+                                    if (composition == null) {
+                                        return;
+                                    }
+                                    if (mComposition != null) {
+                                        return;
+                                    }
+                                    mComposition = composition;
+                                    standLiveHeadView.setImageAssetsFolder("live_stand/lottie/head");
+                                    standLiveHeadView.setComposition(composition);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void bindListener() {
+
+                        }
+
+                        @Override
+                        public void updateViews(LiveMessageEntity entity, int position, Object objTag) {
+                            String sender = entity.getSender();
 //                        switch (entity.getType()) {
 //                            case LiveMessageEntity.MESSAGE_MINE:
 //                            case LiveMessageEntity.MESSAGE_TEACHER:
@@ -477,16 +624,16 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //                                color = nameColors[0];
 //                                break;
 //                        }
-                        if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
-                            tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
-                            tvMessageItem.setText(entity.getText());
-                            urlClick(tvMessageItem);
-                            CharSequence text = tvMessageItem.getText();
-                            tvMessageItem.setText(text);
-                        } else {
-                            tvMessageItem.setAutoLinkMask(0);
-                            tvMessageItem.setText(entity.getText());
-                        }
+                            if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
+                                tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
+                                tvMessageItem.setText(entity.getText());
+                                urlClick(tvMessageItem);
+                                CharSequence text = tvMessageItem.getText();
+                                tvMessageItem.setText(text);
+                            } else {
+                                tvMessageItem.setAutoLinkMask(0);
+                                tvMessageItem.setText(entity.getText());
+                            }
 //                        boolean deng = standLiveHeadView.getEntity() == entity;
 //                        Loger.d(TAG, "updateViews:deng=" + deng + ",text=" + entity.getText());
 //                        if (!deng) {
@@ -522,22 +669,32 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 ////                                standLiveHeadView.resumeAnimation();
 //                            }
 //                        }
-                        boolean deng = standLiveHeadView.getEntity() == entity;
-                        Loger.d(TAG, "updateViews:deng=" + deng + ",progress=" + standLiveHeadView.getProgress() + ",standLiveHeadView=" + standLiveHeadView.getEntity() + ",text=" + entity.getText());
-                        standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
+                            boolean deng = standLiveHeadView.getEntity() == entity;
+//                            if (deng) {
+//                                return;
+//                            }
+                            Loger.d(TAG, "updateViews:deng=" + deng + ",progress=" + standLiveHeadView.getProgress() + ",standLiveHeadView=" + standLiveHeadView.getEntity() + ",text=" + entity.getText());
+                            standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
 //                        entity.setHeadUrl(getInfo.getHeadImgPath());
-                        standLiveHeadView.setName(entity.getSender());
-                        standLiveHeadView.setHead(entity.getHeadUrl());
-                        if (!entity.isPlayAnimation()) {
-                            entity.setPlayAnimation(true);
-                            standLiveHeadView.playAnimation();
-                        } else {
-                            standLiveHeadView.setProgress(1.0f);
+                            standLiveHeadView.setName(entity.getSender());
+                            standLiveHeadView.setHead(entity.getHeadUrl());
+                            if (!entity.isPlayAnimation()) {
+                                entity.setPlayAnimation(true);
+                                standLiveHeadView.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        standLiveHeadView.playAnimation();
+                                    }
+                                }, 10);
+                            } else {
+                                standLiveHeadView.setProgress(1.0f);
+                            }
+                            entity.setStandLiveHeadView(standLiveHeadView);
+                            standLiveHeadView.setEntity(entity);
                         }
-                        entity.setStandLiveHeadView(standLiveHeadView);
-                        standLiveHeadView.setEntity(entity);
-                    }
-                };
+                    };
+                }
+
             }
         };
         lvMessage.setAdapter(messageAdapter);
@@ -771,7 +928,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     /** 聊天开始连接 */
     public void onStartConnect() {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_offline);
@@ -803,7 +960,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     /** 聊天连上 */
     public void onConnect() {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT, "");
@@ -823,7 +980,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     /** 聊天进入房间 */
     public void onRegister() {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 isRegister = true;
@@ -834,7 +991,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     /** 聊天断开 */
     public void onDisconnect() {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 isRegister = false;
@@ -846,7 +1003,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     @Override
     public void onUserList(String channel, final User[] users) {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (liveBll.isHaveTeam()) {
@@ -860,6 +1017,11 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
+        if (sender.startsWith(LiveBll.TEACHER_PREFIX)) {
+            sender = getInfo.getMainTeacherInfo().getTeacherName();
+        } else if (sender.startsWith(LiveBll.COUNTTEACHER_PREFIX)) {
+            sender = getInfo.getTeacherName();
+        }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);
     }
 
@@ -929,20 +1091,42 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (disable) {
-                    XESToastUtils.showToast(mContext, "你被老师禁言了");
-                    btMesOpen.setAlpha(0.4f);
+                    if (fromNotice) {
+                        XESToastUtils.showToast(mContext, "你被老师禁言了");
+                        addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, "你被老师禁言了，不能发言，请认真听课！", "");
+                    }
+//                    btMesOpen.setAlpha(0.4f);
+//                    btMesOpen.setEnabled(false);
 //                    btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                 } else {
                     if (fromNotice) {
-                        XESToastUtils.showToast(mContext, "老师解除了你的禁言");
+//                        XESToastUtils.showToast(mContext, "老师解除了你的禁言");
+                        addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, "老师解除了你的禁言，注意文明讨论！", "");
                     }
-                    if (liveBll.openchat()) {
-                        btMesOpen.setAlpha(1.0f);
+//                    if (liveBll.openchat()) {
+//                        btMesOpen.setAlpha(1.0f);
+//                        btMesOpen.setEnabled(true);
 //                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
-                    } else {
-                        btMesOpen.setAlpha(0.4f);
+//                    } else {
+//                        btMesOpen.setAlpha(0.4f);
+//                        btMesOpen.setEnabled(false);
 //                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
-                    }
+//                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onOtherDisable(String id, final String name, final boolean disable) {
+        mView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (disable) {
+                    addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, "老师禁言了" + name + "，请大家文明讨论！", "");
+//                    btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
+                } else {
+                    addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, "老师解除了" + name + "的禁言，请大家文明讨论！", "");
                 }
             }
         });
@@ -954,23 +1138,31 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (liveBll.isDisable()) {
-                    btMesOpen.setAlpha(0.4f);
+//                    btMesOpen.setAlpha(0.4f);
+//                    btMesOpen.setEnabled(false);
+//                    rl_live_stand_message_content.setVisibility(View.GONE);
 //                    btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                 } else {
-                    if (openchat) {
-                        btMesOpen.setAlpha(1.0f);
+                    if (openchat && !isAnaswer) {
+//                        btMesOpen.setAlpha(1.0f);
+//                        btMesOpen.setEnabled(true);
+                        rl_live_stand_message_content.setVisibility(View.VISIBLE);
+                        btMesOpen.setVisibility(View.VISIBLE);
 //                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     } else {
-                        btMesOpen.setAlpha(0.4f);
+//                        btMesOpen.setAlpha(0.4f);
+//                        btMesOpen.setEnabled(false);
+                        rl_live_stand_message_content.setVisibility(View.GONE);
+                        btMesOpen.setVisibility(View.GONE);
 //                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     }
-                    if (fromNotice) {
-                        if (LiveTopic.MODE_CLASS.equals(mode)) {
-                            XESToastUtils.showToast(mContext, "主讲老师" + (openchat ? "打开" : "关闭") + "了聊天区");
-                        } else {
-                            XESToastUtils.showToast(mContext, "辅导老师" + (openchat ? "打开" : "关闭") + "了聊天区");
-                        }
-                    }
+//                    if (fromNotice) {
+//                        if (LiveTopic.MODE_CLASS.equals(mode)) {
+//                            XESToastUtils.showToast(mContext, "主讲老师" + (openchat ? "打开" : "关闭") + "了聊天区");
+//                        } else {
+//                            XESToastUtils.showToast(mContext, "辅导老师" + (openchat ? "打开" : "关闭") + "了聊天区");
+//                        }
+//                    }
                 }
             }
         });
@@ -1146,9 +1338,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     public void onGetMyGoldDataEvent(String goldNum) {
         this.goldNum = goldNum;
-        tvMessageGold.setText(goldNum);
-        tvMessageGold.setVisibility(View.VISIBLE);
-        tvMessageGoldLable.setVisibility(View.VISIBLE);
+//        tvMessageGold.setText(goldNum);
+//        tvMessageGold.setVisibility(View.VISIBLE);
+//        tvMessageGoldLable.setVisibility(View.VISIBLE);
     }
 
     // 03.16 模拟读取历史聊天记录
@@ -1164,5 +1356,24 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     // 03.16 模拟显示聊天人数
     public void showPeopleCount(int num) {
         tvMessageCount.setText(num + "人正在上课");
+    }
+
+    @Override
+    public void onQuestionShow(final boolean isShow) {
+        isAnaswer = isShow;
+        mView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (isShow) {
+                    rl_live_stand_message_content.setVisibility(View.GONE);
+                    btMesOpen.setVisibility(View.GONE);
+                } else {
+                    if (liveBll.openchat()) {
+                        rl_live_stand_message_content.setVisibility(View.VISIBLE);
+                        btMesOpen.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
     }
 }

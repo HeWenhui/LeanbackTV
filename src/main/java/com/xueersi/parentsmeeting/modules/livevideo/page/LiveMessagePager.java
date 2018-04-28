@@ -6,8 +6,6 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -49,6 +47,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -133,6 +132,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     LiveAndBackDebug liveAndBackDebug;
     private String liveId;
     private String termId;
+    private View mFloatView;
+    private PopupWindow mPopupWindow;
 
     public LiveMessagePager(Context context, QuestionBll questionBll, LiveAndBackDebug ums, BaseLiveMediaControllerBottom
             liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
@@ -154,7 +155,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         cbMessageClock = liveMediaControllerBottom.getCbMessageClock();
         lvCommonWord = liveMediaControllerBottom.getLvCommonWord();
 
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 initListener();
@@ -553,10 +554,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         Loger.i(TAG, "initFlower:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mFlowerWindow = flowerWindow;
-        Handler handler = new Handler(Looper.getMainLooper());
         for (int i = 0; i < flowerEntities.size(); i++) {
             final int index = i;
-            handler.postDelayed(new Runnable() {
+            mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     final FlowerEntity entity = flowerEntities.get(index);
@@ -727,7 +727,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     /** 聊天开始连接 */
     public void onStartConnect() {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_offline);
@@ -759,14 +759,16 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     /** 聊天连上 */
     public void onConnect() {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT, "");
 //                if (BuildConfig.DEBUG) {
 //                    addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, getInfo.getTeacherId() + "_" + getInfo.getId());
 //                }
-                ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_offline);
+                if (!isRegister) {
+                    ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_offline);
+                }
             }
         });
     }
@@ -779,7 +781,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     /** 聊天进入房间 */
     public void onRegister() {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 isRegister = true;
@@ -790,7 +792,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     /** 聊天断开 */
     public void onDisconnect() {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 isRegister = false;
@@ -802,7 +804,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void onUserList(String channel, final User[] users) {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (liveBll.isHaveTeam()) {
@@ -816,7 +818,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-        addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, "");
+        if (sender.startsWith(LiveBll.TEACHER_PREFIX)) {
+            sender = "主讲老师";
+        } else if (sender.startsWith(LiveBll.COUNTTEACHER_PREFIX)) {
+            sender = "辅导老师";
+        }
+        addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);
     }
 
     @Override
@@ -825,7 +832,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         if (isCloseChat()) {
             return;
         }
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -847,7 +854,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void onJoin(String target, String sender, String login, String hostname) {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (liveBll.isHaveTeam()) {
@@ -861,7 +868,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (liveBll.isHaveTeam()) {
@@ -886,7 +893,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     /** 被禁言 */
     public void onDisable(final boolean disable, final boolean fromNotice) {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (disable) {
@@ -911,7 +918,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     /** 关闭开启聊天 */
     public void onopenchat(final boolean openchat, final String mode, final boolean fromNotice) {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (liveBll.isDisable()) {
@@ -939,7 +946,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void onModeChange(final String mode) {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
 
             @Override
             public void run() {
@@ -965,7 +972,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     /** 关闭开启弹幕 */
     public void onOpenbarrage(final boolean openbarrage, final boolean fromNotice) {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (LiveTopic.MODE_CLASS.equals(liveBll.getMode())) {
@@ -991,7 +998,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     /*添加聊天信息，超过120，移除60个*/
     @Override
-    public void addMessage(final String sender, final int type, final String text, String headUrl) {
+    public void addMessage(final String sender, final int type, final String text, final String headUrl) {
         final Exception e = new Exception();
         pool.execute(new Runnable() {
             @Override
@@ -1005,7 +1012,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                         if (liveMessageEntities.size() > 29) {
                             liveMessageEntities.remove(0);
                         }
-                        LiveMessageEntity entity = new LiveMessageEntity(sender, type, sBuilder);
+                        LiveMessageEntity entity = new LiveMessageEntity(sender, type, sBuilder, headUrl);
                         liveMessageEntities.add(entity);
                         if (otherLiveMessageEntities != null) {
                             if (otherLiveMessageEntities.size() > 29) {
@@ -1033,7 +1040,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayUserMsg");
             logHashMap.put("LiveFreePlayUserMsg", text);
             logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_IMMSG);
-            liveAndBackDebug.umsAgentDebug2(LiveVideoConfig.LIVE_EXPERIENCE_IMMSG, logHashMap.getData());
+            liveAndBackDebug.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_IMMSG, logHashMap.getData());
         }
         Log.e("Duncan", "sender:" + sender);
 
@@ -1112,6 +1119,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         tvMessageGold.setText(goldNum);
         tvMessageGold.setVisibility(View.VISIBLE);
         tvMessageGoldLable.setVisibility(View.VISIBLE);
+
     }
 
 

@@ -27,7 +27,7 @@ public class VoiceAnswerLog {
         logHashMap.put("answertype", "voice");
         logHashMap.addExY().addSno("2");
         logHashMap.addStable("1");
-        liveAndBackDebug.umsAgentDebug3(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
     }
 
     /** 语音答题第二步，收到普通互动题 */
@@ -39,7 +39,7 @@ public class VoiceAnswerLog {
         logHashMap.put("answertype", "voice");
         logHashMap.addExY().addSno("2").addNonce("" + nonce);
         logHashMap.addStable("1");
-        liveAndBackDebug.umsAgentDebug3(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
     }
 
     /** 语音答题第二步，收到课件互动题 */
@@ -51,6 +51,6 @@ public class VoiceAnswerLog {
         logHashMap.put("answertype", "voice");
         logHashMap.addExY().addSno("2").addNonce("" + nonce);
         logHashMap.addStable("1");
-        liveAndBackDebug.umsAgentDebug3(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
     }
 }

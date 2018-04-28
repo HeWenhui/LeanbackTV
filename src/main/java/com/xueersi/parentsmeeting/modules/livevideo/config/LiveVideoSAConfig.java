@@ -41,6 +41,8 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_SPEECH_TEAM = HTTP_HOST + "/LiveCourse/getSpeechEvalAnswerTeamStatus";
         /** 直播课的语音答题小组排名 */
         public String URL_LIVE_ANSWER_TEAM = HTTP_HOST + "/LiveCourse/getTestAnswerTeamStatus";
+        /** roleplay组内排行榜 */
+        public String URL_LIVE_ROLE_TEAM = HTTP_HOST + "/LiveCourse/getRolePlayAnswerTeamRank";
         /** 直播课的直播提交测试题-h5课件 */
         public String URL_LIVE_SUBMIT_TEST_H5_ANSWER = HTTP_HOST + "/LiveCourse/sumitCourseWareH5AnswerUseVoice";
         /** 直播献花 */
@@ -113,6 +115,8 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_GET_AUTO_NOTICE = HTTP_HOST + "/LiveCourse/counselorWhisper";
         /** 智能私信警告统计 */
         public String URL_LIVE_STATISTICS_AUTO_NOTICE = HTTP_HOST + "/LiveCourse/whisperStatisc";
+        /** 语音反馈保存录音地址 */
+        public String URL_LIVE_SAVESTU_TALK = HTTP_HOST + "/LiveCourse/saveStuTalkSource";
 
         /** h5课件地址 */
         public String coursewareH5 = "https://live.xueersi.com/" +

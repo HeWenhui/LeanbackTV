@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -10,9 +9,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
@@ -20,8 +17,6 @@ import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LineEvaluator;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveLottieAnimationView;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -192,7 +187,7 @@ public class LiveStandAchievementBll implements StarInteractAction {
     private void initlottieAnim() {
         final String fileName = "live_stand_jindu.json";
         final HashMap<String, String> assetFolders = new HashMap<String, String>();
-        assetFolders.put(fileName, "Images/jindu");
+        assetFolders.put(fileName, "live_stand/lottie/jindu");
         LottieComposition.Factory.fromAssetFileName(activity, fileName, new OnCompositionLoadedListener() {
             @Override
             public void onCompositionLoaded(@Nullable LottieComposition composition) {
@@ -211,8 +206,16 @@ public class LiveStandAchievementBll implements StarInteractAction {
     }
 
     private void setGoldCount() {
-        lottieAnimationView.setGoldCount(goldCount);
-        lottieAnimationView.setStarCount(starCount);
+        int goldCount2 = goldCount;
+        if (goldCount2 > 999) {
+            goldCount2 = 999;
+        }
+        lottieAnimationView.setGoldCount(goldCount2);
+        int starCount2 = starCount;
+        if (starCount2 > 999) {
+            starCount2 = 999;
+        }
+        lottieAnimationView.setStarCount(starCount2);
 //        String num = "" + goldCount;
 //        AssetManager manager = activity.getAssets();
 //        Bitmap img_7Bitmap;
@@ -257,7 +260,7 @@ public class LiveStandAchievementBll implements StarInteractAction {
             mData.put("sno", "2");
             mData.put("stable", "1");
         }
-        liveBll.umsAgentDebug3(eventId, mData);
+        liveBll.umsAgentDebugPv(eventId, mData);
     }
 
     @Override
@@ -281,7 +284,7 @@ public class LiveStandAchievementBll implements StarInteractAction {
             mData.put("answer", myAnswer);
             mData.put("starid", mStarid);
             mData.put("star_num", "" + (starCount));
-            liveBll.umsAgentDebug(eventId, mData);
+            liveBll.umsAgentDebugSys(eventId, mData);
             if (receive > -1) {
                 liveBll.setStuStarCount(1000, id, new AbstractBusinessDataCallBack() {
                     @Override
@@ -297,7 +300,7 @@ public class LiveStandAchievementBll implements StarInteractAction {
                         mData.put("status", "success");
                         mData.put("starnum", "" + (starCount));
                         mData.put("starid", mStarid);
-                        liveBll.umsAgentDebug(eventId, mData);
+                        liveBll.umsAgentDebugSys(eventId, mData);
                     }
 
                     @Override
@@ -313,7 +316,7 @@ public class LiveStandAchievementBll implements StarInteractAction {
                             mData.put("status", "error");
                         }
                         mData.put("msg", failMsg);
-                        liveBll.umsAgentDebug(eventId, mData);
+                        liveBll.umsAgentDebugSys(eventId, mData);
                     }
                 });
             }
@@ -341,7 +344,7 @@ public class LiveStandAchievementBll implements StarInteractAction {
                     mData.put("answer", msg);
                     mData.put("status", "true");
                     mData.put("starid", mStarid);
-                    liveBll.umsAgentDebug(eventId, mData);
+                    liveBll.umsAgentDebugSys(eventId, mData);
                     break;
                 }
             }

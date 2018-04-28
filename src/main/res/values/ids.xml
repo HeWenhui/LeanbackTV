@@ -302,6 +302,8 @@
     <item name="tv_livevideo_speecteval_cancle" type="id" />
     <item name="wv_livevideo_speecteval_web" type="id" />
     <item name="rl_course_video_contentview" type="id" />
+    <item name="vs_live_stand_update" type="id" />
+    <item name="rl_live_stand_update" type="id" />
     <!--直播-语音评测二期-->
     <item name="iv_livevideo_speecteval_time_emoji" type="id" />
     <item name="tv_livevideo_speecteval_time" type="id" />
@@ -388,6 +390,7 @@
     <item name="tv_livevideo_voiceans_title" type="id" />
     <item name="rl_livevideo_voiceans_content" type="id" />
     <item name="lav_livevideo_voiceans_team_mine" type="id" />
+    <item name="iv_livevideo_voiceans_team_mine" type="id" />
     <item name="ll_livevideo_voiceans_team_left" type="id" />
     <item name="ll_livevideo_voiceans_team_right" type="id" />
     <item name="rl_livevideo_voiceans_switch" type="id" />
@@ -472,10 +475,16 @@
     <item name="iv_live_mark_point_delete" type="id" />
     <item name="v_live_mark_point_sig" type="id" />
     <!--站立直播标题-->
+    <item name="rl_live_stand_message_content" type="id" />
     <item name="iv_live_stand_title_red" type="id" />
     <item name="tv_live_stand_title_time" type="id" />
     <item name="lav_livevideo_chievement" type="id" />
-
+    <item name="pb_live_stand_update" type="id" />
+    <item name="tv_live_stand_update_zip" type="id" />
+    <item name="iv_live_stand_update_back" type="id" />
+    <item name="rl_live_stand_update_prog" type="id" />
+    <item name="tv_live_stand_update_prog" type="id" />
+    <item name="iv_live_stand_update_prog_arrow" type="id" />
     <!--RolePlayer-->
     <item name="ll_roleplayer_main" type="id" />
     <item name="rl_live_roleplayer_matchpager" type="id" />
@@ -617,5 +626,41 @@
     <item name="tv_teampk_open_box_winner_coin" type="id"/>
     <item name="iv_teampk_open_box_lucky_guy" type="id"/>
 
-
+    <item name="iv_roleplayer_item_shadow" type="id" />
+    <item name="tv_live_roleplayer_match_tip2" type="id" />
+    <item name="tv_live_roleplayer_message_speech_tip" type="id" />
+    <item name="iv_live_roleplayer_message_speech_start1" type="id" />
+    <item name="iv_live_roleplayer_message_speech_start2" type="id" />
+    <item name="iv_live_roleplayer_message_speech_start3" type="id" />
+    <item name="iv_live_roleplayer_message_speech_start4" type="id" />
+    <item name="iv_live_roleplayer_message_speech_start5" type="id" />
+    <item name="lav_live_roleplayer_message_dz" type="id" />
+    <item name="rl_live_roleplayer_message_dz" type="id" />
+    <item name="iv_live_roleplayer_message_dz" type="id" />
+    <item name="rl_live_roleplayer_result_main" type="id" />
+    <item name="iv_live_roleplayer_result_star" type="id" />
+    <item name="rl_livevideo_roleplayer_result_qizhi" type="id" />
+    <item name="tv_livevideo_roleplayer_result_totalscore" type="id" />
+    <item name="tv_livevideo_roleplayer_result_head" type="id" />
+    <item name="rl_livevideo_roleplayer_result_role_1" type="id" />
+    <item name="rl_livevideo_roleplayer_result_role_2" type="id" />
+    <item name="rl_livevideo_roleplayer_result_role_3" type="id" />
+    <item name="civ_livevideo_roleplayer_result_role_head_1" type="id" />
+    <item name="civ_livevideo_roleplayer_result_role_head_2" type="id" />
+    <item name="civ_livevideo_roleplayer_result_role_head_3" type="id" />
+    <item name="tv_livevideo_roleplayer_result_role_nickname_1" type="id" />
+    <item name="tv_livevideo_roleplayer_result_role_score_1" type="id" />
+    <item name="tv_livevideo_roleplayer_result_role_score_2" type="id" />
+    <item name="tv_livevideo_roleplayer_result_role_nickname_2" type="id" />
+    <item name="tv_livevideo_roleplayer_result_role_score_3" type="id" />
+    <item name="tv_livevideo_roleplayer_result_role_nickname_3" type="id" />
+    <item name="rl_livevideo_roleplayer_bubble_dz" type="id" />
+    <item name="rl_live_roleplayer_message_main" type="id" />
+    <item name="tv_livevideo_roleplayer_bubble_message" type="id" />
+    <item name="tv_livevideo_roleplayer_result_dz_count" type="id" />
+    <item name="tv_livevideo_roleplayer_result_fluency" type="id" />
+    <item name="tv_livevideo_roleplayer_result_gold_count" type="id" />
+    <item name="tv_livevideo_roleplayer_result_accuracy" type="id" />
+    <item name="civ_livevideo_roleplayer_result_headimg" type="id" />
+    <item name="tv_livevideo_roleplayer_result_msgtip" type="id" />
 </resources>

@@ -26,16 +26,18 @@ public interface BaseVoiceAnswerCreat {
      *
      * @param context
      * @param questionBll
-     * @param baseVideoQuestionEntity
-     * @param entity
-     * @return
+     * @param baseVoiceAnswerPager
+     *@param baseVideoQuestionEntity
+     * @param entity   @return
      */
-    boolean onAnswerReslut(Context context, AnswerRightResultVoice questionBll, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity);
+    boolean onAnswerReslut(Context context, AnswerRightResultVoice questionBll, BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity);
 
     interface AnswerRightResultVoice {
         void initQuestionAnswerReslut(View popupWindow_view);
 
         void removeQuestionAnswerReslut(View popupWindow_view);
+
+        void removeBaseVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager);
 
         void initSelectAnswerRightResultVoice(VideoResultEntity entity);
 

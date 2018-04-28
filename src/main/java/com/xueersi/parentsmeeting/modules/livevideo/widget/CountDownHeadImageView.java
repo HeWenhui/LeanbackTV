@@ -63,7 +63,17 @@ public class CountDownHeadImageView extends CircleImageView {
         void countTime(long time);
     }
 
+    /** 计时起点 */
     private long beginCountDownTime;
+
+    public void setBeginCountdownTime(boolean beginCountdownTime) {
+        isBeginCountdownTime = beginCountdownTime;
+        countDownTime = 0;
+        allCountDownTime=0;
+    }
+
+    /** 是否开启倒计时 */
+    public boolean isBeginCountdownTime;
 
     /**
      * 开始倒计时
@@ -71,6 +81,7 @@ public class CountDownHeadImageView extends CircleImageView {
      * @param countDownTime 毫秒
      */
     public void startCountDown(int countDownTime, int endDownTime, final countDownTimeImpl downtimeImpl) {
+        isBeginCountdownTime = true;
         beginCountDownTime = System.currentTimeMillis() - (countDownTime - endDownTime);
         this.allCountDownTime = countDownTime;
         this.countDownTime = endDownTime;
@@ -88,7 +99,7 @@ public class CountDownHeadImageView extends CircleImageView {
                 if (downtimeImpl != null) {
                     downtimeImpl.countTime((long) Math.ceil((double) CountDownHeadImageView.this.countDownTime / (double) 1000));
                 }
-                if (CountDownHeadImageView.this.countDownTime > 0) {
+                if (CountDownHeadImageView.this.countDownTime > 0 && isBeginCountdownTime) {
                     postDelayed(this, 50);
                 }
             }
@@ -130,7 +141,7 @@ public class CountDownHeadImageView extends CircleImageView {
 
         mUnFinishCirclePaint.setColor(mUnFinishBorderColor);
         mUnFinishCirclePaint.setStyle(Paint.Style.FILL);
-        mUnFinishCirclePaint.setStrokeWidth(1);
+        mUnFinishCirclePaint.setStrokeWidth(mBorderWidth + 5);
 
         invalidate();
     }
@@ -146,17 +157,23 @@ public class CountDownHeadImageView extends CircleImageView {
 //        } else
         if (mBorderWidth > 0 && countDownTime > 0) {
             //画倒计时的圆弧
-            finishedOuterRect.set(mBorderWidth, mBorderWidth, getWidth() - mBorderWidth, getHeight() - mBorderWidth);
-            unfinishedOuterRect.set(mBorderWidth, mBorderWidth, getWidth() - mBorderWidth, getHeight() - mBorderWidth);
+
+//            rectF.left = strokeWidth / 2;
+//            rectF.top = strokeWidth / 2;
+//            rectF.right = width - strokeWidth / 2;
+//            rectF.bottom = height - strokeWidth / 2;
+            int piding = 10;
+            finishedOuterRect.set(mBorderWidth / 2 + piding, mBorderWidth / 2 + piding, (getWidth() - mBorderWidth / 2 - piding), (getHeight() - mBorderWidth / 2 - piding));
+            unfinishedOuterRect.set(mBorderWidth / 2 + piding, mBorderWidth / 2 + piding, (getWidth() - mBorderWidth / 2 - piding), (getHeight() - mBorderWidth / 2 - piding));
             float unFinishRange = ((float) countDownTime / (float) allCountDownTime) * 360;
             canvas.drawArc(unfinishedOuterRect, -90, unFinishRange, false, mUnFinishBorderPaint);
             canvas.drawArc(finishedOuterRect, unFinishRange - 90, 360 - unFinishRange, false, mFinishBorderPaint);
 
 
-            double arg = unFinishRange * Math.PI / 180;
-            int x = (int) (Math.cos(arg) * (getWidth() ) / 2 + getWidth() / 2);
-            int y = (int) (Math.sin(arg) * (getHeight()) / 2 + getHeight() / 2);
-            canvas.drawCircle(x, y, 0, mUnFinishCirclePaint);
+            double arg = (unFinishRange - 90) * Math.PI / 180;
+            int x = (int) (Math.cos(arg) * ((getWidth() - piding * 2 - mBorderWidth) / 2) + (getWidth()) / 2);
+            int y = (int) (Math.sin(arg) * ((getHeight() - piding * 2 - mBorderWidth) / 2) + (getHeight()) / 2);
+            canvas.drawCircle(x, y, mBorderWidth, mUnFinishCirclePaint);
 
         } else if (mBitmapWidth > 0) {
             canvas.drawCircle(getWidth() / 2, getHeight() / 2, mBorderRadius, mBorderPaint);

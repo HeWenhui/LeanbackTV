@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Build;
 import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
@@ -143,6 +144,9 @@ public class QuestionWebPager extends BasePager {
         webSetting.setDomStorageEnabled(true);
         webSetting.setLoadWithOverviewMode(true);
         webSetting.setBuiltInZoomControls(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webSetting.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
 //        int scale = DeviceUtils.getScreenWidth(mContext) * 100 / 878;
 //        wvSubjectWeb.setInitialScale(scale);
 //        // 设置可以支持缩放
@@ -156,7 +160,7 @@ public class QuestionWebPager extends BasePager {
         Map<String, String> mData = new HashMap<>();
         mData.put("testid", "" + testId);
         mData.put("logtype", "interactTestEnd");
-        questionBll.umsAgentDebug(questionEventId, mData);
+        questionBll.umsAgentDebugSys(questionEventId, mData);
 //        wvSubjectWeb.loadUrl(String.format("javascript:examSubmitAll(" + code + ")"));
         isEnd = true;
         wvSubjectWeb.loadUrl(jsExamSubmitAll);
@@ -225,7 +229,7 @@ public class QuestionWebPager extends BasePager {
             mData.put("logtype", "interactTestDidLoad");
             mData.put("status", "success");
             mData.put("loadurl", url);
-            questionBll.umsAgentDebug(questionEventId, mData);
+            questionBll.umsAgentDebugSys(questionEventId, mData);
 //            super.onPageFinished(view, url);
         }
 
@@ -255,13 +259,13 @@ public class QuestionWebPager extends BasePager {
             mData.put("status", "fail");
             mData.put("loadurl", failingUrl);
             mData.put("msg", description);
-            questionBll.umsAgentDebug(questionEventId, mData);
+            questionBll.umsAgentDebugSys(questionEventId, mData);
         }
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             logToFile.i("shouldOverrideUrlLoading:url=" + url);
-            if (url.contains("/Live/getMultiTestResult")) {
+            if (url.contains("science/Live/getMultiTestResult")) {
                 if (questionBll instanceof QuestionBll) {
                     ((QuestionBll) questionBll).onSubmit(XESCODE.STOPQUESTION, url.contains("submitType=force"));
                 }
@@ -277,7 +281,7 @@ public class QuestionWebPager extends BasePager {
                 mData.put("testid", "" + testId);
                 mData.put("closetype", "clickWebCloseButton");
                 mData.put("logtype", "interactTestClose");
-                questionBll.umsAgentDebug(questionEventId, mData);
+                questionBll.umsAgentDebugSys(questionEventId, mData);
             } else {
                 if (url.contains("xueersi.com")) {
                     view.loadUrl(url);
@@ -290,6 +294,6 @@ public class QuestionWebPager extends BasePager {
     public interface StopWebQuestion {
         void stopWebQuestion(BasePager pager, String testId);
 
-        void umsAgentDebug(String eventId, final Map<String, String> mData);
+        void umsAgentDebugSys(String eventId, final Map<String, String> mData);
     }
 }

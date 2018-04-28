@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Build;
 import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
@@ -166,6 +167,9 @@ public class ExamQuestionPager extends BasePager {
         webSetting.setDomStorageEnabled(true);
         webSetting.setLoadWithOverviewMode(true);
         webSetting.setBuiltInZoomControls(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webSetting.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
 //        int scale = DeviceUtils.getScreenWidth(mContext) * 100 / 878;
 //        wvSubjectWeb.setInitialScale(scale);
 //        // 设置可以支持缩放
@@ -182,7 +186,7 @@ public class ExamQuestionPager extends BasePager {
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "examEnd");
         mData.put("examid", num);
-        mLiveBll.umsAgentDebug(examQuestionEventId, mData);
+        mLiveBll.umsAgentDebugSys(examQuestionEventId, mData);
     }
 
     public class MyWebChromeClient extends android.webkit.WebChromeClient {
@@ -248,7 +252,7 @@ public class ExamQuestionPager extends BasePager {
             mData.put("examid", num);
             mData.put("status", "success");
             mData.put("loadurl", url);
-            mLiveBll.umsAgentDebug(examQuestionEventId, mData);
+            mLiveBll.umsAgentDebugSys(examQuestionEventId, mData);
 //            super.onPageFinished(view, url);
         }
 
@@ -278,7 +282,7 @@ public class ExamQuestionPager extends BasePager {
             mData.put("status", "fail");
             mData.put("msg", description);
             mData.put("loadurl", failingUrl);
-            mLiveBll.umsAgentDebug(examQuestionEventId, mData);
+            mLiveBll.umsAgentDebugSys(examQuestionEventId, mData);
         }
 
         @Override
@@ -300,7 +304,7 @@ public class ExamQuestionPager extends BasePager {
                 mData.put("logtype", "examClose");
                 mData.put("examid", num);
                 mData.put("closetype", "clickWebCloseButton");
-                mLiveBll.umsAgentDebug(examQuestionEventId, mData);
+                mLiveBll.umsAgentDebugSys(examQuestionEventId, mData);
             } else {
                 if (url.contains("xueersi.com")) {
                     view.loadUrl(url);

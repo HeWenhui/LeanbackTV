@@ -1,7 +1,14 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
+import android.view.View;
+
+import com.tal.speech.speechrecognizer.PhoneScore;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * RolePlayer角色扮演数据
@@ -9,10 +16,33 @@ import java.util.List;
  */
 public class RolePlayerEntity {
 
+    /** 自己的角色ID */
+    private int selfRoleId;
+    /** 试题ID */
+    private String testId;
+    /** 小组编号 */
+    private int teamId;
+    /** 直播ID */
+    private int liveId;
+
     /** RolePlayer倒计时秒数 */
     private long countDownSecond;
+    /** 收到的点赞数 */
+    private int pullDZCount;
+    /** 金币数 */
+    private int goldCount;
+
+    /** 自己最后一段话的index */
+    private int selfLastIndex;
+
+    /** 已提交取得结果 */
+    private boolean isResult;
+
     /** 所有的角色信息 */
     private List<RolePlayerHead> lstRoleInfo = new ArrayList<>();
+
+    private Map<String, RolePlayerHead> mapRoleHeadInfo = new HashMap<>();
+
     /** 所有的对话信息 */
     private List<RolePlayerMessage> lstRolePlayerMessage = new ArrayList<>();
 
@@ -33,6 +63,133 @@ public class RolePlayerEntity {
         return lstRolePlayerMessage;
     }
 
+    public int getSelfRoleId() {
+        return selfRoleId;
+    }
+
+    public void setSelfRoleId(int selfRoleId) {
+        this.selfRoleId = selfRoleId;
+    }
+
+    public String getTestId() {
+        return testId;
+    }
+
+    public void setTestId(String testId) {
+        this.testId = testId;
+    }
+
+    public int getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
+    }
+
+    public Map<String, RolePlayerHead> getMapRoleHeadInfo() {
+        return mapRoleHeadInfo;
+    }
+
+    public int getPullDZCount() {
+        return pullDZCount;
+    }
+
+    public void setPullDZCount(int pullDZCount) {
+        this.pullDZCount = pullDZCount;
+    }
+
+    public int getLiveId() {
+        return liveId;
+    }
+
+    public void setLiveId(int liveId) {
+        this.liveId = liveId;
+    }
+
+    public int getGoldCount() {
+        return goldCount;
+    }
+
+    public void setGoldCount(int goldCount) {
+        this.goldCount = goldCount;
+    }
+
+    public int getSelfLastIndex() {
+        return selfLastIndex;
+    }
+
+    public void setSelfLastIndex(int selfLastIndex) {
+        this.selfLastIndex = selfLastIndex;
+    }
+
+    public boolean isResult() {
+        return isResult;
+    }
+
+    public void setResult(boolean result) {
+        isResult = result;
+    }
+
+    /**
+     * 返回自己的角色
+     *
+     * @return
+     */
+    public RolePlayerHead getSelfRoleHead() {
+        for (RolePlayerHead head : lstRoleInfo) {
+            if (head.isSelfRole()) {
+                return head;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 返回结果排名
+     *
+     * @return
+     */
+    public List<RolePlayerHead> getResultRoleList() {
+
+        List<RolePlayerHead> lstPM = new ArrayList<>();
+        RolePlayerHead selfHead = null;
+        for (RolePlayerHead head : lstRoleInfo) {
+            int i = 0;
+            boolean isResult = false;
+            if (head.isSelfRole()) {
+                selfHead = head;
+            }
+            for (i = 0; i < lstPM.size(); i++) {
+                if (head.getSpeechScore() > lstPM.get(i).getSpeechScore()) {
+                    isResult = true;
+                }
+                break;
+            }
+            if (isResult) {
+                lstPM.add(i, head);
+            } else {
+                lstPM.add(head);
+            }
+        }
+
+        boolean isThreadUp = false;
+        for (int i = 0; i < 3; i++) {
+            RolePlayerHead head = lstPM.get(i);
+            if (head.isSelfRole()) {
+                isThreadUp = true;
+                break;
+            }
+        }
+
+        if (!isThreadUp) {
+            //前3名中没有自己
+            lstPM.add(2, selfHead);
+        }
+        return lstPM;
+
+    }
+
 
     /**
      * 角色信息
@@ -47,6 +204,15 @@ public class RolePlayerEntity {
         private String roleName;
         /** 是否是自己扮演的角色 */
         private boolean isSelfRole;
+        /** 角色ID */
+        private int roleId;
+        /** 平均分 */
+        private int speechScore;
+        /** 流畅性 */
+        private int fluency;
+        /** 准确性 */
+        private int accuracy;
+
 
         public String getNickName() {
             return nickName;
@@ -79,6 +245,60 @@ public class RolePlayerEntity {
         public void setSelfRole(boolean selfRole) {
             isSelfRole = selfRole;
         }
+
+        public int getRoleId() {
+            return roleId;
+        }
+
+        public void setRoleId(int roleId) {
+            this.roleId = roleId;
+        }
+
+
+        public int getSpeechScore() {
+            return speechScore;
+        }
+
+        public void setSpeechScore(int speechScore) {
+            if (speechScore <= 1) {
+                return;
+            }
+            if (speechScore == 0) {
+                this.speechScore = speechScore;
+            } else {
+                this.speechScore = ((speechScore + this.speechScore) / 2);
+            }
+        }
+
+        public int getFluency() {
+            return fluency;
+        }
+
+        public void setFluency(int fluency) {
+            if (fluency <= 1) {
+                return;
+            }
+            if (fluency == 0) {
+                this.fluency = fluency;
+            } else {
+                this.fluency = ((fluency + this.fluency) / 2);
+            }
+        }
+
+        public int getAccuracy() {
+            return accuracy;
+        }
+
+        public void setAccuracy(int accuracy) {
+            if (accuracy <= 1) {
+                return;
+            }
+            if (accuracy == 0) {
+                this.accuracy = accuracy;
+            } else {
+                this.accuracy = ((accuracy + this.accuracy) / 2);
+            }
+        }
     }
 
     /**
@@ -98,16 +318,28 @@ public class RolePlayerEntity {
         private boolean isFavour;
         /** 测评分数 */
         private int speechScore;
+        /** 流畅度 */
+        private int fluency;
+        /** 准确度 */
+        private int accuracy;
         /** 当前对话所处的状态 RolePlayerMessageStatus */
         private int msgStatus;
         /** 网络播放地址（用于回放） */
         private String webVoiceUrl;
+        /** 是否被点赞 */
+        private boolean isDZ;
+        /** 每个音素的分数 */
+        private List<PhoneScore> lstPhoneScore = new ArrayList<>();
+        /** 下标 */
+        private int position;
+        /** 级别 */
+        private int level;
 
         public RolePlayerMessage(RolePlayerHead head, String msg, int maxTime) {
             this.rolePlayer = head;
             this.readMsg = msg;
             this.maxReadTime = maxTime;
-            this.endReadTime=maxTime;
+            this.endReadTime = maxTime;
             this.msgStatus = RolePlayerMessageStatus.WAIT_NORMAL;
         }
 
@@ -151,6 +383,7 @@ public class RolePlayerEntity {
 
         public void setSpeechScore(int speechScore) {
             this.speechScore = speechScore;
+            this.rolePlayer.setSpeechScore(speechScore);
         }
 
         public int getMsgStatus() {
@@ -176,6 +409,80 @@ public class RolePlayerEntity {
         public void setEndReadTime(int endReadTime) {
             this.endReadTime = endReadTime;
         }
+
+        public boolean isDZ() {
+            return isDZ;
+        }
+
+        public void setDZ(boolean DZ) {
+            isDZ = DZ;
+        }
+
+        public List<PhoneScore> getLstPhoneScore() {
+            return lstPhoneScore;
+        }
+
+        public void setLstPhoneScore(List<PhoneScore> lstPhoneScore) {
+            this.lstPhoneScore = lstPhoneScore;
+        }
+
+        public int getPosition() {
+            return position;
+        }
+
+        public void setPosition(int position) {
+            this.position = position;
+        }
+
+        public int getFluency() {
+            return fluency;
+        }
+
+        public void setFluency(int fluency) {
+            this.fluency = fluency;
+            this.rolePlayer.setFluency(fluency);
+        }
+
+        public int getAccuracy() {
+            return accuracy;
+        }
+
+        public void setAccuracy(int accuracy) {
+            this.accuracy = accuracy;
+            this.rolePlayer.setAccuracy(accuracy);
+        }
+
+        public int getLevel() {
+            return level;
+        }
+
+        public void setLevel(int level) {
+            this.level = level;
+        }
+
+        /**
+         * 返回星星数
+         *
+         * @return
+         */
+        public int getStars() {
+            if (speechScore >= 1 && speechScore < 40) {
+                return 1;
+            }
+            if (speechScore >= 40 && speechScore < 60) {
+                return 2;
+            }
+            if (speechScore >= 60 && speechScore < 75) {
+                return 3;
+            }
+            if (speechScore >= 75 && speechScore < 90) {
+                return 4;
+            }
+            if (speechScore >= 90) {
+                return 5;
+            }
+            return 0;
+        }
     }
 
     /**
@@ -189,6 +496,23 @@ public class RolePlayerEntity {
         public static final int BEGIN_ROLEPLAY = 2;
         /** 朗读完成 */
         public static final int END_ROLEPLAY = 3;
+        /** 测评结束 */
+        public static final int END_SPEECH = 4;
+        /** 空 */
+        public static final int EMPTY = 5;
     }
 
+    /**
+     * 通过预埋的Index号来找对应的消息
+     *
+     * @return
+     */
+    public RolePlayerMessage getMessageByIndex(int index) {
+        for (RolePlayerMessage message : lstRolePlayerMessage) {
+            if (message.getPosition() == index) {
+                return message;
+            }
+        }
+        return null;
+    }
 }

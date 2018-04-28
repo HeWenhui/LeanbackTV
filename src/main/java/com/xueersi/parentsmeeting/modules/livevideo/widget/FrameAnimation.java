@@ -3,16 +3,28 @@ package com.xueersi.parentsmeeting.modules.livevideo.widget;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.xesalib.utils.log.Loger;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by Ansen on 2015/5/14 23:30.
@@ -25,7 +37,8 @@ import java.util.Set;
  * @Description: TODO
  */
 public class FrameAnimation {
-
+    static String TAG = "FrameAnimation";
+    String eventId = LiveVideoConfig.LIVE_FRAME_ANIM;
     private boolean mIsRepeat;
 
     private AnimationListener mAnimationListener;
@@ -35,6 +48,7 @@ public class FrameAnimation {
     private Handler handler = new Handler(Looper.getMainLooper());
     private int[] mFrameRess;
     private String[] files;
+    public String path;
     /**
      * 每帧动画的播放间隔数组
      */
@@ -69,7 +83,11 @@ public class FrameAnimation {
 
     private static final int SELECTED_D = 4;
     private HashMap<String, Bitmap> bitmapHashMap = new HashMap<>();
+    private static HashMap<String, Bitmap> allBitmapHashMap = new HashMap<>();
+    private String drawFile = "";
     private boolean destory = false;
+    private ThreadPoolExecutor executor;
+    long beginTime;
 
     /**
      * @param iv       播放动画的控件
@@ -94,6 +112,14 @@ public class FrameAnimation {
         this.mIsRepeat = isRepeat;
         if (files.length > 0) {
             play(0);
+            executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+            executor.setRejectedExecutionHandler(new RejectedExecutionHandler() {
+
+                @Override
+                public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+
+                }
+            });
         }
     }
 
@@ -275,14 +301,30 @@ public class FrameAnimation {
                     if (mAnimationListener != null) {
                         mAnimationListener.onAnimationStart();
                     }
+                    beginTime = System.currentTimeMillis();
                 }
 //                mImageView.setBackgroundResource(mFrameRess[i]);
                 final String file = files[i];
                 Bitmap bitmap = bitmapHashMap.get(file);
                 if (bitmap != null) {
-                    mView.setBackgroundDrawable(new BitmapDrawable(bitmap));
+                    mView.setBackgroundDrawable(new FrameBitmapDrawable(bitmap, mView, file, i));
+                    if (i == mLastFrame) {
+                        if (mIsRepeat) {
+                            if (mAnimationListener != null) {
+                                mAnimationListener.onAnimationRepeat();
+                            }
+                            play(0);
+                        } else {
+                            if (mAnimationListener != null) {
+                                mAnimationListener.onAnimationEnd();
+                                mPause = true;
+                            }
+                        }
+                    } else {
+                        play(i + 1);
+                    }
                 } else {
-                    new Thread() {
+                    Thread thread = new Thread() {
                         @Override
                         public void run() {
                             if (destory) {
@@ -299,10 +341,12 @@ public class FrameAnimation {
                                             return;
                                         }
                                         bitmapHashMap.put(file, bitmap);
+                                        allBitmapHashMap.put(file, bitmap);
                                     }
                                 }
                                 if (bitmap == null) {
-                                    inputStream = mView.getContext().getAssets().open(file);
+//                                    inputStream = mView.getContext().getAssets().open(file);
+                                    inputStream = getInputStream(mView.getContext(), file);
                                     bitmap = BitmapFactory.decodeStream(inputStream);
                                     if (bitmap != null) {
                                         if (destory) {
@@ -310,6 +354,7 @@ public class FrameAnimation {
                                             return;
                                         }
                                         bitmapHashMap.put(file, bitmap);
+                                        allBitmapHashMap.put(file, bitmap);
                                         bitmap.setDensity(160);
                                     }
                                 }
@@ -322,12 +367,61 @@ public class FrameAnimation {
                                                 finalBitmap.recycle();
                                                 return;
                                             }
-                                            mView.setBackgroundDrawable(new BitmapDrawable(finalBitmap));
+                                            mView.setBackgroundDrawable(new FrameBitmapDrawable(finalBitmap, mView, file, i));
+                                            if (!mIsRepeat) {
+                                                if (i > 0) {
+                                                    mView.post(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            for (int index = 0; index < i - 1; index++) {
+                                                                String f = files[index];
+                                                                Bitmap bitmap1 = bitmapHashMap.get(f);
+                                                                if (f.equals(drawFile)) {
+                                                                    Loger.d(TAG, "setBackgroundDrawable:recycle");
+                                                                }
+                                                                if (bitmap1 != null) {
+                                                                    bitmap1.recycle();
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                            if (i == mLastFrame) {
+                                                HashMap<String, String> map = new HashMap<>();
+                                                long totaltime = (System.currentTimeMillis() - beginTime);
+                                                map.put("totaltime", "" + totaltime);
+                                                map.put("totaltime2", "" + (mDuration * files.length));
+                                                map.put("frames", "" + files.length);
+                                                map.put("fps", "" + (files.length * 1000 / totaltime));
+                                                map.put("path", "" + path);
+                                                Runtime runtime = Runtime.getRuntime();
+                                                map.put("totalMemory", "" + (runtime.totalMemory() / 1024 / 1024));
+                                                map.put("freeMemory", "" + (runtime.freeMemory() / 1024 / 1024));
+                                                Loger.d(mView.getContext(), eventId, map, true);
+                                            }
+                                            if (i == mLastFrame) {
+                                                if (mIsRepeat) {
+                                                    if (mAnimationListener != null) {
+                                                        mAnimationListener.onAnimationRepeat();
+                                                    }
+                                                    play(0);
+                                                } else {
+                                                    if (mAnimationListener != null) {
+                                                        mAnimationListener.onAnimationEnd();
+                                                        mPause = true;
+                                                    }
+                                                }
+                                            } else {
+                                                play(i + 1);
+                                            }
                                         }
                                     });
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();
+                            } catch (OutOfMemoryError e) {
+                                Loger.d(TAG, "play:OutOfMemoryError:file=" + file);
                             } finally {
                                 if (inputStream != null) {
                                     try {
@@ -338,25 +432,8 @@ public class FrameAnimation {
                                 }
                             }
                         }
-                    }.start();
-                }
-                if (i == mLastFrame) {
-
-                    if (mIsRepeat) {
-                        if (mAnimationListener != null) {
-                            mAnimationListener.onAnimationRepeat();
-                        }
-                        play(0);
-                    } else {
-                        if (mAnimationListener != null) {
-                            mAnimationListener.onAnimationEnd();
-                            mPause = true;
-                        }
-                    }
-
-                } else {
-
-                    play(i + 1);
+                    };
+                    executor.execute(thread);
                 }
             }
         }, mDuration);
@@ -441,31 +518,107 @@ public class FrameAnimation {
     }
 
     public void removeBitmapCache(String file) {
-        bitmapHashMap.remove(file);
+        if (mIsRepeat) {
+            bitmapHashMap.remove(file);
+        }
     }
 
-    public void destory() {
+    public int destory() {
         destory = true;
+        if (executor != null) {
+            executor.shutdownNow();
+        }
         pauseAnimation();
         Set<String> keys = bitmapHashMap.keySet();
+        int recycle = 0;
         for (String k : keys) {
-            bitmapHashMap.get(k).recycle();
+            Bitmap bitmap = bitmapHashMap.get(k);
+            if (!bitmap.isRecycled()) {
+                bitmapHashMap.get(k).recycle();
+                recycle++;
+            }
         }
         bitmapHashMap.clear();
+        return recycle;
+    }
+
+    class FrameBitmapDrawable extends BitmapDrawable {
+        String file;
+        int index;
+        View view;
+
+        public FrameBitmapDrawable(Bitmap bitmap, View view, String file, int index) {
+            super(bitmap);
+            this.file = file;
+            this.index = index;
+            this.view = view;
+        }
+
+        @Override
+        public void draw(Canvas canvas) {
+            drawFile = file;
+            try {
+                if (getBitmap().isRecycled()) {
+                    Loger.e(TAG, "setBackgroundDrawable:file=" + file + ",index=" + index);
+                    return;
+                }
+                super.draw(canvas);
+            } catch (Exception e) {
+                Loger.e(TAG, "setBackgroundDrawable:file=" + file);
+            }
+        }
     }
 
     public static FrameAnimation createFromAees(Context mContext, View iv, String path, int duration, boolean isRepeat) {
         try {
-            String[] files = mContext.getAssets().list(path);
-            for (int i = 0; i < files.length; i++) {
-                files[i] = path + "/" + files[i];
+            String[] files = {};
+            File externalFilesDir = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/live_stand/" + LiveStandFrameAnim.version), path);
+            if (externalFilesDir.exists()) {
+                files = externalFilesDir.list();
+                if (files != null) {
+                    Arrays.sort(files);
+                    Loger.d(TAG, "createFromAees:path=" + path + ",files=" + files.length);
+                    for (int i = 0; i < files.length; i++) {
+                        files[i] = new File(externalFilesDir, files[i]).getPath();
+                    }
+                } else {
+                    Loger.d(TAG, "createFromAees:path=" + path + ",files=null");
+                }
+            }
+            if (files == null || files.length == 0) {
+                files = mContext.getAssets().list(path);
+                for (int i = 0; i < files.length; i++) {
+                    files[i] = path + "/" + files[i];
+                }
             }
             FrameAnimation btframeAnimation1 = new FrameAnimation(iv, files, duration, isRepeat);
+            btframeAnimation1.path = path;
             return btframeAnimation1;
         } catch (IOException e) {
             e.printStackTrace();
         }
         FrameAnimation btframeAnimation1 = new FrameAnimation(iv, new String[0], duration, false);
         return btframeAnimation1;
+    }
+
+    public static InputStream getInputStream(Context context, String file) throws IOException {
+        if (file.contains("xueersi")) {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            return fileInputStream;
+        }
+        InputStream inputStream = context.getAssets().open(file);
+        return inputStream;
+    }
+
+    public static void allRecycle() {
+        Set<String> keys = allBitmapHashMap.keySet();
+        for (String k : keys) {
+            Bitmap bitmap = allBitmapHashMap.get(k);
+            if (!bitmap.isRecycled()) {
+                Loger.d(TAG, "allRecycle:k=" + k);
+            }
+        }
+        Loger.d(TAG, "allRecycle:allBitmapHashMap=" + allBitmapHashMap.size());
+        allBitmapHashMap.clear();
     }
 }

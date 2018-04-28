@@ -42,11 +42,14 @@ import com.xueersi.xesalib.adapter.AdapterItemInterface;
 import com.xueersi.xesalib.adapter.CommonAdapter;
 import com.xueersi.xesalib.utils.app.ContextManager;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
+import com.xueersi.xesalib.utils.listener.OnUnDoubleClickListener;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ImageUtils;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
+import com.xueersi.xesalib.view.alertdialog.BaseAlertDialog;
 import com.xueersi.xesalib.view.alertdialog.ChooseListAlertDialog;
+import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -55,6 +58,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -97,18 +101,22 @@ public class LiveRemarkBll {
     private MediaController mController;
     private AbstractBusinessDataCallBack mCallBack;
     private String liveId;
-    private int markNum=0;
-    private int questionNum=0;
-    private int englishH5Num=0;
-    private int redPackNum=0;
-    private int examNum=0;
-    private ChooseListAlertDialog mDialog;
+    private int markNum = 0;
+    private int questionNum = 0;
+    private int englishH5Num = 0;
+    private int redPackNum = 0;
+    private int examNum = 0;
+    private VerifyCancelAlertDialog mDialog;
     private boolean isVideoReady;
     private boolean isClassReady;
+    private boolean isOnChat;
+    private boolean isMarking;
+    private boolean isCounting;
+    private LiveAndBackDebug mLiveAndBackDebug;
 
-    public LiveRemarkBll(Context context, PlayerService playerService){
-        mContext=context;
-        mPlayerService=playerService;
+    public LiveRemarkBll(Context context, PlayerService playerService) {
+        mContext = context;
+        mPlayerService = playerService;
         initData();
     }
 
@@ -137,75 +145,117 @@ public class LiveRemarkBll {
                 if (mPlayerService.getPlayer() == null) {
                     return;
                 }
-                long tcpSpeed = ((IjkMediaPlayer)mPlayerService.getPlayer()).getTcpSpeed();
-                float vdfps = ((IjkMediaPlayer)mPlayerService.getPlayer()).getVideoDecodeFramesPerSecond();
-                if(mLiveMediaControllerBottom==null){
+                long tcpSpeed = ((IjkMediaPlayer) mPlayerService.getPlayer()).getTcpSpeed();
+                float vdfps = ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoDecodeFramesPerSecond();
+                if (mLiveMediaControllerBottom == null) {
                     return;
                 }
                 if (Math.round(vdfps) == 12) {
-                    //mTimer.cancel();
-                    Loger.i(TAG, "dfps   " + vdfps);
-                    FrameInfo frameInfo = ((IjkMediaPlayer)mPlayerService.getPlayer()).native_getFrameInfo();
-                    offSet = System.currentTimeMillis()/1000+sysTimeOffset - frameInfo.pkt/1000;
-                    Loger.i(TAG, "nowtime  " + frameInfo.nowTime + "   dts     " + frameInfo.pkt_dts
-                            + "   pkt   " + frameInfo.pkt + "  cache:" + ((IjkMediaPlayer)mPlayerService.getPlayer()).getVideoCachedDuration());
-                    //setBtEnable(true);
-                    setVideoReady(true);
-                    mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
+                    mHttpManager.getCurTime(new HttpCallBack(false) {
                         @Override
-                        public void onClick(final View v) {
-                            final LiveTextureView liveTextureView = (LiveTextureView) ((Activity) mContext).findViewById(R.id.ltv_course_video_video_texture);
-                            if (liveTextureView == null) {
-                                return;
-                            }
-                            if(mPlayerService.getPlayer()==null){
-                                XESToastUtils.showToast(mContext,"暂时无法标记");
-                                return;
-                            }
-                            final LiveVideoView liveVideoView = (LiveVideoView) ((Activity) mContext).findViewById(R.id.vv_course_video_video);
-//                liveVideoView.setVisibility(View.INVISIBLE);
-                            ((IjkMediaPlayer)mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
-                            v.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ((IjkMediaPlayer)mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
-                                    v.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            ((IjkMediaPlayer)mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
-                                            v.postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    Bitmap bitmap = liveTextureView.getBitmap();
-                                                    if (bitmap == null) {
-                                                        XESToastUtils.showToast(mContext, "标记获取图片失败");
-                                                        return;
-                                                    }
-                                                    bitmap=Bitmap.createBitmap(bitmap,0,0,(int)videoWidth,displayHeight);
-                                                    File saveDir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/save");
-                                                    if (!saveDir.exists()) {
-                                                        saveDir.mkdirs();
-                                                    }
-                                                    File file = new File(saveDir, "" + System.currentTimeMillis() + ".png");
-                                                    ImageUtils.save(bitmap, file, Bitmap.CompressFormat.JPEG);
-                                                    reMark(file);
-                                                    ((IjkMediaPlayer)mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
-                                                }
-                                            }, 100);
-                                        }
-                                    }, 100);
-                                }
-                            }, 100);
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            Loger.i(TAG,responseEntity.getJsonObject().toString());
+                            long time=((JSONObject)responseEntity.getJsonObject()).optLong("time");
+                            setVideoOffset(time);
+                        }
+
+                        @Override
+                        public void onPmFailure(Throwable error, String msg) {
+                            super.onPmFailure(error, msg);
+                            setVideoOffset(0);
+                        }
+
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            super.onPmError(responseEntity);
+                            setVideoOffset(0);
                         }
                     });
-                    mTimer.cancel();
+                    //mTimer.cancel();
+
+
                 }
 
             }
         };
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
         mTimer = new Timer();
         mTimer.schedule(task, 1000, 1000);
         mCloudUploadBusiness = new XesCloudUploadBusiness(mContext);
+    }
+    private void setVideoOffset(long time){
+        FrameInfo frameInfo = ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo();
+        if(time==0) {
+            offSet = System.currentTimeMillis() / 1000 + sysTimeOffset - frameInfo.pkt / 1000;
+        }else{
+            offSet=time-frameInfo.pkt / 1000;
+        }
+        Loger.i(TAG, "nowtime  " + frameInfo.nowTime + "   dts     " + frameInfo.pkt_dts
+                + "   pkt   " + frameInfo.pkt + "  cache:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration()
+        +" systime:"+(System.currentTimeMillis() / 1000 + sysTimeOffset)+"   nettime:"+time);
+        //setBtEnable(true);
+        setVideoReady(true);
+        mTimer.cancel();
+        mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                if (isMarking) {
+                    return;
+                }
+                final LiveTextureView liveTextureView = (LiveTextureView) ((Activity) mContext).findViewById(R.id.ltv_course_video_video_texture);
+                if (liveTextureView == null) {
+                    return;
+                }
+                if (mPlayerService.getPlayer() == null) {
+                    XESToastUtils.showToast(mContext, "标记失败");
+                    return;
+                }
+                isMarking = true;
+                final LiveVideoView liveVideoView = (LiveVideoView) ((Activity) mContext).findViewById(R.id.vv_course_video_video);
+//                liveVideoView.setVisibility(View.INVISIBLE);
+                ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
+                v.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
+                        v.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
+                                v.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Bitmap bitmap = liveTextureView.getBitmap();
+                                        if (bitmap == null) {
+                                            markFail();
+                                            return;
+                                        }
+                                        bitmap = Bitmap.createBitmap(bitmap, 0, 0, (int) videoWidth, displayHeight);
+                                        bitmap = Bitmap.createScaledBitmap(bitmap, 320, 240, true);
+                                        File saveDir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/save");
+                                        if (!saveDir.exists()) {
+                                            saveDir.mkdirs();
+                                        }
+                                        File file = new File(saveDir, "" + System.currentTimeMillis() + ".png");
+                                        ImageUtils.save(bitmap, file, Bitmap.CompressFormat.JPEG);
+                                        reMark(file);
+                                        ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
+                                    }
+                                }, 100);
+                            }
+                        }, 100);
+                    }
+                }, 100);
+            }
+        });
+    }
+
+    public void markFail() {
+        XESToastUtils.showToast(mContext, "标记失败");
+        umsAgentMark(false,0,0,0);
+        isMarking = false;
     }
 
     public void hideBtMark() {
@@ -213,15 +263,24 @@ public class LiveRemarkBll {
             mLiveMediaControllerBottom.getBtMark().setVisibility(View.GONE);
         }
     }
+    private void setIsCounting(boolean counting){
+        isCounting=counting;
+        setBtEnable(!isCounting&&isClassReady && isVideoReady && !isOnChat);
+    }
 
     public void setVideoReady(boolean videoReady) {
         isVideoReady = videoReady;
-        setBtEnable(isClassReady&&isVideoReady);
+        setBtEnable(!isCounting&&isClassReady && isVideoReady && !isOnChat);
     }
 
     public void setClassReady(boolean classReady) {
         isClassReady = classReady;
-        setBtEnable(isClassReady&&isVideoReady);
+        setBtEnable(!isCounting&&isClassReady && isVideoReady && !isOnChat);
+    }
+
+    public void setOnChat(boolean onChat) {
+        isOnChat = onChat;
+        setBtEnable(!isCounting&&isClassReady && isVideoReady && !isOnChat);
     }
 
     public void setBottom(RelativeLayout bottom) {
@@ -245,6 +304,11 @@ public class LiveRemarkBll {
         setEntityNum(mList);
     }
 
+
+    public void setLiveAndBackDebug(LiveAndBackDebug liveAndBackDebug) {
+        mLiveAndBackDebug = liveAndBackDebug;
+    }
+
     public void setHttpManager(LiveHttpManager httpManager) {
         mHttpManager = httpManager;
     }
@@ -266,82 +330,90 @@ public class LiveRemarkBll {
     public void setVideoView(VideoView videoView) {
         mVideoView = videoView;
     }
-    /**上传标记点*/
+
+    /**
+     * 上传标记点
+     */
     private void reMark(File file) {
         String fileName = file.getAbsolutePath();
-        long testTime=0;
-
         try {
-            testTime = ((IjkMediaPlayer)mPlayerService.getPlayer()).native_getFrameInfo().pkt / 1000 - ((IjkMediaPlayer)mPlayerService.getPlayer()).getVideoCachedDuration() / 1000 + offSet;
-        }catch (Exception e){
+            final long pkt = ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo().pkt / 1000;
+            final long cache = ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration() / 1000;
+            final long time = pkt - cache + offSet-8;
+            Loger.i(TAG, "frameTime:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo().pkt / 1000);
+            Loger.i(TAG, "cacheTime:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration() / 1000);
+            Loger.i(TAG, "offset:" + offSet + "  time:" + time + "   sysTime:" + System.currentTimeMillis());
+            if (!TextUtils.isEmpty(fileName)) {
+                CloudUploadEntity entity = new CloudUploadEntity();
+                entity.setFilePath(fileName);
+                entity.setType(XesCloudConfig.UPLOAD_IMAGE);
+                entity.setCloudPath(CloudDir.LIVE_MARK);
+                mCloudUploadBusiness.asyncUpload(entity, new XesStsUploadListener() {
+                    @Override
+                    public void onProgress(XesCloudResult result, int percent) {
+                        Loger.i(TAG, "progress " + percent);
+                    }
+
+                    @Override
+                    public void onSuccess(XesCloudResult result) {
+                        Loger.i(TAG, "upCloud Sucess");
+                        mHttpManager.saveLiveMark("" + time, result.getHttpPath(), new HttpCallBack(false) {
+                            @Override
+                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                XESToastUtils.showToast(mContext, "标记成功");
+                                isMarking = false;
+                                umsAgentMark(true,pkt,cache,offSet);
+                                startCountDown();
+                            }
+
+                            @Override
+                            public void onPmFailure(Throwable error, String msg) {
+                                super.onPmFailure(error, msg);
+                                markFail();
+                            }
+
+                            @Override
+                            public void onPmError(ResponseEntity responseEntity) {
+                                super.onPmError(responseEntity);
+                                markFail();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(XesCloudResult result) {
+                        Loger.i(TAG, result.getErrorMsg());
+                    }
+                });
+            } else {
+                markFail();
+            }
+        } catch (Exception e) {
             e.printStackTrace();
-        }
-        final long time=testTime;
-        Loger.i(TAG,"frameTime:"+((IjkMediaPlayer)mPlayerService.getPlayer()).native_getFrameInfo().pkt/1000);
-        Loger.i(TAG,"cacheTime:"+((IjkMediaPlayer)mPlayerService.getPlayer()).getVideoCachedDuration()/1000);
-        Loger.i(TAG,"offset:"+offSet+"  time:"+time+"   sysTime:"+System.currentTimeMillis());
-        if (!TextUtils.isEmpty(fileName)) {
-            CloudUploadEntity entity = new CloudUploadEntity();
-            entity.setFilePath(fileName);
-            entity.setType(XesCloudConfig.UPLOAD_IMAGE);
-            entity.setCloudPath(CloudDir.LIVE_MARK);
-            mCloudUploadBusiness.asyncUpload(entity, new XesStsUploadListener() {
-                @Override
-                public void onProgress(XesCloudResult result, int percent) {
-                    Loger.i(TAG, "progress " + percent);
-                }
-
-                @Override
-                public void onSuccess(XesCloudResult result) {
-                    Loger.i(TAG, "upCloud Sucess");
-                    mHttpManager.saveLiveMark("" + time, result.getHttpPath(), new HttpCallBack(false) {
-                        @Override
-                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                            XESToastUtils.showToast(mContext, "标记成功");
-                            startCountDown();
-                        }
-
-                        @Override
-                        public void onPmFailure(Throwable error, String msg) {
-                            super.onPmFailure(error, msg);
-                            XESToastUtils.showToast(mContext, "标记失败");
-                        }
-
-                        @Override
-                        public void onPmError(ResponseEntity responseEntity) {
-                            super.onPmError(responseEntity);
-                            XESToastUtils.showToast(mContext, "标记失败");
-                        }
-                    });
-                }
-
-                @Override
-                public void onError(XesCloudResult result) {
-                    Loger.i(TAG, result.getErrorMsg());
-                }
-            });
-        } else {
-            XESToastUtils.showToast(mContext, "标记失败");
         }
 
     }
-    private void startCountDown(){
-        CountDownTimer timer=new CountDownTimer(15000,1000) {
+
+    private void startCountDown() {
+        CountDownTimer timer = new CountDownTimer(15200, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-
-                mLiveMediaControllerBottom.getBtMark().setText(millisUntilFinished/1000+"");
+                Loger.i(TAG, "onTick:" + millisUntilFinished);
+                mLiveMediaControllerBottom.getBtMark().setText(((millisUntilFinished) / 1000) + "");
                 mLiveMediaControllerBottom.getBtMark().setBackgroundResource(R.drawable.shape_oval_black);
             }
 
             @Override
             public void onFinish() {
+                Loger.i(TAG, "onFinish");
                 mLiveMediaControllerBottom.getBtMark().setBackgroundResource(R.drawable.bg_bt_live_mark);
                 mLiveMediaControllerBottom.getBtMark().setText("");
-                mLiveMediaControllerBottom.getBtMark().setEnabled(true);
+                setIsCounting(false);
             }
         };
-        mLiveMediaControllerBottom.getBtMark().setEnabled(false);
+        //mLiveMediaControllerBottom.getBtMark().setText("15");
+        mLiveMediaControllerBottom.getBtMark().setBackgroundResource(R.drawable.shape_oval_black);
+        setIsCounting(true);
         timer.start();
     }
 
@@ -371,7 +443,7 @@ public class LiveRemarkBll {
      * 获取标记点列表
      */
     public void getMarkPoints(String liveId, final AbstractBusinessDataCallBack callBack) {
-        mHttpManager.getMarkPoints(liveId,new HttpCallBack(false) {
+        mHttpManager.getMarkPoints(liveId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 JSONArray points = ((JSONObject) responseEntity.getJsonObject()).optJSONArray("markpointData");
@@ -390,13 +462,13 @@ public class LiveRemarkBll {
                         mList.add(entity);
                     }
                 }
-                if(mList.size()>0){
+                if (mList.size() > 0) {
                     callBack.onDataSucess();
                 }
                 Collections.sort(mList, new Comparator<VideoPointEntity>() {
                     @Override
                     public int compare(VideoPointEntity o1, VideoPointEntity o2) {
-                        return (int)(o1.getRelativeTime()-o2.getRelativeTime());
+                        return (int) (o1.getRelativeTime() - o2.getRelativeTime());
                     }
                 });
                 setEntityNum(mList);
@@ -419,21 +491,21 @@ public class LiveRemarkBll {
      * 显示标记点列表
      */
     public void showMarkPoints() {
-        if ( rlMask== null) {
-            rlMask=new RelativeLayout(mContext);
-            RelativeLayout.LayoutParams rlParam=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        if (rlMask == null) {
+            rlMask = new RelativeLayout(mContext);
+            RelativeLayout.LayoutParams rlParam = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             rlMask.setLayoutParams(rlParam);
-            llPoints=new LinearLayout(mContext);
+            llPoints = new LinearLayout(mContext);
             llPoints.setOrientation(LinearLayout.VERTICAL);
             llPoints.setBackgroundColor(Color.parseColor("#a0000000"));
-            TextView tv=new TextView(mContext);
+            TextView tv = new TextView(mContext);
             tv.setText("标记点");
             tv.setTextSize(12);
             tv.setTextColor(Color.WHITE);
-            tv.setPadding(0,10,10,10);
+            tv.setPadding(0, 10, 10, 10);
             llPoints.addView(tv);
-            lvPoints=new ListView(mContext);
-            mAdapter =new CommonAdapter<VideoPointEntity>(mList) {
+            lvPoints = new ListView(mContext);
+            mAdapter = new CommonAdapter<VideoPointEntity>(mList) {
                 @Override
                 public AdapterItemInterface getItemView(Object o) {
                     return new PointListItem();
@@ -443,18 +515,18 @@ public class LiveRemarkBll {
                 @Override
                 public void onChanged() {
                     super.onChanged();
-                    markNum=0;
-                    questionNum=0;
-                    englishH5Num=0;
-                    redPackNum=0;
+                    markNum = 0;
+                    questionNum = 0;
+                    englishH5Num = 0;
+                    redPackNum = 0;
                 }
             });
             lvPoints.setAdapter(mAdapter);
 
-            RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(SizeUtils.Dp2Px(mContext,278), ViewGroup.LayoutParams.MATCH_PARENT);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(SizeUtils.Dp2Px(mContext, 278), ViewGroup.LayoutParams.MATCH_PARENT);
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             //params.setMargins(0,40,0,0);
-            llPoints.setPadding(20,20,0,0);
+            llPoints.setPadding(20, 20, 0, 0);
             llPoints.addView(lvPoints);
             rlMask.addView(llPoints);
             bottom.addView(rlMask);
@@ -463,9 +535,9 @@ public class LiveRemarkBll {
         rlMask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(rlMask.getVisibility()==View.VISIBLE){
+                if (rlMask.getVisibility() == View.VISIBLE) {
                     rlMask.setVisibility(View.GONE);
-                    if(mCallBack!=null){
+                    if (mCallBack != null) {
                         mCallBack.onDataSucess();
                     }
                 }
@@ -474,27 +546,31 @@ public class LiveRemarkBll {
         rlMask.setVisibility(View.VISIBLE);
         mController.release();
         mAdapter.notifyDataSetChanged();
+        umsAgentMarkButton();
     }
 
     public void hideMarkPoints() {
         if (rlMask != null) {
             rlMask.setVisibility(View.GONE);
         }
-        if(mDialog!=null&&mDialog.isDialogShow()){
+        if (mDialog != null && mDialog.isDialogShow()) {
             mDialog.cancelDialog();
         }
     }
-    public void setBtEnable(final boolean enable){
-        if(mLiveMediaControllerBottom==null){
+
+    public void setBtEnable(final boolean enable) {
+        Loger.i(TAG,"setBtEnable  "+"video:"+isVideoReady+"   class:"+isClassReady
+        +"   onchat:"+isOnChat);
+        if (mLiveMediaControllerBottom == null) {
             return;
         }
         mLiveMediaControllerBottom.getBtMark().post(new Runnable() {
             @Override
             public void run() {
-                if(enable){
+                if (enable) {
                     mLiveMediaControllerBottom.getBtMark().setAlpha(1);
                     mLiveMediaControllerBottom.getBtMark().setEnabled(true);
-                }else{
+                } else {
                     mLiveMediaControllerBottom.getBtMark().setAlpha(0.5f);
                     mLiveMediaControllerBottom.getBtMark().setEnabled(false);
                 }
@@ -502,15 +578,16 @@ public class LiveRemarkBll {
         });
 
     }
-    private void deletPoint(final VideoPointEntity entity){
-        mHttpManager.deleteMarkPoints(liveId,entity.getCurTime(),new HttpCallBack(){
+
+    private void deletPoint(final VideoPointEntity entity) {
+        mHttpManager.deleteMarkPoints(liveId, entity.getCurTime(), new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                try{
+                try {
                     mList.remove(entity);
                     setEntityNum(mList);
                     mAdapter.notifyDataSetChanged();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -526,17 +603,18 @@ public class LiveRemarkBll {
             }
         });
     }
-    private void setEntityNum(List<VideoPointEntity> lst){
-        if(lst==null||lst.size()==0){
+
+    private void setEntityNum(List<VideoPointEntity> lst) {
+        if (lst == null || lst.size() == 0) {
             return;
         }
-        questionNum=0;
-        redPackNum=0;
-        examNum=0;
-        englishH5Num=0;
-        markNum=0;
-        for(VideoPointEntity entity:lst){
-            switch (entity.getType()){
+        questionNum = 0;
+        redPackNum = 0;
+        examNum = 0;
+        englishH5Num = 0;
+        markNum = 0;
+        for (VideoPointEntity entity : lst) {
+            switch (entity.getType()) {
                 case CATEGORY_QUESTION:
                     entity.setNum(++questionNum);
                     break;
@@ -557,15 +635,16 @@ public class LiveRemarkBll {
     }
 
 
-    private class PointListItem implements AdapterItemInterface<VideoPointEntity>{
+    private class PointListItem implements AdapterItemInterface<VideoPointEntity> {
         private ImageView ivShot;
         private ImageView ivPlay;
         private TextView tvText;
-        private ChooseListAlertDialog mDialog;
+        private VerifyCancelAlertDialog mDialog;
         private View vDelete;
         private View root;
         private View vSig;
         private VideoPointEntity mEntity;
+
         @Override
         public int getLayoutResId() {
             return R.layout.layout_live_mark_point;
@@ -573,12 +652,12 @@ public class LiveRemarkBll {
 
         @Override
         public void initViews(View view) {
-            root=view;
+            root = view;
             ivShot = (ImageView) view.findViewById(R.id.iv_live_mark_point_shot_pic);
             ivPlay = (ImageView) view.findViewById(R.id.iv_live_mark_point_play);
             tvText = (TextView) view.findViewById(R.id.tv_live_mark_point_text);
-            vDelete=view.findViewById(R.id.iv_live_mark_point_delete);
-            vSig=view.findViewById(R.id.v_live_mark_point_sig);
+            vDelete = view.findViewById(R.id.iv_live_mark_point_delete);
+            vSig = view.findViewById(R.id.v_live_mark_point_sig);
         }
 
         @Override
@@ -610,18 +689,9 @@ public class LiveRemarkBll {
             root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mPlayerService.seekTo(mEntity.getRelativeTime()*1000);
-                    /*if(!mEntity.isPlaying()){
-                        //ivPlay.setVisibility(View.GONE);
-
-                        for(int j=0;j<mList.size();j++){
-                            mList.get(j).setPlaying(false);
-
-                        }
-                        mEntity.setPlaying(true);
-                        mAdapter.notifyDataSetChanged();
-                    }*/
-                    if(LiveRemarkBll.this.mCallBack!=null){
+                    mPlayerService.seekTo((mEntity.getRelativeTime() <0?0:mEntity.getRelativeTime()) * 1000);
+                    umsAgentPlay(mEntity.getType(),mEntity.getRelativeTime());
+                    if (LiveRemarkBll.this.mCallBack != null) {
                         LiveRemarkBll.this.mCallBack.onDataSucess();
                     }
                 }
@@ -629,20 +699,18 @@ public class LiveRemarkBll {
             vDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mDialog==null){
-                        mDialog=new ChooseListAlertDialog(mContext, ContextManager.getApplication(),false);
-                        mDialog.initInfo(new ChooseListAlertDialog.OnChooseItemClickImpl() {
+                    if (mDialog == null) {
+                        mDialog = new VerifyCancelAlertDialog(mContext, ContextManager.getApplication(), false, VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
+                        mDialog.initInfo("删除标记点", "是否删除标记点？");
+                        mDialog.setVerifyBtnListener(new View.OnClickListener() {
                             @Override
-                            public void onItemClick(int ii) {
-                                if(ii==R.string.live_mark_point_long_click_tip) {
-                                    deletPoint(mEntity);
-                                }else{
-                                    mDialog.cancelDialog();
-                                }
+                            public void onClick(View v) {
+                                deletPoint(mEntity);
+                                umsAgentDelete();
                             }
-                        },R.string.live_mark_point_long_click_tip,R.string.live_mark_point_long_click_cancel);
+                        });
                     }
-                    LiveRemarkBll.this.mDialog=mDialog;
+                    LiveRemarkBll.this.mDialog = mDialog;
                     mDialog.showDialog();
                 }
             });
@@ -650,7 +718,7 @@ public class LiveRemarkBll {
 
         @Override
         public void updateViews(VideoPointEntity entity, int i, Object o) {
-            mEntity=entity;
+            mEntity = entity;
 
             ivPlay.setTag(entity.getPic());
             if (!entity.isPlaying()) {
@@ -660,9 +728,9 @@ public class LiveRemarkBll {
             }
             vDelete.setVisibility(View.GONE);
 
-            StringBuilder sb=new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             ivShot.setScaleType(ImageView.ScaleType.CENTER);
-            switch (entity.getType()){
+            switch (entity.getType()) {
                 case CATEGORY_QUESTION:
                     sb.append("互动题");
                     vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f0773c);
@@ -695,5 +763,57 @@ public class LiveRemarkBll {
             tvText.setText(sb.toString());
             //tvText.setText("疑问点" + (i + 1));
         }
+    }
+
+    private void umsAgentMark(boolean success,long pkt,long cache,long offSet) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("logtype", "clickMark");
+        map.put("ex", success ? "Y" : "N");
+        if(success){
+            map.put("pkt",pkt+"");
+            map.put("cache",cache+"");
+            map.put("offset",offSet+"");
+            map.put("systime",(System.currentTimeMillis()/1000+sysTimeOffset)+"");
+        }
+        mLiveAndBackDebug.umsAgentDebugInter("live_mark", map);
+    }
+
+    private void umsAgentMarkButton() {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("logtype", "clickMarkTag");
+        mLiveAndBackDebug.umsAgentDebugInter("replay_mark", map);
+    }
+
+    private void umsAgentPlay(int type,long time) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("logtype", "clickMarkPlay");
+        map.put("time",time+"");
+        String markType = "";
+        switch (type) {
+            case CATEGORY_QUESTION:
+                markType = "interact";
+                break;
+            case CATEGORY_REDPACKET:
+                markType = "redPacket";
+                break;
+            case CATEGORY_EXAM:
+                markType = "exampaper";
+                break;
+            case CATEGORY_H5COURSE_WARE:
+            case CATEGORY_ENGLISH_H5COURSE_WARE:
+                markType = "interactware";
+                break;
+            default:
+                markType = "query";
+                break;
+        }
+        map.put("marktype", markType);
+        mLiveAndBackDebug.umsAgentDebugInter("replay_mark", map);
+    }
+
+    private void umsAgentDelete() {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("logtype", "clickMarkDelete");
+        mLiveAndBackDebug.umsAgentDebugInter("replay_mark", map);
     }
 }

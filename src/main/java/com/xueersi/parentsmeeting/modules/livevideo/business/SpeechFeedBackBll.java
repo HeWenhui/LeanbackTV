@@ -6,26 +6,40 @@ import android.graphics.Rect;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.tal.speech.speechrecognizer.PCMFormat;
+import com.xueersi.parentsmeeting.cloud.XesCloudUploadBusiness;
+import com.xueersi.parentsmeeting.cloud.config.CloudDir;
+import com.xueersi.parentsmeeting.cloud.config.XesCloudConfig;
+import com.xueersi.parentsmeeting.cloud.entity.CloudUploadEntity;
+import com.xueersi.parentsmeeting.cloud.entity.XesCloudResult;
+import com.xueersi.parentsmeeting.cloud.listener.XesStsUploadListener;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.AGEventHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
+import com.xueersi.xesalib.umsagent.DeviceInfo;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
 import io.agora.rtc.Constants;
+import io.agora.rtc.IAudioFrameObserver;
+import io.agora.rtc.RtcEngine;
 
 /**
  * Created by linyuqiang on 2018/1/11.
@@ -57,8 +71,11 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
     /** 原始录音数据 */
     private short[] mPCMBuffer;
     private WorkerThread mWorkerThread;
+    FileOutputStream outputStream;
+    File saveVideoFile;
     private String roomId;
     private long joinTime;
+    long startTime;
 
     private void initAudioRecorder() throws IOException {
         mBufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLING_RATE,
@@ -87,7 +104,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
 
     @Override
     public void setNonce(String s) {
-        this.nonce=s;
+        this.nonce = s;
     }
 
     public void setBottomContent(RelativeLayout bottomContent) {
@@ -96,8 +113,8 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
 
     @Override
     public void start(final String roomId) {
-        boolean permission=isHasPermission(activity);
-        umsagentCommand(2,"on",permission?1:0);
+        boolean permission = isHasPermission(activity);
+        umsagentCommand(2, "on", permission ? 1 : 0);
         if (isStart) {
             return;
         }
@@ -130,6 +147,43 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                     int stuid = Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getStuId());
                     long time = System.currentTimeMillis();
                     mWorkerThread = new WorkerThread(activity, stuid, true);
+
+                    try {
+                        File alldir = activity.getExternalFilesDir(Environment.DIRECTORY_ALARMS + "/speechfeed");
+                        if (alldir == null) {
+                            alldir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/speechfeed/");
+                        }
+                        if (!alldir.exists()) {
+                            alldir.mkdirs();
+                        }
+                        saveVideoFile = new File(alldir, "ise" + System.currentTimeMillis() + ".pcm");
+                        outputStream = new FileOutputStream(saveVideoFile);
+                        mWorkerThread.setOnEngineCreate(new WorkerThread.OnEngineCreate() {
+                            @Override
+                            public void onEngineCreate(RtcEngine mRtcEngine) {
+                                mRtcEngine.registerAudioFrameObserver(new IAudioFrameObserver() {
+                                    @Override
+                                    public boolean onRecordFrame(byte[] bytes, int i, int i1, int i2, int i3) {
+                                        if (outputStream != null) {
+                                            try {
+                                                outputStream.write(bytes);
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onPlaybackFrame(byte[] bytes, int i, int i1, int i2, int i3) {
+                                        return false;
+                                    }
+                                });
+                            }
+                        });
+                    } catch (Exception e) {
+                        Loger.d(TAG, "start:setOnEngineCreate", e);
+                    }
                     mWorkerThread.eventHandler().addEventHandler(new AGEventHandler() {
                         @Override
                         public void onFirstRemoteVideoDecoded(int uid, int width, int height, int elapsed) {
@@ -138,7 +192,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                         @Override
                         public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
                             Loger.i(TAG, "joinchannelsuccess");
-                            joinTime=System.currentTimeMillis();
+                            joinTime = System.currentTimeMillis();
                             umsagentJoin();
                         }
 
@@ -201,7 +255,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
 
     @Override
     public void stop() {
-        umsagentCommand(5,"off",1);
+        umsagentCommand(5, "off", 1);
         if (!isStart) {
             return;
         }
@@ -212,6 +266,49 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                 umsagentLeave();
             }
         });
+        if (outputStream != null) {
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                Loger.d(TAG, "stop:close", e);
+            }
+            outputStream = null;
+            long time = System.currentTimeMillis() - startTime;
+            int netWorkType = NetWorkHelper.getNetWorkState(activity);
+            StableLogHashMap hashMap = new StableLogHashMap("uploadfile");
+            hashMap.put("time", "" + time);
+            hashMap.put("networktype", "" + netWorkType);
+            hashMap.put("length", "" + saveVideoFile.length());
+            liveBll.umsAgentDebugSys("live_voice", hashMap.getData());
+            final File finalFile = saveVideoFile;
+            XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(activity);
+            CloudUploadEntity uploadEntity = new CloudUploadEntity();
+            uploadEntity.setFilePath(finalFile.getPath());
+            uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
+            uploadEntity.setCloudPath(CloudDir.LIVE_FEED_BACK);
+            if (netWorkType == NetWorkHelper.WIFI_STATE) {
+                xesCloudUploadBusiness.asyncUpload(uploadEntity, new XesStsUploadListener() {
+                    @Override
+                    public void onProgress(XesCloudResult result, int percent) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(XesCloudResult result) {
+                        finalFile.delete();
+                        Loger.d(TAG, "asyncUpload:onSuccess=" + result.getHttpPath());
+                        String service = DeviceInfo.getDeviceName();
+                        liveBll.saveStuTalkSource(result.getHttpPath(), service);
+//                    http://testmv.xesimg.com/app/live_feed_back/2018/04/27/31203_1524811986079_ise1524811975319.mp3
+                    }
+
+                    @Override
+                    public void onError(XesCloudResult result) {
+                        Loger.d(TAG, "asyncUpload:onError=" + result);
+                    }
+                });
+            }
+        }
         isStart = false;
         if (mAudioRecord != null) {
             mAudioRecord.release();
@@ -312,61 +409,63 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
 
     /**
      * 接收语音反馈指令日志
+     *
      * @param sno
      * @param cmd
      * @param micStatus
      */
-    private void umsagentCommand(int sno,String cmd,int micStatus){
-        HashMap<String,String> map=new HashMap<>();
-        map.put("sno",""+sno);
-        map.put("nonce",nonce);
-        map.put("stable","1");
-        map.put("logtype","voiceInterationCmd");
-        map.put("command",cmd);
-        map.put("status",""+micStatus);
-        map.put("channelname",roomId);
-        liveBll.umsAgentDebug("live_voice",map);
+    private void umsagentCommand(int sno, String cmd, int micStatus) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("sno", "" + sno);
+        map.put("nonce", nonce);
+        map.put("stable", "1");
+        map.put("logtype", "voiceInterationCmd");
+        map.put("command", cmd);
+        map.put("status", "" + micStatus);
+        map.put("channelname", roomId);
+        liveBll.umsAgentDebugSys("live_voice", map);
     }
 
     /**
      * 加入连麦房间日志
      */
-    private void umsagentJoin(){
-        HashMap<String,String> map=new HashMap<>();
-        map.put("sno","3");
-        map.put("nonce",nonce);
-        map.put("stable","1");
-        map.put("ex","Y");
-        map.put("logtype","joinChannelSuccess");
-        map.put("channelname",roomId);
-        liveBll.umsAgentDebug("live_voice",map);
+    private void umsagentJoin() {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("sno", "3");
+        map.put("nonce", nonce);
+        map.put("stable", "1");
+        map.put("ex", "Y");
+        map.put("logtype", "joinChannelSuccess");
+        map.put("channelname", roomId);
+        liveBll.umsAgentDebugSys("live_voice", map);
     }
 
     /**
      * 离开连麦房间日志
      */
-    private void umsagentLeave(){
-        HashMap<String,String> map=new HashMap<>();
-        map.put("sno","6");
-        map.put("nonce",nonce);
-        map.put("stable","1");
-        map.put("ex","Y");
-        map.put("logtype","leaveChannel");
-        map.put("channelname",roomId);
-        map.put("duration",""+(System.currentTimeMillis()-joinTime)/1000);
-        liveBll.umsAgentDebug("live_voice",map);
+    private void umsagentLeave() {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("sno", "6");
+        map.put("nonce", nonce);
+        map.put("stable", "1");
+        map.put("ex", "Y");
+        map.put("logtype", "leaveChannel");
+        map.put("channelname", roomId);
+        map.put("duration", "" + (System.currentTimeMillis() - joinTime) / 1000);
+        liveBll.umsAgentDebugSys("live_voice", map);
     }
 
     /**
      * 连麦错误日志
+     *
      * @param errCode
      */
-    private void umsagentError(int errCode){
-        HashMap<String,String> map=new HashMap<>();
-        map.put("nonce",nonce);
-        map.put("stable","2");
-        map.put("logtype","voiceInterationError");
-        map.put("errcode",""+errCode);
-        liveBll.umsAgentDebug("live_voice",map);
+    private void umsagentError(int errCode) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("nonce", nonce);
+        map.put("stable", "2");
+        map.put("logtype", "voiceInterationError");
+        map.put("errcode", "" + errCode);
+        liveBll.umsAgentDebugSys("live_voice", map);
     }
 }

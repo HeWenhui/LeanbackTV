@@ -392,7 +392,7 @@ public class LiveAchievementBll implements StarInteractAction {
             mData.put("sno", "2");
             mData.put("stable", "1");
         }
-        liveBll.umsAgentDebug3(eventId, mData);
+        liveBll.umsAgentDebugPv(eventId, mData);
     }
 
     @Override
@@ -416,7 +416,7 @@ public class LiveAchievementBll implements StarInteractAction {
             mData.put("answer", myAnswer);
             mData.put("starid", mStarid);
             mData.put("star_num", "" + (starCount));
-            liveBll.umsAgentDebug(eventId, mData);
+            liveBll.umsAgentDebugSys(eventId, mData);
             if (receive > -1) {
                 liveBll.setStuStarCount(1000, id, new AbstractBusinessDataCallBack() {
                     @Override
@@ -437,7 +437,7 @@ public class LiveAchievementBll implements StarInteractAction {
                         mData.put("status", "success");
                         mData.put("starnum", "" + (starCount));
                         mData.put("starid", mStarid);
-                        liveBll.umsAgentDebug(eventId, mData);
+                        liveBll.umsAgentDebugSys(eventId, mData);
                     }
 
                     @Override
@@ -453,7 +453,7 @@ public class LiveAchievementBll implements StarInteractAction {
                             mData.put("status", "error");
                         }
                         mData.put("msg", failMsg);
-                        liveBll.umsAgentDebug(eventId, mData);
+                        liveBll.umsAgentDebugSys(eventId, mData);
                     }
                 });
             }
@@ -481,7 +481,7 @@ public class LiveAchievementBll implements StarInteractAction {
                     mData.put("answer", msg);
                     mData.put("status", "true");
                     mData.put("starid", mStarid);
-                    liveBll.umsAgentDebug(eventId, mData);
+                    liveBll.umsAgentDebugSys(eventId, mData);
                     break;
                 }
             }
@@ -588,7 +588,7 @@ public class LiveAchievementBll implements StarInteractAction {
 //                        mData.put("time", "" + (System.currentTimeMillis() - before));
 //                        mData.put("location1", location1);
 //                        mData.put("location2", location2);
-//                        liveBll.umsAgentDebug3(eventId, mData);
+//                        liveBll.umsAgentDebugPv(eventId, mData);
                     }
                 });
             }
@@ -785,7 +785,7 @@ public class LiveAchievementBll implements StarInteractAction {
                             mData.put("time", "" + (System.currentTimeMillis() - before));
                             mData.put("location1", location1);
                             mData.put("location2", location2);
-                            liveBll.umsAgentDebug3(eventId, mData);
+                            liveBll.umsAgentDebugPv(eventId, mData);
                             bottomContent.removeView(flyStat);
                             allAnimations.add(AllAnimation.this);
                         }
@@ -966,7 +966,7 @@ public class LiveAchievementBll implements StarInteractAction {
 //                            mData.put("time", "" + (System.currentTimeMillis() - before));
 //                            mData.put("location1", location1);
 //                            mData.put("location2", location2);
-//                            liveBll.umsAgentDebug(eventId, mData);
+//                            liveBll.umsAgentDebugSys(eventId, mData);
 //                            bottomContent.removeView(flyStat);
 //                            allAnimations.add(AllAnimation.this);
 //                        }

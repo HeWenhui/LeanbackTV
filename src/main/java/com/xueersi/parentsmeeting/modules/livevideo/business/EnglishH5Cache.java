@@ -310,7 +310,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                     mData.put("times", "2");
                     mData.put("error", "" + errorUrls.size());
                     mData.put("total", "" + total);
-                    liveBll.umsAgentDebug(eventId, mData);
+                    liveBll.umsAgentDebugSys(eventId, mData);
                     if (context instanceof WebViewRequest) {
                         WebViewRequest webViewRequest = (WebViewRequest) context;
                         webViewRequest.onWebViewEnd();
@@ -327,7 +327,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                         mData.put("times", "1");
                         mData.put("error", "0");
                         mData.put("total", "" + total);
-                        liveBll.umsAgentDebug(eventId, mData);
+                        liveBll.umsAgentDebugSys(eventId, mData);
                         if (context instanceof WebViewRequest) {
                             WebViewRequest webViewRequest = (WebViewRequest) context;
                             webViewRequest.onWebViewEnd();

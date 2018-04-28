@@ -3,15 +3,25 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity.item;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
+import com.xueersi.xesalib.utils.app.ContextManager;
+import com.xueersi.xesalib.utils.audio.safeaudioplayer.AudioPlayerManager;
+import com.xueersi.xesalib.utils.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.xesalib.utils.listener.OnAlphaTouchListener;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
@@ -39,8 +49,13 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 
     private TextView tvCountTime;
 
-    public RolePlayerSelfItem(Context context) {
-        super(context);
+    /** 主布局 */
+    private RelativeLayout rlMain;
+
+    /** 测评 */
+    //private TextView tvSpeechTip;
+    public RolePlayerSelfItem(Context context, RolePlayerBll bll) {
+        super(context, bll);
     }
 
     @Override
@@ -56,6 +71,9 @@ public class RolePlayerSelfItem extends RolePlayerItem {
         vVoiceMain = root.findViewById(R.id.rl_live_roleplayer_message_voice_main);
         tvMessageContent = root.findViewById(R.id.tv_live_roleplayer_message_voice_content);
         tvCountTime = root.findViewById(R.id.tv_live_roleplayer_message_counttime);
+        //tvSpeechTip = root.findViewById(R.id.tv_live_roleplayer_message_speech_tip);
+        rlMain = root.findViewById(R.id.rl_live_roleplayer_message_main);
+        initStartView(root);
     }
 
     @Override
@@ -65,13 +83,38 @@ public class RolePlayerSelfItem extends RolePlayerItem {
         vVoiceMain.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                voiceClick();
+                if (!TextUtils.isEmpty(mEntity.getWebVoiceUrl())) {
+                    voiceClick();
+                }
             }
         });
-        vVoiceMain.setOnTouchListener(new OnAlphaTouchListener());
+        //vVoiceMain.setOnTouchListener(new OnAlphaTouchListener());
     }
 
     private void voiceClick() {
+        //播放
+        AudioPlayerManager.get(ContextManager.getApplication()).start(mEntity.getWebVoiceUrl(), new PlayerCallback() {
+            @Override
+            public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+            }
+
+            @Override
+            public void onStop(Object dataSource, AudioPlayerManager manager) {
+                super.onStop(dataSource, manager);
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+            }
+
+            @Override
+            public void onPreparing(Object dataSource, AudioPlayerManager manager) {
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_self_voice_white_anim);
+                AnimationDrawable selfVoiceAnimationDrawable = null;
+                selfVoiceAnimationDrawable = (AnimationDrawable) ivVoiceAnimtor.getBackground();
+                if (selfVoiceAnimationDrawable != null && !selfVoiceAnimationDrawable.isRunning()) {
+
+                }
+            }
+        });
 //        if (mEntity.isVoiceIsplay()) {
 //            AudioPlayerManager.get(ContextManager.getApplication()).stop();
 //            AudioPlayerManager.get(ContextManager.getApplication()).setDataSource("");
@@ -148,21 +191,29 @@ public class RolePlayerSelfItem extends RolePlayerItem {
     }
 
     @Override
-    public void updateViews(final RolePlayerEntity.RolePlayerMessage entity, int position, Object objTag) {
+    public void updateViews(final RolePlayerEntity.RolePlayerMessage entity,
+                            int position, Object objTag) {
         super.updateViews(entity, position, objTag);
         updateUserHeadImage(civUserHead, UserBll.getInstance().getMyUserInfoEntity()
                 .getHeadImg());
+        rlMain.setVisibility(View.VISIBLE);
         tvMessageContent.setText(entity.getReadMsg());
+        tvMessageContent.setTextColor(Color.parseColor("#333333"));
         tvUserNickName.setText(entity.getRolePlayer().getNickName());
-
+        civUserHead.setBeginCountdownTime(false);
+        // tvSpeechTip.setVisibility(View.INVISIBLE);
 
         switch (entity.getMsgStatus()) {
             case RolePlayerEntity.RolePlayerMessageStatus.WAIT_NORMAL:
-                ivVoiceAnimtor.setBackgroundResource(R.drawable.bg_chat_voice_to_playing_img);
+                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
                 tvCountTime.setVisibility(View.INVISIBLE);
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY:
-                ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_homework_voice_right_anim);
+                vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_me_reading);
+                tvMessageContent.setTextColor(Color.WHITE);
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_self_voice_white_anim);
                 AnimationDrawable selfVoiceAnimationDrawable = null;
                 selfVoiceAnimationDrawable = (AnimationDrawable) ivVoiceAnimtor.getBackground();
                 if (selfVoiceAnimationDrawable != null && !selfVoiceAnimationDrawable.isRunning()) {
@@ -181,6 +232,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                         if (time <= 3) {
                             tvCountTime.setVisibility(View.VISIBLE);
                         }
+                        Log.i("RolePlayerSelfItemTest", mPosition + " / " + time);
                         entity.setEndReadTime((int) time);
 
                     }
@@ -189,10 +241,45 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY:
-                ivVoiceAnimtor.setBackgroundResource(R.drawable.bg_chat_voice_to_playing_img);
+                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
                 civUserHead.invalidate();
                 tvCountTime.setText("");
                 tvCountTime.setVisibility(View.INVISIBLE);
+                showSpeechStar();
+                speechPhoneScore();
+                break;
+            case RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH:
+                //测评有得分刚结束
+                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+                civUserHead.invalidate();
+                tvCountTime.setText("");
+                tvCountTime.setVisibility(View.INVISIBLE);
+                showSpeechStar();
+//                if (entity.getSpeechScore() >= 75 && entity.getSpeechScore() < 90) {
+//                    tvSpeechTip.setVisibility(View.VISIBLE);
+//                    tvSpeechTip.setText("Well done!");
+//                } else if (entity.getSpeechScore() >= 90) {
+//                    tvSpeechTip.setVisibility(View.VISIBLE);
+//                    tvSpeechTip.setText("Fantastic!");
+//                }
+//                if (tvSpeechTip.getVisibility() == View.VISIBLE) {
+//                    tvSpeechTip.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            tvSpeechTip.setVisibility(View.INVISIBLE);
+//                        }
+//                    }, 5000);
+//                }
+                //测试完毕后状态改成END_ROLEPLAY
+                entity.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY);
+                speechPhoneScore();
+
+
+                break;
+            case RolePlayerEntity.RolePlayerMessageStatus.EMPTY:
+                rlMain.setVisibility(View.INVISIBLE);
                 break;
             default:
                 break;
@@ -239,5 +326,51 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 
     }
 
+    /**
+     * 对音素分变色
+     */
 
+    private void speechPhoneScore() {
+        String[] textArray;
+        if (mEntity.getLstPhoneScore().isEmpty()) {
+            if (mEntity.getSpeechScore() >= 75) {
+                tvMessageContent.setTextColor(mContext.getResources().getColor(R.color.COLOR_53C058));
+            } else if (mEntity.getSpeechScore() < 30) {
+                tvMessageContent.setTextColor(mContext.getResources().getColor(R.color.COLOR_F13232));
+            } else {
+                tvMessageContent.setTextColor(mContext.getResources().getColor(R.color.COLOR_333333));
+            }
+        } else {
+            int lastSub = 0;
+            String subtemText = mEntity.getReadMsg();
+            String upText = mEntity.getReadMsg().toUpperCase();
+            //句子不带人名 hello boy
+            SpannableStringBuilder spannable = new SpannableStringBuilder(subtemText);
+            for (int i = 0; i < mEntity.getLstPhoneScore().size(); i++) {
+                String word = mEntity.getLstPhoneScore().get(i).getWord();
+                int index = upText.indexOf(word);
+                int left = index + lastSub;
+                int right = left + word.length();
+                Log.i("RolePlayerTestDemo", word + " : " + mEntity.getLstPhoneScore().get(i).getScore());
+                if (index != -1) {
+                    subtemText = subtemText.substring(index);
+                    upText = upText.substring(index);
+                    lastSub += index;
+                    if (mEntity.getLstPhoneScore().get(i).getScore() >= 75) {
+                        //显示绿色
+                        spannable.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.COLOR_53C058)), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    } else if (mEntity.getLstPhoneScore().get(i).getScore() < 30) {
+                        // 显示红色
+                        spannable.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.COLOR_F13232)), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    } else {
+                        // 显示黑色
+                        spannable.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.COLOR_333333)), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+                }
+            }
+            tvMessageContent.setText(spannable);
+        }
+    }
 }
+
+

@@ -125,7 +125,7 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
             StableLogHashMap logHashMap = new StableLogHashMap("AGEventHandlerError");
             logHashMap.put("channel_name", room);
             logHashMap.put("err", "" + err);
-            liveBll.umsAgentDebug(eventId, logHashMap.getData());
+            liveBll.umsAgentDebugSys(eventId, logHashMap.getData());
         }
 
         @Override
@@ -182,7 +182,7 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
                 if (leaveChannel != 0) {
                     logHashMap.put("errcode", "" + leaveChannel);
                 }
-                liveBll.umsAgentDebug(eventId, logHashMap.getData());
+                liveBll.umsAgentDebugSys(eventId, logHashMap.getData());
             }
         });
         mWorkerThread.eventHandler().removeEventHandler(agEventHandler);

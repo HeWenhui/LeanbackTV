@@ -90,6 +90,8 @@ public interface XESCODE {
     int XCR_ROOM_DB_START = 193;
     /** 开启分贝能量条指令 */
     int XCR_ROOM_DB_CLOSE = 194;
+    /** roleplay领读消息指令 */
+    int XCR_ROOM_ROLE_READ = 195;
     /** 学习报告-讲座 */
     int LEC_LEARNREPORT = 199;
     /** 语音反馈 */

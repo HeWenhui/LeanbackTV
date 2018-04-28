@@ -23,7 +23,7 @@ public class LecAdvertLog {
         logHashMap.put("adsid", "" + lecAdvertEntity.id);
         logHashMap.addSno("4").addStable("1").addExY();
         logHashMap.addNonce("" + lecAdvertEntity.nonce);
-        liveAndBackDebug.umsAgentDebug3(eventid, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugPv(eventid, logHashMap.getData());
     }
 
     /**
@@ -37,6 +37,6 @@ public class LecAdvertLog {
         logHashMap.put("adsid", "" + lecAdvertEntity.id);
         logHashMap.addSno("5").addStable("1").addExY();
         logHashMap.addNonce("" + lecAdvertEntity.nonce);
-        liveAndBackDebug.umsAgentDebug2(eventid, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugInter(eventid, logHashMap.getData());
     }
 }

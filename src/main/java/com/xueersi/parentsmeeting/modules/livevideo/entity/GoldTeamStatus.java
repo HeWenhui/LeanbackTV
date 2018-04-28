@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
+import com.tencent.cos.xml.utils.StringUtils;
+
 import java.util.ArrayList;
 
 /**
@@ -7,7 +9,7 @@ import java.util.ArrayList;
  */
 
 public class GoldTeamStatus {
-
+    private String id;
     private String myScore;//学生本人分数
     private String myName;//"学生本人姓名
     private String myNickName;//"学生本人昵称
@@ -15,6 +17,14 @@ public class GoldTeamStatus {
     private String myAvatarPath;//":"http://xesfile.xesimg.com/user/h/def10002.png"
 
     private ArrayList<Student> students = new ArrayList<>();
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getMyScore() {
         return myScore;
@@ -70,10 +80,17 @@ public class GoldTeamStatus {
         String gold;// 15,
         String score;// 15,
         String name;// "lyq2@qq.com",
+        String realname;
         String nickname;// "ssss",
         String en_name;// "rer",
+        /** 显示的名字 */
+        String showName;
         String avatar_path;// "http:\/\/xesfile.xesimg.com\/user\/h\/31203.jpg"
         boolean isRight = false;
+        /** 只绘制头像不绘制名字 */
+        boolean drawName;
+        /** 空对象 */
+        boolean nullEntity = false;
 
         public boolean isMe() {
             return isMe;
@@ -115,6 +132,14 @@ public class GoldTeamStatus {
             this.name = name;
         }
 
+        public String getRealname() {
+            return realname;
+        }
+
+        public void setRealname(String realname) {
+            this.realname = realname;
+        }
+
         public String getNickname() {
             return nickname;
         }
@@ -131,6 +156,25 @@ public class GoldTeamStatus {
             this.en_name = en_name;
         }
 
+        public String getShowName() {
+            if (StringUtils.isEmpty(showName)) {
+                createShowName();
+            }
+            return showName;
+        }
+
+        public void createShowName() {
+            if (!StringUtils.isEmpty(en_name)) {
+                this.showName = en_name;
+            } else if (!StringUtils.isEmpty(realname)) {
+                this.showName = realname;
+            } else if (!StringUtils.isEmpty(nickname)) {
+                this.showName = nickname;
+            } else {
+                this.showName = name;
+            }
+        }
+
         public String getAvatar_path() {
             return avatar_path;
         }
@@ -145,6 +189,22 @@ public class GoldTeamStatus {
 
         public void setRight(boolean right) {
             isRight = right;
+        }
+
+        public boolean isDrawName() {
+            return drawName;
+        }
+
+        public void setDrawName(boolean drawName) {
+            this.drawName = drawName;
+        }
+
+        public boolean isNullEntity() {
+            return nullEntity;
+        }
+
+        public void setNullEntity(boolean nullEntity) {
+            this.nullEntity = nullEntity;
         }
 
         @Override

@@ -74,7 +74,7 @@
             android:id="@id/rl_course_video_first_backgroud"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#000000">
+            android:background="@drawable/livevideo_zw_dengdaida_bg_before">
 
             <!-- 退出按钮 （横屏的时候变成竖屏，竖屏的时候退出当前Activity） -->
 
@@ -102,7 +102,8 @@
                     android:layout_width="240dp"
                     android:layout_height="65dp"
                     android:layout_gravity="center_horizontal"
-                    android:src="@drawable/livevideo_cy_moren_logo_normal" />
+                    android:src="@drawable/livevideo_cy_moren_logo_normal"
+                    android:visibility="gone" />
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -127,7 +128,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="0dp"
-                    android:text="正在获取网络资源，请稍候" />
+                    android:paddingLeft="300dp"
+                    android:text="正在获取网络资源，请稍候"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@id/tv_course_video_loading_fail"
@@ -136,6 +139,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="5dp"
+                    android:paddingLeft="300dp"
                     android:visibility="gone" />
             </LinearLayout>
         </RelativeLayout>
@@ -183,6 +187,12 @@
             android:layout_alignParentBottom="true"
             android:visibility="gone"></RelativeLayout>
     </RelativeLayout>
+
+    <ViewStub
+        android:id="@id/vs_live_stand_update"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/activity_video_live_stand_check" />
     <!--<RelativeLayout-->
     <!--android:id="@+id/rl_speech_test"-->
     <!--android:layout_width="match_parent"-->

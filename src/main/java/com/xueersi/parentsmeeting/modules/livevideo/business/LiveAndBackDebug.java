@@ -14,7 +14,7 @@ public interface LiveAndBackDebug {
      * @param eventId
      * @param mData
      */
-    void umsAgentDebug(String eventId, final Map<String, String> mData);
+    void umsAgentDebugSys(String eventId, final Map<String, String> mData);
 
     /**
      * 交互日志
@@ -22,7 +22,7 @@ public interface LiveAndBackDebug {
      * @param eventId
      * @param mData
      */
-    void umsAgentDebug2(String eventId, final Map<String, String> mData);
+    void umsAgentDebugInter(String eventId, final Map<String, String> mData);
 
     /**
      * 展现日志
@@ -30,6 +30,6 @@ public interface LiveAndBackDebug {
      * @param eventId
      * @param mData
      */
-    void umsAgentDebug3(String eventId, final Map<String, String> mData);
+    void umsAgentDebugPv(String eventId, final Map<String, String> mData);
 
 }

@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VP;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
+import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
@@ -94,6 +94,7 @@ public class VideoChatBll implements VideoChatAction {
     WiredHeadsetReceiver wiredHeadsetReceiver;
     String openhandsStatus = "off";
     String onmicStatus = "off";
+    private LiveRemarkBll mLiveRemarkBll;
 
     public VideoChatBll(LiveVideoActivityBase activity) {
         this.activity = activity;
@@ -169,6 +170,10 @@ public class VideoChatBll implements VideoChatAction {
         }
     }
 
+    public void setLiveRemarkBll(LiveRemarkBll liveRemarkBll) {
+        mLiveRemarkBll = liveRemarkBll;
+    }
+
     private int isHasPermission() {
         int sampleRate = 48000;
         int channels = 1;
@@ -237,6 +242,9 @@ public class VideoChatBll implements VideoChatAction {
         if (activity instanceof AudioRequest) {
             AudioRequest audioRequest = (AudioRequest) activity;
             audioRequest.request(null);
+        }
+        if (mLiveRemarkBll != null) {
+            mLiveRemarkBll.setOnChat(true);
         }
         if (nativeLibLoaded != 2) {
             activity.setVolume(0, 0);
@@ -395,7 +403,7 @@ public class VideoChatBll implements VideoChatAction {
 //                        mData.put("log_type", "getKick");
 //                        mData.put("teacher_type", from);
 //                        mData.put("status", finalContain ? "on" : "off");
-//                        liveBll.umsAgentDebug(eventId, mData);
+//                        liveBll.umsAgentDebugSys(eventId, mData);
                         micTipDialog.showDialog();
                     }
                     if (finalContain) {
@@ -572,7 +580,7 @@ public class VideoChatBll implements VideoChatAction {
                 } else {
                     StableLogHashMap logHashMap = new StableLogHashMap("getStopRaiseHand");
                     logHashMap.put("teacher_type", from);
-                    liveBll.umsAgentDebug(eventId, logHashMap.getData());
+                    liveBll.umsAgentDebugSys(eventId, logHashMap.getData());
                     isSuccess = false;
                     if (raiseHandDialog != null) {
                         raiseHandDialog.cancelDialog();
@@ -617,7 +625,7 @@ public class VideoChatBll implements VideoChatAction {
         mLogtf.d("requestAccept");
         StableLogHashMap logHashMap = new StableLogHashMap("getSelection");
         logHashMap.put("teacher_type", from);
-        liveBll.umsAgentDebug(eventId, logHashMap.getData());
+        liveBll.umsAgentDebugSys(eventId, logHashMap.getData());
         btRaiseHands.post(new Runnable() {
             @Override
             public void run() {
@@ -714,7 +722,7 @@ public class VideoChatBll implements VideoChatAction {
         StableLogHashMap logHashMap = new StableLogHashMap("getKick");
         logHashMap.put("teacher_type", from);
         logHashMap.put("status", status);
-        liveBll.umsAgentDebug(eventId, logHashMap.getData());
+        liveBll.umsAgentDebugSys(eventId, logHashMap.getData());
         if ("on".equals(status)) {
             startMicro("on", "", true, room, from);
             return;
@@ -755,6 +763,9 @@ public class VideoChatBll implements VideoChatAction {
             if (activity instanceof AudioRequest) {
                 AudioRequest audioRequest = (AudioRequest) activity;
                 audioRequest.release();
+            }
+            if (mLiveRemarkBll != null) {
+                mLiveRemarkBll.setOnChat(false);
             }
         }
     }

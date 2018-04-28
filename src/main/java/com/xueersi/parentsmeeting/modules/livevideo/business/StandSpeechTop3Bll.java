@@ -1,24 +1,38 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.graphics.Bitmap;
+import android.os.Environment;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechTop3Pager;
+import com.xueersi.xesalib.utils.log.Loger;
+
+import java.io.File;
+import java.util.HashMap;
 
 /**
  * Created by linyuqiang on 2018/4/10.
+ * 语音评测结束后调排行榜
  */
-
 public class StandSpeechTop3Bll implements SpeechEndAction {
+    String TAG = "StandSpeechTop3Bll";
     LiveBll liveBll;
     StandSpeechTop3Pager standSpeechTop3Pager;
     RelativeLayout bottomContent;
     GoldTeamStatus entity;
     boolean stop = false;
+    HashMap<String, GoldTeamStatus> goldTeamStatusHashMap = new HashMap<>();
+    LogToFile logToFile;
 
     public StandSpeechTop3Bll(LiveBll liveBll) {
         this.liveBll = liveBll;
+        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+                + ".txt"));
     }
 
     public void initView(RelativeLayout bottomContent) {
@@ -26,36 +40,70 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
     }
 
     @Override
-    public void examSubmitAll(final String num) {
+    public void examSubmitAll(final BaseSpeechAssessmentPager speechAssessmentPager, final String num) {
         bottomContent.postDelayed(new Runnable() {
             @Override
             public void run() {
-                liveBll.getSpeechEvalAnswerTeamRank(num, new AbstractBusinessDataCallBack() {
-                    @Override
-                    public void onDataSucess(Object... objData) {
-                        entity = (GoldTeamStatus) objData[0];
-                        if (stop) {
-                            onStopSpeech(num);
+                //原生语音评测
+                if (speechAssessmentPager instanceof StandSpeechAssAutoPager) {
+                    liveBll.getSpeechEvalAnswerTeamRank(num, new AbstractBusinessDataCallBack() {
+                        @Override
+                        public void onDataSucess(Object... objData) {
+                            entity = (GoldTeamStatus) objData[0];
+                            entity.setId(num);
+                            goldTeamStatusHashMap.put(num, entity);
+                            Loger.d(TAG, "getSpeechEvalAnswerTeamRank:stop=" + stop);
+                            if (stop) {
+                                onStopSpeech(speechAssessmentPager, num);
+                            }
                         }
-                    }
-                });
+                    });
+                    /** 语音评测 roleplay */
+                } else if (speechAssessmentPager instanceof SpeechAssessmentWebPager) {
+                    liveBll.getRolePlayAnswerTeamRank(num, new AbstractBusinessDataCallBack() {
+                        @Override
+                        public void onDataSucess(Object... objData) {
+                            entity = (GoldTeamStatus) objData[0];
+                            entity.setId(num);
+                            goldTeamStatusHashMap.put(num, entity);
+                            Loger.d(TAG, "getRolePlayAnswerTeamRank:stop=" + stop);
+                            if (stop) {
+                                onStopSpeech(speechAssessmentPager, num);
+                            }
+                        }
+                    });
+                }
             }
         }, 3000);
     }
 
     @Override
-    public void onStopSpeech(String num) {
+    public void onStopSpeech(BaseSpeechAssessmentPager speechAssessmentPager, String num) {
+        stop = true;
+        if (entity != null) {
+            logToFile.d("onStopSpeech:entity=" + entity.getId() + ",num=" + num + ",size=" + goldTeamStatusHashMap.size());
+        } else {
+            logToFile.d("onStopSpeech:entity=null" + ",num=" + num + ",size=" + goldTeamStatusHashMap.size());
+        }
+        GoldTeamStatus entity = goldTeamStatusHashMap.get(num);
         if (entity == null) {
             return;
         }
-        stop = true;
-        initTop();
+        initTop(num, entity);
     }
 
-    private void initTop() {
+    private void initTop(String num, GoldTeamStatus entity) {
+        if (standSpeechTop3Pager != null && num.equals(standSpeechTop3Pager.getId())) {
+            Loger.d(TAG, "initTop:num=" + num);
+            return;
+        }
         standSpeechTop3Pager = new StandSpeechTop3Pager(bottomContent.getContext(), entity);
+        standSpeechTop3Pager.setId(num);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         bottomContent.addView(standSpeechTop3Pager.getRootView(), lp);
+        StandSpeechTop3Bll.this.entity = null;
+        goldTeamStatusHashMap.remove(num);
+        stop = false;
     }
 
 }

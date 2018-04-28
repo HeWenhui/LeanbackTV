@@ -9,7 +9,8 @@
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:gravity="bottom"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <Button
             android:id="@id/rl_livevideo_common_rank"
@@ -35,14 +36,5 @@
             android:visibility="gone" />
 
     </LinearLayout>
-
-    <Button
-        android:id="@id/bt_livevideo_message_open"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginLeft="20dp"
-        android:background="@drawable/bg_livevideo_message_open" />
 
 </RelativeLayout>

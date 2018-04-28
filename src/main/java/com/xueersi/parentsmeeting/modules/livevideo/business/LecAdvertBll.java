@@ -1,16 +1,20 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
+import com.xueersi.parentsmeeting.event.MiniEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.LecAdvertLog;
 import com.xueersi.xesalib.utils.log.Loger;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
@@ -66,7 +70,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
         logHashMap.put("adsid", "" + lecAdvertEntity.id);
         logHashMap.addSno("3").addStable("2");
         logHashMap.addNonce("" + lecAdvertEntity.nonce);
-        liveBll.umsAgentDebug(eventid, logHashMap.getData());
+        liveBll.umsAgentDebugSys(eventid, logHashMap.getData());
         bottomContent.post(new Runnable() {
             @Override
             public void run() {
@@ -79,10 +83,31 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                 liveBll.getAdOnLL(lecAdvertEntity, new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
+                        // 刷新广告列表数据
+                        Intent intent = new Intent();
+                        intent.setAction("refreshadvertisementlist");
+                        context.sendBroadcast(intent);
                         if (lecAdvertager != null) {
                             return;
                         }
                         if (lecAdvertEntity.isLearn == 1) {
+                            // 添加不弹出广告的日志
+                            StableLogHashMap logHashMap = new StableLogHashMap("interactiveAdsShown");
+                            logHashMap.put("adsid", "" + lecAdvertEntity.id);
+                            logHashMap.addSno("4").addStable("1").addExN();
+                            logHashMap.addNonce("" + lecAdvertEntity.nonce);
+                            logHashMap.put("extra","此广告已报名");
+                            liveBll.umsAgentDebugSys(eventid, logHashMap.getData());
+                            return;
+                        }
+                        if("0".equals(lecAdvertEntity.limit)){
+                            // 已报满的情况也不弹出广告
+                            StableLogHashMap logHashMap = new StableLogHashMap("interactiveAdsShown");
+                            logHashMap.put("adsid", "" + lecAdvertEntity.id);
+                            logHashMap.addSno("4").addStable("1").addExN();
+                            logHashMap.addNonce("" + lecAdvertEntity.nonce);
+                            logHashMap.put("extra","此广告已报满");
+                            liveBll.umsAgentDebugSys(eventid, logHashMap.getData());
                             return;
                         }
                         lecAdvertager = new LecAdvertPager(context, lecAdvertEntity, LecAdvertBll.this, liveid, liveBll);
@@ -90,6 +115,24 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                         bottomContent.addView(lecAdvertager.getRootView(), lp);
                         lecAdvertager.initStep1();
                         LecAdvertLog.sno4(lecAdvertEntity, liveBll);
+                        // 添加成功弹出广告的日志
+                        StableLogHashMap logHashMap = new StableLogHashMap("interactiveAdsShown");
+                        logHashMap.put("adsid", "" + lecAdvertEntity.id);
+                        logHashMap.addSno("4").addStable("1").addExY();
+                        logHashMap.addNonce("" + lecAdvertEntity.nonce);
+                        logHashMap.put("extra","成功弹出广告");
+                        liveBll.umsAgentDebugSys(eventid, logHashMap.getData());
+                    }
+
+                    @Override
+                    public void onDataFail(int errStatus, String failMsg) {
+                        // 添加不弹出广告的日志
+                        StableLogHashMap logHashMap = new StableLogHashMap("interactiveAdsShown");
+                        logHashMap.put("adsid", "" + lecAdvertEntity.id);
+                        logHashMap.addSno("4").addStable("1").addExN();
+                        logHashMap.addNonce("" + lecAdvertEntity.nonce);
+                        logHashMap.put("extra","接口返回数据失败");
+                        liveBll.umsAgentDebugSys(eventid, logHashMap.getData());
                     }
                 });
             }
