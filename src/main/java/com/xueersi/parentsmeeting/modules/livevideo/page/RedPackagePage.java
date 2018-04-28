@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
@@ -24,7 +25,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.Top3FrameAnim;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -484,7 +484,8 @@ public class RedPackagePage extends BasePager {
                 tv_livevideo_redpackage_num.setText(gold);
                 layout_live_stand_red_mine1.measure(canvasBitmap.getWidth(), canvasBitmap.getHeight());
                 layout_live_stand_red_mine1.layout(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight());
-
+                tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 14.5f);
+                tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 13.5f);
                 canvas.save();
                 canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 160);
                 layout_live_stand_red_mine1.draw(canvas);
@@ -507,7 +508,10 @@ public class RedPackagePage extends BasePager {
 
     private ArrayList<Point> teamLeftAndTops = new ArrayList<>();
 
-    {
+    private void initPos() {
+        if (!teamLeftAndTops.isEmpty()) {
+            return;
+        }
         int screenWidth = ScreenUtils.getScreenWidth();
         int screenHeight = ScreenUtils.getScreenHeight();
         int width = 368;
@@ -515,17 +519,26 @@ public class RedPackagePage extends BasePager {
 
         teamLeftAndTops.add(new Point(screenWidth / 2 - 164 - width, screenHeight / 2 - height / 2));//左
         teamLeftAndTops.add(new Point(screenWidth / 2 + 164, screenHeight / 2 - height / 2));//右
-        teamLeftAndTops.add(new Point(screenWidth / 2 - 82 - width, 72));//左上
-        teamLeftAndTops.add(new Point(screenWidth / 2 - 82 - width, screenHeight / 2 + height / 2));//左下
+        teamLeftAndTops.add(new Point(screenWidth / 2 - 82 - width, 62));//左上
+        teamLeftAndTops.add(new Point(screenWidth / 2 - 82 - width, screenHeight / 2 + height / 2 - 40));//左下
         teamLeftAndTops.add(new Point(screenWidth / 2 + 84, 30));//右上
-        teamLeftAndTops.add(new Point(screenWidth / 2 + 70, screenHeight / 2 + height / 2));//右下
+        teamLeftAndTops.add(new Point(screenWidth / 2 + 70, screenHeight / 2 + height / 2 - 40));//右下
 
-        teamLeftAndTops.add(new Point(152, 63));
-        teamLeftAndTops.add(new Point(52, 325));
-        teamLeftAndTops.add(new Point(172, screenHeight / 2 + height / 2));
+        teamLeftAndTops.add(new Point(152, 63));//最左上
+        teamLeftAndTops.add(new Point(52, 325));//最左中
+        teamLeftAndTops.add(new Point(172, screenHeight / 2 + height / 2 - 40));//最左下
 
-        teamLeftAndTops.add(new Point(screenWidth - 152 - width, 128));
-        teamLeftAndTops.add(new Point(screenWidth - 172 - width, 456));
+        teamLeftAndTops.add(new Point(screenWidth - 152 - width, 128));//最右上
+        teamLeftAndTops.add(new Point(screenWidth - 172 - width, 456));//最右中
+        int width2 = width * ScreenUtils.getScreenHeight() / 750;
+        int height2 = width * ScreenUtils.getScreenHeight() / 750;
+        int chax = (width2 - width) / 2;
+        int chay = (height2 - height) / 2;
+        for (int i = 0; i < teamLeftAndTops.size(); i++) {
+            Point point = teamLeftAndTops.get(i);
+            point.x -= chax;
+            point.y -= chay;
+        }
     }
 
     /**
@@ -542,6 +555,7 @@ public class RedPackagePage extends BasePager {
             goldTeamStatus = entity;
             return;
         }
+        initPos();
         RedPackageStandLog.sno3(liveAndBackDebug, "" + operateId);
         goldTeamStatus = entity;
         ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
@@ -571,8 +585,8 @@ public class RedPackagePage extends BasePager {
             } else {
                 if (!teamLeftAndTops.isEmpty()) {
                     Point point = teamLeftAndTops.remove(0);
-                    lp.leftMargin = (int) point.x;
-                    lp.topMargin = (int) point.y;
+                    lp.leftMargin = point.x;
+                    lp.topMargin = point.y;
                 } else {
                     lp.leftMargin = random.nextInt(1700);
                     lp.topMargin = random.nextInt(850);
@@ -809,14 +823,16 @@ public class RedPackagePage extends BasePager {
                     tv_livevideo_redpackage_name.setTextColor(0xff096D62);
                     tv_livevideo_redpackage_num.setTextColor(0xff096D62);
                 }
+                tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 14.5f);
+                tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 13.5f);
                 layout_live_stand_red_mine1.measure(canvasBitmap.getWidth(), canvasBitmap.getHeight());
                 layout_live_stand_red_mine1.layout(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight());
 
                 canvas.save();
                 if (isMe) {
-                    canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 283);
+                    canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 286);
                 } else {
-                    canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 190);
+                    canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 194);
                 }
                 layout_live_stand_red_mine1.draw(canvas);
                 canvas.restore();

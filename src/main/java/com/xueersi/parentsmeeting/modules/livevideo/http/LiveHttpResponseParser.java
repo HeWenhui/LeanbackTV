@@ -478,12 +478,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     private int testid = 1;
     private boolean lyqTest = true;
 
-    public GoldTeamStatus redGoldTeamStatus(ResponseEntity responseEntity, String stuid) {
+    public GoldTeamStatus redGoldTeamStatus(ResponseEntity responseEntity, String stuid, String headUrl) {
         GoldTeamStatus entity = new GoldTeamStatus();
         try {
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
             JSONArray stuList = jsonObject.getJSONArray("stuList");
-            String avatar_path = "";
             for (int i = 0; i < stuList.length(); i++) {
                 try {
                     JSONObject stu = stuList.getJSONObject(i);
@@ -497,7 +496,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     student.setEn_name(stu.getString("en_name"));
                     student.createShowName();
                     student.setGold(stu.optString("gold"));
-                    avatar_path = stu.getString("avatar_path");
+                    String  avatar_path = stu.getString("avatar_path");
                     student.setAvatar_path(avatar_path);
                     entity.getStudents().add(student);
                 } catch (Exception e) {
@@ -510,14 +509,38 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //                    student.setStuId("12345" + testid++);
 //                    student.setName(student.getStuId());
 //                    student.setNickname("测试" + testid++);
+//                    student.createShowName();
 //                    student.setGold("1" + i);
-//                    student.setAvatar_path(avatar_path);
+//                    student.setAvatar_path(headUrl);
 //                    entity.getStudents().add(student);
 //                }
 //            }
         } catch (Exception e) {
             MobAgent.httpResponseParserError(TAG, "redGoldTeamStatus", e.getMessage());
         }
+//        if (AppConfig.DEBUG && lyqTest) {
+//            {
+//                GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                student.setStuId(stuid);
+//                student.setMe(true);
+//                student.setName(student.getStuId());
+//                student.setNickname("测试" + testid++);
+//                student.createShowName();
+//                student.setGold("99");
+//                student.setAvatar_path(headUrl);
+//                entity.getStudents().add(student);
+//            }
+//            for (int i = 0; i < 11; i++) {
+//                GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                student.setStuId("12345" + testid++);
+//                student.setName(student.getStuId());
+//                student.setNickname("测试" + testid++);
+//                student.createShowName();
+//                student.setGold("1" + i);
+//                student.setAvatar_path(headUrl);
+//                entity.getStudents().add(student);
+//            }
+//        }
         return entity;
     }
 
@@ -599,6 +622,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //                    student.setStuId("12345" + testid++);
 //                    student.setName(student.getStuId());
 //                    student.setNickname("测试" + testid++);
+//                    student.createShowName();
 //                    student.setScore("" + (10 + i));
 //                    student.setAvatar_path(avatar_path);
 //                    entity.getStudents().add(student);
@@ -1041,12 +1065,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     /*
     * 解析更多课程的数据
     * */
-    public MoreChoice parseMoreChoice(ResponseEntity responseEntity){
+    public MoreChoice parseMoreChoice(ResponseEntity responseEntity) {
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         MoreChoice moreChoice = new MoreChoice();
         JSONArray casesjson = data.optJSONArray("cases");
         List<MoreChoice.Choice> choices = new ArrayList<>();
-        for(int i = 0 ; i < casesjson.length() ; i++){
+        for (int i = 0; i < casesjson.length(); i++) {
             JSONObject jsonObject = casesjson.optJSONObject(i);
             MoreChoice.Choice choice = new MoreChoice.Choice();
             choice.setSaleName(jsonObject.optString("saleName"));

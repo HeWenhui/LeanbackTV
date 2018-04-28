@@ -86,7 +86,8 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     public static final int FLOWERS_SMALL = 2, FLOWERS_MIDDLE = 3, FLOWERS_BIG = 4;
     /** 献花字体颜色 */
     public int[] flowsDrawColors = {0xFF1a8615, Color.RED, 0xFFff00ea};
-    public static final String SYSTEM_TIP = "系统提示";
+    public String SYSTEM_TIP = "系统提示";
+    public static String SYSTEM_TIP_STATIC = "系统提示";
     /** 聊天连接 */
     public static final String CONNECT = "聊天服务器连接成功";
     /** 聊天断开连接 */

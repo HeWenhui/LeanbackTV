@@ -284,9 +284,9 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
      * 结果页获得小组数据
      *
      * @param operateId
-     * @param getCount
+     * @param stop
      */
-    private void getReceiveGoldTeamStatus(final int operateId, final AtomicBoolean getCount) {
+    private void getReceiveGoldTeamStatus(final int operateId, final AtomicBoolean stop) {
         receiveGold.getReceiveGoldTeamStatus(operateId, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
@@ -303,7 +303,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                 super.onDataFail(errStatus, failMsg);
                 onFinish();
                 if (errStatus == 0) {
-                    if (getCount.get()) {
+                    if (stop.get()) {
                         return;
                     }
                     RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
@@ -311,7 +311,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                         redPackagePage.getRootView().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                getReceiveGoldTeamStatus(operateId, getCount);
+                                getReceiveGoldTeamStatus(operateId, stop);
                             }
                         }, 1000);
                     }
@@ -319,7 +319,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
             }
 
             void onFinish() {
-//                if (getCount.get()) {
+//                if (stop.get()) {
 //                    return;
 //                }
 //                RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
@@ -327,7 +327,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
 //                    redPackagePage.getRootView().postDelayed(new Runnable() {
 //                        @Override
 //                        public void run() {
-//                            getReceiveGoldTeamStatus(operateId, getCount);
+//                            getReceiveGoldTeamStatus(operateId, stop);
 //                        }
 //                    }, 1000);
 //                }

@@ -8,11 +8,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.util.ScreenUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 
 import java.io.File;
@@ -340,6 +342,7 @@ public class FrameAnimation {
                                             bitmap.recycle();
                                             return;
                                         }
+                                        bitmap.setDensity((int) (DisplayMetrics.DENSITY_MEDIUM * ((float) 750 / (float) ScreenUtils.getScreenHeight(mView.getContext()))));
                                         bitmapHashMap.put(file, bitmap);
                                         allBitmapHashMap.put(file, bitmap);
                                     }
@@ -355,7 +358,8 @@ public class FrameAnimation {
                                         }
                                         bitmapHashMap.put(file, bitmap);
                                         allBitmapHashMap.put(file, bitmap);
-                                        bitmap.setDensity(160);
+//                                        bitmap.setDensity(160);
+                                        bitmap.setDensity((int) (DisplayMetrics.DENSITY_MEDIUM * ((float) 750 / (float) ScreenUtils.getScreenHeight(mView.getContext()))));
                                     }
                                 }
                                 if (bitmap != null) {

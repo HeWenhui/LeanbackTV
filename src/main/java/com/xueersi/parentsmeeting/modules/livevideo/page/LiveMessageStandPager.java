@@ -145,7 +145,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //        btMesOpen = liveMediaControllerBottom.getBtMesOpen();
         btMessageFlowers = liveMediaControllerBottom.getBtMessageFlowers();
 //        cbMessageClock = liveMediaControllerBottom.getCbMessageClock();
-
+        SYSTEM_TIP = "爱豆";
         mainHandler.post(new Runnable() {
             @Override
             public void run() {

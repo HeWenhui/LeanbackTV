@@ -2,20 +2,21 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <TextView
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView
         android:id="@id/tv_livevideo_redpackage_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
         android:textColor="@color/COLOR_97091D"
-        android:textSize="12px" />
+        android:textSize="12px"
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@id/iv_livevideo_redpackage_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/bg_live_stand_red_gold_sma"
-        android:layout_below="@id/tv_livevideo_redpackage_name" />
+        android:layout_below="@id/tv_livevideo_redpackage_name"
+        android:src="@drawable/bg_live_stand_red_gold_sma" />
 
     <TextView
         android:id="@id/tv_livevideo_redpackage_num"
@@ -25,5 +26,6 @@
         android:layout_toRightOf="@id/iv_livevideo_redpackage_num"
         android:includeFontPadding="false"
         android:textColor="@color/COLOR_97091D"
-        android:textSize="12px" />
+        android:textSize="12px"
+        android:textStyle="bold" />
 </RelativeLayout>

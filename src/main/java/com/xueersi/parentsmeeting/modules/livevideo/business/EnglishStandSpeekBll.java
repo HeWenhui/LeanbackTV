@@ -523,10 +523,10 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
             dbStart = false;
             if (sendDbDuration == 0) {
                 liveBll.setNotOpeningNum();
-                liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, "大声的说出来，老师很想听到你的声音哦~");
+                liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP, "大声的说出来，老师很想听到你的声音哦~");
             } else {
                 if (lastdbDuration == 0) {
-                    liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, "没错，就是这样，继续坚持下去！");
+                    liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP, "没错，就是这样，继续坚持下去！");
                 }
             }
             lastdbDuration = sendDbDuration;

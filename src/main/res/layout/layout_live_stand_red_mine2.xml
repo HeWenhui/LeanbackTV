@@ -2,14 +2,15 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <TextView
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView
         android:id="@id/tv_livevideo_redpackage_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:includeFontPadding="false"
         android:textColor="@color/COLOR_97091D"
-        android:textSize="16px" />
+        android:textSize="16px"
+        android:textStyle="bold" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -32,8 +33,8 @@
             android:layout_toRightOf="@id/iv_livevideo_redpackage_num"
             android:includeFontPadding="false"
             android:textColor="@color/COLOR_97091D"
-            android:textSize="16px" />
+            android:textSize="16px"
+            android:textStyle="bold" />
     </RelativeLayout>
-
 
 </RelativeLayout>

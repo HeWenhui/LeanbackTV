@@ -516,7 +516,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             public void onPmSuccess(ResponseEntity responseEntity) {
                 mLogtf.d("getReceiveGoldTeamStatus:onPmSuccess=" + responseEntity.getJsonObject().toString() + ",operateId=" +
                         operateId);
-                GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId());
+                GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId(), mGetInfo.getHeadImgPath());
                 callBack.onDataSucess(entity);
             }
 
@@ -542,7 +542,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             public void onPmSuccess(ResponseEntity responseEntity) {
                 mLogtf.d("getReceiveGoldTeamRank:onPmSuccess=" + responseEntity.getJsonObject().toString() + ",operateId=" +
                         operateId);
-                GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId());
+                GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId(), mGetInfo.getHeadImgPath());
                 callBack.onDataSucess(entity);
             }
 
@@ -3841,7 +3841,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         int index1 = url.substring(7).indexOf("/");
                         if (index1 != -1) {
                             String host = url.substring(7, 7 + index1);
-                            playserverEntity.setAddress(host);
+                            playserverEntity.setIpAddress(host);
                         }
                         dataCallBack.onDataSucess(provide, url);
                         return;
@@ -3852,7 +3852,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             JSONArray ipArray = jsonObject.optJSONArray("ips");
                             String ip = ipArray.getString(0);
                             String url = "rtmp://" + ip + "/" + host + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
-                            playserverEntity.setAddress(host);
+                            playserverEntity.setIpAddress(host);
                             dataCallBack.onDataSucess(provide, url);
                             mLogtf.d("dns_resolve_stream:ip_gslb_addr=" + playserverEntity.getIp_gslb_addr() + ",ip=" + ip);
                             return;
@@ -3898,7 +3898,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         entity.addBodyParam("serverac", playserverEntity.getAcode());
         entity.addBodyParam("serveric", playserverEntity.getIcode());
         entity.addBodyParam("servergroup", playserverEntity.getGroup());
-        entity.addBodyParam("server", playserverEntity.getAddress());
+        if (StringUtils.isEmpty(playserverEntity.getIpAddress())) {
+            entity.addBodyParam("server", playserverEntity.getAddress());
+        } else {
+            entity.addBodyParam("server", playserverEntity.getIpAddress());
+        }
         entity.addBodyParam("appname", mServer.getAppname());
         entity.addBodyParam("reconnnum", "" + (mOpenCount.get() - 1));
         entity.addBodyParam("connsec", "" + (connsec / 1000));
