@@ -42,31 +42,48 @@ import okhttp3.Call;
 
 
 /**
- * RolePlayer业务类
- * Created by zouhao on 2018/4/12.
+ * 多人连麦业务类
+ * @author zouhao on 2018/4/12
  */
 public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
-    /** 是否已经通过权限判断进入连接WebSocket */
+    /**
+     * 是否已经通过权限判断进入连接WebSocket
+     */
     private boolean isBeginConnWebSocket;
 
-    /** WebSocket连接类 */
+    /**
+     * WebSocket连接类
+     */
     private WebSocketConn mWebSocket;
 
-    /** 连接地址 */
-    private String webSocketUrl = "ws://wsarts.xueersi.com:9590/roleplay/index?userId=%1$s&role=1&cookie=%2$s&liveId=%3$s";
+    /**
+     * 连接地址
+     */
+    private String webSocketUrl = "ws://wsarts.xueersi" +
+            ".com:9590/roleplay/index?userId=%1$s&role=1&cookie=%2$s&liveId=%3$s";
 
-    /** RolePlayer数据实体 */
+    /**
+     * RolePlayer数据实体
+     */
     private RolePlayerEntity mRolePlayerEntity;
 
-    /** 直播ID */
+    /**
+     * 直播ID
+     */
     private String mLiveId;
-    /** 购课ID */
+    /**
+     * 购课ID
+     */
     private String mStuCouId;
     VideoQuestionLiveEntity videoQuestionLiveEntity;
-    /** 基础布局 */
+    /**
+     * 基础布局
+     */
     private RelativeLayout bottomContent;
-    /** 直播基础BLL */
+    /**
+     * 直播基础BLL
+     */
     private LiveBll mLiveBll;
 
     private RolePlayerPager mRolePlayerPager;
@@ -185,8 +202,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
         if (mWebSocket == null) {
             mWebSocket = new WebSocketConn();
-            webSocketUrl = String.format(webSocketUrl, UserBll.getInstance().getMyUserInfoEntity().getStuId(), AppBll.getInstance().getUserToken(), mLiveId);
-            //webSocketUrl = String.format(webSocketUrl, "1237", "1111111", "1234");
+            webSocketUrl = String.format(webSocketUrl, UserBll.getInstance().getMyUserInfoEntity().getStuId(), AppBll
+                    .getInstance().getUserToken(), mLiveId);
             Loger.i("RolePlayerDemoTest", "websocket:" + webSocketUrl);
             mWebSocket.connect(webSocketUrl, new WebSocketConn.WebSocketCallBack() {
                 @Override
@@ -311,7 +328,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                             //收到对方的MP3文件地址
                             String mp3Url = msgObj.optString("content");
                             int index = msgObj.optInt("index");
-                            if (!TextUtils.isEmpty(mp3Url) && index >= 0 && index < mRolePlayerEntity.getLstRolePlayerMessage().size()) {
+                            if (!TextUtils.isEmpty(mp3Url) && index >= 0 && index < mRolePlayerEntity
+                                    .getLstRolePlayerMessage().size()) {
                                 mRolePlayerEntity.getLstRolePlayerMessage().get(index).setWebVoiceUrl(mp3Url);
                             }
                             break;
@@ -343,8 +361,10 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                             int fluency = obj.optInt("fluency");
                             int accuracy = obj.optInt("accuracy");
 
-                            if (totalScore > 0 && position >= 0 && position < mRolePlayerEntity.getLstRolePlayerMessage().size()) {
-                                final RolePlayerEntity.RolePlayerMessage message = mRolePlayerEntity.getMessageByIndex(position);
+                            if (totalScore > 0 && position >= 0 && position < mRolePlayerEntity
+                                    .getLstRolePlayerMessage().size()) {
+                                final RolePlayerEntity.RolePlayerMessage message = mRolePlayerEntity
+                                        .getMessageByIndex(position);
                                 if (message != null) {
                                     message.setSpeechScore(totalScore);
                                     message.setFluency(fluency);
@@ -389,6 +409,9 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                 case -1:
                     //异常情况
                     break;
+                default:
+                    break;
+
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -402,7 +425,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      */
     public void requestTestInfos() {
         if (mRolePlayerEntity != null) {
-            mRolePlayerHttpManager.requestRolePlayTestInfos(mLiveId, mStuCouId, mRolePlayerEntity.getTestId(), new HttpCallBack(false) {
+            mRolePlayerHttpManager.requestRolePlayTestInfos(mLiveId, mStuCouId, mRolePlayerEntity.getTestId(), new
+                    HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     Loger.i("RolePlayerDemoTest", responseEntity.getJsonObject().toString());
@@ -444,7 +468,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             }
             obj.put("answers", arrAnswer);
 
-            mRolePlayerHttpManager.requestResult(mStuCouId, mLiveId, mRolePlayerEntity.getTestId(), mRolePlayerEntity.getSelfRoleHead().getRoleName(), obj.toString(), new HttpCallBack() {
+            mRolePlayerHttpManager.requestResult(mStuCouId, mLiveId, mRolePlayerEntity.getTestId(), mRolePlayerEntity
+                    .getSelfRoleHead().getRoleName(), obj.toString(), new HttpCallBack() {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
@@ -565,7 +590,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         this.mRolePlayerEntity = entity;
     }
 
-    public void setRolePlayPager(RolePlayerPager pager){
+    public void setRolePlayPager(RolePlayerPager pager) {
         this.mRolePlayerPager = pager;
     }
 }
