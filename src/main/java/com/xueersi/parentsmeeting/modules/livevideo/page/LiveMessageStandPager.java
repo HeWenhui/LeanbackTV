@@ -16,6 +16,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
 import android.text.util.Linkify;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -176,7 +177,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         try {
             inputStream = mContext.getAssets().open("live_stand/frame_anim/openmsg/message_open_00074.png");
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            bitmap.setDensity(160);
+            bitmap.setDensity((int) (DisplayMetrics.DENSITY_MEDIUM * (FrameAnimation.IMAGE_HEIGHT / (float) com.xueersi.parentsmeeting.util.ScreenUtils.getScreenHeight(mView.getContext()))));
             btMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
             inputStream.close();
         } catch (IOException e) {
@@ -203,8 +204,34 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         return mView;
     }
 
-    void initBtMesOpenAnimation() {
+    /**
+     * 设置聊天开启图片
+     */
+    private void initOpenBt() {
+        InputStream inputStream = null;
+        try {
+            inputStream = mContext.getAssets().open("live_stand/frame_anim/openmsg/message_open_00074.png");
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+//            bitmap.setDensity((int) (DisplayMetrics.DENSITY_MEDIUM * (FrameAnimation.IMAGE_HEIGHT / (float) com.xueersi.parentsmeeting.util.ScreenUtils.getScreenHeight(mView.getContext()))));
+            bitmap.setDensity(DisplayMetrics.DENSITY_MEDIUM);
+            btMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void initBtMesOpenAnimation() {
         btMesOpenAnimation = FrameAnimation.createFromAees(mContext, btMesOpen, "live_stand/frame_anim/openmsg", 50, false);
+        btMesOpenAnimation.setDensity(DisplayMetrics.DENSITY_MEDIUM);
 //            btMesOpenAnimation.restartAnimation();
         btMesOpenAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
             @Override
@@ -214,10 +241,21 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
             @Override
             public void onAnimationEnd() {
+                initOpenBt();
                 Log.d(TAG, "onAnimationEnd");
                 liveMediaControllerBottom.onChildViewClick(btMesOpen);
-                rlMessageContent.setVisibility(View.VISIBLE);
-                KPSwitchConflictUtil.showKeyboard(switchFSPanelLinearLayout, etMessageContent);
+                if (lvMessage.getVisibility() == View.GONE) {
+                    lvMessage.setVisibility(View.VISIBLE);
+                    rlMessageContent.setVisibility(View.VISIBLE);
+//                    KPSwitchConflictUtil.showKeyboard(switchFSPanelLinearLayout, etMessageContent);
+                } else {
+                    if (rlMessageContent.getVisibility() == View.GONE) {
+                        rlMessageContent.setVisibility(View.VISIBLE);
+                    } else {
+                        lvMessage.setVisibility(View.GONE);
+                        rlMessageContent.setVisibility(View.GONE);
+                    }
+                }
             }
 
             @Override
@@ -264,6 +302,15 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //                liveMediaControllerBottom.onChildViewClick(v);
 //                rlMessageContent.setVisibility(View.VISIBLE);
 //                KPSwitchConflictUtil.showKeyboard(switchFSPanelLinearLayout, etMessageContent);
+            }
+        });
+        mView.findViewById(R.id.iv_livevideo_message_close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputMethodManager mInputMethodManager = (InputMethodManager) mContext.getSystemService(Context
+                        .INPUT_METHOD_SERVICE);
+                mInputMethodManager.hideSoftInputFromWindow(etMessageContent.getWindowToken(), 0);
+                rlMessageContent.setVisibility(View.GONE);
             }
         });
         etMessageContent.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -727,6 +774,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         });
         Loger.i(TAG, "initData:time5=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
+        initOpenBt();
     }
 
     private void initFlower() {
@@ -849,11 +897,13 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     }
 
     public void onTitleShow(boolean show) {
-        if (rlMessageContent.getVisibility() != View.GONE) {
+//        if (rlMessageContent.getVisibility() != View.GONE) {
+//            rlMessageContent.setVisibility(View.GONE);
+//        }
+        if (switchFSPanelLinearLayout.getVisibility() == View.VISIBLE) {
             InputMethodManager mInputMethodManager = (InputMethodManager) mContext.getSystemService(Context
                     .INPUT_METHOD_SERVICE);
             mInputMethodManager.hideSoftInputFromWindow(etMessageContent.getWindowToken(), 0);
-            rlMessageContent.setVisibility(View.GONE);
         }
         switchFSPanelLinearLayout.setVisibility(View.GONE);
     }

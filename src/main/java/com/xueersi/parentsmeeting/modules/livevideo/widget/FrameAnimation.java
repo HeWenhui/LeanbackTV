@@ -76,6 +76,7 @@ public class FrameAnimation {
     private int mCurrentSelect;
 
     private int mCurrentFrame;
+    public static final float IMAGE_HEIGHT = 750f;
 
     private static final int SELECTED_A = 1;
 
@@ -90,6 +91,8 @@ public class FrameAnimation {
     private boolean destory = false;
     private ThreadPoolExecutor executor;
     long beginTime;
+    /** 图片的密度 */
+    private int mDensity;
 
     /**
      * @param iv       播放动画的控件
@@ -112,6 +115,7 @@ public class FrameAnimation {
         this.mDuration = duration;
         this.mLastFrame = files.length - 1;
         this.mIsRepeat = isRepeat;
+        mDensity = (int) (DisplayMetrics.DENSITY_MEDIUM * (IMAGE_HEIGHT / (float) ScreenUtils.getScreenHeight(mView.getContext())));
         if (files.length > 0) {
             play(0);
             executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
@@ -342,7 +346,7 @@ public class FrameAnimation {
                                             bitmap.recycle();
                                             return;
                                         }
-                                        bitmap.setDensity((int) (DisplayMetrics.DENSITY_MEDIUM * ((float) 750 / (float) ScreenUtils.getScreenHeight(mView.getContext()))));
+                                        bitmap.setDensity(mDensity);
                                         bitmapHashMap.put(file, bitmap);
                                         allBitmapHashMap.put(file, bitmap);
                                     }
@@ -359,7 +363,7 @@ public class FrameAnimation {
                                         bitmapHashMap.put(file, bitmap);
                                         allBitmapHashMap.put(file, bitmap);
 //                                        bitmap.setDensity(160);
-                                        bitmap.setDensity((int) (DisplayMetrics.DENSITY_MEDIUM * ((float) 750 / (float) ScreenUtils.getScreenHeight(mView.getContext()))));
+                                        bitmap.setDensity(mDensity);
                                     }
                                 }
                                 if (bitmap != null) {
@@ -519,6 +523,10 @@ public class FrameAnimation {
                     break;
             }
         }
+    }
+
+    public void setDensity(int density) {
+        this.mDensity = density;
     }
 
     public void removeBitmapCache(String file) {
