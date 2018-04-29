@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -23,7 +22,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +32,6 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -114,7 +111,6 @@ import com.xueersi.xesalib.adapter.CommonAdapter;
 import com.xueersi.xesalib.umsagent.UmsAgentManager;
 import com.xueersi.xesalib.umsagent.UmsConstants;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
-import com.xueersi.xesalib.utils.audio.AudioPlayer;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.utils.string.StringUtils;
@@ -122,9 +118,7 @@ import com.xueersi.xesalib.utils.time.TimeUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
-import com.xueersi.xesalib.view.layout.dataload.DataErrorManager;
 import com.xueersi.xesalib.view.layout.dataload.DataLoadEntity;
-import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -283,12 +277,12 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             @Override
             public void onReceive(Context context, Intent intent) {
                 // 04.12 弹出广告的时候，需要刷新广告列表
-                lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(),getDataCallBack);
-                Log.e("Duncan","PaySuccessfully");
+                lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(), getDataCallBack);
+                Log.e("Duncan", "PaySuccessfully");
             }
         };
         registerReceiver(receiver, intentFilter);
-        Log.e("Duncan","oncreating");
+        Log.e("Duncan", "oncreating");
     }
 
     @Override
@@ -299,22 +293,22 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (mIsLand) {
             lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
             lp.addRule(RelativeLayout.BELOW, 0);
-            if(mPopupWindows != null){
+            if (mPopupWindows != null) {
                 mPopupWindows = null;
             }
-            if(LiveVideoConfig.MORE_COURSE > 0){
+            if (LiveVideoConfig.MORE_COURSE > 0) {
                 showPopupwindowboard();
             }
             rlAdvanceContent.setVisibility(View.GONE);
         } else {
             lp.height = RelativeLayout.LayoutParams.MATCH_PARENT;
             lp.addRule(RelativeLayout.BELOW, R.id.rl_course_video_content);
-            if(mPopupWindows != null){
+            if (mPopupWindows != null) {
                 mPopupWindows.dismiss();
                 mPopupWindows = null;
             }
             // 04.11 获取更多课程信息
-            lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(),getDataCallBack);
+            lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(), getDataCallBack);
             // 04.11 展示更多课程报名的列表信息
             rlAdvanceContent.setVisibility(View.VISIBLE);
             rlAdvanceContent.setLayoutParams(lp);
@@ -336,7 +330,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             mMediaController.setWindowLayoutType();
             mMediaController.release();
         }
-        if(mLiveRemarkBll!=null){
+        if (mLiveRemarkBll != null) {
             mLiveRemarkBll.hideMarkPoints();
         }
         // 设置当前是否为横屏
@@ -372,7 +366,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (lstVideoQuestion == null || lstVideoQuestion.size() == 0) {
             return;
         }
-        if(mVideoEntity.getIsAllowMarkpoint()!=1) {
+        if (mVideoEntity.getIsAllowMarkpoint() != 1) {
             mMediaController.setVideoQuestions("playback" + mVideoEntity.getvLivePlayBackType() + "-", lstVideoQuestion,
                     vPlayer.getDuration());
         }
@@ -456,10 +450,10 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         // 加载竖屏时显示更多课程广告的布局
         rlAdvanceContent = (RelativeLayout) findViewById(R.id.rl_livevideo_playback);
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mMoreChoice = inflater.inflate(R.layout.layout_lecture_livevideoback,null);
-        mApplyNumber = (TextView)mMoreChoice.findViewById(R.id.tv_apply_number);
-        mMorecourse = (ListView)mMoreChoice.findViewById(R.id.morecourse_list);
-        ImageButton back = (ImageButton)mMoreChoice.findViewById(R.id.ib_back);
+        mMoreChoice = inflater.inflate(R.layout.layout_lecture_livevideoback, null);
+        mApplyNumber = (TextView) mMoreChoice.findViewById(R.id.tv_apply_number);
+        mMorecourse = (ListView) mMoreChoice.findViewById(R.id.morecourse_list);
+        ImageButton back = (ImageButton) mMoreChoice.findViewById(R.id.ib_back);
         back.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -602,7 +596,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             mCourseAdapter = new CommonAdapter<MoreChoice.Choice>(mChoices) {
                 @Override
                 public AdapterItemInterface<MoreChoice.Choice> getItemView(Object type) {
-                    MoreChoiceItem morelistItem = new MoreChoiceItem(mContext,mData);
+                    MoreChoiceItem morelistItem = new MoreChoiceItem(mContext, mData);
                     return morelistItem;
                 }
 
@@ -610,20 +604,20 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             mMorecourse.setAdapter(mCourseAdapter);
         }
         // 04.12 第一次进入的时候，就去请求回放的所有广告信息
-        lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(),getDataCallBack);
+        lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(), getDataCallBack);
 
     }
 
-    AbstractBusinessDataCallBack getDataCallBack = new AbstractBusinessDataCallBack(){
+    AbstractBusinessDataCallBack getDataCallBack = new AbstractBusinessDataCallBack() {
         @Override
         public void onDataSucess(Object... objData) {
             // 04.04 获取到数据之后的逻辑处理
-            if(objData.length > 0){
+            if (objData.length > 0) {
                 mData = (MoreChoice) objData[0];
                 mChoices.clear();
                 mChoices.addAll(mData.getCases());
                 LiveVideoConfig.MORE_COURSE = mChoices.size();
-                mApplyNumber.setText(Html.fromHtml("<font color='#333333'>正在报名中</font>"+ "<font color='#F13232'>" +"  " + mChoices.size() + "</font>"));
+                mApplyNumber.setText(Html.fromHtml("<font color='#333333'>正在报名中</font>" + "<font color='#F13232'>" + "  " + mChoices.size() + "</font>"));
                 mCourseAdapter.updateData(mChoices);
             }
 
@@ -1111,7 +1105,12 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showExam");
                     mPlayVideoControlHandler.sendMessage(msg);
                     examQuestionPlaybackPager = new ExamQuestionPlaybackPager(LivePlayBackVideoActivity.this,
-                            mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), IS_SCIENCE, stuCourId);
+                            mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), IS_SCIENCE, stuCourId, new ExamQuestionPlaybackPager.ExamStop() {
+                        @Override
+                        public void stopExam() {
+                            LivePlayBackVideoActivity.this.stopExam();
+                        }
+                    });
                     rlQuestionContent.removeAllViews();
                     rlQuestionContent.addView(examQuestionPlaybackPager.getRootView(), new LayoutParams(LayoutParams
                             .MATCH_PARENT,
@@ -1245,7 +1244,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 rlQuestionContent.setVisibility(View.VISIBLE);
                 lecAdvertPager.initStep1();
                 // 04.12 更多课程的列表刷新
-                lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(),getDataCallBack);
+                lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(), getDataCallBack);
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             }
         });
@@ -1872,22 +1871,22 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(mIsLand){
-                    if(mPopupWindows != null){
+                if (mIsLand) {
+                    if (mPopupWindows != null) {
                         mPopupWindows.dismiss();
                         mPopupWindows = null;
                     }
-                    if(LiveVideoConfig.MORE_COURSE > 0){
+                    if (LiveVideoConfig.MORE_COURSE > 0) {
                         showPopupwindowboard();
                     }
-                }else{
-                    if(mPopupWindows != null) {
+                } else {
+                    if (mPopupWindows != null) {
                         mPopupWindows.dismiss();
                         mPopupWindows = null;
                     }
                 }
             }
-        },800);
+        }, 800);
 
     }
 
@@ -2791,43 +2790,43 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(MiniEvent event) {
-        if("Order".equals(event.getMin())){
-            if(mIsLand){
+        if ("Order".equals(event.getMin())) {
+            if (mIsLand) {
                 final String courseId = event.getCourseId();
                 final String classId = event.getClassId();
                 changeLOrP();
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        createRealVideo(courseId,classId);
+                        createRealVideo(courseId, classId);
                     }
-                },500);
-            }else{
-                createRealVideo(event.getCourseId(),event.getClassId());
+                }, 500);
+            } else {
+                createRealVideo(event.getCourseId(), event.getClassId());
             }
             // 添加点击立即报名的日志
             StableLogHashMap logHashMap = new StableLogHashMap("clickEnroll");
             logHashMap.put("adsid", "" + event.getAdId());
             logHashMap.addSno("5").addStable("2");
-            logHashMap.put("extra","点击了立即报名");
+            logHashMap.put("extra", "点击了立即报名");
             liveBll.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
             LiveVideoConfig.LECTUREADID = event.getAdId();
         }
-        if("ConfirmClick".equals(event.getMin())){
+        if ("ConfirmClick".equals(event.getMin())) {
             // 添加用户点击提交订单日志
             StableLogHashMap logHashMap = new StableLogHashMap("clickSubmitOrder");
             logHashMap.put("adsid", "" + LiveVideoConfig.LECTUREADID);
             logHashMap.addSno("6").addStable("2");
-            logHashMap.put("extra","点击了立即支付");
+            logHashMap.put("extra", "点击了立即支付");
             liveBll.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
         }
-        if("OrderPaySuccess".equals(event.getMin())){
+        if ("OrderPaySuccess".equals(event.getMin())) {
             // 添加用户购买成功的日志
             StableLogHashMap logHashMap = new StableLogHashMap("purchaseSucceed");
             logHashMap.put("adsid", "" + LiveVideoConfig.LECTUREADID);
             logHashMap.addSno("7").addStable("2");
-            logHashMap.put("orderid",event.getCourseId());
-            logHashMap.put("extra","用户支付成功");
+            logHashMap.put("orderid", event.getCourseId());
+            logHashMap.put("extra", "用户支付成功");
             liveBll.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
         }
     }
@@ -2835,8 +2834,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        ViewGroup parents = (ViewGroup)videoView.getParent();
-        if(parents != null) {
+        ViewGroup parents = (ViewGroup) videoView.getParent();
+        if (parents != null) {
             parents.removeView(videoView);
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -2849,9 +2848,9 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     @Override
     protected void onRestart() {
         super.onRestart();
-        if(picinpic){
-            ViewGroup parents = (ViewGroup)videoView.getParent();
-            if(parents != null) {
+        if (picinpic) {
+            ViewGroup parents = (ViewGroup) videoView.getParent();
+            if (parents != null) {
                 parents.removeView(videoView);
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -2862,18 +2861,18 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         }
     }
 
-    private void createRealVideo(String courseId,String classId){
+    private void createRealVideo(String courseId, String classId) {
         boolean isPermission = FloatPermissionManager.getInstance().applyFloatWindow(this);
 
         //有对应权限或者系统版本小于7.0
         if (isPermission || Build.VERSION.SDK_INT < 24) {
-            mParent = (ViewGroup)videoView.getParent();
-            if(mParent != null){
+            mParent = (ViewGroup) videoView.getParent();
+            if (mParent != null) {
                 mParent.removeView(videoView);
             }
             //开启悬浮窗
-            OtherModulesEnter.intentToOrderConfirmActivity(this,courseId+"-"+classId,100,"LectureLiveVideoActivity");
-            FloatWindowManager.addView(this,videoView,2);
+            OtherModulesEnter.intentToOrderConfirmActivity(this, courseId + "-" + classId, 100, "LectureLiveVideoActivity");
+            FloatWindowManager.addView(this, videoView, 2);
             AppConfig.LECTURELIVEBACK = false;
             picinpic = true;
         }
@@ -2891,7 +2890,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mFloatView = inflater.inflate(R.layout.livemessage_jumpboard, null);
         mPopupWindows = new PopupWindow(mFloatView, 360, 90, false);
         mPopupWindows.setOutsideTouchable(false);
-        mPopupWindows.showAtLocation(mFloatView, Gravity.BOTTOM | Gravity.LEFT, ScreenUtils.getScreenWidth()-420, 160);
+        mPopupWindows.showAtLocation(mFloatView, Gravity.BOTTOM | Gravity.LEFT, ScreenUtils.getScreenWidth() - 420, 160);
         // 03.29 横竖屏的切换
         mFloatView.findViewById(R.id.switch_orientation).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -2900,7 +2899,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 changeLOrP();
             }
         });
-        TextView totalnum = (TextView)mFloatView.findViewById(R.id.tv_apply_totalnum);
+        TextView totalnum = (TextView) mFloatView.findViewById(R.id.tv_apply_totalnum);
         totalnum.setText(LiveVideoConfig.MORE_COURSE + "");
 
     }
