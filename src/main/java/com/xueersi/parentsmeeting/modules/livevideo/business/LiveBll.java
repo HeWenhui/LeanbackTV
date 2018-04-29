@@ -665,12 +665,32 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
     private int test1 = 0;
 
+    /**
+     * 站立直播语音评测战况
+     *
+     * @param testId
+     * @param callBack
+     */
     public void getSpeechEvalAnswerTeamStatus(String testId, final AbstractBusinessDataCallBack callBack) {
         mHttpManager.getSpeechEvalAnswerTeamStatus(testId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 GoldTeamStatus entity = mHttpResponseParser.getSpeechEvalAnswerTeamStatus(responseEntity, mGetInfo.getStuId());
                 callBack.onDataSucess(entity);
+//                if (AppConfig.DEBUG) {
+//                    GoldTeamStatus entity = new GoldTeamStatus();
+//                    for (int i = 0; i < 5; i++) {
+//                        GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                        student.setNickname("王爽" + (test1++));
+//                        student.createShowName();
+//                        student.setScore("90");
+//                        student.setAvatar_path(mGetInfo.getHeadImgPath());
+//                        entity.getStudents().add(student);
+//                    }
+//                    callBack.onDataSucess(entity);
+//                } else {
+//                    callBack.onDataFail(1, responseEntity.getErrorMsg());
+//                }
             }
 
             @Override
@@ -687,6 +707,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     for (int i = 0; i < 3; i++) {
                         GoldTeamStatus.Student student = new GoldTeamStatus.Student();
                         student.setNickname("测试" + (test1++));
+                        student.createShowName();
                         student.setScore("90");
                         student.setAvatar_path(mGetInfo.getHeadImgPath());
                         entity.getStudents().add(student);

@@ -347,8 +347,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                             if (addStudents.isEmpty()) {
                                 SpeechStandLog.sno4(speechEvalAction, id);
                             }
+                            long delayMillis = 3000 + students.size() * 300;
                             for (int i = 0; i < students.size(); i++) {
-                                GoldTeamStatus.Student student = students.get(i);
+                                final GoldTeamStatus.Student student = students.get(i);
                                 if (student.isMe()) {
                                     continue;
                                 }
@@ -356,75 +357,80 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                                     continue;
                                 }
                                 addStudents.add(student);
-                                LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
-                                String path = "live_stand_voice_team_right.json";
-                                lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/team_right");
-                                LottieComposition.Factory.fromAssetFileName(mContext, path, new TeamOnCompositionLoadedListener(student, lottieAnimationView));
-                                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                mView.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
+                                        String path = "live_stand_voice_team_right.json";
+                                        lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/team_right");
+                                        LottieComposition.Factory.fromAssetFileName(mContext, path, new TeamOnCompositionLoadedListener(student, lottieAnimationView));
+                                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 //                                lp.weight = 1;
-                                int countLeft = ll_livevideo_voiceans_team_left.getChildCount();
-                                int countRight = ll_livevideo_voiceans_team_right.getChildCount();
-                                if (leftOrRight % 2 == 1) {
-                                    boolean remove = false;
-                                    int index = 0;
-                                    if (countRight > 0) {
-                                        int rightWidth = ((View) ll_livevideo_voiceans_team_right.getParent()).getWidth();
-                                        View child = ll_livevideo_voiceans_team_right.getChildAt(0);
-                                        int childWidth = child.getWidth();
-                                        while (childWidth * (countRight + 1) > rightWidth) {
-                                            countRight--;
-                                            View view = rightView.remove(0);
-                                            lp.width = childWidth;
-                                            index = ll_livevideo_voiceans_team_right.indexOfChild(view);
-                                            ll_livevideo_voiceans_team_right.removeViewInLayout(view);
-                                            remove = true;
+                                        int countLeft = ll_livevideo_voiceans_team_left.getChildCount();
+                                        int countRight = ll_livevideo_voiceans_team_right.getChildCount();
+                                        if (leftOrRight % 2 == 1) {
+                                            boolean remove = false;
+                                            int index = 0;
+                                            if (countRight > 0) {
+                                                int rightWidth = ((View) ll_livevideo_voiceans_team_right.getParent()).getWidth();
+                                                View child = ll_livevideo_voiceans_team_right.getChildAt(0);
+                                                int childWidth = child.getWidth();
+                                                while (childWidth * (countRight + 1) > rightWidth) {
+                                                    countRight--;
+                                                    View view = rightView.remove(0);
+                                                    lp.width = childWidth;
+                                                    index = ll_livevideo_voiceans_team_right.indexOfChild(view);
+                                                    ll_livevideo_voiceans_team_right.removeViewInLayout(view);
+                                                    remove = true;
+                                                }
+                                            }
+                                            if (remove) {
+                                                ll_livevideo_voiceans_team_right.addView(lottieAnimationView, index, lp);
+                                            } else {
+                                                ll_livevideo_voiceans_team_right.addView(lottieAnimationView, lp);
+                                            }
+                                            rightView.add(lottieAnimationView);
+                                        } else {
+                                            boolean remove = false;
+                                            int index = 0;
+                                            if (countLeft > 0) {
+                                                int leftWidth = ((View) ll_livevideo_voiceans_team_left.getParent()).getWidth();
+                                                View child = ll_livevideo_voiceans_team_left.getChildAt(countLeft - 1);
+                                                int childWidth = child.getWidth();
+                                                while (childWidth * (countLeft + 1) > leftWidth) {
+                                                    countLeft--;
+                                                    remove = true;
+                                                    View view = leftView.remove(0);
+                                                    lp.width = childWidth;
+                                                    index = ll_livevideo_voiceans_team_left.indexOfChild(view);
+                                                    ll_livevideo_voiceans_team_left.removeViewInLayout(view);
+                                                }
+                                            }
+                                            if (remove) {
+                                                ll_livevideo_voiceans_team_left.addView(lottieAnimationView, index, lp);
+                                            } else {
+                                                ll_livevideo_voiceans_team_left.addView(lottieAnimationView, 0, lp);
+                                            }
+                                            leftView.add(lottieAnimationView);
                                         }
+                                        leftOrRight++;
                                     }
-                                    if (remove) {
-                                        ll_livevideo_voiceans_team_right.addView(lottieAnimationView, index, lp);
-                                    } else {
-                                        ll_livevideo_voiceans_team_right.addView(lottieAnimationView, lp);
-                                    }
-                                    rightView.add(lottieAnimationView);
-                                } else {
-                                    boolean remove = false;
-                                    int index = 0;
-                                    if (countLeft > 0) {
-                                        int leftWidth = ((View) ll_livevideo_voiceans_team_left.getParent()).getWidth();
-                                        View child = ll_livevideo_voiceans_team_left.getChildAt(countLeft - 1);
-                                        int childWidth = child.getWidth();
-                                        while (childWidth * (countLeft + 1) > leftWidth) {
-                                            countLeft--;
-                                            remove = true;
-                                            View view = leftView.remove(0);
-                                            lp.width = childWidth;
-                                            index = ll_livevideo_voiceans_team_left.indexOfChild(view);
-                                            ll_livevideo_voiceans_team_left.removeViewInLayout(view);
-                                        }
-                                    }
-                                    if (remove) {
-                                        ll_livevideo_voiceans_team_left.addView(lottieAnimationView, index, lp);
-                                    } else {
-                                        ll_livevideo_voiceans_team_left.addView(lottieAnimationView, 0, lp);
-                                    }
-                                    leftView.add(lottieAnimationView);
-                                }
-                                leftOrRight++;
+                                }, 300 * i);
                             }
-                            onFinish();
+                            onFinish(delayMillis);
                         }
 
                         @Override
                         public void onDataFail(int errStatus, String failMsg) {
                             super.onDataFail(errStatus, failMsg);
-                            onFinish();
+                            onFinish(3000);
                         }
 
-                        private void onFinish() {
+                        private void onFinish(long delayMillis) {
                             if (mView.getParent() == null) {
                                 return;
                             }
-                            mView.postDelayed(r, 3000);
+                            mView.postDelayed(r, delayMillis);
                         }
                     });
                 }
@@ -743,16 +749,17 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
                 ImageView iv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.iv_livevideo_redpackage_num);
                 tv_livevideo_redpackage_num.setText(strGold);
-                tv_livevideo_redpackage_name.setTextSize(12.5f);
+                tv_livevideo_redpackage_name.setTextSize(14.5f);
                 tv_livevideo_redpackage_num.setTextSize(12.5f);
                 tv_livevideo_redpackage_name.setTextColor(0xff97091D);
                 tv_livevideo_redpackage_num.setTextColor(0xff97091D);
+                tv_livevideo_redpackage_name.setTypeface(fontFace);
                 iv_livevideo_redpackage_num.setImageResource(R.drawable.bg_live_stand_red_gold_big);
                 layout_live_stand_red_mine1.measure(canvasBitmap.getWidth(), canvasBitmap.getHeight());
                 layout_live_stand_red_mine1.layout(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight());
 
                 canvas.save();
-                canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 350);
+                canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 345);
                 layout_live_stand_red_mine1.draw(canvas);
                 canvas.restore();
             }
@@ -840,6 +847,16 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                         return updateHead(frameAnimation2, resultEntity, file, true, gold);
                     }
                 });
+                mView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        group.removeView(resultMine);
+                        frameAnimation2.destory();
+                        if (isEnd || !isLive) {
+                            speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, id);
+                        }
+                    }
+                }, 3000);
             }
 
             @Override
@@ -864,15 +881,6 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         } else {
             progress = 5;
         }
-        mView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                group.removeView(resultMine);
-                if (isEnd || !isLive) {
-                    speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, id);
-                }
-            }
-        }, 3000);
         speechEvalAction.onSpeechSuccess(id);
         String state;
         if (haveAnswer) {
@@ -1231,6 +1239,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 String name = student.getShowName();
                 Paint paint = new Paint();
                 paint.setTextSize(20);
+                paint.setTypeface(fontFace);
                 if (isMe) {
                     paint.setColor(Color.WHITE);
                 } else {
