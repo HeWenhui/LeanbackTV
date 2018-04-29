@@ -11,6 +11,7 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.xueersi.parentsmeeting.modules.livevideo.util.FontCache;
 
 import java.io.IOException;
 
@@ -23,12 +24,14 @@ public class StandLiveLottieAnimationView extends LottieAnimationView {
     int starCount = -1;
     Paint paint;
     private String TAG = "StandLiveLottieAnimationView";
+    Typeface fontFace;
 
     public StandLiveLottieAnimationView(Context context, AttributeSet attrs) {
         super(context, attrs);
         paint = new Paint();
         paint.setTextSize(24);
         paint.setColor(Color.WHITE);
+        fontFace = FontCache.getTypeface(context, "fangzhengyouyuan.ttf");
     }
 
     /**
@@ -53,7 +56,7 @@ public class StandLiveLottieAnimationView extends LottieAnimationView {
             canvas.drawBitmap(img_7Bitmap, 0, 0, null);
             Paint paint = new Paint();
             paint.setTextSize(24);
-            paint.setTypeface(Typeface.DEFAULT_BOLD);
+            paint.setTypeface(fontFace);
             paint.setAntiAlias(true);
             paint.setColor(Color.WHITE);
             float width = paint.measureText(num);
@@ -84,7 +87,7 @@ public class StandLiveLottieAnimationView extends LottieAnimationView {
             canvas.drawBitmap(img_7Bitmap, 0, 0, null);
             Paint paint = new Paint();
             paint.setTextSize(24);
-            paint.setTypeface(Typeface.DEFAULT_BOLD);
+            paint.setTypeface(fontFace);
             paint.setAntiAlias(true);
             paint.setColor(0xff8C4302);
             float width = paint.measureText(num);

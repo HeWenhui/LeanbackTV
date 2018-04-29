@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Environment;
 import android.view.View;
 import android.view.ViewStub;
@@ -16,6 +17,7 @@ import com.xueersi.parentsmeeting.http.DownloadCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.file.FileUtils;
@@ -50,6 +52,7 @@ public class LiveStandFrameAnim {
     long downloadStart;
     /** 下载文件大小 */
     long downloadSize = 117780122;
+    Typeface fontFace;
 
     public LiveStandFrameAnim(Activity activity) {
         this.activity = activity;
@@ -57,6 +60,9 @@ public class LiveStandFrameAnim {
 
     public void check(LiveBll liveBll, final AbstractBusinessDataCallBack callBack) {
         File alldir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/live_stand");
+        if (alldir == null) {
+            alldir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/live_stand");
+        }
         File[] allcache = alldir.listFiles();
         if (allcache != null) {
             for (int i = 0; i < allcache.length; i++) {
@@ -83,6 +89,7 @@ public class LiveStandFrameAnim {
             if (saveFile.exists()) {
                 callBack.onDataSucess("");
             } else {
+                fontFace = FontCache.getTypeface(activity, "fangzhengyouyuan.ttf");
                 //activity_video_live_stand_check
                 ViewStub vs_live_stand_update = activity.findViewById(R.id.vs_live_stand_update);
                 View view = vs_live_stand_update.inflate();
@@ -95,10 +102,12 @@ public class LiveStandFrameAnim {
                 });
                 TextView tv_live_stand_update_zip = view.findViewById(R.id.tv_live_stand_update_zip);
                 tv_live_stand_update_zip.setText("解压中");
+                tv_live_stand_update_zip.setTypeface(fontFace);
                 zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, activity, view, callBack, saveFile, saveFileTemp);
                 zipExtractorTask.execute();
             }
         } else {
+            fontFace = FontCache.getTypeface(activity, "fangzhengyouyuan.ttf");
             //activity_video_live_stand_check
             ViewStub vs_live_stand_update = activity.findViewById(R.id.vs_live_stand_update);
             final View view = vs_live_stand_update.inflate();
@@ -111,6 +120,7 @@ public class LiveStandFrameAnim {
             });
             final ProgressBar pb_live_stand_update = view.findViewById(R.id.pb_live_stand_update);
             final TextView tv_live_stand_update_zip = view.findViewById(R.id.tv_live_stand_update_zip);
+            tv_live_stand_update_zip.setTypeface(fontFace);
             int netWorkType = NetWorkHelper.getNetWorkState(activity);
             if (netWorkType == NetWorkHelper.MOBILE_STATE) {
                 final VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(), false,
@@ -149,6 +159,7 @@ public class LiveStandFrameAnim {
         final ProgressBar pb_live_stand_update = view.findViewById(R.id.pb_live_stand_update);
         final RelativeLayout rl_live_stand_update_prog = view.findViewById(R.id.rl_live_stand_update_prog);
         final TextView tv_live_stand_update_prog = view.findViewById(R.id.tv_live_stand_update_prog);
+        tv_live_stand_update_prog.setTypeface(fontFace);
         downloadStart = System.currentTimeMillis();
         baseHttp.downloadRenew(xuersi, tempFileZip, new DownloadCallBack() {
             DownloadCallBack downloadCallBack = this;

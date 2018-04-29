@@ -584,7 +584,11 @@ public class FrameAnimation {
     public static FrameAnimation createFromAees(Context mContext, View iv, String path, int duration, boolean isRepeat) {
         try {
             String[] files = {};
-            File externalFilesDir = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/live_stand/" + LiveStandFrameAnim.version), path);
+            File alldir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/live_stand");
+            if (alldir == null) {
+                alldir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/live_stand");
+            }
+            File externalFilesDir = new File(new File(alldir.getPath() + "/" + LiveStandFrameAnim.version), path);
             if (externalFilesDir.exists()) {
                 files = externalFilesDir.list();
                 if (files != null) {
@@ -614,7 +618,7 @@ public class FrameAnimation {
     }
 
     public static InputStream getInputStream(Context context, String file) throws IOException {
-        if (file.contains("xueersi")) {
+        if (file.contains(LiveStandFrameAnim.version)) {
             FileInputStream fileInputStream = new FileInputStream(file);
             return fileInputStream;
         }

@@ -43,6 +43,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
 import com.xueersi.parentsmeeting.permission.PermissionCallback;
@@ -492,8 +493,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         entranceTime = System.currentTimeMillis();
         final String questionID = baseVideoQuestionEntity.getvQuestionID();
         Loger.d(TAG, "initData:questionID=" + questionID);
-        fontFace = Typeface.createFromAsset(mContext.getAssets(),
-                "fangzhengyouyuan.ttf");
+        fontFace = FontCache.getTypeface(mContext, "fangzhengyouyuan.ttf");
         dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/voice/");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {
