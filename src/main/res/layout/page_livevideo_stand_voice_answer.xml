@@ -11,7 +11,7 @@
     <RelativeLayout
         android:id="@id/rl_livevideo_voiceans_content"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:visibility="gone">
 
@@ -52,6 +52,7 @@
             android:id="@id/lav_livevideo_voiceans_team_mine"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:visibility="invisible" />
 
@@ -59,11 +60,31 @@
             android:id="@id/iv_livevideo_speecteval_wave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" />
+
+        <RelativeLayout
+            android:id="@id/rl_livevideo_speecteval_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/iv_livevideo_speecteval_wave"
+            android:layout_centerHorizontal="true"
+            android:visibility="invisible">
+
+            <TextView
+                android:id="@id/tv_livevideo_speecteval_tip"
+                style="@style/text_font12_ff4343_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:visibility="visible" />
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@id/iv_livevideo_speecteval_wave"
             android:layout_toRightOf="@id/lav_livevideo_voiceans_team_mine">
 
@@ -79,6 +100,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@id/rl_livevideo_voiceans_switch"
             android:layout_toRightOf="@id/iv_livevideo_speecteval_wave">
 
@@ -88,26 +110,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" />
         </RelativeLayout>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@id/rl_livevideo_speecteval_tip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/rl_livevideo_voiceans_content"
-        android:layout_centerHorizontal="true"
-        android:visibility="invisible">
-
-        <TextView
-            android:id="@id/tv_livevideo_speecteval_tip"
-            style="@style/text_font12_ff4343_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingLeft="35dp"
-            android:paddingRight="7dp"
-            android:visibility="visible" />
 
     </RelativeLayout>
 

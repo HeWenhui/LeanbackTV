@@ -112,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/rl_livevideo_message_back"
                 android:layout_alignTop="@id/rl_livevideo_message_back"
-                android:layout_marginTop="6dp">
+                android:layout_marginTop="8dp">
 
                 <Button
                     android:id="@id/bt_livevideo_message_send"
