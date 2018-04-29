@@ -8,6 +8,7 @@ import android.os.Message;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService;
 import com.xueersi.xesalib.utils.log.Loger;
 
@@ -100,11 +101,11 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
             }
         }
         frames.clear();
-        Map<String, String> mData = new HashMap<>();
-        mData.put("activity", activity.getClass().getSimpleName());
-        mData.put("method", method);
-        mData.put("message", "server: " + lastPlayserverEntity.getAddress() + " vdownload:" + vdownload);
-        Loger.e(activity, LiveVideoConfig.LIVE_GSLB, mData, true);
+        StableLogHashMap stableLogHashMap = new StableLogHashMap("glsbSpeed");
+        stableLogHashMap.put("activity", activity.getClass().getSimpleName());
+        stableLogHashMap.put("method", method);
+        stableLogHashMap.put("message", "server: " + lastPlayserverEntity.getAddress() + " vdownload:" + vdownload);
+        Loger.e(activity, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData(), true);
     }
 
     public void onPause() {
