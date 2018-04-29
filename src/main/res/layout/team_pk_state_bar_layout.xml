@@ -10,7 +10,6 @@
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
-        android:background="@drawable/shape_livevideo_teampk_statebar_blue_bg"
         android:text="全力追赶"
         android:gravity="center_vertical"
         android:textSize="8sp"

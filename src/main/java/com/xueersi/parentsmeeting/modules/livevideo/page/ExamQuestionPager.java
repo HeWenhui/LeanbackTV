@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
@@ -20,13 +21,17 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.HashMap;
@@ -63,9 +68,12 @@ public class ExamQuestionPager extends BasePager {
     private String isShowRankList;
     boolean IS_SCIENCE;
     String stuCouId;
+    private int isTeamPkRoom;
+    private int mGoldNum;
+    private int mEnergyNum;
 
     public ExamQuestionPager(Context context, LiveBll liveBll, QuestionBll questionBll, String stuId
-            , String stuName, String liveid, String num, String nonce, String isShowRankList, boolean IS_SCIENCE, String stuCouId) {
+            , String stuName, String liveid, String num, String nonce, String isShowRankList, boolean IS_SCIENCE, String stuCouId, int isTeamPkRoom) {
         super(context);
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
@@ -80,6 +88,7 @@ public class ExamQuestionPager extends BasePager {
         this.stuCouId = stuCouId;
         logToFile.i("ExamQuestionPager:liveid=" + liveid + ",num=" + num);
         this.isShowRankList = isShowRankList;
+        this.isTeamPkRoom = isTeamPkRoom;
         initData();
     }
 
@@ -141,7 +150,22 @@ public class ExamQuestionPager extends BasePager {
         examUrl += "&stuCouId=" + stuCouId;
         examUrl += "&isTowall=" + isShowRankList;
         examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
+        examUrl += "&isShowTeamPk="+ (LiveBll.isAllowTeamPk?"1":"0");
         wvSubjectWeb.loadUrl(examUrl);
+
+        mView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+                EventBus.getDefault().post(new LiveRoomH5CloseEvent(mGoldNum,mEnergyNum,LiveRoomH5CloseEvent.H5_TYPE_EXAM,num));
+            }
+        });
+
+
 //        wvSubjectWeb.loadUrl("http://7.xesweb.sinaapp.com/test/examPaper2.html");
     }
 
@@ -294,7 +318,9 @@ public class ExamQuestionPager extends BasePager {
                 return false;
             }
             logToFile.i("shouldOverrideUrlLoading:url=" + url);
-            if ("xueersi://livevideo/examPaper/close".equals(url) || "http://baidu.com/".equals(url)) {
+
+
+            if ("xueersi://livevideo/examPaper/close".equals(url) || url.contains("baidu.com")) {
                 ViewGroup group = (ViewGroup) mView.getParent();
                 if (group != null) {
                     group.removeView(mView);
@@ -310,6 +336,37 @@ public class ExamQuestionPager extends BasePager {
                     view.loadUrl(url);
                 }
             }
+
+
+            if (url.contains(TeamPKBll.TEAMPK_URL_FIFTE)) {
+                try {
+                    int startIndex = url.indexOf("goldNum=");
+                    if (startIndex != -1) {
+                        String teamStr = url.substring(startIndex, url.length());
+                        int endIndex = teamStr.indexOf("&");
+                        String goldNUmStr = teamStr.substring(0, endIndex);
+                        if (!TextUtils.isEmpty(goldNUmStr)) {
+                            mGoldNum = Integer.parseInt(goldNUmStr.trim());
+                        }
+                    }
+                    int satrIndex2 = url.indexOf("eneryNum=");
+                    if (satrIndex2 != -1) {
+                        String tempStr2 = url.substring(satrIndex2);
+                        String energyNumStr = null;
+                        if (tempStr2.contains("&")) {
+                            energyNumStr = tempStr2.substring(0, tempStr2.indexOf("&"));
+                        } else {
+                            energyNumStr = tempStr2.substring(0, tempStr2.length());
+                        }
+                        if (!TextUtils.isEmpty(energyNumStr)) {
+                            mEnergyNum = Integer.parseInt(energyNumStr.trim());
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
             return true;
         }
     }

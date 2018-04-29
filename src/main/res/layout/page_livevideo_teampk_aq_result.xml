@@ -62,6 +62,44 @@
     </RelativeLayout>
 
 
+    <RelativeLayout
+        android:layout_width="210dp"
+        android:layout_height="60dp"
+        android:background="@drawable/shape_livevideo_teampk_aq_result_bg"
+        android:layout_centerInParent="true"
+        android:id="@id/rl_vote_award_root"
+        android:visibility="visible"
+        >
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            >
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="27dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/livevideo_tool_energy_img_disable"
+            android:id="@id/iv_vote_award_energy"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@id/tv_vote_award_energy"
+            android:layout_toRightOf="@id/iv_vote_award_energy"
+            android:textStyle="bold"
+            android:text="+10"
+            android:textSize="15sp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/black"
+            />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

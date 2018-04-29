@@ -588,6 +588,9 @@
     <item name="iv_teampk_pkresult_student_name" type="id"/>
     <item name="iv_teampk_pkresult_student_energy" type="id"/>
     <item name="tv_teampk_pkresult_time_countdow" type="id"/>
+    <item name="tv_teampk_pkresult_contribution_name" type="id"/>
+
+
 
     <item name="tv_teampk_student_add_energy" type="id"/>
     <item name="iv_teampk_pkstate_coin" type="id"/>
@@ -600,7 +603,6 @@
     <item name="rl_teampk_pkstate_container_2" type="id"/>
     <item name="tpb_teampk_pkstate_energy_bar" type="id"/>
     <item name="v_teampk_pkstate_devide_line" type="id"/>
-
     <!--实时答题-->
     <item name="rl_answer_question_award_root" type="id"/>
     <item name="iv_answer_question_energy" type="id"/>
@@ -610,8 +612,17 @@
     <item name="tv_answer_question_coin" type="id"/>
     <item name="tv_answer_question_state" type="id"/>
 
+
+    <item name="rl_vote_award_root" type="id"/>
+    <item name="tv_vote_award_energy" type="id"/>
+    <item name="iv_vote_award_energy" type="id"/>
+
+
+
+
+
     <!--开宝箱-->
-    <item name="lav_teampk_open_box"     type="id"/>
+    <item name="lav_teampk_open_box" type="id"/>
     <item name="cad_teampk_open_box_team_coin" type="id"/>
 
     <item name="cad_teampk_open_box_my_coin" type="id"/>
@@ -663,4 +674,8 @@
     <item name="tv_livevideo_roleplayer_result_accuracy" type="id" />
     <item name="civ_livevideo_roleplayer_result_headimg" type="id" />
     <item name="tv_livevideo_roleplayer_result_msgtip" type="id" />
+    <!--老师点赞-->
+    <item name="lav_teacher_priase" type="id"/>
+
+
 </resources>

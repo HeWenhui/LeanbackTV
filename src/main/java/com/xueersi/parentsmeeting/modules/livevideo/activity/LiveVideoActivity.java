@@ -58,6 +58,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBllOld;
+import com.xueersi.parentsmeeting.modules.livevideo.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
@@ -186,7 +187,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     SpeechEvaluatorUtils mIse;
     RankBll rankBll;
     EnglishH5CacheAction englishH5Cache;
-    TeamPKBll teamPKBll; //战队pk
+   // TeamPKBll teamPKBll; //战队pk
     private LiveRemarkBll liveRemarkBll;
     /** 视频宽度 */
     public static final float VIDEO_WIDTH = 1280f;
@@ -206,6 +207,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     /** onPause状态不暂停视频 */
     boolean onPauseNotStopVideo = false;
     LiveTextureView liveTextureView;
+    private TeacherPraiseBll teacherPraiseBll;
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         long before = System.currentTimeMillis();
@@ -294,8 +296,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
 
         setFirstParam(lp);
         liveMessageBll.setVideoLayout(lp.width, lp.height);
-        teamPKBll.setRootView(bottomContent);
-
+        mLiveBll.setRootView(bottomContent);
         Loger.d(TAG, "initView:time2=" + (System.currentTimeMillis() - before));
         final View contentView = findViewById(android.R.id.content);
         contentView.postDelayed(new Runnable() {
@@ -464,9 +465,11 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         mLiveBll.setLiveLazyBllCreat(liveLazyBllCreat);
 
         // 初始战队pk
-        teamPKBll = new TeamPKBll(this);
-        mLiveBll.setTeamPkBll(teamPKBll);
-
+        //teamPKBll = new TeamPKBll(this);
+   //setTeamPkBll(teamPKBll);
+        //老师点赞
+        teacherPraiseBll = new TeacherPraiseBll(this);
+        mLiveBll.setTeacherPriaseBll(teacherPraiseBll);
     }
 
     /**
@@ -1585,6 +1588,11 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
         if (speechFeedBackAction != null) {
             speechFeedBackAction.stop();
         }
+
+        if(teacherPraiseBll != null){
+            teacherPraiseBll.onDestroy();
+        }
+
         super.onDestroy();
     }
 

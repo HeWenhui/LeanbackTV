@@ -6,13 +6,11 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,14 +30,15 @@ import android.widget.TextView;
 
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
-import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieImageAsset;
-import com.airbnb.lottie.OnCompositionLoadedListener;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SoundInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamSelectLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.InputEffectTextView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamMemberGridlayoutManager;
@@ -49,8 +48,6 @@ import com.xueersi.xesalib.utils.uikit.SizeUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -114,15 +111,8 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         rlTeamIntroduceRoot = view.findViewById(R.id.rl_teampk_teaminfo_root);
         tvTimeCountDown = view.findViewById(R.id.tv_teampk_team_select_timecoutdown);
         tvTimeCountDown.setTimeSuffix("秒后进入下一步");
-
         loadSoundRes();
-        // 延迟500 毫秒开始分队仪式
-        view.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startTeamSelect();
-            }
-        }, 500);
+        startTeamSelect();
         return view;
     }
 
@@ -132,37 +122,21 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
     private void loadSoundRes() {
         soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
         mSoundInfoMap = new HashMap<Integer, SoundInfo>();
-        mSoundInfoMap.put(SOUND_TYPE_WAR_BG, new SoundInfo(soundPool.load(mContext, R.raw.war_bg, 1), -1));
-        mSoundInfoMap.put(SOUND_TYPE_WELCOME_TO_TEAMPK, new SoundInfo(soundPool.load(mContext, R.raw.welcome_to_teampk, 1), -1));
-        mSoundInfoMap.put(SOUND_TYPE_MARQUEE, new SoundInfo(soundPool.load(mContext, R.raw.marquee, 1), -1));
-        mSoundInfoMap.put(SOUND_TYPE_CHEER, new SoundInfo(soundPool.load(mContext, R.raw.cheering, 1), -1));
-        mSoundInfoMap.put(SOUND_TYPE_INPUT_EFFECT, new SoundInfo(soundPool.load(mContext, R.raw.input_effect, 1), -1));
-        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                soundResAvailable = true;
-            }
-        });
-        mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
     }
 
     private void playBgMusic() {
-        playMusic(SOUND_TYPE_WAR_BG, MUSIC_VOLUME_RATIO_BG, true);
-        //playMusicWithLoad(SOUND_TYPE_WAR_BG,R.raw.war_bg,MUSIC_VOLUME_RATIO_BG,true);
+        playMusicWithLoad(SOUND_TYPE_WAR_BG, R.raw.war_bg, MUSIC_VOLUME_RATIO_BG, true);
     }
 
     private void playWelcomeMusic() {
-        playMusic(SOUND_TYPE_WELCOME_TO_TEAMPK, MUSIC_VOLUME_RATIO_FRONT, false);
-        //playMusicWithLoad(SOUND_TYPE_WELCOME_TO_TEAMPK,R.raw.welcome_to_teampk,MUSIC_VOLUME_RATIO_FRONT,false);
-        // setSoundVolume(SOUND_TYPE_WAR_BG, (int) (mSoundInfoMap.get(SOUND_TYPE_WAR_BG).getSoundVolume() * 0.3f));
+        playMusicWithLoad(SOUND_TYPE_WELCOME_TO_TEAMPK, R.raw.welcome_to_teampk, MUSIC_VOLUME_RATIO_FRONT, false);
     }
 
     /**
      * 播发跑马灯音效
      */
     private void playMarquee() {
-        playMusic(SOUND_TYPE_MARQUEE, MUSIC_VOLUME_RATIO_FRONT, true);
-        //playMusicWithLoad(SOUND_TYPE_MARQUEE,R.raw.marquee,MUSIC_VOLUME_RATIO_FRONT,true);
+        playMusicWithLoad(SOUND_TYPE_MARQUEE, R.raw.marquee, MUSIC_VOLUME_RATIO_FRONT, true);
     }
 
 
@@ -170,8 +144,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
      * 播放欢呼音效
      */
     private void playCheering() {
-        playMusic(SOUND_TYPE_CHEER, MUSIC_VOLUME_RATIO_FRONT, false);
-        // playMusicWithLoad(SOUND_TYPE_CHEER,R.raw.cheering,MUSIC_VOLUME_RATIO_FRONT,false);
+        playMusicWithLoad(SOUND_TYPE_CHEER, R.raw.cheering, MUSIC_VOLUME_RATIO_FRONT, false);
 
     }
 
@@ -180,9 +153,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
      * 播放打字音效
      */
     private void playInputEffect() {
-        playMusic(SOUND_TYPE_INPUT_EFFECT, MUSIC_VOLUME_RATIO_FRONT, true);
-        //playMusicWithLoad(SOUND_TYPE_INPUT_EFFECT,R.raw.input_effect,MUSIC_VOLUME_RATIO_FRONT,true);
-
+        playMusicWithLoad(SOUND_TYPE_INPUT_EFFECT, R.raw.input_effect, MUSIC_VOLUME_RATIO_FRONT, true);
     }
 
 
@@ -217,20 +188,24 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
      */
     private void playMusicWithLoad(final int soundType, int resId, final float volume, final boolean loop) {
         if (soundPool != null) {
-            soundPool.load(mContext, resId, 1);
-            soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-                @Override
-                public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                    int streamId = soundPool.play(sampleId, volume, volume, 0, loop ? -1 : 0, 1);
-                    SoundInfo soundInfo = mSoundInfoMap.get(soundType);
-                    if (soundInfo == null) {
-                        soundInfo = new SoundInfo(sampleId, streamId);
+            SoundInfo soundInfo = mSoundInfoMap.get(soundType);
+            if (soundInfo != null) {
+                int streamId = soundPool.play(soundInfo.getSoundId(), volume, volume, soundType, loop ? -1 : 0, 1);
+                soundInfo.setStreamId(streamId);
+                mSoundInfoMap.put(soundType,soundInfo);
+                Log.e("", "======>playMusicWithLoad: cached info" + soundType +":"+streamId);
+            } else {
+                soundPool.load(mContext, resId, 1);
+                soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+                    @Override
+                    public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                        int streamId = soundPool.play(sampleId, volume, volume, soundType, loop ? -1 : 0, 1);
+                        Log.e("TeamSelectedPager", "======>playMusicWithLoad: new info" + soundType + ":" + sampleId);
+                        SoundInfo soundInfo = new SoundInfo(sampleId, streamId);
                         mSoundInfoMap.put(soundType, soundInfo);
-                    } else {
-                        soundInfo.setStreamId(streamId);
                     }
-                }
-            });
+                });
+            }
         }
     }
 
@@ -259,8 +234,9 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
     private void stopMusic(int soundType) {
 
         Log.e("TeamPkTeamSelectPager", "======>stopMusic:" + soundPool + ":" + mSoundInfoMap + ":" + soundResAvailable);
-        if (soundPool != null && mSoundInfoMap != null && soundResAvailable) {
+        if (soundPool != null && mSoundInfoMap != null) {
             SoundInfo soundInfo = mSoundInfoMap.get(soundType);
+            Log.e("TeampkSelectpager", "=====>stopMusic:" + soundType);
             if (soundInfo != null) {
                 soundPool.stop(soundInfo.getStreamId());
                 Log.e("TeamPkTeamSelectPager", "======>stopMusic:" + soundInfo.getStreamId());
@@ -268,47 +244,35 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         }
     }
 
-    /* *//**
-     * 获取当前系统音量
-     *
-     * @return
-     *//*
-    private int getSysVolume() {
-        int currentVolume = 1;
-        try {
-            int volume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-            if (volume == 0) {
-                volume = (int) (0.6f * mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
-            }
-            currentVolume = volume;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return currentVolume;
-    }*/
-
-
     /**
      * 已选中 战队信息
      */
     boolean paused = false;
     boolean teamInfoUiReaMoved = false;
 
+    /**
+     * 展示分队仪式 lottie 动画
+     */
     public void showTeamSelectedScene() {
         final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "team_selected/images";
         String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "team_selected/data.json";
+        final TeamSelectLottieEffectInfo effectInfo = new TeamSelectLottieEffectInfo(lottieResPath, lottieJsonPath, "img_1.png");
+        effectInfo.setLogoUrl(mTeamInfo.getTeamInfo().getImg());
         lavTeamSelectAnimView.setVisibility(View.VISIBLE);
-        lavTeamSelectAnimView.setImageAssetsFolder(lottieResPath);
         lavTeamSelectAnimView.removeAllAnimatorListeners();
         lavTeamSelectAnimView.addAnimatorListener(new TeamSelectAnimatorListener(ANIMTYPE_TEAM_SELECTED));
 
-        LottieComposition.Factory.fromAssetFileName(mContext, lottieJsonPath, new OnCompositionLoadedListener() {
+        lavTeamSelectAnimView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext));
+        lavTeamSelectAnimView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
-            public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
-                lavTeamSelectAnimView.setComposition(lottieComposition);
-                lavTeamSelectAnimView.playAnimation();
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                return effectInfo.fetchBitmapFromAssets(lavTeamSelectAnimView, lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), mContext);
             }
         });
+        lavTeamSelectAnimView.playAnimation();
+
+
         // 0.35 进度 : 显示 战队介绍
         // 监听 动画执行进度
         // lavTeamSelectAnimView.setProgress(0.0f); // lottie 中读取的 读取的初始值 不为0
@@ -322,13 +286,11 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
                     isInited = true;
                     return;
                 }
-
                 if (!paused && animation.getAnimatedFraction() > LAST_ANIMPUASE_FRACTION) {
                     paused = true;
                     lavTeamSelectAnimView.pauseAnimation();
                     showTeamIntroduce(lavTeamSelectAnimView);
                 }
-
                 if (!teamInfoUiReaMoved && animation.getAnimatedFraction() >= TEAMINFOUI_HIDE_FRACTION) {
                     teamInfoUiReaMoved = true;
                     hideTeamInfoUi();
@@ -336,61 +298,8 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
                 }
             }
         });
-        // TODO: 2018/4/18 替换 战队图标
-        lavTeamSelectAnimView.setImageAssetDelegate(new ImageAssetDelegate() {
-            @Override
-            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                Bitmap resultBitmap=null;
-                 InputStream in = null;
-                try {
 
-                    if(lottieImageAsset.getFileName().equals("img_1.png")){
-                        if(teamLogo != null){
-                            return  teamLogo;
-                        }else{
-                            updateTeamLog("img_1",lavTeamSelectAnimView);
-                        }
-                    }
-                    in = mContext.getAssets().open(lottieResPath + "/" + lottieImageAsset.getFileName());
-                    resultBitmap = BitmapFactory.decodeStream(in);
-                    in.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if (in != null) {
-                        try {
-                            in.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                return resultBitmap;
-            }
-        });
     }
-
-    /**
-     * 更新战队图片
-     * @param bitmap_id
-     * @param lavTeamSelectAnimView
-     */
-    private void updateTeamLog(final String  bitmap_id, final LottieAnimationView lavTeamSelectAnimView) {
-
-        ImageLoader.with(mContext).load(mTeamInfo.getTeamInfo().getImg()).asBitmap(new SingleConfig.BitmapListener() {
-            @Override
-            public void onSuccess(Drawable drawable) {
-                Bitmap logo = ((BitmapDrawable)drawable).getBitmap();
-                lavTeamSelectAnimView.updateBitmap(bitmap_id,logo);
-            }
-            @Override
-            public void onFail() {
-
-            }
-        });
-    }
-
-
 
 
     private void hideTeamInfoUi() {
@@ -404,7 +313,6 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         rclTeamMember.setVisibility(View.VISIBLE);
         rclTeamMember.setLayoutManager(new TeamMemberGridlayoutManager(mContext, 5,
                 LinearLayoutManager.VERTICAL, false));
-        //测试 队员UI
         ((ViewGroup) mView).setClipChildren(true);
         teamMemberAdapter = new TeamAdapter(ADAPTER_TYPE_TEAM_MEMBER);
         rclTeamMember.setAdapter(teamMemberAdapter);
@@ -414,36 +322,28 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         rclTeamMember.setLayoutAnimation(animationController);
         rclTeamMember.scheduleLayoutAnimation();
 
-        Log.e("TeamPKSelectPager","=======>990:"+rclTeamMember.canScrollVertically(10));
-
-        //lavTeamSelectAnimView.resumeAnimation();
-        //重新播放动画
-        //lavTeamSelectAnimView.setProgress(TEAMINFOUI_HIDE_FRACTION);
-       // lavTeamSelectAnimView.playAnimation();
-       // lavTeamSelectAnimView.invalidate();
-
         // 队员人数小于 一屏
-        if(rclTeamMember.getAdapter().getItemCount() <= 15){
+        if (rclTeamMember.getAdapter().getItemCount() <= 15) {
             finishTeamSelect();
-        }else{
-        rclTeamMember.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                rclTeamMember.smoothScrollToPosition((teamMemberAdapter.getItemCount() - 1));
-            }
-        }, 1500);
-
-        rclTeamMember.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                GridLayoutManager gridLayoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
-                int postion = gridLayoutManager.findLastVisibleItemPosition();
-                if (postion == recyclerView.getAdapter().getItemCount() - 1) {
-                    finishTeamSelect();
+        } else {
+            rclTeamMember.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    rclTeamMember.smoothScrollToPosition((teamMemberAdapter.getItemCount() - 1));
                 }
-            }
-        });
+            }, 1500);
+
+            rclTeamMember.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    GridLayoutManager gridLayoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
+                    int postion = gridLayoutManager.findLastVisibleItemPosition();
+                    if (postion == recyclerView.getAdapter().getItemCount() - 1) {
+                        finishTeamSelect();
+                    }
+                }
+            });
         }
     }
 
@@ -468,7 +368,19 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                releaseRes();
+                closeTeamSelectPager();
+            }
+        });
+    }
+
+    /**
+     * 关闭 页面
+     */
+    public void closeTeamSelectPager() {
+        releaseRes();
+        mView.post(new Runnable() {
+            @Override
+            public void run() {
                 ((ViewGroup) mView.getParent()).removeView(mView);
             }
         });
@@ -495,17 +407,18 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         mTeamInfoStr = mTeamInfo.getTeamInfo().getBackGroud();
         teamName = mTeamInfo.getTeamInfo().getTeamName();
         //预加载队伍图标
-          String logurl = "http://xesfile.xesimg.com/user/h/def10002.png";//mTeamInfo.getTeamInfo().getImg()
-          ImageLoader.with(mContext).load(logurl)
+        String logourl = mTeamInfo.getTeamInfo().getImg();
+        ImageLoader.with(mContext).load(logourl).diskCacheStrategy(DiskCacheStrategy.ALL)
                 .asBitmap(new SingleConfig.BitmapListener() {
-            @Override
-            public void onSuccess(Drawable drawable) {
-                teamLogo = ((BitmapDrawable) drawable).getBitmap();
-            }
-            @Override
-            public void onFail() {
-            }
-        });
+                    @Override
+                    public void onSuccess(Drawable drawable) {
+                        teamLogo = ((BitmapDrawable) drawable).getBitmap();
+                    }
+
+                    @Override
+                    public void onFail() {
+                    }
+                });
     }
 
     class AnimInfo {
@@ -705,15 +618,17 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         playBgMusic();
         String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "team_select_start/images";
         String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "team_select_start/data.json";
-        lavTeamSelectAnimView.setImageAssetsFolder(lottieResPath);
-        lavTeamSelectAnimView.addAnimatorListener(new TeamSelectAnimatorListener(ANIMTYPE_START));
-        LottieComposition.Factory.fromAssetFileName(mContext, lottieJsonPath, new OnCompositionLoadedListener() {
+        final LottieEffectInfo effectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
+        lavTeamSelectAnimView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext));
+        lavTeamSelectAnimView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
-            public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
-                lavTeamSelectAnimView.setComposition(lottieComposition);
-                lavTeamSelectAnimView.playAnimation();
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                return effectInfo.fetchBitmapFromAssets(lavTeamSelectAnimView, lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), mContext);
             }
         });
+        lavTeamSelectAnimView.addAnimatorListener(new TeamSelectAnimatorListener(ANIMTYPE_START));
+        lavTeamSelectAnimView.playAnimation();
     }
 
     class TeamSelectAnimatorListener implements Animator.AnimatorListener {
@@ -728,7 +643,12 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
 
             switch (mAnimType) {
                 case ANIMTYPE_START:
-                    playWelcomeMusic();
+                    mView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            playWelcomeMusic();
+                        }
+                    },1000);
                     break;
                 case ANIMTYPE_TEAM_SELECTED:
                     playCheering();
@@ -765,12 +685,15 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
 
     private class TeamItemHolder extends RecyclerView.ViewHolder {
 
+        ImageView ivTeamLogo;
+
         public TeamItemHolder(View itemView) {
             super(itemView);
+            ivTeamLogo = itemView.findViewById(R.id.iv_teampk_team_logo);
         }
 
         public void bindData(String logoUrl) {
-
+            ImageLoader.with(mContext).load(logoUrl).diskCacheStrategy(DiskCacheStrategy.ALL).into(ivTeamLogo);
         }
     }
 
@@ -787,7 +710,6 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         }
 
         public void bindData(TeamPkTeamInfoEntity.StudentEntity studentEntity) {
-            // TODO: 2018/4/25 绑定数据
             tvName.setText(studentEntity.getUserName());
             ImageLoader.with(mContext).load(studentEntity.getImg()).asCircle().into(ivhead);
         }
@@ -810,7 +732,6 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
                 return new TeamItemHolder(LayoutInflater.from(mContext).
                         inflate(R.layout.item_teampk_team, parent, false));
             } else {
-                Log.e(TAG, "======>onCreateViewHolder");
                 return new TeamMemberHolder(LayoutInflater.from(mContext).
                         inflate(R.layout.item_teampk_teammember, parent, false));
             }
@@ -818,11 +739,11 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-              if(adapterType == ADAPTER_TYPE_TEAM){
-                  ((TeamItemHolder)holder).bindData(mTeamInfo.getTeamLogoList().get(position));
-              }else{
-                  ((TeamMemberHolder)holder).bindData(mTeamInfo.getTeamMembers().get(position));
-              }
+            if (adapterType == ADAPTER_TYPE_TEAM) {
+                ((TeamItemHolder) holder).bindData(mTeamInfo.getTeamLogoList().get(position));
+            } else {
+                ((TeamMemberHolder) holder).bindData(mTeamInfo.getTeamMembers().get(position));
+            }
         }
 
         @Override
@@ -832,12 +753,10 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
                 if (mTeamInfo != null && mTeamInfo.getTeamMembers() != null) {
                     itemCount = mTeamInfo.getTeamMembers().size();
                 }
-                  //itemCount = 25;
             } else {
                 if (mTeamInfo != null && mTeamInfo.getTeamLogoList() != null) {
                     itemCount = mTeamInfo.getTeamLogoList().size();
                 }
-                // itemCount = 6;
             }
             return itemCount;
         }
@@ -1003,17 +922,19 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "time_cutdown/images";
         String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "time_cutdown/data.json";
         lavTeamSelectAnimView.cancelAnimation();
-        lavTeamSelectAnimView.setImageAssetsFolder(lottieResPath);
         lavTeamSelectAnimView.setRepeatCount(0);
         lavTeamSelectAnimView.removeAllAnimatorListeners();
         lavTeamSelectAnimView.addAnimatorListener(new TeamSelectAnimatorListener(ANIMTYPE_TIME_COUTDOWN));
-        LottieComposition.Factory.fromAssetFileName(mContext, lottieJsonPath, new OnCompositionLoadedListener() {
+        final LottieEffectInfo lottieEffectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
+        lavTeamSelectAnimView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext));
+        lavTeamSelectAnimView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
-            public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
-                lavTeamSelectAnimView.setComposition(lottieComposition);
-                lavTeamSelectAnimView.playAnimation();
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                return lottieEffectInfo.fetchBitmapFromAssets(lavTeamSelectAnimView, lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), mContext);
             }
         });
+        lavTeamSelectAnimView.playAnimation();
     }
 
 
@@ -1026,16 +947,15 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
 
     //上报学生 分队准备ok
     private void upLoadStudentReady() {
-        //Toast.makeText(mContext, "准备好了", Toast.LENGTH_LONG).show();
         try {
-            ((ViewGroup)mView).removeView(tvTimeCountDown);
-        }catch (Exception e){
+            ((ViewGroup) mView).removeView(tvTimeCountDown);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         // step 2 继续 lottie 动画
         lavTeamSelectAnimView.resumeAnimation();
         lavTeamSelectAnimView.setProgress(LAST_ANIM_RESUME_FRACTION);
-        // TODO: 2018/4/18  上报 服务器 学生准备ok
+        mPKBll.sendStudentReady();
     }
 
     @Override
@@ -1047,7 +967,6 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.e(TAG, "========> onDestroy called:");
         releaseRes();
     }
 

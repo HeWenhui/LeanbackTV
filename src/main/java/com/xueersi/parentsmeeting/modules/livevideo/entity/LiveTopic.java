@@ -46,6 +46,10 @@ public class LiveTopic {
      */
     private TopicEntity topic;
     VideoQuestionLiveEntity videoQuestionLiveEntity;
+
+    private TeamPkEntity  teamPkEntity;
+
+
     /** 当前禁言用户列表,存id */
     private List<String> disableSpeaking;
     /** 是否被禁言 */
@@ -563,4 +567,53 @@ public class LiveTopic {
             this.pople = pople;
         }
     }
+
+
+    public TeamPkEntity getTeamPkEntity() {
+        return teamPkEntity;
+    }
+
+    public void setTeamPkEntity(TeamPkEntity teamPkEntity) {
+        this.teamPkEntity = teamPkEntity;
+    }
+
+    /**战队pk topic中的信息*/
+    public static class TeamPkEntity{
+        private int alloteam;
+        private int allotpkman;
+        private int openbox;
+        public TeamPkEntity(){
+
+        }
+        public TeamPkEntity(int alloteam, int allotpkman, int openbox) {
+            this.alloteam = alloteam;
+            this.allotpkman = allotpkman;
+            this.openbox = openbox;
+        }
+
+        public int getAlloteam() {
+            return alloteam;
+        }
+
+        public void setAlloteam(int alloteam) {
+            this.alloteam = alloteam;
+        }
+
+        public int getAllotpkman() {
+            return allotpkman;
+        }
+
+        public void setAllotpkman(int allotpkman) {
+            this.allotpkman = allotpkman;
+        }
+
+        public int getOpenbox() {
+            return openbox;
+        }
+
+        public void setOpenbox(int openbox) {
+            this.openbox = openbox;
+        }
+    }
+
 }

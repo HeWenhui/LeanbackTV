@@ -980,7 +980,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mData.put("examid", num);
                 umsAgentDebugSys(examQuestionEventId, mData);
                 examQuestionPager = new ExamQuestionPager(activity, mLiveBll, QuestionBll.this, liveGetInfo.getStuId
-                        (), liveGetInfo.getUname(), liveid, num, nonce, mAnswerRankBll == null ? "0" : mAnswerRankBll.getIsShow(), IS_SCIENCE, stuCouId);
+                        (), liveGetInfo.getUname(), liveid, num, nonce, mAnswerRankBll == null ? "0" : mAnswerRankBll.getIsShow(), IS_SCIENCE, stuCouId, 0);
                 rlQuestionContent.addView(examQuestionPager.getRootView());
                 setHaveExam(true);
                 activity.getWindow().getDecorView().requestLayout();
@@ -988,6 +988,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
         });
     }
+
 
     @Override
     public void onExamStop() {
@@ -1906,4 +1907,5 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             questionShowAction.onQuestionShow(isShow);
         }
     }
+
 }

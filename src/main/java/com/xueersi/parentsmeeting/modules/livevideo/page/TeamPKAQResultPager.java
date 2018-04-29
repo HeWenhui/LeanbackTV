@@ -12,6 +12,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
@@ -27,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolat
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPKStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
+import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 
 import java.util.HashMap;
 
@@ -35,7 +37,7 @@ import java.util.HashMap;
  */
 public class TeamPKAQResultPager extends BasePager {
 
-    private RelativeLayout rlRootView;
+    private RelativeLayout rlQuestionRootView;
     private ImageView ivEnergy;
     private ImageView ivCoin;
     private TextView tvEnergy;
@@ -51,9 +53,19 @@ public class TeamPKAQResultPager extends BasePager {
     private static final int SOUND_TYPE_COIN_GET = 1; //获得金币音效
     private HashMap<Integer,SoundInfo> mSoundInfoMap;
     private static final int DEFAULT_VOLUME = 5;  //默认音量大小
+    private int mGoldNum;
+    private int mEnergy;
+    public static  final int AWARD_TYPE_VOTE = 1; //投票奖励
+    public static  final int AWARD_TYPE_QUESTION = 2; //答题奖励
 
-    public TeamPKAQResultPager(Context context){
+    int awardType;
+    private RelativeLayout rlVotRootView;
+    private TextView tvVoteEnergy;
+    private ImageView ivVoteEnergy;
+
+    public TeamPKAQResultPager(Context context,int Type){
         super(context);
+        this.awardType = Type;
     }
 
     @Override
@@ -62,22 +74,48 @@ public class TeamPKAQResultPager extends BasePager {
         controloffsetX = SizeUtils.Dp2Px(mContext,70);
         controloffsetY = SizeUtils.Dp2Px(mContext,120);
 
-        View view = View.inflate(mContext, R.layout.page_livevideo_teampk_aq_result, null);
-        rlRootView = view.findViewById(R.id.rl_answer_question_award_root);
+        final View view = View.inflate(mContext, R.layout.page_livevideo_teampk_aq_result, null);
+        rlQuestionRootView = view.findViewById(R.id.rl_answer_question_award_root);
         ivEnergy = view.findViewById(R.id.iv_answer_question_energy);
         ivCoin = view.findViewById(R.id.iv_answer_question_coin);
         tvEnergy = view.findViewById(R.id.tv_answer_question_energy);
         tvCoin = view.findViewById(R.id.tv_answer_question_coin);
-        view.findViewById(R.id.test).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAwardAnim();
-            }
-        });
+
+        rlVotRootView = view.findViewById(R.id.rl_vote_award_root);
+        tvVoteEnergy = view.findViewById(R.id.tv_vote_award_energy);
+        ivVoteEnergy = view.findViewById(R.id.iv_vote_award_energy);
+
+
+       view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+           @Override
+           public void onGlobalLayout() {
+               try {
+                   if(awardType == AWARD_TYPE_QUESTION){
+                       showQuestionAwardAnim();
+                   }else if(awardType == AWARD_TYPE_VOTE){
+                       showVoteAwardAnim();
+                   }
+               }catch (Exception e){
+                   e.printStackTrace();
+               }
+               view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+           }
+       });
 
         return  view;
     }
 
+
+
+    /**
+     * 设置数据
+     * @param goldNum
+     * @param energy
+     */
+    public void setData(int goldNum,int energy){
+        mGoldNum = goldNum;
+        mEnergy = energy;
+    }
 
     /**
      *
@@ -111,12 +149,16 @@ public class TeamPKAQResultPager extends BasePager {
     /**
      * 展示  答题奖励动画
      */
-    private void showAwardAnim() {
+    private void showQuestionAwardAnim() {
+        tvCoin.setText(mGoldNum+"");
+        tvEnergy.setText(mEnergy+"");
+
         scaleAnimation = (ScaleAnimation) AnimationUtils.
                 loadAnimation(mContext, R.anim.anim_livevido_teampk_aq_award);
         scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
-        rlRootView.setVisibility(View.VISIBLE);
-        rlRootView.startAnimation(scaleAnimation);
+        rlQuestionRootView.setVisibility(View.VISIBLE);
+        rlVotRootView.setVisibility(View.GONE);
+        rlQuestionRootView.startAnimation(scaleAnimation);
 
         scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -124,10 +166,10 @@ public class TeamPKAQResultPager extends BasePager {
             }
             @Override
             public void onAnimationEnd(Animation animation) {
-                rlRootView.postDelayed(new Runnable() {
+                rlQuestionRootView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        startFlyAnim();
+                        startQuestionAwardFlyAnim();
                     }
                 },500);
             }
@@ -138,6 +180,38 @@ public class TeamPKAQResultPager extends BasePager {
 
     }
 
+    private void showVoteAwardAnim() {
+        tvVoteEnergy.setText("+"+mEnergy);
+        scaleAnimation = (ScaleAnimation) AnimationUtils.
+                loadAnimation(mContext, R.anim.anim_livevido_teampk_aq_award);
+        scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
+        rlQuestionRootView.setVisibility(View.GONE);
+        rlVotRootView.setVisibility(View.VISIBLE);
+        rlVotRootView.startAnimation(scaleAnimation);
+
+        scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                rlVotRootView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startVoteAwardFlyAnim();
+                    }
+                },500);
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+
+    }
+
+
+
+
     @Override
     public void initData() {
 
@@ -146,10 +220,9 @@ public class TeamPKAQResultPager extends BasePager {
     /**
      * 执行飞星 动画
      */
-    private void startFlyAnim() {
+    private void startQuestionAwardFlyAnim() {
         decorView = (ViewGroup) ((Activity)mContext).getWindow().getDecorView();
         teamPKStateLayout = decorView.findViewById(R.id.tpkL_teampk_pkstate_root);
-
         if(teamPKStateLayout == null){
             return;
         }
@@ -159,7 +232,6 @@ public class TeamPKAQResultPager extends BasePager {
         if(endRect != null){
             playFlayAnim(ivEnergy,endRect);
         }
-
         //金币图标动画
         ImageView ivTargetCoin = teamPKStateLayout.findViewById(R.id.iv_teampk_pkstate_coin);
         Rect coinEndRect = new Rect();
@@ -170,8 +242,27 @@ public class TeamPKAQResultPager extends BasePager {
         coinEndRect.right =  coinEndRect.left + ivTargetCoin.getLayoutParams().width;
         coinEndRect.bottom =  coinEndRect.top+ ivTargetCoin.getLayoutParams().height;
         playFlayAnim(ivCoin,coinEndRect);
+    }
+
+    /**
+     * 投票 能量飞行 动画
+     */
+    private void startVoteAwardFlyAnim(){
+        decorView = (ViewGroup) ((Activity)mContext).getWindow().getDecorView();
+        teamPKStateLayout = decorView.findViewById(R.id.tpkL_teampk_pkstate_root);
+        if(teamPKStateLayout == null){
+            return;
+        }
+        // 能量图标动画
+        pkProgressBar = teamPKStateLayout.findViewById(R.id.tpb_teampk_pkstate_energy_bar);
+        Rect endRect = pkProgressBar.getSliderDrawRect();
+        if(endRect != null){
+            playFlayAnim(ivVoteEnergy,endRect);
+        }
 
     }
+
+
 
     /**
      *
@@ -245,13 +336,23 @@ public class TeamPKAQResultPager extends BasePager {
           playMusic(SOUND_TYPE_COIN_GET, DEFAULT_VOLUME,false);
         // 1 聊天区域状态更新
          if(teamPKStateLayout != null){
-             teamPKStateLayout.updateData(15,10);
+             teamPKStateLayout.updateData(mEnergy,mGoldNum);
          }
         // 2 隐藏 UI/ 移除UI ？
-        rlRootView.setVisibility(View.GONE);
-
+          try {
+              if( ((ViewGroup)mView.getParent()) != null){
+                  ((ViewGroup)mView.getParent()).removeView(mView);
+              }
+          }catch ( Exception e){
+             e.printStackTrace();
+          }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        releaseRes();
+    }
 
     /**
      * 清除资源

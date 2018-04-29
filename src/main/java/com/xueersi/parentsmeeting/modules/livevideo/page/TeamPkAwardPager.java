@@ -6,13 +6,17 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,6 +26,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.GridLayoutAnimationController;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.ImageAssetDelegate;
@@ -29,17 +34,28 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieImageAsset;
 import com.airbnb.lottie.OnCompositionLoadedListener;
+import com.sobot.chat.utils.ToastUtil;
 import com.xueersi.parentsmeeting.base.BasePager;
+import com.xueersi.parentsmeeting.http.HttpCallBack;
+import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SoundInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CoinAwardDisplayer;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamMemberGridlayoutManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView;
 import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
+import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
+
+import okhttp3.Call;
 
 /**
  * Created by chenkun on 2018/4/12
@@ -59,17 +75,21 @@ public class TeamPkAwardPager extends BasePager {
     private CoinAwardDisplayer cadMycoin;
 
     private static final long TIME_DELAY_SHOW_WINNER = 5 * 1000; //进入
-    private static final long TIME_DELAY_AUTO_FINISH = 10 *1000; // 榜单显示时间
+    private static final long TIME_DELAY_AUTO_FINISH = 10 * 1000; // 榜单显示时间
     private SoundPool soundPool;
     private static final int SOUND_TYPE_BG = 1; //背景音效
     private static final int SOUND_TYPE_BOX_OPEN = 2; //宝箱打开音效
     private HashMap<Integer, SoundInfo> mSoundInfoMap;
     private static final int DEFAULT_BG_VOLUME = 4;     //默认背景音效大小
     private static final int DEFAULT_FRONT_VOLUME = 6;  //默认前景音效大小
+    private ClassChestEntity classChestEntity;
+    private final TeamPKBll teamPKBll;
+    private boolean mIsWin;
 
 
-    public TeamPkAwardPager(Context context) {
+    public TeamPkAwardPager(Context context, TeamPKBll pkBll) {
         super(context);
+        teamPKBll = pkBll;
     }
 
     @Override
@@ -79,24 +99,29 @@ public class TeamPkAwardPager extends BasePager {
         cadMycoin = view.findViewById(R.id.cad_teampk_open_box_my_coin);
         recyclerView = view.findViewById(R.id.rcl_teampk_open_box_rank);
         lottieAnimationView = view.findViewById(R.id.lav_teampk_open_box);
-        cadTeamCoin.setAwardInfo(R.drawable.livevideo_alertview_guafen_img_disable,
-                2000, R.drawable.livevideo_alertview_gegoldwenzi_img_disable);
+
         ivBgMask = view.findViewById(R.id.iv_teampk_open_box_bg_mask);
         ivBgMask.setVisibility(View.GONE);
         addInputEventInterceptor();
-
-
-        // 测试
-        view.findViewById(R.id.btn_test).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String lottieResPath = lottieResDir + "_loop/images/";
-                String lottieJsonPath = lottieResDir + "_loop/data.json";
-                startBoxLoopAnim(lottieResPath, lottieJsonPath);
-            }
-        });
         return view;
     }
+
+    /**
+     * 显示开宝箱动画
+     * @param isWin
+     */
+    public void showBoxLoop(boolean isWin) {
+        mIsWin = isWin;
+        if (isWin) {
+            lottieResDir = "team_pk/award/big_box";
+        } else {
+            lottieResDir = "team_pk/award/small_box";
+        }
+        String lottieResPath = lottieResDir + "_loop/images/";
+        String lottieJsonPath = lottieResDir + "_loop/data.json";
+        startBoxLoopAnim(lottieResPath, lottieJsonPath);
+    }
+
 
     // 对lottie 拦截点击事件
     private void addInputEventInterceptor() {
@@ -138,17 +163,10 @@ public class TeamPkAwardPager extends BasePager {
             public void onAnimationEnd(Animator animation) {
                 // 播放开宝箱音效
                 playMusic(SOUND_TYPE_BOX_OPEN, R.raw.box_open, DEFAULT_FRONT_VOLUME, false);
-                //展示 获得金币数
-                cadMycoin.setVisibility(View.VISIBLE);
-                cadMycoin.setAwardInfo(R.drawable.livevideo_alertview_tosmoke_img_disable, 80,
-                        R.drawable.livevideo_alertview_goldwenzi_img_disable);
-                Animation alphaAnimation = AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_teampk_open_box_coin_in);
-                cadMycoin.startAnimation(alphaAnimation);
                 //开启背景循环动效
                 String lottieResPath = lottieResDir + "_after_open/images";
                 String lottieJsonPath = lottieResDir + "_after_open/data.json";
                 showAfterOpenAnim(lottieResPath, lottieJsonPath);
-                // showWinners();
             }
         });
     }
@@ -158,7 +176,6 @@ public class TeamPkAwardPager extends BasePager {
      * @param lottieJsonPath
      */
     private void showAfterOpenAnim(String lottieResPath, String lottieJsonPath) {
-
         lottieAnimationView.setImageAssetDelegate(null);
         lottieAnimationView.setOnClickListener(null);
         lottieAnimationView.setOnTouchListener(null);
@@ -177,17 +194,25 @@ public class TeamPkAwardPager extends BasePager {
         lottieAnimationView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                showWinners();
+                closeAwardPager(); //自动关闭
             }
         }, TIME_DELAY_SHOW_WINNER);
-
     }
 
 
     private void showWinners() {
+        if(ivBgMask.getVisibility() != View.VISIBLE){
+            ivBgMask.setVisibility(View.VISIBLE);
+        }
+        if (classChestEntity == null) {
+            return;
+        }
         if (cadMycoin.getParent() != null) {
             ((ViewGroup) cadMycoin.getParent()).removeView(cadMycoin);
         }
+
+        playMusic(SOUND_TYPE_BG, R.raw.war_bg, DEFAULT_BG_VOLUME, true);
+
         // step 1 展示lottie
         String imgDir = lottieResDir + "_top_open/images";
         String jsonPath = lottieResDir + "_top_open/data.json";
@@ -209,7 +234,7 @@ public class TeamPkAwardPager extends BasePager {
             public void onAnimationUpdate(ValueAnimator animation) {
                 if (!startShowWinner && animation.getAnimatedFraction() > 0.7) {
                     startShowWinner = true;
-                    showDetailInfo();
+                    showDetailInfo(classChestEntity);
                 }
             }
         });
@@ -250,7 +275,10 @@ public class TeamPkAwardPager extends BasePager {
 
     }
 
-    private void showDetailInfo() {
+    private void showDetailInfo(ClassChestEntity data) {
+        if (data == null) {
+            return;
+        }
         // step 2 展示 获得金币信息
         cadTeamCoin.setVisibility(View.VISIBLE);
         Animation alphaAnimation = AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_teampk_open_box_coin_in);
@@ -263,9 +291,11 @@ public class TeamPkAwardPager extends BasePager {
                 AnimationUtils.loadLayoutAnimation(mContext, R.anim.anim_livevido_teampk_teammember_list);
         recyclerView.setLayoutAnimation(animationController);
         if (adapter == null) {
-            adapter = new WinnerAdapter();
+            adapter = new WinnerAdapter(data.getSubChestEntityList());
             recyclerView.setAdapter(adapter);
         } else {
+            adapter.getData().clear();
+            adapter.getData().addAll(data.getSubChestEntityList());
             adapter.notifyDataSetChanged();
         }
         recyclerView.scheduleLayoutAnimation();
@@ -273,18 +303,18 @@ public class TeamPkAwardPager extends BasePager {
         recyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {
-               closeAwardPager();
+                closeAwardPager();
             }
-        },TIME_DELAY_AUTO_FINISH);
+        }, TIME_DELAY_AUTO_FINISH);
     }
 
     /**
-     *关闭 宝箱展示页面
+     * 关闭 宝箱展示页面
      */
-      public void closeAwardPager() {
+    public void closeAwardPager() {
         releaseRes();
         if (getRootView().getParent() != null) {
-            ((ViewGroup)getRootView().getParent()).removeView(getRootView());
+            ((ViewGroup) getRootView().getParent()).removeView(getRootView());
         }
     }
 
@@ -375,12 +405,50 @@ public class TeamPkAwardPager extends BasePager {
         lottieAnimationView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "===>开宝箱", Toast.LENGTH_LONG).show();
+                getStuChestInfo();
                 String lottieResPath = lottieResDir + "_open/images";
                 String lottieJsonPath = lottieResDir + "_open/data.json";
                 startOpenBoxAnim(lottieResPath, lottieJsonPath);
             }
         });
+    }
+
+    /**
+     * 获取学生宝箱信息
+     */
+    private void getStuChestInfo() {
+        teamPKBll.getmHttpManager().getStuChest(mIsWin?1:0, teamPKBll.getRoomInitInfo().getStudentLiveInfo().getClassId()
+                , teamPKBll.getRoomInitInfo().getStudentLiveInfo().getTeamId(),
+                teamPKBll.getRoomInitInfo().getStuId(), teamPKBll.getmLiveBll().getLiveId(), new HttpCallBack() {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        StudentChestEntity studentChestEntity = teamPKBll.getmHttpResponseParser().parseStuChest(responseEntity);
+                        if(studentChestEntity.getIsGet().equals("0")){
+                            //展示 获得金币数
+                            cadMycoin.setVisibility(View.VISIBLE);
+                            try {
+                                int gold =  Integer.parseInt( studentChestEntity.getGold()) ;
+                                cadMycoin.setAwardInfo(R.drawable.livevideo_alertview_tosmoke_img_disable, gold,
+                                        R.drawable.livevideo_alertview_goldwenzi_img_disable);
+                                Animation alphaAnimation = AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_teampk_open_box_coin_in);
+                                cadMycoin.startAnimation(alphaAnimation);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }else{
+                            ToastUtil.showToast(mContext,"您已经领过宝箱了");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        super.onFailure(call, e);
+                    }
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        super.onPmError(responseEntity);
+                    }
+                });
     }
 
 
@@ -405,30 +473,92 @@ public class TeamPkAwardPager extends BasePager {
         Loger.e(TAG, "======> initData called");
     }
 
+    /**
+     * 显示班级获奖列表
+     *
+     * @param data
+     * @param isWin 是否获胜
+     */
+    public void showClassChest(ClassChestEntity data, boolean isWin) {
+        classChestEntity = data;
+        mIsWin = isWin;
+        if (isWin) {
+            lottieResDir = "team_pk/award/big_box";
+        } else {
+            lottieResDir = "team_pk/award/small_box";
+        }
+        showWinners();
+    }
 
     static class ItemHolder extends RecyclerView.ViewHolder {
+        ImageView ivHead;
+        ImageView ivLuckyStar;
+        TextView tvName;
+        TextView tvCoin;
 
         public ItemHolder(View itemView) {
             super(itemView);
+            ivHead = itemView.findViewById(R.id.iv_teampk_open_box_winner_head);
+            ivLuckyStar = itemView.findViewById(R.id.iv_teampk_open_box_lucky_guy);
+            tvName = itemView.findViewById(R.id.tv_teampk_open_box_winner_name);
+            tvCoin = itemView.findViewById(R.id.tv_teampk_open_box_winner_coin);
+        }
+
+        public void bindData(ClassChestEntity.SubChestEntity data, int postion) {
+            ImageLoader.with(ivHead.getContext()).load(data.getAvatarPath())
+                    .placeHolder(R.drawable.livevideo_list_headportrait_ic_disable)
+                    .asBitmap(new SingleConfig.BitmapListener() {
+                        @Override
+                        public void onSuccess(Drawable drawable) {
+                            Bitmap resultBitmap = ((BitmapDrawable) drawable).getBitmap();
+                            Bitmap circleBitmap = scaleBitmap(resultBitmap, Math.min(resultBitmap.getWidth(), resultBitmap.getHeight()) / 2);
+                            ivHead.setImageBitmap(circleBitmap);
+                        }
+
+                        @Override
+                        public void onFail() {
+                        }
+                    });
+            ivLuckyStar.setVisibility(postion <= 4 ? View.VISIBLE : View.GONE);
+            tvName.setText(data.getStuName());
+            tvCoin.setText("+"+data.getGold());
         }
     }
 
     static class WinnerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+        private List<ClassChestEntity.SubChestEntity> data;
+
+        WinnerAdapter(List<ClassChestEntity.SubChestEntity> data) {
+            this.data = data;
+        }
+
+        public List<ClassChestEntity.SubChestEntity> getData() {
+            return data;
+        }
+
+        public void setData(List<ClassChestEntity.SubChestEntity> data) {
+            this.data = data;
+        }
+
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
             return new ItemHolder(LayoutInflater.from(parent.getContext()).
                     inflate(R.layout.item_teampk_open_box_winner, parent, false));
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
+            ((ItemHolder) holder).bindData(data.get(position), position);
         }
 
         @Override
         public int getItemCount() {
-            return 25;
+            int itemCount = 0;
+            if (data != null) {
+                itemCount = data.size();
+            }
+            return itemCount;
         }
     }
 
@@ -448,6 +578,21 @@ public class TeamPkAwardPager extends BasePager {
             mSoundInfoMap.clear();
             mSoundInfoMap = null;
         }
+    }
+
+
+    public static Bitmap scaleBitmap(Bitmap input, int radius) {
+        Bitmap result = Bitmap.createBitmap(radius * 2, radius * 2, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(result);
+        Rect src = new Rect(0, 0, input.getWidth(), input.getHeight());
+        Rect dst = new Rect(0, 0, radius * 2, radius * 2);
+        Path path = new Path();
+        path.addCircle(radius, radius, radius, Path.Direction.CCW);
+        canvas.clipPath(path);
+        Paint paint = new Paint();
+        paint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+        canvas.drawBitmap(input, src, dst, paint);
+        return result;
     }
 
 }

@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -12,10 +13,15 @@ import android.widget.RelativeLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 
@@ -41,6 +47,9 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
     private String isShowRanks;
     RelativeLayout rl_livevideo_subject_web;
     boolean IS_SCIENCE;
+    int mGoldNum;
+    int mEnergyNum;
+
 
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
         mEnglishH5CoursewareBll = englishH5CoursewareBll;
@@ -162,6 +171,40 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
                 return true;
             }
         }
+
+
+        if (url.contains(TeamPKBll.TEAMPK_URL_FIFTE)) {
+            try {
+                int startIndex = url.indexOf("goldNum=");
+                if (startIndex != -1) {
+                    String teamStr = url.substring(startIndex, url.length());
+                    int endIndex = teamStr.indexOf("&");
+                    String goldNUmStr = teamStr.substring(0, endIndex);
+                    if (!TextUtils.isEmpty(goldNUmStr)) {
+                        mGoldNum = Integer.parseInt(goldNUmStr.trim());
+                    }
+                }
+                int satrIndex2 = url.indexOf("eneryNum=");
+                if (satrIndex2 != -1) {
+                    String tempStr2 = url.substring(satrIndex2);
+                    String energyNumStr = null;
+                    if (tempStr2.contains("&")) {
+                        energyNumStr = tempStr2.substring(0, tempStr2.indexOf("&"));
+                    } else {
+                        energyNumStr = tempStr2.substring(0, tempStr2.length());
+                    }
+                    if (!TextUtils.isEmpty(energyNumStr)) {
+                        mEnergyNum = Integer.parseInt(energyNumStr.trim());
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return true;
+        }
+
+
         return super.shouldOverrideUrlLoading(view, url);
     }
 
@@ -182,6 +225,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         }
         loadUrl += "&isTowall=" + isShowRanks;
         Loger.i(TAG, "initData:loadUrl=" + loadUrl);
+        loadUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
         loadUrl(loadUrl);
         reloadurl = loadUrl;
         mView.findViewById(R.id.iv_livevideo_subject_refresh).setOnClickListener(new View.OnClickListener() {
@@ -213,7 +257,21 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
                 loadUrl(reloadurl);
             }
         });
+
+        mView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+                EventBus.getDefault().post(new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent.H5_TYPE_COURSE, id));
+            }
+        });
+
     }
+
 
     /**
      * 设置webview透明
@@ -235,6 +293,10 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         webSetting.setBuiltInZoomControls(true);
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
         wvSubjectWeb.setWebViewClient(new MyWebViewClient());
+    }
+
+    public String getId() {
+        return id;
     }
 
 }

@@ -12,7 +12,12 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:id="@id/iv_teampk_open_box_winner_head"
-            android:src="@drawable/livevideo_list_headportrait_ic_disable"
+            />
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/live_video_teampk_headmask"
             />
 
         <ImageView
@@ -20,6 +25,7 @@
             android:layout_height="13dp"
             android:src="@drawable/livevideo_alertview_luckystar_img_disable"
             android:layout_alignBottom="@id/iv_teampk_open_box_winner_head"
+            android:id="@id/iv_teampk_open_box_lucky_guy"
             />
 
         <TextView

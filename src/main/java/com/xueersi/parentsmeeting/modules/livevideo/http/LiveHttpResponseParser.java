@@ -11,11 +11,18 @@ import com.xueersi.parentsmeeting.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentChestEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentCoinAndTotalEnergyEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
@@ -58,10 +65,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         this.mContext = mContext;
     }
 
-    /** 解析getInfo */
+    /**
+     * 解析getInfo
+     */
     public LiveGetInfo parseLiveGetInfo(JSONObject data, LiveTopic liveTopic, int liveType, int from) {
         try {
-            Log.e("teamPk","=====>parseLiveGetInfo:"+data.toString());
+            Log.e("teamPk", "=====>parseLiveGetInfo:" + data.toString());
 
             LiveGetInfo getInfo = new LiveGetInfo(liveTopic);
             getInfo.setId(data.getString("id"));
@@ -78,7 +87,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.seteTime(data.optLong("etime"));
             getInfo.setNowTime(data.getDouble("nowTime"));
             //getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));\
-            if(data.has("isAllowTeamPk")){
+            if (data.has("isAllowTeamPk")) {
                 getInfo.setIsAllowTeamPk(data.getString("isAllowTeamPk"));
             }
             getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));
@@ -265,7 +274,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return null;
     }
 
-    /** 解析直播服务器 */
+    /**
+     * 解析直播服务器
+     */
     public PlayServerEntity parsePlayerServer(JSONObject object) {
         PlayServerEntity server = new PlayServerEntity();
         try {
@@ -305,12 +316,16 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return null;
     }
 
-    /** 解析直播topic数据 */
+    /**
+     * 解析直播topic数据
+     */
     public LiveTopic parseLiveTopic(LiveTopic oldLiveTopic, JSONObject liveTopicJson, int type) throws JSONException {
         LiveTopic liveTopic = new LiveTopic();
         if (type != LiveBll.LIVE_TYPE_LIVE) {
             liveTopic.setMode(LiveTopic.MODE_CLASS);
         }
+
+        LiveTopic.TeamPkEntity teamPkEntity = new LiveTopic.TeamPkEntity();
         if (type == LiveBll.LIVE_TYPE_LIVE && liveTopicJson.has("room_2")) {
             JSONObject status = liveTopicJson.getJSONObject("room_2");
             RoomStatusEntity coachStatusEntity = liveTopic.getCoachRoomstatus();
@@ -318,6 +333,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             coachStatusEntity.setOpenchat(status.getBoolean("openchat"));
             coachStatusEntity.setCalling(status.getBoolean("isCalling"));
             coachStatusEntity.setListStatus(status.optInt("listStatus"));
+
+            teamPkEntity.setAlloteam(status.optInt("alloteam"));
+            teamPkEntity.setOpenbox(status.optInt("openbox"));
+
+
             if (status.has("link_mic")) {
                 JSONObject link_mic = status.getJSONObject("link_mic");
                 coachStatusEntity.setOnmic(link_mic.optString("onmic", "off"));
@@ -360,6 +380,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             mainStatusEntity.setOpenbarrage(status.getBoolean("openbarrage"));
             mainStatusEntity.setOpenchat(status.getBoolean("openchat"));
             mainStatusEntity.setOpenFeedback(status.optBoolean("isOpenFeedback"));
+            teamPkEntity.setAllotpkman(status.optInt("allotpkman"));
+
             if (status.has("exam")) {
                 mainStatusEntity.setHaveExam(true);
                 JSONObject jsonObject = status.getJSONObject("exam");
@@ -407,6 +429,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             mainStatusEntity.setOpenDbEnergy(status.optBoolean("openDbEnergy", false));
         }
+        liveTopic.setTeamPkEntity(teamPkEntity);
 //        topic":{"gold_count":3,"id":"161870","num":1,"time":3,"type":"2"}}
         if (liveTopicJson.has("topic")) {
             JSONObject topic = liveTopicJson.getJSONObject("topic");
@@ -1048,17 +1071,19 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     }
 
 
-    /**解析分队仪式信息*/
-    public TeamPkTeamInfoEntity parseTeamInfo(ResponseEntity responseEntity){
+    /**
+     * 解析分队仪式信息
+     */
+    public TeamPkTeamInfoEntity parseTeamInfo(ResponseEntity responseEntity) {
         TeamPkTeamInfoEntity teamInfoEntity = new TeamPkTeamInfoEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
-            if(data.has("students")){
+            if (data.has("students")) {
                 JSONArray jsonArray = data.getJSONArray("students");
                 TeamPkTeamInfoEntity.StudentEntity studentEntity;
                 JSONObject jsonObject;
                 List<TeamPkTeamInfoEntity.StudentEntity> teamMembers = new ArrayList<TeamPkTeamInfoEntity.StudentEntity>();
-                for(int i= 0;i<jsonArray.length();i++){
+                for (int i = 0; i < jsonArray.length(); i++) {
                     jsonObject = (JSONObject) jsonArray.get(i);
                     studentEntity = new TeamPkTeamInfoEntity.StudentEntity();
                     studentEntity.setUserId(jsonObject.getString("userId"));
@@ -1070,24 +1095,24 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
 
 
-            if(data.has("imgs")){
-                 JSONObject jsonObject  = (JSONObject) data.get("imgs");
-                 if(jsonObject.has("key")){
-                     teamInfoEntity.setKey(jsonObject.getInt("key"));
-                 }
-                 if(jsonObject.has("imgs")){
-                      JSONArray jsonArray = jsonObject.getJSONArray("imgs");
-                      List<String> imgList = new ArrayList<String>();
-                     for (int i = 0; i < jsonArray.length(); i++) {
-                         imgList.add(jsonArray.getString(i));
-                     }
-                     teamInfoEntity.setTeamLogoList(imgList);
-                 }
+            if (data.has("imgs")) {
+                JSONObject jsonObject = (JSONObject) data.get("imgs");
+                if (jsonObject.has("key")) {
+                    teamInfoEntity.setKey(jsonObject.getInt("key"));
+                }
+                if (jsonObject.has("imgs")) {
+                    JSONArray jsonArray = jsonObject.getJSONArray("imgs");
+                    List<String> imgList = new ArrayList<String>();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        imgList.add(jsonArray.getString(i));
+                    }
+                    teamInfoEntity.setTeamLogoList(imgList);
+                }
             }
 
-            if(data.has("teamInfo")){
-                JSONObject jsonObject  = (JSONObject) data.get("teamInfo");
-                TeamPkTeamInfoEntity.TeamInfoEntity  teamInfo = new TeamPkTeamInfoEntity.TeamInfoEntity();
+            if (data.has("teamInfo")) {
+                JSONObject jsonObject = (JSONObject) data.get("teamInfo");
+                TeamPkTeamInfoEntity.TeamInfoEntity teamInfo = new TeamPkTeamInfoEntity.TeamInfoEntity();
                 teamInfo.setImg(jsonObject.getString("img"));
                 teamInfo.setTeamName(jsonObject.getString("teamName"));
                 teamInfo.setTeamMateName(jsonObject.getString("teamMateName"));
@@ -1096,11 +1121,285 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 teamInfoEntity.setTeamInfo(teamInfo);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return  teamInfoEntity;
+        return teamInfoEntity;
+    }
+
+
+    /**
+     * 解析pk 对手信息
+     */
+    public TeamPkAdversaryEntity parsePkAdversary(ResponseEntity responseEntity) {
+        TeamPkAdversaryEntity pkAdversaryEntity = new TeamPkAdversaryEntity();
+        try {
+            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            if (data.has("self")) {
+                JSONObject jsonObject = (JSONObject) data.get("self");
+                TeamPkAdversaryEntity.AdversaryInfo selfInfo = new TeamPkAdversaryEntity.AdversaryInfo();
+                selfInfo.setClassId(jsonObject.getString("classId"));
+                selfInfo.setTeamId(jsonObject.getString("teamId"));
+                if (jsonObject.has("teamInfo")) {
+                    JSONObject teamInfoObj = jsonObject.getJSONObject("teamInfo");
+                    selfInfo.setTeamName(teamInfoObj.getString("teamName"));
+                    selfInfo.setTeamMateName(teamInfoObj.getString("teamMateName"));
+                    selfInfo.setSlogon(teamInfoObj.getString("slogon"));
+                    selfInfo.setBackGroud(teamInfoObj.getString("backGroud"));
+                    selfInfo.setImg(teamInfoObj.getString("img"));
+                    selfInfo.setTeacherName(teamInfoObj.getString("teacherName"));
+                    selfInfo.setTeacherImg(teamInfoObj.getString("teacherImg"));
+                }
+                pkAdversaryEntity.setSelf(selfInfo);
+            }
+
+            if (data.has("opponent")) {
+                JSONObject jsonObject = (JSONObject) data.get("opponent");
+                TeamPkAdversaryEntity.AdversaryInfo opponentInfo = new TeamPkAdversaryEntity.AdversaryInfo();
+                opponentInfo.setClassId(jsonObject.getString("classId"));
+                opponentInfo.setTeamId(jsonObject.getString("teamId"));
+                if (jsonObject.has("teamInfo")) {
+                    JSONObject teamInfoObj = jsonObject.getJSONObject("teamInfo");
+                    opponentInfo.setTeamName(teamInfoObj.getString("teamName"));
+                    opponentInfo.setTeamMateName(teamInfoObj.getString("teamMateName"));
+                    opponentInfo.setSlogon(teamInfoObj.getString("slogon"));
+                    opponentInfo.setBackGroud(teamInfoObj.getString("backGroud"));
+                    opponentInfo.setImg(teamInfoObj.getString("img"));
+                    opponentInfo.setTeacherName(teamInfoObj.getString("teacherName"));
+                    opponentInfo.setTeacherImg(teamInfoObj.getString("teacherImg"));
+                }
+                pkAdversaryEntity.setOpponent(opponentInfo);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pkAdversaryEntity;
+    }
+
+    /**
+     * 解析学生开宝箱
+     *
+     * @param responseEntity
+     * @return
+     */
+    public StudentChestEntity parseStuChest(ResponseEntity responseEntity) {
+        StudentChestEntity studentChestEntity = null;
+        JSONObject data = (JSONObject) responseEntity.getJsonObject();
+        try {
+            String gold = data.getString("gold");
+            String  isGet = data.getString("isGet");
+            studentChestEntity = new StudentChestEntity(gold, isGet);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return studentChestEntity;
+    }
+
+
+    /**
+     * 解析班级开宝箱结果
+     *
+     * @param responseEntity
+     * @return
+     */
+    public ClassChestEntity parseClassChest(ResponseEntity responseEntity) {
+        ClassChestEntity classChestEntity = new ClassChestEntity();
+        try {
+            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            if (data.has("sumGold")) {
+                long sumGold = data.getLong("sumGold");
+                classChestEntity.setSumGold(sumGold);
+            }
+            if (data.has("stuList")) {
+                List<ClassChestEntity.SubChestEntity> list = new ArrayList<ClassChestEntity.SubChestEntity>();
+                JSONArray jsonArray = data.getJSONArray("stuList");
+                ClassChestEntity.SubChestEntity subChestEntity = null;
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    long gold = jsonObject.getLong("gold");
+                    String stuName = jsonObject.getString("stuName");
+                    String avatarPath = jsonObject.getString("avatarPath");
+                    String stuId = jsonObject.getString("stuId");
+                    subChestEntity = new ClassChestEntity.SubChestEntity(gold, stuName, avatarPath, stuId);
+                    list.add(subChestEntity);
+                }
+                classChestEntity.setSubChestEntityList(list);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return classChestEntity;
+    }
+
+    /**
+     * 解析 投票题 增加能量
+     * @param responseEntity
+     * @return
+     */
+    public AddPersonAndTeamEnergyEntity parseAddPersonAndTeamEnergy(ResponseEntity responseEntity) {
+        AddPersonAndTeamEnergyEntity energyEntity = null;
+        try {
+            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            long teamEnergy = data.getLong("teamEnergy");
+            energyEntity = new AddPersonAndTeamEnergyEntity(teamEnergy);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return energyEntity;
+    }
+
+    /**
+     * 解析 学生 总金币 及战队 能量
+     * @param responseEntity
+     * @return
+     */
+    public StudentCoinAndTotalEnergyEntity parseStuCoinAndTotalEnergy(ResponseEntity responseEntity){
+        StudentCoinAndTotalEnergyEntity energyEntity = new StudentCoinAndTotalEnergyEntity();
+        try {
+           JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            energyEntity.setCompetitorEnergy(data.getLong("competitorEnergy"));
+            energyEntity.setMyEnergy(data.getLong("myEnergy"));
+            energyEntity.setStuLiveGold(data.getLong("stuLiveGold"));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return energyEntity;
+    }
+
+    /**
+     * 解析每题战队能量 和贡献之星
+     * @param responseEntity
+     * @return
+     */
+    public TeamEnergyAndContributionStarEntity parseTeanEnergyAndContribution(ResponseEntity responseEntity){
+        TeamEnergyAndContributionStarEntity entity = new TeamEnergyAndContributionStarEntity();
+        try {
+          JSONObject data = (JSONObject) responseEntity.getJsonObject();
+          if(data.has("starList")){
+              JSONArray jsonArray = data.getJSONArray("starList");
+              JSONObject jsonObject = null;
+              List<TeamEnergyAndContributionStarEntity.ContributionStar> contributionStarList
+                      = new ArrayList<TeamEnergyAndContributionStarEntity.ContributionStar>();
+              TeamEnergyAndContributionStarEntity.ContributionStar star= null;
+              for (int i = 0; i < jsonArray.length(); i++) {
+                  jsonObject = jsonArray.getJSONObject(i);
+                  star = new TeamEnergyAndContributionStarEntity.ContributionStar();
+                  star.setStuId(jsonObject.getString("stuId"));
+                  star.setEnergy(jsonObject.getLong("energy"));
+                  star.setName(jsonObject.getString("name"));
+                  star.setRealname(jsonObject.getString("realname"));
+                  star.setNickname(jsonObject.getString("nickname"));
+                  star.setAvaterPath(jsonObject.getString("avater_path"));
+                  contributionStarList.add(star);
+              }
+              entity.setContributionStarList(contributionStarList);
+          }
+
+          if(data.has("myTeam")){
+             JSONObject jsonObject = data.getJSONObject("myTeam");
+              TeamEnergyAndContributionStarEntity.TeamEnergyInfo teamEnergyInfo
+                      = new TeamEnergyAndContributionStarEntity.TeamEnergyInfo();
+              teamEnergyInfo.setAddEnergy(jsonObject.getLong("addEnergy"));
+              teamEnergyInfo.setTotalEnergy(jsonObject.getLong("totalEnergy"));
+              if(jsonObject.has("teamInfo")){
+                  JSONObject teamInfoJsonObj = jsonObject.getJSONObject("teamInfo");
+                  teamEnergyInfo.setTeamName(teamInfoJsonObj.getString("teamName"));
+                  teamEnergyInfo.setTeamMateName(teamInfoJsonObj.getString("teamMateName"));
+                  teamEnergyInfo.setSlogon(teamInfoJsonObj.getString("slogon"));
+                  teamEnergyInfo.setBackGroud(teamInfoJsonObj.getString("backGroud"));
+                  teamEnergyInfo.setImg(teamInfoJsonObj.getString("img"));
+                  teamEnergyInfo.setTeacherName(teamInfoJsonObj.getString("teacherName"));
+                  teamEnergyInfo.setTeacherImg(teamInfoJsonObj.getString("teacherImg"));
+              }
+              entity.setMyTeamEngerInfo(teamEnergyInfo);
+          }
+
+            if(data.has("competitor")){
+                JSONObject jsonObject = data.getJSONObject("competitor");
+                TeamEnergyAndContributionStarEntity.TeamEnergyInfo teamEnergyInfo
+                        = new TeamEnergyAndContributionStarEntity.TeamEnergyInfo();
+                teamEnergyInfo.setAddEnergy(jsonObject.getLong("addEnergy"));
+                teamEnergyInfo.setTotalEnergy(jsonObject.getLong("totalEnergy"));
+                if(jsonObject.has("teamInfo")){
+                    JSONObject teamInfoJsonObj = jsonObject.getJSONObject("teamInfo");
+                    teamEnergyInfo.setTeamName(teamInfoJsonObj.getString("teamName"));
+                    teamEnergyInfo.setTeamMateName(teamInfoJsonObj.getString("teamMateName"));
+                    teamEnergyInfo.setSlogon(teamInfoJsonObj.getString("slogon"));
+                    teamEnergyInfo.setBackGroud(teamInfoJsonObj.getString("backGroud"));
+                    teamEnergyInfo.setImg(teamInfoJsonObj.getString("img"));
+                    teamEnergyInfo.setTeacherName(teamInfoJsonObj.getString("teacherName"));
+                    teamEnergyInfo.setTeacherImg(teamInfoJsonObj.getString("teacherImg"));
+                }
+                entity.setCompetitorEngerInfo(teamEnergyInfo);
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  entity;
+    }
+
+    /**
+     * 解析每题 pk 结果
+     * @param responseEntity
+     * @return
+     */
+    public StudentPkResultEntity parseStuPkResult(ResponseEntity responseEntity){
+
+        StudentPkResultEntity entity = new StudentPkResultEntity();
+        try {
+            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+
+            if(data.has("my")){
+                JSONObject jsonObject = data.getJSONObject("my");
+                StudentPkResultEntity.PkResultInfo resultInfo = new StudentPkResultEntity.PkResultInfo();
+                resultInfo.setEnergy(jsonObject.getLong("energy"));
+                if(jsonObject.has("teamInfo")){
+                    JSONObject teamInfoJsonObj = jsonObject.getJSONObject("teamInfo");
+                    resultInfo.setTeamName(teamInfoJsonObj.getString("teamName"));
+                    resultInfo.setTeamMateName(teamInfoJsonObj.getString("teamMateName"));
+                    resultInfo.setSlogon(teamInfoJsonObj.getString("slogon"));
+                    resultInfo.setBackGroud(teamInfoJsonObj.getString("backGroud"));
+                    resultInfo.setImg(teamInfoJsonObj.getString("img"));
+                }
+
+                if(jsonObject.has("teacherInfo")){
+                    JSONObject teacherInfoJsonObj = jsonObject.getJSONObject("teacherInfo");
+                    resultInfo.setTeamName(teacherInfoJsonObj.getString("teacherName"));
+                    resultInfo.setTeacherImg(teacherInfoJsonObj.getString("teacherImg"));
+                }
+                entity.setMyTeamResultInfo(resultInfo);
+            }
+
+
+            if(data.has("competitor")){
+                JSONObject jsonObject = data.getJSONObject("competitor");
+                StudentPkResultEntity.PkResultInfo resultInfo = new StudentPkResultEntity.PkResultInfo();
+                resultInfo.setEnergy(jsonObject.getLong("energy"));
+                if(jsonObject.has("teamInfo")){
+
+                    JSONObject teamInfoJsonObj = jsonObject.getJSONObject("teamInfo");
+                    resultInfo.setTeamName(teamInfoJsonObj.getString("teamName"));
+                    resultInfo.setTeamMateName(teamInfoJsonObj.getString("teamMateName"));
+                    resultInfo.setSlogon(teamInfoJsonObj.getString("slogon"));
+                    resultInfo.setBackGroud(teamInfoJsonObj.getString("backGroud"));
+                    resultInfo.setImg(teamInfoJsonObj.getString("img"));
+                }
+
+                if(jsonObject.has("teacherInfo")){
+                    JSONObject teacherInfoJsonObj = jsonObject.getJSONObject("teacherInfo");
+                    resultInfo.setTeamName(teacherInfoJsonObj.getString("teacherName"));
+                    resultInfo.setTeacherImg(teacherInfoJsonObj.getString("teacherImg"));
+                }
+                entity.setCompetitorResultInfo(resultInfo);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  entity;
     }
 
     /*

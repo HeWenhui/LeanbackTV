@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -231,6 +232,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             h5CoursewarePager.onResume();
         }
     }
+
+
+
 
     @Override
     public void onH5Courseware(final String status, final VideoQuestionLiveEntity videoQuestionLiveEntity) {

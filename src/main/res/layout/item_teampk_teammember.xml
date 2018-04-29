@@ -5,8 +5,8 @@
     >
 
     <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:id="@id/iv_teampk_member_head"
         android:scaleType="centerCrop"
         android:layout_centerHorizontal="true"

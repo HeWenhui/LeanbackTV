@@ -18,8 +18,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.VoteWaitDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.event.NativeVoteRusltulCloseEvent;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -139,6 +142,7 @@ public class LiveVoteBll implements LiveVoteAction {
             public void onClick(View v) {
                 bottomContent.removeView(contentView);
                 contentView = null;
+                EventBus.getDefault().post(new NativeVoteRusltulCloseEvent());
             }
         });
         StableLogHashMap logHashMap = new StableLogHashMap("showVoteResult");

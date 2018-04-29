@@ -9,6 +9,7 @@
         android:layout_height="97dp"
         android:src="@drawable/livevideo_teampk_team_placehoder"
         android:layout_centerInParent="true"
+        android:id="@id/iv_teampk_team_logo"
         />
 
 </RelativeLayout>

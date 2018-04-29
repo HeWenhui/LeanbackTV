@@ -133,6 +133,7 @@ public class LiveVideoSAConfig {
         public   String URL_TEMPK_PKTEAMINFO= HTTP_HOST+"/LiveCourse/getTeamNameAndMembers";
         /** pk对手信息*/
         public    String URL_TEMPK_MATCHTEAM = HTTP_HOST+"/LiveCourse/getMatchResult";
+
         /**获取本场次 金币，能量信息*/
         public   String URL_TEMPK_LIVESTUGOLDANDTOTALENERGY =HTTP_HOST+"/LiveCourse/liveStuGoldAndTotalEnergy";
         /**添加能能量值接口*/

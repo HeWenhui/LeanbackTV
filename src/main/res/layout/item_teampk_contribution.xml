@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="60dp"
+    android:layout_height="match_parent"
+    >
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -14,7 +15,16 @@
             android:layout_height="34dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
-            android:src="@drawable/live_video_teampk_blue_headmask" />
+         />
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/live_video_teampk_blue_headmask"
+            />
+
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -36,7 +46,9 @@
                 android:gravity="center"
                 android:text="宋珂珂"
                 android:textSize="9sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:id="@id/tv_teampk_pkresult_contribution_name"
+                />
 
             <TextView
                 android:id="@id/tv_teampk_student_add_energy"

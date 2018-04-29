@@ -78,7 +78,7 @@
             android:id="@id/tv_teampk_pkstate_myteam_energy"
             android:text="798"
             android:textSize="9sp"
-            android:textColor="@color/COLOR_EE4646"
+            android:textColor="@color/white"
             android:textStyle="bold"
             android:layout_toRightOf="@id/tv_teampk_pkstate_myteam_coin_prefix"
             android:layout_marginLeft="5dp"

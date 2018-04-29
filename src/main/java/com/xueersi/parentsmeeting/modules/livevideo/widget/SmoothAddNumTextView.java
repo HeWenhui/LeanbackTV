@@ -48,12 +48,14 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
     public void smoothAddNum(int numIncrement) {
         try {
             if (!TextUtils.isEmpty(this.getText().toString())) {
-                int currentEnergy = Integer.parseInt(this.getText().toString());
-                addTimes = numIncrement > maxAddCount ? maxAddCount : numIncrement;
-                timeGap = (int) (duration / addTimes);
-                increment = numIncrement / addTimes;
-                task = new IncrementTask(currentEnergy, numIncrement, increment, timeGap);
-                this.post(task);
+                if(numIncrement >0){
+                    int currentEnergy = Integer.parseInt(this.getText().toString());
+                    addTimes = numIncrement > maxAddCount ? maxAddCount : numIncrement;
+                    timeGap = (int) (duration / addTimes);
+                    increment = numIncrement / addTimes;
+                    task = new IncrementTask(currentEnergy, numIncrement, increment, timeGap);
+                    this.post(task);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -121,4 +121,26 @@ public interface XESCODE {
 
     /** 讲座购课广告 */
     int LEC_ADVERT = 2000;
+
+    /**老师点赞*/
+    int TEACHER_PRAISE = 236;
+
+    /** 分队仪式*/
+    int TEAM_PK_TEAM_SELECT = 230;
+
+    /**分配PK 对手*/
+    int TEAM_PK_SELECT_PKADVERSARY = 231;
+
+    /**分队仪式 学生准备ok*/
+    int TEAM_PK_STUDENT_READY = 232;
+
+    /**公布pk 结果*/
+    int TEAM_PK_PUBLIC_PK_RESULT = 233;
+
+    /**公布 本轮pk  战队pk 情况*/
+    int TEAM_PK_PUBLIC_CONTRIBUTION_STAR = 234;
+
+    /**推出每题pk 结果*/
+    int TEAM_PK_EXIT_PK_RESULT = 235;
+
 }
