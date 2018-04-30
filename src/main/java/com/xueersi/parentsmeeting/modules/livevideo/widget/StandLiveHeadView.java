@@ -15,7 +15,6 @@ import android.util.AttributeSet;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
-import com.airbnb.lottie.model.layer.Layer;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -23,7 +22,6 @@ import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by linyuqiang on 2018/3/23.
@@ -128,17 +126,7 @@ public class StandLiveHeadView extends LottieAnimationView {
      * 设置名字
      */
     public void updateName() {
-        String num = name;
-        int length = name.length();
-        if (StandLiveTextView.isChinese(num)) {
-            if (length > 4) {
-                num = num.substring(0, 4) + "...";
-            }
-        } else {
-            if (length > 8) {
-                num = num.substring(0, 8) + "...";
-            }
-        }
+        String num = StandLiveTextView.getShortName(name);
         AssetManager manager = getContext().getAssets();
         Bitmap img_7Bitmap;
         try {

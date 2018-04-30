@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.Top3FrameAnim;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
@@ -81,7 +82,7 @@ public class RedPackagePage extends BasePager {
         this.operateId = operateId;
         this.redPackageAction = redPackageAction;
         this.headUrl = headUrl;
-        this.userName = userName;
+        this.userName = StandLiveTextView.getShortName(userName);
         this.isLive = isLive;
         if (isLive) {
             top3FrameAnim = new Top3FrameAnim(context, rl_livevideo_redpackage_bg, stuHeadBitmap, frameAnimations);
@@ -508,6 +509,7 @@ public class RedPackagePage extends BasePager {
 
     private ArrayList<Point> teamLeftAndTops = new ArrayList<>();
 
+    /** 组内成员领取红包位置 */
     private void initPos(int screenWidth, int screenHeight) {
         if (!teamLeftAndTops.isEmpty()) {
             return;

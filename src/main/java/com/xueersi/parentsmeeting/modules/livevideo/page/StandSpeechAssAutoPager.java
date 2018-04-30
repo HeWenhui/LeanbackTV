@@ -50,6 +50,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView;
 import com.xueersi.parentsmeeting.permission.PermissionCallback;
 import com.xueersi.parentsmeeting.permission.XesPermission;
 import com.xueersi.parentsmeeting.permission.config.PermissionConfig;
@@ -185,7 +186,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //        this.content = "C" + content.substring(1);
         this.content = content;
         this.time = time;
-        this.userName = userName;
+        this.userName = StandLiveTextView.getShortName(userName);
         this.headUrl = headUrl;
         entranceTime = System.currentTimeMillis();
         Map<String, String> mData = new HashMap<>();
@@ -216,7 +217,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         this.content = content;
         this.time = time;
         this.examSubmit = examSubmit;
-        this.userName = userName;
+        this.userName = StandLiveTextView.getShortName(userName);
         this.headUrl = headUrl;
         this.learning_stage = learning_stage;
         entranceTime = System.currentTimeMillis();

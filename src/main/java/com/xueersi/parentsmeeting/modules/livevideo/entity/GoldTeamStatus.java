@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.tencent.cos.xml.utils.StringUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView;
 
 import java.util.ArrayList;
 
@@ -160,7 +161,8 @@ public class GoldTeamStatus {
             if (StringUtils.isEmpty(showName)) {
                 createShowName();
             }
-            return showName;
+            String newText = StandLiveTextView.getShortName(showName);
+            return newText;
         }
 
         public void createShowName() {

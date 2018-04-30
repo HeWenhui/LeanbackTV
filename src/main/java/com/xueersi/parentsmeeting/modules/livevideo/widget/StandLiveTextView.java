@@ -24,19 +24,30 @@ public class StandLiveTextView extends TextView {
     @Override
     public void setText(CharSequence text, BufferType type) {
         String str = text.toString();
-        String newText = str;
-        boolean isChinese = isChinese(str);
-        int length = str.length();
+        String newText = getShortName(str);
+        super.setText(newText, type);
+    }
+
+    /**
+     * 站立直播名称显示，中文4个，英文8个
+     *
+     * @param name
+     * @return
+     */
+    public static String getShortName(String name) {
+        String newText = name;
+        boolean isChinese = isChinese(name);
+        int length = name.length();
         if (isChinese) {
             if (length > 4) {
-                newText = str.substring(0, 4) + "...";
+                newText = name.substring(0, 4) + "...";
             }
         } else {
             if (length > 8) {
-                newText = str.substring(0, 8) + "...";
+                newText = name.substring(0, 8) + "...";
             }
         }
-        super.setText(newText, type);
+        return newText;
     }
 
     public static boolean isChinese(String str) {

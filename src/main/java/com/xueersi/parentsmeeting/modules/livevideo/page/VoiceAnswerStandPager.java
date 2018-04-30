@@ -46,6 +46,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLo
 import com.xueersi.parentsmeeting.modules.livevideo.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView;
 import com.xueersi.parentsmeeting.permission.PermissionCallback;
 import com.xueersi.parentsmeeting.permission.XesPermission;
 import com.xueersi.parentsmeeting.permission.config.PermissionConfig;
@@ -152,7 +153,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         this.type = type;
         this.assess_ref = assess_ref;
         this.headUrl = headUrl;
-        this.userName = userName;
+        this.userName = StandLiveTextView.getShortName(userName);
         if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
             try {
                 answer = assess_ref.getJSONArray("answer").getString(0);
