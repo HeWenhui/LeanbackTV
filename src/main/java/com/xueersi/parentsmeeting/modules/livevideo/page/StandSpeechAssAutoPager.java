@@ -787,9 +787,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         iv_livevideo_speecteval_wave.setVisibility(View.INVISIBLE);
         rlSpeectevalBg.setVisibility(View.GONE);
         rlSpeectevalBg.removeAllViews();
-
-        onSpeechEvalSuccessMe(resultEntity);
-
+        if (isLive) {//直播中显示左下角自己的分数
+            onSpeechEvalSuccessMe(resultEntity);
+        }
         int score = resultEntity.getScore();
         final RelativeLayout group = (RelativeLayout) mView;
         final View resultMine = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_stand_speech_mine, group, false);
