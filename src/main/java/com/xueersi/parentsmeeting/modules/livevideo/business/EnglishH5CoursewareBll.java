@@ -790,6 +790,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     if (voiceAnswerPager instanceof VoiceAnswerPager) {
                         stopVoiceAnswerPager();
                     }
+                    mLiveBll.getStuGoldCount();
                     mH5AndBool.add(videoQuestionLiveEntity1.url);
                     try {
                         JSONObject object = new JSONObject();
