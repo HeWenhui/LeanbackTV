@@ -699,9 +699,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         try {
             inputStream = FrameAnimation.getInputStream(mContext, file);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            bitmap.setDensity(160);
+            bitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
             Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-            canvasBitmap.setDensity(160);
+            canvasBitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
             Canvas canvas = new Canvas(canvasBitmap);
             canvas.drawBitmap(bitmap, 0, 0, null);
             final Bitmap head = headBitmap;
@@ -710,7 +710,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 Matrix matrix = new Matrix();
                 matrix.postScale(scaleWidth, scaleWidth);
                 Bitmap scalHeadBitmap = Bitmap.createBitmap(head, 0, 0, head.getWidth(), head.getHeight(), matrix, true);
-                scalHeadBitmap.setDensity(160);
+                scalHeadBitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
                 float left = (bitmap.getWidth() - scalHeadBitmap.getWidth()) / 2;
                 float top;
                 left += 3f;

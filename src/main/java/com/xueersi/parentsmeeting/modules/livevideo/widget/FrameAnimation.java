@@ -93,6 +93,8 @@ public class FrameAnimation {
     long beginTime;
     /** 图片的密度 */
     private int mDensity;
+    /** 1倍图片的密度 */
+    public static int DEFAULT_DENSITY = DisplayMetrics.DENSITY_MEDIUM;
 
     /**
      * @param iv       播放动画的控件
@@ -115,7 +117,7 @@ public class FrameAnimation {
         this.mDuration = duration;
         this.mLastFrame = files.length - 1;
         this.mIsRepeat = isRepeat;
-        mDensity = (int) (DisplayMetrics.DENSITY_MEDIUM * (IMAGE_HEIGHT / (float) ScreenUtils.getScreenHeight(mView.getContext())));
+        mDensity = (int) (DEFAULT_DENSITY * (IMAGE_HEIGHT / (float) ScreenUtils.getScreenHeight(mView.getContext())));
         if (files.length > 0) {
             play(0);
             executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);

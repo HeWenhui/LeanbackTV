@@ -177,7 +177,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         try {
             inputStream = mContext.getAssets().open("live_stand/frame_anim/openmsg/message_open_00074.png");
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            bitmap.setDensity((int) (DisplayMetrics.DENSITY_MEDIUM * (FrameAnimation.IMAGE_HEIGHT / (float) com.xueersi.parentsmeeting.util.ScreenUtils.getScreenHeight(mView.getContext()))));
+            bitmap.setDensity((int) (FrameAnimation.DEFAULT_DENSITY * (FrameAnimation.IMAGE_HEIGHT / (float) com.xueersi.parentsmeeting.util.ScreenUtils.getScreenHeight(mView.getContext()))));
             btMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
             inputStream.close();
         } catch (IOException e) {
@@ -213,7 +213,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             inputStream = mContext.getAssets().open("live_stand/frame_anim/openmsg/message_open_00074.png");
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 //            bitmap.setDensity((int) (DisplayMetrics.DENSITY_MEDIUM * (FrameAnimation.IMAGE_HEIGHT / (float) com.xueersi.parentsmeeting.util.ScreenUtils.getScreenHeight(mView.getContext()))));
-            bitmap.setDensity(DisplayMetrics.DENSITY_MEDIUM);
+            bitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
             btMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
             inputStream.close();
         } catch (IOException e) {
@@ -229,9 +229,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         }
     }
 
+    /** 聊天打开的动画 */
     private void initBtMesOpenAnimation() {
         btMesOpenAnimation = FrameAnimation.createFromAees(mContext, btMesOpen, "live_stand/frame_anim/openmsg", 50, false);
-        btMesOpenAnimation.setDensity(DisplayMetrics.DENSITY_MEDIUM);
+        btMesOpenAnimation.setDensity(FrameAnimation.DEFAULT_DENSITY);
 //            btMesOpenAnimation.restartAnimation();
         btMesOpenAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
             @Override

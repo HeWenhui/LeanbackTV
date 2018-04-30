@@ -435,9 +435,9 @@ public class RedPackagePage extends BasePager {
         try {
             inputStream = FrameAnimation.getInputStream(mContext, file);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            bitmap.setDensity(160);
+            bitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
             Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-            canvasBitmap.setDensity(160);
+            canvasBitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
             Canvas canvas = new Canvas(canvasBitmap);
 
             if (headBitmap != null && !headBitmap.isRecycled()) {
@@ -445,7 +445,7 @@ public class RedPackagePage extends BasePager {
                 Matrix matrix = new Matrix();
                 matrix.postScale(scaleWidth, scaleWidth);
                 Bitmap scalHeadBitmap = Bitmap.createBitmap(headBitmap, 0, 0, headBitmap.getWidth(), headBitmap.getHeight(), matrix, true);
-                scalHeadBitmap.setDensity(160);
+                scalHeadBitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
                 float left = (bitmap.getWidth() - scalHeadBitmap.getWidth()) / 2;
                 float top = (bitmap.getHeight() - scalHeadBitmap.getHeight()) / 2;
                 canvas.drawBitmap(scalHeadBitmap, left + 3f, top + 4, null);
@@ -480,13 +480,15 @@ public class RedPackagePage extends BasePager {
                 String gold = "+" + entity.getGoldNum();
                 View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout.layout_live_stand_red_mine1, null);
                 TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_name);
-                tv_livevideo_redpackage_name.setText("" + userName);
+                tv_livevideo_redpackage_name.setText(userName + "");
                 TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
                 tv_livevideo_redpackage_num.setText(gold);
-                layout_live_stand_red_mine1.measure(canvasBitmap.getWidth(), canvasBitmap.getHeight());
+                tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 13.5f);
+                tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 13f);
+                int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(canvasBitmap.getWidth(), View.MeasureSpec.AT_MOST);
+                int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(canvasBitmap.getHeight(), View.MeasureSpec.AT_MOST);
+                layout_live_stand_red_mine1.measure(widthMeasureSpec, heightMeasureSpec);
                 layout_live_stand_red_mine1.layout(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight());
-                tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 14.5f);
-                tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 13.5f);
                 canvas.save();
                 canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 160);
                 layout_live_stand_red_mine1.draw(canvas);
@@ -759,9 +761,9 @@ public class RedPackagePage extends BasePager {
         try {
             inputStream = FrameAnimation.getInputStream(mContext, file);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            bitmap.setDensity(160);
+            bitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
             Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-            canvasBitmap.setDensity(160);
+            canvasBitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
             Canvas canvas = new Canvas(canvasBitmap);
             canvas.drawBitmap(bitmap, 0, 0, null);
             Bitmap head = null;
@@ -779,7 +781,7 @@ public class RedPackagePage extends BasePager {
                 Matrix matrix = new Matrix();
                 matrix.postScale(scaleWidth, scaleWidth);
                 Bitmap scalHeadBitmap = Bitmap.createBitmap(head, 0, 0, head.getWidth(), head.getHeight(), matrix, true);
-                scalHeadBitmap.setDensity(160);
+                scalHeadBitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
                 float left = (bitmap.getWidth() - scalHeadBitmap.getWidth()) / 2;
                 float top;
                 if (isMe) {
@@ -838,7 +840,7 @@ public class RedPackagePage extends BasePager {
                 if (isMe) {
                     canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 286);
                 } else {
-                    canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 194);
+                    canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 195);
                 }
                 layout_live_stand_red_mine1.draw(canvas);
                 canvas.restore();
@@ -957,9 +959,9 @@ public class RedPackagePage extends BasePager {
         try {
             inputStream = FrameAnimation.getInputStream(mContext, file);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            bitmap.setDensity(160);
+            bitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
             Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-            canvasBitmap.setDensity(160);
+            canvasBitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
             Canvas canvas = new Canvas(canvasBitmap);
             canvas.drawBitmap(bitmap, 0, 0, null);
             float[] headWidth = {108f, 96f, 96f};
@@ -987,7 +989,7 @@ public class RedPackagePage extends BasePager {
                     Matrix matrix = new Matrix();
                     matrix.postScale(scaleWidth, scaleWidth);
                     Bitmap scalHeadBitmap = Bitmap.createBitmap(head, 0, 0, head.getWidth(), head.getHeight(), matrix, true);
-                    scalHeadBitmap.setDensity(160);
+                    scalHeadBitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
                     if (i == 0) {
                         left = mid - scalHeadBitmap.getWidth() / 2;
                     } else if (i == 1) {

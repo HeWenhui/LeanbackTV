@@ -204,9 +204,9 @@ public class Top3FrameAnim {
             inputStream = FrameAnimation.getInputStream(mContext, file);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             Loger.d(TAG, "initTeamRankHeadAndGold:file=" + file);
-            bitmap.setDensity(160);
+            bitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
             Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-            canvasBitmap.setDensity(160);
+            canvasBitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
             Canvas canvas = new Canvas(canvasBitmap);
             Paint paint = new Paint();
             paint.setColor(Color.WHITE);
@@ -236,7 +236,7 @@ public class Top3FrameAnim {
                     Matrix matrix = new Matrix();
                     matrix.postScale(scaleWidth, scaleWidth);
                     Bitmap scalHeadBitmap = Bitmap.createBitmap(head, 0, 0, head.getWidth(), head.getHeight(), matrix, true);
-                    scalHeadBitmap.setDensity(160);
+                    scalHeadBitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
                     if (i == 0) {
                         left = mid - scalHeadBitmap.getWidth() / 2 - 2;
                     } else if (i == 1) {
@@ -340,7 +340,9 @@ public class Top3FrameAnim {
                     tv_livevideo_redpackage_num.setTextColor(textColors[i]);
                     tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 23);
                     tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 22);
-                    layout_live_stand_red_mine1.measure(canvasBitmap.getWidth(), canvasBitmap.getHeight());
+                    int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(canvasBitmap.getWidth(), View.MeasureSpec.AT_MOST);
+                    int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(canvasBitmap.getHeight(), View.MeasureSpec.AT_MOST);
+                    layout_live_stand_red_mine1.measure(widthMeasureSpec, heightMeasureSpec);
                     layout_live_stand_red_mine1.layout(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight());
                     canvas.save();
                     float top = textTops[i];
