@@ -901,12 +901,15 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //        if (rlMessageContent.getVisibility() != View.GONE) {
 //            rlMessageContent.setVisibility(View.GONE);
 //        }
-        if (switchFSPanelLinearLayout.getVisibility() == View.VISIBLE) {
-            InputMethodManager mInputMethodManager = (InputMethodManager) mContext.getSystemService(Context
-                    .INPUT_METHOD_SERVICE);
-            mInputMethodManager.hideSoftInputFromWindow(etMessageContent.getWindowToken(), 0);
-        }
-        switchFSPanelLinearLayout.setVisibility(View.GONE);
+        InputMethodManager mInputMethodManager = (InputMethodManager) mContext.getSystemService(Context
+                .INPUT_METHOD_SERVICE);
+        mInputMethodManager.hideSoftInputFromWindow(etMessageContent.getWindowToken(), 0);
+        switchFSPanelLinearLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                switchFSPanelLinearLayout.setVisibility(View.GONE);
+            }
+        }, 10);
     }
 
     public void closeChat(final boolean close) {
