@@ -348,7 +348,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                             if (addStudents.isEmpty()) {
                                 SpeechStandLog.sno4(speechEvalAction, id);
                             }
-                            long delayMillis = 3000 + students.size() * 300;
+                            long delayMillis = 3000;
+                            int addCount = 0;
                             for (int i = 0; i < students.size(); i++) {
                                 final GoldTeamStatus.Student student = students.get(i);
                                 if (student.isMe()) {
@@ -357,6 +358,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                                 if (addStudents.contains(student)) {
                                     continue;
                                 }
+                                delayMillis += 300;
                                 addStudents.add(student);
                                 mView.postDelayed(new Runnable() {
                                     @Override
@@ -416,7 +418,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                                         }
                                         leftOrRight++;
                                     }
-                                }, 300 * i);
+                                }, 300 * addCount);
+                                addCount++;
                             }
                             onFinish(delayMillis);
                         }

@@ -292,6 +292,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                             if (addStudents.isEmpty()) {
                                 VoiceAnswerStandLog.sno4(liveAndBackDebug, baseVideoQuestionEntity.getvQuestionID());
                             }
+                            long delayMillis = 3000;
+                            int addCount = 0;
                             for (int i = 0; i < students.size(); i++) {
                                 final GoldTeamStatus.Student student = students.get(i);
                                 if (student.isMe()) {
@@ -300,82 +302,89 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                 if (addStudents.contains(student)) {
                                     continue;
                                 }
+                                delayMillis += 300;
                                 addStudents.add(student);
-                                final LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
-                                String path;
-                                if (student.isRight()) {
-                                    path = "live_stand_voice_team_right.json";
-                                    lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/team_right");
-                                } else {
-                                    path = "live_stand_voice_team_wrong.json";
-                                    lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/team_wrong");
-                                }
-                                LottieComposition.Factory.fromAssetFileName(mContext, path, new TeamOnCompositionLoadedListener(student, lottieAnimationView));
-                                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                mView.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        final LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
+                                        String path;
+                                        if (student.isRight()) {
+                                            path = "live_stand_voice_team_right.json";
+                                            lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/team_right");
+                                        } else {
+                                            path = "live_stand_voice_team_wrong.json";
+                                            lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/team_wrong");
+                                        }
+                                        LottieComposition.Factory.fromAssetFileName(mContext, path, new TeamOnCompositionLoadedListener(student, lottieAnimationView));
+                                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 //                                lp.weight = 1;
-                                int countLeft = ll_livevideo_voiceans_team_left.getChildCount();
-                                int countRight = ll_livevideo_voiceans_team_right.getChildCount();
-                                if (leftOrRight % 2 == 1) {
-                                    boolean remove = false;
-                                    int index = 0;
-                                    if (countRight > 0) {
-                                        int rightWidth = ((View) ll_livevideo_voiceans_team_right.getParent()).getWidth();
-                                        View child = ll_livevideo_voiceans_team_right.getChildAt(0);
-                                        int childWidth = child.getWidth();
-                                        while (childWidth * (countRight + 1) > rightWidth) {
-                                            countRight--;
-                                            View view = rightView.remove(0);
-                                            lp.width = childWidth;
-                                            index = ll_livevideo_voiceans_team_right.indexOfChild(view);
-                                            ll_livevideo_voiceans_team_right.removeViewInLayout(view);
-                                            remove = true;
+                                        int countLeft = ll_livevideo_voiceans_team_left.getChildCount();
+                                        int countRight = ll_livevideo_voiceans_team_right.getChildCount();
+                                        if (leftOrRight % 2 == 1) {
+                                            boolean remove = false;
+                                            int index = 0;
+                                            if (countRight > 0) {
+                                                int rightWidth = ((View) ll_livevideo_voiceans_team_right.getParent()).getWidth();
+                                                View child = ll_livevideo_voiceans_team_right.getChildAt(0);
+                                                int childWidth = child.getWidth();
+                                                while (childWidth * (countRight + 1) > rightWidth) {
+                                                    countRight--;
+                                                    View view = rightView.remove(0);
+                                                    lp.width = childWidth;
+                                                    index = ll_livevideo_voiceans_team_right.indexOfChild(view);
+                                                    ll_livevideo_voiceans_team_right.removeViewInLayout(view);
+                                                    remove = true;
+                                                }
+                                            }
+                                            if (remove) {
+                                                ll_livevideo_voiceans_team_right.addView(lottieAnimationView, index, lp);
+                                            } else {
+                                                ll_livevideo_voiceans_team_right.addView(lottieAnimationView, lp);
+                                            }
+                                            rightView.add(lottieAnimationView);
+                                        } else {
+                                            boolean remove = false;
+                                            int index = 0;
+                                            if (countLeft > 0) {
+                                                int leftWidth = ((View) ll_livevideo_voiceans_team_left.getParent()).getWidth();
+                                                View child = ll_livevideo_voiceans_team_left.getChildAt(countLeft - 1);
+                                                int childWidth = child.getWidth();
+                                                while (childWidth * (countLeft + 1) > leftWidth) {
+                                                    countLeft--;
+                                                    remove = true;
+                                                    View view = leftView.remove(0);
+                                                    lp.width = childWidth;
+                                                    index = ll_livevideo_voiceans_team_left.indexOfChild(view);
+                                                    ll_livevideo_voiceans_team_left.removeViewInLayout(view);
+                                                }
+                                            }
+                                            if (remove) {
+                                                ll_livevideo_voiceans_team_left.addView(lottieAnimationView, index, lp);
+                                            } else {
+                                                ll_livevideo_voiceans_team_left.addView(lottieAnimationView, 0, lp);
+                                            }
+                                            leftView.add(lottieAnimationView);
                                         }
+                                        leftOrRight++;
                                     }
-                                    if (remove) {
-                                        ll_livevideo_voiceans_team_right.addView(lottieAnimationView, index, lp);
-                                    } else {
-                                        ll_livevideo_voiceans_team_right.addView(lottieAnimationView, lp);
-                                    }
-                                    rightView.add(lottieAnimationView);
-                                } else {
-                                    boolean remove = false;
-                                    int index = 0;
-                                    if (countLeft > 0) {
-                                        int leftWidth = ((View) ll_livevideo_voiceans_team_left.getParent()).getWidth();
-                                        View child = ll_livevideo_voiceans_team_left.getChildAt(countLeft - 1);
-                                        int childWidth = child.getWidth();
-                                        while (childWidth * (countLeft + 1) > leftWidth) {
-                                            countLeft--;
-                                            remove = true;
-                                            View view = leftView.remove(0);
-                                            lp.width = childWidth;
-                                            index = ll_livevideo_voiceans_team_left.indexOfChild(view);
-                                            ll_livevideo_voiceans_team_left.removeViewInLayout(view);
-                                        }
-                                    }
-                                    if (remove) {
-                                        ll_livevideo_voiceans_team_left.addView(lottieAnimationView, index, lp);
-                                    } else {
-                                        ll_livevideo_voiceans_team_left.addView(lottieAnimationView, 0, lp);
-                                    }
-                                    leftView.add(lottieAnimationView);
-                                }
-                                leftOrRight++;
+                                }, 300 * addCount);
+                                addCount++;
                             }
-                            onFinish();
+                            onFinish(delayMillis);
                         }
 
                         @Override
                         public void onDataFail(int errStatus, String failMsg) {
                             super.onDataFail(errStatus, failMsg);
-                            onFinish();
+                            onFinish(3000);
                         }
 
-                        private void onFinish() {
+                        private void onFinish(long delayMillis) {
                             if (mView.getParent() == null) {
                                 return;
                             }
-                            mView.postDelayed(r, 3000);
+                            mView.postDelayed(r, delayMillis);
                         }
                     });
                 }

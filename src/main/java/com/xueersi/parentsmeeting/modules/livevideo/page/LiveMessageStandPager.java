@@ -1286,7 +1286,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                 mView.post(new Runnable() {
                     @Override
                     public void run() {
-                        if (liveMessageEntities.size() > 29) {
+                        if (liveMessageEntities.size() > 2) {
                             LiveMessageEntity entity = liveMessageEntities.remove(0);
                             //使用AutohListview会走这，现在listview不会
 //                            StandLiveHeadView standLiveHeadView = entity.getStandLiveHeadView();
@@ -1300,15 +1300,16 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                         }
                         LiveMessageEntity entity = new LiveMessageEntity(sender, type, sBuilder, headUrl);
                         liveMessageEntities.add(entity);
-                        if (otherLiveMessageEntities != null) {
-                            if (otherLiveMessageEntities.size() > 29) {
-                                otherLiveMessageEntities.remove(0);
-                            }
-                            otherLiveMessageEntities.add(entity);
-                        }
-                        if (otherMessageAdapter != null) {
-                            otherMessageAdapter.notifyDataSetChanged();
-                        }
+                        //站立直播不保留其他数据
+//                        if (otherLiveMessageEntities != null) {
+//                            if (otherLiveMessageEntities.size() > 29) {
+//                                otherLiveMessageEntities.remove(0);
+//                            }
+//                            otherLiveMessageEntities.add(entity);
+//                        }
+//                        if (otherMessageAdapter != null) {
+//                            otherMessageAdapter.notifyDataSetChanged();
+//                        }
                         messageAdapter.notifyDataSetChanged();
                         if (!isTouch) {
 //                            if (lvMessage.getChildCount() == 1) {

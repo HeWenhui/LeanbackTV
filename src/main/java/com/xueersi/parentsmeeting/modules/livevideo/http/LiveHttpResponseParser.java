@@ -496,7 +496,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     student.setEn_name(stu.getString("en_name"));
                     student.createShowName();
                     student.setGold(stu.optString("gold"));
-                    String  avatar_path = stu.getString("avatar_path");
+                    String avatar_path = stu.getString("avatar_path");
                     student.setAvatar_path(avatar_path);
                     entity.getStudents().add(student);
                 } catch (Exception e) {
@@ -544,12 +544,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return entity;
     }
 
-    public GoldTeamStatus testAnswerTeamStatus(ResponseEntity responseEntity, String stuid) {
+    public GoldTeamStatus testAnswerTeamStatus(ResponseEntity responseEntity, String stuid, String headUrl) {
         GoldTeamStatus entity = new GoldTeamStatus();
         try {
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
             JSONArray stuList = jsonObject.getJSONArray("stuList");
-            String avatar_path = "";
             for (int i = 0; i < stuList.length(); i++) {
                 try {
                     JSONObject stu = stuList.getJSONObject(i);
@@ -563,7 +562,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     student.setEn_name(stu.getString("en_name"));
                     student.createShowName();
                     student.setRight(stu.optInt("isRight") == 1);
-                    avatar_path = stu.getString("avatar_path");
+                    String avatar_path = stu.getString("avatar_path");
                     student.setAvatar_path(avatar_path);
                     entity.getStudents().add(student);
                 } catch (Exception e) {
@@ -571,19 +570,30 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 }
             }
 //            if (AppConfig.DEBUG && lyqTest) {
-//                for (int i = 0; i < 3; i++) {
+//                for (int i = 0; i < 8; i++) {
 //                    GoldTeamStatus.Student student = new GoldTeamStatus.Student();
 //                    student.setStuId("12345" + testid++);
 //                    student.setName(student.getStuId());
 //                    student.setNickname("测试" + testid++);
 //                    student.setRight(i % 2 == 0);
-//                    student.setAvatar_path(avatar_path);
+//                    student.setAvatar_path(headUrl);
 //                    entity.getStudents().add(student);
 //                }
 //            }
         } catch (Exception e) {
-            MobAgent.httpResponseParserError(TAG, "redGoldTeamStatus", e.getMessage());
+            MobAgent.httpResponseParserError(TAG, "testAnswerTeamStatus", e.getMessage());
         }
+//        if (AppConfig.DEBUG && lyqTest) {
+//            for (int i = 0; i < 8; i++) {
+//                GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                student.setStuId("12345" + testid++);
+//                student.setName(student.getStuId());
+//                student.setNickname("测试" + testid++);
+//                student.setRight(i % 2 == 0);
+//                student.setAvatar_path(headUrl);
+//                entity.getStudents().add(student);
+//            }
+//        }
         return entity;
     }
 
