@@ -39,7 +39,7 @@ public class StandLiveTextView extends TextView {
         super.setText(newText, type);
     }
 
-    protected boolean isChinese(String str) {
+    public static boolean isChinese(String str) {
         char[] chars = str.toCharArray();
         for (int i = 0; i < chars.length; i++) {
             byte[] bytes = ("" + chars[i]).getBytes();

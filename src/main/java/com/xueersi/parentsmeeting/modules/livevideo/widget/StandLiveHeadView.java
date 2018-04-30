@@ -128,8 +128,17 @@ public class StandLiveHeadView extends LottieAnimationView {
      * 设置名字
      */
     public void updateName() {
-        String num = "abcdefghijk";
-        num = name;
+        String num = name;
+        int length = name.length();
+        if (StandLiveTextView.isChinese(num)) {
+            if (length > 4) {
+                num = num.substring(0, 4) + "...";
+            }
+        } else {
+            if (length > 8) {
+                num = num.substring(0, 8) + "...";
+            }
+        }
         AssetManager manager = getContext().getAssets();
         Bitmap img_7Bitmap;
         try {
@@ -144,9 +153,13 @@ public class StandLiveHeadView extends LottieAnimationView {
             canvas.drawBitmap(img_7Bitmap, 0, 0, null);
             Paint paint = new Paint();
             paint.setTextSize(24);
-            paint.setColor(Color.WHITE);
+            if (isMine) {
+                paint.setColor(Color.WHITE);
+            } else {
+                paint.setColor(0xffA56202);
+            }
             float width = paint.measureText(num);
-            canvas.drawText(num, img_3Bitmap.getWidth() / 2 + 5, img_7Bitmap.getHeight() / 2 + paint.measureText("a") / 2, paint);
+            canvas.drawText(num, img_3Bitmap.getWidth() / 2 + 5, img_7Bitmap.getHeight() / 2 + paint.measureText("学") / 2 - 5, paint);
             Bitmap oldBitmap = img_7Bitmap;
             img_7Bitmap = creatBitmap;
             oldBitmap.recycle();
