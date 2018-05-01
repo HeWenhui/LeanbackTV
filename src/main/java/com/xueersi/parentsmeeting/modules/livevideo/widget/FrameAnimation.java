@@ -14,8 +14,8 @@ import android.widget.ImageView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.util.ScreenUtils;
 import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,9 +41,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class FrameAnimation {
     static String TAG = "FrameAnimation";
     String eventId = LiveVideoConfig.LIVE_FRAME_ANIM;
-    /**是不是循环播放*/
+    /** 是不是循环播放 */
     private boolean mIsRepeat;
-    /**是循环播放的时候，是不是缓存图片*/
+    /** 是循环播放的时候，是不是缓存图片 */
     private boolean mCache = true;
     private AnimationListener mAnimationListener;
 
@@ -120,7 +120,7 @@ public class FrameAnimation {
         this.mDuration = duration;
         this.mLastFrame = files.length - 1;
         this.mIsRepeat = isRepeat;
-        mDensity = (int) (DEFAULT_DENSITY * (IMAGE_HEIGHT / (float) ScreenUtils.getScreenHeight(mView.getContext())));
+        mDensity = (int) (DEFAULT_DENSITY * (IMAGE_HEIGHT / (float) ScreenUtils.getScreenHeight()));
         if (files.length > 0) {
             play(0);
             executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
@@ -381,7 +381,7 @@ public class FrameAnimation {
                                                 return;
                                             }
                                             mView.setBackgroundDrawable(new FrameBitmapDrawable(finalBitmap, mView, file, i));
-                                            if (!mIsRepeat|| !mCache) {
+                                            if (!mIsRepeat || !mCache) {
                                                 if (i > 0) {
                                                     mView.post(new Runnable() {
                                                         @Override
