@@ -524,26 +524,36 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         Rect r = new Rect();
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
         int screenWidth = (r.right - r.left);
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
-        int rightMargin = (int) (StandLiveVideoActivity.VIDEO_HEAD_WIDTH * lp.width / VIDEO_WIDTH + (screenWidth - lp.width) / 2);
-        int topMargin = (ScreenUtils.getScreenHeight() - lp.height) / 2;
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlFirstBackgroundView.getLayoutParams();
         if (LiveTopic.MODE_CLASS.equals(mode)) {
-            if (params.rightMargin != 0 || params.bottomMargin != topMargin) {
-                params.rightMargin = 0;
-                params.bottomMargin = params.topMargin = topMargin;
+//           主讲模式铺满屏幕，等比例缩放
+            int screenHeight = ScreenUtils.getScreenHeight();
+            float density = ScreenUtils.getScreenDensity();
+            int bitmapW = (int) (density * 1280);
+            int bitmapH = (int) (density * 720);
+            float screenRatio = (float) screenWidth / (float) screenHeight;
+            int newWidth = screenWidth;
+            int newHeight = screenHeight;
+            if (screenRatio > 16 / 9) {
+                newHeight = (int) ((float) screenWidth * (float) bitmapH / (float) bitmapW);
+            } else if (screenRatio < 16 / 9) {
+                newWidth = (int) ((float) screenHeight * (float) bitmapW / (float) bitmapH);
+            }
+            if (params.width != newWidth || params.height != newHeight) {
+                params.width = newWidth;
+                params.height = newHeight;
                 LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
-//            rlFirstBackgroundView.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
-//            ivTeacherNotpresent.setLayoutParams(params);
             }
         } else {
+            // 辅导模式保留三分屏
+            int rightMargin = (int) (StandLiveVideoActivity.VIDEO_HEAD_WIDTH * lp.width / VIDEO_WIDTH + (screenWidth - lp.width) / 2);
+            int topMargin = (ScreenUtils.getScreenHeight() - lp.height) / 2;
             if (params.rightMargin != rightMargin || params.bottomMargin != topMargin) {
                 params.rightMargin = rightMargin;
                 params.bottomMargin = params.topMargin = topMargin;
                 LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
-//            rlFirstBackgroundView.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
-//            ivTeacherNotpresent.setLayoutParams(params);
             }
         }
         //Loger.e(TAG, "setFirstParam:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
@@ -896,15 +906,15 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
 //                if (tvLoadingHint != null) {
 //                    tvLoadingHint.setText(msg);
 //                }
-                if (liveType == LiveBll.LIVE_TYPE_LIVE) {
-                    if (mGetInfo.getStudentLiveInfo().isExpe() && LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())) {
-                        tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
-                        setFirstBackgroundVisible(View.VISIBLE);
-                        findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.GONE);
-                        ivTeacherNotpresent.setVisibility(View.GONE);
-                        return;
-                    }
-                }
+//                if (liveType == LiveBll.LIVE_TYPE_LIVE) {
+//                    if (mGetInfo.getStudentLiveInfo().isExpe() && LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())) {
+//                        tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
+//                        setFirstBackgroundVisible(View.VISIBLE);
+//                        findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.GONE);
+//                        ivTeacherNotpresent.setVisibility(View.GONE);
+//                        return;
+//                    }
+//                }
                 ivTeacherNotpresent.setVisibility(View.VISIBLE);
                 setTeacherNotpresent(ivTeacherNotpresent);
                 findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
@@ -1211,15 +1221,15 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
             return;
         }
         totalFrameStat.onReplay();
-        if (liveType == LiveBll.LIVE_TYPE_LIVE) {
-            if (LiveTopic.MODE_TRANING.endsWith(mGetInfo.getLiveTopic().getMode()) && mGetInfo.getStudentLiveInfo().isExpe()) {
-                tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
-                setFirstBackgroundVisible(View.VISIBLE);
-                findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.GONE);
-                ivTeacherNotpresent.setVisibility(View.GONE);
-                return;
-            }
-        }
+//        if (liveType == LiveBll.LIVE_TYPE_LIVE) {
+//            if (LiveTopic.MODE_TRANING.endsWith(mGetInfo.getLiveTopic().getMode()) && mGetInfo.getStudentLiveInfo().isExpe()) {
+//                tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
+//                setFirstBackgroundVisible(View.VISIBLE);
+//                findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.GONE);
+//                ivTeacherNotpresent.setVisibility(View.GONE);
+//                return;
+//            }
+//        }
         new Thread() {
             @Override
             public void run() {
