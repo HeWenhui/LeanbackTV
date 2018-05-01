@@ -254,6 +254,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                     } else {
                         lvMessage.setVisibility(View.GONE);
                         rlMessageContent.setVisibility(View.GONE);
+                        onTitleShow(true);
                     }
                 }
             }
@@ -900,6 +901,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //        if (rlMessageContent.getVisibility() != View.GONE) {
 //            rlMessageContent.setVisibility(View.GONE);
 //        }
+        btMessageExpress.setBackgroundResource(R.drawable.selector_live_stand_chat_expression);
         InputMethodManager mInputMethodManager = (InputMethodManager) mContext.getSystemService(Context
                 .INPUT_METHOD_SERVICE);
         mInputMethodManager.hideSoftInputFromWindow(etMessageContent.getWindowToken(), 0);
