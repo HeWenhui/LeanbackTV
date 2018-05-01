@@ -504,7 +504,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 }
             }
 //            if (AppConfig.DEBUG && lyqTest) {
-//                for (int i = 0; i < 2; i++) {
+//                for (int i = 0; i < 11; i++) {
 //                    GoldTeamStatus.Student student = new GoldTeamStatus.Student();
 //                    student.setStuId("12345" + testid++);
 //                    student.setName(student.getStuId());

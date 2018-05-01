@@ -200,55 +200,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
 //                        if (AppConfig.DEBUG) {
 //                            VideoResultEntity entity = new VideoResultEntity();
 //                            entity.setGoldNum(12);
-//                            RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
-//                            redPackagePage.onGetPackage(entity);
-//                            if (clickPackage == 1) {
-//                                MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
-//                                GoldTeamStatus goldTeamStatus = new GoldTeamStatus();
-//                                GoldTeamStatus.Student student = new GoldTeamStatus.Student();
-//                                student.setNickname(userName);
-//                                student.setAvatar_path(headUrl);
-//                                student.setStuId(mMyInfo.getStuId());
-//                                student.setGold("99");
-//                                student.setMe(true);
-//                                goldTeamStatus.getStudents().add(student);
-//                                redPackagePage.onGetTeamPackage(goldTeamStatus);
-//                                //直播获得小组数据，回放隔几秒就消失
-//                                if (isLive) {
-//                                    final AtomicBoolean stop = new AtomicBoolean(false);
-//                                    getReceiveGoldTeamStatus(operateId, stop);
-//                                    rlRedpacketContent.postDelayed(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            stop.set(true);
-//                                            final AtomicInteger tryTime = new AtomicInteger();
-//                                            receiveGold.getReceiveGoldTeamRank(operateId, new AbstractBusinessDataCallBack() {
-//                                                @Override
-//                                                public void onDataSucess(Object... objData) {
-//                                                    GoldTeamStatus entity = (GoldTeamStatus) objData[0];
-//                                                    RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
-//                                                    redPackagePage.onGetTeamRank(entity);
-//                                                }
-//
-//                                                @Override
-//                                                public void onDataFail(int errStatus, String failMsg) {
-//                                                    super.onDataFail(errStatus, failMsg);
-//                                                    if (errStatus == 0) {
-//                                                        if (tryTime.get() == 0) {
-//                                                            receiveGold.getReceiveGoldTeamRank(operateId, this);
-//                                                            tryTime.getAndIncrement();
-//                                                        } else {
-//                                                            onPackageClose(operateId);
-//                                                        }
-//                                                    } else if (errStatus == 1) {
-//                                                        onPackageClose(operateId);
-//                                                    }
-//                                                }
-//                                            });
-//                                        }
-//                                    }, 14000);
-//                                }
-//                            }
+//                            onDataSucess(entity);
 //                        }
                     }
                 });
