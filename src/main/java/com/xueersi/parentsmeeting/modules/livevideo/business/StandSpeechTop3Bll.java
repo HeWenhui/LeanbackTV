@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import android.graphics.Bitmap;
 import android.os.Environment;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
@@ -27,6 +27,7 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
     GoldTeamStatus entity;
     boolean stop = false;
     HashMap<String, GoldTeamStatus> goldTeamStatusHashMap = new HashMap<>();
+    HashMap<String, OnTop3End> top3EndHashMap = new HashMap<>();
     LogToFile logToFile;
 
     public StandSpeechTop3Bll(LiveBll liveBll) {
@@ -54,7 +55,16 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
                             goldTeamStatusHashMap.put(num, entity);
                             Loger.d(TAG, "getSpeechEvalAnswerTeamRank:stop=" + stop);
                             if (stop) {
-                                onStopSpeech(speechAssessmentPager, num);
+                                onStopSpeech(speechAssessmentPager, num, null);
+                            }
+                        }
+
+                        @Override
+                        public void onDataFail(int errStatus, String failMsg) {
+                            super.onDataFail(errStatus, failMsg);
+                            goldTeamStatusHashMap.put(num, null);
+                            if (stop) {
+                                onStopSpeech(speechAssessmentPager, num, null);
                             }
                         }
                     });
@@ -68,7 +78,16 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
                             goldTeamStatusHashMap.put(num, entity);
                             Loger.d(TAG, "getRolePlayAnswerTeamRank:stop=" + stop);
                             if (stop) {
-                                onStopSpeech(speechAssessmentPager, num);
+                                onStopSpeech(speechAssessmentPager, num, null);
+                            }
+                        }
+
+                        @Override
+                        public void onDataFail(int errStatus, String failMsg) {
+                            super.onDataFail(errStatus, failMsg);
+                            goldTeamStatusHashMap.put(num, null);
+                            if (stop) {
+                                onStopSpeech(speechAssessmentPager, num, null);
                             }
                         }
                     });
@@ -78,21 +97,35 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
     }
 
     @Override
-    public void onStopSpeech(BaseSpeechAssessmentPager speechAssessmentPager, String num) {
+    public void onStopSpeech(BaseSpeechAssessmentPager speechAssessmentPager, String num, OnTop3End top3End) {
+        if (top3End != null) {
+            top3EndHashMap.put(num, top3End);
+        } else {
+            top3End = top3EndHashMap.get(num);
+            logToFile.d("onStopSpeech:num=" + num + ",top3End=" + (top3End == null));
+        }
         stop = true;
         if (entity != null) {
             logToFile.d("onStopSpeech:entity=" + entity.getId() + ",num=" + num + ",size=" + goldTeamStatusHashMap.size());
         } else {
             logToFile.d("onStopSpeech:entity=null" + ",num=" + num + ",size=" + goldTeamStatusHashMap.size());
         }
-        GoldTeamStatus entity = goldTeamStatusHashMap.get(num);
-        if (entity == null) {
-            return;
+        if (goldTeamStatusHashMap.containsKey(num)) {//说明请求了
+            GoldTeamStatus entity = goldTeamStatusHashMap.get(num);
+            if (entity == null) {//请求失败
+                logToFile.d("onStopSpeech:entity=null" + ",num=" + num);
+                if (top3End != null) {
+                    top3End.onShowEnd();
+                    top3EndHashMap.remove(num);
+                }
+                return;
+            }
+            logToFile.d("onStopSpeech:entity=" + entity.getId() + ",num=" + num);
+            initTop(num, entity, top3End);
         }
-        initTop(num, entity);
     }
 
-    private void initTop(String num, GoldTeamStatus entity) {
+    private void initTop(final String num, GoldTeamStatus entity, final OnTop3End top3End) {
         if (standSpeechTop3Pager != null && num.equals(standSpeechTop3Pager.getId())) {
             Loger.d(TAG, "initTop:num=" + num);
             return;
@@ -104,6 +137,21 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
         StandSpeechTop3Bll.this.entity = null;
         goldTeamStatusHashMap.remove(num);
         stop = false;
+        standSpeechTop3Pager.getRootView().addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+                logToFile.d("initTop:Detached:num=" + num + ",top3End=" + (top3End == null));
+                if (top3End != null) {
+                    top3End.onShowEnd();
+                    top3EndHashMap.remove(num);
+                }
+            }
+        });
     }
 
 }

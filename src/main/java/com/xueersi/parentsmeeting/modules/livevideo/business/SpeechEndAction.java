@@ -14,5 +14,9 @@ public interface SpeechEndAction {
 
     void initView(RelativeLayout bottomContent);
 
-    void onStopSpeech(BaseSpeechAssessmentPager speechAssessmentPager, String num);
+    void onStopSpeech(BaseSpeechAssessmentPager speechAssessmentPager, String num, OnTop3End top3End);
+
+    interface OnTop3End {
+        void onShowEnd();
+    }
 }
