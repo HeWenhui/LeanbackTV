@@ -41,8 +41,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class FrameAnimation {
     static String TAG = "FrameAnimation";
     String eventId = LiveVideoConfig.LIVE_FRAME_ANIM;
+    /**是不是循环播放*/
     private boolean mIsRepeat;
-
+    /**是循环播放的时候，是不是缓存图片*/
+    private boolean mCache = true;
     private AnimationListener mAnimationListener;
 
     private ImageView mImageView;
@@ -76,6 +78,7 @@ public class FrameAnimation {
     private int mCurrentSelect;
 
     private int mCurrentFrame;
+
     public static final float IMAGE_HEIGHT = 750f;
 
     private static final int SELECTED_A = 1;
@@ -378,7 +381,7 @@ public class FrameAnimation {
                                                 return;
                                             }
                                             mView.setBackgroundDrawable(new FrameBitmapDrawable(finalBitmap, mView, file, i));
-                                            if (!mIsRepeat) {
+                                            if (!mIsRepeat|| !mCache) {
                                                 if (i > 0) {
                                                     mView.post(new Runnable() {
                                                         @Override
@@ -529,6 +532,10 @@ public class FrameAnimation {
 
     public void setDensity(int density) {
         this.mDensity = density;
+    }
+
+    public void setCache(boolean mCache) {
+        this.mCache = mCache;
     }
 
     public void removeBitmapCache(String file) {
