@@ -2954,14 +2954,17 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /**
      * 发生聊天消息
      */
-    public boolean sendMessage(String msg) {
+    public boolean sendMessage(String msg, String name) {
         if (mLiveTopic.isDisable()) {
             return false;
         } else {
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("type", "" + XESCODE.TEACHER_MESSAGE);
-                jsonObject.put("name", mGetInfo.getStuName());
+                if (StringUtils.isEmpty(name)) {
+                    name = mGetInfo.getStuName();
+                }
+                jsonObject.put("name", name);
                 jsonObject.put("path", "" + mGetInfo.getHeadImgPath());
                 jsonObject.put("version", "" + mGetInfo.getHeadImgVersion());
                 jsonObject.put("msg", msg);

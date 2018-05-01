@@ -16,7 +16,6 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
 import android.text.util.Linkify;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -372,7 +371,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                     }
                     if (liveBll.openchat()) {
                         if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
-                            boolean send = liveBll.sendMessage(msg);
+                            boolean send = liveBll.sendMessage(msg, getInfo.getStandLiveName());
                             if (send) {
                                 etMessageContent.setText("");
                                 addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, getInfo.getHeadImgPath());

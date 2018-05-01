@@ -188,7 +188,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
                     }
                     if (liveBll.openchat()) {
                         if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
-                            boolean send = liveBll.sendMessage(msg);
+                            boolean send = liveBll.sendMessage(msg, "");
                             if (send) {
                                 etMessageContent.setText("");
                                 addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
