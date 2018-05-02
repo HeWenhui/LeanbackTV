@@ -1141,6 +1141,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                              mTeamPKBll.showOpenBoxScene(true);//从topic 恢复是如何判断胜负关系
                              return;
                          }
+                        mTeamPKBll.setTopicHandled(true);
                     }
                 }
 

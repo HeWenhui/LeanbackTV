@@ -255,6 +255,7 @@ public class TeamPKBll {
      * 开启分队仪式
      */
     public void startTeamSelect() {
+        Log.e("teamPkBll","====>startTeamSelect:");
         getTeamInfo();
     }
 
@@ -310,6 +311,7 @@ public class TeamPKBll {
      */
     private void showTeamSelectScene() {
         if (mFoucesPager == null || !(mFoucesPager instanceof TeamPkTeamSelectingPager)) {
+            Log.e("teamPkBll","====>showTeamSelectScene:"+mFoucesPager);
             TeamPkTeamSelectPager teamSelectPager = new TeamPkTeamSelectPager(activity, this);
             mFoucesPager = teamSelectPager;
             teamSelectPager.setData(teamInfoEntity);
@@ -404,6 +406,7 @@ public class TeamPKBll {
      */
     public void showTeamSelecting() {
         if (mFoucesPager == null || !(mFoucesPager instanceof TeamPkTeamSelectPager)) {
+            Log.e("teamPkBll","====>showTeamSelecting:");
             TeamPkTeamSelectingPager selectingPager = new TeamPkTeamSelectingPager(activity, this);
             mFoucesPager = selectingPager;
             rlTeamPkContent.removeAllViews();
