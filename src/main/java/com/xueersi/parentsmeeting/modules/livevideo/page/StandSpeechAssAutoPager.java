@@ -364,7 +364,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                                     @Override
                                     public void run() {
                                         LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
-                                        String path = "live_stand_voice_team_right.json";
+                                        String path = "live_stand/lottie/live_stand_voice_team_right.json";
                                         lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/team_right");
                                         LottieComposition.Factory.fromAssetFileName(mContext, path, new TeamOnCompositionLoadedListener(student, lottieAnimationView));
                                         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -1028,7 +1028,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 return false;
             }
         });
-        String path = "live_stand_voice_team_right.json";
+        String path = "live_stand/lottie/live_stand_voice_team_right.json";
         lav_livevideo_voiceans_team_mine.setImageAssetsFolder("live_stand/lottie/voice_answer/team_right");
         GoldTeamStatus.Student student = new GoldTeamStatus.Student();
         student.setNickname(userName);

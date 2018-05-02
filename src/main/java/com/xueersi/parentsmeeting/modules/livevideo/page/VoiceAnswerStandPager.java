@@ -310,10 +310,10 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                         final LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
                                         String path;
                                         if (student.isRight()) {
-                                            path = "live_stand_voice_team_right.json";
+                                            path = "live_stand/lottie/live_stand_voice_team_right.json";
                                             lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/team_right");
                                         } else {
-                                            path = "live_stand_voice_team_wrong.json";
+                                            path = "live_stand/lottie/live_stand_voice_team_wrong.json";
                                             lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/team_wrong");
                                         }
                                         LottieComposition.Factory.fromAssetFileName(mContext, path, new TeamOnCompositionLoadedListener(student, lottieAnimationView));
@@ -972,10 +972,10 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         lav_livevideo_voiceans_team_mine.setVisibility(View.VISIBLE);
         String path;
         if (isRight) {
-            path = "live_stand_voice_team_right.json";
+            path = "live_stand/lottie/live_stand_voice_team_right.json";
             lav_livevideo_voiceans_team_mine.setImageAssetsFolder("live_stand/lottie/voice_answer/team_right");
         } else {
-            path = "live_stand_voice_team_wrong.json";
+            path = "live_stand/lottie/live_stand_voice_team_wrong.json";
             lav_livevideo_voiceans_team_mine.setImageAssetsFolder("live_stand/lottie/voice_answer/team_wrong");
         }
         GoldTeamStatus.Student student = new GoldTeamStatus.Student();
