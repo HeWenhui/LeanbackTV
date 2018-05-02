@@ -62,6 +62,7 @@ public class LiveStandFrameAnim {
     int progGap;
     /** 进度条里面进度的高度 */
     int progHeight;
+    /** 进度条里面进度的高度 */
     int progWidth;
 
     public LiveStandFrameAnim(Activity activity) {
@@ -186,6 +187,14 @@ public class LiveStandFrameAnim {
         final TextView tv_live_stand_update_prog = view.findViewById(R.id.tv_live_stand_update_prog);
         tv_live_stand_update_prog.setTypeface(fontFace);
         downloadStart = System.currentTimeMillis();
+        pb_live_stand_update.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                pb_live_stand_update.getViewTreeObserver().removeOnPreDrawListener(this);
+                onProgress(pb_live_stand_update.getLeft(), rl_live_stand_update_prog, iv_live_stand_update_prog_light, pb_live_stand_update.getProgress());
+                return false;
+            }
+        });
         baseHttp.downloadRenew(xuersi, tempFileZip, new DownloadCallBack() {
             DownloadCallBack downloadCallBack = this;
 
@@ -208,12 +217,7 @@ public class LiveStandFrameAnim {
                 logHashMap.put("version", "" + version);
                 logHashMap.put("downloadsize", "" + downloadSize);
                 Loger.d(activity, eventId, logHashMap.getData(), true);
-                {
-                    RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) rl_live_stand_update_prog.getLayoutParams();
-                    int left = (progWidth) / 2;
-                    lp2.leftMargin = left - rl_live_stand_update_prog.getWidth() / 2 + pb_live_stand_update.getLeft() + progGap - progHeight / 2;
-                    rl_live_stand_update_prog.setLayoutParams(lp2);
-                }
+                onProgress(pb_live_stand_update.getLeft(), rl_live_stand_update_prog, iv_live_stand_update_prog_light, 50);
                 LiveZip liveZip = new LiveZip(view, callBack, saveFile, saveFileTemp);
                 zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, activity, liveZip);
                 zipExtractorTask.execute();
@@ -262,26 +266,40 @@ public class LiveStandFrameAnim {
                     tv_live_stand_update_prog.post(new Runnable() {
                         @Override
                         public void run() {
-                            int progTipWidth = rl_live_stand_update_prog.getWidth();
-                            int lightWidth = iv_live_stand_update_prog_light.getWidth();
-                            int left = (int) (((float) progWidth) * (float) finalProgress / 100.0f);
-                            {
-                                RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) rl_live_stand_update_prog.getLayoutParams();
-//                        int left = pb_live_stand_update.getWidth() * progress / 100;
-                                lp2.leftMargin = left - progTipWidth / 2 + pb_live_stand_update.getLeft() + progGap - progHeight / 2;
-                                rl_live_stand_update_prog.setLayoutParams(lp2);
-                            }
-                            {
-                                RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) iv_live_stand_update_prog_light.getLayoutParams();
-//                        int left = pb_live_stand_update.getWidth() * progress / 100;
-                                lp2.leftMargin = left - lightWidth / 2 + pb_live_stand_update.getLeft() + progGap - progHeight / 2;
-                                iv_live_stand_update_prog_light.setLayoutParams(lp2);
-                            }
+                            onProgress(pb_live_stand_update.getLeft(), rl_live_stand_update_prog, iv_live_stand_update_prog_light, finalProgress);
                         }
                     });
                 }
             }
         });
+    }
+
+    /**
+     * 进度条变化，更新上面的文字和光的位置
+     *
+     * @param progLeft                        进度条左边
+     * @param rl_live_stand_update_prog       进度条上文字布局
+     * @param iv_live_stand_update_prog_light 光的布局
+     * @param progress                        进度
+     */
+    private void onProgress(int progLeft, RelativeLayout rl_live_stand_update_prog, ImageView iv_live_stand_update_prog_light, int progress) {
+        int progTipWidth = rl_live_stand_update_prog.getWidth();
+        int lightWidth = iv_live_stand_update_prog_light.getWidth();
+        Loger.d(TAG, "onProgress:progLeft=" + progLeft + ",progTipWidth=" + progTipWidth + ",lightWidth=" + lightWidth);
+        int left = (int) (((float) progWidth) * (float) progress / 100.0f);
+        Loger.d(TAG, "onProgress:progress=" + progress + ",left=" + left);
+        {
+            RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) rl_live_stand_update_prog.getLayoutParams();
+//                        int left = pb_live_stand_update.getWidth() * progress / 100;
+            lp2.leftMargin = left - progTipWidth / 2 + progLeft + progGap - progHeight / 2;
+            rl_live_stand_update_prog.setLayoutParams(lp2);
+        }
+        {
+            RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) iv_live_stand_update_prog_light.getLayoutParams();
+//                        int left = pb_live_stand_update.getWidth() * progress / 100;
+            lp2.leftMargin = left - lightWidth / 2 + progLeft + progGap - progHeight / 2;
+            iv_live_stand_update_prog_light.setLayoutParams(lp2);
+        }
     }
 
     class LiveZip implements ZipProg {
@@ -329,21 +347,7 @@ public class LiveStandFrameAnim {
                     tv_live_stand_update_prog.post(new Runnable() {
                         @Override
                         public void run() {
-                            int progTipWidth = rl_live_stand_update_prog.getWidth();
-                            int lightWidth = iv_live_stand_update_prog_light.getWidth();
-                            int left = (int) (((float) progWidth) * (float) progress / 100.0f);
-                            {
-                                RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) rl_live_stand_update_prog.getLayoutParams();
-//                        int left = pb_live_stand_update.getWidth() * progress / 100;
-                                lp2.leftMargin = left - progTipWidth / 2 + pb_live_stand_update.getLeft() + progGap - progHeight / 2;
-                                rl_live_stand_update_prog.setLayoutParams(lp2);
-                            }
-                            {
-                                RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) iv_live_stand_update_prog_light.getLayoutParams();
-//                        int left = pb_live_stand_update.getWidth() * progress / 100;
-                                lp2.leftMargin = left - lightWidth / 2 + pb_live_stand_update.getLeft() + progGap - progHeight / 2;
-                                iv_live_stand_update_prog_light.setLayoutParams(lp2);
-                            }
+                            onProgress(pb_live_stand_update.getLeft(), rl_live_stand_update_prog, iv_live_stand_update_prog_light, progress);
                         }
                     });
                 }
