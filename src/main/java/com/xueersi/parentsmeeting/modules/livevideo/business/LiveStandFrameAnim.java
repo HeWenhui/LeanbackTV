@@ -103,6 +103,7 @@ public class LiveStandFrameAnim {
                 //activity_video_live_stand_check
                 ViewStub vs_live_stand_update = activity.findViewById(R.id.vs_live_stand_update);
                 View view = vs_live_stand_update.inflate();
+                init(view);
 //                view.setVisibility(View.INVISIBLE);
                 view.findViewById(R.id.iv_live_stand_update_back).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -126,21 +127,8 @@ public class LiveStandFrameAnim {
                     activity.finish();
                 }
             });
+            init(view);
             final ProgressBar pb_live_stand_update = view.findViewById(R.id.pb_live_stand_update);
-
-            ViewGroup.LayoutParams layoutParams = pb_live_stand_update.getLayoutParams();
-            Bitmap bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.bg_live_stand_update_prog_bg);
-            Bitmap bitmap2 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.bg_live_stand_update_prog);
-            //设置进度条宽度
-            layoutParams.width = bitmap.getWidth();
-            pb_live_stand_update.setLayoutParams(layoutParams);
-            //进度条背景和里面进度的差值
-            progGap = (bitmap.getWidth() - bitmap2.getWidth()) / 2;
-            progHeight = bitmap2.getHeight();
-            progWidth = bitmap2.getWidth();
-            bitmap.recycle();
-            bitmap2.recycle();
-
             int netWorkType = NetWorkHelper.getNetWorkState(activity);
             if (netWorkType == NetWorkHelper.MOBILE_STATE) {
                 final VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(), false,
@@ -170,6 +158,22 @@ public class LiveStandFrameAnim {
                 download(view, saveFileZip, tempFileZip, saveFile, saveFileTemp);
             }
         }
+    }
+
+    private void init(View view) {
+        ProgressBar pb_live_stand_update = view.findViewById(R.id.pb_live_stand_update);
+        ViewGroup.LayoutParams layoutParams = pb_live_stand_update.getLayoutParams();
+        Bitmap bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.bg_live_stand_update_prog_bg);
+        Bitmap bitmap2 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.bg_live_stand_update_prog);
+        //设置进度条宽度
+        layoutParams.width = bitmap.getWidth();
+        pb_live_stand_update.setLayoutParams(layoutParams);
+        //进度条背景和里面进度的差值
+        progGap = (bitmap.getWidth() - bitmap2.getWidth()) / 2;
+        progHeight = bitmap2.getHeight();
+        progWidth = bitmap2.getWidth();
+        bitmap.recycle();
+        bitmap2.recycle();
     }
 
     private void download(final View view, final File saveFileZip, final File tempFileZip, final File saveFile, final File saveFileTemp) {
