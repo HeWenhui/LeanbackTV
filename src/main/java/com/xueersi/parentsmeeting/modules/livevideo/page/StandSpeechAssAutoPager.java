@@ -793,6 +793,33 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         int score = resultEntity.getScore();
         final RelativeLayout group = (RelativeLayout) mView;
         final View resultMine = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_stand_speech_mine, group, false);
+        InputStream inputStream = null;
+        try {
+            inputStream = mContext.getAssets().open("live_stand/frame_anim/redpackage/9_teams_bg/package_team_bg_00035.png");
+            final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            resultMine.setBackgroundDrawable(new BitmapDrawable(bitmap));
+            resultMine.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(View v) {
+
+                }
+
+                @Override
+                public void onViewDetachedFromWindow(View v) {
+                    bitmap.recycle();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         LinearLayout ll_livevideo_speecteval_result_mine = resultMine.findViewById(R.id.ll_livevideo_speecteval_result_mine);
 //        bg_livevideo_speecteval_result_number_0
         for (int i = 0; i < ("" + score).length(); i++) {
