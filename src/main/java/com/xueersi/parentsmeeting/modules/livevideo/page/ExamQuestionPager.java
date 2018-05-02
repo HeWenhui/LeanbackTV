@@ -151,7 +151,11 @@ public class ExamQuestionPager extends BasePager {
         examUrl += "&isTowall=" + isShowRankList;
         examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
         examUrl += "&isShowTeamPk="+ (LiveBll.isAllowTeamPk?"1":"0");
+        Loger.e("ExamQuestionPager","======> loadUrl:"+examUrl);
         wvSubjectWeb.loadUrl(examUrl);
+
+        mGoldNum = -1;
+        mEnergyNum = -1;
 
         mView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
@@ -311,6 +315,8 @@ public class ExamQuestionPager extends BasePager {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            Loger.e("ExamQuestionPager","======> shouldOverrideUrlLoading:"+url);
+
             if (url.contains("/LiveExam/examResult")) {
                 if (questionBll instanceof QuestionBll) {
                     ((QuestionBll) questionBll).onSubmit(XESCODE.EXAM_STOP, url.contains("submitType=force"));
@@ -340,7 +346,7 @@ public class ExamQuestionPager extends BasePager {
 
             if (url.contains(TeamPKBll.TEAMPK_URL_FIFTE)) {
                 try {
-                    int startIndex = url.indexOf("goldNum=");
+                    int startIndex = url.indexOf("goldNum=")+"goldNum=".length();
                     if (startIndex != -1) {
                         String teamStr = url.substring(startIndex, url.length());
                         int endIndex = teamStr.indexOf("&");
@@ -349,7 +355,7 @@ public class ExamQuestionPager extends BasePager {
                             mGoldNum = Integer.parseInt(goldNUmStr.trim());
                         }
                     }
-                    int satrIndex2 = url.indexOf("eneryNum=");
+                    int satrIndex2 = url.indexOf("energyNum=")+"energyNum=".length();
                     if (satrIndex2 != -1) {
                         String tempStr2 = url.substring(satrIndex2);
                         String energyNumStr = null;

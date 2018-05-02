@@ -94,6 +94,7 @@ public class TeamPKStateLayout extends FrameLayout {
         //docerView.addView(statBarRootView,lp);
         rootView.addView(statBarRootView,lp);
         tvState = statBarRootView.findViewById(R.id.tv_answer_question_state);
+        tvState.setVisibility(GONE);
     }
 
 
@@ -142,9 +143,10 @@ public class TeamPKStateLayout extends FrameLayout {
         float ratio  = 0;
         if((mMyteamAnergy+mOtherTeamAnergy)>0){
             ratio  = mMyteamAnergy/(float)(mMyteamAnergy+mOtherTeamAnergy);
-        }
-        if(ratio == 0){
-            ratio = 0.5f;
+        }else{
+            if(ratio == 0){
+                ratio = 0.5f;
+            }
         }
         upDataSateText(ratio);
         int currentProgress = (int) (ratio*100);
@@ -153,6 +155,7 @@ public class TeamPKStateLayout extends FrameLayout {
 
     private void upDataSateText(float ratio) {
         tvState.setVisibility(ratio != 0.5f?VISIBLE:GONE);
+        tvState.setVisibility(VISIBLE);
         if(ratio == 0){
             tvState.setText("准备战斗");
             tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_ready_bg);

@@ -897,6 +897,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 mLogtf.i("onTopic(equals):topicstr=" + topicstr);
                 return;
             }
+            Log.e("LiveBll","======>onTopic:"+topicstr);
+
             if (TextUtils.isEmpty(topicstr)) {
                 return;
             }
@@ -1114,6 +1116,34 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         speechFeedBackAction.stop();
                     }
                 }
+
+                // 战队pk  topic 逻辑
+                LiveTopic.TeamPkEntity  teamPkEntity =  liveTopic.getTeamPkEntity();
+                Log.e("LiveBll","====>onTopic 112:"+teamPkEntity+":"+mTeamPKBll);
+
+                if(teamPkEntity != null  && mTeamPKBll != null){
+                    Log.e("LiveBll","====>onTopic 113:"+teamPkEntity);
+                    if(!mTeamPKBll.isTopicHandled()){
+                         if(teamPkEntity.getAlloteam() == 1){
+                             mTeamPKBll.setTopicHandled(true);
+                             mTeamPKBll.showTeamSelecting();
+                             Log.e("LiveBll","====>onTopic 114:"+teamPkEntity);
+                             return;
+                         }
+                         if(teamPkEntity.getAllotpkman() == 1){
+                             mTeamPKBll.setTopicHandled(true);
+                             mTeamPKBll.startSelectAdversary();
+                             return;
+                         }
+
+                         if(teamPkEntity.getOpenbox() == 1){
+                             mTeamPKBll.setTopicHandled(true);
+                             mTeamPKBll.showOpenBoxScene(true);//从topic 恢复是如何判断胜负关系
+                             return;
+                         }
+                    }
+                }
+
             } catch (JSONException e) {
                 mLogtf.e("onTopic", e);
                 MobAgent.httpResponseParserError(TAG, "onTopic", e.getMessage());
@@ -1132,6 +1162,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             try {
                 final JSONObject object = new JSONObject(notice);
                 int mtype = object.getInt("type");
+                Log.e("LiveBll","=====>:onNotice:"+mtype);
                 Loger.i("===========notice type" + mtype);
                 msg += ",mtype=" + mtype + ",voiceChatStatu=" + voiceChatStatus + ",";
                 switch (mtype) {
@@ -1836,7 +1867,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
                     case XESCODE.TEAM_PK_TEAM_SELECT:
                     {
-                       if(mTeamPKBll != null){
+
+                        Log.e("LiveBll","=====>: notice teampk  show teamselect:"+mtype);
+
+                        if(mTeamPKBll != null){
                            String open = object.optString("open");
                            if(open.equals("1")){
                                mTeamPKBll.startTeamSelect();

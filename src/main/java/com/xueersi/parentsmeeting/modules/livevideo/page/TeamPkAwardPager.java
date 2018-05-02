@@ -13,6 +13,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
+import android.media.Image;
 import android.media.SoundPool;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -85,6 +86,7 @@ public class TeamPkAwardPager extends BasePager {
     private ClassChestEntity classChestEntity;
     private final TeamPKBll teamPKBll;
     private boolean mIsWin;
+    private ImageView ivOpenstate;
 
 
     public TeamPkAwardPager(Context context, TeamPKBll pkBll) {
@@ -99,7 +101,8 @@ public class TeamPkAwardPager extends BasePager {
         cadMycoin = view.findViewById(R.id.cad_teampk_open_box_my_coin);
         recyclerView = view.findViewById(R.id.rcl_teampk_open_box_rank);
         lottieAnimationView = view.findViewById(R.id.lav_teampk_open_box);
-
+        ivOpenstate = view.findViewById(R.id.iv_teampk_open_box_open_state);
+        ivOpenstate.setVisibility(View.GONE);
         ivBgMask = view.findViewById(R.id.iv_teampk_open_box_bg_mask);
         ivBgMask.setVisibility(View.GONE);
         addInputEventInterceptor();
@@ -436,7 +439,8 @@ public class TeamPkAwardPager extends BasePager {
                                 e.printStackTrace();
                             }
                         }else{
-                            ToastUtil.showToast(mContext,"您已经领过宝箱了");
+                          //  ToastUtil.showToast(mContext,"您已经领过宝箱了");
+                            ivOpenstate.setVisibility(View.VISIBLE);
                         }
                     }
 

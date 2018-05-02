@@ -173,6 +173,7 @@ public class TeamPkResultPager extends BasePager {
         Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_teampk_add_energy);
         animation.setFillAfter(true);
         tvAddEnergy.setVisibility(View.VISIBLE);
+        tvAddEnergy.setText("+"+increment);
         tvAddEnergy.startAnimation(animation);
         tvMyTeamEnergy.smoothAddNum(increment);
     }
@@ -249,7 +250,7 @@ public class TeamPkResultPager extends BasePager {
                     public void run() {
                         updateProgressBar(data);
                     }
-                },150);
+                },200);
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -268,6 +269,9 @@ public class TeamPkResultPager extends BasePager {
                 }else if(otherTeamTotalEnergy > myTeamTotalEnergy){
                     ivOtherTeamState.setImageResource(R.drawable.livevideo_list_lead_img_disable);
                     ivMyteamState.setImageResource(R.drawable.livevideo_list_catchup_img_disable);
+                }else{
+                    ivOtherTeamState.setImageResource(R.drawable.livevideo_alertview_pingshou_img_disable);
+                    ivMyteamState.setImageResource(R.drawable.livevideo_alertview_pingshou_img_disable);
                 }
             }
              ImageLoader.with(ivMyTeacherHead.getContext()).load(data.getMyTeamEngerInfo().getTeacherImg()).asBitmap(new SingleConfig.BitmapListener() {
@@ -811,3 +815,4 @@ public class TeamPkResultPager extends BasePager {
         Loger.e(TAG, "======> initData called");
     }
 }
+

@@ -6,6 +6,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
@@ -147,6 +148,10 @@ public class QuestionWebPager extends BasePager {
         examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
         examUrl += "&isShowTeamPk="+ (LiveBll.isAllowTeamPk?"1":"0");
         wvSubjectWeb.loadUrl(examUrl);
+        Loger.e("QuestionWebPager","======> loadUrl:"+examUrl);
+
+        mGoldNum = -1;
+        mEngerNum = -1;
 
         mView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
@@ -291,6 +296,9 @@ public class QuestionWebPager extends BasePager {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             logToFile.i("shouldOverrideUrlLoading:url=" + url);
+
+            Loger.e("QuestionWebPager","======> shouldOverrideUrlLoading:"+url);
+
             if (url.contains("science/Live/getMultiTestResult")) {
                 if (questionBll instanceof QuestionBll) {
                     ((QuestionBll) questionBll).onSubmit(XESCODE.STOPQUESTION, url.contains("submitType=force"));
@@ -300,7 +308,7 @@ public class QuestionWebPager extends BasePager {
 
             if (url.contains(TeamPKBll.TEAMPK_URL_FIFTE)) {
                 try {
-                    int startIndex = url.indexOf("goldNum=");
+                    int startIndex = url.indexOf("goldNum=")+"goldNum=".length();
                     if (startIndex != -1) {
                         String teamStr = url.substring(startIndex, url.length());
                         int endIndex = teamStr.indexOf("&");
@@ -309,7 +317,7 @@ public class QuestionWebPager extends BasePager {
                             mGoldNum = Integer.parseInt(goldNUmStr.trim());
                         }
                     }
-                    int satrIndex2 = url.indexOf("eneryNum=");
+                    int satrIndex2 = url.indexOf("energyNum=")+"energyNum=".length();
                     if (satrIndex2 != -1) {
                         String tempStr2 = url.substring(satrIndex2);
                         String energyNumStr = null;
@@ -321,6 +329,7 @@ public class QuestionWebPager extends BasePager {
                         if (!TextUtils.isEmpty(energyNumStr)) {
                             mEngerNum= Integer.parseInt(energyNumStr.trim());
                         }
+                       // Log.e("QuestionWebPager","=======>mEngerNum:"+mEngerNum+":"+energyNumStr);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

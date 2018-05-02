@@ -627,7 +627,7 @@
     <item name="cad_teampk_open_box_team_coin" type="id"/>
 
     <item name="cad_teampk_open_box_my_coin" type="id"/>
-
+   <item name="iv_teampk_open_box_open_state" type="id"/>
 
     <item name="rcl_teampk_open_box_rank" type="id"/>
     <item name="iv_teampk_open_box_bg" type="id"/>

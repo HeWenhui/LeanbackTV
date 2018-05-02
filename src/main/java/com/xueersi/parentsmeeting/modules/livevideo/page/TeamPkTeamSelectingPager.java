@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
@@ -49,9 +50,21 @@ public class TeamPkTeamSelectingPager extends BasePager implements View.OnClickL
 
     }
 
-
     @Override
     public void onClick(View v) {
         mTeamPkBll.enterTeamSelectScene();
     }
+
+    /**
+     * 关闭当前页面
+     */
+    public void closeTeamSelectPager(){
+        mView.post(new Runnable() {
+            @Override
+            public void run() {
+                ((ViewGroup) mView.getParent()).removeView(mView);
+            }
+        });
+    }
+
 }

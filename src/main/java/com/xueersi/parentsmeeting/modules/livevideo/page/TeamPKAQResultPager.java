@@ -150,8 +150,8 @@ public class TeamPKAQResultPager extends BasePager {
      * 展示  答题奖励动画
      */
     private void showQuestionAwardAnim() {
-        tvCoin.setText(mGoldNum+"");
-        tvEnergy.setText(mEnergy+"");
+        tvCoin.setText("+"+mGoldNum);
+        tvEnergy.setText("+"+mEnergy);
 
         scaleAnimation = (ScaleAnimation) AnimationUtils.
                 loadAnimation(mContext, R.anim.anim_livevido_teampk_aq_award);

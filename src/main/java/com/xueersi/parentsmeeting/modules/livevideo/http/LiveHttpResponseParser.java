@@ -333,11 +333,16 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             coachStatusEntity.setOpenchat(status.getBoolean("openchat"));
             coachStatusEntity.setCalling(status.getBoolean("isCalling"));
             coachStatusEntity.setListStatus(status.optInt("listStatus"));
-
-            teamPkEntity.setAlloteam(status.optInt("alloteam"));
-            teamPkEntity.setOpenbox(status.optInt("openbox"));
-
-
+           // teamPkEntity.setAlloteam(status.optInt("alloteam"));
+            //teamPkEntity.setOpenbox(status.optInt("openbox"));
+            int alloteam = status.optInt("alloteam");
+            int openbox = status.optInt("openbox");
+            if(alloteam == 1){
+                teamPkEntity.setAlloteam(alloteam);
+            }
+            if(openbox == 1){
+                teamPkEntity.setOpenbox(openbox);
+            }
             if (status.has("link_mic")) {
                 JSONObject link_mic = status.getJSONObject("link_mic");
                 coachStatusEntity.setOnmic(link_mic.optString("onmic", "off"));
@@ -380,8 +385,23 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             mainStatusEntity.setOpenbarrage(status.getBoolean("openbarrage"));
             mainStatusEntity.setOpenchat(status.getBoolean("openchat"));
             mainStatusEntity.setOpenFeedback(status.optBoolean("isOpenFeedback"));
-            teamPkEntity.setAllotpkman(status.optInt("allotpkman"));
 
+            int alltopkman = status.optInt("allotpkman");
+            teamPkEntity.setAllotpkman(alltopkman);
+
+            int alloteam = status.optInt("alloteam");
+            Log.e("LiveHttpResponseParser","====>alloteam:"+alloteam);
+            int openbox = status.optInt("openbox");
+            if(alloteam == 1){
+                teamPkEntity.setAlloteam(alloteam);
+            }
+
+            if(openbox == 1){
+                teamPkEntity.setOpenbox(openbox);
+            }
+            //teamPkEntity.setAlloteam(status.optInt("alloteam"));
+            //teamPkEntity.setOpenbox(status.optInt("openbox"));
+            //teamPkEntity.setAllotpkman(status.optInt("allotpkman"));
             if (status.has("exam")) {
                 mainStatusEntity.setHaveExam(true);
                 JSONObject jsonObject = status.getJSONObject("exam");

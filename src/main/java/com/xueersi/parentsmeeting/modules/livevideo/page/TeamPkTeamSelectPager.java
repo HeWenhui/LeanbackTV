@@ -112,7 +112,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         tvTimeCountDown = view.findViewById(R.id.tv_teampk_team_select_timecoutdown);
         tvTimeCountDown.setTimeSuffix("秒后进入下一步");
         loadSoundRes();
-        startTeamSelect();
+        //startTeamSelect();
         return view;
     }
 
@@ -125,6 +125,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
     }
 
     private void playBgMusic() {
+        Log.e("TeamPkSelectPager","====>playMusic called:");
         playMusicWithLoad(SOUND_TYPE_WAR_BG, R.raw.war_bg, MUSIC_VOLUME_RATIO_BG, true);
     }
 
@@ -250,10 +251,20 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
     boolean paused = false;
     boolean teamInfoUiReaMoved = false;
 
+    private boolean halfInTeamSelect = false;
     /**
      * 展示分队仪式 lottie 动画
      */
-    public void showTeamSelectedScene() {
+    public void showTeamSelectedScene(boolean isHalfIn) {
+        halfInTeamSelect = isHalfIn;
+        if(isHalfIn){
+            mView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    playBgMusic();
+                }
+            },300);
+        }
         final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "team_selected/images";
         String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "team_selected/data.json";
         final TeamSelectLottieEffectInfo effectInfo = new TeamSelectLottieEffectInfo(lottieResPath, lottieJsonPath, "img_1.png");
@@ -615,6 +626,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
      * 开启分队仪式
      */
     public void startTeamSelect() {
+        Log.e("TeamPkTeamSelectPager","====>:startTeamSelect");
         playBgMusic();
         String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "team_select_start/images";
         String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "team_select_start/data.json";
@@ -651,7 +663,10 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
                     },1000);
                     break;
                 case ANIMTYPE_TEAM_SELECTED:
-                    playCheering();
+                    //中途进入不在播放欢呼音效
+                    if(!halfInTeamSelect){
+                        playCheering();
+                    }
                     break;
             }
         }
@@ -808,7 +823,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
                     public void run() {
                         try {
                             cancelMarquee();
-                            showTeamSelectedScene();
+                            showTeamSelectedScene(false);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -871,7 +886,8 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
             }
             teamItemAnimInfoList.clear();
         }
-        if (teamsRecyclView.getParent() != null) {
+
+        if (teamsRecyclView != null && teamsRecyclView.getParent() != null) {
             ((ViewGroup) teamsRecyclView.getParent()).removeView(teamsRecyclView);
         }
     }
@@ -971,8 +987,13 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
     }
 
     private void releaseRes() {
-        cancelMarquee();
-        releaseSoundRes();
+        try {
+            cancelMarquee();
+            releaseSoundRes();
+        }catch ( Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     private void releaseSoundRes() {

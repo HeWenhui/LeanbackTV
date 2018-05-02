@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -155,6 +156,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
     protected boolean shouldOverrideUrlLoading(WebView view, String url) {
         //      if ("http://baidu.com/".equals(url)) {
         Loger.d(TAG, "shouldOverrideUrlLoading:url=" + url);
+        Loger.e("EnglishH5CoursewarePager","======> shouldOverrideUrlLoading:"+url);
         reloadurl = url;
         if (url.contains("baidu.com")) {
             onClose.onH5ResultClose();
@@ -175,7 +177,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
 
         if (url.contains(TeamPKBll.TEAMPK_URL_FIFTE)) {
             try {
-                int startIndex = url.indexOf("goldNum=");
+                int startIndex = url.indexOf("goldNum=")+"goldNum=".length();
                 if (startIndex != -1) {
                     String teamStr = url.substring(startIndex, url.length());
                     int endIndex = teamStr.indexOf("&");
@@ -183,8 +185,9 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
                     if (!TextUtils.isEmpty(goldNUmStr)) {
                         mGoldNum = Integer.parseInt(goldNUmStr.trim());
                     }
+                    Log.e("EnglishH5Courseware","======> shouldOverrideUrlLoading: mGoldNum="+mGoldNum);
                 }
-                int satrIndex2 = url.indexOf("eneryNum=");
+                int satrIndex2 = url.indexOf("energyNum=")+"energyNum=".length();
                 if (satrIndex2 != -1) {
                     String tempStr2 = url.substring(satrIndex2);
                     String energyNumStr = null;
@@ -196,11 +199,11 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
                     if (!TextUtils.isEmpty(energyNumStr)) {
                         mEnergyNum = Integer.parseInt(energyNumStr.trim());
                     }
+                    Log.e("EnglishH5Courseware","======> shouldOverrideUrlLoading: mEnergyNum="+mEnergyNum);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             return true;
         }
 
@@ -227,7 +230,12 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         Loger.i(TAG, "initData:loadUrl=" + loadUrl);
         loadUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
         loadUrl(loadUrl);
+        Loger.e("EnglishH5CoursewarePager","======> loadUrl:"+loadUrl);
         reloadurl = loadUrl;
+
+        mGoldNum = -1;
+        mEnergyNum = -1;
+
         mView.findViewById(R.id.iv_livevideo_subject_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
