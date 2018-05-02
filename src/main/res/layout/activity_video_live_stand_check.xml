@@ -32,20 +32,13 @@
             android:id="@id/tv_live_stand_update_prog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/shape_live_stand_update_pro_bg"
-            android:paddingBottom="5dp"
+            android:background="@drawable/bg_live_stand_update_pro_bg"
+            android:paddingBottom="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="5dp"
             android:textColor="@color/white" />
 
-        <ImageView
-            android:id="@id/iv_live_stand_update_prog_arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_live_stand_update_prog"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/bg_livevideo_common_word_arrow" />
     </RelativeLayout>
 
     <ProgressBar
