@@ -62,6 +62,7 @@ public class LiveStandFrameAnim {
     int progGap;
     /** 进度条里面进度的高度 */
     int progHeight;
+    int progWidth;
 
     public LiveStandFrameAnim(Activity activity) {
         this.activity = activity;
@@ -136,6 +137,7 @@ public class LiveStandFrameAnim {
             //进度条背景和里面进度的差值
             progGap = (bitmap.getWidth() - bitmap2.getWidth()) / 2;
             progHeight = bitmap2.getHeight();
+            progWidth = bitmap2.getWidth();
             bitmap.recycle();
             bitmap2.recycle();
 
@@ -204,7 +206,7 @@ public class LiveStandFrameAnim {
                 Loger.d(activity, eventId, logHashMap.getData(), true);
                 {
                     RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) rl_live_stand_update_prog.getLayoutParams();
-                    int left = (pb_live_stand_update.getWidth()) / 2;
+                    int left = (progWidth) / 2;
                     lp2.leftMargin = left - rl_live_stand_update_prog.getWidth() / 2 + pb_live_stand_update.getLeft() + progGap - progHeight / 2;
                     rl_live_stand_update_prog.setLayoutParams(lp2);
                 }
@@ -256,13 +258,13 @@ public class LiveStandFrameAnim {
                     tv_live_stand_update_prog.post(new Runnable() {
                         @Override
                         public void run() {
-                            int progWidth = rl_live_stand_update_prog.getWidth();
+                            int progTipWidth = rl_live_stand_update_prog.getWidth();
                             int lightWidth = iv_live_stand_update_prog_light.getWidth();
-                            int left = (int) ((pb_live_stand_update.getWidth()) * finalProgress / 100);
+                            int left = (int) (((float) progWidth) * (float) finalProgress / 100.0f);
                             {
                                 RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) rl_live_stand_update_prog.getLayoutParams();
 //                        int left = pb_live_stand_update.getWidth() * progress / 100;
-                                lp2.leftMargin = left - progWidth / 2 + pb_live_stand_update.getLeft() + progGap - progHeight / 2;
+                                lp2.leftMargin = left - progTipWidth / 2 + pb_live_stand_update.getLeft() + progGap - progHeight / 2;
                                 rl_live_stand_update_prog.setLayoutParams(lp2);
                             }
                             {
@@ -323,13 +325,13 @@ public class LiveStandFrameAnim {
                     tv_live_stand_update_prog.post(new Runnable() {
                         @Override
                         public void run() {
-                            int progWidth = rl_live_stand_update_prog.getWidth();
+                            int progTipWidth = rl_live_stand_update_prog.getWidth();
                             int lightWidth = iv_live_stand_update_prog_light.getWidth();
-                            int left = (int) ((pb_live_stand_update.getWidth()) * progress / 100);
+                            int left = (int) (((float) progWidth) * (float) progress / 100.0f);
                             {
                                 RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) rl_live_stand_update_prog.getLayoutParams();
 //                        int left = pb_live_stand_update.getWidth() * progress / 100;
-                                lp2.leftMargin = left - progWidth / 2 + pb_live_stand_update.getLeft() + progGap - progHeight / 2;
+                                lp2.leftMargin = left - progTipWidth / 2 + pb_live_stand_update.getLeft() + progGap - progHeight / 2;
                                 rl_live_stand_update_prog.setLayoutParams(lp2);
                             }
                             {
@@ -347,6 +349,22 @@ public class LiveStandFrameAnim {
         @Override
         public void onPostExecute(Exception exception) {
             if (exception == null) {
+                int progress = 100;
+                int progTipWidth = rl_live_stand_update_prog.getWidth();
+                int lightWidth = iv_live_stand_update_prog_light.getWidth();
+                int left = (int) (((float) progWidth) * (float) progress / 100.0f);
+                {
+                    RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) rl_live_stand_update_prog.getLayoutParams();
+//                        int left = pb_live_stand_update.getWidth() * progress / 100;
+                    lp2.leftMargin = left - progTipWidth / 2 + pb_live_stand_update.getLeft() + progGap - progHeight / 2;
+                    rl_live_stand_update_prog.setLayoutParams(lp2);
+                }
+                {
+                    RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) iv_live_stand_update_prog_light.getLayoutParams();
+//                        int left = pb_live_stand_update.getWidth() * progress / 100;
+                    lp2.leftMargin = left - lightWidth / 2 + pb_live_stand_update.getLeft() + progGap - progHeight / 2;
+                    iv_live_stand_update_prog_light.setLayoutParams(lp2);
+                }
                 saveFileTemp.renameTo(saveFile);
                 pb_live_stand_update.post(new Runnable() {
                     @Override
