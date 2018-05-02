@@ -12,19 +12,15 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/pb_live_stand_update"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:shadowColor="@color/mediacontroller_bg"
-        android:shadowDx="4"
-        android:shadowDy="-4"
-        android:shadowRadius="2"
-        android:text="加载中，请耐心等待"
-        android:textColor="@color/white" />
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/bg_live_stand_update_zip"
+        android:shadowColor="@color/mediacontroller_bg" />
 
     <RelativeLayout
         android:id="@id/rl_live_stand_update_prog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/pb_live_stand_update"
+        android:layout_above="@id/iv_live_stand_update_prog_light"
         android:layout_marginBottom="2dp"
         android:visibility="invisible">
 
@@ -37,19 +33,30 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="5dp"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="14sp" />
 
     </RelativeLayout>
 
     <ProgressBar
         android:id="@id/pb_live_stand_update"
         style="@style/ProgressBar_live_stand_update"
-        android:layout_width="match_parent"
-        android:layout_height="9dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:max="100" />
+        android:layout_centerHorizontal="true"
+        android:max="100"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp" />
+
+    <ImageView
+        android:id="@id/iv_live_stand_update_prog_light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/pb_live_stand_update"
+        android:layout_alignTop="@id/pb_live_stand_update"
+        android:src="@drawable/bg_live_stand_update_prog_light"
+        android:visibility="invisible" />
 
     <ImageView
         android:id="@id/iv_live_stand_update_back"
