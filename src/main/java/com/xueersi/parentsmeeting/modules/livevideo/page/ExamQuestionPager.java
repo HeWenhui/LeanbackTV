@@ -165,7 +165,14 @@ public class ExamQuestionPager extends BasePager {
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-                EventBus.getDefault().post(new LiveRoomH5CloseEvent(mGoldNum,mEnergyNum,LiveRoomH5CloseEvent.H5_TYPE_EXAM,num));
+                LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum,mEnergyNum,LiveRoomH5CloseEvent.H5_TYPE_EXAM,num);
+                if(questionBll != null && questionBll instanceof  QuestionBll){
+                    event.setCloseByTeahcer(((QuestionBll)questionBll).isWebViewCloseByTeacher());
+                    ((QuestionBll)questionBll).setWebViewCloseByTeacher(false);
+                }
+                EventBus.getDefault().post(event);
+                mGoldNum = -1;
+                mEnergyNum = -1;
             }
         });
 

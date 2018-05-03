@@ -10,9 +10,16 @@ public class LiveRoomH5CloseEvent {
     public  static  final int H5_TYPE_INTERACTION = 1; //互动题
     public  static  final int H5_TYPE_EXAM = 2; //测试卷
     public  static  final int H5_TYPE_COURSE= 3; //课件
-
     private String id; // testId/ testPlan
+    private boolean closeByTeacher;// 是否是老师发起的关闭
 
+    public void setCloseByTeahcer(boolean closeByTeacher) {
+        this.closeByTeacher = closeByTeacher;
+    }
+
+    public boolean isCloseByTeacher() {
+        return closeByTeacher;
+    }
 
     public LiveRoomH5CloseEvent(){
     }

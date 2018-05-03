@@ -161,7 +161,15 @@ public class QuestionWebPager extends BasePager {
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-                EventBus.getDefault().post(new LiveRoomH5CloseEvent(mGoldNum,mEngerNum,LiveRoomH5CloseEvent.H5_TYPE_INTERACTION,testId));
+                LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum,mEngerNum,LiveRoomH5CloseEvent.H5_TYPE_INTERACTION,testId);
+                if(questionBll != null && questionBll instanceof  QuestionBll){
+                    Log.e("webViewCloseByTeacher","=======> postEvent closeByTeacher:"+((QuestionBll)questionBll).isWebViewCloseByTeacher());
+                    event.setCloseByTeahcer(((QuestionBll)questionBll).isWebViewCloseByTeacher());
+                    ((QuestionBll)questionBll).setWebViewCloseByTeacher(false);
+                }
+                EventBus.getDefault().post(event);
+                mGoldNum = -1;
+                mEngerNum = -1;
             }
         });
 

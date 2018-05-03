@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
+import android.app.usage.UsageEvents;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPKStateLayout;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
@@ -66,6 +69,7 @@ public class TeamPKBll {
 
     private boolean isWin;
     private TeamPKStateLayout pkStateRootView;
+    private List<LiveRoomH5CloseEvent> h5CloseEvents; //直播间内答题 H5 答题结果页面关闭事件容器
 
     public TeamPKBll(Activity activity) {
         this.activity = activity;
@@ -550,34 +554,61 @@ public class TeamPKBll {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRoomH5CloseEvent(final LiveRoomH5CloseEvent event) {
-        Log.e("TeamPkBll", "=======>:onRoomH5CloseEvent:" + event.getId() + ":" + event.getmGoldNum() + ":" + event.getmEnergyNum());
-        if (event.getmEnergyNum() != -1 && event.getmGoldNum() != -1) {
-            showAnswerQuestionAward(event.getmGoldNum(), event.getmEnergyNum());
-            rlTeamPkContent.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    String testId = "";
-                    String testPlan = "";
-                    if (event.getH5Type() == LiveRoomH5CloseEvent.H5_TYPE_EXAM) {
-                        testPlan = event.getId();
-                    } else {
-                        testId = event.getId();
-                    }
-                    getEnergyNumAndContributionStar(testId, testPlan);
-                }
-            }, 3000);
-
-        } else {
-            String testId = "";
-            String testPlan = "";
-            if (event.getH5Type() == LiveRoomH5CloseEvent.H5_TYPE_EXAM) {
-                testPlan = event.getId();
-            } else {
-                testId = event.getId();
-            }
-            getEnergyNumAndContributionStar(testId, testPlan);
+        Log.e("TeamPkBll", "=======>:onRoomH5CloseEvent:" + event.getId() + ":"
+                + event.getmGoldNum() + ":" + event.getmEnergyNum()+":"+event.isCloseByTeacher());
+        if(h5CloseEvents == null){
+            h5CloseEvents = new ArrayList<LiveRoomH5CloseEvent>();
         }
+        // 只有答题结果页面才会初始化 energyNum 和 goldNum
+         if(event.getmEnergyNum() != -1 && event.getmGoldNum() != -1){
+             h5CloseEvents.add(event);
+             LiveRoomH5CloseEvent cacheEvent = null;
+             if(h5CloseEvents.get(0).isCloseByTeacher()){
+                 cacheEvent = h5CloseEvents.remove(0);
+                 //step  1 显示飞星动画
+                 showAnswerQuestionAward(cacheEvent.getmGoldNum(), cacheEvent.getmEnergyNum());
+                 //step  2 显示pk 结果
+                 final LiveRoomH5CloseEvent finalCacheEvent = cacheEvent;
+                 rlTeamPkContent.postDelayed(new Runnable() {
+                     @Override
+                     public void run() {
+                         String testId = "";
+                         String testPlan = "";
+                         if (finalCacheEvent.getH5Type() == LiveRoomH5CloseEvent.H5_TYPE_EXAM) {
+                             testPlan = finalCacheEvent.getId();
+                         } else {
+                             testId = finalCacheEvent.getId();
+                         }
+                         getEnergyNumAndContributionStar(testId, testPlan);
+                     }
+                 }, 3000);
+             }else{
+                 cacheEvent = h5CloseEvents.get(0);
+                 showAnswerQuestionAward(cacheEvent.getmGoldNum(), cacheEvent.getmEnergyNum());
+             }
+         }else{
+            //为展示答题结果
+             h5CloseEvents.add(event);
+         }
+    }
 
+
+    /**
+     * 显示当前的pk 结果
+     */
+    public void showCurrentPkResult(){
+        if(h5CloseEvents ==null || h5CloseEvents.size() == 0){
+            return;
+        }
+        LiveRoomH5CloseEvent cacheEvent = h5CloseEvents.remove(0);
+        String testId = "";
+        String testPlan = "";
+        if (cacheEvent.getH5Type() == LiveRoomH5CloseEvent.H5_TYPE_EXAM) {
+            testPlan = cacheEvent.getId();
+        } else {
+            testId = cacheEvent.getId();
+        }
+        getEnergyNumAndContributionStar(testId, testPlan);
     }
 
 

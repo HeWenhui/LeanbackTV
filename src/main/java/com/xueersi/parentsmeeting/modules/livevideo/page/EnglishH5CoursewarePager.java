@@ -274,7 +274,14 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-                EventBus.getDefault().post(new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent.H5_TYPE_COURSE, id));
+                LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent.H5_TYPE_COURSE, id);
+                if(mEnglishH5CoursewareBll != null){
+                    event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
+                    mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
+                }
+                EventBus.getDefault().post(event);
+                mGoldNum = -1;
+                mEnergyNum = -1;
             }
         });
 

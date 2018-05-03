@@ -90,6 +90,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private LiveTopic mLiveTopic;
     private BasePager curQuestionView;
     private boolean isTeamPkAllowed = false;
+    private boolean webViewCloseByTeacher = false;
     /**
      * 直播id
      */
@@ -998,6 +999,19 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         });
     }
 
+
+    public boolean isWebViewCloseByTeacher() {
+        return webViewCloseByTeacher;
+    }
+
+    public void setWebViewCloseByTeacher(boolean webViewCloseByTeacher) {
+        if(curQuestionView != null){
+            if(curQuestionView instanceof  QuestionWebPager || curQuestionView instanceof ExamQuestionPager){
+                this.webViewCloseByTeacher = webViewCloseByTeacher;
+                Log.e("webViewCloseByTeacher","======>QuestionBll setWebViewCloseByTeacher:"+webViewCloseByTeacher);
+            }
+        }
+    }
 
     @Override
     public void onExamStop() {

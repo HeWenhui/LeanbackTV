@@ -95,6 +95,17 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     private LiveVideoSAConfig liveVideoSAConfig;
     boolean IS_SCIENCE = false;
     private boolean isTeamPkAllowed = false;
+    private boolean webViewCloseByTeacher = false;
+
+    public boolean isWebViewCloseByTeacher() {
+        return webViewCloseByTeacher;
+    }
+
+    public void setWebViewCloseByTeacher(boolean webViewCloseByTeacher) {
+        if(h5CoursewarePager != null){
+            this.webViewCloseByTeacher = webViewCloseByTeacher;
+        }
+    }
 
     public void setAnswerRankBll(AnswerRankBll answerRankBll) {
         mAnswerRankBll = answerRankBll;

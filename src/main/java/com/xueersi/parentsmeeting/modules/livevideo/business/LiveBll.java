@@ -1237,9 +1237,17 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(null);
                         if (mQuestionAction != null) {
                             mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
+                            if(mQuestionAction instanceof  QuestionBll){
+                                ((QuestionBll)mQuestionAction).setWebViewCloseByTeacher(true);
+                                Log.e("webViewCloseByTeacher","======>LiveBll setWebViewCloseByTeacher: STOPQUESTION");
+                            }
                         }
                         if (mAnswerRankBll != null) {
                             mAnswerRankBll.setNonce(object.optString("nonce"));
+                        }
+
+                        if(mTeamPKBll != null){
+                            mTeamPKBll.showCurrentPkResult();
                         }
 
 //                        getStuGoldCount();
@@ -1438,9 +1446,17 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         msg += "EXAM_STOP";
                         if (mQuestionAction != null) {
                             mQuestionAction.onExamStop();
+                            if(mQuestionAction instanceof  QuestionBll){
+                                ((QuestionBll)mQuestionAction).setWebViewCloseByTeacher(true);
+                                Log.e("webViewCloseByTeacher","======>LiveBll setWebViewCloseByTeacher: EXAM_STOP");
+                            }
                         }
                         if (mAnswerRankBll != null) {
                             mAnswerRankBll.setNonce(object.optString("nonce"));
+                        }
+
+                        if(mTeamPKBll != null){
+                            mTeamPKBll.showCurrentPkResult();
                         }
                     }
                     break;
@@ -1494,6 +1510,12 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             } else {
                                 if (mAnswerRankBll != null) {
                                     mAnswerRankBll.setNonce(object.optString("nonce"));
+                                }
+                                if(englishH5CoursewareAction instanceof  EnglishH5CoursewareBll){
+                                    ((EnglishH5CoursewareBll)englishH5CoursewareAction).setWebViewCloseByTeacher(true);
+                                }
+                                if(mTeamPKBll != null){
+                                    mTeamPKBll.showCurrentPkResult();
                                 }
                             }
                             englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
