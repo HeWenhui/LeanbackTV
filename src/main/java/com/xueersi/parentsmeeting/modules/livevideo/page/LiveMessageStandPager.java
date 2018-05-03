@@ -176,7 +176,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         try {
             inputStream = mContext.getAssets().open("live_stand/frame_anim/openmsg/message_open_00074.png");
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            bitmap.setDensity((int) (FrameAnimation.DEFAULT_DENSITY * (FrameAnimation.IMAGE_HEIGHT / (float) com.xueersi.parentsmeeting.util.ScreenUtils.getScreenHeight(mView.getContext()))));
+            bitmap.setDensity((int) (FrameAnimation.DEFAULT_DENSITY * (FrameAnimation.IMAGE_HEIGHT / (float) ScreenUtils.getScreenHeight())));
             btMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
             inputStream.close();
         } catch (IOException e) {
