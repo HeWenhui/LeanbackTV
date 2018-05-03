@@ -475,8 +475,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
         Loger.i(TAG, "initData:minisize=" + minisize);
 
-//        for (int i = 0; i < 10; i++) {
-//            LiveMessageEntity liveMessageEntity = new LiveMessageEntity(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, MESSAGE_CHINESE, "");
+//        liveMessageEntities.clear();
+//        for (int i = 0; i < 3; i++) {
+//            LiveMessageEntity liveMessageEntity = new LiveMessageEntity(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP,
+//                    "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊" + i, "");
 //            liveMessageEntities.add(liveMessageEntity);
 //        }
 

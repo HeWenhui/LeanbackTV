@@ -9,9 +9,8 @@
 
         <RelativeLayout
             android:id="@id/rl_livevideo_info"
-            android:layout_width="300dp"
+            android:layout_width="270dp"
             android:layout_height="match_parent"
-            android:layout_marginTop="100dp"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -37,7 +36,7 @@
                     android:src="@drawable/bg_livevideo_message_offline" />
             </RelativeLayout>
 
-            <ListView
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveEdgeListView
                 android:id="@id/lv_livevideo_message"
                 style="@style/listview_common_style"
                 android:layout_width="wrap_content"
