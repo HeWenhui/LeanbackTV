@@ -3796,6 +3796,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /** 使用第三方视频提供商提供的调度接口获得第三方播放域名对应的包括ip地址的播放地址 */
     public void dns_resolve_stream(final PlayServerEntity.PlayserverEntity playserverEntity, final PlayServerEntity mServer, String channelname, final AbstractBusinessDataCallBack callBack) {
         if (StringUtils.isEmpty(playserverEntity.getIp_gslb_addr())) {
+            callBack.onDataFail(3, "empty");
             return;
         }
         final StringBuilder url;
