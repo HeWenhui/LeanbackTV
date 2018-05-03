@@ -28,7 +28,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolat
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPKStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
-import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 
 import java.util.HashMap;
 

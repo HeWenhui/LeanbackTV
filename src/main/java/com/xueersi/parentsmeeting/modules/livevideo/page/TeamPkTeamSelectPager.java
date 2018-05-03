@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -44,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolat
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamMemberGridlayoutManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
+import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
@@ -333,29 +335,36 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         rclTeamMember.setLayoutAnimation(animationController);
         rclTeamMember.scheduleLayoutAnimation();
 
-        // 队员人数小于 一屏
-        if (rclTeamMember.getAdapter().getItemCount() <= 15) {
-            finishTeamSelect();
-        } else {
-            rclTeamMember.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    rclTeamMember.smoothScrollToPosition((teamMemberAdapter.getItemCount() - 1));
-                }
-            }, 1500);
+        rclTeamMember.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                //判断当前队员是否显示完毕  未显示完 则自动滑动到底部
+               if(rclTeamMember.canScrollVertically(1)){
+                   rclTeamMember.postDelayed(new Runnable() {
+                       @Override
+                       public void run() {
+                           rclTeamMember.smoothScrollToPosition((teamMemberAdapter.getItemCount() - 1));
+                       }
+                   }, 1500);
+                   rclTeamMember.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                       @Override
+                       public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                           super.onScrolled(recyclerView, dx, dy);
+                           GridLayoutManager gridLayoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
+                           int postion = gridLayoutManager.findLastVisibleItemPosition();
+                           if (postion == recyclerView.getAdapter().getItemCount() - 1) {
+                               finishTeamSelect();
+                           }
+                       }
+                   });
+               }else{
+                   // 队员显示完毕 显示关闭按钮
+                   finishTeamSelect();
+               }
+                rclTeamMember.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            }
+        });
 
-            rclTeamMember.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-                    GridLayoutManager gridLayoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
-                    int postion = gridLayoutManager.findLastVisibleItemPosition();
-                    if (postion == recyclerView.getAdapter().getItemCount() - 1) {
-                        finishTeamSelect();
-                    }
-                }
-            });
-        }
     }
 
     /**
