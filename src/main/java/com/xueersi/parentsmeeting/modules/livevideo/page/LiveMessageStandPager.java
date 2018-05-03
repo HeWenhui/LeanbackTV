@@ -481,7 +481,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //        liveMessageEntities.clear();
 //        for (int i = 0; i < 3; i++) {
 //            LiveMessageEntity liveMessageEntity = new LiveMessageEntity(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP,
-//                    "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊" + i, "");
+//                    "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊" + i, "");
+//            liveMessageEntity = new LiveMessageEntity(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP,
+//                    "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊", "");
 //            liveMessageEntities.add(liveMessageEntity);
 //        }
 
@@ -750,6 +752,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
             }
         };
+        ViewGroup.LayoutParams lp = lvMessage.getLayoutParams();
+        lp.height = ScreenUtils.getScreenHeight() * 2 / 3;
+        lvMessage.setLayoutParams(lp);
         lvMessage.setAdapter(messageAdapter);
 //        mView.post(new Runnable() {
 //            @Override

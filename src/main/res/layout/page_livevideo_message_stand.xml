@@ -9,7 +9,7 @@
 
         <RelativeLayout
             android:id="@id/rl_livevideo_info"
-            android:layout_width="270dp"
+            android:layout_width="265dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
@@ -41,10 +41,11 @@
                 style="@style/listview_common_style"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
-                android:layout_marginBottom="15dp"
                 android:divider="@null"
                 android:listSelector="@color/transparent"
+                android:paddingBottom="15dp"
                 android:paddingLeft="4dp"
                 android:paddingRight="4dp"
                 android:paddingTop="10dp"
@@ -94,7 +95,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/rl_livevideo_message_panelcontent"
-            android:layout_marginLeft="215dp"
+            android:layout_marginLeft="230dp"
             android:layout_marginRight="109dp"
             android:gravity="center"
             android:paddingBottom="15dp"

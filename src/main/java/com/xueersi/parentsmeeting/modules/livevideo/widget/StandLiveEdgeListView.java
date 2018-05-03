@@ -10,6 +10,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Shader;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -28,9 +29,9 @@ public class StandLiveEdgeListView extends ListView {
     public Matrix matrix;
     public Shader shader;
     boolean drawShader = false;
-    /**阴影高度*/
+    /** 阴影高度 */
     int drawHeight = 0;
-    /**最上面child 布局的top*/
+    /** 最上面child 布局的top */
     int drawTop = 0;
 
     public StandLiveEdgeListView(Context context, AttributeSet attrs) {
@@ -70,20 +71,13 @@ public class StandLiveEdgeListView extends ListView {
                             }
                         }
                         Loger.d(TAG, "onPreDraw:height=" + height + ",i=" + index + ",totalChildHeight=" + totalChildHeight);
-                        if (index != -1) {
-                            View child = getChildAt(0);
-                            int[] outLocation = new int[2];
-                            child.getLocationOnScreen(outLocation);
-                            drawTop = outLocation[1];
-                            child = getChildAt(index);
-                            child.getLocationOnScreen(outLocation);
-
+                        if (totalChildHeight > ScreenUtils.getScreenHeight() / 2) {
                             drawShader = true;
-                            drawHeight = outLocation[1] + child.getHeight();
-                            Loger.d(TAG, "onPreDraw:drawTop=" + drawTop + ",outLocation=" + outLocation[1] + "," + child.getHeight() + ",drawHeight=" + drawHeight);
+                            drawHeight = height - ScreenUtils.getScreenHeight() / 2;
+                            Loger.d(TAG, "onPreDraw:drawTop=" + drawTop + ",drawHeight=" + drawHeight);
 
                             matrix.setScale(1, drawHeight);
-                            matrix.postTranslate(getLeft(), getTop());
+                            matrix.postTranslate(getLeft(), 0);
                             shader.setLocalMatrix(matrix);
 
                             invalidate();
@@ -107,14 +101,19 @@ public class StandLiveEdgeListView extends ListView {
     }
 
     @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return false;
+    }
+
+    @Override
     public void draw(Canvas canvas) {
         if (drawShader) {
             int saveCount = canvas.getSaveCount();//好像没用
             final int flags = Canvas.HAS_ALPHA_LAYER_SAVE_FLAG;
-            canvas.saveLayer(getLeft(), getTop(), getRight(), getTop() + drawHeight + drawTop, null, flags);
+            canvas.saveLayer(getLeft(), 0, getRight(), drawHeight, null, flags);
             super.draw(canvas);
-            Loger.d(TAG, "draw");
-            canvas.drawRect(0, drawTop, getWidth(), drawHeight, paint);
+            Loger.d(TAG, "draw:top=" + getTop());
+            canvas.drawRect(0, 0, getWidth(), drawHeight, paint);
             canvas.restoreToCount(saveCount);
         } else {
             super.draw(canvas);
