@@ -283,6 +283,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                     umsagentLeave();
                 }
             });
+            mWorkerThread.exit();
         }
         if (outputStream != null) {
             try {
