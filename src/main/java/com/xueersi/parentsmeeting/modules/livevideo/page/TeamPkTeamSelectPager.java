@@ -389,12 +389,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
      */
     public void closeTeamSelectPager() {
         releaseRes();
-        mView.post(new Runnable() {
-            @Override
-            public void run() {
-                ((ViewGroup) mView.getParent()).removeView(mView);
-            }
-        });
+        mPKBll.closeCurrentPager();
     }
 
     private void showTeamIntroduce(LottieAnimationView bgAnimView) {

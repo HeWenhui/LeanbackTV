@@ -13,7 +13,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
-import android.media.Image;
 import android.media.SoundPool;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,14 +27,12 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.GridLayoutAnimationController;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieImageAsset;
 import com.airbnb.lottie.OnCompositionLoadedListener;
-import com.sobot.chat.utils.ToastUtil;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
@@ -316,9 +313,11 @@ public class TeamPkAwardPager extends BasePager {
      */
     public void closeAwardPager() {
         releaseRes();
-        if (getRootView().getParent() != null) {
+      /*  if (getRootView().getParent() != null) {
             ((ViewGroup) getRootView().getParent()).removeView(getRootView());
-        }
+        }*/
+      teamPKBll.closeCurrentPager();
+
     }
 
 

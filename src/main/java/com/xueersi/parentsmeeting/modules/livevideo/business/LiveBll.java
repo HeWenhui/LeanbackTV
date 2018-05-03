@@ -1120,19 +1120,18 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 // 战队pk  topic 逻辑
                 LiveTopic.TeamPkEntity  teamPkEntity =  liveTopic.getTeamPkEntity();
                 Log.e("LiveBll","====>onTopic 112:"+teamPkEntity+":"+mTeamPKBll);
-
                 if(teamPkEntity != null  && mTeamPKBll != null){
                     Log.e("LiveBll","====>onTopic 113:"+teamPkEntity);
                     if(!mTeamPKBll.isTopicHandled()){
                          if(teamPkEntity.getAlloteam() == 1){
                              mTeamPKBll.setTopicHandled(true);
                              mTeamPKBll.showTeamSelecting();
-                             Log.e("LiveBll","====>onTopic 114:"+teamPkEntity);
                              return;
                          }
                          if(teamPkEntity.getAllotpkman() == 1){
                              mTeamPKBll.setTopicHandled(true);
                              mTeamPKBll.startSelectAdversary();
+                             Log.e("LiveBll","====>onTopic startSelectAdversary:");
                              return;
                          }
 
@@ -1887,6 +1886,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         if(mTeamPKBll != null){
                             if(open.equals("1")){
                                 mTeamPKBll.startSelectAdversary();
+                                Log.e("LiveBll","====>onNotice startSelectAdversary:");
                             }else if(open.equals("0")){
                                 mTeamPKBll.stopSelectAdversary();
                             }
@@ -2311,6 +2311,13 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
         mLogtf.d("onGetInfoSuccess:mode=" + mLiveTopic.getMode());
         if(isTeamPkRoom(getInfo)){
+
+            if (mQuestionAction instanceof QuestionBll) {
+                ((QuestionBll) mQuestionAction).setTeamPkAllowed(true);
+            }
+            if (englishH5CoursewareAction instanceof EnglishH5CoursewareBll) {
+                ((EnglishH5CoursewareBll) englishH5CoursewareAction).setTeamPkAllowed(true);
+            }
             mTeamPKBll = new TeamPKBll((Activity) mContext);
             mTeamPKBll.setRootView(mBottomContent);
             mTeamPKBll.setHttpManager(mHttpManager);

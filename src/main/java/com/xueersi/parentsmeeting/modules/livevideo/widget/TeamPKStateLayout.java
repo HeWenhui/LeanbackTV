@@ -82,16 +82,13 @@ public class TeamPKStateLayout extends FrameLayout {
      */
     private void addPkStatBar(){
         statBarRootView = View.inflate(getContext(), R.layout.team_pk_state_bar_layout,null);
-       // ViewGroup docerView = (ViewGroup) ((Activity)getContext()).getWindow().getDecorView();
         ViewGroup rootView = (ViewGroup) this.getParent().getParent();
         int stateBarHeight = SizeUtils.Dp2Px(getContext(),17);
         int gapAbovePkStateLayout = SizeUtils.Dp2Px(getContext(),6);
-      //  FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(this.getLayoutParams().width,stateBarHeight);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(this.getLayoutParams().width,stateBarHeight);
         int []location = new int[2];
         this.getLocationInWindow(location);
         lp.topMargin = location[1] - (gapAbovePkStateLayout+stateBarHeight);
-        //docerView.addView(statBarRootView,lp);
         rootView.addView(statBarRootView,lp);
         tvState = statBarRootView.findViewById(R.id.tv_answer_question_state);
         tvState.setVisibility(GONE);
@@ -156,6 +153,7 @@ public class TeamPKStateLayout extends FrameLayout {
     private void upDataSateText(float ratio) {
         tvState.setVisibility(ratio != 0.5f?VISIBLE:GONE);
         tvState.setVisibility(VISIBLE);
+        Log.e("teamPkStateLayout","======>upDataSateText:"+ratio);
         if(ratio == 0){
             tvState.setText("准备战斗");
             tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_ready_bg);

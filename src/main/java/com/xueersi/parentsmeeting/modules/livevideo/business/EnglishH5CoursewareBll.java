@@ -94,6 +94,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     private boolean hasSubmit;
     private LiveVideoSAConfig liveVideoSAConfig;
     boolean IS_SCIENCE = false;
+    private boolean isTeamPkAllowed = false;
 
     public void setAnswerRankBll(AnswerRankBll answerRankBll) {
         mAnswerRankBll = answerRankBll;
@@ -234,7 +235,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     }
 
 
-
+    public void setTeamPkAllowed(boolean teamPkAllowed) {
+        isTeamPkAllowed = teamPkAllowed;
+    }
 
     @Override
     public void onH5Courseware(final String status, final VideoQuestionLiveEntity videoQuestionLiveEntity) {
@@ -328,10 +331,30 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         getAutoNotice(isForce);
                         hasQuestion = false;
                     }
+                    closePageByTeamPk();
                 }
             }
         });
     }
+
+
+    /**
+     * 战队pk 自动关闭答题结果页
+     */
+    private void closePageByTeamPk(){
+        Log.e("EnglishH5CoursewareBll","=======>closePageByTeamPk:"+isTeamPkAllowed);
+        if(isTeamPkAllowed){
+            bottomContent.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(h5CoursewarePager != null && h5CoursewarePager == curPager){
+                        bottomContent.removeView(h5CoursewarePager.getRootView());
+                    }
+                }
+            },6000);
+        }
+    }
+
 
     private void showH5Paper(final VideoQuestionLiveEntity videoQuestionH5Entity) {
 

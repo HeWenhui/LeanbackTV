@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -88,6 +89,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private LiveBll mLiveBll;
     private LiveTopic mLiveTopic;
     private BasePager curQuestionView;
+    private boolean isTeamPkAllowed = false;
     /**
      * 直播id
      */
@@ -163,9 +165,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 答题的暂存状态
      */
     private HashSet<String> mQueAndBool = new HashSet<>();
-    /** 答题的暂存状态-可以重复作答的 */
+    /**
+     * 答题的暂存状态-可以重复作答的
+     */
     private HashSet<String> mQueReAnswer = new HashSet<>();
-    /** 语音答题错误 */
+    /**
+     * 语音答题错误
+     */
     private HashSet<String> mErrorVoiceQue = new HashSet<>();
     /**
      * 试卷的暂存状态
@@ -200,7 +206,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private boolean isAnaswer = false;
     private ArrayList<QuestionShowAction> questionShowActions = new ArrayList<>();
     private AnswerRankBll mAnswerRankBll;
-    /** 智能私信业务 */
+    /**
+     * 智能私信业务
+     */
     private LiveAutoNoticeBll mLiveAutoNoticeBll;
     private VideoQuestionLiveEntity mVideoQuestionLiveEntity;
     private boolean hasQuestion;
@@ -821,6 +829,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
             });
             delayTime = 3000;
+            closePageByTeamPk();
         } else if (hasQuestion && !hasSubmit) {
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
             hasQuestion = false;
@@ -1001,6 +1010,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     curQuestionView = examQuestionPager;
                     examQuestionPager.examSubmitAll();
                     delayTime = 3000;
+                    closePageByTeamPk();
                 } else if (hasExam && !hasSubmit) {
                     getFullMarkList(XESCODE.EXAM_STOP, delayTime);
                     hasExam = false;
@@ -1011,6 +1021,29 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
             }
         });
+    }
+
+
+    public void setTeamPkAllowed(boolean teamPkAllowed) {
+        isTeamPkAllowed = teamPkAllowed;
+    }
+
+    /**战队pk答题结果页自动关闭
+     */
+    private void closePageByTeamPk() {
+        Log.e("QuestionBll","=======>closePageByTeamPk:"+isTeamPkAllowed);
+        if (isTeamPkAllowed) {
+            if (mVPlayVideoControlHandler != null) {
+                mVPlayVideoControlHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (curQuestionView != null) {
+                            rlQuestionContent.removeView(curQuestionView.getRootView());
+                        }
+                    }
+                }, 6000);
+            }
+        }
     }
 
     public boolean onBack() {
@@ -1711,6 +1744,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     }
 
     private void showFullMarkList(final int type, final List<FullMarkListEntity> lst, int delayTime) {
+
         if (mAnswerRankBll == null) {
             return;
         }

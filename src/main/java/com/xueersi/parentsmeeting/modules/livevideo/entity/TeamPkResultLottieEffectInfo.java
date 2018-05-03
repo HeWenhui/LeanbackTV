@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
-    private static  final String TAG = "TeamPkResultLottieEffectInfo";
+    private static final String TAG = "TeamPkResultLottieEffectInfo";
     private int nameTextSize;
     private int sloganTextSize;
     private int textColor;
@@ -84,21 +84,22 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
 
     @Override
     public Bitmap fetchTargetBitMap(LottieAnimationView animationView, String fileName, String bitmapId, int width, int height) {
-            DetailIfo info;
-            if((info = getTeacherNameInfo(fileName)) != null){
-                return createMsgBitmap(width, height, info.value, nameTextSize, textColor);
-            }else if( (info =getSlogan(fileName)) != null){
-                return createMsgBitmap(width, height, info.value, sloganTextSize, textColor);
-            }else  if( (info = getLogo(fileName)) != null){
-                upDateLottieBitmap(animationView,bitmapId,info.value,width,height,false);
-            }else if( (info = getTeacherHead(fileName)) != null){
-                upDateLottieBitmap(animationView,bitmapId,info.value,width,height,true);
-            }
-            return  null;
+        DetailIfo info;
+        if ((info = getTeacherNameInfo(fileName)) != null) {
+            return createMsgBitmap(width, height, info.value, nameTextSize, textColor);
+        } else if ((info = getSlogan(fileName)) != null) {
+            return createMsgBitmap(width, height, info.value, sloganTextSize, textColor);
+        } else if ((info = getLogo(fileName)) != null) {
+            upDateLottieBitmap(animationView, bitmapId, info.value, width, height, false);
+        } else if ((info = getTeacherHead(fileName)) != null) {
+            upDateLottieBitmap(animationView, bitmapId, info.value, width, height, true);
+        }
+        return null;
     }
 
     /**
      * 网络加载lottie 图片并进行更新
+     *
      * @param animationView
      * @param bitmapId
      * @param url
@@ -108,25 +109,27 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
     private void upDateLottieBitmap(final LottieAnimationView animationView, final String bitmapId,
                                     String url, final int width, final int height, boolean modify) {
 
-        if(!modify){
+        if (!modify) {
             ImageLoader.with(animationView.getContext()).load(url).asBitmap(new SingleConfig.BitmapListener() {
                 @Override
                 public void onSuccess(Drawable drawable) {
-                    Bitmap resultBitmap = ((BitmapDrawable)drawable).getBitmap();
-                    animationView.updateBitmap(bitmapId,resultBitmap);
+                    Bitmap resultBitmap = ((BitmapDrawable) drawable).getBitmap();
+                    animationView.updateBitmap(bitmapId, resultBitmap);
                 }
+
                 @Override
                 public void onFail() {
                 }
             });
-        }else{
+        } else {
             ImageLoader.with(animationView.getContext()).load(url).asBitmap(new SingleConfig.BitmapListener() {
                 @Override
                 public void onSuccess(Drawable drawable) {
-                    Bitmap resultBitmap = ((BitmapDrawable)drawable).getBitmap();
-                    Bitmap tempBitmap = scaleBitmap(resultBitmap,Math.min(width,height)/2);
-                    animationView.updateBitmap(bitmapId,tempBitmap);
+                    Bitmap resultBitmap = ((BitmapDrawable) drawable).getBitmap();
+                    Bitmap tempBitmap = scaleBitmap(resultBitmap, Math.min(width, height) / 2);
+                    animationView.updateBitmap(bitmapId, tempBitmap);
                 }
+
                 @Override
                 public void onFail() {
                 }
@@ -137,9 +140,9 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
 
     private DetailIfo getTeacherHead(String fileName) {
         DetailIfo result = null;
-        if(teacherHeadInfoList.size() >0){
+        if (teacherHeadInfoList.size() > 0) {
             for (int i = 0; i < teacherHeadInfoList.size(); i++) {
-                if(teacherHeadInfoList.get(i).fileName.equals(fileName)){
+                if (teacherHeadInfoList.get(i).fileName.equals(fileName)) {
                     result = teacherHeadInfoList.get(i);
                     break;
                 }
@@ -150,9 +153,9 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
 
     private DetailIfo getLogo(String fileName) {
         DetailIfo result = null;
-        if(logoInfoList.size() >0){
+        if (logoInfoList.size() > 0) {
             for (int i = 0; i < logoInfoList.size(); i++) {
-                if(logoInfoList.get(i).fileName.equals(fileName)){
+                if (logoInfoList.get(i).fileName.equals(fileName)) {
                     result = logoInfoList.get(i);
                     break;
                 }
@@ -163,9 +166,9 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
 
     private DetailIfo getSlogan(String fileName) {
         DetailIfo result = null;
-        if(sloganInfoList.size() >0){
+        if (sloganInfoList.size() > 0) {
             for (int i = 0; i < sloganInfoList.size(); i++) {
-                if(sloganInfoList.get(i).fileName.equals(fileName)){
+                if (sloganInfoList.get(i).fileName.equals(fileName)) {
                     result = sloganInfoList.get(i);
                     break;
                 }
@@ -176,9 +179,9 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
 
     private DetailIfo getTeacherNameInfo(String fileName) {
         DetailIfo result = null;
-        if(teacherNameInfoList.size() >0){
+        if (teacherNameInfoList.size() > 0) {
             for (int i = 0; i < teacherNameInfoList.size(); i++) {
-                if(teacherNameInfoList.get(i).fileName.equals(fileName)){
+                if (teacherNameInfoList.get(i).fileName.equals(fileName)) {
                     result = teacherNameInfoList.get(i);
                     break;
                 }
@@ -209,7 +212,7 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
         Rect fontRect;
         List<String> stringList = getStrList(msg, lineNum);
         //最多显示2行
-        if(stringList.size() > 2){
+        if (stringList.size() > 2) {
             String line_1 = stringList.get(0);
             String line_2 = stringList.get(1);
             stringList.clear();
@@ -218,7 +221,7 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
         }
         int size = height / stringList.size();
         //paint.setTextSize(size);
-        Log.e(TAG, "====>setTextSize:" + size + ":" + stringList.size() + ":" + height);
+      //  Log.e(TAG, "====>setTextSize:" + size + ":" + stringList.size() + ":" + height);
         resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Rect drawRect = null;
         Canvas canvas = new Canvas(resultBitmap);
@@ -272,19 +275,23 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
     }
 
     public static Bitmap scaleBitmap(Bitmap input, int radius) {
-        Bitmap result = Bitmap.createBitmap(radius * 2, radius * 2, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(result);
-        Rect src = new Rect(0,0,input.getWidth(),input.getHeight());
-        Rect dst = new Rect(0, 0, radius * 2, radius * 2);
-        Path path = new Path();
-        path.addCircle(radius, radius, radius, Path.Direction.CCW);
-        canvas.clipPath(path);
-        Paint paint = new Paint();
-        paint.setFlags(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-        canvas.drawBitmap(input,src,dst,paint);
+        Bitmap result = null;
+        try {
+            result = Bitmap.createBitmap(radius * 2, radius * 2, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(result);
+            Rect src = new Rect(0, 0, input.getWidth(), input.getHeight());
+            Rect dst = new Rect(0, 0, radius * 2, radius * 2);
+            Path path = new Path();
+            path.addCircle(radius, radius, radius, Path.Direction.CCW);
+            canvas.clipPath(path);
+            Paint paint = new Paint();
+            paint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+            canvas.drawBitmap(input, src, dst, paint);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return result;
     }
-
 }
 
 

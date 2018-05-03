@@ -153,19 +153,6 @@ public class TeamPkResultPager extends BasePager {
         timeCountDowTextView = view.findViewById(R.id.tv_teampk_pkresult_time_countdow);
 
         rclContributionRank = view.findViewById(R.id.rcl_teampk_pkresult_contribution_rank);
-        //initRecycleView(rclContributionRank);
-     /*   view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                try {
-
-                     Log.e("TeamPkResultPager","======>initRecycleView:"+(mView.getMeasuredWidth() - SizeUtils.Dp2Px(mContext,30))/6);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-            }
-        });*/
         return view;
     }
 
@@ -305,7 +292,8 @@ public class TeamPkResultPager extends BasePager {
             tvOtherTeacherName.setText(data.getCompetitorEngerInfo().getTeacherName());
             tvMyTeamSlogan.setText(data.getMyTeamEngerInfo().getSlogon());
             tvOtherTeamSlogan.setText(data.getCompetitorEngerInfo().getSlogon());
-             startTimeCountDow(CURRENT_PK_RESULT_AUTO_CLOSE_DRUATION);
+            startTimeCountDow(CURRENT_PK_RESULT_AUTO_CLOSE_DRUATION);
+            timeCountDowTextView.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -348,9 +336,10 @@ public class TeamPkResultPager extends BasePager {
         int currentProgress = (int) (newRatio*tpbEnergyBar.getMaxProgress()+0.5);
         int addProgress =  currentProgress - tpbEnergyBar.getProgress();
         tpbEnergyBar.smoothAddProgress(addProgress);
-        tvMyTeamEnergy.setText(myTeamTotalEnergy+"");
+        tvMyTeamEnergy.setText(myTeamOldEnergy+"");
         tvOtherTeamEnergy.setText(otherTeamEnergy+"");
         int addEnergy = (int) (myTeamTotalEnergy - myTeamOldEnergy);
+        Log.e("TeamPkResult","=======>showNewProgress: addEnergy="+addEnergy);
         startAddEnergyEffect(addEnergy);
 
     }
@@ -732,9 +721,7 @@ public class TeamPkResultPager extends BasePager {
                @Override
                public void run() {
                    releaseSoundRes();
-                   if (getRootView().getParent() != null) {
-                       ((ViewGroup) getRootView().getParent()).removeView(getRootView());
-                   }
+                   mTeamPkBll.closeCurrentPager();
                }
            });
        }catch (Exception e){

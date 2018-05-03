@@ -140,7 +140,7 @@ public interface XESCODE {
     /**公布 本轮pk  战队pk 情况*/
     int TEAM_PK_PUBLIC_CONTRIBUTION_STAR = 234;
 
-    /**推出每题pk 结果*/
+    /**退出每题pk 结果*/
     int TEAM_PK_EXIT_PK_RESULT = 235;
 
 }

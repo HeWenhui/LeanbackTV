@@ -59,12 +59,13 @@ public class TeamPkTeamSelectingPager extends BasePager implements View.OnClickL
      * 关闭当前页面
      */
     public void closeTeamSelectPager(){
-        mView.post(new Runnable() {
+     /*   mView.post(new Runnable() {
             @Override
             public void run() {
                 ((ViewGroup) mView.getParent()).removeView(mView);
             }
-        });
+        });*/
+       mTeamPkBll.closeCurrentPager();
     }
 
 }
