@@ -194,7 +194,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
 
                         @Override
                         public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
-                            logToFile.i("joinchannelsuccess:channel=" + channel);
+                            logToFile.i("joinchannelsuccess:channel=" + channel + ",uid=" + uid);
                             joinTime = System.currentTimeMillis();
                             umsagentJoin();
                         }
@@ -211,7 +211,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
 
                         @Override
                         public void onUserOffline(int uid, int reason) {
-                            Loger.i(TAG, "useroffline");
+                            logToFile.i("useroffline:uid=" + uid + ",reason=" + reason);
                         }
 
                         @Override
@@ -220,7 +220,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                                 XESToastUtils.showToast(activity, "请检查是否获取麦克风权限");
                             }
                             umsagentError(err);
-                            Loger.i(TAG, "error" + err);
+                            logToFile.i("onError:err=" + err);
                             //SpeechFeedBackBll.this.stop();
                         }
 
@@ -233,7 +233,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                     mWorkerThread.waitForReady();
                     int vProfile = Constants.VIDEO_PROFILE_120P;
                     mWorkerThread.configEngine(Constants.CLIENT_ROLE_BROADCASTER, vProfile);
-                    logToFile.i("onJoinChannel:isStart=" + isStart);
+                    logToFile.i("onJoinChannel:isStart=" + isStart + ",roomId=" + roomId);
                     if (isStart) {
                         mWorkerThread.joinChannel(null, roomId, stuid, new WorkerThread.OnJoinChannel() {
                             @Override
