@@ -74,6 +74,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
@@ -1379,9 +1380,10 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
                             } else {
                                 return;
                             }
-                            Map<String, String> mData = new HashMap<>();
-                            mData.put("message", "" + url);
-                            Loger.e(StandLiveVideoActivity.this, LiveVideoConfig.LIVE_GSLB, mData, true);
+                            StableLogHashMap stableLogHashMap = new StableLogHashMap("glsb3rdDnsReply");
+                            stableLogHashMap.put("message", "" + url);
+                            stableLogHashMap.put("activity", mContext.getClass().getSimpleName());
+                            Loger.e(mContext, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData(), true);
                         }
 
                         @Override

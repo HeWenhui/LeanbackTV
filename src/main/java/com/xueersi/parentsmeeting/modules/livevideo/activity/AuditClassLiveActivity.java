@@ -1175,7 +1175,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                             }
                             StableLogHashMap stableLogHashMap = new StableLogHashMap("glsb3rdDnsReply");
                             stableLogHashMap.put("message", "" + url);
-                            mLiveBll.umsAgentDebugSys(LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData());
+                            stableLogHashMap.put("activity", mContext.getClass().getSimpleName());
+                            Loger.e(mContext, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData(), true);
                         }
 
                         @Override

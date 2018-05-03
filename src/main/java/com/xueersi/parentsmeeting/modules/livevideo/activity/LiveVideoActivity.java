@@ -1307,7 +1307,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                             }
                             StableLogHashMap stableLogHashMap = new StableLogHashMap("glsb3rdDnsReply");
                             stableLogHashMap.put("message", "" + url);
-                            mLiveBll.umsAgentDebugSys(LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData());
+                            stableLogHashMap.put("activity", mContext.getClass().getSimpleName());
+                            Loger.e(mContext, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData(), true);
                         }
 
                         @Override
