@@ -348,7 +348,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                             if (addStudents.isEmpty()) {
                                 SpeechStandLog.sno4(speechEvalAction, id);
                             }
-                            long delayMillis = 3000;
+                            long delayMillis = liveStandSpeechEvalAction.getRequestTime();
                             int addCount = 0;
                             for (int i = 0; i < students.size(); i++) {
                                 final GoldTeamStatus.Student student = students.get(i);

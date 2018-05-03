@@ -292,7 +292,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                             if (addStudents.isEmpty()) {
                                 VoiceAnswerStandLog.sno4(liveAndBackDebug, baseVideoQuestionEntity.getvQuestionID());
                             }
-                            long delayMillis = 3000;
+                            long delayMillis = liveStandQuestionSwitch.getRequestTime();
                             int addCount = 0;
                             for (int i = 0; i < students.size(); i++) {
                                 final GoldTeamStatus.Student student = students.get(i);

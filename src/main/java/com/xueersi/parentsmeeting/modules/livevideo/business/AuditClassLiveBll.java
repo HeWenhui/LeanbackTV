@@ -1057,6 +1057,10 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             onLiveFailure("服务器异常", null);
             return;
         }
+        if (mGetInfo.getPattern() == 2) {
+            onLiveFailure("家长旁听暂不支持全身直播，程序员哥哥正在夜以继日的开发哦!", null);
+            return;
+        }
         if (mGetInfo.getIsArts() == 1) {
             appID = UmsConstants.ARTS_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);

@@ -710,13 +710,27 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
         @Override
         public void getTestAnswerTeamStatus(BaseVideoQuestionEntity videoQuestionLiveEntity, AbstractBusinessDataCallBack callBack) {
-            final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
-            mLiveBll.getTestAnswerTeamStatus(videoQuestionLiveEntity1, callBack);
+            if (!"-1".equals(mLiveBll.getGetInfo().getRequestTime())) {
+                final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
+                mLiveBll.getTestAnswerTeamStatus(videoQuestionLiveEntity1, callBack);
+            }
         }
 
         @Override
         public void onAnswerTimeOutError(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
             baseVoiceAnswerCreat.onAnswerReslut(context, EnglishH5CoursewareBll.this, voiceAnswerPager, baseVideoQuestionEntity, entity);
+        }
+
+        @Override
+        public long getRequestTime() {
+            try {
+                String requestTime = mLiveBll.getGetInfo().getRequestTime();
+                long time = Long.parseLong(requestTime);
+                return time;
+            } catch (Exception e) {
+
+            }
+            return 3000;
         }
     }
 

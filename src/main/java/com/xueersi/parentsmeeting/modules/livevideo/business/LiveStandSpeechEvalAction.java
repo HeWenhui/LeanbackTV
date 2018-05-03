@@ -17,4 +17,6 @@ public interface LiveStandSpeechEvalAction extends SpeechEvalAction {
      * @param callBack
      */
     void getSpeechEvalAnswerTeamStatus(String testId, AbstractBusinessDataCallBack callBack);
+
+    long getRequestTime();
 }

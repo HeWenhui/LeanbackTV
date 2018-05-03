@@ -248,6 +248,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             getInfo.setTotalOpeningLength(totalOpeningLength);
             getInfo.setPattern(data.optInt("pattern", 1));
+            getInfo.setRequestTime(data.optString("requestTime"));
             return getInfo;
         } catch (JSONException e) {
             Loger.e(TAG, "parseLiveGetInfo", e);

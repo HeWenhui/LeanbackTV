@@ -147,6 +147,8 @@ public class LiveGetInfo {
     private String isShowMarkPoint;
     /** 1-普通直播，2-全身直播 */
     private int pattern = 1;
+    /** 全身直播语音答题和评测小组排名请求时间 */
+    private String requestTime;
 
     public String getIsShowMarkPoint() {
         return isShowMarkPoint;
@@ -667,6 +669,14 @@ public class LiveGetInfo {
 
     public void setPattern(int pattern) {
         this.pattern = pattern;
+    }
+
+    public String getRequestTime() {
+        return requestTime;
+    }
+
+    public void setRequestTime(String requestTime) {
+        this.requestTime = requestTime;
     }
 
     public ArrayList<String> getTeamStuIds() {

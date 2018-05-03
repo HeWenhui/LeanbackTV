@@ -62,6 +62,18 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         }
 
         @Override
+        public long getRequestTime() {
+            try {
+                String requestTime = liveBll.getGetInfo().getRequestTime();
+                long time = Long.parseLong(requestTime);
+                return time;
+            } catch (Exception e) {
+
+            }
+            return 3000;
+        }
+
+        @Override
         public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
             action.umsAgentDebugSys(eventId, mData);
         }
@@ -78,7 +90,10 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
 
         @Override
         public void getSpeechEvalAnswerTeamStatus(String testId, AbstractBusinessDataCallBack callBack) {
-            liveBll.getSpeechEvalAnswerTeamStatus(testId, callBack);
+            String requestTime = liveBll.getGetInfo().getRequestTime();
+            if (!"-1".equals(requestTime)) {
+                liveBll.getSpeechEvalAnswerTeamStatus(testId, callBack);
+            }
         }
 
         @Override

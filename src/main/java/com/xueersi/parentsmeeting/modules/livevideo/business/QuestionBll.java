@@ -1821,10 +1821,23 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
         @Override
         public void getTestAnswerTeamStatus(BaseVideoQuestionEntity videoQuestionLiveEntity, AbstractBusinessDataCallBack callBack) {
-            final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
-            mLiveBll.getTestAnswerTeamStatus(videoQuestionLiveEntity1, callBack);
+            if (!"-1".equals(mLiveBll.getGetInfo().getRequestTime())) {
+                final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
+                mLiveBll.getTestAnswerTeamStatus(videoQuestionLiveEntity1, callBack);
+            }
         }
 
+        @Override
+        public long getRequestTime() {
+            try {
+                String requestTime = mLiveBll.getGetInfo().getRequestTime();
+                long time = Long.parseLong(requestTime);
+                return time;
+            } catch (Exception e) {
+
+            }
+            return 3000;
+        }
     }
 
     public class LiveQuestionSwitchImpl implements QuestionSwitch {
