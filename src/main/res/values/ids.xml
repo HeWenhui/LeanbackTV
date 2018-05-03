@@ -637,6 +637,7 @@
     <item name="tv_teampk_open_box_winner_name" type="id"/>
     <item name="tv_teampk_open_box_winner_coin" type="id"/>
     <item name="iv_teampk_open_box_lucky_guy" type="id"/>
+    <item name="rl_teampk_open_box_lucy_start_root" type="id"/>
 
     <item name="iv_roleplayer_item_shadow" type="id" />
     <item name="tv_live_roleplayer_match_tip2" type="id" />

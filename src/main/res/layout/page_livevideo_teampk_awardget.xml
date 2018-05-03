@@ -35,14 +35,18 @@
       android:visibility="gone"
       />
 
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:id="@id/rl_teampk_open_box_lucy_start_root"
+      android:visibility="gone"
+      >
 
   <com.xueersi.parentsmeeting.modules.livevideo.widget.CoinAwardDisplayer
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:id="@id/cad_teampk_open_box_team_coin"
       android:layout_centerHorizontal="true"
-      android:layout_marginTop="130dp"
-      android:visibility="gone"
       />
   <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView
       android:layout_width="match_parent"
@@ -54,9 +58,9 @@
       android:layout_marginTop="14dp"
       android:scrollbars="none"
       android:overScrollMode="never"
-      android:visibility="gone"
       />
-  
+  </RelativeLayout>
+
   <ImageView
       android:layout_width="273dp"
       android:layout_height="28dp"

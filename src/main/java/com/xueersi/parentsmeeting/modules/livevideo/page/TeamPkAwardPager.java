@@ -3,12 +3,14 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -26,6 +28,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.GridLayoutAnimationController;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.ImageAssetDelegate;
@@ -84,6 +87,7 @@ public class TeamPkAwardPager extends BasePager {
     private final TeamPKBll teamPKBll;
     private boolean mIsWin;
     private ImageView ivOpenstate;
+    private RelativeLayout rlLuckystartRoot;
 
 
     public TeamPkAwardPager(Context context, TeamPKBll pkBll) {
@@ -94,6 +98,7 @@ public class TeamPkAwardPager extends BasePager {
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_teampk_awardget, null);
+        rlLuckystartRoot = view.findViewById(R.id.rl_teampk_open_box_lucy_start_root);
         cadTeamCoin = view.findViewById(R.id.cad_teampk_open_box_team_coin);
         cadMycoin = view.findViewById(R.id.cad_teampk_open_box_my_coin);
         recyclerView = view.findViewById(R.id.rcl_teampk_open_box_rank);
@@ -279,14 +284,25 @@ public class TeamPkAwardPager extends BasePager {
         if (data == null) {
             return;
         }
+
+        rlLuckystartRoot.setVisibility(View.VISIBLE);
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rlLuckystartRoot.getLayoutParams();
+        Point point = new Point();
+        ((Activity)mContext).getWindowManager().getDefaultDisplay().getSize(point);
+        int topMargin = (int) (point.y *0.36);
+        layoutParams.topMargin = topMargin;
+        rlLuckystartRoot.setLayoutParams(layoutParams);
+
         // step 2 展示 获得金币信息
-        cadTeamCoin.setVisibility(View.VISIBLE);
+        //cadTeamCoin.setVisibility(View.VISIBLE);
+        cadTeamCoin.setAwardInfo(R.drawable.livevideo_alertview_guafen_img_disable, (int)
+                data.getSumGold(),R.drawable.livevideo_alertview_gegoldwenzi_img_disable);
         Animation alphaAnimation = AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_teampk_open_box_coin_in);
         cadTeamCoin.startAnimation(alphaAnimation);
         // step 3 展示队员信息
         recyclerView.setLayoutManager(new TeamMemberGridlayoutManager(mContext, 3,
                 LinearLayoutManager.VERTICAL, false));
-        recyclerView.setVisibility(View.VISIBLE);
+        //recyclerView.setVisibility(View.VISIBLE);
         GridLayoutAnimationController animationController = (GridLayoutAnimationController)
                 AnimationUtils.loadLayoutAnimation(mContext, R.anim.anim_livevido_teampk_teammember_list);
         recyclerView.setLayoutAnimation(animationController);
