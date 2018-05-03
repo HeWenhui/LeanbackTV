@@ -94,7 +94,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/rl_livevideo_message_panelcontent"
-            android:layout_marginLeft="205dp"
+            android:layout_marginLeft="215dp"
             android:layout_marginRight="109dp"
             android:gravity="center"
             android:paddingBottom="15dp"

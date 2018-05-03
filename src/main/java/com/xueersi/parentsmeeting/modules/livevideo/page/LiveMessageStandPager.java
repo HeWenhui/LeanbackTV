@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -34,6 +35,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieComposition;
@@ -53,6 +55,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveHeadView;
@@ -937,50 +940,30 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     }
 
     public void setVideoWidthAndHeight(int width, int height) {
-//        final View contentView = liveVideoActivity.findViewById(android.R.id.content);
-//        final View actionBarOverlayLayout = (View) contentView.getParent();
-//        Rect r = new Rect();
-//        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
-//        int screenWidth = (r.right - r.left);
-//        int screenHeight = ScreenUtils.getScreenHeight();
-//        if (width > 0) {
-//            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
-//            int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
-//            wradio += (screenWidth - width) / 2;
-//            if (wradio != params.width) {
-//                //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
-//                // + ",wradio=" + wradio + "," + params.width);
-//                params.width = wradio;
-////                rlInfo.setLayoutParams(params);
-//                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-//            }
-//            params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
-//            if (params.rightMargin != wradio) {
-//                params.rightMargin = wradio;
-////                cbMessageClock.setLayoutParams(params);
-//                LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
-//            }
-//        }
-//        if (height > 0) {
-//            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();
-//            int topMargin = (int) ((LiveVideoActivity.VIDEO_HEIGHT - LiveVideoActivity.VIDEO_HEAD_HEIGHT) * height /
-//                    LiveVideoActivity.VIDEO_HEIGHT);
-//            topMargin = height - topMargin + (screenHeight - height) / 2;
-//            if (topMargin != params.topMargin) {
-//                params.topMargin = topMargin;
-////                rlInfo.setLayoutParams(params);
-//                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-//                Loger.e(TAG, "setVideoWidthAndHeight:topMargin=" + params.topMargin);
-//            }
-//            int bottomMargin = (ScreenUtils.getScreenHeight() - height) / 2;
-//            params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
-//            if (params.bottomMargin != bottomMargin) {
-//                params.bottomMargin = bottomMargin;
-////                lvMessage.setLayoutParams(params);
-//                LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
-//                //Loger.e(TAG, "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
-//            }
-//        }
+        final View contentView = liveVideoActivity.findViewById(android.R.id.content);
+        final View actionBarOverlayLayout = (View) contentView.getParent();
+        Rect r = new Rect();
+        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
+        int screenWidth = (r.right - r.left);
+        int screenHeight = ScreenUtils.getScreenHeight();
+        if (width > 0) {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
+            int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
+            int videoGap = (screenWidth - width) / 2;
+            if (videoGap != params.leftMargin) {
+                //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+                // + ",wradio=" + wradio + "," + params.width);
+                params.leftMargin = videoGap;
+//                rlInfo.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
+            }
+            params = (RelativeLayout.LayoutParams) btMesOpen.getLayoutParams();
+            if (params.rightMargin != videoGap) {
+                params.rightMargin = videoGap;
+//                cbMessageClock.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(btMesOpen, params);
+            }
+        }
     }
 
     /** 聊天开始连接 */
