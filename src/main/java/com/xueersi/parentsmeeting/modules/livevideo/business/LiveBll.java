@@ -3514,7 +3514,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * @param talkSourcePath
      */
     public void saveStuTalkSource(String talkSourcePath, String service) {
-        mHttpManager.saveStuTalkSource(mGetInfo.getStuId(), talkSourcePath, service, new HttpCallBack() {
+        mHttpManager.saveStuTalkSource(mGetInfo.getStuId(), talkSourcePath, service, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 Loger.d(TAG, "saveStuTalkSource:onPmSuccess" + responseEntity.getJsonObject());
