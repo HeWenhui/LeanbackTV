@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,7 +26,6 @@ import android.widget.Toast;
 import com.tal.speech.language.TalLanguage;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.business.AppBll;
-import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.event.AppEvent;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
@@ -101,9 +101,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
@@ -141,6 +139,8 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
     private VPlayerListener mPlayStatistics;
     /** 初始进入播放器时的预加载界面 */
     private RelativeLayout rlFirstBackgroundView;
+    private RelativeLayout rlFirstBackgroundContent;
+    private FrameLayout flFirstBackgroundContent;
     /** 老师不在直播间 */
     private ImageView ivTeacherNotpresent;
     RelativeLayout bottomContent;
@@ -276,6 +276,8 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
     private void initView() {
         // 预加载布局
         rlFirstBackgroundView = (RelativeLayout) findViewById(R.id.rl_course_video_first_backgroud);
+        rlFirstBackgroundContent = findViewById(R.id.rl_course_video_first_content);
+        flFirstBackgroundContent = findViewById(R.id.fl_course_video_first_content);
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
         bottomContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
@@ -322,7 +324,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
         h5CoursewareBll.initView(bottomContent);
         englishH5CoursewareBll.initView(bottomContent);
 
-        setFirstParam(lp);
+        setFirstParam(lp, true);
         liveMessageBll.setVideoLayout(lp.width, lp.height);
 
         Loger.d(TAG, "initView:time2=" + (System.currentTimeMillis() - before));
@@ -347,7 +349,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
                         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
                                 (int) VIDEO_HEIGHT, VIDEO_RATIO);
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-                        setFirstParam(lp);
+                        setFirstParam(lp, false);
                         liveMessageBll.setVideoLayout(lp.width, lp.height);
                         questionBll.setVideoLayout(lp.width, lp.height);
                         if (rankBll != null) {
@@ -519,14 +521,26 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
     /**
      * 设置蓝屏界面
      */
-    private void setFirstParam(ViewGroup.LayoutParams lp) {
+    private void setFirstParam(ViewGroup.LayoutParams lp, boolean first) {
         final View contentView = findViewById(android.R.id.content);
         final View actionBarOverlayLayout = (View) contentView.getParent();
         Rect r = new Rect();
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
         int screenWidth = (r.right - r.left);
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlFirstBackgroundView.getLayoutParams();
+        Loger.d(TAG, "setFirstParam:mode=" + mode);
         if (LiveTopic.MODE_CLASS.equals(mode)) {
+            if (first) {
+                //主讲模式去掉外层的RelativeLayout换回FrameLayout
+                ViewGroup group = (ViewGroup) rlFirstBackgroundView.getParent();
+                if (group != flFirstBackgroundContent) {
+                    while (group.getChildCount() > 0) {
+                        View childView = group.getChildAt(0);
+                        group.removeViewAt(0);
+                        flFirstBackgroundContent.addView(childView);
+                    }
+                }
+            }
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlFirstBackgroundView.getLayoutParams();
 //           主讲模式铺满屏幕，等比例缩放
             int screenHeight = ScreenUtils.getScreenHeight();
             float density = ScreenUtils.getScreenDensity();
@@ -547,7 +561,27 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
                 LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
             }
         } else {
+            if (first) {
+                //辅导模式去掉外层的FrameLayout
+                ViewGroup group = (ViewGroup) rlFirstBackgroundView.getParent();
+                if (group != rlFirstBackgroundContent) {
+                    while (group.getChildCount() > 0) {
+                        View childView = group.getChildAt(0);
+                        group.removeViewAt(0);
+                        rlFirstBackgroundContent.addView(childView);
+                    }
+                }
+            }
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlFirstBackgroundView.getLayoutParams();
             // 辅导模式保留三分屏
+            if (params.width != ScreenUtils.getScreenWidth() || params.height != ScreenUtils.getScreenHeight()) {
+                params.width = ScreenUtils.getScreenWidth();
+                params.height = ScreenUtils.getScreenHeight();
+                LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
+                LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
+                Loger.d(TAG, "setFirstParam:width");
+            }
+
             int rightMargin = (int) (StandLiveVideoActivity.VIDEO_HEAD_WIDTH * lp.width / VIDEO_WIDTH + (screenWidth - lp.width) / 2);
             int topMargin = (ScreenUtils.getScreenHeight() - lp.height) / 2;
             if (params.rightMargin != rightMargin || params.bottomMargin != topMargin) {
@@ -555,6 +589,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
                 params.bottomMargin = params.topMargin = topMargin;
                 LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
                 LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
+                Loger.d(TAG, "setFirstParam:rightMargin");
             }
         }
         //Loger.e(TAG, "setFirstParam:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
@@ -1131,8 +1166,26 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
             public void run() {
                 liveMediaControllerBottom.onModeChange(mode);
                 if (LiveTopic.MODE_CLASS.equals(mode)) {
+                    //主讲模式去掉外层的RelativeLayout换回FrameLayout
+                    ViewGroup group = (ViewGroup) rlFirstBackgroundView.getParent();
+                    if (group != flFirstBackgroundContent) {
+                        while (group.getChildCount() > 0) {
+                            View childView = group.getChildAt(0);
+                            group.removeViewAt(0);
+                            flFirstBackgroundContent.addView(childView);
+                        }
+                    }
                     liveMessageBll.initViewLiveStand(bottomContent);
                 } else {
+                    //辅导模式去掉外层的FrameLayout
+                    ViewGroup group = (ViewGroup) rlFirstBackgroundView.getParent();
+                    if (group != rlFirstBackgroundContent) {
+                        while (group.getChildCount() > 0) {
+                            View childView = group.getChildAt(0);
+                            group.removeViewAt(0);
+                            rlFirstBackgroundContent.addView(childView);
+                        }
+                    }
                     liveMessageBll.initViewLive(bottomContent);
                 }
                 initAchievement(mode);
