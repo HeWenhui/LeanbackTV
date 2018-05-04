@@ -752,8 +752,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
             }
         };
-        ViewGroup.LayoutParams lp = lvMessage.getLayoutParams();
-        lp.height = ScreenUtils.getScreenHeight() * 2 / 3;
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
+        lp.topMargin = ScreenUtils.getScreenHeight() / 3;
         lvMessage.setLayoutParams(lp);
         lvMessage.setAdapter(messageAdapter);
 //        mView.post(new Runnable() {
@@ -911,16 +911,19 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //        if (rlMessageContent.getVisibility() != View.GONE) {
 //            rlMessageContent.setVisibility(View.GONE);
 //        }
+        Loger.d(TAG, "onTitleShow:show=" + show + ",keyboardShowing=" + keyboardShowing);
         btMessageExpress.setBackgroundResource(R.drawable.selector_live_stand_chat_expression);
         InputMethodManager mInputMethodManager = (InputMethodManager) mContext.getSystemService(Context
                 .INPUT_METHOD_SERVICE);
         mInputMethodManager.hideSoftInputFromWindow(etMessageContent.getWindowToken(), 0);
-        switchFSPanelLinearLayout.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                switchFSPanelLinearLayout.setVisibility(View.GONE);
-            }
-        }, 10);
+        if (!keyboardShowing && switchFSPanelLinearLayout.getVisibility() != View.GONE) {
+            switchFSPanelLinearLayout.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    switchFSPanelLinearLayout.setVisibility(View.GONE);
+                }
+            }, 10);
+        }
     }
 
     public void closeChat(final boolean close) {
