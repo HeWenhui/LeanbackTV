@@ -1005,12 +1005,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     }
 
     public void setWebViewCloseByTeacher(boolean webViewCloseByTeacher) {
-        if(curQuestionView != null){
-            if(curQuestionView instanceof  QuestionWebPager || curQuestionView instanceof ExamQuestionPager){
-                this.webViewCloseByTeacher = webViewCloseByTeacher;
-                Log.e("webViewCloseByTeacher","======>QuestionBll setWebViewCloseByTeacher:"+webViewCloseByTeacher);
-            }
-        }
+        this.webViewCloseByTeacher = webViewCloseByTeacher;
     }
 
     @Override
@@ -1042,18 +1037,25 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         isTeamPkAllowed = teamPkAllowed;
     }
 
-    /**战队pk答题结果页自动关闭
+    private boolean isPageOnCloseing = false;
+
+    /**
+     * 战队pk答题结果页自动关闭
      */
     private void closePageByTeamPk() {
-        Log.e("QuestionBll","=======>closePageByTeamPk:"+isTeamPkAllowed);
+       // Log.e("QuestionBll","=======>closePageByTeamPk 1111:"+isTeamPkAllowed);
         if (isTeamPkAllowed) {
-            if (mVPlayVideoControlHandler != null) {
+            if (mVPlayVideoControlHandler != null && !isPageOnCloseing) {
+                isPageOnCloseing = true;
                 mVPlayVideoControlHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                       // Log.e("QuestionBll","=======>closePageByTeamPk 2222:"+curQuestionView);
                         if (curQuestionView != null) {
+                          //  Log.e("QuestionBll","=======>closePageByTeamPk 33333:"+curQuestionView);
                             rlQuestionContent.removeView(curQuestionView.getRootView());
                         }
+                           isPageOnCloseing = false;
                     }
                 }, 6000);
             }

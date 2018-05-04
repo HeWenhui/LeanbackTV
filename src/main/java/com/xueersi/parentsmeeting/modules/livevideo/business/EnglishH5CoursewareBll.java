@@ -348,19 +348,21 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         });
     }
 
-
+    private boolean isPageOnCloseing = false;
     /**
      * 战队pk 自动关闭答题结果页
      */
     private void closePageByTeamPk(){
-        Log.e("EnglishH5CoursewareBll","=======>closePageByTeamPk:"+isTeamPkAllowed);
-        if(isTeamPkAllowed){
+       // Log.e("EnglishH5CoursewareBll","=======>closePageByTeamPk:"+isTeamPkAllowed);
+        if(isTeamPkAllowed && !isPageOnCloseing){
+            isPageOnCloseing = true;
             bottomContent.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if(h5CoursewarePager != null && h5CoursewarePager == curPager){
                         bottomContent.removeView(h5CoursewarePager.getRootView());
                     }
+                    isPageOnCloseing = false;
                 }
             },6000);
         }

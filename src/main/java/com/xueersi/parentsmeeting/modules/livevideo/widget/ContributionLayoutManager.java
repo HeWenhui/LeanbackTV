@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.view.View;
@@ -21,7 +20,7 @@ import java.util.List;
 
 public class ContributionLayoutManager extends RecyclerView.LayoutManager {
 
-    private static final String Tag = "SignLayoutManager";
+    private static final String Tag = "ContributionLayoutManager";
     public int mLineSize;  //每行item个数
     private int lineNum; //行数
     private final int[] mMeasuredDimension = new int[2];
@@ -46,7 +45,6 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
 
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
-        Log.e(Tag, "=========>onLayoutChildren:" + getItemCount() + ":" + getChildCount());
         if (getItemCount() <= 0 || state.isPreLayout()) {
             return;
         }
@@ -76,9 +74,6 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
         measureChild(firstView, 0, 0);
         int itemWith = getDecoratedMeasuredWidth(firstView);
         int itemHeight = getDecoratedMeasuredHeight(firstView);
-        Log.e(Tag, "=========>calculateChildrenSite:" + itemWith + ":" + itemHeight + ":" + getWidth() + getHeight());
-        //detachAndScrapView(firstView,recycler);
-
         lines = new ArrayList<Line>();
         Line line = null;
         for (int i = 0; i < getItemCount(); i++) {
@@ -108,8 +103,6 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
 
     @Override
     public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
-        Log.e(Tag, "=========>dy1111:" + dy + ":" + mVerticalOffset+":"+totalHeight);
-
         //每次滑动时先释放掉所有的View，因为后面调用recycleAndFillView()时会重新addView()。
         detachAndScrapAttachedViews(recycler); //有没有有必要 detach所有的 移除显示在可视窗口外的试图
 
@@ -136,7 +129,6 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
         }
         // 当前scroll offset状态下的显示区域
         Rect displayRect = new Rect(0, mVerticalOffset, getHorizontalSpace(),  mVerticalOffset + getVerticalSpace());
-        Log.e(Tag,"recycleAndFill:"+displayRect);
 
 
         //重新显示需要出现在屏幕的子View
@@ -150,7 +142,6 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
                 addView(itemView);
                 //取出先前存好的ItemView的位置矩形
                 Rect rect = allItemRects.get(i);
-                Log.e(Tag,"=========>222222222:"+i+":"+rect);
                 //将这个item布局出来
                 layoutDecoratedWithMargins(itemView,
                         rect.left,
@@ -160,7 +151,6 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
                 itemVisibilities.put(i, true); //更新该View的状态为依附
             }
         }
-        Log.e(Tag,"itemCount = " + getChildCount());
     }
 
     int itemWith;
@@ -214,12 +204,10 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
 
                 if (list.size() < mLineSize) {
                     //不再均分,采用整体居中
-                    Log.e("cksdd","=====>itemLeft:"+ContributionLayoutManager.this.getWidth()+":"+mItemTotalWidth+":"+mItemWidth);
                     itemLeft = (ContributionLayoutManager.this.getWidth() - mItemTotalWidth) / 2 + i * mItemWidth;
                     if (i > 0) {
                         //itemLeft += minHdevidWithd;
                     }
-                    Log.e("cksdd","=====>itemLeft:"+itemLeft);
                     mTmpRect.set(itemLeft, mlineTop, itemLeft + mItemWidth, mlineTop + mItemHeight);
 
 
@@ -235,13 +223,9 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
                     //SignLayoutManager.this.layoutDecorated(itemView, itemLeft, mlineTop, itemLeft + mItemWidth, mlineTop + mItemHeight);
                     mTmpRect.set(itemLeft, mlineTop, itemLeft + mItemWidth, mlineTop + mItemHeight);
                 }
-
-                Log.e(Tag,"=====cache rect index:"+(lineIndex*mLineSize+i)+":"+mTmpRect);
                 allItemRects.put(lineIndex*mLineSize+i, mTmpRect);
                 itemVisibilities.put(i, false);
             }
-
-
         }
 
     }

@@ -269,13 +269,11 @@
                android:layout_below="@id/rl_teampk_pkresult_bottom_pb_container"
                android:scrollbars="none"
                android:overScrollMode="never"
-               android:layout_marginLeft="15dp"
-               android:layout_marginRight="15dp"
+               android:layout_marginRight="40dp"
+               android:layout_alignLeft="@id/rl_teampk_pkresult_bottom_pb_container"
                />
 
-        <!--   android:layout_alignLeft="@id/rl_teampk_pkresult_bottom_pb_container"-->
-
-        <!--   <ImageView
+            <ImageView
                android:layout_width="40dp"
                android:layout_height="45dp"
                android:scaleType="centerCrop"
@@ -283,7 +281,7 @@
                android:src="@drawable/livevideo_list_contribution_img_disable"
                android:layout_toLeftOf="@id/rcl_teampk_pkresult_contribution_rank"
                android:layout_marginTop="15dp"
-               />-->
+               />
 
     </RelativeLayout>
 
