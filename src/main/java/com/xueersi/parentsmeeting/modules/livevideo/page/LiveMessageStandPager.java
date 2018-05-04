@@ -1305,6 +1305,13 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                                 @Override
                                 public void run() {
                                     lvMessage.smoothScrollToPosition(lvMessage.getCount() - 1);
+                                    lvMessage.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+//                                            lvMessage.smoothScrollToPosition(lvMessage.getCount() - 1);
+                                            lvMessage.setSelection(lvMessage.getCount() - 1);
+                                        }
+                                    }, 200);
                                 }
                             });
 //                            lvMessage.setSelection(lvMessage.getCount() - 1);

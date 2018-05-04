@@ -1058,7 +1058,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             return;
         }
         if (mGetInfo.getPattern() == 2) {
-            onLiveFailure("家长旁听暂不支持全身直播，程序员哥哥正在夜以继日的开发哦!", null);
+            ResponseEntity responseEntity = new ResponseEntity();
+            responseEntity.setErrorMsg("家长旁听暂不支持全身直播，程序员哥哥正在夜以继日的开发哦!");
+            onLiveError(responseEntity);
             return;
         }
         if (mGetInfo.getIsArts() == 1) {
