@@ -73,6 +73,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
     private short[] mPCMBuffer;
     private WorkerThread mWorkerThread;
     FileOutputStream outputStream;
+    RtcEngine mRtcEngine;
     File saveVideoFile;
     private String roomId;
     private long joinTime;
@@ -164,6 +165,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                         mWorkerThread.setOnEngineCreate(new WorkerThread.OnEngineCreate() {
                             @Override
                             public void onEngineCreate(RtcEngine mRtcEngine) {
+                                SpeechFeedBackBll.this.mRtcEngine = mRtcEngine;
                                 mRtcEngine.registerAudioFrameObserver(new IAudioFrameObserver() {
                                     @Override
                                     public boolean onRecordFrame(byte[] bytes, int i, int i1, int i2, int i3) {
@@ -277,6 +279,9 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         umsagentCommand(5, "off", 1);
         logToFile.d("stop:mAudioRecord=" + (mAudioRecord == null) + ",mWorkerThread=" + (mWorkerThread == null));
         if (mWorkerThread != null) {
+            if (mRtcEngine != null) {
+                mRtcEngine.registerAudioFrameObserver(null);
+            }
             mWorkerThread.leaveChannel(roomId, new WorkerThread.OnLevelChannel() {
                 @Override
                 public void onLevelChannel(int leaveChannel) {

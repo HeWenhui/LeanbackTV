@@ -752,6 +752,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
             }
         };
+        lvMessage.setVerticalFadingEdgeEnabled(false);
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
         lp.topMargin = ScreenUtils.getScreenHeight() / 3;
         lvMessage.setLayoutParams(lp);
@@ -1309,7 +1310,13 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //                            if (lvMessage.getChildCount() == 1) {
 //                                lvMessage.scrollBy(0, lvMessage.getChildAt(0).getHeight());
 //                            }
-                            lvMessage.setSelection(lvMessage.getCount() - 1);
+                            lvMessage.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    lvMessage.smoothScrollToPosition(lvMessage.getCount() - 1);
+                                }
+                            });
+//                            lvMessage.setSelection(lvMessage.getCount() - 1);
                         }
                     }
                 });
