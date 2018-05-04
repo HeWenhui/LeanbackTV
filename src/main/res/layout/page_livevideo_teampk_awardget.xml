@@ -66,8 +66,6 @@
       android:layout_height="28dp"
       android:src="@drawable/livevideo_alertview_kaiguo_img_disable"
       android:layout_centerHorizontal="true"
-      android:layout_alignParentBottom="true"
-      android:layout_marginBottom="60dp"
       android:visibility="gone"
       android:id="@id/iv_teampk_open_box_open_state"
       />

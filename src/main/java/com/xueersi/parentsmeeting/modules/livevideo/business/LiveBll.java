@@ -1473,7 +1473,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             }
                             if(mQuestionAction instanceof  QuestionBll){
                                 ((QuestionBll)mQuestionAction).setWebViewCloseByTeacher(false);
-                                Log.e("webViewCloseByTeacher","======>LiveBll setWebViewCloseByTeacher: EXAM_START");
+                                Loger.e("webViewCloseByTeacher","======>LiveBll setWebViewCloseByTeacher: EXAM_START");
                             }
 
                         }
@@ -1485,7 +1485,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             mQuestionAction.onExamStop();
                             if(mQuestionAction instanceof  QuestionBll){
                                 ((QuestionBll)mQuestionAction).setWebViewCloseByTeacher(true);
-                                Log.e("webViewCloseByTeacher","======>LiveBll setWebViewCloseByTeacher: EXAM_STOP");
+                                Loger.e("webViewCloseByTeacher","======>LiveBll setWebViewCloseByTeacher: EXAM_STOP");
                             }
                         }
                         if (mAnswerRankBll != null) {
@@ -1887,8 +1887,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             }
                             JSONArray agreeForms = object.optJSONArray("agreeFroms");
                             boolean isTeacher = object.optBoolean("isTeacher");
-                            Log.i(TAG, "agreeForms=" + agreeForms.toString());
-                            Log.i(TAG, "isTeacher=" + isTeacher);
+                            Loger.i(TAG, "agreeForms=" + agreeForms.toString());
+                            Loger.i(TAG, "isTeacher=" + isTeacher);
                             if (isTeacher) {
                                 if (mPraiseListAction != null && agreeForms.length() != 0) {
                                     mPraiseListAction.showPraiseScroll(mGetInfo.getStuName(), agreeForms.getString(0));
@@ -1897,7 +1897,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 ArrayList<String> list = new ArrayList<>();
                                 for (int i = 0; i < agreeForms.length(); i++) {
                                     String stuName = agreeForms.getString(i);
-                                    Log.i(TAG, "stuName=" + stuName);
+                                    Loger.i(TAG, "stuName=" + stuName);
                                     list.add(stuName);
                                 }
                                 if (mPraiseListAction != null && list.size() != 0) {
@@ -1929,7 +1929,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     case XESCODE.TEAM_PK_TEAM_SELECT:
                     {
 
-                        Log.e("LiveBll","=====>: notice teampk  show teamselect:"+mtype);
+                        Loger.e("LiveBll","=====>: notice teampk  show teamselect:"+mtype);
 
                         if(mTeamPKBll != null){
                            String open = object.optString("open");
@@ -1947,7 +1947,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         if(mTeamPKBll != null){
                             if(open.equals("1")){
                                 mTeamPKBll.startSelectAdversary();
-                                Log.e("LiveBll","====>onNotice startSelectAdversary:");
+                                Loger.e("LiveBll","====>onNotice startSelectAdversary:");
                             }else if(open.equals("0")){
                                 mTeamPKBll.stopSelectAdversary();
                             }

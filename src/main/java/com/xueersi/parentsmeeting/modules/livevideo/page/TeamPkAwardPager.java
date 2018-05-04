@@ -454,8 +454,13 @@ public class TeamPkAwardPager extends BasePager {
                                 e.printStackTrace();
                             }
                         }else{
-                          //  ToastUtil.showToast(mContext,"您已经领过宝箱了");
+                            Point point = new Point();
+                            ((Activity)mContext).getWindowManager().getDefaultDisplay().getSize(point);
+                            int topMargin = (int) (point.y *0.8f);
+                            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) ivOpenstate.getLayoutParams();
+                            layoutParams.topMargin = topMargin;
                             ivOpenstate.setVisibility(View.VISIBLE);
+                            ivOpenstate.setLayoutParams(layoutParams);
                         }
                     }
 

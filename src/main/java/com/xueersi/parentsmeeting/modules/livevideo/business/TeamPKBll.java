@@ -210,8 +210,14 @@ public class TeamPKBll {
     /**
      * 获取每题的 pk 结果
      */
-    private void getEnergyNumAndContributionStar(String testId, String testPlan) {
-
+    private void getEnergyNumAndContributionStar(LiveRoomH5CloseEvent event) {
+        String testId = "";
+        String testPlan = "";
+        if (event.getH5Type() == LiveRoomH5CloseEvent.H5_TYPE_EXAM) {
+            testPlan = event.getId();
+        } else {
+            testId = event.getId();
+        }
         mHttpManager.teamEnergyNumAndContributionStar(mLiveBll.getLiveId(),
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), testId, testPlan, new HttpCallBack() {
@@ -222,6 +228,7 @@ public class TeamPKBll {
                     }
                 });
     }
+
 
     /**
      * 判断是否已经分好对了
@@ -555,60 +562,50 @@ public class TeamPKBll {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRoomH5CloseEvent(final LiveRoomH5CloseEvent event) {
         Log.e("TeamPkBll", "=======>:onRoomH5CloseEvent:" + event.getId() + ":"
-                + event.getmGoldNum() + ":" + event.getmEnergyNum()+":"+event.isCloseByTeacher());
-        if(h5CloseEvents == null){
+                + event.getmGoldNum() + ":" + event.getmEnergyNum() + ":" + event.isCloseByTeacher());
+        if (h5CloseEvents == null) {
             h5CloseEvents = new ArrayList<LiveRoomH5CloseEvent>();
         }
         // 只有答题结果页面才会初始化 energyNum 和 goldNum
-         if(event.getmEnergyNum() != -1 && event.getmGoldNum() != -1){
-             h5CloseEvents.add(event);
-             LiveRoomH5CloseEvent cacheEvent = null;
-             if(h5CloseEvents.get(0).isCloseByTeacher()){
-                 cacheEvent = h5CloseEvents.remove(0);
-                 //step  1 显示飞星动画
-                 showAnswerQuestionAward(cacheEvent.getmGoldNum(), cacheEvent.getmEnergyNum());
-                 //step  2 显示pk 结果
-                 final LiveRoomH5CloseEvent finalCacheEvent = cacheEvent;
-                 rlTeamPkContent.postDelayed(new Runnable() {
-                     @Override
-                     public void run() {
-                         String testId = "";
-                         String testPlan = "";
-                         if (finalCacheEvent.getH5Type() == LiveRoomH5CloseEvent.H5_TYPE_EXAM) {
-                             testPlan = finalCacheEvent.getId();
-                         } else {
-                             testId = finalCacheEvent.getId();
-                         }
-                         getEnergyNumAndContributionStar(testId, testPlan);
-                     }
-                 }, 3000);
-             }else{
-                 cacheEvent = h5CloseEvents.get(0);
-                 showAnswerQuestionAward(cacheEvent.getmGoldNum(), cacheEvent.getmEnergyNum());
-             }
-         }else{
+        if (event.getmEnergyNum() != -1 && event.getmGoldNum() != -1) {
+            h5CloseEvents.add(event);
+            LiveRoomH5CloseEvent cacheEvent = null;
+            if (h5CloseEvents.get(0).isCloseByTeacher()) {
+                cacheEvent = h5CloseEvents.remove(0);
+                //step  1 显示飞星动画
+                showAnswerQuestionAward(cacheEvent.getmGoldNum(), cacheEvent.getmEnergyNum());
+                //step  2 显示pk 结果
+                final LiveRoomH5CloseEvent finalCacheEvent = cacheEvent;
+                rlTeamPkContent.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        getEnergyNumAndContributionStar(finalCacheEvent);
+                    }
+                }, 3000);
+            } else {
+                cacheEvent = h5CloseEvents.get(0);
+                showAnswerQuestionAward(cacheEvent.getmGoldNum(), cacheEvent.getmEnergyNum());
+            }
+        } else {
             //为展示答题结果
-             h5CloseEvents.add(event);
-         }
+            if (event.isCloseByTeacher()) {
+                getEnergyNumAndContributionStar(event);
+            } else {
+                h5CloseEvents.add(event);
+            }
+        }
     }
 
 
     /**
      * 显示当前的pk 结果
      */
-    public void showCurrentPkResult(){
-        if(h5CloseEvents ==null || h5CloseEvents.size() == 0){
+    public void showCurrentPkResult() {
+        if (h5CloseEvents == null || h5CloseEvents.size() == 0) {
             return;
         }
         LiveRoomH5CloseEvent cacheEvent = h5CloseEvents.remove(0);
-        String testId = "";
-        String testPlan = "";
-        if (cacheEvent.getH5Type() == LiveRoomH5CloseEvent.H5_TYPE_EXAM) {
-            testPlan = cacheEvent.getId();
-        } else {
-            testId = cacheEvent.getId();
-        }
-        getEnergyNumAndContributionStar(testId, testPlan);
+        getEnergyNumAndContributionStar(cacheEvent);
     }
 
 

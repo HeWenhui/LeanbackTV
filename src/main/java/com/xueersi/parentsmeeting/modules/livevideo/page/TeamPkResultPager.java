@@ -5,27 +5,20 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -34,34 +27,24 @@ import android.widget.TextView;
 
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
-import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieImageAsset;
-import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SoundInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkResultLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ContributionLayoutManager;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.ContributionRankLayoutManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPKStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
 import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.uikit.SizeUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -94,11 +77,6 @@ public class TeamPkResultPager extends BasePager {
     private TextView tvAddEnergy;
     private TeamPkProgressBar tpbEnergyBar;
     private RecyclerView rclContributionRank;
-
-    private static final int ADAPTER_TYPE_CONTRIBUTION_RANK = 1; // 贡献之星
-    private static final int ADAPTER_TYPE_ALL = 2; // 贡献之星
-    private static final int TEXT_SIZE_NAME = 30;
-    private static final int TEXT_SIZE_SLOGAN = 40;
     private SoundPool soundPool;
     private HashMap<Integer, SoundInfo> mSoundInfoMap;
 
@@ -167,11 +145,6 @@ public class TeamPkResultPager extends BasePager {
 
 
     private void initRecycleView() {
-      /*  mContributions = new ArrayList<TeamEnergyAndContributionStarEntity.ContributionStar>();
-        rclContributionRank.setLayoutManager(new GridLayoutManager(mContext, 5,
-                LinearLayoutManager.VERTICAL, false));
-        pkResultAdapter = new PkResultAdapter(mContributions);
-        rclContributionRank.setAdapter(new PkResultAdapter(mContributions));*/
         mContributions = new ArrayList<TeamEnergyAndContributionStarEntity.ContributionStar>();
         layoutmanager = new ContributionLayoutManager(5);
         int itemWidth = rclContributionRank.getMeasuredWidth() / 5;

@@ -57,13 +57,22 @@
                         android:src="@drawable/live_video_teampk_team_logo"
                         />
 
+
                     <ImageView
                         android:layout_width="23dp"
                         android:layout_height="23dp"
                         android:layout_marginLeft="30dp"
-                        android:src="@drawable/live_video_teampk_yellow_headmask"
                         android:layout_marginTop="10dp"
                         android:id="@id/iv_teampk_pkresult_myteam_teacher_head"
+                        android:layout_below="@id/iv_teampk_pkresult_myteam_logo"
+                        />
+
+                    <ImageView
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/live_video_teampk_yellow_headmask"
                         android:layout_below="@id/iv_teampk_pkresult_myteam_logo"
                         />
                     
@@ -126,7 +135,6 @@
                     android:id="@id/iv_teampk_pkresult_otherteam_state"
                     />
 
-
                 <RelativeLayout
                     android:layout_width="133dp"
                     android:layout_height="193dp"
@@ -147,9 +155,17 @@
                         android:layout_width="23dp"
                         android:layout_height="23dp"
                         android:layout_marginLeft="30dp"
-                        android:src="@drawable/live_video_teampk_blue_headmask"
                         android:layout_marginTop="10dp"
                         android:id="@id/iv_teampk_pkresult_otherteam_teacher_head"
+                        android:layout_below="@id/iv_teampk_pkresult_otherteam_logo"
+                        />
+
+                    <ImageView
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/live_video_teampk_blue_headmask"
                         android:layout_below="@id/iv_teampk_pkresult_otherteam_logo"
                         />
 
@@ -202,8 +218,8 @@
             android:layout_below="@id/rl_teampk_pk_result"
             android:layout_alignLeft="@id/rl_teampk_pk_result"
             android:layout_alignRight="@id/rl_teampk_pk_result"
-            android:layout_marginTop="-20dp"
             android:id="@id/rl_teampk_pkresult_bottom_pb_container"
+            android:layout_marginTop="-8dp"
             >
 
           <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
@@ -211,7 +227,6 @@
               android:layout_height="wrap_content"
               android:textSize="16sp"
               android:text="3896"
-              android:layout_marginBottom="2dp"
               android:id="@id/tv_teampk_myteam_energy"
               android:textStyle="bold"
               android:layout_marginLeft="20dp"
@@ -225,7 +240,6 @@
                 android:layout_alignParentRight="true"
                 android:text="1461"
                 android:textColor="@color/white"
-                android:layout_marginBottom="2dp"
                 android:id="@id/tv_teampk_otherteam_energy"
                 android:textStyle="bold"
                 android:layout_marginRight="20dp"
@@ -238,7 +252,6 @@
                 android:id="@id/tv_teampk_myteam_add_energy"
                 android:layout_toRightOf="@id/tv_teampk_myteam_energy"
                 android:layout_marginLeft="10dp"
-                android:layout_marginBottom="3dp"
                 android:layout_alignBottom="@id/tv_teampk_myteam_energy"
                 android:textStyle="bold"
                 android:visibility="gone"
@@ -256,7 +269,7 @@
                 app:innerProgressBarHeight="5dp"
                 app:sliderHeader="@drawable/livevideo_tool_energy_img_disable"
                 app:sliderHeaderBg="@drawable/livevideo_slider_bg"
-                android:layout_marginTop="-30dp"
+                android:layout_marginTop="-35dp"
                 />
 
         </RelativeLayout>
@@ -264,7 +277,7 @@
            <android.support.v7.widget.RecyclerView
                android:layout_width="match_parent"
                android:layout_height="75dp"
-               android:layout_marginTop="-25dp"
+               android:layout_marginTop="-35dp"
                android:id="@id/rcl_teampk_pkresult_contribution_rank"
                android:layout_below="@id/rl_teampk_pkresult_bottom_pb_container"
                android:scrollbars="none"

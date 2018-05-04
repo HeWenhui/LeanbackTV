@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -830,7 +829,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
             });
             delayTime = 3000;
-            closePageByTeamPk();
+            closePageByTeamPk(questionWebPager);
         } else if (hasQuestion && !hasSubmit) {
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
             hasQuestion = false;
@@ -1019,7 +1018,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     curQuestionView = examQuestionPager;
                     examQuestionPager.examSubmitAll();
                     delayTime = 3000;
-                    closePageByTeamPk();
+                    closePageByTeamPk(examQuestionPager);
                 } else if (hasExam && !hasSubmit) {
                     getFullMarkList(XESCODE.EXAM_STOP, delayTime);
                     hasExam = false;
@@ -1042,20 +1041,19 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     /**
      * 战队pk答题结果页自动关闭
      */
-    private void closePageByTeamPk() {
-       // Log.e("QuestionBll","=======>closePageByTeamPk 1111:"+isTeamPkAllowed);
+    private void closePageByTeamPk(final BasePager pager) {
+        Loger.e("QuestionBll","=======>closePageByTeamPk 1111:"+isTeamPkAllowed+":"+isPageOnCloseing);
         if (isTeamPkAllowed) {
             if (mVPlayVideoControlHandler != null && !isPageOnCloseing) {
                 isPageOnCloseing = true;
                 mVPlayVideoControlHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                       // Log.e("QuestionBll","=======>closePageByTeamPk 2222:"+curQuestionView);
-                        if (curQuestionView != null) {
-                          //  Log.e("QuestionBll","=======>closePageByTeamPk 33333:"+curQuestionView);
-                            rlQuestionContent.removeView(curQuestionView.getRootView());
+                        Loger.e("QuestionBll","=======>closePageByTeamPk 2222:"+curQuestionView);
+                        if(pager != null){
+                            rlQuestionContent.removeView(pager.getRootView());
                         }
-                           isPageOnCloseing = false;
+                      isPageOnCloseing = false;
                     }
                 }, 6000);
             }
