@@ -27,6 +27,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     LiveBll liveBll;
     PlayerService vPlayer;
     ArrayList<String> frames = new ArrayList<>();
+    long frameStart;
     Activity activity;
     private PlayServerEntity.PlayserverEntity lastPlayserverEntity;
     /** 是不是开始统计 */
@@ -70,6 +71,9 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                     if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
                         IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
                         float fps = ijkMediaPlayer.getVideoDecodeFramesPerSecond();
+                        if (frames.isEmpty()) {
+                            frameStart = System.currentTimeMillis();
+                        }
                         if (lastFps != 0) {
                             frames.add("" + ((int) ((lastFps + lastFps) * 5 / 2)));
                         } else {
@@ -101,9 +105,11 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
             }
         }
         frames.clear();
+        long time = System.currentTimeMillis() - frameStart;
         StableLogHashMap stableLogHashMap = new StableLogHashMap("glsbSpeed");
         stableLogHashMap.put("activity", activity.getClass().getSimpleName());
         stableLogHashMap.put("method", method);
+        stableLogHashMap.put("time", "" + time);
         stableLogHashMap.put("message", "server: " + lastPlayserverEntity.getAddress() + " vdownload:" + vdownload);
         Loger.e(activity, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData(), true);
     }
@@ -121,7 +127,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     @Override
     public void onOpenStart() {
         super.onOpenStart();
-        handler.sendEmptyMessage(1);
+        handler.removeMessages(1);
     }
 
     @Override
