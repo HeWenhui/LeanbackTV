@@ -549,9 +549,9 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
             float screenRatio = (float) screenWidth / (float) screenHeight;
             int newWidth = screenWidth;
             int newHeight = screenHeight;
-            if (screenRatio > 16 / 9) {
+            if (screenRatio > (float) 16 / (float) 9) {
                 newHeight = (int) ((float) screenWidth * (float) bitmapH / (float) bitmapW);
-            } else if (screenRatio < 16 / 9) {
+            } else if (screenRatio < (float) 16 / (float) 9) {
                 newWidth = (int) ((float) screenHeight * (float) bitmapW / (float) bitmapH);
             }
             if (params.width != newWidth || params.height != newHeight) {
