@@ -726,7 +726,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             try {
                 String requestTime = mLiveBll.getGetInfo().getRequestTime();
                 long time = Long.parseLong(requestTime);
-                return time;
+                return time * 1000;
             } catch (Exception e) {
 
             }

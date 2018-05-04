@@ -66,7 +66,7 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
             try {
                 String requestTime = liveBll.getGetInfo().getRequestTime();
                 long time = Long.parseLong(requestTime);
-                return time;
+                return time * 1000;
             } catch (Exception e) {
 
             }
