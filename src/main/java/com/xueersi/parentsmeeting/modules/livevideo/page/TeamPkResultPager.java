@@ -385,6 +385,24 @@ public class TeamPkResultPager extends BasePager {
         }
     }
 
+
+
+    static class SoundPlayTask{
+        int soundType;
+        int resId;
+        float volume;
+        boolean loop;
+
+        public SoundPlayTask(int soundType, int resId, float volume, boolean loop) {
+            this.soundType = soundType;
+            this.resId = resId;
+            this.volume = volume;
+            this.loop = loop;
+        }
+    }
+
+    private List<SoundPlayTask>playTasks;
+    private boolean isSoundPoolbusy = false;
     /**
      * @param
      * @param resId
@@ -392,27 +410,50 @@ public class TeamPkResultPager extends BasePager {
      * @param loop
      */
     private void playMusic(final int soundType, int resId, final float volume, final boolean loop) {
+        if(playTasks == null){
+            playTasks = new ArrayList<SoundPlayTask>();
+        }
+        SoundPlayTask task = new SoundPlayTask(soundType,resId,volume,loop);
+        playTasks.add(task);
+        if(!isSoundPoolbusy){
+            playMusic(playTasks.remove(0));
+        }
+    }
+
+    private void playMusic(final SoundPlayTask task){
         if (soundPool == null) {
             soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
         }
-        if (mSoundInfoMap == null) {
+        if(mSoundInfoMap == null){
             mSoundInfoMap = new HashMap<Integer, SoundInfo>();
         }
-        soundPool.load(mContext, resId, 1);
-        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                int streamId = soundPool.play(sampleId, volume, volume, 0, loop ? -1 : 0, 1);
-                SoundInfo soundInfo = mSoundInfoMap.get(soundType);
-                if (soundInfo == null) {
-                    soundInfo = new SoundInfo(sampleId, streamId);
-                    mSoundInfoMap.put(soundType, soundInfo);
-                } else {
-                    soundInfo.setStreamId(streamId);
-                }
+        isSoundPoolbusy = true;
+        SoundInfo soundInfo = mSoundInfoMap.get(task.soundType);
+        if (soundInfo != null) {
+            int streamId = soundPool.play(soundInfo.getSoundId(), task.volume, task.volume, task.soundType, task.loop ? -1 : 0, 1);
+            soundInfo.setStreamId(streamId);
+            mSoundInfoMap.put(task.soundType, soundInfo);
+            isSoundPoolbusy = false;
+            if(playTasks.size() >0){
+                playMusic(playTasks.remove(0));
             }
-        });
+        } else {
+            int soundid = soundPool.load(mContext, task.resId, 1);
+            soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+                @Override
+                public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                    int streamId = soundPool.play(sampleId, task.volume, task.volume, 0, task.loop ? -1 : 0, 1);
+                    SoundInfo soundInfo = new SoundInfo(sampleId, streamId);
+                    mSoundInfoMap.put(task.soundType, soundInfo);
+                    isSoundPoolbusy = false;
+                    if(playTasks.size() >0){
+                        playMusic(playTasks.remove(0));
+                    }
+                }
+            });
+        }
     }
+
 
     @Override
     public void onDestroy() {

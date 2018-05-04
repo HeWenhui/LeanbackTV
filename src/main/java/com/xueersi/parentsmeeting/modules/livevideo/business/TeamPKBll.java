@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
-import android.app.usage.UsageEvents;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,9 +42,11 @@ import org.greenrobot.eventbus.ThreadMode;
 import okhttp3.Call;
 
 /**
- * Created by chenkun on 2018/4/12
+*
+*@author chekun
+*created  at 2018/4/12
  * 战队PK 相关业务处理
- */
+*/
 public class TeamPKBll {
     public static final String TEAMPK_URL_FIFTE = "http://addenergyandgold.com/";
     private static final int CHEST_TYPE_CLASS = 1; //开宝箱类型 班级宝箱列表
@@ -112,35 +113,6 @@ public class TeamPKBll {
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         mRootView.addView(rlTeamPkContent, params);
         showPkStateLayout();
-    /*   if(!isTeamSelected()){
-           getTeamInfo();
-       }*/
-        // test();
-    }
-
-
-    /**
-     * 测试相关接口
-     */
-    private void test() {
-        //getPkAdversary();
-        //getStuChest();
-        //getClassChestResult();
-        //showOpenBoxScene(false);
-        //showClassChest(false);
-        //showPkResult();
-        //showVoteEnergyAnim();
-        //测试 lottie 动画
-        TeamPkResultPager resultPager = new TeamPkResultPager(activity, this);
-        rlTeamPkContent.removeAllViews();
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        int screenWidth = ScreenUtils.getScreenWidth();
-        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
-        params.rightMargin = wradio;
-        rlTeamPkContent.addView(resultPager.getRootView(), params);
-
-        resultPager.showCurrentResult((TeamEnergyAndContributionStarEntity) null);
     }
 
     /**
