@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -24,12 +25,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.Top3FrameAnim;
 import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 
@@ -37,7 +37,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -47,7 +46,7 @@ public class RedPackagePage extends BasePager {
     private int operateId;
     private RedPackagePageAction redPackageAction;
     private ArrayList<GoldTeamStatus.Student> addStudents = new ArrayList<>();
-    private View rl_livevideo_redpackage_bg;
+    private ImageView rl_livevideo_redpackage_bg;
     private ImageView iv_livevideo_redpackage_bg;
     private RelativeLayout rl_livevideo_redpackage_teams;
     GoldTeamStatus goldTeamStatus;
@@ -95,6 +94,7 @@ public class RedPackagePage extends BasePager {
     public View initView() {
         mView = View.inflate(mContext, R.layout.dialog_live_stand_red_packet_view, null);
         rl_livevideo_redpackage_bg = mView.findViewById(R.id.rl_livevideo_redpackage_bg);
+        LayoutParamsUtil.setViewFullScreen(rl_livevideo_redpackage_bg);
         iv_livevideo_redpackage_bg = mView.findViewById(R.id.iv_livevideo_redpackage_bg);
         rl_livevideo_redpackage_teams = mView.findViewById(R.id.rl_livevideo_redpackage_teams);
         mView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
@@ -187,14 +187,15 @@ public class RedPackagePage extends BasePager {
                         if (click.get()) {
                             return;
                         }
+                        Loger.d(TAG, "onPackageClick(timeout):operateId=" + operateId);
                         iv_livevideo_redpackage_bg.setOnClickListener(null);
                         if (finalBtframeAnimation != null) {
                             finalBtframeAnimation.pauseAnimation();
                         }
-                        final FrameAnimation btframeAnimation1 = createFromAees(file6, false);
-                        frameAnimations.add(btframeAnimation1);
-                        btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
-                            FrameAnimation btframeAnimation1;
+                        final FrameAnimation btframeAnimationFile6 = createFromAees(file6, false);
+                        frameAnimations.add(btframeAnimationFile6);
+                        btframeAnimationFile6.setAnimationListener(new FrameAnimation.AnimationListener() {
+                            FrameAnimation btframeAnimationFile7;
 
                             @Override
                             public void onAnimationStart() {
@@ -202,10 +203,11 @@ public class RedPackagePage extends BasePager {
                                 iv_livevideo_redpackage_bg.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        Loger.d(TAG, "onPackageClick:operateId=" + operateId + "," + view.getTop() + "," + view);
+                                        Loger.d(TAG, "onPackageClick2:operateId=" + operateId + "," + view.getTop());
                                         iv_livevideo_redpackage_bg.setOnClickListener(null);
-                                        if (btframeAnimation1 != null) {
-                                            btframeAnimation1.pauseAnimation();
+                                        btframeAnimationFile6.pauseAnimation();
+                                        if (btframeAnimationFile7 != null) {
+                                            btframeAnimationFile7.pauseAnimation();
                                         }
                                         clickPackage = 2;
                                         redPackageAction.onPackageClick(operateId, clickPackage);
@@ -222,8 +224,8 @@ public class RedPackagePage extends BasePager {
                                 lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                                 lp.rightMargin = 40;
                                 iv_livevideo_redpackage_bg.setLayoutParams(lp);
-                                btframeAnimation1 = createFromAees(file7, true);
-                                frameAnimations.add(btframeAnimation1);
+                                btframeAnimationFile7 = createFromAees(file7, true);
+                                frameAnimations.add(btframeAnimationFile7);
                             }
 
                             @Override
@@ -239,6 +241,7 @@ public class RedPackagePage extends BasePager {
                         click.set(true);
                         RedPackageStandLog.sno2(liveAndBackDebug, "" + operateId);
                         iv_livevideo_redpackage_bg.setOnClickListener(null);
+                        Loger.d(TAG, "onPackageClick:operateId=" + operateId);
                         if (finalBtframeAnimation != null) {
                             finalBtframeAnimation.pauseAnimation();
                             iv_livevideo_redpackage_bg.postDelayed(new Runnable() {
@@ -260,8 +263,7 @@ public class RedPackagePage extends BasePager {
                             public void onAnimationEnd() {
                                 clickPackage = 1;
                                 redPackageAction.onPackageClick(operateId, clickPackage);
-                                rl_livevideo_redpackage_bg.setBackgroundColor(Color.TRANSPARENT);
-//                                redPackageAction.onPackageClose(operateId);
+                                rl_livevideo_redpackage_bg.setImageDrawable(new ColorDrawable(Color.TRANSPARENT));
                             }
 
                             @Override
@@ -401,7 +403,7 @@ public class RedPackagePage extends BasePager {
                 btframeAnimation2.setBitmapCreate(new FrameAnimation.BitmapCreate() {
                     @Override
                     public Bitmap onAnimationCreate(String file) {
-                        Loger.d(TAG, "onAnimationCreate:file=" + file);
+//                        Loger.d(TAG, "onAnimationCreate:file=" + file);
 //                        return headBitmap;
                         return initHeadAndGold(entity, file, btframeAnimation2, true);
                     }

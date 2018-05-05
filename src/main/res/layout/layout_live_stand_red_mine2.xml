@@ -2,39 +2,46 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView
-        android:id="@id/tv_livevideo_redpackage_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:includeFontPadding="false"
-        android:textColor="@color/COLOR_97091D"
-        android:textSize="16px"
-        android:textStyle="bold" />
-
     <RelativeLayout
+        android:id="@id/rl_livevideo_redpackage_team"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_livevideo_redpackage_name"
-        android:layout_centerHorizontal="true">
+        android:layout_centerInParent="true">
 
-        <ImageView
-            android:id="@id/iv_livevideo_redpackage_num"
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView
+            android:id="@id/tv_livevideo_redpackage_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:src="@drawable/bg_live_stand_red_gold_sma" />
-
-        <TextView
-            android:id="@id/tv_livevideo_redpackage_num"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/iv_livevideo_redpackage_num"
+            android:layout_centerHorizontal="true"
             android:includeFontPadding="false"
             android:textColor="@color/COLOR_97091D"
             android:textSize="16px"
             android:textStyle="bold" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_livevideo_redpackage_name"
+            android:layout_centerHorizontal="true">
+
+            <ImageView
+                android:id="@id/iv_livevideo_redpackage_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@drawable/bg_live_stand_red_gold_sma" />
+
+            <TextView
+                android:id="@id/tv_livevideo_redpackage_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/iv_livevideo_redpackage_num"
+                android:includeFontPadding="false"
+                android:textColor="@color/COLOR_97091D"
+                android:textSize="16px"
+                android:textStyle="bold" />
+        </RelativeLayout>
     </RelativeLayout>
 
 </RelativeLayout>

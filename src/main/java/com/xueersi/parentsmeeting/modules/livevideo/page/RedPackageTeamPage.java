@@ -335,21 +335,34 @@ public class RedPackageTeamPage extends BasePager {
                 tv_livevideo_redpackage_name.setText("" + entity.getShowName());
                 TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
                 tv_livevideo_redpackage_num.setText(gold);
-                if (!isMe) {
+                int width;
+                int height;
+                if (isMe) {
+                    width = 66;
+                    height = 44;
+                } else {
+                    width = 64;
+                    height = 44;
                     tv_livevideo_redpackage_name.setTextColor(0xff096D62);
                     tv_livevideo_redpackage_num.setTextColor(0xff096D62);
                 }
-                tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 14.5f);
-                tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 13.5f);
-                layout_live_stand_red_mine1.measure(canvasBitmap.getWidth(), canvasBitmap.getHeight());
-                layout_live_stand_red_mine1.layout(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight());
+                tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 13.5f);
+                tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 12.5f);
+
+                int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.AT_MOST);
+                int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.AT_MOST);
+                layout_live_stand_red_mine1.measure(widthMeasureSpec, heightMeasureSpec);
+                layout_live_stand_red_mine1.layout(0, 0, width, height);
 
                 canvas.save();
+                int measuredWidth = layout_live_stand_red_mine1.getMeasuredWidth();
+                int measuredHeight = layout_live_stand_red_mine1.getMeasuredHeight();
                 if (isMe) {
-                    canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 286);
+                    canvas.translate((canvasBitmap.getWidth() - measuredWidth) / 2, 286);
                 } else {
-                    canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 195);
+                    canvas.translate((canvasBitmap.getWidth() - measuredWidth) / 2, 193);
                 }
+//                Loger.d(TAG, "initTeamHeadAndGold:measuredWidth=" + measuredWidth + ",measuredHeight=" + measuredHeight);
                 layout_live_stand_red_mine1.draw(canvas);
                 canvas.restore();
             }

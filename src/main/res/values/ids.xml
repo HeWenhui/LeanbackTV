@@ -262,6 +262,7 @@
     <item name="iv_livevideo_redpackage_close" type="id" />
     <item name="tv_livevideo_redpackage_gold" type="id" />
     <item name="tv_livevideo_redpackage_autoclose" type="id" />
+    <item name="rl_livevideo_redpackage_team" type="id" />
     <item name="tv_livevideo_redpackage_name" type="id" />
     <item name="iv_livevideo_redpackage_num" type="id" />
     <item name="tv_livevideo_redpackage_num" type="id" />

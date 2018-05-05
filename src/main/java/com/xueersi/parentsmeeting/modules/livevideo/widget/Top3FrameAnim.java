@@ -214,7 +214,7 @@ public class Top3FrameAnim {
             float[] headWidth = {110f, 98f, 98f};
             int mid = bitmap.getWidth() / 2;
             float[][] headLeftAndRights = {{mid - 20, 296}, {mid - 200, 382}, {mid + 170, 398}};
-            float[] textTops = {408, 482, 498};
+            float[] textTops = {411, 484, 500};
             int[] textColors = {0xffD45F19, 0xff0C719B, 0xffD04715};
             int[] scalHeadWidth = new int[]{-1, -1, -1};
             for (int i = 0; i < students.size(); i++) {
@@ -341,11 +341,14 @@ public class Top3FrameAnim {
                     tv_livevideo_redpackage_name.setTextColor(textColors[i]);
                     tv_livevideo_redpackage_num.setTextColor(textColors[i]);
                     if (i == 0) {
-                        tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 22);
-                        tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 20);
+                        tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 17);
+                        tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 13);
+                    } else if (i == 1) {
+                        tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 17);
+                        tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 12);
                     } else {
-                        tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 18);
-                        tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 17);
+                        tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 16);
+                        tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 12);
                     }
                     int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(canvasBitmap.getWidth(), View.MeasureSpec.AT_MOST);
                     int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(canvasBitmap.getHeight(), View.MeasureSpec.AT_MOST);

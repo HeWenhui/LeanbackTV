@@ -509,7 +509,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //                    GoldTeamStatus.Student student = new GoldTeamStatus.Student();
 //                    student.setStuId("12345" + testid++);
 //                    student.setName(student.getStuId());
-//                    student.setNickname("测试" + testid++);
+//                    student.setNickname("测试测试" + testid++);
+//                    if (i % 2 == 0) {
+//                        student.setEn_name("rrrrrrrr...");
+//                    }
 //                    student.createShowName();
 //                    student.setGold("1" + i);
 //                    student.setAvatar_path(headUrl);

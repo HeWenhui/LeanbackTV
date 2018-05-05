@@ -318,7 +318,12 @@ public class FrameAnimation {
                 final String file = files[i];
                 Bitmap bitmap = bitmapHashMap.get(file);
                 if (bitmap != null) {
-                    mView.setBackgroundDrawable(new FrameBitmapDrawable(bitmap, mView, file, i));
+                    if (mView instanceof ImageView) {
+                        ImageView imageView = (ImageView) mView;
+                        imageView.setImageDrawable(new FrameBitmapDrawable(bitmap, mView, file, i));
+                    } else {
+                        mView.setBackgroundDrawable(new FrameBitmapDrawable(bitmap, mView, file, i));
+                    }
                     if (i == mLastFrame) {
                         if (mIsRepeat) {
                             if (mAnimationListener != null) {
@@ -380,7 +385,13 @@ public class FrameAnimation {
                                                 finalBitmap.recycle();
                                                 return;
                                             }
-                                            mView.setBackgroundDrawable(new FrameBitmapDrawable(finalBitmap, mView, file, i));
+//                                            mView.setBackgroundDrawable(new FrameBitmapDrawable(finalBitmap, mView, file, i));
+                                            if (mView instanceof ImageView) {
+                                                ImageView imageView = (ImageView) mView;
+                                                imageView.setImageDrawable(new FrameBitmapDrawable(finalBitmap, mView, file, i));
+                                            } else {
+                                                mView.setBackgroundDrawable(new FrameBitmapDrawable(finalBitmap, mView, file, i));
+                                            }
                                             if (!mIsRepeat || !mCache) {
                                                 if (i > 0) {
                                                     mView.post(new Runnable() {
