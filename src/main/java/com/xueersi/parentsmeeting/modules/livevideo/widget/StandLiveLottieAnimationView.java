@@ -50,7 +50,6 @@ public class StandLiveLottieAnimationView extends LottieAnimationView {
         Bitmap img_7Bitmap;
         try {
             img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/jindu/img_9.png"));
-            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/jindu/img_3.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
             canvas.drawBitmap(img_7Bitmap, 0, 0, null);
@@ -60,7 +59,8 @@ public class StandLiveLottieAnimationView extends LottieAnimationView {
             paint.setAntiAlias(true);
             paint.setColor(Color.WHITE);
             float width = paint.measureText(num);
-            canvas.drawText(num, (img_7Bitmap.getWidth() - img_3Bitmap.getWidth() / 2) / 2 + img_3Bitmap.getWidth() / 2 - width / 2, img_7Bitmap.getHeight() / 2 + paint.measureText("a") / 2, paint);
+//            canvas.drawText(num, (img_7Bitmap.getWidth() - img_3Bitmap.getWidth() / 2) / 2 + img_3Bitmap.getWidth() / 2 - width / 2, img_7Bitmap.getHeight() / 2 + paint.measureText("a") / 2, paint);
+            canvas.drawText(num, img_7Bitmap.getWidth() - width - 20, img_7Bitmap.getHeight() / 2 + paint.measureText("a") / 2, paint);
 //                    canvas.drawRect(img_9Bitmap.getWidth()/2, 0, img_3Bitmap.getWidth(), img_3Bitmap.getHeight(), paint);
             img_7Bitmap = creatBitmap;
         } catch (IOException e) {
@@ -86,7 +86,11 @@ public class StandLiveLottieAnimationView extends LottieAnimationView {
             Canvas canvas = new Canvas(creatBitmap);
             canvas.drawBitmap(img_7Bitmap, 0, 0, null);
             Paint paint = new Paint();
-            paint.setTextSize(24);
+            if (num.length() < 3) {
+                paint.setTextSize(24);
+            } else {
+                paint.setTextSize(22);
+            }
             paint.setTypeface(fontFace);
             paint.setAntiAlias(true);
             paint.setColor(0xff8C4302);
