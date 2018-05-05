@@ -2,6 +2,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <Button
+        android:id="@id/bt_livevideo_message_open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/bg_livevideo_message_open" />
+
     <RelativeLayout
         android:id="@id/rl_live_stand_message_content"
         android:layout_width="match_parent"
@@ -178,13 +186,5 @@
         android:id="@id/lav_livevideo_chievement"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <Button
-        android:id="@id/bt_livevideo_message_open"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/bg_livevideo_message_open" />
 
 </RelativeLayout>
