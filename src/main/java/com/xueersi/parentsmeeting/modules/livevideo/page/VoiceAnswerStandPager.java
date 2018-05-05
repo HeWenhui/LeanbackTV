@@ -1037,7 +1037,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 canvas.drawBitmap(headBack, 0, 0, null);
                 String name = student.getShowName();
                 Paint paint = new Paint();
-                paint.setTextSize(20);
+                paint.setTextSize(22);
                 if (isMe) {
                     paint.setColor(Color.WHITE);
                 } else {

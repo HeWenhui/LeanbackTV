@@ -153,7 +153,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 if (mVSectionID.equals(vSectionID)) {
                     String url = jsonObject.optString("url");
                     if (!StringUtils.isSpace(url)) {
-//                        mH5AndBool.add(url);
+                        mH5AndBool.add(url);
                     }
                 }
             }

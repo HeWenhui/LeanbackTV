@@ -15,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -753,17 +754,25 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
                 ImageView iv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.iv_livevideo_redpackage_num);
                 tv_livevideo_redpackage_num.setText(strGold);
-                tv_livevideo_redpackage_name.setTextSize(14.5f);
-                tv_livevideo_redpackage_num.setTextSize(12.5f);
+                tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 23f);
+                tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 18f);
                 tv_livevideo_redpackage_name.setTextColor(0xff97091D);
                 tv_livevideo_redpackage_num.setTextColor(0xff97091D);
                 tv_livevideo_redpackage_name.setTypeface(fontFace);
                 iv_livevideo_redpackage_num.setImageResource(R.drawable.bg_live_stand_red_gold_big);
-                layout_live_stand_red_mine1.measure(canvasBitmap.getWidth(), canvasBitmap.getHeight());
-                layout_live_stand_red_mine1.layout(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight());
+                int width = 122;
+                int height = 72;
+                int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
+                int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
+                layout_live_stand_red_mine1.measure(widthMeasureSpec, heightMeasureSpec);
+                layout_live_stand_red_mine1.layout(0, 0, width, height);
 
                 canvas.save();
-                canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 345);
+                int measuredWidth = layout_live_stand_red_mine1.getMeasuredWidth();
+                int measuredHeight = layout_live_stand_red_mine1.getMeasuredHeight();
+//                canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 345 + (height - measuredHeight) / 2);
+                canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 348);
+//                Loger.d(TAG, "updateHead:measuredWidth=" + measuredWidth + ",measuredHeight=" + measuredHeight);
                 layout_live_stand_red_mine1.draw(canvas);
                 canvas.restore();
             }
@@ -1269,7 +1278,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 canvas.drawBitmap(headBack, 0, 0, null);
                 String name = student.getShowName();
                 Paint paint = new Paint();
-                paint.setTextSize(20);
+                paint.setTextSize(22);
                 paint.setTypeface(fontFace);
                 if (isMe) {
                     paint.setColor(Color.WHITE);

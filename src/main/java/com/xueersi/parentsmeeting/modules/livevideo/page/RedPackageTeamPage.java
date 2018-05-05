@@ -339,18 +339,18 @@ public class RedPackageTeamPage extends BasePager {
                 int height;
                 if (isMe) {
                     width = 66;
-                    height = 44;
+                    height = 42;
                 } else {
                     width = 64;
-                    height = 44;
+                    height = 40;
                     tv_livevideo_redpackage_name.setTextColor(0xff096D62);
                     tv_livevideo_redpackage_num.setTextColor(0xff096D62);
                 }
                 tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 13.5f);
                 tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 12.5f);
 
-                int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.AT_MOST);
-                int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.AT_MOST);
+                int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
+                int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
                 layout_live_stand_red_mine1.measure(widthMeasureSpec, heightMeasureSpec);
                 layout_live_stand_red_mine1.layout(0, 0, width, height);
 
