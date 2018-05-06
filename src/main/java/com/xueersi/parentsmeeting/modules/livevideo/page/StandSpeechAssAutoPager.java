@@ -49,6 +49,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.FontCache;
+import com.xueersi.parentsmeeting.modules.livevideo.util.TextStrokeUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView;
@@ -1361,36 +1362,19 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/voice_answer/team_right/img_0.png"));
                 Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(creatBitmap);
-                Paint paintInner = new Paint();
-                paintInner.setTextSize(25);
-                paintInner.setColor(0xffFE5C03);
-                paintInner.setTypeface(fontFace);
-
-                Paint paintOut = new Paint();
-                paintOut.setStyle(Paint.Style.STROKE);
-                paintOut.setTextSize(25);
-                paintOut.setStrokeWidth(3);
-                paintOut.setColor(0xffffffff);
-                paintOut.setTypeface(fontFace);
-
-                float widthOut = paintOut.measureText(text);
-
-                float x = (creatBitmap.getWidth() - widthOut) / 2;
-                float y = (creatBitmap.getHeight() + paintOut.measureText("a")) / 2;
-                Paint mPaint = paintOut;
-                int strokeSize = 3;
-                if (strokeSize > 0 && strokeSize < 4) {
-                    canvas.drawText(text, x, y - strokeSize, mPaint);
-                    canvas.drawText(text, x, y + strokeSize, mPaint);
-                    canvas.drawText(text, x + strokeSize, y, mPaint);
-                    canvas.drawText(text, x + strokeSize, y + strokeSize, mPaint);
-                    canvas.drawText(text, x + strokeSize, y - strokeSize, mPaint);
-                    canvas.drawText(text, x - strokeSize, y, mPaint);
-                    canvas.drawText(text, x - strokeSize, y + strokeSize, mPaint);
-                    canvas.drawText(text, x - strokeSize, y - strokeSize, mPaint);
-                    canvas.drawText(text, x, y, paintInner);
+                int textColor;
+                if (isMe) {
+                    textColor = 0xffF3057D;
+                } else {
+                    textColor = 0xffD05D5D;
                 }
-
+                float textSize = 30;
+                int strokeColor = Color.WHITE;
+                Bitmap textStrokeBitmap = TextStrokeUtil.createTextStroke(score, fontFace, textSize, textColor, 4, strokeColor);
+                int x = (creatBitmap.getWidth() - textStrokeBitmap.getWidth()) / 2;
+                int y = (creatBitmap.getHeight() - textStrokeBitmap.getHeight()) / 2;
+                canvas.drawBitmap(textStrokeBitmap, x, y, null);
+                textStrokeBitmap.recycle();
                 img_7Bitmap.recycle();
                 img_7Bitmap = creatBitmap;
             } catch (IOException e) {

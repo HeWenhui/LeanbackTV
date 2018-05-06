@@ -81,6 +81,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -679,11 +680,12 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 callBack.onDataSucess(entity);
 //                if (AppConfig.DEBUG) {
 //                    GoldTeamStatus entity = new GoldTeamStatus();
+//                    Random random = new Random();
 //                    for (int i = 0; i < 5; i++) {
 //                        GoldTeamStatus.Student student = new GoldTeamStatus.Student();
-//                        student.setNickname("王爽" + (test1++));
+//                        student.setNickname("测试" + (test1++));
 //                        student.createShowName();
-//                        student.setScore("90");
+//                        student.setScore("" + random.nextInt(101));
 //                        student.setAvatar_path(mGetInfo.getHeadImgPath());
 //                        entity.getStudents().add(student);
 //                    }
