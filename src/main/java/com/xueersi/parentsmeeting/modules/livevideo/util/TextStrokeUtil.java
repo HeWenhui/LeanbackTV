@@ -24,14 +24,10 @@ public class TextStrokeUtil {
         paintOut2.setFakeBoldText(true);
 
         float widthOut = paintOut2.measureText(num) + stroke * 2;
-        float heightOut = -paintOut2.ascent() + paintOut2.descent();
-
-        Rect mRect = new Rect();
-        paintOut2.getTextBounds(num, 0, num.length(), mRect);
-        int w = mRect.right - mRect.left;
+        float heightOut = PaintTextUtil.getTextHeitht(paintOut2);
 
         float textHeight = heightOut + stroke * 2;
-        int baseline = (int) ((textHeight - (paintOut2.descent() - paintOut2.ascent())) / 2 - paintOut2.ascent());
+        int baseline = PaintTextUtil.getBaseline(textHeight, paintOut2);
 
         int x, y;
 
