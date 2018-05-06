@@ -485,14 +485,16 @@ public class RedPackagePage extends BasePager {
                 tv_livevideo_redpackage_name.setText(userName + "");
                 TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id.tv_livevideo_redpackage_num);
                 tv_livevideo_redpackage_num.setText(gold);
-                tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 13.5f);
-                tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 13f);
-                int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(canvasBitmap.getWidth(), View.MeasureSpec.AT_MOST);
-                int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(canvasBitmap.getHeight(), View.MeasureSpec.AT_MOST);
+                tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 11f);
+                tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 10f);
+                int width = 52;
+                int height = 32;
+                int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
+                int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
                 layout_live_stand_red_mine1.measure(widthMeasureSpec, heightMeasureSpec);
-                layout_live_stand_red_mine1.layout(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight());
+                layout_live_stand_red_mine1.layout(0, 0, width, height);
                 canvas.save();
-                canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 160);
+                canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 162);
                 layout_live_stand_red_mine1.draw(canvas);
                 canvas.restore();
             }
