@@ -12,6 +12,7 @@ import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.Top3FrameAnim;
 
@@ -44,6 +45,7 @@ public class StandSpeechTop3Pager extends BasePager {
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_live_stand_speecheval_top3, null);
         iv_livevideo_speecteval_result_top3 = mView.findViewById(R.id.iv_livevideo_speecteval_result_top3);
+        LayoutParamsUtil.setViewFullScreen(iv_livevideo_speecteval_result_top3);
         return mView;
     }
 
