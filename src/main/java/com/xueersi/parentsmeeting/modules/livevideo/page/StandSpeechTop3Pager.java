@@ -38,7 +38,6 @@ public class StandSpeechTop3Pager extends BasePager {
         this.entity = entity;
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
-        initData();
     }
 
     @Override

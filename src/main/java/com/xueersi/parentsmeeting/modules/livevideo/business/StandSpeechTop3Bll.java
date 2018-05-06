@@ -53,7 +53,7 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
                             entity = (GoldTeamStatus) objData[0];
                             entity.setId(num);
                             goldTeamStatusHashMap.put(num, entity);
-                            Loger.d(TAG, "getSpeechEvalAnswerTeamRank:stop=" + stop);
+                            logToFile.d("getSpeechEvalAnswerTeamRank:num=" + num + ",stop=" + stop + ",entity=" + entity.getStudents().size());
                             if (stop) {
                                 onStopSpeech(speechAssessmentPager, num, null);
                             }
@@ -76,7 +76,7 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
                             entity = (GoldTeamStatus) objData[0];
                             entity.setId(num);
                             goldTeamStatusHashMap.put(num, entity);
-                            Loger.d(TAG, "getRolePlayAnswerTeamRank:stop=" + stop);
+                            logToFile.d("getRolePlayAnswerTeamRank:num=" + num + ",stop=" + stop + ",entity=" + entity.getStudents().size());
                             if (stop) {
                                 onStopSpeech(speechAssessmentPager, num, null);
                             }
@@ -132,6 +132,7 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
         }
         standSpeechTop3Pager = new StandSpeechTop3Pager(bottomContent.getContext(), entity);
         standSpeechTop3Pager.setId(num);
+        standSpeechTop3Pager.initData();
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         bottomContent.addView(standSpeechTop3Pager.getRootView(), lp);
         StandSpeechTop3Bll.this.entity = null;

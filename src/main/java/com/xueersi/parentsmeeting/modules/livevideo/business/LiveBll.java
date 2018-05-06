@@ -3488,7 +3488,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mHttpManager.getRolePlayAnswerTeamRank(testId, new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Loger.d(TAG, "getRolePlayAnswerTeamRank:responseEntity=" + responseEntity.getJsonObject());
+                mLogtf.d("getRolePlayAnswerTeamRank:responseEntity=" + responseEntity.getJsonObject());
                 GoldTeamStatus entity = mHttpResponseParser.parseRolePlayTeamRank(responseEntity, mGetInfo);
                 callBack.onDataSucess(entity);
             }
