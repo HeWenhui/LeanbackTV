@@ -75,7 +75,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                             frameStart = System.currentTimeMillis();
                         }
                         if (lastFps != 0) {
-                            frames.add("" + ((int) ((lastFps + lastFps) * 5 / 2)));
+                            frames.add("" + ((int) ((lastFps + fps) * 5 / 2)));
                         } else {
                             frames.add("" + ((int) (fps * 5)));
                         }
@@ -93,7 +93,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     };
 
     private void send(String method) {
-        Loger.d(TAG, "send:frames=" + frames.size());
+        Loger.d(TAG, "send:method=" + method + ",frames=" + frames.size());
         if (frames.isEmpty()) {
             return;
         }
