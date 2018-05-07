@@ -824,5 +824,6 @@ public class LiveRemarkBll {
         if(mTimer!=null){
             mTimer.cancel();
         }
+        setVideoReady(false);
     }
 }
