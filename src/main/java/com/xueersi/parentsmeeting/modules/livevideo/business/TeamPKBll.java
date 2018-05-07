@@ -193,6 +193,7 @@ public class TeamPKBll {
         }
         Loger.e("TeamPkBll","======>getEnergyNumAndContributionStar: called:"+testId+":"+testPlan);
 
+
         mHttpManager.teamEnergyNumAndContributionStar(mLiveBll.getLiveId(),
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), testId, testPlan, new HttpCallBack() {
