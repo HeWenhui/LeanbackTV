@@ -186,6 +186,9 @@ public class LiveRemarkBll {
         mCloudUploadBusiness = new XesCloudUploadBusiness(mContext);
     }
     private void setVideoOffset(long time){
+        if(mPlayerService.getPlayer()==null){
+            return;
+        }
         FrameInfo frameInfo = ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo();
         if(time==0) {
             offSet = System.currentTimeMillis() / 1000 + sysTimeOffset - frameInfo.pkt / 1000;
@@ -815,5 +818,10 @@ public class LiveRemarkBll {
         HashMap<String, String> map = new HashMap<>();
         map.put("logtype", "clickMarkDelete");
         mLiveAndBackDebug.umsAgentDebugInter("replay_mark", map);
+    }
+    public void onPause(){
+        if(mTimer!=null){
+            mTimer.cancel();
+        }
     }
 }

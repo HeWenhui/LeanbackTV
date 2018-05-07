@@ -617,6 +617,9 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                 }
             }.start();
         }
+        if(liveRemarkBll!=null){
+            liveRemarkBll.onPause();
+        }
     }
 
     @Override
