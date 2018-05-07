@@ -245,7 +245,9 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mEntity.getLstRoleInfo().size() > 0 && mEntity.getLstRolePlayerMessage().size() > 0) {
+                List<RolePlayerEntity.RolePlayerHead> rolePlayerHeads = mEntity.getLstRoleInfo();
+                List<RolePlayerEntity.RolePlayerMessage> rolePlayerMessages =  mEntity.getLstRolePlayerMessage();
+                if (rolePlayerHeads != null && rolePlayerHeads.size() > 0 &&  rolePlayerMessages != null && rolePlayerMessages.size() > 0) {
                     rlMatchLottie.setVisibility(View.GONE);
                     rlMatchRoleList.setVisibility(View.VISIBLE);
                     roleConfirmPage(); //确定角色开始RolePlayer
