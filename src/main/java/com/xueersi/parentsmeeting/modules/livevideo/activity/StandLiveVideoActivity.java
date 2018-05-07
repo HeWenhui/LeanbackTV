@@ -112,7 +112,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  *
  * @author linyuqiang
  */
-public class StandLiveVideoActivity extends LiveVideoActivityBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest {
+public class StandLiveVideoActivity extends LiveActivityBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest {
 
     private String TAG = "StandLiveVideoActivity";
 
@@ -1268,6 +1268,7 @@ public class StandLiveVideoActivity extends LiveVideoActivityBase implements Vid
      *
      * @param modechange
      */
+    @Override
     public void rePlay(boolean modechange) {
         if (mLiveBll.getGetInfo() == null) {//上次初始化尚未完成
             return;
