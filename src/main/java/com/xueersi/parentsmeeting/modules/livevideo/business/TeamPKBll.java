@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkTeamSelectPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkTeamSelectingPager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPKStateLayout;
+import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 import java.io.IOException;
@@ -190,6 +191,8 @@ public class TeamPKBll {
         } else {
             testId = event.getId();
         }
+        Loger.e("TeamPkBll","======>getEnergyNumAndContributionStar: called:"+testId+":"+testPlan);
+
         mHttpManager.teamEnergyNumAndContributionStar(mLiveBll.getLiveId(),
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), testId, testPlan, new HttpCallBack() {
@@ -576,6 +579,7 @@ public class TeamPKBll {
         if (h5CloseEvents == null || h5CloseEvents.size() == 0) {
             return;
         }
+        Loger.e("TeamPkBll","======>showCurrentPkResult: called");
         LiveRoomH5CloseEvent cacheEvent = h5CloseEvents.remove(0);
         getEnergyNumAndContributionStar(cacheEvent);
     }

@@ -1398,7 +1398,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 
                 if (jsonObject.has("teacherInfo")) {
                     JSONObject teacherInfoJsonObj = jsonObject.getJSONObject("teacherInfo");
-                    resultInfo.setTeamName(teacherInfoJsonObj.getString("teacherName"));
+                    resultInfo.setTeacherName(teacherInfoJsonObj.getString("teacherName"));
                     resultInfo.setTeacherImg(teacherInfoJsonObj.getString("teacherImg"));
                 }
                 entity.setMyTeamResultInfo(resultInfo);
@@ -1421,7 +1421,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 
                 if (jsonObject.has("teacherInfo")) {
                     JSONObject teacherInfoJsonObj = jsonObject.getJSONObject("teacherInfo");
-                    resultInfo.setTeamName(teacherInfoJsonObj.getString("teacherName"));
+                    resultInfo.setTeacherName(teacherInfoJsonObj.getString("teacherName"));
                     resultInfo.setTeacherImg(teacherInfoJsonObj.getString("teacherImg"));
                 }
                 entity.setCompetitorResultInfo(resultInfo);

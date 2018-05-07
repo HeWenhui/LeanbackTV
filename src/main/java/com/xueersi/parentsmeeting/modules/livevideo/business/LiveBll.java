@@ -1281,6 +1281,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
                         if(mTeamPKBll != null){
                             mTeamPKBll.showCurrentPkResult();
+                            Loger.e("TeamPkBll","======>showCurrentPkResult: called in STOPQUESTION");
                         }
 //                        getStuGoldCount();
                         break;
@@ -1494,6 +1495,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
                         if(mTeamPKBll != null){
                             mTeamPKBll.showCurrentPkResult();
+                            Loger.e("TeamPkBll","======>showCurrentPkResult: called in EXAM_STOP");
                         }
                     }
                     break;
@@ -1555,6 +1557,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 }
                                 if(mTeamPKBll != null){
                                     mTeamPKBll.showCurrentPkResult();
+                                    if(mTeamPKBll != null){
+                                        mTeamPKBll.showCurrentPkResult();
+                                        Loger.e("TeamPkBll","======>showCurrentPkResult: called in ENGLISH_H5_COURSEWARE");
+                                    }
                                 }
                             }
                             englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
