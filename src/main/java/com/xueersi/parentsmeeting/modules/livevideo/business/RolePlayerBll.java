@@ -147,7 +147,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     @Override
     public void teacherPushTest(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
-        //拉取试题
+        //拉取试题a
         requestTestInfos();
         mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this);
         mRolePlayerPager.initData();
