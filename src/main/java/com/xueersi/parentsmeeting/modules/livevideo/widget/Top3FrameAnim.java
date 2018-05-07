@@ -343,17 +343,17 @@ public class Top3FrameAnim {
                     int width;
                     int height;
                     if (i == 0) {
-                        width = 66;
+                        width = 92;
                         height = 52;
                         tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 17);
                         tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 13);
                     } else if (i == 1) {
-                        width = 66;
+                        width = 86;
                         height = 50;
                         tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 17);
                         tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 12);
                     } else {
-                        width = 66;
+                        width = 86;
                         height = 50;
                         tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 16);
                         tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 12);
