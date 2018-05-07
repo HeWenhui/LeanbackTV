@@ -268,9 +268,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setTotalOpeningLength(totalOpeningLength);
             getInfo.setPattern(data.optInt("pattern", 1));
             //解析学科id
-            String strSubjIds = data.getString("subject_ids");
-            String[] arrSubjIds = strSubjIds.split(",");
-            getInfo.setSubjectIds(arrSubjIds);
+            if(data.has("subject_ids")){
+                String strSubjIds = data.getString("subject_ids");
+                String[] arrSubjIds = strSubjIds.split(",");
+                getInfo.setSubjectIds(arrSubjIds);
+            }
             return getInfo;
         } catch (JSONException e) {
             Loger.e(TAG, "parseLiveGetInfo", e);
