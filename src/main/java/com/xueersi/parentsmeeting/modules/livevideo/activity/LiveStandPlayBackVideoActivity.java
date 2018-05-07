@@ -1571,13 +1571,15 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                         if (answerReslut != null) {
                             Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 14, 14, mQuestionEntity);
                             mPlayVideoControlHandler.sendMessage(msg);
-                            answerReslut.onAnswerReslut(questionEntity, entity);
                             seekTo(questionEntity.getvEndTime() * 1000);
                             start();
                         }
                         questionViewGone("sendQuestionResultVoice");
                     }
                 }, 2200);
+                if (answerReslut != null) {
+                    answerReslut.onAnswerReslut(questionEntity, entity);
+                }
                 if (voiceAnswerPager != null) {
                     stopVoiceAnswerPager();
                 }
