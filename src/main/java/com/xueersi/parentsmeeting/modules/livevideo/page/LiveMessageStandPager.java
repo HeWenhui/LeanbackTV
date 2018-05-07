@@ -225,7 +225,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     private void initBtMesOpenAnimation() {
         if (lvMessage.getVisibility() == View.GONE) {
             btMesOpenAnimation = FrameAnimation.createFromAees(mContext, btMesOpen, "live_stand/frame_anim/openmsg", 50, false);
-//            btMesOpenAnimation.setDensity((int) (FrameAnimation.DEFAULT_DENSITY * (FrameAnimation.IMAGE_HEIGHT / (float) ScreenUtils.getScreenHeight())));
+            btMesOpenAnimation.setDensity(FrameAnimation.DEFAULT_DENSITY);
 //            btMesOpenAnimation.restartAnimation();
             btMesOpenAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
                 @Override
