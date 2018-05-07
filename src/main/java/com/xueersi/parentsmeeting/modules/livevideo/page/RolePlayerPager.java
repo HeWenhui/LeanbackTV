@@ -222,8 +222,10 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
 
             @Override
             public void onViewDetachedFromWindow(View view) {
+                Loger.i("RolePlayerDemoTest", "离开连麦界面");
                 mReadHandler.removeMessages(READ_MESSAGE);
                 mRolePlayBll.realease();
+
             }
         });
         return view;
@@ -333,7 +335,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         lvReadList.setVisibility(View.VISIBLE);
 
         vHead = new View(mContext);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SizeUtils.Dp2Px(mContext, 50));
+        //修改类型转换异常
+        ListView.LayoutParams lp = new ListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SizeUtils.Dp2Px(mContext, 50));
         vHead.setLayoutParams(lp);
         lvReadList.addFooterView(vHead);
 
@@ -381,8 +384,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                             upMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY);
                         }
                         if (upMessage.getRolePlayer().isSelfRole()) {
-                            //自己朗读完毕
-                            mRolePlayBll.selfReadEnd(upMessage.getStars(), upMessage.getSpeechScore(), upMessage.getFluency(), upMessage.getAccuracy(), upMessage.getPosition());
+                            //自己朗读完毕，只通知除自己以外的其他组内成员
+                            mRolePlayBll.selfReadEnd(upMessage.getStars(), upMessage.getSpeechScore(), upMessage.getFluency(), upMessage.getAccuracy(), upMessage.getPosition(),mEntity,upMessage.getRolePlayer().getRoleId());
                         }
                         mRolePlayerAdapter.updataSingleRow(lvReadList, upMessage);
 
@@ -413,7 +416,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 RolePlayerEntity.RolePlayerMessage currentMessage = mEntity.getLstRolePlayerMessage().get(mCurrentReadIndex);
                 currentMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY);
                 mRolePlayerAdapter.updataSingleRow(lvReadList, currentMessage);
-                speechReadMessage(currentMessage);
+                speechReadMessage(currentMessage,mEntity);
 
                 mCurrentReadIndex++;
                 Message temp = mReadHandler.obtainMessage();
@@ -571,9 +574,10 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      * 进入自己朗读评测
      *
      * @param message
+     * @param entity
      */
 
-    private void speechReadMessage(final RolePlayerEntity.RolePlayerMessage message) {
+    private void speechReadMessage(final RolePlayerEntity.RolePlayerMessage message, final RolePlayerEntity entity) {
         if (!message.getRolePlayer().isSelfRole()) {
             //对方朗读则隐藏
             rlSpeechVolumnMain.setVisibility(View.INVISIBLE);
@@ -607,7 +611,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                             message.setAccuracy(resultEntity.getPronScore());
                             message.setWebVoiceUrl(saveVideoFile.getAbsolutePath());
                             message.setLevel(resultEntity.getLevel());
-                            mRolePlayBll.uploadFileToAliCloud(saveVideoFile.getAbsolutePath(), message);
+                            //上传自己读完的语句，只通知除了自己以外的其他组内成员
+                            mRolePlayBll.uploadFileToAliCloud(saveVideoFile.getAbsolutePath(), message,entity,message.getRolePlayer().getRoleId());
                             XESToastUtils.showToast(mContext, resultEntity.getScore() + "");
                             //提前开始下一条
                             nextReadMessage();

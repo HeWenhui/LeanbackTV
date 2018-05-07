@@ -37,7 +37,9 @@ public class WorkerThread extends Thread {
 
     private static final int ACTION_WORKER_PREVIEW = 0X2014;
 
-    /** 是否使用自采集音频 */
+    /**
+     * 是否使用自采集音频
+     */
     private boolean isExternalAudio;
     private OnEngineCreate onEngineCreate;
 
@@ -179,7 +181,8 @@ public class WorkerThread extends Thread {
         }
         int joinChannel = mRtcEngine.joinChannel(null, channel, "OpenLive", uid);
         onJoinChannel.onJoinChannel(joinChannel);
-        Loger.d(TAG, "joinChannel:channelKey=" + channelKey + ",channel=" + channel + ",uid=" + uid + ",joinChannel=" + joinChannel);
+        Loger.d(TAG, "joinChannel:channelKey=" + channelKey + ",channel=" + channel + ",uid=" + uid + ",joinChannel="
+                + joinChannel);
         mEngineConfig.mChannel = channel;
 
         enablePreProcessor();
@@ -187,7 +190,7 @@ public class WorkerThread extends Thread {
     }
 
     public final void leaveChannel(String channel, OnLevelChannel onLevelChannel) {
-        if (Thread.currentThread() != this) {
+        if (Thread.currentThread() != this && mWorkerHandler != null) {
             Loger.w(TAG, "leaveChannel() - worker thread asynchronously " + channel);
             Message envelop = new Message();
             envelop.what = ACTION_WORKER_LEAVE_CHANNEL;

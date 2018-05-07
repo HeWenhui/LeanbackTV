@@ -23,6 +23,7 @@ import com.xueersi.xesalib.utils.app.ContextManager;
 import com.xueersi.xesalib.utils.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.xesalib.utils.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.xesalib.utils.listener.OnAlphaTouchListener;
+import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
 
@@ -32,27 +33,41 @@ import com.xueersi.xesalib.utils.uikit.SizeUtils;
  * @author ZouHao
  */
 public class RolePlayerSelfItem extends RolePlayerItem {
-    /** 头像 */
+    /**
+     * 头像
+     */
     private CountDownHeadImageView civUserHead;
 
-    /** 用户的昵称 */
+    /**
+     * 用户的昵称
+     */
     private TextView tvUserNickName;
 
-    /** 表示语音播放状态的背景动画 */
+    /**
+     * 表示语音播放状态的背景动画
+     */
     private ImageView ivVoiceAnimtor;
 
-    /** 语音主体界面 */
+    /**
+     * 语音主体界面
+     */
     private View vVoiceMain;
 
-    /** 语音的内容 */
+    /**
+     * 语音的内容
+     */
     private TextView tvMessageContent;
 
     private TextView tvCountTime;
 
-    /** 主布局 */
+    /**
+     * 主布局
+     */
     private RelativeLayout rlMain;
 
-    /** 测评 */
+    /**
+     * 测评
+     */
     //private TextView tvSpeechTip;
     public RolePlayerSelfItem(Context context, RolePlayerBll bll) {
         super(context, bll);
@@ -84,6 +99,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
             @Override
             public void onClick(View v) {
                 if (!TextUtils.isEmpty(mEntity.getWebVoiceUrl())) {
+                    Loger.i("RolePlayerDemoTest", "点击自己语音：url  = " + mEntity.getWebVoiceUrl());
                     voiceClick();
                 }
             }
@@ -147,7 +163,8 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 //                                    public void run() {
 //                                        if (mLstMessageData.size() > mPosition + 1) {
 //                                            MessageEntity messageEntity = mLstMessageData.get(mPosition + 1);
-//                                            int type = (int) messageEntity.getDataType(AppBll.getInstance().getAppInfoEntity
+//                                            int type = (int) messageEntity.getDataType(AppBll.getInstance()
+// .getAppInfoEntity
 //                                                    ().getChildName());
 //                                            if (type == MessageEntity.MessageViewType.SELF_VOICE) {
 //                                                if (messageEntity.voiceSelfItem != null) {
@@ -225,7 +242,8 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 if (entity.getMaxReadTime() <= 3) {
                     tvCountTime.setVisibility(View.VISIBLE);
                 }
-                civUserHead.startCountDown(entity.getMaxReadTime() * 1000, entity.getEndReadTime() * 1000, new CountDownHeadImageView.countDownTimeImpl() {
+                civUserHead.startCountDown(entity.getMaxReadTime() * 1000, entity.getEndReadTime() * 1000, new
+                        CountDownHeadImageView.countDownTimeImpl() {
                     @Override
                     public void countTime(long time) {
                         tvCountTime.setText(time + "");
@@ -358,13 +376,16 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                     lastSub += index;
                     if (mEntity.getLstPhoneScore().get(i).getScore() >= 75) {
                         //显示绿色
-                        spannable.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.COLOR_53C058)), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        spannable.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color
+                                .COLOR_53C058)), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     } else if (mEntity.getLstPhoneScore().get(i).getScore() < 30) {
                         // 显示红色
-                        spannable.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.COLOR_F13232)), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        spannable.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color
+                                .COLOR_F13232)), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     } else {
                         // 显示黑色
-                        spannable.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.COLOR_333333)), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        spannable.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color
+                                .COLOR_333333)), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                 }
             }

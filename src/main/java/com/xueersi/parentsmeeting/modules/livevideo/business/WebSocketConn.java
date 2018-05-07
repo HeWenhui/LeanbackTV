@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.text.TextUtils;
 
 import com.tal.speech.asr.SpeechLog;
+import com.xueersi.xesalib.utils.log.Loger;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -92,6 +93,7 @@ public class WebSocketConn {
                 @Override
                 public void onError(Exception ex) {
                     ex.printStackTrace();
+                    Loger.i("RolePlayerDemoTest", "onError : "+ex.toString());
                     mCallBack.onError();
                 }
             };

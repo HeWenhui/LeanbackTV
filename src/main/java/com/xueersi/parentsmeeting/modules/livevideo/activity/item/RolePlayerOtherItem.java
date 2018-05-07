@@ -21,6 +21,7 @@ import com.xueersi.xesalib.utils.app.ContextManager;
 import com.xueersi.xesalib.utils.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.xesalib.utils.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.xesalib.utils.listener.OnAlphaTouchListener;
+import com.xueersi.xesalib.utils.log.Loger;
 
 
 /**
@@ -33,26 +34,42 @@ public class RolePlayerOtherItem extends RolePlayerItem {
 
     String TAG = "VoiceComeItem";
 
-    /** 头像 */
+    /**
+     * 头像
+     */
     private CountDownHeadImageView civUserHead;
 
-    /** 用户的昵称 */
+    /**
+     * 用户的昵称
+     */
     private TextView tvUserNickName;
 
-    /** 表示语音播放状态的背景动画 */
+    /**
+     * 表示语音播放状态的背景动画
+     */
     private ImageView ivVoiceAnimtor;
 
-    /** 语音主体界面 */
+    /**
+     * 语音主体界面
+     */
     private View vVoiceMain;
 
-    /** 语音的内容 */
+    /**
+     * 语音的内容
+     */
     private TextView tvMessageContent;
 
-    /** 点赞布局 */
+    /**
+     * 点赞布局
+     */
     private RelativeLayout rlMessageDZ;
-    /** 点赞默认图 */
+    /**
+     * 点赞默认图
+     */
     private ImageView ivMessageDZ;
-    /** 点赞动图 */
+    /**
+     * 点赞动图
+     */
     private LottieAnimationView lavMessageDZ;
 
 
@@ -88,7 +105,10 @@ public class RolePlayerOtherItem extends RolePlayerItem {
             public void onClick(View view) {
                 if (!TextUtils.isEmpty(mEntity.getWebVoiceUrl())) {
                     //只有当这个URL不为空时才可以点击播放
+                    Loger.i("RolePlayerDemoTest", "点击他人语音：url = " + mEntity.getWebVoiceUrl());
                     voiceClick();
+                } else {
+                    Loger.i("RolePlayerDemoTest", "点击他人语音：url 为空");
                 }
             }
         });
@@ -139,7 +159,8 @@ public class RolePlayerOtherItem extends RolePlayerItem {
 //            final AnimationDrawable animationDrawable = (AnimationDrawable) ivVoiceAnimtor.getBackground();
 //            animationDrawable.start();
 //            mEntity.setVoiceIsplay(true);
-//            AudioPlayerManager.get(ContextManager.getApplication()).start(mEntity.getLocalResourceUrl(), new PlayerCallback() {
+//            AudioPlayerManager.get(ContextManager.getApplication()).start(mEntity.getLocalResourceUrl(), new
+// PlayerCallback() {
 //                @Override
 //                public void onCompletion(Object dataSource, AudioPlayerManager manager) {
 //                    mEntity.setVoiceIsplay(false);
@@ -230,6 +251,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
 
                         @Override
                         public void onClick(View view) {
+                            Loger.i("RolePlayerDemoTest", "给他人点赞");
                             bllRolePlayerBll.toOtherDZ(mEntity.getRolePlayer().getRoleId(), mEntity.getPosition());
                             ivMessageDZ.setVisibility(View.GONE);
                             lavMessageDZ.setVisibility(View.VISIBLE);

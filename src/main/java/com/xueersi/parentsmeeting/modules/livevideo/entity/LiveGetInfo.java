@@ -31,99 +31,179 @@ public class LiveGetInfo {
      * 测1 notice : 测1 liveType : 3 liveTime : 21:00 23:00 nowTime : 1452164919
      */
 
-    /** 用户名称 */
+    /**
+     * 用户名称
+     */
     private String stuName;
-    /** 用户Id */
+    /**
+     * 用户Id
+     */
     private String stuId;
-    /** 用户拼音，现阶段取用户名 */
+    /**
+     * 用户拼音，现阶段取用户名
+     */
     private String uname;
-    /** 用户英文名 */
+    /**
+     * 用户英文名
+     */
     private String en_name;
-    /** 用户昵称 */
+    /**
+     * 用户昵称
+     */
     private String nickname;
-    /** 用户性别 */
+    /**
+     * 用户性别
+     */
     private String stuSex;
-    /** 用户头像 */
+    /**
+     * 用户头像
+     */
     private String stuImg;
-    /** groupId : 57 classId : 50 shutupStatus : 1直播信息 */
+    /**
+     * groupId : 57 classId : 50 shutupStatus : 1直播信息
+     */
     private StudentLiveInfoEntity studentLiveInfo;
-    /** 主讲教师id */
+    /**
+     * 主讲教师id
+     */
     private String mainTeacherId;
-    /** 主讲教师 */
+    /**
+     * 主讲教师
+     */
     private final MainTeacherInfo mainTeacherInfo = new MainTeacherInfo();
-    /** 辅导教师id */
+    /**
+     * 辅导教师id
+     */
     private String teacherId;
-    /** 辅导教师名称 */
+    /**
+     * 辅导教师名称
+     */
     private String teacherName;
-    /** 辅导教师头像 */
+    /**
+     * 辅导教师头像
+     */
     private String teacherIMG;
-    /** 直播状态，1：无老师，2：有老师，3：已上课 */
+    /**
+     * 直播状态，1：无老师，2：有老师，3：已上课
+     */
     private int stat;
-    /** 聊天服务器地址 */
+    /**
+     * 聊天服务器地址
+     */
     private String talkHost;
-    /** 聊天服务器密码 */
+    /**
+     * 聊天服务器密码
+     */
     private String talkPwd;
-    /** 聊天服务器端口 */
+    /**
+     * 聊天服务器端口
+     */
     private String talkPort;
     private String roomId;
-    /** 直播调度URL */
+    /**
+     * 直播调度URL
+     */
     private String gslbServerUrl;
-    /** 直播日志收集URL */
+    /**
+     * 直播日志收集URL
+     */
     private String logServerUrl;
     /**
      * 2 : 5 3 : 50 4 : 100 直播送花类型与金币对应关系
      */
     private FollowTypeEntity followType;
-    /** RTMP服务器地址 */
+    /**
+     * RTMP服务器地址
+     */
     private String rtmpUrl;
-    /** RTMP服务器地址 */
+    /**
+     * RTMP服务器地址
+     */
     private String[] rtmpUrls;
-    /** 用户心跳时间间隔 */
+    /**
+     * 用户心跳时间间隔
+     */
     private int hbTime;
-    /** 记录客户端日志地址 */
+    /**
+     * 记录客户端日志地址
+     */
     private String clientLog;
-    /** 直播id */
+    /**
+     * 直播id
+     */
     private String id;
-    /** 直播名称 */
+    /**
+     * 直播名称
+     */
     private String name;
-    /** 直播说明 */
+    /**
+     * 直播说明
+     */
     private String instructions;
-    /** 直播公告 */
+    /**
+     * 直播公告
+     */
     private String notice;
-    /** 直播类型 3是直播课程 */
+    /**
+     * 直播类型 3是直播课程
+     */
     private int liveType;
-    /** 直播开始时间 */
+    /**
+     * 直播开始时间
+     */
     private String liveTime;
-    /** 直播开始时间 */
+    /**
+     * 直播开始时间
+     */
     private long sTime;
-    /** 直播开始时间 */
+    /**
+     * 直播开始时间
+     */
     private long eTime;
-    /** 当前时间 */
+    /**
+     * 当前时间
+     */
     private double nowTime;
     private List<TestInfoEntity> testInfo = new ArrayList<TestInfoEntity>();
     /**
      * host : 124.243.202.5 port : 16692 pwd : xueersi.com 备用用户聊天服务配置
      */
     private List<NewTalkConfEntity> newTalkConf;
-    /** 用户头像服务器地址 */
+    /**
+     * 用户头像服务器地址
+     */
     private List<String> headImgUrl;
     private String headImgPath;
-    /** 用户头像类型middle.jpg */
+    /**
+     * 用户头像类型middle.jpg
+     */
     private String imgSizeType;
     private String headImgVersion;
     private String channelname;
     private String studentChannelname;
-    /** 关闭聊天 */
+    /**
+     * 关闭聊天
+     */
     private boolean isCloseChat = false;
-    /** 数据缓存 */
+    /**
+     * 数据缓存
+     */
     private final LiveTopic liveTopic;
-    /** 主讲老师加密 */
+    /**
+     * 主讲老师加密
+     */
     private String skeyPlayT;
-    /** 辅导老师加密 */
+    /**
+     * 辅导老师加密
+     */
     private String skeyPlayF;
-    /** 语音评测地址 */
+    /**
+     * 语音评测地址
+     */
     private String speechEvalUrl;
-    /** 聊天中老师连接是否可以点击 */
+    /**
+     * 聊天中老师连接是否可以点击
+     */
     private int urlClick;
     private boolean allowLinkMic;
     private int stuLinkMicNum;
@@ -136,20 +216,33 @@ public class LiveGetInfo {
     private String testPaperUrl;
     private boolean blockChinese;
     private String subjectiveTestAnswerResult;
-    /** 当前的直播模式 */
+    /**
+     * 当前的直播模式
+     */
     private String mode = LiveTopic.MODE_TRANING;
     private TotalOpeningLength totalOpeningLength;
-    /** 是否显示满分榜 */
+    /**
+     * 是否显示满分榜
+     */
     private String is_show_ranks;
-    /** 是否显示智能私信 */
+    /**
+     * 是否显示智能私信
+     */
     private String isShowCounselorWhisper;
-    /** 是否有标记点功能 */
+    /**
+     * 是否有标记点功能
+     */
     private String isShowMarkPoint;
-    /** 1-普通直播，2-全身直播 */
+    /**
+     * 1-普通直播，2-全身直播
+     */
     private int pattern = 1;
 
-    /**是否是 teampk 直播间*/
-    private String  isAllowTeamPk;  // 1 :是pk 直播间  0 :非pk直播间
+    /**
+     * 是否是 teampk 直播间
+     */
+    private String isAllowTeamPk;  // 1 :是pk 直播间  0 :非pk直播间
+    private String[] subjectIds;//所有学科id
 
     public void setIsAllowTeamPk(String isAllowTeamPk) {
         this.isAllowTeamPk = isAllowTeamPk;
@@ -367,7 +460,9 @@ public class LiveGetInfo {
         return uname;
     }
 
-    /** 站立直播名字 */
+    /**
+     * 站立直播名字
+     */
     public String getStandLiveName() {
         if (!StringUtils.isEmpty(en_name)) {
             return en_name;
@@ -684,6 +779,10 @@ public class LiveGetInfo {
         return teamStuIds;
     }
 
+    public void setSubjectIds(String[] subjectIds) {
+        this.subjectIds = subjectIds;
+    }
+
     public static class MainTeacherInfo {
         String teacherId;//"teacherId":"1434",
         String teacherName; //"teacherName":"小琪老师",
@@ -728,26 +827,46 @@ public class LiveGetInfo {
      */
     public static class StudentLiveInfoEntity {
         private String courseId;
-        /** 组id */
+        /**
+         * 组id
+         */
         private String groupId;
-        /** 课id，加入聊天服务的房间 */
+        /**
+         * 课id，加入聊天服务的房间
+         */
         private String classId;
         private String shutupStatus;
-        /** 弹出学习报告 1弹，0不弹 */
+        /**
+         * 弹出学习报告 1弹，0不弹
+         */
         private int evaluateStatus;
-        /** 弹出点名 是否签到，0未开始，1老师开始签到，2未结束且已签到,3签到失败 */
+        /**
+         * 弹出点名 是否签到，0未开始，1老师开始签到，2未结束且已签到,3签到失败
+         */
         private int signStatus;
-        /** 班级分组，组id */
+        /**
+         * 班级分组，组id
+         */
         private String teamId;
-        /** 购课url */
+        /**
+         * 购课url
+         */
         private String buyCourseUrl;
-        /** 试听总时间 */
+        /**
+         * 试听总时间
+         */
         private long userModeTotalTime;
-        /** 试听还有多长时间 */
+        /**
+         * 试听还有多长时间
+         */
         private long userModeTime;
-        /** 是不是试听 */
+        /**
+         * 是不是试听
+         */
         private boolean isExpe = false;
-        /** 童音测评 */
+        /**
+         * 童音测评
+         */
         private String learning_stage = "";
 
         public String getCourseId() {
@@ -917,15 +1036,25 @@ public class LiveGetInfo {
      * @author linyuqiang 互动题信息
      */
     public static class TestInfoEntity {
-        /** 互动题ID */
+        /**
+         * 互动题ID
+         */
         public String id;
-        /** 互动题类型，1：单选，2：填空 */
+        /**
+         * 互动题类型，1：单选，2：填空
+         */
         public String type;
-        /** 互动题地址 */
+        /**
+         * 互动题地址
+         */
         public String content;
-        /** 音频地址 */
+        /**
+         * 音频地址
+         */
         public String audio;
-        /** 互动题当题空数，填空题用 */
+        /**
+         * 互动题当题空数，填空题用
+         */
         public int num;
 
     }
