@@ -213,7 +213,7 @@ public class StandLiveHeadView extends LottieAnimationView {
             img_7Bitmap = creatBitmap;
             oldBitmap.recycle();
 //            if (!isSystem) {
-            headBitmap.recycle();
+//                headBitmap.recycle();
 //            }
         } catch (IOException e) {
             Loger.e(TAG, "updateHead", e);
