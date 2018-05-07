@@ -151,26 +151,27 @@ public class LiveRemarkBll {
                     return;
                 }
                 if (Math.round(vdfps) == 12) {
-                    mHttpManager.getCurTime(new HttpCallBack(false) {
-                        @Override
-                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                            Loger.i(TAG,responseEntity.getJsonObject().toString());
-                            long time=((JSONObject)responseEntity.getJsonObject()).optLong("time");
-                            setVideoOffset(time);
-                        }
-
-                        @Override
-                        public void onPmFailure(Throwable error, String msg) {
-                            super.onPmFailure(error, msg);
-                            setVideoOffset(0);
-                        }
-
-                        @Override
-                        public void onPmError(ResponseEntity responseEntity) {
-                            super.onPmError(responseEntity);
-                            setVideoOffset(0);
-                        }
-                    });
+//                    mHttpManager.getCurTime(new HttpCallBack(false) {
+//                        @Override
+//                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+//                            Loger.i(TAG,responseEntity.getJsonObject().toString());
+//                            long time=((JSONObject)responseEntity.getJsonObject()).optLong("time");
+//                            setVideoOffset(time);
+//                        }
+//
+//                        @Override
+//                        public void onPmFailure(Throwable error, String msg) {
+//                            super.onPmFailure(error, msg);
+//                            setVideoOffset(0);
+//                        }
+//
+//                        @Override
+//                        public void onPmError(ResponseEntity responseEntity) {
+//                            super.onPmError(responseEntity);
+//                            setVideoOffset(0);
+//                        }
+//                    });
+                    setVideoOffset(0);
                     //mTimer.cancel();
 
 
