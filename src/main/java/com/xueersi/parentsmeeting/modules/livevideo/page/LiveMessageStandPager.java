@@ -225,7 +225,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     private void initBtMesOpenAnimation() {
         if (lvMessage.getVisibility() == View.GONE) {
             btMesOpenAnimation = FrameAnimation.createFromAees(mContext, btMesOpen, "live_stand/frame_anim/openmsg", 50, false);
-            btMesOpenAnimation.setDensity(FrameAnimation.DEFAULT_DENSITY);
+//            btMesOpenAnimation.setDensity((int) (FrameAnimation.DEFAULT_DENSITY * (FrameAnimation.IMAGE_HEIGHT / (float) ScreenUtils.getScreenHeight())));
 //            btMesOpenAnimation.restartAnimation();
             btMesOpenAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
                 @Override
@@ -1196,13 +1196,13 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                         btMesOpen.setVisibility(View.GONE);
 //                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     }
-//                    if (fromNotice) {
-//                        if (LiveTopic.MODE_CLASS.equals(mode)) {
-//                            XESToastUtils.showToast(mContext, "主讲老师" + (openchat ? "打开" : "关闭") + "了聊天区");
-//                        } else {
-//                            XESToastUtils.showToast(mContext, "辅导老师" + (openchat ? "打开" : "关闭") + "了聊天区");
-//                        }
-//                    }
+                    if (fromNotice) {
+                        if (LiveTopic.MODE_CLASS.equals(mode)) {
+                            XESToastUtils.showToast(mContext, "主讲老师" + (openchat ? "打开" : "关闭") + "了聊天区");
+                        } else {
+                            XESToastUtils.showToast(mContext, "辅导老师" + (openchat ? "打开" : "关闭") + "了聊天区");
+                        }
+                    }
                 }
             }
         });

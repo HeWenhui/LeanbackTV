@@ -468,6 +468,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
      */
     @Override
     public void initQuestionAnswerReslut(final View popupWindow_view) {
+        bottomContent.removeView(rlQuestionResContent);
+        bottomContent.addView(rlQuestionResContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         rlQuestionResContent.addView(popupWindow_view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         popupWindow_view.setOnClickListener(new View.OnClickListener() {

@@ -132,22 +132,24 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                     lp.addRule(RelativeLayout.CENTER_IN_PARENT);
                     rlResult.addView(lottieAnimationView, lp);
-                    final ViewGroup group = (ViewGroup) baseVoiceAnswerPager.getRootView();
-                    group.addView(rlResult);
+//                    final ViewGroup group = (ViewGroup) baseVoiceAnswerPager.getRootView();
+//                    group.addView(rlResult);
+                    questionBll.initQuestionAnswerReslut(rlResult);
                     lottieAnimationView.playAnimation();
                     setRightGold(context, lottieAnimationView, entity.getGoldNum());
                     rlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            group.removeView(rlResult);
+//                            group.removeView(rlResult);
+                            questionBll.removeQuestionAnswerReslut(rlResult);
                         }
                     });
-                    group.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            group.removeView(rlResult);
-                        }
-                    }, 3200);
+//                    rlResult.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            group.removeView(rlResult);
+//                        }
+//                    }, 3200);
                     rlResult.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
                         @Override
                         public void onViewAttachedToWindow(View v) {
@@ -195,21 +197,23 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                     lp.addRule(RelativeLayout.CENTER_IN_PARENT);
                     rlResult.addView(lottieAnimationView, lp);
-                    final ViewGroup group = (ViewGroup) baseVoiceAnswerPager.getRootView();
-                    group.addView(rlResult);
+//                    final ViewGroup group = (ViewGroup) baseVoiceAnswerPager.getRootView();
+//                    group.addView(rlResult);
+                    questionBll.initQuestionAnswerReslut(rlResult);
                     setWrongTip(context, lottieAnimationView, entity.getStandardAnswer());
                     rlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            group.removeView(rlResult);
+//                            group.removeView(rlResult);
+                            questionBll.removeQuestionAnswerReslut(rlResult);
                         }
                     });
-                    group.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            group.removeView(rlResult);
-                        }
-                    }, 3200);
+//                    group.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            group.removeView(rlResult);
+//                        }
+//                    }, 3200);
                     rlResult.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
                         @Override
                         public void onViewAttachedToWindow(View v) {
