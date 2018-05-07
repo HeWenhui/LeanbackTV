@@ -57,6 +57,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBllOld;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
@@ -953,9 +954,9 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                 englishH5Cache.getCourseWareUrl();
             }
             if (IS_SCIENCE) {
-                SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(this, mLiveBll);
-                speechFeedBackBll.setGetInfo(getInfo);
-                //SpeechFeedBackBllOld speechFeedBackBll = new SpeechFeedBackBllOld(this, mLiveBll);
+//                SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(this, mLiveBll);
+//                speechFeedBackBll.setGetInfo(getInfo);
+                SpeechFeedBackBllOld speechFeedBackBll = new SpeechFeedBackBllOld(this, mLiveBll);
                 speechFeedBackBll.setBottomContent(bottomContent);
                 speechFeedBackAction = speechFeedBackBll;
                 mLiveBll.setSpeechFeedBackAction(speechFeedBackBll);

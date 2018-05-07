@@ -1026,13 +1026,13 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
             if (englishH5Cache != null) {
                 englishH5Cache.getCourseWareUrl();
             }
-            if (IS_SCIENCE) {
-                SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(this, mLiveBll);
-                speechFeedBackBll.setBottomContent(bottomContent);
-                speechFeedBackBll.setGetInfo(getInfo);
-                speechFeedBackAction = speechFeedBackBll;
-                mLiveBll.setSpeechFeedBackAction(speechFeedBackBll);
-            }
+//            if (IS_SCIENCE) {
+//                SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(this, mLiveBll);
+//                speechFeedBackBll.setBottomContent(bottomContent);
+//                speechFeedBackBll.setGetInfo(getInfo);
+//                speechFeedBackAction = speechFeedBackBll;
+//                mLiveBll.setSpeechFeedBackAction(speechFeedBackBll);
+//            }
         }
         Loger.d(TAG, "onLiveInit:time=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
