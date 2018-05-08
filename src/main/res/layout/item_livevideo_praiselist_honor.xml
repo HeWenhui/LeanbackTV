@@ -28,6 +28,7 @@
         android:layout_toRightOf="@+id/tv_livevideo_praiselist_honor_name"
         android:layout_marginLeft="4dp"
         android:gravity="top|left"
+        android:visibility="gone"
         style="@style/text_font16_666666_style"/>
 
 

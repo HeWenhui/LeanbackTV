@@ -7,9 +7,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.xueersi.parentsmeeting.modules.livevideo.util.FontCache;
+import com.xueersi.parentsmeeting.modules.livevideo.util.PaintTextUtil;
+import com.xueersi.xesalib.utils.log.Loger;
 
 import java.io.IOException;
 
@@ -22,12 +26,14 @@ public class StandLiveLottieAnimationView extends LottieAnimationView {
     int starCount = -1;
     Paint paint;
     private String TAG = "StandLiveLottieAnimationView";
+    Typeface fontFace;
 
     public StandLiveLottieAnimationView(Context context, AttributeSet attrs) {
         super(context, attrs);
         paint = new Paint();
         paint.setTextSize(24);
         paint.setColor(Color.WHITE);
+        fontFace = FontCache.getTypeface(context, "fangzhengyouyuan.ttf");
     }
 
     /**
@@ -46,19 +52,20 @@ public class StandLiveLottieAnimationView extends LottieAnimationView {
         Bitmap img_7Bitmap;
         try {
             img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/jindu/img_9.png"));
-            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/jindu/img_3.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
             canvas.drawBitmap(img_7Bitmap, 0, 0, null);
             Paint paint = new Paint();
             paint.setTextSize(24);
+            paint.setTypeface(fontFace);
+            paint.setAntiAlias(true);
             paint.setColor(Color.WHITE);
             float width = paint.measureText(num);
-            canvas.drawText(num, (img_7Bitmap.getWidth() - img_3Bitmap.getWidth() / 2) / 2 + img_3Bitmap.getWidth() / 2 - width / 2, img_7Bitmap.getHeight() / 2 + paint.measureText("a") / 2, paint);
-//                    canvas.drawRect(img_9Bitmap.getWidth()/2, 0, img_3Bitmap.getWidth(), img_3Bitmap.getHeight(), paint);
+            int baseline = PaintTextUtil.getBaseline(img_7Bitmap.getHeight(), paint);
+            canvas.drawText(num, img_7Bitmap.getWidth() - width - 20, baseline, paint);
             img_7Bitmap = creatBitmap;
         } catch (IOException e) {
-//            e.printStackTrace();
+            Loger.e(TAG, "setGoldCount", e);
             return;
         }
         updateBitmap("image_9", img_7Bitmap);
@@ -74,22 +81,28 @@ public class StandLiveLottieAnimationView extends LottieAnimationView {
         AssetManager manager = getContext().getAssets();
         Bitmap img_7Bitmap;
         try {
-            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/jindu/img_4.png"));
+            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/jindu/img_3.png"));
 //            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
             canvas.drawBitmap(img_7Bitmap, 0, 0, null);
             Paint paint = new Paint();
-            paint.setTextSize(24);
+            if (num.length() < 3) {
+                paint.setTextSize(24);
+            } else {
+                paint.setTextSize(22);
+            }
+            paint.setTypeface(fontFace);
+            paint.setAntiAlias(true);
             paint.setColor(0xff8C4302);
             float width = paint.measureText(num);
-            canvas.drawText(num, (img_7Bitmap.getWidth() - width) / 2, (img_7Bitmap.getHeight()+ paint.measureText("a")) / 2, paint);
-//                    canvas.drawRect(img_9Bitmap.getWidth()/2, 0, img_3Bitmap.getWidth(), img_3Bitmap.getHeight(), paint);
+            int baseline = PaintTextUtil.getBaseline(img_7Bitmap.getHeight(), paint);
+            canvas.drawText(num, (img_7Bitmap.getWidth() - width) / 2, baseline, paint);
             img_7Bitmap = creatBitmap;
         } catch (IOException e) {
-//            e.printStackTrace();
+            Loger.e(TAG, "setStarCount", e);
             return;
         }
-        updateBitmap("image_4", img_7Bitmap);
+        updateBitmap("image_3", img_7Bitmap);
     }
 }

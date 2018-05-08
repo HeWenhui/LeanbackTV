@@ -8,6 +8,7 @@ import android.os.Message;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService;
 import com.xueersi.xesalib.utils.log.Loger;
 
@@ -26,6 +27,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     LiveBll liveBll;
     PlayerService vPlayer;
     ArrayList<String> frames = new ArrayList<>();
+    long frameStart;
     Activity activity;
     private PlayServerEntity.PlayserverEntity lastPlayserverEntity;
     /** 是不是开始统计 */
@@ -69,8 +71,11 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                     if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
                         IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
                         float fps = ijkMediaPlayer.getVideoDecodeFramesPerSecond();
+                        if (frames.isEmpty()) {
+                            frameStart = System.currentTimeMillis();
+                        }
                         if (lastFps != 0) {
-                            frames.add("" + ((int) ((lastFps + lastFps) * 5 / 2)));
+                            frames.add("" + ((int) ((lastFps + fps) * 5 / 2)));
                         } else {
                             frames.add("" + ((int) (fps * 5)));
                         }
@@ -88,7 +93,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     };
 
     private void send(String method) {
-        Loger.d(TAG, "send:frames=" + frames.size());
+        Loger.d(TAG, "send:method=" + method + ",frames=" + frames.size());
         if (frames.isEmpty()) {
             return;
         }
@@ -100,11 +105,13 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
             }
         }
         frames.clear();
-        Map<String, String> mData = new HashMap<>();
-        mData.put("activity", activity.getClass().getSimpleName());
-        mData.put("method", method);
-        mData.put("message", "server: " + lastPlayserverEntity.getAddress() + " vdownload:" + vdownload);
-        Loger.e(activity, LiveVideoConfig.LIVE_GSLB, mData, true);
+        long time = System.currentTimeMillis() - frameStart;
+        StableLogHashMap stableLogHashMap = new StableLogHashMap("glsbSpeed");
+        stableLogHashMap.put("activity", activity.getClass().getSimpleName());
+        stableLogHashMap.put("method", method);
+        stableLogHashMap.put("time", "" + time);
+        stableLogHashMap.put("message", "server: " + lastPlayserverEntity.getAddress() + " vdownload:" + vdownload);
+        Loger.e(activity, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData(), true);
     }
 
     public void onPause() {
@@ -120,7 +127,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     @Override
     public void onOpenStart() {
         super.onOpenStart();
-        handler.sendEmptyMessage(1);
+        handler.removeMessages(1);
     }
 
     @Override

@@ -237,6 +237,8 @@ public class LiveGetInfo {
      * 1-普通直播，2-全身直播
      */
     private int pattern = 1;
+    /** 全身直播语音答题和评测小组排名请求时间 */
+    private String requestTime;
 
     /**
      * 是否是 teampk 直播间
@@ -773,6 +775,14 @@ public class LiveGetInfo {
 
     public void setPattern(int pattern) {
         this.pattern = pattern;
+    }
+
+    public String getRequestTime() {
+        return requestTime;
+    }
+
+    public void setRequestTime(String requestTime) {
+        this.requestTime = requestTime;
     }
 
     public ArrayList<String> getTeamStuIds() {

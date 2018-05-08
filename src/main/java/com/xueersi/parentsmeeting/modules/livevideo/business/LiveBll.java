@@ -83,6 +83,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -528,7 +529,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             public void onPmSuccess(ResponseEntity responseEntity) {
                 mLogtf.d("getReceiveGoldTeamStatus:onPmSuccess=" + responseEntity.getJsonObject().toString() + ",operateId=" +
                         operateId);
-                GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId());
+                GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId(), mGetInfo.getHeadImgPath());
                 callBack.onDataSucess(entity);
             }
 
@@ -554,7 +555,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             public void onPmSuccess(ResponseEntity responseEntity) {
                 mLogtf.d("getReceiveGoldTeamRank:onPmSuccess=" + responseEntity.getJsonObject().toString() + ",operateId=" +
                         operateId);
-                GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId());
+                GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId(), mGetInfo.getHeadImgPath());
                 callBack.onDataSucess(entity);
             }
 
@@ -643,7 +644,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mHttpManager.getTestAnswerTeamStatus(videoQuestionLiveEntity.id, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                GoldTeamStatus entity = mHttpResponseParser.testAnswerTeamStatus(responseEntity, mGetInfo.getStuId());
+                GoldTeamStatus entity = mHttpResponseParser.testAnswerTeamStatus(responseEntity, mGetInfo.getStuId(), mGetInfo.getHeadImgPath());
                 callBack.onDataSucess(entity);
             }
 
@@ -677,12 +678,33 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
     private int test1 = 0;
 
+    /**
+     * 站立直播语音评测战况
+     *
+     * @param testId
+     * @param callBack
+     */
     public void getSpeechEvalAnswerTeamStatus(String testId, final AbstractBusinessDataCallBack callBack) {
         mHttpManager.getSpeechEvalAnswerTeamStatus(testId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 GoldTeamStatus entity = mHttpResponseParser.getSpeechEvalAnswerTeamStatus(responseEntity, mGetInfo.getStuId());
                 callBack.onDataSucess(entity);
+//                if (AppConfig.DEBUG) {
+//                    GoldTeamStatus entity = new GoldTeamStatus();
+//                    Random random = new Random();
+//                    for (int i = 0; i < 5; i++) {
+//                        GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                        student.setNickname("测试" + (test1++));
+//                        student.createShowName();
+//                        student.setScore("" + random.nextInt(101));
+//                        student.setAvatar_path(mGetInfo.getHeadImgPath());
+//                        entity.getStudents().add(student);
+//                    }
+//                    callBack.onDataSucess(entity);
+//                } else {
+//                    callBack.onDataFail(1, responseEntity.getErrorMsg());
+//                }
             }
 
             @Override
@@ -699,6 +721,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     for (int i = 0; i < 3; i++) {
                         GoldTeamStatus.Student student = new GoldTeamStatus.Student();
                         student.setNickname("测试" + (test1++));
+                        student.createShowName();
                         student.setScore("90");
                         student.setAvatar_path(mGetInfo.getHeadImgPath());
                         entity.getStudents().add(student);
@@ -1749,12 +1772,12 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     }
                     case XESCODE.XCR_ROOM_ROLE_READ: {
                         msg += ",XCR_ROOM_ROLE_READ";
-                        if (rolePlayAction == null && liveLazyBllCreat != null) {
-                            rolePlayAction = liveLazyBllCreat.createRolePlayBll();
-                        }
-                        if (rolePlayAction != null) {
-                            rolePlayAction.teacherRead(mLiveId, vStuCourseID);
-                        }
+//                        if (rolePlayAction == null && liveLazyBllCreat != null) {
+//                            rolePlayAction = liveLazyBllCreat.createRolePlayBll();
+//                        }
+//                        if (rolePlayAction != null) {
+//                            rolePlayAction.teacherRead(mLiveId, vStuCourseID);
+//                        }
                         break;
                     }
                     case XESCODE.XCR_ROOM_DB_CLOSE: {
@@ -3117,14 +3140,17 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /**
      * 发生聊天消息
      */
-    public boolean sendMessage(String msg) {
+    public boolean sendMessage(String msg, String name) {
         if (mLiveTopic.isDisable()) {
             return false;
         } else {
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("type", "" + XESCODE.TEACHER_MESSAGE);
-                jsonObject.put("name", mGetInfo.getStuName());
+                if (StringUtils.isEmpty(name)) {
+                    name = mGetInfo.getStuName();
+                }
+                jsonObject.put("name", name);
                 jsonObject.put("path", "" + mGetInfo.getHeadImgPath());
                 jsonObject.put("version", "" + mGetInfo.getHeadImgVersion());
                 jsonObject.put("msg", msg);
@@ -3449,6 +3475,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 mLogtf.i("getSpeechEvalAnswerTeamRank:onPmError=" + responseEntity.getErrorMsg());
+                callBack.onDataFail(1, responseEntity.getErrorMsg());
             }
         });
     }
@@ -3645,22 +3672,25 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mHttpManager.getRolePlayAnswerTeamRank(testId, new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Loger.d(TAG, "getRolePlayAnswerTeamRank:responseEntity=" + responseEntity.getJsonObject());
+                mLogtf.d("getRolePlayAnswerTeamRank:responseEntity=" + responseEntity.getJsonObject());
                 GoldTeamStatus entity = mHttpResponseParser.parseRolePlayTeamRank(responseEntity, mGetInfo);
                 callBack.onDataSucess(entity);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                super.onPmError(responseEntity);
-                Loger.d(TAG, "getRolePlayAnswerTeamRank:onPmError=" + responseEntity.getErrorMsg());
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
                 Loger.d(TAG, "getRolePlayAnswerTeamRank:msg=" + msg);
+                callBack.onDataFail(0, msg);
             }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                Loger.d(TAG, "getRolePlayAnswerTeamRank:onPmError=" + responseEntity.getErrorMsg());
+                callBack.onDataFail(1, responseEntity.getErrorMsg());
+            }
+
         });
     }
 
@@ -3670,7 +3700,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * @param talkSourcePath
      */
     public void saveStuTalkSource(String talkSourcePath, String service) {
-        mHttpManager.saveStuTalkSource(mGetInfo.getStuId(), talkSourcePath, service, new HttpCallBack() {
+        mHttpManager.saveStuTalkSource(mGetInfo.getStuId(), talkSourcePath, service, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 Loger.d(TAG, "saveStuTalkSource:onPmSuccess" + responseEntity.getJsonObject());
@@ -3958,6 +3988,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      */
     public void dns_resolve_stream(final PlayServerEntity.PlayserverEntity playserverEntity, final PlayServerEntity mServer, String channelname, final AbstractBusinessDataCallBack callBack) {
         if (StringUtils.isEmpty(playserverEntity.getIp_gslb_addr())) {
+            callBack.onDataFail(3, "empty");
             return;
         }
         final StringBuilder url;
@@ -4016,42 +4047,57 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             @Override
             public void onFailure(Call call, IOException e) {
                 Loger.i(TAG, "dns_resolve_stream:onFailure=", e);
-                dataCallBack.onDataFail(0, "onFailure");
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        dataCallBack.onDataFail(0, "onFailure");
+                    }
+                });
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                int code = response.code();
-                String r = response.body().string();
-                Loger.i(TAG, "dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
-                if (response.code() >= 200 && response.code() <= 300) {
-                    if ("wangsu".equals(provide)) {
-//                        rtmp://111.202.83.208/live_server/x_3_55873?wsiphost=ipdb&wsHost=livewangsu.xescdn.com
-                        String url = r.replace("\n", "");
-                        int index1 = url.substring(7).indexOf("/");
-                        if (index1 != -1) {
-                            String host = url.substring(7, 7 + index1);
-                            playserverEntity.setAddress(host);
-                        }
-                        dataCallBack.onDataSucess(provide, url);
-                        return;
-                    } else {
+            public void onResponse(Call call, final Response response) throws IOException {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        int code = response.code();
+                        String r = "";
                         try {
-                            JSONObject jsonObject = new JSONObject(r);
-                            String host = jsonObject.getString("host");
-                            JSONArray ipArray = jsonObject.optJSONArray("ips");
-                            String ip = ipArray.getString(0);
-                            String url = "rtmp://" + ip + "/" + host + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
-                            playserverEntity.setAddress(host);
-                            dataCallBack.onDataSucess(provide, url);
-                            mLogtf.d("dns_resolve_stream:ip_gslb_addr=" + playserverEntity.getIp_gslb_addr() + ",ip=" + ip);
-                            return;
+                            r = response.body().string();
+                            Loger.i(TAG, "dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
+                            if (response.code() >= 200 && response.code() <= 300) {
+                                if ("wangsu".equals(provide)) {
+//                        rtmp://111.202.83.208/live_server/x_3_55873?wsiphost=ipdb&wsHost=livewangsu.xescdn.com
+                                    String url = r.replace("\n", "");
+                                    int index1 = url.substring(7).indexOf("/");
+                                    if (index1 != -1) {
+                                        String host = url.substring(7, 7 + index1);
+                                        playserverEntity.setIpAddress(host);
+                                    }
+                                    dataCallBack.onDataSucess(provide, url);
+                                    return;
+                                } else {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(r);
+                                        String host = jsonObject.getString("host");
+                                        JSONArray ipArray = jsonObject.optJSONArray("ips");
+                                        String ip = ipArray.getString(0);
+                                        String url = "rtmp://" + ip + "/" + host + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+                                        playserverEntity.setIpAddress(host);
+                                        dataCallBack.onDataSucess(provide, url);
+                                        mLogtf.d("dns_resolve_stream:ip_gslb_addr=" + playserverEntity.getIp_gslb_addr() + ",ip=" + ip);
+                                        return;
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        dataCallBack.onDataFail(1, r);
                     }
-                }
-                dataCallBack.onDataFail(1, r);
+                });
             }
         });
     }
@@ -4088,7 +4134,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         entity.addBodyParam("serverac", playserverEntity.getAcode());
         entity.addBodyParam("serveric", playserverEntity.getIcode());
         entity.addBodyParam("servergroup", playserverEntity.getGroup());
-        entity.addBodyParam("server", playserverEntity.getAddress());
+        if (StringUtils.isEmpty(playserverEntity.getIpAddress())) {
+            entity.addBodyParam("server", playserverEntity.getAddress());
+        } else {
+            entity.addBodyParam("server", playserverEntity.getIpAddress());
+        }
         entity.addBodyParam("appname", mServer.getAppname());
         entity.addBodyParam("reconnnum", "" + (mOpenCount.get() - 1));
         entity.addBodyParam("connsec", "" + (connsec / 1000));

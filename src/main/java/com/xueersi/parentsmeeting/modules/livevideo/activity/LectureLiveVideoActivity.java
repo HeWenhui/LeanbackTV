@@ -1158,9 +1158,10 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                             } else {
                                 return;
                             }
-                            Map<String, String> mData = new HashMap<>();
-                            mData.put("message", "" + url);
-                            Loger.e(LectureLiveVideoActivity.this, LiveVideoConfig.LIVE_GSLB, mData, true);
+                            StableLogHashMap stableLogHashMap = new StableLogHashMap("glsb3rdDnsReply");
+                            stableLogHashMap.put("message", "" + url);
+                            stableLogHashMap.put("activity", mContext.getClass().getSimpleName());
+                            Loger.e(mContext, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData(), true);
                         }
 
                         @Override

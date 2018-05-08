@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.base.BasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveActivityBase;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -44,7 +45,7 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
     LiveGetInfo getInfo;
     int netWorkType;
     boolean isFail = false;
-    LiveVideoActivity activity;
+    LiveActivityBase activity;
     WorkerThread mWorkerThread;
     private LogToFile mLogtf;
     private AtomicBoolean startRemote;
@@ -52,8 +53,8 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
     String room;
 
     public AgoraVideoChatPager(Activity activity, LiveBll liveBll, LiveGetInfo getInfo) {
-        this.activity = (LiveVideoActivity) activity;
-        startRemote = ((LiveVideoActivity) activity).getStartRemote();
+        this.activity = (LiveActivityBase) activity;
+        startRemote = this.activity.getStartRemote();
         this.liveBll = liveBll;
         this.getInfo = getInfo;
         netWorkType = NetWorkHelper.getNetWorkState(activity);
@@ -218,4 +219,5 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
             }
         }
     }
+
 }

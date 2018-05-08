@@ -617,10 +617,19 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         TextView beat = (TextView) result.findViewById(R.id.tv_result);
         TextView totalscore = (TextView) result.findViewById(R.id.tv_total_score);
         beat.setText("恭喜，你打败了"+ mData.getBeat() + "%的学生");
-        recommand.setText("推荐您报名" + mData.getRecommend());
+        if(TextUtils.isEmpty(mData.getRecommend())){
+            recommand.setVisibility(View.GONE);
+        }else{
+            recommand.setVisibility(View.VISIBLE);
+            recommand.setText("推荐您报名" + mData.getRecommend());
+        }
         totalscore.setText(mData.getCorrect() + "%" );
         mProgressbar.setMax(100);
-        mProgressbar.setProgress(mData.getCorrect());
+        if(mData.getCorrect() > 0){
+            mProgressbar.setProgress(mData.getCorrect());
+        }else{
+            mProgressbar.setProgress(0);
+        }
         ImageButton shut = (ImageButton)result.findViewById(R.id.ib_shut);
         shut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -629,17 +638,17 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             }
         });
         Button chat = (Button)result.findViewById(R.id.bt_chat);
+        if(TextUtils.isEmpty(mData.getWechatNum())){
+            chat.setVisibility(View.GONE);
+        }else{
+            chat.setVisibility(View.VISIBLE);
+        }
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mData.getWechatNum() != null){
-                    ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                    cm.setText(mData.getWechatNum());
-                    Toast.makeText(ExperienceLiveVideoActivity.this,"您已复制老师微信号，快去添加吧!",Toast.LENGTH_LONG).show();
-                }else{
-                    Toast.makeText(ExperienceLiveVideoActivity.this,"数据异常",Toast.LENGTH_LONG).show();
-                }
-
+                ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                cm.setText(mData.getWechatNum());
+                Toast.makeText(ExperienceLiveVideoActivity.this,"您已复制老师微信号，快去添加吧!",Toast.LENGTH_LONG).show();
             }
         });
         Button apply = (Button)result.findViewById(R.id.bt_apply);
@@ -651,7 +660,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 }else{
                     Toast.makeText(ExperienceLiveVideoActivity.this,"数据异常",Toast.LENGTH_LONG).show();
                 }
-
             }
         });
     }

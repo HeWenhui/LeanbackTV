@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:id="@id/rl_livevideo_english_speak_error"
@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
-            android:text="分贝能量条需要麦克风权限"/>
+            android:text="分贝能量条需要麦克风权限" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
                 android:paddingRight="4dp"
                 android:paddingTop="2dp"
                 android:text="设置"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white" />
 
             <Button
                 android:id="@id/bt_livevideo_english_speak_close"
@@ -54,9 +54,14 @@
                 android:paddingRight="4dp"
                 android:paddingTop="2dp"
                 android:text="关闭"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white" />
         </LinearLayout>
 
     </RelativeLayout>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@id/lav_live_stand_english_gold"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

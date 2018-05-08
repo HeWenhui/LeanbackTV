@@ -45,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerListener;
@@ -1172,9 +1173,10 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                             } else {
                                 return;
                             }
-                            Map<String, String> mData = new HashMap<>();
-                            mData.put("message", "" + url);
-                            mLiveBll.umsAgentDebugSys(LiveVideoConfig.LIVE_GSLB, mData);
+                            StableLogHashMap stableLogHashMap = new StableLogHashMap("glsb3rdDnsReply");
+                            stableLogHashMap.put("message", "" + url);
+                            stableLogHashMap.put("activity", mContext.getClass().getSimpleName());
+                            Loger.e(mContext, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData(), true);
                         }
 
                         @Override

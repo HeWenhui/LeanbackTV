@@ -3,8 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.content.Context;
 import android.util.Log;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.http.HttpResponseParser;
 import com.xueersi.parentsmeeting.logerhelper.MobAgent;
@@ -18,13 +16,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentCoinAndTotalEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -65,13 +63,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         this.mContext = mContext;
     }
 
-    /**
-     * 解析getInfo
-     */
+    /** 解析getInfo */
     public LiveGetInfo parseLiveGetInfo(JSONObject data, LiveTopic liveTopic, int liveType, int from) {
         try {
-            Log.e("teamPk", "=====>parseLiveGetInfo:" + data.toString());
-
             LiveGetInfo getInfo = new LiveGetInfo(liveTopic);
             getInfo.setId(data.getString("id"));
             getInfo.setIs_show_ranks(data.optString("is_show_ranks"));
@@ -255,8 +249,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setStuLinkMicNum(data.optInt("stuLinkMicNum", 0));
             getInfo.setTestPaperUrl(data.optString("testPaperUrl", "http://live.xueersi.com/Live/getMultiTestPaper"));
             getInfo.setBlockChinese(data.optInt("blockChinese", 0) == 1);
-            getInfo.setSubjectiveTestAnswerResult(data.optString("getSubjectiveTestResultUrl", "https://live.xueersi" +
-                    ".com/Live/subjectiveTestAnswerResult/" + getInfo.getId()));
+            getInfo.setSubjectiveTestAnswerResult(data.optString("getSubjectiveTestResultUrl", "https://live.xueersi.com/Live/subjectiveTestAnswerResult/" + getInfo.getId()));
             LiveGetInfo.TotalOpeningLength totalOpeningLength = new LiveGetInfo.TotalOpeningLength();
             Object getTotalOpeningLengthObj = data.opt("getTotalOpeningLength");
             if (getTotalOpeningLengthObj instanceof JSONObject) {
@@ -267,8 +260,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             getInfo.setTotalOpeningLength(totalOpeningLength);
             getInfo.setPattern(data.optInt("pattern", 1));
+            getInfo.setRequestTime(data.optString("requestTime"));
             //解析学科id
-
             if(data.has("subject_ids")){
                 String strSubjIds = data.getString("subject_ids");
                 String[] arrSubjIds = strSubjIds.split(",");
@@ -282,9 +275,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return null;
     }
 
-    /**
-     * 解析直播服务器
-     */
+    /** 解析直播服务器 */
     public PlayServerEntity parsePlayerServer(JSONObject object) {
         PlayServerEntity server = new PlayServerEntity();
         try {
@@ -324,9 +315,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return null;
     }
 
-    /**
-     * 解析直播topic数据
-     */
+    /** 解析直播topic数据 */
     public LiveTopic parseLiveTopic(LiveTopic oldLiveTopic, JSONObject liveTopicJson, int type) throws JSONException {
         LiveTopic liveTopic = new LiveTopic();
         if (type != LiveBll.LIVE_TYPE_LIVE) {
@@ -538,12 +527,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     private int testid = 1;
     private boolean lyqTest = true;
 
-    public GoldTeamStatus redGoldTeamStatus(ResponseEntity responseEntity, String stuid) {
+    public GoldTeamStatus redGoldTeamStatus(ResponseEntity responseEntity, String stuid, String headUrl) {
         GoldTeamStatus entity = new GoldTeamStatus();
         try {
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
             JSONArray stuList = jsonObject.getJSONArray("stuList");
-            String avatar_path = "";
             for (int i = 0; i < stuList.length(); i++) {
                 try {
                     JSONObject stu = stuList.getJSONObject(i);
@@ -557,7 +545,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     student.setEn_name(stu.getString("en_name"));
                     student.createShowName();
                     student.setGold(stu.optString("gold"));
-                    avatar_path = stu.getString("avatar_path");
+                    String avatar_path = stu.getString("avatar_path");
                     student.setAvatar_path(avatar_path);
                     entity.getStudents().add(student);
                 } catch (Exception e) {
@@ -565,28 +553,54 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 }
             }
 //            if (AppConfig.DEBUG && lyqTest) {
-//                for (int i = 0; i < 2; i++) {
+//                for (int i = 0; i < 11; i++) {
 //                    GoldTeamStatus.Student student = new GoldTeamStatus.Student();
 //                    student.setStuId("12345" + testid++);
 //                    student.setName(student.getStuId());
-//                    student.setNickname("测试" + testid++);
+//                    student.setNickname("测试测试" + testid++);
+//                    if (i % 2 == 0) {
+//                        student.setEn_name("rrrrrrrr...");
+//                    }
+//                    student.createShowName();
 //                    student.setGold("1" + i);
-//                    student.setAvatar_path(avatar_path);
+//                    student.setAvatar_path(headUrl);
 //                    entity.getStudents().add(student);
 //                }
 //            }
         } catch (Exception e) {
             MobAgent.httpResponseParserError(TAG, "redGoldTeamStatus", e.getMessage());
         }
+//        if (AppConfig.DEBUG && lyqTest) {
+//            {
+//                GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                student.setStuId(stuid);
+//                student.setMe(true);
+//                student.setName(student.getStuId());
+//                student.setNickname("测试" + testid++);
+//                student.createShowName();
+//                student.setGold("99");
+//                student.setAvatar_path(headUrl);
+//                entity.getStudents().add(student);
+//            }
+//            for (int i = 0; i < 11; i++) {
+//                GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                student.setStuId("12345" + testid++);
+//                student.setName(student.getStuId());
+//                student.setNickname("测试" + testid++);
+//                student.createShowName();
+//                student.setGold("1" + i);
+//                student.setAvatar_path(headUrl);
+//                entity.getStudents().add(student);
+//            }
+//        }
         return entity;
     }
 
-    public GoldTeamStatus testAnswerTeamStatus(ResponseEntity responseEntity, String stuid) {
+    public GoldTeamStatus testAnswerTeamStatus(ResponseEntity responseEntity, String stuid, String headUrl) {
         GoldTeamStatus entity = new GoldTeamStatus();
         try {
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
             JSONArray stuList = jsonObject.getJSONArray("stuList");
-            String avatar_path = "";
             for (int i = 0; i < stuList.length(); i++) {
                 try {
                     JSONObject stu = stuList.getJSONObject(i);
@@ -600,7 +614,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     student.setEn_name(stu.getString("en_name"));
                     student.createShowName();
                     student.setRight(stu.optInt("isRight") == 1);
-                    avatar_path = stu.getString("avatar_path");
+                    String avatar_path = stu.getString("avatar_path");
                     student.setAvatar_path(avatar_path);
                     entity.getStudents().add(student);
                 } catch (Exception e) {
@@ -608,19 +622,30 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 }
             }
 //            if (AppConfig.DEBUG && lyqTest) {
-//                for (int i = 0; i < 3; i++) {
+//                for (int i = 0; i < 8; i++) {
 //                    GoldTeamStatus.Student student = new GoldTeamStatus.Student();
 //                    student.setStuId("12345" + testid++);
 //                    student.setName(student.getStuId());
 //                    student.setNickname("测试" + testid++);
 //                    student.setRight(i % 2 == 0);
-//                    student.setAvatar_path(avatar_path);
+//                    student.setAvatar_path(headUrl);
 //                    entity.getStudents().add(student);
 //                }
 //            }
         } catch (Exception e) {
-            MobAgent.httpResponseParserError(TAG, "redGoldTeamStatus", e.getMessage());
+            MobAgent.httpResponseParserError(TAG, "testAnswerTeamStatus", e.getMessage());
         }
+//        if (AppConfig.DEBUG && lyqTest) {
+//            for (int i = 0; i < 8; i++) {
+//                GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                student.setStuId("12345" + testid++);
+//                student.setName(student.getStuId());
+//                student.setNickname("测试" + testid++);
+//                student.setRight(i % 2 == 0);
+//                student.setAvatar_path(headUrl);
+//                entity.getStudents().add(student);
+//            }
+//        }
         return entity;
     }
 
@@ -659,6 +684,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //                    student.setStuId("12345" + testid++);
 //                    student.setName(student.getStuId());
 //                    student.setNickname("测试" + testid++);
+//                    student.createShowName();
 //                    student.setScore("" + (10 + i));
 //                    student.setAvatar_path(avatar_path);
 //                    entity.getStudents().add(student);
@@ -1438,12 +1464,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     /*
     * 解析更多课程的数据
     * */
-    public MoreChoice parseMoreChoice(ResponseEntity responseEntity) {
+    public MoreChoice parseMoreChoice(ResponseEntity responseEntity){
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         MoreChoice moreChoice = new MoreChoice();
         JSONArray casesjson = data.optJSONArray("cases");
         List<MoreChoice.Choice> choices = new ArrayList<>();
-        for (int i = 0; i < casesjson.length(); i++) {
+        for(int i = 0 ; i < casesjson.length() ; i++){
             JSONObject jsonObject = casesjson.optJSONObject(i);
             MoreChoice.Choice choice = new MoreChoice.Choice();
             choice.setSaleName(jsonObject.optString("saleName"));

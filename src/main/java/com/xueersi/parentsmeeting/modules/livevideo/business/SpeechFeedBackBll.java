@@ -47,6 +47,7 @@ import io.agora.rtc.RtcEngine;
  */
 public class SpeechFeedBackBll implements SpeechFeedBackAction {
     String TAG = "SpeechFeedBackBll";
+    LogToFile logToFile;
     boolean isStart = false;
     Activity activity;
     RelativeLayout bottomContent;
@@ -72,6 +73,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
     private short[] mPCMBuffer;
     private WorkerThread mWorkerThread;
     FileOutputStream outputStream;
+//    RtcEngine mRtcEngine;
     File saveVideoFile;
     private String roomId;
     private long joinTime;
@@ -96,6 +98,8 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
     public SpeechFeedBackBll(Activity activity, LiveBll liveBll) {
         this.activity = activity;
         this.liveBll = liveBll;
+        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+                + ".txt"));
     }
 
     public void setGetInfo(LiveGetInfo mGetInfo) {
@@ -113,21 +117,23 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
 
     @Override
     public void start(final String roomId) {
-        boolean permission = isHasPermission(activity);
-        umsagentCommand(2, "on", permission ? 1 : 0);
         if (isStart) {
             return;
         }
+        isStart = true;
+        boolean permission = isHasPermission(activity);
+        umsagentCommand(2, "on", permission ? 1 : 0);
         bottomContent.post(new Runnable() {
             @Override
             public void run() {
+                logToFile.i("start:speechFeedBackPager=" + (speechFeedBackPager == null));
                 speechFeedBackPager = new SpeechFeedBackPager(activity);
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
                 int screenWidth = ScreenUtils.getScreenWidth();
                 int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
                 params.rightMargin = wradio;
-                Loger.i(TAG, "add view");
+                Loger.i(TAG, "start:addView");
                 bottomContent.addView(speechFeedBackPager.getRootView(), params);
             }
         });
@@ -136,8 +142,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
             return;
         }
         this.roomId = roomId;
-        Loger.d(TAG, "start:roomId=" + roomId);
-        isStart = true;
+        logToFile.d("start:roomId=" + roomId);
         new Thread() {
             @Override
             public void run() {
@@ -147,7 +152,6 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                     int stuid = Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getStuId());
                     long time = System.currentTimeMillis();
                     mWorkerThread = new WorkerThread(activity, stuid, true);
-
                     try {
                         File alldir = activity.getExternalFilesDir(Environment.DIRECTORY_ALARMS + "/speechfeed");
                         if (alldir == null) {
@@ -161,6 +165,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                         mWorkerThread.setOnEngineCreate(new WorkerThread.OnEngineCreate() {
                             @Override
                             public void onEngineCreate(RtcEngine mRtcEngine) {
+//                                SpeechFeedBackBll.this.mRtcEngine = mRtcEngine;
                                 mRtcEngine.registerAudioFrameObserver(new IAudioFrameObserver() {
                                     @Override
                                     public boolean onRecordFrame(byte[] bytes, int i, int i1, int i2, int i3) {
@@ -191,7 +196,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
 
                         @Override
                         public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
-                            Loger.i(TAG, "joinchannelsuccess");
+                            logToFile.i("joinchannelsuccess:channel=" + channel + ",uid=" + uid);
                             joinTime = System.currentTimeMillis();
                             umsagentJoin();
                         }
@@ -208,7 +213,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
 
                         @Override
                         public void onUserOffline(int uid, int reason) {
-                            Loger.i(TAG, "useroffline");
+                            logToFile.i("useroffline:uid=" + uid + ",reason=" + reason);
                         }
 
                         @Override
@@ -217,7 +222,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                                 XESToastUtils.showToast(activity, "请检查是否获取麦克风权限");
                             }
                             umsagentError(err);
-                            Loger.i(TAG, "error" + err);
+                            logToFile.i("onError:err=" + err);
                             //SpeechFeedBackBll.this.stop();
                         }
 
@@ -230,12 +235,24 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                     mWorkerThread.waitForReady();
                     int vProfile = Constants.VIDEO_PROFILE_120P;
                     mWorkerThread.configEngine(Constants.CLIENT_ROLE_BROADCASTER, vProfile);
-                    mWorkerThread.joinChannel(null, roomId, stuid, new WorkerThread.OnJoinChannel() {
-                        @Override
-                        public void onJoinChannel(int joinChannel) {
-                            //VideoChatLog.sno4(liveBll, nonce, room, joinChannel);
-                        }
-                    });
+                    logToFile.i("onJoinChannel:isStart=" + isStart + ",roomId=" + roomId);
+                    if (isStart) {
+                        mWorkerThread.joinChannel(null, roomId, stuid, new WorkerThread.OnJoinChannel() {
+                            @Override
+                            public void onJoinChannel(int joinChannel) {
+                                logToFile.i("onJoinChannel:joinChannel=" + joinChannel + ",isStart=" + isStart);
+                                //VideoChatLog.sno4(liveBll, nonce, room, joinChannel);
+                                if (!isStart) {
+                                    mWorkerThread.leaveChannel(roomId, new WorkerThread.OnLevelChannel() {
+                                        @Override
+                                        public void onLevelChannel(int leaveChannel) {
+
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
                     //mAudioRecord.startRecording();
                     /*while (isStart) {
                         if (mAudioRecord != null) {
@@ -255,17 +272,24 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
 
     @Override
     public void stop() {
-        umsagentCommand(5, "off", 1);
         if (!isStart) {
             return;
         }
-        Loger.d(TAG, "stop:mAudioRecord=" + (mAudioRecord == null));
-        mWorkerThread.leaveChannel(roomId, new WorkerThread.OnLevelChannel() {
-            @Override
-            public void onLevelChannel(int leaveChannel) {
-                umsagentLeave();
-            }
-        });
+        isStart = false;
+        umsagentCommand(5, "off", 1);
+        logToFile.d("stop:mAudioRecord=" + (mAudioRecord == null) + ",mWorkerThread=" + (mWorkerThread == null));
+        if (mWorkerThread != null) {
+//            if (mRtcEngine != null) {
+//                mRtcEngine.registerAudioFrameObserver(null);
+//            }
+            mWorkerThread.leaveChannel(roomId, new WorkerThread.OnLevelChannel() {
+                @Override
+                public void onLevelChannel(int leaveChannel) {
+                    umsagentLeave();
+                }
+            });
+            mWorkerThread.exit();
+        }
         if (outputStream != null) {
             try {
                 outputStream.close();
@@ -309,7 +333,6 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                 });
             }
         }
-        isStart = false;
         if (mAudioRecord != null) {
             mAudioRecord.release();
             mAudioRecord = null;

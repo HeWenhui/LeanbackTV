@@ -71,6 +71,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
@@ -107,7 +108,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  *
  * @author linyuqiang
  */
-public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest {
+public class LiveVideoActivity extends LiveActivityBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest {
 
     private String TAG = "LiveVideoActivityLog";
     /** 播放器同步 */
@@ -187,7 +188,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
     SpeechEvaluatorUtils mIse;
     RankBll rankBll;
     EnglishH5CacheAction englishH5Cache;
-   // TeamPKBll teamPKBll; //战队pk
     private LiveRemarkBll liveRemarkBll;
     /** 视频宽度 */
     public static final float VIDEO_WIDTH = 1280f;
@@ -627,6 +627,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 }
             }.start();
         }
+        if(liveRemarkBll!=null){
+            liveRemarkBll.onPause();
+        }
     }
 
     @Override
@@ -964,9 +967,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                 englishH5Cache.getCourseWareUrl();
             }
             if (IS_SCIENCE) {
-                SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(this, mLiveBll);
-                speechFeedBackBll.setGetInfo(getInfo);
-                //SpeechFeedBackBllOld speechFeedBackBll = new SpeechFeedBackBllOld(this, mLiveBll);
+//                SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(this, mLiveBll);
+//                speechFeedBackBll.setGetInfo(getInfo);
+                SpeechFeedBackBllOld speechFeedBackBll = new SpeechFeedBackBllOld(this, mLiveBll);
                 speechFeedBackBll.setBottomContent(bottomContent);
                 speechFeedBackAction = speechFeedBackBll;
                 mLiveBll.setSpeechFeedBackAction(speechFeedBackBll);
@@ -1134,6 +1137,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
      *
      * @param modechange
      */
+    @Override
     public void rePlay(boolean modechange) {
         if (mGetInfo == null) {//上次初始化尚未完成
             return;
@@ -1316,9 +1320,10 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements VideoAct
                             } else {
                                 return;
                             }
-                            Map<String, String> mData = new HashMap<>();
-                            mData.put("message", "" + url);
-                            Loger.e(LiveVideoActivity.this, LiveVideoConfig.LIVE_GSLB, mData, true);
+                            StableLogHashMap stableLogHashMap = new StableLogHashMap("glsb3rdDnsReply");
+                            stableLogHashMap.put("message", "" + url);
+                            stableLogHashMap.put("activity", mContext.getClass().getSimpleName());
+                            Loger.e(mContext, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData(), true);
                         }
 
                         @Override

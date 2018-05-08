@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="fl_course_video_first_content" type="id" />
+    <item name="rl_course_video_first_content" type="id" />
     <item name="vs_course_video_video_texture" type="id" />
     <item name="ltv_course_video_video_texture" type="id" />
     <item name="rl_livevideo_student_load" type="id" />
@@ -46,6 +48,7 @@
     <item name="iv_livevideo_english_remind" type="id" />
     <item name="tv_livevideo_english_tip" type="id" />
     <item name="bt_livevideo_english_tip_ok" type="id" />
+    <item name="lav_live_stand_english_gold" type="id" />
     <!--直播排名-->
     <item name="rl_livevideo_rank_mygroup" type="id" />
     <item name="tv_livevideo_rank_mygroup" type="id" />
@@ -259,6 +262,7 @@
     <item name="iv_livevideo_redpackage_close" type="id" />
     <item name="tv_livevideo_redpackage_gold" type="id" />
     <item name="tv_livevideo_redpackage_autoclose" type="id" />
+    <item name="rl_livevideo_redpackage_team" type="id" />
     <item name="tv_livevideo_redpackage_name" type="id" />
     <item name="iv_livevideo_redpackage_num" type="id" />
     <item name="tv_livevideo_redpackage_num" type="id" />
@@ -484,7 +488,7 @@
     <item name="iv_live_stand_update_back" type="id" />
     <item name="rl_live_stand_update_prog" type="id" />
     <item name="tv_live_stand_update_prog" type="id" />
-    <item name="iv_live_stand_update_prog_arrow" type="id" />
+    <item name="iv_live_stand_update_prog_light" type="id" />
     <!--RolePlayer-->
     <item name="ll_roleplayer_main" type="id" />
     <item name="rl_live_roleplayer_matchpager" type="id" />

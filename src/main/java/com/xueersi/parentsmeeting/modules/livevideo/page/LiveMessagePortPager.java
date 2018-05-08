@@ -1,7 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.page;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -27,7 +25,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -62,7 +59,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.event.MiniEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
 import com.xueersi.xesalib.adapter.CommonAdapter;
@@ -76,8 +72,6 @@ import com.xueersi.xesalib.view.layout.dataload.DataErrorManager;
 import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -240,7 +234,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                         }
                         if (liveBll.openchat()) {
                             if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
-                                boolean send = liveBll.sendMessage(msg);
+                                boolean send = liveBll.sendMessage(msg, "");
                                 if (send) {
                                     messageBll.startCountDown(COUNT_TAG_MSG, (int) (SEND_MSG_INTERVAL / 1000));
                                     etMessageContent.setText("");

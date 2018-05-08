@@ -7,6 +7,7 @@
         android:id="@id/tv_livevideo_vote_result_count"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
         android:gravity="center"
         android:text="99% 1000人"
         android:textColor="@color/COLOR_333333"

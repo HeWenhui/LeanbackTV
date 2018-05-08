@@ -1057,6 +1057,12 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             onLiveFailure("服务器异常", null);
             return;
         }
+        if (mGetInfo.getPattern() == 2) {
+            ResponseEntity responseEntity = new ResponseEntity();
+            responseEntity.setErrorMsg("家长旁听暂不支持全身直播，程序员哥哥正在夜以继日的开发哦!");
+            onLiveError(responseEntity);
+            return;
+        }
         if (mGetInfo.getIsArts() == 1) {
             appID = UmsConstants.ARTS_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
@@ -1939,7 +1945,11 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         entity.addBodyParam("serverac", playserverEntity.getAcode());
         entity.addBodyParam("serveric", playserverEntity.getIcode());
         entity.addBodyParam("servergroup", playserverEntity.getGroup());
-        entity.addBodyParam("server", playserverEntity.getAddress());
+        if (StringUtils.isEmpty(playserverEntity.getIpAddress())) {
+            entity.addBodyParam("server", playserverEntity.getAddress());
+        } else {
+            entity.addBodyParam("server", playserverEntity.getIpAddress());
+        }
         entity.addBodyParam("appname", mServer.getAppname());
         entity.addBodyParam("reconnnum", "" + (mOpenCount.get() - 1));
         entity.addBodyParam("connsec", "" + (connsec / 1000));
@@ -1962,6 +1972,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     /** 使用第三方视频提供商提供的调度接口获得第三方播放域名对应的包括ip地址的播放地址 */
     public void dns_resolve_stream(final PlayServerEntity.PlayserverEntity playserverEntity, final PlayServerEntity mServer, String channelname, final AbstractBusinessDataCallBack callBack) {
         if (StringUtils.isEmpty(playserverEntity.getIp_gslb_addr())) {
+            callBack.onDataFail(3, "empty");
             return;
         }
         final StringBuilder url;
@@ -2020,40 +2031,57 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             @Override
             public void onFailure(Call call, IOException e) {
                 Loger.i(TAG, "dns_resolve_stream:onFailure=", e);
-                dataCallBack.onDataFail(0, "onFailure");
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        dataCallBack.onDataFail(0, "onFailure");
+                    }
+                });
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                int code = response.code();
-                String r = response.body().string();
-                Loger.i(TAG, "dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
-                if (response.code() >= 200 && response.code() <= 300) {
-                    if ("wangsu".equals(provide)) {
-                        String url = r.replace("\n", "");
-                        int index1 = url.substring(7).indexOf("/");
-                        if (index1 != -1) {
-                            String host = url.substring(7, 7 + index1);
-                            playserverEntity.setAddress(host);
-                        }
-                        dataCallBack.onDataSucess(provide, url);
-                    } else {
+            public void onResponse(Call call, final Response response) throws IOException {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        int code = response.code();
+                        String r = "";
                         try {
-                            JSONObject jsonObject = new JSONObject(r);
-                            String host = jsonObject.getString("host");
-                            JSONArray ipArray = jsonObject.optJSONArray("ips");
-                            String ip = ipArray.getString(0);
-                            String url = "rtmp://" + ip + "/" + host + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
-                            playserverEntity.setAddress(host);
-                            dataCallBack.onDataSucess(provide, url);
-                            mLogtf.d("dns_resolve_stream:ip_gslb_addr=" + playserverEntity.getIp_gslb_addr() + ",ip=" + ip);
-                            return;
+                            r = response.body().string();
+                            Loger.i(TAG, "dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
+                            if (response.code() >= 200 && response.code() <= 300) {
+                                if ("wangsu".equals(provide)) {
+//                        rtmp://111.202.83.208/live_server/x_3_55873?wsiphost=ipdb&wsHost=livewangsu.xescdn.com
+                                    String url = r.replace("\n", "");
+                                    int index1 = url.substring(7).indexOf("/");
+                                    if (index1 != -1) {
+                                        String host = url.substring(7, 7 + index1);
+                                        playserverEntity.setIpAddress(host);
+                                    }
+                                    dataCallBack.onDataSucess(provide, url);
+                                    return;
+                                } else {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(r);
+                                        String host = jsonObject.getString("host");
+                                        JSONArray ipArray = jsonObject.optJSONArray("ips");
+                                        String ip = ipArray.getString(0);
+                                        String url = "rtmp://" + ip + "/" + host + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+                                        playserverEntity.setIpAddress(host);
+                                        dataCallBack.onDataSucess(provide, url);
+                                        mLogtf.d("dns_resolve_stream:ip_gslb_addr=" + playserverEntity.getIp_gslb_addr() + ",ip=" + ip);
+                                        return;
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        dataCallBack.onDataFail(1, r);
                     }
-                }
-                dataCallBack.onDataFail(1, r);
+                });
             }
         });
     }

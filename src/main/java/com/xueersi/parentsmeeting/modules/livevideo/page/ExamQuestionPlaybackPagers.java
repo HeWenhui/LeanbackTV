@@ -100,7 +100,7 @@ public class ExamQuestionPlaybackPagers extends BasePager {
             public void onClick(View v) {
                 ViewGroup group = (ViewGroup) mView.getParent();
                 group.removeView(mView);
-//                videoActivity.stopExam();
+//                examStop.stopExam();
             }
         });
         bt_livevideo_subject_calljs.setOnClickListener(new View.OnClickListener() {
@@ -243,7 +243,7 @@ public class ExamQuestionPlaybackPagers extends BasePager {
                 ViewGroup group = (ViewGroup) mView.getParent();
                 if (group != null) {
                     group.removeView(mView);
-//                    videoActivity.stopExam();
+//                    examStop.stopExam();
                 }
                 Loger.i(TAG, "shouldOverrideUrlLoading:stopExam");
             } else {

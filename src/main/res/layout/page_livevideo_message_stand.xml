@@ -2,6 +2,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <Button
+        android:id="@id/bt_livevideo_message_open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/bg_livevideo_message_open" />
+
     <RelativeLayout
         android:id="@id/rl_live_stand_message_content"
         android:layout_width="match_parent"
@@ -9,9 +17,8 @@
 
         <RelativeLayout
             android:id="@id/rl_livevideo_info"
-            android:layout_width="300dp"
+            android:layout_width="265dp"
             android:layout_height="match_parent"
-            android:layout_marginTop="100dp"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -37,14 +44,15 @@
                     android:src="@drawable/bg_livevideo_message_offline" />
             </RelativeLayout>
 
-            <ListView
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveEdgeListView
                 android:id="@id/lv_livevideo_message"
                 style="@style/listview_common_style"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:divider="@null"
                 android:listSelector="@color/transparent"
+                android:paddingBottom="15dp"
                 android:paddingLeft="4dp"
                 android:paddingRight="4dp"
                 android:paddingTop="10dp"
@@ -94,8 +102,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/rl_livevideo_message_panelcontent"
+            android:layout_marginLeft="230dp"
+            android:layout_marginRight="109dp"
             android:gravity="center"
-            android:visibility="gone">
+            android:paddingBottom="15dp"
+            android:visibility="visible">
 
             <RelativeLayout
                 android:id="@+id/rl_livevideo_message_back"
@@ -108,7 +119,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/rl_livevideo_message_back"
                 android:layout_alignTop="@id/rl_livevideo_message_back"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="8dp">
 
                 <Button
                     android:id="@id/bt_livevideo_message_send"
@@ -119,7 +130,6 @@
                     android:layout_marginLeft="4dp"
                     android:layout_marginRight="12dp"
                     android:background="@drawable/selector_live_stand_chat_send"
-                    android:text="发送"
                     android:textColor="@color/white" />
 
                 <Button
@@ -159,8 +169,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignRight="@id/rl_livevideo_message_back"
                 android:layout_alignTop="@id/rl_livevideo_message_back"
-                android:layout_marginRight="6dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="6dp"
                 android:background="@drawable/selector_live_stand_chat_close" />
         </RelativeLayout>
 
@@ -176,13 +186,5 @@
         android:id="@id/lav_livevideo_chievement"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <Button
-        android:id="@id/bt_livevideo_message_open"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/bg_livevideo_message_open" />
 
 </RelativeLayout>

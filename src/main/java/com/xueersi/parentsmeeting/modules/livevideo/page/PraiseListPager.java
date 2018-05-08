@@ -737,7 +737,7 @@ public class PraiseListPager extends BasePager {
                     tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
                 }
                 tvName.setText(honorEntity.getStuName());
-                tvCounts.setText("×"+honorEntity.getExcellentNum());
+//                tvCounts.setText("×" + honorEntity.getExcellentNum());
             }
         }
     }

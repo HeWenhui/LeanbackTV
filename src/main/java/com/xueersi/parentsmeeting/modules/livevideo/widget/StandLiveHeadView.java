@@ -15,7 +15,6 @@ import android.util.AttributeSet;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
-import com.airbnb.lottie.model.layer.Layer;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -23,7 +22,6 @@ import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by linyuqiang on 2018/3/23.
@@ -128,8 +126,7 @@ public class StandLiveHeadView extends LottieAnimationView {
      * 设置名字
      */
     public void updateName() {
-        String num = "abcdefghijk";
-        num = name;
+        String num = StandLiveTextView.getShortName(name);
         AssetManager manager = getContext().getAssets();
         Bitmap img_7Bitmap;
         try {
@@ -144,9 +141,13 @@ public class StandLiveHeadView extends LottieAnimationView {
             canvas.drawBitmap(img_7Bitmap, 0, 0, null);
             Paint paint = new Paint();
             paint.setTextSize(24);
-            paint.setColor(Color.WHITE);
+            if (isMine) {
+                paint.setColor(Color.WHITE);
+            } else {
+                paint.setColor(0xffA56202);
+            }
             float width = paint.measureText(num);
-            canvas.drawText(num, img_3Bitmap.getWidth() / 2 + 5, img_7Bitmap.getHeight() / 2 + paint.measureText("a") / 2, paint);
+            canvas.drawText(num, img_3Bitmap.getWidth() / 2 + 5, img_7Bitmap.getHeight() / 2 + paint.measureText("学") / 2 - 5, paint);
             Bitmap oldBitmap = img_7Bitmap;
             img_7Bitmap = creatBitmap;
             oldBitmap.recycle();
@@ -212,7 +213,7 @@ public class StandLiveHeadView extends LottieAnimationView {
             img_7Bitmap = creatBitmap;
             oldBitmap.recycle();
 //            if (!isSystem) {
-            headBitmap.recycle();
+//                headBitmap.recycle();
 //            }
         } catch (IOException e) {
             Loger.e(TAG, "updateHead", e);

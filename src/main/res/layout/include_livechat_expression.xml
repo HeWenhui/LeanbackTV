@@ -1,6 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@id/rl_livevideo_message_expression"
@@ -13,7 +13,7 @@
             android:id="@id/hlv_chat_expression_hlvCustomList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <ImageView
             android:id="@id/iv_livevideo_message_expression_cancle"
@@ -21,13 +21,13 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:scaleType="centerInside"
-            android:src="@drawable/bg_livevideo_message_expression_cancle"/>
+            android:src="@drawable/bg_livevideo_message_expression_cancle" />
 
         <View
             android:layout_width="1px"
             android:layout_height="match_parent"
             android:layout_toLeftOf="@id/iv_livevideo_message_expression_cancle"
-            android:background="@color/COLOR_DCDCDC"/>
+            android:background="@color/COLOR_DCDCDC" />
     </RelativeLayout>
 
     <LinearLayout
@@ -44,46 +44,46 @@
             style="@style/dot_style"
             android:layout_marginBottom="12dp"
             android:layout_marginLeft="10dp"
-            android:background="@drawable/bg_expression_page_focused"/>
+            android:background="@drawable/bg_expression_page_focused" />
 
         <View
             android:id="@id/v_chat_expression_page1_select"
             style="@style/dot_style"
             android:layout_marginBottom="12dp"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginLeft="10dp" />
 
         <View
             android:id="@id/v_chat_expression_page2_select"
             style="@style/dot_style"
             android:layout_marginBottom="12dp"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginLeft="10dp" />
 
         <View
             android:id="@id/v_chat_expression_page3_select"
             style="@style/dot_style"
             android:layout_marginBottom="12dp"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginLeft="10dp" />
 
         <View
             android:id="@id/v_chat_expression_page4_select"
             style="@style/dot_style"
             android:layout_marginBottom="12dp"
             android:layout_marginLeft="10dp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <View
             android:id="@id/v_chat_expression_page5_select"
             style="@style/dot_style"
             android:layout_marginBottom="12dp"
             android:layout_marginLeft="10dp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <View
             android:id="@id/v_chat_expression_page6_select"
             style="@style/dot_style"
             android:layout_marginBottom="12dp"
             android:layout_marginLeft="10dp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </LinearLayout>
 
     <android.support.v4.view.ViewPager
@@ -93,7 +93,7 @@
         android:layout_above="@id/ll_chat_expression_page_select"
         android:layout_alignParentTop="true"
         android:background="#ddd"
-        android:visibility="gone">
-    </android.support.v4.view.ViewPager>
+        android:paddingTop="15dp"
+        android:visibility="gone" />
 
 </RelativeLayout>

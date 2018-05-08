@@ -24,7 +24,6 @@ import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
 import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.entity.AppInfoEntity;
 import com.xueersi.parentsmeeting.logerhelper.LogerTag;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
@@ -47,7 +46,7 @@ public class ExamQuestionPlaybackPager extends BasePager {
     private WebView wvSubjectWeb;
     private String liveid;
     private String num;
-    LivePlayBackVideoActivity videoActivity;
+    ExamStop examStop;
     private View errorView;
     /** 试卷地址 */
     private String examUrl = "";
@@ -57,9 +56,9 @@ public class ExamQuestionPlaybackPager extends BasePager {
     boolean IS_SCIENCE;
     String stuCouId;
 
-    public ExamQuestionPlaybackPager(Context context, String liveid, String num, boolean IS_SCIENCE, String stuCouId) {
+    public ExamQuestionPlaybackPager(Context context, String liveid, String num, boolean IS_SCIENCE, String stuCouId, ExamStop examStop) {
         super(context);
-        videoActivity = (LivePlayBackVideoActivity) context;
+        this.examStop = examStop;
         this.liveid = liveid;
         this.IS_SCIENCE = IS_SCIENCE;
         this.num = num;
@@ -100,7 +99,7 @@ public class ExamQuestionPlaybackPager extends BasePager {
             public void onClick(View v) {
                 ViewGroup group = (ViewGroup) mView.getParent();
                 group.removeView(mView);
-                videoActivity.stopExam();
+                examStop.stopExam();
             }
         });
         bt_livevideo_subject_calljs.setOnClickListener(new View.OnClickListener() {
@@ -248,7 +247,7 @@ public class ExamQuestionPlaybackPager extends BasePager {
                 ViewGroup group = (ViewGroup) mView.getParent();
                 if (group != null) {
                     group.removeView(mView);
-                    videoActivity.stopExam();
+                    examStop.stopExam();
                 }
                 Loger.i(TAG, "shouldOverrideUrlLoading:stopExam");
             } else {
@@ -265,5 +264,9 @@ public class ExamQuestionPlaybackPager extends BasePager {
         super.onDestroy();
         wvSubjectWeb.stopLoading();
         wvSubjectWeb.destroy();
+    }
+
+    public interface ExamStop {
+        void stopExam();
     }
 }

@@ -1052,7 +1052,12 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                     Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showExam");
                     mPlayVideoControlHandler.sendMessage(msg);
                     examQuestionPlaybackPager = new ExamQuestionPlaybackPager(LiveStandPlayBackVideoActivity.this,
-                            mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), IS_SCIENCE, stuCourId);
+                            mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), IS_SCIENCE, stuCourId, new ExamQuestionPlaybackPager.ExamStop() {
+                        @Override
+                        public void stopExam() {
+                            LiveStandPlayBackVideoActivity.this.stopExam();
+                        }
+                    });
                     rlQuestionContent.removeAllViews();
                     rlQuestionContent.addView(examQuestionPlaybackPager.getRootView(), new LayoutParams(LayoutParams
                             .MATCH_PARENT,
@@ -1091,9 +1096,11 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //                        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
 //                        lp.rightMargin = wradio;
                     } else {
-                        speechQuestionPlaybackPager = new SpeechAssessmentWebPager(LiveStandPlayBackVideoActivity.this,
+                        SpeechAssessmentWebPager speechAssessmentWebPager = new SpeechAssessmentWebPager(LiveStandPlayBackVideoActivity.this,
                                 mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), userInfoEntity.getStuId(),
                                 false, "", LiveStandPlayBackVideoActivity.this, stuCourId, IS_SCIENCE);
+                        speechAssessmentWebPager.setStandingLive(true);
+                        speechQuestionPlaybackPager = speechAssessmentWebPager;
                     }
                     speechQuestionPlaybackPager.initData();
                     rlQuestionContent.removeAllViews();
@@ -1554,20 +1561,27 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
             @Override
             public void onDataSucess(Object... objData) {
                 PlaybackVideoEvent.OnAnswerReslut onAnswerReslut = (PlaybackVideoEvent.OnAnswerReslut) objData[0];
-                VideoResultEntity entity = onAnswerReslut.getVideoResultEntity();
-                VideoQuestionEntity questionEntity = onAnswerReslut.getQuestionEntity();
+                final VideoResultEntity entity = onAnswerReslut.getVideoResultEntity();
+                final VideoQuestionEntity questionEntity = onAnswerReslut.getQuestionEntity();
                 questionEntity.setAnswered(true);
-                rlQuestionContent.removeAllViews();
-                questionViewGone("sendQuestionResultVoice");
+                mPlayVideoControlHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        rlQuestionContent.removeAllViews();
+                        if (answerReslut != null) {
+                            Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 14, 14, mQuestionEntity);
+                            mPlayVideoControlHandler.sendMessage(msg);
+                            seekTo(questionEntity.getvEndTime() * 1000);
+                            start();
+                        }
+                        questionViewGone("sendQuestionResultVoice");
+                    }
+                }, 2200);
+                if (answerReslut != null) {
+                    answerReslut.onAnswerReslut(questionEntity, entity);
+                }
                 if (voiceAnswerPager != null) {
                     stopVoiceAnswerPager();
-                }
-                if (answerReslut != null) {
-                    Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 14, 14, mQuestionEntity);
-                    mPlayVideoControlHandler.sendMessage(msg);
-                    answerReslut.onAnswerReslut(questionEntity, entity);
-                    seekTo(questionEntity.getvEndTime() * 1000);
-                    start();
                 }
                 answerResultChk(questionEntity, entity, true);
             }

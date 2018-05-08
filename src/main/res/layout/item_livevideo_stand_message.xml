@@ -11,10 +11,10 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/shape_live_stand_message_back"
         android:includeFontPadding="false"
-        android:paddingBottom="7dp"
-        android:paddingLeft="25dp"
-        android:paddingRight="27dp"
-        android:paddingTop="18dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="22dp"
         android:textColor="@color/white"
         android:textSize="14sp" />
 

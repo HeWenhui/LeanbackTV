@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.FontCache;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -70,7 +72,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     public BaseVoiceAnswerPager create(Context activity, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
                                        RelativeLayout rlQuestionContent, SpeechEvaluatorUtils mIse, LiveAndBackDebug liveAndBackDebug) {
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
-        VoiceAnswerStandLog.sno2(liveBll,videoQuestionLiveEntity);
+        VoiceAnswerStandLog.sno2(liveBll, videoQuestionLiveEntity);
         VoiceAnswerStandPager voiceAnswerPager2 = new VoiceAnswerStandPager(activity, baseVideoQuestionEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch, liveAndBackDebug, headUrl, userName);
         voiceAnswerPager2.setIse(mIse);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -123,23 +125,32 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                         }
                         return;
                     }
-                    final RelativeLayout group = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_livevideo_stand_voice_result, null);
+                    final RelativeLayout rlResult = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_livevideo_stand_voice_result, null);
                     LottieAnimationView lottieAnimationView = new LottieAnimationView(context);
                     lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/my_right");
                     lottieAnimationView.setComposition(lottieComposition);
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                     lp.addRule(RelativeLayout.CENTER_IN_PARENT);
-                    group.addView(lottieAnimationView, lp);
-                    questionBll.initQuestionAnswerReslut(group);
+                    rlResult.addView(lottieAnimationView, lp);
+//                    final ViewGroup group = (ViewGroup) baseVoiceAnswerPager.getRootView();
+//                    group.addView(rlResult);
+                    questionBll.initQuestionAnswerReslut(rlResult);
                     lottieAnimationView.playAnimation();
                     setRightGold(context, lottieAnimationView, entity.getGoldNum());
-                    group.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
+                    rlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            questionBll.removeQuestionAnswerReslut(group);
+//                            group.removeView(rlResult);
+                            questionBll.removeQuestionAnswerReslut(rlResult);
                         }
                     });
-                    group.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+//                    rlResult.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            group.removeView(rlResult);
+//                        }
+//                    }, 3200);
+                    rlResult.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
                         @Override
                         public void onViewAttachedToWindow(View v) {
 
@@ -178,23 +189,32 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                         }
                         return;
                     }
-                    final RelativeLayout group = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_livevideo_stand_voice_result_wrong, null);
+                    final RelativeLayout rlResult = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_livevideo_stand_voice_result_wrong, null);
                     LottieAnimationView lottieAnimationView = new LottieAnimationView(context);
                     lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/my_wrong");
                     lottieAnimationView.setComposition(lottieComposition);
                     lottieAnimationView.playAnimation();
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                     lp.addRule(RelativeLayout.CENTER_IN_PARENT);
-                    group.addView(lottieAnimationView, lp);
-                    questionBll.initQuestionAnswerReslut(group);
+                    rlResult.addView(lottieAnimationView, lp);
+//                    final ViewGroup group = (ViewGroup) baseVoiceAnswerPager.getRootView();
+//                    group.addView(rlResult);
+                    questionBll.initQuestionAnswerReslut(rlResult);
                     setWrongTip(context, lottieAnimationView, entity.getStandardAnswer());
-                    group.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
+                    rlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            questionBll.removeQuestionAnswerReslut(group);
+//                            group.removeView(rlResult);
+                            questionBll.removeQuestionAnswerReslut(rlResult);
                         }
                     });
-                    group.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+//                    group.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            group.removeView(rlResult);
+//                        }
+//                    }, 3200);
+                    rlResult.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
                         @Override
                         public void onViewAttachedToWindow(View v) {
 
@@ -226,6 +246,8 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             Paint paint = new Paint();
             paint.setTextSize(48);
             paint.setColor(0xffCC6E12);
+            Typeface fontFace = FontCache.getTypeface(context, "fangzhengyouyuan.ttf");
+            paint.setTypeface(fontFace);
             float width = paint.measureText(num);
             canvas.drawText(num, (img_7Bitmap.getWidth() - width) / 2, (img_7Bitmap.getHeight() + paint.measureText("a")) / 2, paint);
             img_7Bitmap.recycle();
@@ -250,7 +272,9 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             canvas.drawBitmap(img_7Bitmap, 0, 0, null);
             Paint paint = new Paint();
             paint.setTextSize(48);
-            paint.setColor(0xffCC6E12);
+            paint.setColor(0xff5586A3);
+            Typeface fontFace = FontCache.getTypeface(context, "fangzhengyouyuan.ttf");
+            paint.setTypeface(fontFace);
             float width = paint.measureText(num);
             canvas.drawText(num, (img_7Bitmap.getWidth() - width) / 2, (img_7Bitmap.getHeight() + paint.measureText("a")) / 2, paint);
             img_7Bitmap.recycle();

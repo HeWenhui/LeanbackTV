@@ -88,6 +88,8 @@ public class PlayServerEntity {
         private boolean useFlv;
         private String acode;
         private String address;
+        /** 播放地址域名的ip */
+        private String ipAddress;
         private String ccode;
         private String group;
         private String icode;
@@ -124,6 +126,14 @@ public class PlayServerEntity {
 
         public void setAddress(String address) {
             this.address = address;
+        }
+
+        public String getIpAddress() {
+            return ipAddress;
+        }
+
+        public void setIpAddress(String ipAddress) {
+            this.ipAddress = ipAddress;
         }
 
         public void setCcode(String ccode) {

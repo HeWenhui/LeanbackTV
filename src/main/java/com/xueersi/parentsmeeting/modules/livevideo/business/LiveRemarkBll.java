@@ -151,26 +151,27 @@ public class LiveRemarkBll {
                     return;
                 }
                 if (Math.round(vdfps) == 12) {
-                    mHttpManager.getCurTime(new HttpCallBack(false) {
-                        @Override
-                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                            Loger.i(TAG,responseEntity.getJsonObject().toString());
-                            long time=((JSONObject)responseEntity.getJsonObject()).optLong("time");
-                            setVideoOffset(time);
-                        }
-
-                        @Override
-                        public void onPmFailure(Throwable error, String msg) {
-                            super.onPmFailure(error, msg);
-                            setVideoOffset(0);
-                        }
-
-                        @Override
-                        public void onPmError(ResponseEntity responseEntity) {
-                            super.onPmError(responseEntity);
-                            setVideoOffset(0);
-                        }
-                    });
+//                    mHttpManager.getCurTime(new HttpCallBack(false) {
+//                        @Override
+//                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+//                            Loger.i(TAG,responseEntity.getJsonObject().toString());
+//                            long time=((JSONObject)responseEntity.getJsonObject()).optLong("time");
+//                            setVideoOffset(time);
+//                        }
+//
+//                        @Override
+//                        public void onPmFailure(Throwable error, String msg) {
+//                            super.onPmFailure(error, msg);
+//                            setVideoOffset(0);
+//                        }
+//
+//                        @Override
+//                        public void onPmError(ResponseEntity responseEntity) {
+//                            super.onPmError(responseEntity);
+//                            setVideoOffset(0);
+//                        }
+//                    });
+                    setVideoOffset(0);
                     //mTimer.cancel();
 
 
@@ -186,6 +187,9 @@ public class LiveRemarkBll {
         mCloudUploadBusiness = new XesCloudUploadBusiness(mContext);
     }
     private void setVideoOffset(long time){
+        if(mPlayerService.getPlayer()==null){
+            return;
+        }
         FrameInfo frameInfo = ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo();
         if(time==0) {
             offSet = System.currentTimeMillis() / 1000 + sysTimeOffset - frameInfo.pkt / 1000;
@@ -815,5 +819,11 @@ public class LiveRemarkBll {
         HashMap<String, String> map = new HashMap<>();
         map.put("logtype", "clickMarkDelete");
         mLiveAndBackDebug.umsAgentDebugInter("replay_mark", map);
+    }
+    public void onPause(){
+        if(mTimer!=null){
+            mTimer.cancel();
+        }
+        setVideoReady(false);
     }
 }

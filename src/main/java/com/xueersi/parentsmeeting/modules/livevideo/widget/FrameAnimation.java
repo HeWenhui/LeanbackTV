@@ -8,12 +8,14 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,8 +41,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class FrameAnimation {
     static String TAG = "FrameAnimation";
     String eventId = LiveVideoConfig.LIVE_FRAME_ANIM;
+    /** 是不是循环播放 */
     private boolean mIsRepeat;
-
+    /** 是循环播放的时候，是不是缓存图片 */
+    private boolean mCache = true;
     private AnimationListener mAnimationListener;
 
     private ImageView mImageView;
@@ -75,6 +79,8 @@ public class FrameAnimation {
 
     private int mCurrentFrame;
 
+    public static final float IMAGE_HEIGHT = 750f;
+
     private static final int SELECTED_A = 1;
 
     private static final int SELECTED_B = 2;
@@ -88,6 +94,10 @@ public class FrameAnimation {
     private boolean destory = false;
     private ThreadPoolExecutor executor;
     long beginTime;
+    /** 图片的密度 */
+    private int mDensity;
+    /** 1倍图片的密度 */
+    public static int DEFAULT_DENSITY = DisplayMetrics.DENSITY_MEDIUM;
 
     /**
      * @param iv       播放动画的控件
@@ -110,6 +120,7 @@ public class FrameAnimation {
         this.mDuration = duration;
         this.mLastFrame = files.length - 1;
         this.mIsRepeat = isRepeat;
+        mDensity = (int) (DEFAULT_DENSITY * (IMAGE_HEIGHT / (float) ScreenUtils.getScreenHeight()));
         if (files.length > 0) {
             play(0);
             executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
@@ -307,7 +318,12 @@ public class FrameAnimation {
                 final String file = files[i];
                 Bitmap bitmap = bitmapHashMap.get(file);
                 if (bitmap != null) {
-                    mView.setBackgroundDrawable(new FrameBitmapDrawable(bitmap, mView, file, i));
+                    if (mView instanceof ImageView) {
+                        ImageView imageView = (ImageView) mView;
+                        imageView.setImageDrawable(new FrameBitmapDrawable(bitmap, mView, file, i));
+                    } else {
+                        mView.setBackgroundDrawable(new FrameBitmapDrawable(bitmap, mView, file, i));
+                    }
                     if (i == mLastFrame) {
                         if (mIsRepeat) {
                             if (mAnimationListener != null) {
@@ -340,6 +356,7 @@ public class FrameAnimation {
                                             bitmap.recycle();
                                             return;
                                         }
+                                        bitmap.setDensity(mDensity);
                                         bitmapHashMap.put(file, bitmap);
                                         allBitmapHashMap.put(file, bitmap);
                                     }
@@ -355,7 +372,8 @@ public class FrameAnimation {
                                         }
                                         bitmapHashMap.put(file, bitmap);
                                         allBitmapHashMap.put(file, bitmap);
-                                        bitmap.setDensity(160);
+//                                        bitmap.setDensity(160);
+                                        bitmap.setDensity(mDensity);
                                     }
                                 }
                                 if (bitmap != null) {
@@ -367,8 +385,14 @@ public class FrameAnimation {
                                                 finalBitmap.recycle();
                                                 return;
                                             }
-                                            mView.setBackgroundDrawable(new FrameBitmapDrawable(finalBitmap, mView, file, i));
-                                            if (!mIsRepeat) {
+//                                            mView.setBackgroundDrawable(new FrameBitmapDrawable(finalBitmap, mView, file, i));
+                                            if (mView instanceof ImageView) {
+                                                ImageView imageView = (ImageView) mView;
+                                                imageView.setImageDrawable(new FrameBitmapDrawable(finalBitmap, mView, file, i));
+                                            } else {
+                                                mView.setBackgroundDrawable(new FrameBitmapDrawable(finalBitmap, mView, file, i));
+                                            }
+                                            if (!mIsRepeat || !mCache) {
                                                 if (i > 0) {
                                                     mView.post(new Runnable() {
                                                         @Override
@@ -517,6 +541,14 @@ public class FrameAnimation {
         }
     }
 
+    public void setDensity(int density) {
+        this.mDensity = density;
+    }
+
+    public void setCache(boolean mCache) {
+        this.mCache = mCache;
+    }
+
     public void removeBitmapCache(String file) {
         if (mIsRepeat) {
             bitmapHashMap.remove(file);
@@ -572,7 +604,11 @@ public class FrameAnimation {
     public static FrameAnimation createFromAees(Context mContext, View iv, String path, int duration, boolean isRepeat) {
         try {
             String[] files = {};
-            File externalFilesDir = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/live_stand/" + LiveStandFrameAnim.version), path);
+            File alldir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/live_stand");
+            if (alldir == null) {
+                alldir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/live_stand");
+            }
+            File externalFilesDir = new File(new File(alldir.getPath() + "/" + LiveStandFrameAnim.version), path);
             if (externalFilesDir.exists()) {
                 files = externalFilesDir.list();
                 if (files != null) {
@@ -602,7 +638,7 @@ public class FrameAnimation {
     }
 
     public static InputStream getInputStream(Context context, String file) throws IOException {
-        if (file.contains("xueersi")) {
+        if (file.contains(LiveStandFrameAnim.version)) {
             FileInputStream fileInputStream = new FileInputStream(file);
             return fileInputStream;
         }

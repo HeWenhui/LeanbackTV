@@ -397,7 +397,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 h5CoursewarePager.destroy();
                 bottomContent.removeView(h5CoursewarePager.getRootView());
                 h5CoursewarePager = null;
-                onQuestionShow(false);
+                if (!isAnaswer) {
+                    onQuestionShow(false);
+                }
                 mLiveBll.getStuGoldCount();
                 if (context instanceof WebViewRequest) {
                     WebViewRequest webViewRequest = (WebViewRequest) context;
@@ -506,6 +508,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
      */
     @Override
     public void initQuestionAnswerReslut(final View popupWindow_view) {
+        bottomContent.removeView(rlQuestionResContent);
+        bottomContent.addView(rlQuestionResContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         rlQuestionResContent.addView(popupWindow_view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         popupWindow_view.setOnClickListener(new View.OnClickListener() {
@@ -748,13 +752,27 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
         @Override
         public void getTestAnswerTeamStatus(BaseVideoQuestionEntity videoQuestionLiveEntity, AbstractBusinessDataCallBack callBack) {
-            final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
-            mLiveBll.getTestAnswerTeamStatus(videoQuestionLiveEntity1, callBack);
+            if (!"-1".equals(mLiveBll.getGetInfo().getRequestTime())) {
+                final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
+                mLiveBll.getTestAnswerTeamStatus(videoQuestionLiveEntity1, callBack);
+            }
         }
 
         @Override
         public void onAnswerTimeOutError(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
             baseVoiceAnswerCreat.onAnswerReslut(context, EnglishH5CoursewareBll.this, voiceAnswerPager, baseVideoQuestionEntity, entity);
+        }
+
+        @Override
+        public long getRequestTime() {
+            try {
+                String requestTime = mLiveBll.getGetInfo().getRequestTime();
+                long time = Long.parseLong(requestTime);
+                return time * 1000;
+            } catch (Exception e) {
+
+            }
+            return 3000;
         }
     }
 
@@ -830,6 +848,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     if (voiceAnswerPager instanceof VoiceAnswerPager) {
                         stopVoiceAnswerPager();
                     }
+                    mLiveBll.getStuGoldCount();
                     mH5AndBool.add(videoQuestionLiveEntity1.url);
                     try {
                         JSONObject object = new JSONObject();
