@@ -363,8 +363,9 @@ public class TeamPKBll {
      * @param data
      * @param isWin
      */
-    public void showAwardGetScene(int type, Object data, boolean isWin) {
+    public void showAwardGetScene(int type, final Object data, final boolean isWin) {
         Log.e("teampkBll", "======>showAwardGetScene called");
+     //   if (mFoucesPager == null || !(mFoucesPager instanceof TeamPkAwardPager)) {
         if (mFoucesPager == null || !(mFoucesPager instanceof TeamPkAwardPager)) {
             Log.e("teampkBll", "======>showAwardGetScene called 11111");
             TeamPkAwardPager awardGetPager = new TeamPkAwardPager(activity, this);
@@ -381,6 +382,26 @@ public class TeamPKBll {
             } else if (type == CHEST_TYPE_STUDENT) {
                 awardGetPager.showBoxLoop(isWin);
                 Log.e("teampkBll", "======>showAwardGetScene called 3333");
+            }
+        }else  if(mFoucesPager != null && (mFoucesPager instanceof TeamPkAwardPager)){
+            //由开宝箱直接切换到幸运之星页面
+            if(type == CHEST_TYPE_CLASS){
+                ((TeamPkAwardPager)mFoucesPager).closeAwardPager();
+                rlTeamPkContent.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        TeamPkAwardPager awardGetPager = new TeamPkAwardPager(activity, TeamPKBll.this);
+                        rlTeamPkContent.removeAllViews();
+                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.MATCH_PARENT);
+                        int screenWidth = ScreenUtils.getScreenWidth();
+                        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
+                        params.rightMargin = wradio;
+                        rlTeamPkContent.addView(awardGetPager.getRootView(), params);
+                        mFoucesPager = awardGetPager;
+                        awardGetPager.showClassChest((ClassChestEntity) data, isWin);
+                    }
+                },1000);
             }
         }
     }
