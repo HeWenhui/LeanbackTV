@@ -498,7 +498,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                         @Override
                         public void onPmError(ResponseEntity responseEntity) {
                             super.onPmError(responseEntity);
-                            Loger.i("RolePlayerDemoTest", "onPmError:" + responseEntity.getErrorMsg());
+                            Loger.i("RolePlayerDemoTest", "onPmError:" + responseEntity.toString());
                         }
 
                         @Override

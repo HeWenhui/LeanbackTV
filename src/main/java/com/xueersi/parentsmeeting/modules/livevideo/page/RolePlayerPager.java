@@ -1,7 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.page;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
@@ -59,104 +61,184 @@ import io.agora.rtc.Constants;
 
 public class RolePlayerPager extends BasePager<RolePlayerEntity> {
 
-    /** 匹配页默认停留时间 */
+    /**
+     * 匹配页默认停留时间
+     */
     private final int MATCH_WAIT_SECOND = 2000;
-    /** 角色确认页停留时间 */
+    /**
+     * 角色确认页停留时间
+     */
     private final int WAIT_ROLE_HEAD_SHOW = 2000;
 
-    /** 匹配页我的头像 */
+    /**
+     * 匹配页我的头像
+     */
     private CircleImageView civMatchHead;
 
-    /** 匹配页 */
+    /**
+     * 匹配页
+     */
     private RelativeLayout rlMatchPager;
-    /** 角色列表展示区 */
+    /**
+     * 角色列表展示区
+     */
     private RelativeLayout rlMatchRoleList;
-    /** 角色显示页 */
+    /**
+     * 角色显示页
+     */
     private RelativeLayout rlMatchLottie;
-    /** 准备开始朗读前的提示文案 */
+    /**
+     * 准备开始朗读前的提示文案
+     */
     private TextView tvBeginTipMsg;
-    /** 倒计时器 */
+    /**
+     * 倒计时器
+     */
     private TextView tvCountTime;
-    /** 角色展示列表 */
+    /**
+     * 角色展示列表
+     */
     private GridView gvRoleHeadShow;
-    /** 朗读区 */
+    /**
+     * 朗读区
+     */
     private RelativeLayout rlRoleReadMain;
 
-    /** 测评音量条展示区 */
+    /**
+     * 测评音量条展示区
+     */
     private RelativeLayout rlSpeechVolumnMain;
-    /** 测评音量波形 */
+    /**
+     * 测评音量波形
+     */
     private VolumeWaveView vwvSpeechVolume;
 
-    /** 结果页 */
+    /**
+     * 结果页
+     */
     private RelativeLayout rlResult;
 
-    /** 角色展示区适配器 */
+    /**
+     * 角色展示区适配器
+     */
     private RolePlayerHeadShowAdapter mHeadShowAdapter;
 
-    /** 对话区 */
+    /**
+     * 对话区
+     */
     private ListView lvReadList;
 
-    /** 点赞区 */
+    /**
+     * 点赞区
+     */
     private RelativeLayout rlDZBubbleMessage;
 
-    /** 对话数据适配器 */
+    /**
+     * 对话数据适配器
+     */
     private CommonAdapter<RolePlayerEntity.RolePlayerMessage> mRolePlayerAdapter;
 
-    /** 当前正在朗读的索引 */
+    /**
+     * 当前正在朗读的索引
+     */
     private int mCurrentReadIndex;
 
     private View vHead;
 
-    /** 角色业务 */
+    /**
+     * 角色业务
+     */
     private RolePlayerBll mRolePlayBll;
 
-    /** 语音评测 */
+    /**
+     * 语音评测
+     */
     protected SpeechEvaluatorUtils mIse;
     private SpeechEvaluatorInter speechEvaluatorInter;
     private File saveVideoFile, dir;
-    /** 声网 */
+    /**
+     * 声网
+     */
     private WorkerThread mWorkerThread;
 
-    /** 结果总分 */
+    /**
+     * 结果总分
+     */
     private TextView tvTotalScore;
-    /** 获得的点赞数 */
+    /**
+     * 获得的点赞数
+     */
     private TextView tvDzCount;
-    /** 流畅性 */
+    /**
+     * 流畅性
+     */
     private TextView tvFluency;
-    /** 金币数 */
+    /**
+     * 金币数
+     */
     private TextView tvGoldCount;
-    /** 准确性 */
+    /**
+     * 准确性
+     */
     private TextView tvAccuracy;
-    /** 结果页自己的头像 */
+    /**
+     * 结果页自己的头像
+     */
     private CircleImageView civResultHeadImg;
-    /** 总评 */
+    /**
+     * 总评
+     */
     private TextView tvResultMsgTip;
 
-    /** 排名1 */
+    /**
+     * 排名1
+     */
     private RelativeLayout rlResultRole1;
-    /** 排名1头像 */
+    /**
+     * 排名1头像
+     */
     private CircleImageView civResultRoleHeadImg1;
-    /** 排名1分数 */
+    /**
+     * 排名1分数
+     */
     private TextView tvResultRoleScore1;
-    /** 排名1名字 */
+    /**
+     * 排名1名字
+     */
     private TextView tvResultRoleName1;
 
-    /** 排名2 */
+    /**
+     * 排名2
+     */
     private RelativeLayout rlResultRole2;
-    /** 排名2头像 */
+    /**
+     * 排名2头像
+     */
     private CircleImageView civResultRoleHeadImg2;
-    /** 排名2分数 */
+    /**
+     * 排名2分数
+     */
     private TextView tvResultRoleScore2;
-    /** 排名2名字 */
+    /**
+     * 排名2名字
+     */
     private TextView tvResultRoleName2;
 
-    /** 排名3 */
+    /**
+     * 排名3
+     */
     private RelativeLayout rlResultRole3;
-    /** 排名3头像 */
+    /**
+     * 排名3头像
+     */
     private CircleImageView civResultRoleHeadImg3;
-    /** 排名3分数 */
+    /**
+     * 排名3分数
+     */
     private TextView tvResultRoleScore3;
-    /** 排名3名字 */
+    /**
+     * 排名3名字
+     */
     private TextView tvResultRoleName3;
 
     public RolePlayerPager(Context context, RolePlayerEntity obj, boolean isNewView, RolePlayerBll rolePlayerBll) {
@@ -166,7 +248,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        mWorkerThread = new WorkerThread(ContextManager.getApplication(), Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getStuId()), false, true);
+        mWorkerThread = new WorkerThread(ContextManager.getApplication(), Integer.parseInt(UserBll.getInstance()
+                .getMyUserInfoEntity().getStuId()), false, true);
 
 
     }
@@ -245,17 +328,18 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(mEntity != null){
+                if (mEntity != null) {
                     List<RolePlayerEntity.RolePlayerHead> rolePlayerHeads = mEntity.getLstRoleInfo();
-                    List<RolePlayerEntity.RolePlayerMessage> rolePlayerMessages =  mEntity.getLstRolePlayerMessage();
-                    if (rolePlayerHeads != null && rolePlayerHeads.size() > 0 &&  rolePlayerMessages != null && rolePlayerMessages.size() > 0) {
+                    List<RolePlayerEntity.RolePlayerMessage> rolePlayerMessages = mEntity.getLstRolePlayerMessage();
+                    if (rolePlayerHeads != null && rolePlayerHeads.size() > 0 && rolePlayerMessages != null &&
+                            rolePlayerMessages.size() > 0) {
                         rlMatchLottie.setVisibility(View.GONE);
                         rlMatchRoleList.setVisibility(View.VISIBLE);
                         roleConfirmPage(); //确定角色开始RolePlayer
                     } else {
                         XESToastUtils.showToast(mContext, "无朗读数据");
                     }
-                }else {
+                } else {
                     XESToastUtils.showToast(mContext, "无朗读数据");
                 }
 
@@ -321,7 +405,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         }, 1000);
 //
         //填充对话内容
-        mRolePlayerAdapter = new CommonAdapter<RolePlayerEntity.RolePlayerMessage>(mEntity.getLstRolePlayerMessage(), 2) {
+        mRolePlayerAdapter = new CommonAdapter<RolePlayerEntity.RolePlayerMessage>(mEntity.getLstRolePlayerMessage(),
+                2) {
             @Override
             public AdapterItemInterface<RolePlayerEntity.RolePlayerMessage> getItemView(Object type) {
                 if ((boolean) type) {
@@ -343,7 +428,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
 
         vHead = new View(mContext);
         //修改类型转换异常
-        ListView.LayoutParams lp = new ListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SizeUtils.Dp2Px(mContext, 50));
+        ListView.LayoutParams lp = new ListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SizeUtils.Dp2Px
+                (mContext, 50));
         vHead.setLayoutParams(lp);
         lvReadList.addFooterView(vHead);
 
@@ -364,12 +450,18 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
 
     }
 
-    /** 开始朗读下一条 */
+    /**
+     * 开始朗读下一条
+     */
     private final static int READ_MESSAGE = 100;
-    /** 去评测 */
+    /**
+     * 去评测
+     */
     private final static int GO_SPEECH = 200;
 
-    /** 用来自动朗读 */
+    /**
+     * 用来自动朗读
+     */
     Handler mReadHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -383,7 +475,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                     }
                     vwvSpeechVolume.stop();
                     if (position == 0) {
-                        RolePlayerEntity.RolePlayerMessage upMessage = mEntity.getLstRolePlayerMessage().get(mCurrentReadIndex - 1);
+                        RolePlayerEntity.RolePlayerMessage upMessage = mEntity.getLstRolePlayerMessage().get
+                                (mCurrentReadIndex - 1);
                         if ((mCurrentReadIndex - 1) == mEntity.getSelfLastIndex()) {
                             mRolePlayBll.requestResult();
                         }
@@ -392,7 +485,9 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                         }
                         if (upMessage.getRolePlayer().isSelfRole()) {
                             //自己朗读完毕，只通知除自己以外的其他组内成员
-                            mRolePlayBll.selfReadEnd(upMessage.getStars(), upMessage.getSpeechScore(), upMessage.getFluency(), upMessage.getAccuracy(), upMessage.getPosition(),mEntity,upMessage.getRolePlayer().getRoleId());
+                            mRolePlayBll.selfReadEnd(upMessage.getStars(), upMessage.getSpeechScore(), upMessage
+                                            .getFluency(), upMessage.getAccuracy(), upMessage.getPosition(), mEntity,
+                                    upMessage.getRolePlayer().getRoleId());
                         }
                         mRolePlayerAdapter.updataSingleRow(lvReadList, upMessage);
 
@@ -420,10 +515,11 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 }
 
                 //取出当前这条的延时时间
-                RolePlayerEntity.RolePlayerMessage currentMessage = mEntity.getLstRolePlayerMessage().get(mCurrentReadIndex);
+                RolePlayerEntity.RolePlayerMessage currentMessage = mEntity.getLstRolePlayerMessage().get
+                        (mCurrentReadIndex);
                 currentMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY);
                 mRolePlayerAdapter.updataSingleRow(lvReadList, currentMessage);
-                speechReadMessage(currentMessage,mEntity);
+                speechReadMessage(currentMessage, mEntity);
 
                 mCurrentReadIndex++;
                 Message temp = mReadHandler.obtainMessage();
@@ -450,12 +546,14 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         mWorkerThread.waitForReady();
         int vProfile = Constants.VIDEO_PROFILE_120P;
         mWorkerThread.configEngine(Constants.CLIENT_ROLE_BROADCASTER, vProfile);
-        mWorkerThread.joinChannel(null, mEntity.getLiveId() + "_" + mEntity.getTestId() + "_" + mEntity.getTeamId(), Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getStuId()), new WorkerThread.OnJoinChannel() {
-            @Override
-            public void onJoinChannel(int joinChannel) {
-                Loger.i("RolePlayerDemoTest", "声网:" + joinChannel);
-            }
-        });
+        mWorkerThread.joinChannel(null, mEntity.getLiveId() + "_" + mEntity.getTestId() + "_" + mEntity.getTeamId(),
+                Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getStuId()), new WorkerThread
+                        .OnJoinChannel() {
+                    @Override
+                    public void onJoinChannel(int joinChannel) {
+                        Loger.i("RolePlayerDemoTest", "声网:" + joinChannel);
+                    }
+                });
     }
 
     /**
@@ -488,7 +586,25 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             tvFluency.setText("流畅性:" + head.getFluency());
             tvGoldCount.setText(mEntity.getGoldCount() + "");
             tvAccuracy.setText("准确性:" + head.getAccuracy());
-            ImageLoader.with(mContext).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg()).into(civResultHeadImg);
+
+            /** catch exception:java.lang.IllegalArgumentException: You cannot start a load for a destroyed activity;
+             *
+             *  at com.bumptech.glide.manager.RequestManagerRetriever.assertNotDestroyed(RequestManagerRetriever
+             *  .java:284) at com.bumptech.glide.manager.RequestManagerRetriever.get(RequestManagerRetriever.java:145)
+             *  at com.bumptech.glide.manager.RequestManagerRetriever.get(RequestManagerRetriever.java:111)
+             *  at com.bumptech.glide.Glide.with(Glide.java:554)
+             *
+             * 通过查看源码发现，异常的原因在于，当前activity已经销毁，所以无法加载角色头像
+             *
+             * */
+            if (mContext instanceof Activity) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    if (!((Activity) mContext).isDestroyed()) {
+                        ImageLoader.with(mContext).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg())
+                                .into(civResultHeadImg);
+                    }
+                }
+            }
 
             if (lstHead.size() >= 1) {
                 RolePlayerEntity.RolePlayerHead head1 = lstHead.get(0);
@@ -619,7 +735,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                             message.setWebVoiceUrl(saveVideoFile.getAbsolutePath());
                             message.setLevel(resultEntity.getLevel());
                             //上传自己读完的语句，只通知除了自己以外的其他组内成员
-                            mRolePlayBll.uploadFileToAliCloud(saveVideoFile.getAbsolutePath(), message,entity,message.getRolePlayer().getRoleId());
+                            mRolePlayBll.uploadFileToAliCloud(saveVideoFile.getAbsolutePath(), message, entity,
+                                    message.getRolePlayer().getRoleId());
                             XESToastUtils.showToast(mContext, resultEntity.getScore() + "");
                             //提前开始下一条
                             nextReadMessage();
@@ -658,7 +775,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         mEntity.setPullDZCount(mEntity.getPullDZCount() + 1);
         final View view = View.inflate(mContext, R.layout.layout_livevideo_roleplayer_bubble_message_dz, null);
         TextView tvMessage = view.findViewById(R.id.tv_livevideo_roleplayer_bubble_message);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, R.id.rl_live_roleplayer_dz_message_bubble_main);
         lp.addRule(RelativeLayout.CENTER_HORIZONTAL, R.id.rl_live_roleplayer_dz_message_bubble_main);
         tvMessage.setText(roleName + "给你点赞啦~");
@@ -785,13 +903,21 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
 
 
         class Holder {
-            /** 昵称 */
+            /**
+             * 昵称
+             */
             private TextView tvNickName;
-            /** 阴影 */
+            /**
+             * 阴影
+             */
             private ImageView ivHeadShadow;
-            /** 头像 */
+            /**
+             * 头像
+             */
             private CircleImageView civHeadImg;
-            /** 角色名 */
+            /**
+             * 角色名
+             */
             private TextView tvRoleName;
         }
     }
