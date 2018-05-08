@@ -445,6 +445,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                 case 2000:
                     //分组结果
                     if (mRolePlayerEntity != null) {
+                        mRolePlayerEntity.getLstRoleInfo().clear();
                         mRolePlayerEntity.setTestId(msgObj.optString("testId"));
                         mRolePlayerEntity.setTeamId(msgObj.optInt("team"));
                         JSONArray arrRole = msgObj.optJSONArray("teamUsers");

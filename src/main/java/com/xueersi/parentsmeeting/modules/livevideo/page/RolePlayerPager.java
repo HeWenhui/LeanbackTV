@@ -245,15 +245,20 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                List<RolePlayerEntity.RolePlayerHead> rolePlayerHeads = mEntity.getLstRoleInfo();
-                List<RolePlayerEntity.RolePlayerMessage> rolePlayerMessages =  mEntity.getLstRolePlayerMessage();
-                if (rolePlayerHeads != null && rolePlayerHeads.size() > 0 &&  rolePlayerMessages != null && rolePlayerMessages.size() > 0) {
-                    rlMatchLottie.setVisibility(View.GONE);
-                    rlMatchRoleList.setVisibility(View.VISIBLE);
-                    roleConfirmPage(); //确定角色开始RolePlayer
-                } else {
+                if(mEntity != null){
+                    List<RolePlayerEntity.RolePlayerHead> rolePlayerHeads = mEntity.getLstRoleInfo();
+                    List<RolePlayerEntity.RolePlayerMessage> rolePlayerMessages =  mEntity.getLstRolePlayerMessage();
+                    if (rolePlayerHeads != null && rolePlayerHeads.size() > 0 &&  rolePlayerMessages != null && rolePlayerMessages.size() > 0) {
+                        rlMatchLottie.setVisibility(View.GONE);
+                        rlMatchRoleList.setVisibility(View.VISIBLE);
+                        roleConfirmPage(); //确定角色开始RolePlayer
+                    } else {
+                        XESToastUtils.showToast(mContext, "无朗读数据");
+                    }
+                }else {
                     XESToastUtils.showToast(mContext, "无朗读数据");
                 }
+
             }
         }, MATCH_WAIT_SECOND);
 
