@@ -126,9 +126,13 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
      */
     private void showRedPacket(final int operateId) {
         mLogtf.d("showRedPacket:operateId=" + operateId);
-//        rlRedpacketContent.removeAllViews();
         RedPackageStandLog.sno1(liveAndBackDebug, "" + operateId);
         final RedPackagePage oldRedPackagePage = redPackagePage;
+        if (oldRedPackagePage != null) {
+            //新的红包来了，移除旧的
+            packagePageHashMap.remove("" + oldRedPackagePage.getOperateId());
+            rlRedpacketContent.removeView(oldRedPackagePage.getRootView());
+        }
         redPackagePage = new RedPackagePage(activity, operateId, new RedPackagePage.RedPackagePageAction() {
 
             @Override
@@ -140,7 +144,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                         RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
                         redPackagePage.onGetPackage(entity);
                         receiveGold.onReceiveGold();
-                        if (clickPackage == 1) {
+                        if (clickPackage == RedPackagePage.CLICK_PACKAGE_1) {
                             //结果页增加自己数据
                             MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
                             GoldTeamStatus goldTeamStatus = new GoldTeamStatus();
@@ -216,14 +220,13 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
 
             @Override
             public void onPackageRight(int operateId) {
-                if (oldRedPackagePage != null) {
-                    oldRedPackagePage.onOtherPackage();
-                }
+//                if (oldRedPackagePage != null) {
+//                    oldRedPackagePage.onOtherPackage();
+//                }
             }
         }, userName, headUrl, isLive, liveAndBackDebug);
         View view = redPackagePage.getRootView();
         packagePageHashMap.put("" + operateId, redPackagePage);
-//        view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
         view.setTag(operateId);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         rlRedpacketContent.addView(view, params);
@@ -345,12 +348,34 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     }
 
     public interface ReceiveGold {
+        /**
+         * 请求获得红包
+         *
+         * @param operateId
+         * @param liveId
+         * @param callBack
+         */
         void sendReceiveGold(final int operateId, String liveId, AbstractBusinessDataCallBack callBack);
 
+        /**
+         * 请求小组成员得到红包
+         *
+         * @param operateId
+         * @param callBack
+         */
         void getReceiveGoldTeamStatus(int operateId, AbstractBusinessDataCallBack callBack);
 
+        /**
+         * 请求小组成员得到红包的top3
+         *
+         * @param operateId
+         * @param callBack
+         */
         void getReceiveGoldTeamRank(int operateId, AbstractBusinessDataCallBack callBack);
 
+        /**
+         * 当请求到红包
+         */
         void onReceiveGold();
     }
 }
