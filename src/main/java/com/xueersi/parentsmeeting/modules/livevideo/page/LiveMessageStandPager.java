@@ -205,7 +205,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             inputStream = mContext.getAssets().open(fileName);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 //            bitmap.setDensity((int) (DisplayMetrics.DENSITY_MEDIUM * (FrameAnimation.IMAGE_HEIGHT / (float) com.xueersi.parentsmeeting.util.ScreenUtils.getScreenHeight(mView.getContext()))));
-            bitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
+            bitmap.setDensity((int) (FrameAnimation.DEFAULT_DENSITY * 2.8f / ScreenUtils.getScreenDensity()));
             btMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
             inputStream.close();
         } catch (IOException e) {
@@ -225,7 +225,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     private void initBtMesOpenAnimation() {
         if (lvMessage.getVisibility() == View.GONE) {
             btMesOpenAnimation = FrameAnimation.createFromAees(mContext, btMesOpen, "live_stand/frame_anim/openmsg", 50, false);
-            btMesOpenAnimation.setDensity(FrameAnimation.DEFAULT_DENSITY);
+            btMesOpenAnimation.setDensity((int) (FrameAnimation.DEFAULT_DENSITY * 2.8f / ScreenUtils.getScreenDensity()));
 //            btMesOpenAnimation.restartAnimation();
             btMesOpenAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
                 @Override
@@ -305,7 +305,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                 InputMethodManager mInputMethodManager = (InputMethodManager) mContext.getSystemService(Context
                         .INPUT_METHOD_SERVICE);
                 mInputMethodManager.hideSoftInputFromWindow(etMessageContent.getWindowToken(), 0);
-                rlMessageContent.setVisibility(View.GONE);
+                btMesOpen.performClick();
+//                rlMessageContent.setVisibility(View.GONE);
             }
         });
         etMessageContent.setOnEditorActionListener(new TextView.OnEditorActionListener() {

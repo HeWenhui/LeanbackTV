@@ -169,9 +169,11 @@
                 android:layout_height="wrap_content"
                 android:layout_alignRight="@id/rl_livevideo_message_back"
                 android:layout_alignTop="@id/rl_livevideo_message_back"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="6dp"
-                android:background="@drawable/selector_live_stand_chat_close" />
+                android:paddingBottom="6dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="6dp"
+                android:src="@drawable/selector_live_stand_chat_close" />
         </RelativeLayout>
 
         <master.flame.danmaku.danmaku.ui.widget.DanmakuView
