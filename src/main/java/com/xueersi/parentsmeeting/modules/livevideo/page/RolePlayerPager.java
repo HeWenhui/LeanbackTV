@@ -64,11 +64,11 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     /**
      * 匹配页默认停留时间
      */
-    private final int MATCH_WAIT_SECOND = 2000;
+    private final int MATCH_WAIT_SECOND = 3000;
     /**
      * 角色确认页停留时间
      */
-    private final int WAIT_ROLE_HEAD_SHOW = 2000;
+    private final int WAIT_ROLE_HEAD_SHOW = 3000;
 
     /**
      * 匹配页我的头像
@@ -524,7 +524,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 mCurrentReadIndex++;
                 Message temp = mReadHandler.obtainMessage();
                 temp.what = READ_MESSAGE;
-                mReadHandler.sendMessageDelayed(temp, (currentMessage.getMaxReadTime() + 1) * 1000);
+                mReadHandler.sendMessageDelayed(temp, (currentMessage.getMaxReadTime()) * 1000);
                 mReadHandler.sendEmptyMessageDelayed(GO_SPEECH, (currentMessage.getMaxReadTime() - 1) * 1000);
             } else if (msg.what == GO_SPEECH) {
                 //结束评测

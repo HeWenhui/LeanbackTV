@@ -414,7 +414,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                             Loger.i("RolePlayerDemoTest", "收到 " + from + " 读完 " + " mRolePlayerEntity" +
                                     ".getLstRolePlayerMessage().size() = " + mRolePlayerEntity
                                     .getLstRolePlayerMessage().size());
-                            int position = msgObj.optInt("index");
+                            final int position = msgObj.optInt("index");
                             JSONObject obj = msgObj.optJSONObject("data");
                             int totalScore = obj.optInt("totalScore");
                             int fluency = obj.optInt("fluency");
@@ -432,6 +432,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                                         @Override
                                         public void run() {
                                             mRolePlayerPager.updateRolePlayList(message);
+                                            //对方提前读完
+                                            mRolePlayerPager.nextRextMessage(position);
                                         }
                                     });
 
