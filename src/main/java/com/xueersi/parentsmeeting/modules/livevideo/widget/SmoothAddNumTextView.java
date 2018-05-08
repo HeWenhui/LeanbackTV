@@ -5,6 +5,8 @@ import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
+
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 /**
@@ -89,6 +91,10 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
                 SmoothAddNumTextView.this.setText(currentNum + "");
                 currentNum += increment;
                 SmoothAddNumTextView.this.postDelayed(this, timeGap);
+            }else{
+                if(currentNum > endNum){
+                    SmoothAddNumTextView.this.setText(endNum + "");
+                }
             }
         }
     }
