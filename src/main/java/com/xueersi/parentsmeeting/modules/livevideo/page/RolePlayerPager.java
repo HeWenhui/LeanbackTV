@@ -354,6 +354,13 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      */
     private void roleConfirmPage() {
         mHeadShowAdapter = new RolePlayerHeadShowAdapter(mContext, mEntity.getLstRoleInfo());
+        int roleHeadsSize = mEntity.getLstRoleInfo().size();
+        //当角色小于3个的时候，为保证角色头像都居中显示，动态改变列数
+        if (roleHeadsSize < 3) {
+            gvRoleHeadShow.setNumColumns(roleHeadsSize);
+        } else {
+            gvRoleHeadShow.setNumColumns(3);
+        }
         gvRoleHeadShow.setAdapter(mHeadShowAdapter);
 
         new Handler().postDelayed(new Runnable() {
