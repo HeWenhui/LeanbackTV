@@ -16,6 +16,8 @@ import com.xueersi.parentsmeeting.cloud.config.XesCloudConfig;
 import com.xueersi.parentsmeeting.cloud.entity.CloudUploadEntity;
 import com.xueersi.parentsmeeting.cloud.entity.XesCloudResult;
 import com.xueersi.parentsmeeting.cloud.listener.XesStsUploadListener;
+import com.xueersi.parentsmeeting.entity.AnswerEntity;
+import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
@@ -58,7 +60,10 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      * WebSocket连接类
      */
     private WebSocketConn mWebSocket;
-
+    /**
+     * 麦克风权限拒绝；没有分组；没有试题返回的时候的错误回调，帮助进人机
+     */
+    OnError onError;
     /**
      * 连接地址
      */
@@ -112,27 +117,32 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
             @Override
             public void onFinish() {
-
+                Loger.i("RolePlayerDemoTest", "没开启录音权限无法参与RolePlayer");
             }
 
             @Override
             public void onDeny(String permission, int position) {
                 XESToastUtils.showToast(mContext, "没开启录音权限无法参与RolePlayer");
+                Loger.i("RolePlayerDemoTest", "没开启录音权限无法参与RolePlayer");
             }
 
             @Override
             public void onGuarantee(String permission, int position) {
+                Loger.i("RolePlayerDemoTest", "开启了录音权限，开始去请求分组");
                 beginConWebSocket();
             }
         }, PermissionConfig.PERMISSION_CODE_AUDIO);
 
         if (isHasVideo) {
+            Loger.i("RolePlayerDemoTest", "isHasVideo = " + isHasVideo);
             beginConWebSocket();
         } else {
+            Loger.i("RolePlayerDemoTest", "isHasVideo = " + isHasVideo);
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (XesPermission.checkPermissionNoAlert(mContext, PermissionConfig.PERMISSION_CODE_AUDIO)) {
+                        Loger.i("RolePlayerDemoTest", "延迟了3秒去请求分组");
                         beginConWebSocket();
                     }
                 }
@@ -167,6 +177,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     @Override
     public void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         if (mWebSocket != null && mWebSocket.isOpen()) {
+            Loger.i("RolePlayerDemoTest", "老师收题了,断开socket ");
             mWebSocket.close();
             mWebSocket = null;
         }
@@ -180,13 +191,50 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         });
     }
 
+    /**
+     * 帮助进入人机的错误回调
+     * @param onError
+     */
+    @Override
+    public void setOnError(OnError onError) {
+        this.onError = onError;
+    }
+
+    /**
+     * 进人机
+     */
+    @Override
+    public void goToRobot() {
+        Loger.d(TAG, "进人机");
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                //移除roleplay界面，并释放该界面资源
+                if (bottomContent != null && mRolePlayerPager != null) {
+                    bottomContent.removeView(mRolePlayerPager.getRootView());
+                    mRolePlayerPager.onDestroy();
+                    mRolePlayerPager = null;
+                }
+            }
+        });
+        if (videoQuestionLiveEntity != null) {
+            VideoQuestionLiveEntity oldvideoQuestionLiveEntity = videoQuestionLiveEntity;
+            oldvideoQuestionLiveEntity.multiRolePlay = "0";
+            videoQuestionLiveEntity = null;
+            onError.onError(oldvideoQuestionLiveEntity);
+        }
+    }
+
     @Override
     public void onGoToRobot() {
+        Loger.d(TAG, "进入人机；断开socket");
         if (mWebSocket != null && mWebSocket.isOpen()) {
             mWebSocket.close();
             mWebSocket = null;
         }
+
     }
+
 
     /**
      * 开始连接WebSocket
@@ -200,38 +248,35 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         if (mWebSocket != null && mWebSocket.isOpen()) {
             mWebSocket.close();
         }
-        mWebSocket = null;
 
-        if (mWebSocket == null) {
-            mWebSocket = new WebSocketConn();
-            webSocketUrl = String.format(webSocketUrl, UserBll.getInstance().getMyUserInfoEntity().getStuId(), AppBll
-                    .getInstance().getUserToken(), mLiveId);
-            //webSocketUrl = String.format(webSocketUrl, "1237", "1111111", "1234");
-            Loger.i("RolePlayerDemoTest", "websocket:" + webSocketUrl);
-            mWebSocket.connect(webSocketUrl, new WebSocketConn.WebSocketCallBack() {
-                @Override
-                public void onOpen() {
-                    Loger.i("RolePlayerDemoTest", "open");
-                }
+        mWebSocket = new WebSocketConn();
+        webSocketUrl = String.format(webSocketUrl, UserBll.getInstance().getMyUserInfoEntity().getStuId(), AppBll
+                .getInstance().getUserToken(), mLiveId);
+        //webSocketUrl = String.format(webSocketUrl, "1237", "1111111", "1234");
+        Loger.i("RolePlayerDemoTest", "websocket:" + webSocketUrl);
+        mWebSocket.connect(webSocketUrl, new WebSocketConn.WebSocketCallBack() {
+            @Override
+            public void onOpen() {
+                Loger.i("RolePlayerDemoTest", "open");
+            }
 
-                @Override
-                public void onMessage(String result) {
-                    Loger.i("RolePlayerDemoTest", "result:" + result);
-                    onMessageParse(result);
-                }
+            @Override
+            public void onMessage(String result) {
+                Loger.i("RolePlayerDemoTest", "result:" + result);
+                onMessageParse(result);
+            }
 
 
-                @Override
-                public void onClose() {
-                    Loger.i("RolePlayerDemoTest", "close");
-                }
+            @Override
+            public void onClose() {
+                Loger.i("RolePlayerDemoTest", "close");
+            }
 
-                @Override
-                public void onError() {
-                    Loger.i("RolePlayerDemoTest", "onError");
-                }
-            });
-        }
+            @Override
+            public void onError() {
+                Loger.i("RolePlayerDemoTest", "onError");
+            }
+        });
     }
 
 

@@ -28,9 +28,11 @@ import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.xueersi.parentsmeeting.base.BasePager;
+import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerSelfItem;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
@@ -337,10 +339,17 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                         rlMatchRoleList.setVisibility(View.VISIBLE);
                         roleConfirmPage(); //确定角色开始RolePlayer
                     } else {
-                        XESToastUtils.showToast(mContext, "无朗读数据");
+                        rlMatchPager.setVisibility(View.GONE);
+                        Loger.i("RolePlayerDemoTest","无朗读数据,进人机");
+                        XESToastUtils.showToast(mContext, "无朗读数据,进人机");
+                        //进入人机
+                        mRolePlayBll.goToRobot();
                     }
                 } else {
-                    XESToastUtils.showToast(mContext, "无朗读数据");
+                    rlMatchPager.setVisibility(View.GONE);
+                    Loger.i("RolePlayerDemoTest", "匹配失败,进人机");
+                    XESToastUtils.showToast(mContext, "匹配失败,进人机");
+                    mRolePlayBll.goToRobot();
                 }
 
             }
