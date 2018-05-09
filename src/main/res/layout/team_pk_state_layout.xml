@@ -85,7 +85,7 @@
             />
 
 
-        <TextView
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@id/tv_teampk_pkstate_otherteam_energy"

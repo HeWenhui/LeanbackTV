@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SoundInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPKStateLayout;
@@ -61,10 +62,13 @@ public class TeamPKAQResultPager extends BasePager {
     private RelativeLayout rlVotRootView;
     private TextView tvVoteEnergy;
     private ImageView ivVoteEnergy;
+    private final TeamPKBll mTeamPkBll;
 
-    public TeamPKAQResultPager(Context context,int Type){
+
+    public TeamPKAQResultPager(Context context,int Type ,TeamPKBll teamPKBll){
         super(context);
         this.awardType = Type;
+        mTeamPkBll = teamPKBll;
     }
 
     @Override
@@ -336,9 +340,11 @@ public class TeamPKAQResultPager extends BasePager {
         // 0 播发音效
           playMusic(SOUND_TYPE_COIN_GET, DEFAULT_VOLUME,false);
         // 1 聊天区域状态更新
-         if(teamPKStateLayout != null){
-             teamPKStateLayout.updateData(mEnergy,mGoldNum);
+         if(teamPKStateLayout != null && mTeamPkBll != null){
+             //teamPKStateLayout.updateData(mEnergy,mGoldNum);
+             mTeamPkBll.updatePkStateLayout();
          }
+
         // 2 隐藏 UI/ 移除UI
           try {
               if( ((ViewGroup)mView.getParent()) != null){

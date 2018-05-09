@@ -424,11 +424,18 @@ public class TeamPkAwardPager extends BasePager {
             @Override
             public void onClick(View v) {
                 getStuChestInfo();
+                updatePkStateLayout();
                 String lottieResPath = lottieResDir + "_open/images";
                 String lottieJsonPath = lottieResDir + "_open/data.json";
                 startOpenBoxAnim(lottieResPath, lottieJsonPath);
             }
         });
+    }
+
+    private void updatePkStateLayout() {
+        if(teamPKBll != null){
+          teamPKBll.updatePkStateLayout();
+        }
     }
 
     /**

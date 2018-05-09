@@ -482,6 +482,13 @@ public class TeamPKBll {
             pkStateRootView.setVisibility(View.VISIBLE);
         }
         // step 2  初始化 又测 pk 状态栏
+        updatePkStateLayout();
+    }
+
+    /**
+     * 刷新pk状态栏
+     */
+    public void updatePkStateLayout(){
         getPkState();
     }
 
@@ -510,7 +517,7 @@ public class TeamPKBll {
      * 显示实时答题 奖励
      */
     public void showAnswerQuestionAward(int goldNum, int energyNum) {
-        TeamPKAQResultPager aqAwardPager = new TeamPKAQResultPager(activity, TeamPKAQResultPager.AWARD_TYPE_QUESTION);
+        TeamPKAQResultPager aqAwardPager = new TeamPKAQResultPager(activity, TeamPKAQResultPager.AWARD_TYPE_QUESTION,this);
         rlTeamPkContent.removeAllViews();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
@@ -533,7 +540,7 @@ public class TeamPKBll {
      */
     public void showVoteEnergyAnim() {
         Log.e("LiveBll", "========> showVoteEnergyAnim");
-        TeamPKAQResultPager aqAwardPager = new TeamPKAQResultPager(activity, TeamPKAQResultPager.AWARD_TYPE_VOTE);
+        TeamPKAQResultPager aqAwardPager = new TeamPKAQResultPager(activity, TeamPKAQResultPager.AWARD_TYPE_VOTE,this);
         rlTeamPkContent.removeAllViews();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);

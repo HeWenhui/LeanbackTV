@@ -1,8 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -12,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,7 +23,7 @@ public class TeamPKStateLayout extends FrameLayout {
 
     private TeamPkProgressBar pkProgressBar;
     private SmoothAddNumTextView tvMyteamEnergy;
-    private TextView tvOtherteamEnergy;
+    private SmoothAddNumTextView tvOtherteamEnergy;
     private SmoothAddNumTextView tvCoin;
 
     private long mMyteamAnergy;
@@ -38,6 +35,7 @@ public class TeamPKStateLayout extends FrameLayout {
     public static final int PK_STATE_FOLLOW = 1; // 全力追赶
     public static final int PK_STATE_LEAD = 2;    //暂时领先
     public static final int pk_state_replay = 3;  // 回放中
+    private boolean dataInited = false;
 
     public TeamPKStateLayout(@NonNull Context context) {
         super(context);
@@ -104,16 +102,21 @@ public class TeamPKStateLayout extends FrameLayout {
 
     /**
      * 刷新 能量，金币
-     *
-     * @param energrCrement
-     * @param coinCrement
+     * @param ownEnergyAdd 本队新增能量值
+     * @param coinCrement  本地增加金币值
+     * @param otherEnergyAdd 对手增加能量值
      */
-    public void updateData(int energrCrement, int coinCrement) {
-        mMyteamAnergy += energrCrement;
+    private void updateData(int ownEnergyAdd, int otherEnergyAdd,int coinCrement) {
+        mMyteamAnergy += ownEnergyAdd;
+        mOtherTeamAnergy += otherEnergyAdd;
         mCoinNum += coinCrement;
-        tvMyteamEnergy.smoothAddNum(energrCrement);
-        tvCoin.smoothAddNum(coinCrement);
-
+        tvMyteamEnergy.smoothAddNum(ownEnergyAdd);
+        tvOtherteamEnergy.smoothAddNum(otherEnergyAdd);
+        if(coinCrement >=0){
+            tvCoin.smoothAddNum(coinCrement);
+        }else {
+            tvCoin.setText(mCoinNum+"");
+        }
         float ratio = 0;
         if ((mMyteamAnergy + mOtherTeamAnergy) > 0) {
             ratio = mMyteamAnergy / (float) (mMyteamAnergy + mOtherTeamAnergy);
@@ -132,6 +135,18 @@ public class TeamPKStateLayout extends FrameLayout {
      * @param otherTeamAnergy 当前对手能量值
      */
     public void bindData(long coinNum, long myTeamAnergy, long otherTeamAnergy) {
+        if(!dataInited){
+            dataInited = true;
+            initData(coinNum, myTeamAnergy, otherTeamAnergy);
+        }else{
+             int addCoin = (int) (coinNum - mCoinNum);
+             int ownEnergyAdd = (myTeamAnergy - mMyteamAnergy)<0?0: (int) (myTeamAnergy - mMyteamAnergy);
+             int otherEnergyAdd = (otherTeamAnergy - mOtherTeamAnergy)<0?0: (int) (otherTeamAnergy - mOtherTeamAnergy);
+             updateData(ownEnergyAdd,otherEnergyAdd,addCoin);
+        }
+    }
+
+    private void initData(long coinNum, long myTeamAnergy, long otherTeamAnergy) {
         this.mCoinNum = coinNum;
         this.mMyteamAnergy = myTeamAnergy;
         this.mOtherTeamAnergy = otherTeamAnergy;
@@ -146,7 +161,6 @@ public class TeamPKStateLayout extends FrameLayout {
                 ratio = 0.5f;
             }
         }
-
         upDataSateText(ratio);
         int currentProgress = (int) (ratio * 100);
         pkProgressBar.setProgress(currentProgress);
@@ -171,16 +185,6 @@ public class TeamPKStateLayout extends FrameLayout {
                 tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
             }
         }
-    }
-
-
-    /**
-     * 更新pk 状态
-     *
-     * @param state
-     */
-    public void upDatePkStateBar(int state) {
-        // TODO: 2018/4/21 更新显示 状态文案 + 背景
     }
 
 }
