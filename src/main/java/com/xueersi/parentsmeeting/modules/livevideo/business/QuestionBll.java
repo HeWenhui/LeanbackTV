@@ -1065,11 +1065,17 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mVPlayVideoControlHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Loger.e("QuestionBll", "=======>closePageByTeamPk 2222:" + curQuestionView);
-                        if (pager != null) {
+                        Loger.e("QuestionBll","=======>closePageByTeamPk 2222:"+curQuestionView);
+                        if(pager != null){
+                            if(pager instanceof QuestionWebPager){
+                                isHaveWebQuestion = false;
+                            }
+                            if(pager instanceof  ExamQuestionPager){
+                                isHaveExam = false;
+                            }
                             rlQuestionContent.removeView(pager.getRootView());
                         }
-                        isPageOnCloseing = false;
+                      isPageOnCloseing = false;
                     }
                 }, 6000);
             }

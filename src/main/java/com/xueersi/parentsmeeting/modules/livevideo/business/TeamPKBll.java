@@ -77,6 +77,11 @@ public class TeamPKBll {
         this.activity = activity;
     }
 
+    public TeamPKBll(Activity activity,RelativeLayout rootView){
+        this.activity = activity;
+        this.mRootView = rootView;
+    }
+
     public void setHttpManager(LiveHttpManager liveHttpManager) {
         mHttpManager = liveHttpManager;
     }
@@ -103,9 +108,6 @@ public class TeamPKBll {
         return roomInitInfo;
     }
 
-    public void setRootView(RelativeLayout rootView) {
-        this.mRootView = rootView;
-    }
 
     public void attachToRootView() {
         initData();
@@ -286,8 +288,6 @@ public class TeamPKBll {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         bottomContent.addView(rlTeamPkContent, params);
-        // 聊天区域测试
-        // LiveMessagePager mLiveMessagePager = new LiveMessagePager();
     }
 
     /**

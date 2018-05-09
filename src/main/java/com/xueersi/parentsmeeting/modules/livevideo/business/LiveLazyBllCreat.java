@@ -98,4 +98,9 @@ public class LiveLazyBllCreat {
         }
         return praiseListBll;
     }
+
+    public TeamPKBll createTeamPkBll(){
+        return new TeamPKBll(liveVideoActivity, bottomContent);
+    }
+
 }

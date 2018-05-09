@@ -228,7 +228,7 @@ public class TeamPKAQResultPager extends BasePager {
         // 能量图标动画
         pkProgressBar = teamPKStateLayout.findViewById(R.id.tpb_teampk_pkstate_energy_bar);
         Rect endRect = pkProgressBar.getSliderDrawRect();
-        if(endRect != null){
+        if(endRect != null && mEnergy >0){
             playFlayAnim(ivEnergy,endRect);
         }
         //金币图标动画
@@ -240,7 +240,9 @@ public class TeamPKAQResultPager extends BasePager {
         coinEndRect.top = location[1];
         coinEndRect.right =  coinEndRect.left + ivTargetCoin.getLayoutParams().width;
         coinEndRect.bottom =  coinEndRect.top+ ivTargetCoin.getLayoutParams().height;
-        playFlayAnim(ivCoin,coinEndRect);
+        if(mGoldNum >0){
+            playFlayAnim(ivCoin,coinEndRect);
+        }
     }
 
     /**
@@ -337,7 +339,7 @@ public class TeamPKAQResultPager extends BasePager {
          if(teamPKStateLayout != null){
              teamPKStateLayout.updateData(mEnergy,mGoldNum);
          }
-        // 2 隐藏 UI/ 移除UI ？
+        // 2 隐藏 UI/ 移除UI
           try {
               if( ((ViewGroup)mView.getParent()) != null){
                   ((ViewGroup)mView.getParent()).removeView(mView);

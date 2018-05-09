@@ -296,7 +296,6 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
 
         setFirstParam(lp);
         liveMessageBll.setVideoLayout(lp.width, lp.height);
-        mLiveBll.setRootView(bottomContent);
         Loger.d(TAG, "initView:time2=" + (System.currentTimeMillis() - before));
         final View contentView = findViewById(android.R.id.content);
         contentView.postDelayed(new Runnable() {

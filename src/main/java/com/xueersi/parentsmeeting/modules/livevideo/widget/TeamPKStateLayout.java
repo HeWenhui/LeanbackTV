@@ -21,7 +21,6 @@ import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
 /**
  * 战队pk  右侧状态栏
- *
  */
 public class TeamPKStateLayout extends FrameLayout {
 
@@ -57,8 +56,8 @@ public class TeamPKStateLayout extends FrameLayout {
     }
 
 
-    private void initView( ) {
-        LayoutInflater.from(getContext()).inflate(R.layout.team_pk_state_layout,this);
+    private void initView() {
+        LayoutInflater.from(getContext()).inflate(R.layout.team_pk_state_layout, this);
         pkProgressBar = findViewById(R.id.tpb_teampk_pkstate_energy_bar);
         tvMyteamEnergy = findViewById(R.id.tv_teampk_pkstate_myteam_energy);
         tvOtherteamEnergy = findViewById(R.id.tv_teampk_pkstate_otherteam_energy);
@@ -69,7 +68,7 @@ public class TeamPKStateLayout extends FrameLayout {
             public void onGlobalLayout() {
                 try {
                     addPkStatBar();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 TeamPKStateLayout.this.getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -80,16 +79,16 @@ public class TeamPKStateLayout extends FrameLayout {
     /**
      * 添加视屏区域 pk 状态UI
      */
-    private void addPkStatBar(){
-        statBarRootView = View.inflate(getContext(), R.layout.team_pk_state_bar_layout,null);
+    private void addPkStatBar() {
+        statBarRootView = View.inflate(getContext(), R.layout.team_pk_state_bar_layout, null);
         ViewGroup rootView = (ViewGroup) this.getParent().getParent();
-        int stateBarHeight = SizeUtils.Dp2Px(getContext(),17);
-        int gapAbovePkStateLayout = SizeUtils.Dp2Px(getContext(),6);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(this.getLayoutParams().width,stateBarHeight);
-        int []location = new int[2];
+        int stateBarHeight = SizeUtils.Dp2Px(getContext(), 17);
+        int gapAbovePkStateLayout = SizeUtils.Dp2Px(getContext(), 6);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(this.getLayoutParams().width, stateBarHeight);
+        int[] location = new int[2];
         this.getLocationInWindow(location);
-        lp.topMargin = location[1] - (gapAbovePkStateLayout+stateBarHeight);
-        rootView.addView(statBarRootView,lp);
+        lp.topMargin = location[1] - (gapAbovePkStateLayout + stateBarHeight);
+        rootView.addView(statBarRootView, lp);
         tvState = statBarRootView.findViewById(R.id.tv_answer_question_state);
         tvState.setVisibility(GONE);
     }
@@ -98,80 +97,89 @@ public class TeamPKStateLayout extends FrameLayout {
     @Override
     protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
         //关联显示状态
-        if(statBarRootView != null){
+        if (statBarRootView != null) {
             statBarRootView.setVisibility(visibility);
         }
     }
 
     /**
-     *  刷新 能量，金币
+     * 刷新 能量，金币
+     *
      * @param energrCrement
      * @param coinCrement
      */
-    public void updateData(int energrCrement,int coinCrement ){
+    public void updateData(int energrCrement, int coinCrement) {
         mMyteamAnergy += energrCrement;
         mCoinNum += coinCrement;
         tvMyteamEnergy.smoothAddNum(energrCrement);
         tvCoin.smoothAddNum(coinCrement);
 
         float ratio = 0;
-        if((mMyteamAnergy+mOtherTeamAnergy) >0){
-            ratio = mMyteamAnergy /(float)(mMyteamAnergy+mOtherTeamAnergy);
+        if ((mMyteamAnergy + mOtherTeamAnergy) > 0) {
+            ratio = mMyteamAnergy / (float) (mMyteamAnergy + mOtherTeamAnergy);
         }
         upDataSateText(ratio);
-        int addProgress = (int) (ratio * 100+0.5f) - pkProgressBar.getProgress();
+        int addProgress = (int) (ratio * 100 + 0.5f) - pkProgressBar.getProgress();
         pkProgressBar.smoothAddProgress(addProgress);
     }
 
 
     /**
      * 绑定数据
-     * @param coinNum       当前战队 金币总数
-     * @param myTeamAnergy  当前战队 能量值
+     *
+     * @param coinNum         当前战队 金币总数
+     * @param myTeamAnergy    当前战队 能量值
      * @param otherTeamAnergy 当前对手能量值
      */
-    public void bindData(long coinNum , long myTeamAnergy, long otherTeamAnergy){
+    public void bindData(long coinNum, long myTeamAnergy, long otherTeamAnergy) {
         this.mCoinNum = coinNum;
         this.mMyteamAnergy = myTeamAnergy;
         this.mOtherTeamAnergy = otherTeamAnergy;
-        tvCoin.setText(mCoinNum+"");
-        tvMyteamEnergy.setText(mMyteamAnergy+"");
-        tvOtherteamEnergy.setText(otherTeamAnergy+"");
-        float ratio  = 0;
-        if((mMyteamAnergy+mOtherTeamAnergy)>0){
-            ratio  = mMyteamAnergy/(float)(mMyteamAnergy+mOtherTeamAnergy);
-        }else{
-            if(ratio == 0){
+        tvCoin.setText(mCoinNum + "");
+        tvMyteamEnergy.setText(mMyteamAnergy + "");
+        tvOtherteamEnergy.setText(otherTeamAnergy + "");
+        float ratio = 0;
+        if ((mMyteamAnergy + mOtherTeamAnergy) > 0) {
+            ratio = mMyteamAnergy / (float) (mMyteamAnergy + mOtherTeamAnergy);
+        } else {
+            if (ratio == 0) {
                 ratio = 0.5f;
             }
         }
+
         upDataSateText(ratio);
-        int currentProgress = (int) (ratio*100);
+        int currentProgress = (int) (ratio * 100);
         pkProgressBar.setProgress(currentProgress);
     }
 
     private void upDataSateText(float ratio) {
-        tvState.setVisibility(ratio != 0.5f?VISIBLE:GONE);
+        //tvState.setVisibility(ratio != 0.5f?VISIBLE:GONE);
         tvState.setVisibility(VISIBLE);
-        Log.e("teamPkStateLayout","======>upDataSateText:"+ratio);
-        if(ratio == 0){
+        Log.e("teamPkStateLayout", "======>upDataSateText:" + ratio);
+        if (mMyteamAnergy == 0 && mOtherTeamAnergy == 0) {
             tvState.setText("准备战斗");
             tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_ready_bg);
-        }else if(ratio > 0.5f){
-            tvState.setText("暂时领先");
-            tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
-        }else if(ratio < 0.5){
-            tvState.setText("全力追赶");
-            tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_follow_bg);
+        } else {
+            if (ratio > 0.5f) {
+                tvState.setText("暂时领先");
+                tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
+            } else if (ratio < 0.5f) {
+                tvState.setText("全力追赶");
+                tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_follow_bg);
+            } else if (ratio == 0.5f) {
+                tvState.setText("打成平手");
+                tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
+            }
         }
     }
 
 
     /**
      * 更新pk 状态
-     * @param state 
+     *
+     * @param state
      */
-    public  void upDatePkStateBar(int state){
+    public void upDatePkStateBar(int state) {
         // TODO: 2018/4/21 更新显示 状态文案 + 背景
     }
 

@@ -233,7 +233,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      */
     private TeamPKBll mTeamPKBll;
     private TeacherPraiseBll mTeacherPraiseBll1;
-    private RelativeLayout mBottomContent;
 
     public static boolean isAllowTeamPk = false;
 
@@ -2410,8 +2409,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             if (englishH5CoursewareAction instanceof EnglishH5CoursewareBll) {
                 ((EnglishH5CoursewareBll) englishH5CoursewareAction).setTeamPkAllowed(true);
             }
-            mTeamPKBll = new TeamPKBll((Activity) mContext);
-            mTeamPKBll.setRootView(mBottomContent);
+
+            mTeamPKBll  = liveLazyBllCreat.createTeamPkBll();
             mTeamPKBll.setHttpManager(mHttpManager);
             mTeamPKBll.setLiveBll(this);
             mTeamPKBll.setRoomInitInfo(mGetInfo);
@@ -4570,10 +4569,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
     public String getLiveId() {
         return mLiveId;
-    }
-
-    public void setRootView(RelativeLayout view){
-        mBottomContent = view;
     }
 
 

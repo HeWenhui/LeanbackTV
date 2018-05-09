@@ -761,8 +761,13 @@ public class TeamPkResultPager extends BasePager {
                 case ANIM_TYPE_PK_ADVERSARY:
                     break;
                 case ANIM_TYPE_PK_REUSLT:
-                    turn2openBox();
-                    closePkResultPager();
+                    mView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            turn2openBox();
+                            closePkResultPager();
+                        }
+                    },1000);
                     break;
             }
         }
