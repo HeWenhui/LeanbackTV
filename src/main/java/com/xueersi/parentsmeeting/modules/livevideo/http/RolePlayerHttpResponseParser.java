@@ -25,6 +25,7 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
      */
     public void parserRolePlayTestInfos(ResponseEntity responseEntity, RolePlayerEntity rolePlayerEntity) {
         try {
+            rolePlayerEntity.getLstRolePlayerMessage().clear();//在试题信息返回的时候先清空数据集合，防止当服务器返回重复数据的时候，本地也出现重复
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
             JSONObject objContent = jsonObject.optJSONObject("content");
             int minute = jsonObject.optInt("rolePlayTime");
