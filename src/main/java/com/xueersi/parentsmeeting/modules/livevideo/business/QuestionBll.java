@@ -198,6 +198,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 语音评测页面
      */
     private BaseSpeechAssessmentPager speechAssessmentPager;
+    /** 语音评测页面,用户点击返回暂存 */
+    private BaseSpeechAssessmentPager speechAssessmentPagerUserBack;
     private BaseSpeechCreat baseSpeechCreat;
     /** 语音评测结束后的事件 */
     private SpeechEndAction speechEndAction;
@@ -817,6 +819,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
             });
             return;
+        } else {
+            if (speechAssessmentPagerUserBack != null) {
+                String id = speechAssessmentPagerUserBack.getId();
+                if (speechEndAction != null) {
+                    speechEndAction.examSubmitAll(speechAssessmentPagerUserBack, id);
+                }
+                speechAssessmentPagerUserBack = null;
+            }
         }
         int delayTime = 0;
         if (questionWebPager != null) {
@@ -1048,18 +1058,18 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 战队pk答题结果页自动关闭
      */
     private void closePageByTeamPk(final BasePager pager) {
-        Loger.e("QuestionBll","=======>closePageByTeamPk 1111:"+isTeamPkAllowed+":"+isPageOnCloseing);
+        Loger.e("QuestionBll", "=======>closePageByTeamPk 1111:" + isTeamPkAllowed + ":" + isPageOnCloseing);
         if (isTeamPkAllowed) {
             if (mVPlayVideoControlHandler != null && !isPageOnCloseing) {
                 isPageOnCloseing = true;
                 mVPlayVideoControlHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Loger.e("QuestionBll","=======>closePageByTeamPk 2222:"+curQuestionView);
-                        if(pager != null){
+                        Loger.e("QuestionBll", "=======>closePageByTeamPk 2222:" + curQuestionView);
+                        if (pager != null) {
                             rlQuestionContent.removeView(pager.getRootView());
                         }
-                      isPageOnCloseing = false;
+                        isPageOnCloseing = false;
                     }
                 }, 6000);
             }
@@ -1122,10 +1132,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     if (haveExam) {
                         setHaveExam(false);
                     } else if (haveSpeech) {
-                        BaseSpeechAssessmentPager oldSpeechAssessmentPager = speechAssessmentPager;
+                        speechAssessmentPagerUserBack = speechAssessmentPager;
                         setHaveSpeech(false);
-                        if (oldSpeechAssessmentPager != null && speechEndAction != null) {
-                            speechEndAction.onStopSpeech(oldSpeechAssessmentPager, oldSpeechAssessmentPager.getId(), null);
+                        if (speechAssessmentPagerUserBack != null && speechEndAction != null) {
+                            speechEndAction.onStopSpeech(speechAssessmentPagerUserBack, speechAssessmentPagerUserBack.getId(), null);
                         }
                     } else {
                         setHaveWebQuestion(false);

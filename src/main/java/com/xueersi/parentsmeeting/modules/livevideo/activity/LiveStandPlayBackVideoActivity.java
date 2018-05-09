@@ -1106,6 +1106,10 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                     rlQuestionContent.removeAllViews();
                     rlQuestionContent.addView(speechQuestionPlaybackPager.getRootView(), lp);
                     rlQuestionContent.setVisibility(View.VISIBLE);
+                    long time = mQuestionEntity.getvQuestionInsretTime() + (mQuestionEntity.getvEndTime() - mQuestionEntity.getvQuestionInsretTime()) / 2;
+                    if (time >= mQuestionEntity.getvQuestionInsretTime() && time <= mQuestionEntity.getvEndTime()) {
+                        seekTo(time * 1000);
+                    }
                 }
             }
         });
