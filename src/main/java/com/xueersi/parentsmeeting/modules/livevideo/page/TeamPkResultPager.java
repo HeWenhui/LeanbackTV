@@ -767,7 +767,7 @@ public class TeamPkResultPager extends BasePager {
                             turn2openBox();
                             closePkResultPager();
                         }
-                    },1000);
+                    },3500);
                     break;
             }
         }
