@@ -26,6 +26,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
+import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.Top3FrameAnim;
@@ -80,6 +82,7 @@ public class RedPackagePage extends BasePager {
     String file12 = "live_stand/frame_anim/redpackage/12_team_other";
     String file13 = "live_stand/frame_anim/redpackage/13_team_other_loop";
     String file14 = "live_stand/frame_anim/redpackage/14_transition";
+    LiveSoundPool soundPool;
 
     public RedPackagePage(Context context, int operateId, RedPackagePageAction redPackageAction, String userName, String headUrl, boolean isLive, LiveAndBackDebug liveAndBackDebug) {
         super(context);
@@ -160,14 +163,29 @@ public class RedPackagePage extends BasePager {
         });
     }
 
+    /**
+     * 得到红包id
+     *
+     * @return
+     */
     public int getOperateId() {
         return operateId;
+    }
+
+    /**
+     * 创建语音播放
+     */
+    public void createSoundPool() {
+        if (soundPool == null) {
+            soundPool = LiveSoundPool.createSoundPool();
+        }
     }
 
     /**
      * 收到金币命令的开场动画
      */
     public void initEnter() {
+        createSoundPool();
         final FrameAnimation btframeAnimation1 = createFromAees(file1, false);
         frameAnimations.add(btframeAnimation1);
         btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
@@ -214,6 +232,7 @@ public class RedPackagePage extends BasePager {
                                     public void onClick(View view) {
                                         Loger.d(TAG, "onPackageClick2:operateId=" + operateId + "," + view.getTop());
                                         ivLivevideoRedpackageBg.setOnClickListener(null);
+                                        StandLiveMethod.onClickVoice(soundPool);
                                         btframeAnimationFile6.pauseAnimation();
                                         if (btframeAnimationFile7 != null) {
                                             btframeAnimationFile7.pauseAnimation();
@@ -260,17 +279,21 @@ public class RedPackagePage extends BasePager {
                                 }
                             }, 60);
                         }
+                        StandLiveMethod.onClickVoice(soundPool);
                         FrameAnimation btframeAnimation3 = createFromAees(file3, false);
                         frameAnimations.add(btframeAnimation3);
                         btframeAnimation3.setAnimationListener(new FrameAnimation.AnimationListener() {
+                            LiveSoundPool.SoundPlayTask playTask;
+
                             @Override
                             public void onAnimationStart() {
-
+                                playTask = StandLiveMethod.redPocket(soundPool);
                             }
 
                             @Override
                             public void onAnimationEnd() {
                                 clickPackage = CLICK_PACKAGE_1;
+                                soundPool.stop(playTask);
                                 redPackageAction.onPackageClick(operateId, clickPackage);
                                 rlLivevideoRedpackageBg.setImageDrawable(new ColorDrawable(Color.TRANSPARENT));
                             }
@@ -320,7 +343,7 @@ public class RedPackagePage extends BasePager {
         btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
             @Override
             public void onAnimationStart() {
-
+                StandLiveMethod.changeScene(soundPool);
             }
 
             @Override
@@ -574,7 +597,7 @@ public class RedPackagePage extends BasePager {
         btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
             @Override
             public void onAnimationStart() {
-
+                StandLiveMethod.changeScene(soundPool);
             }
 
             @Override

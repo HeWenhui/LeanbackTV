@@ -12,8 +12,8 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
@@ -608,7 +608,7 @@ public class FrameAnimation {
             if (alldir == null) {
                 alldir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/live_stand");
             }
-            File externalFilesDir = new File(new File(alldir.getPath() + "/" + LiveStandFrameAnim.version), path);
+            File externalFilesDir = new File(new File(alldir.getPath() + "/" + StandLiveConfig.version), path);
             if (externalFilesDir.exists()) {
                 files = externalFilesDir.list();
                 if (files != null) {
@@ -638,7 +638,7 @@ public class FrameAnimation {
     }
 
     public static InputStream getInputStream(Context context, String file) throws IOException {
-        if (file.contains(LiveStandFrameAnim.version)) {
+        if (file.contains(StandLiveConfig.version)) {
             FileInputStream fileInputStream = new FileInputStream(file);
             return fileInputStream;
         }

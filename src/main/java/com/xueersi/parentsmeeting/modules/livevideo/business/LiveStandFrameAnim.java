@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.http.BaseHttp;
 import com.xueersi.parentsmeeting.http.DownloadCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
@@ -27,7 +28,6 @@ import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 
 import java.io.File;
@@ -41,8 +41,7 @@ public class LiveStandFrameAnim {
     String eventId = LiveVideoConfig.LIVE_STAND_RES_UPDATE;
     static String TAG = "LiveStandFrameAnim";
     Activity activity;
-    public static String version = "2018041501";
-    final String filePath = "/android_stand_live/" + version + "/frame_anim4.zip";
+    final String filePath = "/android_stand_live/" + StandLiveConfig.version + "/frame_anim5.zip";
     /** 下载地址，阿里云 */
     final String aliyun = "http://xesftp.oss-cn-beijing.aliyuncs.com" + filePath;
     /** 下载地址，网校 */
@@ -70,6 +69,7 @@ public class LiveStandFrameAnim {
     }
 
     public void check(LiveBll liveBll, final AbstractBusinessDataCallBack callBack) {
+        StandLiveConfig.createVoice(activity);
         File alldir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/live_stand");
         if (alldir == null) {
             alldir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/live_stand");
@@ -78,12 +78,12 @@ public class LiveStandFrameAnim {
         if (allcache != null) {
             for (int i = 0; i < allcache.length; i++) {
                 File cache = allcache[i];
-                if (!cache.getPath().contains(version)) {
+                if (!cache.getPath().contains(StandLiveConfig.version)) {
                     FileUtils.deleteDir(cache);
                 }
             }
         }
-        final File externalFilesDir = new File(alldir, version + "/live_stand");
+        final File externalFilesDir = new File(alldir, StandLiveConfig.version + "/live_stand");
         if (!externalFilesDir.exists()) {
             externalFilesDir.mkdirs();
         }
@@ -214,7 +214,7 @@ public class LiveStandFrameAnim {
                 logHashMap.put("bps", bps);
                 logHashMap.put("downTime", "" + downTime);
                 logHashMap.put("times", "" + times.get());
-                logHashMap.put("version", "" + version);
+                logHashMap.put("version", "" + StandLiveConfig.version);
                 logHashMap.put("downloadsize", "" + downloadSize);
                 Loger.d(activity, eventId, logHashMap.getData(), true);
                 onProgress(pb_live_stand_update.getLeft(), rl_live_stand_update_prog, iv_live_stand_update_prog_light, 50);

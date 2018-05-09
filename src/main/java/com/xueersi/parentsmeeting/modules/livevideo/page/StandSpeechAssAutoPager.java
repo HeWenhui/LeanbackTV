@@ -49,6 +49,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.FontCache;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.TextStrokeUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
@@ -167,6 +168,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     String file2 = "live_stand/frame_anim/voice_answer/2_loop";
     String file3 = "live_stand/frame_anim/speech/mine_score";
     String file4 = "live_stand/frame_anim/speech/mine_score_loop";
+    LiveSoundPool liveSoundPool;
 
     /** 语音答题直播 */
     public StandSpeechAssAutoPager(Context context, String liveid, String testId,
@@ -330,7 +332,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
             }
         });
-        rgiv_livevideo_stand_readygo.start();
+        liveSoundPool = LiveSoundPool.createSoundPool();
+        rgiv_livevideo_stand_readygo.start(liveSoundPool);
         if (speechEvalAction instanceof LiveStandSpeechEvalAction) {
             final LiveStandSpeechEvalAction liveStandSpeechEvalAction = (LiveStandSpeechEvalAction) speechEvalAction;
             mView.postDelayed(new Runnable() {
@@ -441,7 +444,6 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     });
                 }
             }, 3000);
-
         }
     }
 

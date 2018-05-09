@@ -18,8 +18,8 @@ public class SoundInfo {
     }
 
     public SoundInfo(int soundId, int streamId) {
-        this.mStreamId = streamId;
         this.mSoundId = soundId;
+        this.mStreamId = streamId;
     }
 
     public int getStreamId() {

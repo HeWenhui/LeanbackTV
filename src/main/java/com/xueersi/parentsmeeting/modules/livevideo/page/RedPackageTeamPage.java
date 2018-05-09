@@ -18,10 +18,11 @@ import android.widget.TextView;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
+import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 
@@ -50,6 +51,11 @@ public class RedPackageTeamPage extends BasePager {
     private boolean isLive;
     private int operateId;
     private Bitmap headBitmap;
+    LiveSoundPool soundPool;
+    /**
+     * 非常循环声音
+     */
+    LiveSoundPool.SoundPlayTask shipFloatSoundId;
 
     public RedPackageTeamPage(Context context, int operateId, boolean isLive, GoldTeamStatus goldTeamStatus, RedPackagePage.RedPackagePageAction redPackageAction) {
         super(context);
@@ -76,6 +82,7 @@ public class RedPackageTeamPage extends BasePager {
 
     @Override
     public void initData() {
+        soundPool = LiveSoundPool.createSoundPool();
         initPos(1334, 750);
 //        initPos(ScreenUtils.getScreenWidth(), ScreenUtils.getScreenHeight());
         Random random = new Random();
@@ -89,7 +96,6 @@ public class RedPackageTeamPage extends BasePager {
             ImageView imageView = new ImageView(mContext);
             boolean center = student.isMe();
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
             if (center) {
                 lp.addRule(RelativeLayout.CENTER_IN_PARENT);
             } else {
@@ -135,6 +141,9 @@ public class RedPackageTeamPage extends BasePager {
                     FrameAnimation frameAnimation = frameAnimations2.get(i);
                     frameAnimation.destory();
                 }
+                if (shipFloatSoundId != null) {
+                    soundPool.stop(shipFloatSoundId);
+                }
             }
         });
     }
@@ -170,7 +179,7 @@ public class RedPackageTeamPage extends BasePager {
         btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
             @Override
             public void onAnimationStart() {
-
+                shipFloatSoundId = StandLiveMethod.floatFloadating(soundPool);
             }
 
             @Override

@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.FontCache;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView;
@@ -144,6 +145,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     String file2 = "live_stand/frame_anim/voice_answer/2_loop";
     String file3 = "live_stand/frame_anim/voice_answer/3_switch_loop";
     String file4 = "live_stand/frame_anim/voice_answer/4_switch";
+    LiveSoundPool liveSoundPool;
 
     public VoiceAnswerStandPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch, LiveAndBackDebug liveAndBackDebug, String headUrl, String userName) {
         super(context);
@@ -208,7 +210,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
                     }
                 });
-                rgiv_livevideo_stand_readygo.start();
+                rgiv_livevideo_stand_readygo.start(liveSoundPool);
             }
         });
     }
@@ -509,6 +511,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         if (!dir.exists()) {
             dir.mkdirs();
         }
+        liveSoundPool = LiveSoundPool.createSoundPool();
         //        questionSwitch.getQuestion(baseVideoQuestionEntity, new QuestionSwitch.OnQuestionGet() {
 //            @Override
 //            public void onQuestionGet(BaseVideoQuestionEntity baseQuestionEntity) {

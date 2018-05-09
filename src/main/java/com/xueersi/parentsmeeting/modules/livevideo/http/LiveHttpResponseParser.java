@@ -63,6 +63,28 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         this.mContext = mContext;
     }
 
+    /**
+     * 解析getInfo 理科
+     *
+     * @param data
+     * @param liveTopic
+     * @param getInfo
+     */
+    public void parseLiveGetInfoScience(JSONObject data, LiveTopic liveTopic, LiveGetInfo getInfo) {
+
+    }
+
+    /**
+     * 解析getInfo 文科
+     *
+     * @param data
+     * @param liveTopic
+     * @param getInfo
+     */
+    public void parseLiveGetInfoLibarts(JSONObject data, LiveTopic liveTopic, LiveGetInfo getInfo) {
+
+    }
+
     /** 解析getInfo */
     public LiveGetInfo parseLiveGetInfo(JSONObject data, LiveTopic liveTopic, int liveType, int from) {
         try {
@@ -262,10 +284,17 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setPattern(data.optInt("pattern", 1));
             getInfo.setRequestTime(data.optString("requestTime"));
             //解析学科id
-            if(data.has("subject_ids")){
+            if (data.has("subject_ids")) {
                 String strSubjIds = data.getString("subject_ids");
                 String[] arrSubjIds = strSubjIds.split(",");
                 getInfo.setSubjectIds(arrSubjIds);
+            }
+            if (liveType == LiveBll.LIVE_TYPE_LIVE) {
+                if (getInfo.getIsArts() == 1) {
+                    parseLiveGetInfoLibarts(data, liveTopic, getInfo);
+                } else {
+                    parseLiveGetInfoScience(data, liveTopic, getInfo);
+                }
             }
             return getInfo;
         } catch (JSONException e) {
@@ -1464,12 +1493,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     /*
     * 解析更多课程的数据
     * */
-    public MoreChoice parseMoreChoice(ResponseEntity responseEntity){
+    public MoreChoice parseMoreChoice(ResponseEntity responseEntity) {
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         MoreChoice moreChoice = new MoreChoice();
         JSONArray casesjson = data.optJSONArray("cases");
         List<MoreChoice.Choice> choices = new ArrayList<>();
-        for(int i = 0 ; i < casesjson.length() ; i++){
+        for (int i = 0; i < casesjson.length(); i++) {
             JSONObject jsonObject = casesjson.optJSONObject(i);
             MoreChoice.Choice choice = new MoreChoice.Choice();
             choice.setSaleName(jsonObject.optString("saleName"));
