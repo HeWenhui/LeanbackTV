@@ -23,7 +23,6 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
     private static final String Tag = "ContributionLayoutManager";
     public int mLineSize;  //每行item个数
     private int lineNum; //行数
-    private final int[] mMeasuredDimension = new int[2];
     private SparseArray<Rect> allItemRects = new SparseArray<Rect>();
     private SparseBooleanArray itemVisibilities = new SparseBooleanArray();
 
@@ -49,7 +48,7 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
             return;
         }
 
-        layoytChild(recycler);
+        layoutChild(recycler);
         recycleAndFill(recycler, state);
 
     }
@@ -57,7 +56,7 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
 
     private int mVerticalOffset;//竖直方向上的滚动偏移量
 
-    private void layoytChild(RecyclerView.Recycler recycler) {
+    private void layoutChild(RecyclerView.Recycler recycler) {
         //清空之前的view
         detachAndScrapAttachedViews(recycler);
         calculateChildrenSite(recycler);
@@ -70,14 +69,13 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
      */
     private void calculateChildrenSite(RecyclerView.Recycler recycler) {
         View firstView = recycler.getViewForPosition(0);
+        lineNum = 0;
         //获取 itemView 的尺寸信息
         measureChild(firstView, 0, 0);
-        int itemWith = getDecoratedMeasuredWidth(firstView);
         int itemHeight = getDecoratedMeasuredHeight(firstView);
         lines = new ArrayList<Line>();
         Line line = null;
         for (int i = 0; i < getItemCount(); i++) {
-
             if (i % mLineSize == 0) {
                 line = new Line(0, lineNum * itemHeight,lineNum);
                 lines.add(line);
@@ -85,27 +83,20 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
             }
             line.addItemView(firstView);
         }
-
         totalHeight = lineNum * itemHeight;
         for (int i = 0; i < lines.size(); i++) {
             lines.get(i).layoutItemView();
         }
-
     }
 
-
-    //////////////////////支持滑动///////////////////////////
     @Override
     public boolean canScrollVertically() {
         return true;
     }
 
-
     @Override
     public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
-        //每次滑动时先释放掉所有的View，因为后面调用recycleAndFillView()时会重新addView()。
-        detachAndScrapAttachedViews(recycler); //有没有有必要 detach所有的 移除显示在可视窗口外的试图
-
+        detachAndScrapAttachedViews(recycler);
         if (mVerticalOffset + dy < 0) {
             dy = -mVerticalOffset;
         }else if(totalHeight <= getVerticalSpace()){
@@ -115,9 +106,7 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
         }
         offsetChildrenVertical(-dy);
         recycleAndFill(recycler, state); //回收并显示View
-
         mVerticalOffset += dy;
-
         return dy;
     }
 
@@ -129,8 +118,6 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
         }
         // 当前scroll offset状态下的显示区域
         Rect displayRect = new Rect(0, mVerticalOffset, getHorizontalSpace(),  mVerticalOffset + getVerticalSpace());
-
-
         //重新显示需要出现在屏幕的子View
         for (int i = 0; i < getItemCount(); i++) {
             //判断ItemView的位置和当前显示区域是否重合
@@ -158,7 +145,6 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
     public void setItemWidth(int width){
         itemWith = width;
     }
-
 
 
     private class Line {
@@ -232,16 +218,12 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
 
 
     private int getVerticalSpace() {
-
         return getHeight() - getPaddingBottom() - getPaddingTop();
     }
 
 
     private int getHorizontalSpace() {
-
         return getWidth() - getPaddingLeft() - getPaddingRight();
     }
-
-
 
 }
