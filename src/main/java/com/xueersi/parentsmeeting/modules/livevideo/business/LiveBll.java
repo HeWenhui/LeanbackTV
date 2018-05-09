@@ -1771,12 +1771,13 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     }
                     case XESCODE.XCR_ROOM_ROLE_READ: {
                         msg += ",XCR_ROOM_ROLE_READ";
-//                        if (rolePlayAction == null && liveLazyBllCreat != null) {
-//                            rolePlayAction = liveLazyBllCreat.createRolePlayBll();
-//                        }
-//                        if (rolePlayAction != null) {
-//                            rolePlayAction.teacherRead(mLiveId, vStuCourseID);
-//                        }
+                        Loger.i("RolePlayerDemoTest", "收到老师分组完成的消息：学生去请分组信息" + XESCODE.XCR_ROOM_ROLE_READ);
+                        if (rolePlayAction == null && liveLazyBllCreat != null) {
+                            rolePlayAction = liveLazyBllCreat.createRolePlayBll();
+                        }
+                        if (rolePlayAction != null) {
+                            rolePlayAction.teacherRead(mLiveId, vStuCourseID);
+                        }
                         break;
                     }
                     case XESCODE.XCR_ROOM_DB_CLOSE: {
