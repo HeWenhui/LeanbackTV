@@ -101,6 +101,8 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 if (!TextUtils.isEmpty(mEntity.getWebVoiceUrl())) {
                     Loger.i("RolePlayerDemoTest", "点击自己语音：url  = " + mEntity.getWebVoiceUrl());
                     voiceClick();
+                }else {
+                    Loger.i("RolePlayerDemoTest", "点击自己语音：url为空 ");
                 }
             }
         });

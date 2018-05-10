@@ -441,7 +441,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         };
         lvReadList.setAdapter(mRolePlayerAdapter);
         lvReadList.setVisibility(View.VISIBLE);
-
+        lvReadList.setDividerHeight(SizeUtils.Dp2Px
+                (mContext, 15));
         vHead = new View(mContext);
         //修改类型转换异常
         ListView.LayoutParams lp = new ListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SizeUtils.Dp2Px
@@ -737,12 +738,14 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 new RoleEvaluatorListener() {
                     @Override
                     public void onBeginOfSpeech() {
+                        Loger.i("RolePlayerDemoTest", "开始测评");
                         vwvSpeechVolume.start();
                     }
 
                     @Override
                     public void onResult(ResultEntity resultEntity) {
                         if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+                            Loger.i("RolePlayerDemoTest", "测评成功，开始上传自己的mp3");
                             message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
                             message.setSpeechScore(resultEntity.getScore());
                             message.setLstPhoneScore(resultEntity.getLstPhonemeScore());
@@ -757,21 +760,25 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                             //提前开始下一条
                             nextReadMessage();
                         } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
+                            Loger.i("RolePlayerDemoTest", "测评失败，"+ ResultEntity.ERROR+" 不上传自己的mp3");
                             XESToastUtils.showToast(mContext, "失败");
                             //提前开始下一条
                             nextReadMessage();
                         } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
+                            Loger.i("RolePlayerDemoTest", "测评失败，"+ ResultEntity.ERROR+"不上传自己的mp3");
                         }
 
                     }
 
                     @Override
                     public void onVolumeUpdate(int volume) {
+                        Loger.i("RolePlayerDemoTest", "测评中");
                         vwvSpeechVolume.setVolume(volume * 3);
                     }
 
                     @Override
                     public void onRecordPCMData(short[] shorts, int readSize) {
+                        Loger.i("RolePlayerDemoTest", "通过声网走");
                         //通过声网走
                         byte[] dest = new byte[readSize * 2];
                         int count = readSize;
