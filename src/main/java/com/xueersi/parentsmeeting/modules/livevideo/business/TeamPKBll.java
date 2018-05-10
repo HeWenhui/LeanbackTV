@@ -151,6 +151,30 @@ public class TeamPKBll {
     }
 
     /**
+     * 从topic 中恢复 开宝箱场景
+     */
+    public void resumeOpenBoxScene(){
+        // 请求接口 获取胜负关系
+        mHttpManager.liveStuGoldAndTotalEnergy(mLiveBll.getLiveId(),
+                roomInitInfo.getStudentLiveInfo().getTeamId(),
+                roomInitInfo.getStudentLiveInfo().getClassId(),
+                roomInitInfo.getStuId(), new HttpCallBack() {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        StudentCoinAndTotalEnergyEntity energyEntity = mHttpResponseParser.parseStuCoinAndTotalEnergy(responseEntity);
+                        if (energyEntity != null){
+                            showOpenBoxScene(energyEntity.getMyEnergy() >= energyEntity.getCompetitorEnergy());
+                        }
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        super.onPmFailure(error, msg);
+                    }
+                });
+    }
+
+    /**
      * 显示 战队宝箱领取情况
      */
     public void showClassChest() {
@@ -493,6 +517,7 @@ public class TeamPKBll {
     }
 
     private void getPkState() {
+        Log.e("TeamPkBll","=====> getPkState:"+ roomInitInfo.getStuId());
         mHttpManager.liveStuGoldAndTotalEnergy(mLiveBll.getLiveId(),
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(),
