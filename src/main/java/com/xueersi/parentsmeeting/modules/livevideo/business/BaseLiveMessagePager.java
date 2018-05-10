@@ -487,6 +487,18 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
 
     public abstract void setOtherMessageAdapter(CommonAdapter<LiveMessageEntity> otherMessageAdapter);
 
+    /**
+     * 带连接的文本点击事件
+     */
+    public interface TextUrlClick {
+        /**
+         * 文本点击
+         *
+         * @param tvContent
+         */
+        void onUrlClick(TextView tvContent);
+    }
+
     protected void urlClick(TextView tvContent) {
         CharSequence text = tvContent.getText();
 

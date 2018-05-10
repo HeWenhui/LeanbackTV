@@ -55,7 +55,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessOtherItem;
+import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessSysItem;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
+import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveHeadView;
@@ -95,7 +99,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     /** 左侧聊天区 */
     private View rl_live_stand_message_content;
     FrameAnimation btMesOpenAnimation;
-    /** 献花，默认关闭 */
+    /** 献花，默认关闭 第一版没有这功能 */
     private Button btMessageFlowers;
 //    /** 聊天，默认打开 */
 //    private CheckBox cbMessageClock;
@@ -131,6 +135,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
     /** 是不是正在答题 */
     private boolean isAnaswer = false;
+    LiveSoundPool liveSoundPool;
 
     public LiveMessageStandPager(Context context, QuestionBll questionBll, BaseLiveMediaControllerBottom
             liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
@@ -281,6 +286,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         btMesOpen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                StandLiveMethod.onClickVoice(liveSoundPool);
                 if (!liveBll.openchat()) {
                     XESToastUtils.showToast(mContext, "已关闭聊天区");
                     return;
@@ -357,6 +363,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             @Override
             public void onClick(View v) {
                 Loger.i(TAG, "onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
+                StandLiveMethod.onClickVoice(liveSoundPool);
                 Editable editable = etMessageContent.getText();
                 String msg = editable.toString();
                 if (!StringUtils.isSpace(msg)) {
@@ -491,257 +498,15 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             public AdapterItemInterface<LiveMessageEntity> getItemView(Object type) {
                 int typeInt = (int) type;
                 if (typeInt == LiveMessageEntity.MESSAGE_TIP) {
-                    return new AdapterItemInterface<LiveMessageEntity>() {
-                        TextView tvMessageItem;
-                        StandLiveHeadView standLiveHeadView;
-                        LottieComposition mComposition;
-
-                        @Override
-                        public int getLayoutResId() {
-                            return R.layout.item_livevideo_stand_message;
-                        }
-
-                        @Override
-                        public void initViews(View root) {
-                            Loger.d(TAG, "initViews");
-                            tvMessageItem = (TextView) root.findViewById(R.id.tv_livevideo_message_item);
-                            tvMessageItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
-                            standLiveHeadView = root.findViewById(R.id.slhv_livevideo_message_head);
-                            standLiveHeadView.addAnimatorListener(new Animator.AnimatorListener() {
-                                @Override
-                                public void onAnimationStart(Animator animator) {
-
-                                }
-
-                                @Override
-                                public void onAnimationEnd(Animator animator) {
-                                    Log.d(TAG, "onAnimationEnd:progerss=" + standLiveHeadView.getProgress());
-//                                standLiveHeadView.setProgress(1.0f);
-                                }
-
-                                @Override
-                                public void onAnimationCancel(Animator animator) {
-
-                                }
-
-                                @Override
-                                public void onAnimationRepeat(Animator animator) {
-
-                                }
-                            });
-                            initlottieAnim();
-                        }
-
-                        private void initlottieAnim() {
-                            LottieComposition.Factory.fromAssetFileName(mContext, fileName, new OnCompositionLoadedListener() {
-                                @Override
-                                public void onCompositionLoaded(@Nullable LottieComposition composition) {
-                                    Log.d(TAG, "onCompositionLoaded:composition=" + composition);
-                                    if (composition == null) {
-                                        return;
-                                    }
-                                    if (mComposition != null) {
-                                        return;
-                                    }
-                                    mComposition = composition;
-                                    standLiveHeadView.setImageAssetsFolder("live_stand/lottie/head");
-                                    standLiveHeadView.setComposition(composition);
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void bindListener() {
-
-                        }
-
-                        @Override
-                        public void updateViews(LiveMessageEntity entity, int position, Object objTag) {
-                            String sender = entity.getSender();
-                            if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
-                                tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
-                                tvMessageItem.setText(entity.getText());
-                                urlClick(tvMessageItem);
-                                CharSequence text = tvMessageItem.getText();
-                                tvMessageItem.setText(text);
-                            } else {
-                                tvMessageItem.setAutoLinkMask(0);
-                                tvMessageItem.setText(entity.getText());
-                            }
-                            boolean deng = standLiveHeadView.getEntity() == entity;
-//                            if (deng) {
-//                                return;
-//                            }
-                            Loger.d(TAG, "updateViews:deng=" + deng + ",progress=" + standLiveHeadView.getProgress() + ",standLiveHeadView=" + standLiveHeadView.getEntity() + ",text=" + entity.getText());
-                            standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
-//                        entity.setHeadUrl(getInfo.getHeadImgPath());
-                            standLiveHeadView.setName(entity.getSender());
-                            standLiveHeadView.setHeadSys();
-                            if (!entity.isPlayAnimation()) {
-                                entity.setPlayAnimation(true);
-                                standLiveHeadView.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        standLiveHeadView.playAnimation();
-                                    }
-                                }, 10);
-                            } else {
-                                standLiveHeadView.setProgress(1.0f);
-                            }
-                            entity.setStandLiveHeadView(standLiveHeadView);
-                            standLiveHeadView.setEntity(entity);
-                        }
-                    };
+                    return new StandLiveMessSysItem(mContext, fileName, messageSize);
                 } else {
-                    return new AdapterItemInterface<LiveMessageEntity>() {
-                        TextView tvMessageItem;
-                        StandLiveHeadView standLiveHeadView;
-                        LottieComposition mComposition;
-
+                    return new StandLiveMessOtherItem(mContext, fileName, messageSize, urlclick, new TextUrlClick() {
                         @Override
-                        public int getLayoutResId() {
-                            return R.layout.item_livevideo_stand_message;
+                        public void onUrlClick(TextView tvContent) {
+                            urlClick(tvContent);
                         }
-
-                        @Override
-                        public void initViews(View root) {
-                            Loger.d(TAG, "initViews");
-                            tvMessageItem = (TextView) root.findViewById(R.id.tv_livevideo_message_item);
-                            tvMessageItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
-                            standLiveHeadView = root.findViewById(R.id.slhv_livevideo_message_head);
-                            standLiveHeadView.addAnimatorListener(new Animator.AnimatorListener() {
-                                @Override
-                                public void onAnimationStart(Animator animator) {
-
-                                }
-
-                                @Override
-                                public void onAnimationEnd(Animator animator) {
-                                    Log.d(TAG, "onAnimationEnd:progerss=" + standLiveHeadView.getProgress());
-//                                standLiveHeadView.setProgress(1.0f);
-                                }
-
-                                @Override
-                                public void onAnimationCancel(Animator animator) {
-
-                                }
-
-                                @Override
-                                public void onAnimationRepeat(Animator animator) {
-
-                                }
-                            });
-                            initlottieAnim();
-                        }
-
-                        private void initlottieAnim() {
-                            LottieComposition.Factory.fromAssetFileName(mContext, fileName, new OnCompositionLoadedListener() {
-                                @Override
-                                public void onCompositionLoaded(@Nullable LottieComposition composition) {
-                                    Log.d(TAG, "onCompositionLoaded:composition=" + composition);
-                                    if (composition == null) {
-                                        return;
-                                    }
-                                    if (mComposition != null) {
-                                        return;
-                                    }
-                                    mComposition = composition;
-                                    standLiveHeadView.setImageAssetsFolder("live_stand/lottie/head");
-                                    standLiveHeadView.setComposition(composition);
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void bindListener() {
-
-                        }
-
-                        @Override
-                        public void updateViews(LiveMessageEntity entity, int position, Object objTag) {
-                            String sender = entity.getSender();
-//                        switch (entity.getType()) {
-//                            case LiveMessageEntity.MESSAGE_MINE:
-//                            case LiveMessageEntity.MESSAGE_TEACHER:
-//                            case LiveMessageEntity.MESSAGE_TIP:
-//                            case LiveMessageEntity.MESSAGE_CLASS:
-//                                color = nameColors[entity.getType()];
-//                                break;
-//                            default:
-//                                color = nameColors[0];
-//                                break;
-//                        }
-                            if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
-                                tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
-                                tvMessageItem.setText(entity.getText());
-                                urlClick(tvMessageItem);
-                                CharSequence text = tvMessageItem.getText();
-                                tvMessageItem.setText(text);
-                            } else {
-                                tvMessageItem.setAutoLinkMask(0);
-                                tvMessageItem.setText(entity.getText());
-                            }
-//                        boolean deng = standLiveHeadView.getEntity() == entity;
-//                        Loger.d(TAG, "updateViews:deng=" + deng + ",text=" + entity.getText());
-//                        if (!deng) {
-//                            standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
-////                        entity.setHeadUrl(getInfo.getHeadImgPath());
-//                            standLiveHeadView.setName(entity.getSender());
-//                            standLiveHeadView.setHead(entity.getHeadUrl());
-//                            if (!entity.isPlayAnimation()) {
-//                                entity.setPlayAnimation(true);
-//                                standLiveHeadView.playAnimation();
-//                            } else {
-//                                standLiveHeadView.setProgress(1.0f);
-//                            }
-//                        } else {
-//                            if (!entity.isPlayAnimation()) {
-//                                Loger.d(TAG, "updateViews:isPlayAnimation=false");
-//                                entity.setPlayAnimation(true);
-//                                standLiveHeadView.playAnimation();
-//                            } else {
-//                                standLiveHeadView.setProgress(1.0f);
-//                            }
-//                        }
-//                        if (!entity.isPlayAnimation()) {
-//                            Loger.d(TAG, "updateViews:isPlayAnimation=false");
-//                            entity.setPlayAnimation(true);
-//                            standLiveHeadView.playAnimation();
-//                        } else {
-//                            Loger.d(TAG, "updateViews:equal=" + (standLiveHeadView.getEntity() != entity));
-//                            if (standLiveHeadView.getEntity() != entity) {
-////                                standLiveHeadView.setProgress(1.0f);
-//                                standLiveHeadView.playAnimation();
-//                            } else {
-////                                standLiveHeadView.resumeAnimation();
-//                            }
-//                        }
-                            boolean deng = standLiveHeadView.getEntity() == entity;
-//                            if (deng) {
-//                                return;
-//                            }
-                            Loger.d(TAG, "updateViews:deng=" + deng + ",progress=" + standLiveHeadView.getProgress() + ",standLiveHeadView=" + standLiveHeadView.getEntity() + ",text=" + entity.getText());
-                            standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
-//                        entity.setHeadUrl(getInfo.getHeadImgPath());
-                            standLiveHeadView.setName(entity.getSender());
-                            standLiveHeadView.setHead(entity.getHeadUrl());
-                            if (!entity.isPlayAnimation()) {
-                                entity.setPlayAnimation(true);
-                                standLiveHeadView.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        standLiveHeadView.playAnimation();
-                                    }
-                                }, 10);
-                            } else {
-                                standLiveHeadView.setProgress(1.0f);
-                            }
-                            entity.setStandLiveHeadView(standLiveHeadView);
-                            standLiveHeadView.setEntity(entity);
-                        }
-                    };
+                    });
                 }
-
             }
         };
         lvMessage.setVerticalFadingEdgeEnabled(false);
@@ -758,6 +523,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //                messageAdapter.notifyDataSetChanged();
 //            }
 //        });
+        liveSoundPool = LiveSoundPool.createSoundPool();
         Loger.i(TAG, "initData:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mView.post(new Runnable() {
@@ -1323,42 +1089,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         });
     }
 
-    /**
-     * 把字符串进行转义（表情显示图片）
-     *
-     * @param content
-     * @param mContext
-     * @param bounds   噢！是写错了，已经加进去了[e]1f60a[/e][e]1f60a[/e][e]1f60a[/e][e]1f33a[/e][e]1f33a[/e]
-     * @return [e]em_2[e] \[e\](.*?)\[/e\]
-     */
-    public static SpannableStringBuilder convertToHtml(String content, Context mContext, int bounds) {
-        String regex = "\\[e\\]em(.*?)\\[e\\]";
-        Pattern pattern = Pattern.compile(regex);
-        String emo = "";
-        Resources resources = mContext.getResources();
-        Matcher matcher = pattern.matcher(content);
-        SpannableStringBuilder sBuilder = new SpannableStringBuilder(content);
-        Drawable drawable = null;
-        ImageSpan span = null;
-        while (matcher.find()) {
-            emo = matcher.group();
-            try {
-                int id = map.get(emo);
-                if (id != 0) {
-                    drawable = resources.getDrawable(id);
-                    if (drawable != null) {
-                        drawable.setBounds(0, 0, bounds, bounds);
-                        span = new VerticalImageSpan(drawable);
-                        sBuilder.setSpan(span, matcher.start(), matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-                }
-            } catch (Exception e) {
-                break;
-            }
-        }
-        return sBuilder;
-    }
-
     @Override
     public CommonAdapter<LiveMessageEntity> getMessageAdapter() {
         return messageAdapter;
@@ -1367,28 +1097,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     @Override
     public void setOtherMessageAdapter(CommonAdapter<LiveMessageEntity> otherMessageAdapter) {
         this.otherMessageAdapter = otherMessageAdapter;
-    }
-
-    public static HashMap<String, Integer> map = new HashMap<>();
-
-    static {
-        map.put("[e]em_1[e]", R.drawable.emoji_1f60a);
-        map.put("[e]em_2[e]", R.drawable.emoji_1f604);
-        map.put("[e]em_3[e]", R.drawable.emoji_1f633);
-        map.put("[e]em_4[e]", R.drawable.emoji_1f60c);
-        map.put("[e]em_5[e]", R.drawable.emoji_1f601);
-        map.put("[e]em_6[e]", R.drawable.emoji_1f61d);
-        map.put("[e]em_7[e]", R.drawable.emoji_1f625);
-        map.put("[e]em_8[e]", R.drawable.emoji_1f623);
-        map.put("[e]em_9[e]", R.drawable.emoji_1f628);
-        map.put("[e]em_10[e]", R.drawable.emoji_1f632);
-        map.put("[e]em_11[e]", R.drawable.emoji_1f62d);
-        map.put("[e]em_12[e]", R.drawable.emoji_1f602);
-        map.put("[e]em_13[e]", R.drawable.emoji_1f631);
-        map.put("[e]em_14[e]", R.drawable.emoji_1f47f);
-        map.put("[e]em_15[e]", R.drawable.emoji_1f44d);
-        map.put("[e]em_16[e]", R.drawable.emoji_1f44c);
-        map.put("[e]em_17[e]", R.drawable.emoji_270c);
     }
 
     public void onGetMyGoldDataEvent(String goldNum) {
