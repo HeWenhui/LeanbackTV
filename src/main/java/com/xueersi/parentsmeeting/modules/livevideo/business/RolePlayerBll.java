@@ -176,8 +176,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
     @Override
     public void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
+        Loger.i("RolePlayerDemoTest", "老师收题了,断开socket ");
         if (mWebSocket != null && mWebSocket.isOpen()) {
-            Loger.i("RolePlayerDemoTest", "老师收题了,断开socket ");
             mWebSocket.close();
             mWebSocket = null;
         }
@@ -193,6 +193,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
     /**
      * 帮助进入人机的错误回调
+     *
      * @param onError
      */
     @Override
@@ -243,7 +244,6 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         if (isBeginConnWebSocket) {
             return;
         }
-        isBeginConnWebSocket = true;
 
         if (mWebSocket != null && mWebSocket.isOpen()) {
             mWebSocket.close();
@@ -257,6 +257,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         mWebSocket.connect(webSocketUrl, new WebSocketConn.WebSocketCallBack() {
             @Override
             public void onOpen() {
+                isBeginConnWebSocket = true;
                 Loger.i("RolePlayerDemoTest", "open");
             }
 
@@ -270,11 +271,13 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             @Override
             public void onClose() {
                 Loger.i("RolePlayerDemoTest", "close");
+                isBeginConnWebSocket = false;
             }
 
             @Override
             public void onError() {
                 Loger.i("RolePlayerDemoTest", "onError");
+                isBeginConnWebSocket = false;
             }
         });
     }
