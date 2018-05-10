@@ -96,7 +96,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPage
 import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
-import com.xueersi.parentsmeeting.modules.livevideo.util.FloatPermissionManager;
+import com.xueersi.parentsmeeting.util.FloatPermissionManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;

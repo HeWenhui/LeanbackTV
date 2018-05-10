@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -56,7 +55,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusE
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideo.util.FloatPermissionManager;
+import com.xueersi.parentsmeeting.util.FloatPermissionManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
@@ -74,15 +73,12 @@ import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
