@@ -395,9 +395,6 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
      * 结束分队仪式
      */
     private void finishTeamSelect() {
-        // todo  显示关闭按钮
-        //Log.e(TAG,"======>显示关闭按钮");
-        // show btn anim
         ImageView ivClose = mView.findViewById(R.id.iv_teampk_finish_team_select);
         if (ivClose.getVisibility() != View.VISIBLE) {
             ivClose.setVisibility(View.VISIBLE);
@@ -406,8 +403,6 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
             scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.19f));
             ivClose.startAnimation(scaleAnimation);
         }
-        // 清除所有 lottie 资源
-        //lavTeamSelectAnimView.cancelAnimation();
         // 去除 选队场景
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override

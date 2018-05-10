@@ -1187,7 +1187,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
                          if(teamPkEntity.getOpenbox() == 1){
                              mTeamPKBll.setTopicHandled(true);
-                             mTeamPKBll.showOpenBoxScene(true);//从topic 恢复是如何判断胜负关系
+                             mTeamPKBll.resumeOpenBoxScene();
                              return;
                          }
                         mTeamPKBll.setTopicHandled(true);
@@ -1221,6 +1221,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         if ("off".equals(voiceChatStatus)) {//接麦红包无效
                             if (readPackageBll != null) {
                                 readPackageBll.onReadPackage(object.getInt("id"));
+                            }
+                            // 更新左侧 金币信息
+                            if(mTeamPKBll != null){
+                                mTeamPKBll.updatePkStateLayout();
                             }
                         }
                         break;

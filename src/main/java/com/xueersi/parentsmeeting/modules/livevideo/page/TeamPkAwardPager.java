@@ -424,7 +424,6 @@ public class TeamPkAwardPager extends BasePager {
             @Override
             public void onClick(View v) {
                 getStuChestInfo();
-                updatePkStateLayout();
                 String lottieResPath = lottieResDir + "_open/images";
                 String lottieJsonPath = lottieResDir + "_open/data.json";
                 startOpenBoxAnim(lottieResPath, lottieJsonPath);
@@ -469,6 +468,7 @@ public class TeamPkAwardPager extends BasePager {
                             ivOpenstate.setVisibility(View.VISIBLE);
                             ivOpenstate.setLayoutParams(layoutParams);
                         }
+                        updatePkStateLayout();
                     }
 
                     @Override

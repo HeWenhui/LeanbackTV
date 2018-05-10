@@ -20,8 +20,6 @@ import java.util.List;
 
 public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
     private static final String TAG = "TeamPkResultLottieEffectInfo";
-    private int nameTextSize;
-    private int sloganTextSize;
     private int textColor;
 
     public static class DetailIfo {
@@ -29,10 +27,28 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
         String value;
     }
 
+    public static class TextSizeInfo{
+        String fileName;
+        int   textSize;
+    }
+
+    private List<TextSizeInfo> textSizeInfos = new ArrayList<TextSizeInfo>();
+
     private List<DetailIfo> teacherNameInfoList = new ArrayList<DetailIfo>();
     private List<DetailIfo> sloganInfoList = new ArrayList<DetailIfo>();
     private List<DetailIfo> logoInfoList = new ArrayList<DetailIfo>();
     private List<DetailIfo> teacherHeadInfoList = new ArrayList<DetailIfo>();
+
+    public void setTextSize(String fileName,int textSize){
+        TextSizeInfo textSizeInfo = new TextSizeInfo();
+        textSizeInfo.fileName = fileName;
+        textSizeInfo.textSize = textSize;
+        textSizeInfos.add(textSizeInfo);
+    }
+
+
+
+
 
     public void addTeacherName(String fileName, String value) {
         DetailIfo ifo = new DetailIfo();
@@ -65,14 +81,6 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
     }
 
 
-    public void setNameTextSize(int textSize) {
-        this.nameTextSize = textSize;
-    }
-
-    public void setSloganTextSize(int sloganTextSize) {
-        this.sloganTextSize = sloganTextSize;
-    }
-
     public void setTextColor(int textColor) {
         this.textColor = textColor;
     }
@@ -86,15 +94,34 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
     public Bitmap fetchTargetBitMap(LottieAnimationView animationView, String fileName, String bitmapId, int width, int height) {
         DetailIfo info;
         if ((info = getTeacherNameInfo(fileName)) != null) {
-            return createMsgBitmap(width, height, info.value, nameTextSize, textColor);
+            return createMsgBitmap(width, height, info.value, getTextSize(fileName), textColor);
         } else if ((info = getSlogan(fileName)) != null) {
-            return createMsgBitmap(width, height, info.value, sloganTextSize, textColor);
+            return createMsgBitmap(width, height, info.value, getTextSize(fileName), textColor);
         } else if ((info = getLogo(fileName)) != null) {
             upDateLottieBitmap(animationView, bitmapId, info.value, width, height, false);
         } else if ((info = getTeacherHead(fileName)) != null) {
             upDateLottieBitmap(animationView, bitmapId, info.value, width, height, true);
         }
         return null;
+    }
+
+    /**
+     * 获取字体大小
+     * @param fileName
+     * @return
+     */
+    private int getTextSize(String fileName) {
+        int textSize = 0;
+        TextSizeInfo sizeInfo ;
+        for (int i = 0; i < textSizeInfos.size(); i++) {
+            sizeInfo = textSizeInfos.get(i);
+            if(sizeInfo.fileName.equals(fileName)){
+                textSize = sizeInfo.textSize;
+                break;
+            }
+        }
+        Log.e("TextSize","====>getTextSize:"+textSize);
+        return textSize;
     }
 
     /**
@@ -292,6 +319,7 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
         }
         return result;
     }
+
 }
 
 

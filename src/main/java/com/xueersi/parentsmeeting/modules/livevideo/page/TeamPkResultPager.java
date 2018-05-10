@@ -170,16 +170,13 @@ public class TeamPkResultPager extends BasePager {
         mFinalPkRsult = data;
         int pkResult = (int) (data.getMyTeamResultInfo().getEnergy() - data.getCompetitorResultInfo().getEnergy());
         if (pkResult == 0) {
-            //showDraw();
             showDrawAnim();
             Log.e("PkResult", "======> ResultPager show showDraw");
         } else if (pkResult > 0) {
-            //showWin();
-            showWinAnim();
+             showWinAnim();
             Log.e("PkResult", "======> ResultPager show showWin");
         } else {
-            //showLose();
-            showLoseAnim();
+             showLoseAnim();
             Log.e("PkResult", "======> ResultPager show showLose");
         }
     }
@@ -302,7 +299,7 @@ public class TeamPkResultPager extends BasePager {
             public void run() {
                 showNewProgress(data, myTeamOldEnergy);
             }
-        }, 5000);
+        }, 2000);
     }
 
     private void showNewProgress(TeamEnergyAndContributionStarEntity data, long myTeamOldEnergy) {
@@ -483,8 +480,11 @@ public class TeamPkResultPager extends BasePager {
         final TeamPkResultLottieEffectInfo lottieEffectInfo =
                 new TeamPkResultLottieEffectInfo(lottieResPath, lottieJsonPath);
         lottieEffectInfo.setTargetFileFilter(targetFileNames);
-        lottieEffectInfo.setNameTextSize(30);
-        lottieEffectInfo.setSloganTextSize(40);
+        lottieEffectInfo.setTextSize("img_3.png",30);
+        lottieEffectInfo.setTextSize("img_9.png",30);
+        lottieEffectInfo.setTextSize("img_4.png",40);
+        lottieEffectInfo.setTextSize("img_10.png",40);
+
         int color = Color.parseColor("#73510A");
         lottieEffectInfo.setTextColor(color);
 
@@ -560,8 +560,12 @@ public class TeamPkResultPager extends BasePager {
         final TeamPkResultLottieEffectInfo lottieEffectInfo =
                 new TeamPkResultLottieEffectInfo(lottieResPath, lottieJsonPath);
         lottieEffectInfo.setTargetFileFilter(targetFileNames);
-        lottieEffectInfo.setNameTextSize(26);
-        lottieEffectInfo.setSloganTextSize(32);
+        lottieEffectInfo.setTextSize("img_15.png",26);
+        lottieEffectInfo.setTextSize("img_10.png",26);
+
+        lottieEffectInfo.setTextSize("img_16.png",32);
+        lottieEffectInfo.setTextSize("img_11.png",32);
+
         int color = Color.parseColor("#73510A");
         lottieEffectInfo.setTextColor(color);
         lottieEffectInfo.addTeacherName("img_15.png", mFinalPkRsult.getMyTeamResultInfo().getTeacherName());
@@ -608,8 +612,12 @@ public class TeamPkResultPager extends BasePager {
         final TeamPkResultLottieEffectInfo lottieEffectInfo =
                 new TeamPkResultLottieEffectInfo(lottieResPath, lottieJsonPath);
         lottieEffectInfo.setTargetFileFilter(targetFileNames);
-        lottieEffectInfo.setNameTextSize(26);
-        lottieEffectInfo.setSloganTextSize(35);
+        lottieEffectInfo.setTextSize("img_14.png",26);
+        lottieEffectInfo.setTextSize("img_9.png",26);
+
+        lottieEffectInfo.setTextSize("img_15.png",35);
+        lottieEffectInfo.setTextSize("img_10.png",35);
+
         int color = Color.parseColor("#73510A");
         lottieEffectInfo.setTextColor(color);
         lottieEffectInfo.addTeacherName("img_14.png", mFinalPkRsult.getMyTeamResultInfo().getTeacherName());
@@ -648,26 +656,32 @@ public class TeamPkResultPager extends BasePager {
 
         final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "win/images";
         String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "win/data.json";
-        String[] targetFileNames = {"img_15.png"
-                , "img_10.png", "img_16.png", "img_11.png", "img_17.png", "img_7.png", "img_14.png", "img_9.png"};
+        String[] targetFileNames = {"img_13.png"
+                , "img_9.png", "img_14.png", "img_10.png", "img_15.png", "img_6.png", "img_12.png", "img_8.png"};
         final TeamPkResultLottieEffectInfo lottieEffectInfo =
                 new TeamPkResultLottieEffectInfo(lottieResPath, lottieJsonPath);
         lottieEffectInfo.setTargetFileFilter(targetFileNames);
-        lottieEffectInfo.setNameTextSize(26);
-        lottieEffectInfo.setSloganTextSize(35);
+
+        lottieEffectInfo.setTextSize("img_13.png",26);
+        lottieEffectInfo.setTextSize("img_9.png",21);
+
+
+        lottieEffectInfo.setTextSize("img_14.png",35);
+        lottieEffectInfo.setTextSize("img_10.png",27);
+
         int color = Color.parseColor("#73510A");
         lottieEffectInfo.setTextColor(color);
-        lottieEffectInfo.addTeacherName("img_15.png", mFinalPkRsult.getMyTeamResultInfo().getTeacherName());
-        lottieEffectInfo.addTeacherName("img_10.png", mFinalPkRsult.getCompetitorResultInfo().getTeacherName());
+        lottieEffectInfo.addTeacherName("img_13.png", mFinalPkRsult.getMyTeamResultInfo().getTeacherName());
+        lottieEffectInfo.addTeacherName("img_9.png", mFinalPkRsult.getCompetitorResultInfo().getTeacherName());
 
-        lottieEffectInfo.addSlogan("img_16.png", mFinalPkRsult.getMyTeamResultInfo().getSlogon());
-        lottieEffectInfo.addSlogan("img_11.png", mFinalPkRsult.getCompetitorResultInfo().getSlogon());
+        lottieEffectInfo.addSlogan("img_14.png", mFinalPkRsult.getMyTeamResultInfo().getSlogon());
+        lottieEffectInfo.addSlogan("img_10.png", mFinalPkRsult.getCompetitorResultInfo().getSlogon());
 
-        lottieEffectInfo.addLogo("img_17.png", mFinalPkRsult.getMyTeamResultInfo().getImg());
-        lottieEffectInfo.addLogo("img_7.png", mFinalPkRsult.getCompetitorResultInfo().getImg());
+        lottieEffectInfo.addLogo("img_15.png", mFinalPkRsult.getMyTeamResultInfo().getImg());
+        lottieEffectInfo.addLogo("img_6.png", mFinalPkRsult.getCompetitorResultInfo().getImg());
 
-        lottieEffectInfo.addTeacherHead("img_14.png", mFinalPkRsult.getMyTeamResultInfo().getTeacherImg());
-        lottieEffectInfo.addTeacherHead("img_9.png", mFinalPkRsult.getCompetitorResultInfo().getTeacherImg());
+        lottieEffectInfo.addTeacherHead("img_12.png", mFinalPkRsult.getMyTeamResultInfo().getTeacherImg());
+        lottieEffectInfo.addTeacherHead("img_8.png", mFinalPkRsult.getCompetitorResultInfo().getTeacherImg());
 
         try {
             lottieAnimationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext));
@@ -769,10 +783,11 @@ public class TeamPkResultPager extends BasePager {
                     mView.postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            //releaseSoundRes();
                             turn2openBox();
                             closePkResultPager();
                         }
-                    },3500);
+                    },500);
                     break;
             }
         }
