@@ -465,7 +465,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
 
         // 初始战队pk
         //teamPKBll = new TeamPKBll(this);
-   //setTeamPkBll(teamPKBll);
+        //setTeamPkBll(teamPKBll);
         //老师点赞
         teacherPraiseBll = new TeacherPraiseBll(this);
         mLiveBll.setTeacherPriaseBll(teacherPraiseBll);
@@ -626,7 +626,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                 }
             }.start();
         }
-        if(liveRemarkBll!=null){
+        if (liveRemarkBll != null) {
             liveRemarkBll.onPause();
         }
     }
@@ -966,9 +966,9 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                 englishH5Cache.getCourseWareUrl();
             }
             if (IS_SCIENCE) {
-//                SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(this, mLiveBll);
-//                speechFeedBackBll.setGetInfo(getInfo);
-                SpeechFeedBackBllOld speechFeedBackBll = new SpeechFeedBackBllOld(this, mLiveBll);
+                SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(this, mLiveBll);
+                speechFeedBackBll.setGetInfo(getInfo);
+//                SpeechFeedBackBllOld speechFeedBackBll = new SpeechFeedBackBllOld(this, mLiveBll);
                 speechFeedBackBll.setBottomContent(bottomContent);
                 speechFeedBackAction = speechFeedBackBll;
                 mLiveBll.setSpeechFeedBackAction(speechFeedBackBll);
@@ -1593,7 +1593,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             speechFeedBackAction.stop();
         }
 
-        if(teacherPraiseBll != null){
+        if (teacherPraiseBll != null) {
             teacherPraiseBll.onDestroy();
         }
 

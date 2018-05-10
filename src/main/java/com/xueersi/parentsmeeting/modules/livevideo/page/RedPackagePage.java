@@ -226,6 +226,7 @@ public class RedPackagePage extends BasePager {
 
                             @Override
                             public void onAnimationStart() {
+                                StandLiveMethod.voiceSiu(soundPool);
                                 redPackageAction.onPackageRight(operateId);
                                 ivLivevideoRedpackageBg.setOnClickListener(new View.OnClickListener() {
                                     @Override

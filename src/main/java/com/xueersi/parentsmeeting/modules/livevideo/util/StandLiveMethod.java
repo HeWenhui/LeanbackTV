@@ -36,6 +36,13 @@ public class StandLiveMethod {
         return task;
     }
 
+    public static LiveSoundPool.SoundPlayTask voiceSiu(LiveSoundPool soundPool) {
+        String path = StandLiveConfig.voicePath.VOICE_SIU;
+        LiveSoundPool.SoundPlayTask task = new LiveSoundPool.SoundPlayTask(path, StandLiveConfig.MUSIC_VOLUME_RATIO_FRONT, false);
+        int soundId = LiveSoundPool.play(null, soundPool, task);
+        return task;
+    }
+
     public static LiveSoundPool.SoundPlayTask readyGo(LiveSoundPool soundPool) {
         String path = StandLiveConfig.voicePath.VOICE_READYGO;
         LiveSoundPool.SoundPlayTask task = new LiveSoundPool.SoundPlayTask(path, StandLiveConfig.MUSIC_VOLUME_RATIO_FRONT, false);

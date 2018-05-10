@@ -26,6 +26,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
+import com.xueersi.parentsmeeting.permission.PermissionCallback;
+import com.xueersi.parentsmeeting.permission.PermissionItem;
+import com.xueersi.parentsmeeting.permission.XesPermission;
+import com.xueersi.parentsmeeting.permission.config.PermissionConfig;
 import com.xueersi.xesalib.umsagent.DeviceInfo;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -35,7 +39,9 @@ import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import io.agora.rtc.Constants;
 import io.agora.rtc.IAudioFrameObserver;
@@ -73,7 +79,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
     private short[] mPCMBuffer;
     private WorkerThread mWorkerThread;
     FileOutputStream outputStream;
-//    RtcEngine mRtcEngine;
+    //    RtcEngine mRtcEngine;
     File saveVideoFile;
     private String roomId;
     private long joinTime;
@@ -115,14 +121,47 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         this.bottomContent = bottomContent;
     }
 
+
     @Override
     public void start(final String roomId) {
         if (isStart) {
             return;
         }
         isStart = true;
-        boolean permission = isHasPermission(activity);
-        umsagentCommand(2, "on", permission ? 1 : 0);
+        this.roomId = roomId;
+        logToFile.d("start:roomId=" + roomId);
+        final List<PermissionItem> unList = new ArrayList<>();
+        List<PermissionItem> unList2 = XesPermission.checkPermissionUnPerList(activity, new PermissionCallback() {
+            @Override
+            public void onFinish() {
+
+            }
+
+            @Override
+            public void onDeny(String permission, int position) {
+                umsagentCommand(2, "on", 0);
+            }
+
+            @Override
+            public void onGuarantee(String permission, int position) {
+                unList.remove(0);
+                if (unList.isEmpty()) {
+                    if (isStart && roomId.equals(SpeechFeedBackBll.this.roomId)) {
+                        umsagentCommand(2, "on", 1);
+                        startVoice();
+                    }
+                }
+            }
+        }, PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO);
+        logToFile.d("start:unList2=" + unList2.size());
+        unList.addAll(unList2);
+        if (unList.isEmpty()) {
+            umsagentCommand(2, "on", 1);
+            startVoice();
+        }
+    }
+
+    private void startVoice() {
         bottomContent.post(new Runnable() {
             @Override
             public void run() {
@@ -137,12 +176,6 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                 bottomContent.addView(speechFeedBackPager.getRootView(), params);
             }
         });
-        if (!permission) {
-            XESToastUtils.showToast(activity, "请检查是否获取录音权限");
-            return;
-        }
-        this.roomId = roomId;
-        logToFile.d("start:roomId=" + roomId);
         new Thread() {
             @Override
             public void run() {

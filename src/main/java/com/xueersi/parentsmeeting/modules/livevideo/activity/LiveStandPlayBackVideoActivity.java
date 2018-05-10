@@ -62,6 +62,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageStandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
@@ -388,6 +389,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 
     /** 竖屏时填充视频列表布局 */
     protected void initData() {
+        StandLiveConfig.createVoice(this);
         BaseApplication baseApplication = (BaseApplication) getApplication();
 //        mRedPacketDialog = new StandLiveRedPacketAlertDialog(this, baseApplication, false);
         stuCourId = mVideoEntity.getStuCourseId();

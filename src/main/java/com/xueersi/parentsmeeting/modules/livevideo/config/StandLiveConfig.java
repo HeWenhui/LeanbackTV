@@ -26,6 +26,9 @@ public class StandLiveConfig {
     private static String voiceDir;
 
     public static void createVoice(Context context) {
+        if (voicePath != null) {
+            return;
+        }
         File alldir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/live_stand");
         if (alldir == null) {
             alldir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/live_stand");
