@@ -50,6 +50,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
+import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.util.TextStrokeUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
@@ -88,23 +89,25 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     private ArrayList<GoldTeamStatus.Student> addStudents = new ArrayList<>();
     /** 语音保存位置 */
     private String id;
-    ReadyGoImageView rgiv_livevideo_stand_readygo;
+    /** ReadyGo 动画 */
+    ReadyGoImageView rgivLivevideoStandReadygo;
     /** great鼓励外层 */
     RelativeLayout rlSpeectevalEncourage;
     /** great文字 */
     TextView tvSpeectevalEncourage;
     /** 提示和波浪线的外层 */
     RelativeLayout rlSpeectevalBg;
-    LottieAnimationView lav_livevideo_voiceans_team_mine;
-    ImageView iv_livevideo_voiceans_team_mine;
-    RelativeLayout rl_livevideo_voiceans_content;
+    LottieAnimationView lavLivevideoVoiceansTeamMine;
+    ImageView ivLivevideoVoiceansTeamMine;
+    RelativeLayout rlLivevideoVoiceansContent;
     /** 组内战况-左边 */
-    LinearLayout ll_livevideo_voiceans_team_left;
+    LinearLayout llLivevideoVoiceansTeamLeft;
     /** 组内战况-右边 */
-    LinearLayout ll_livevideo_voiceans_team_right;
+    LinearLayout llLivevideoVoiceansTeamRight;
     /** 波浪线 */
-    ImageView iv_livevideo_speecteval_wave;
-    TextView tv_livevideo_speecteval_countdown;
+    ImageView ivLivevideoSpeectevalWave;
+    /** 倒计时-暂时没用 */
+    TextView tvLivevideoSpeectevalCountdown;
     /** great动画 */
     Animation animSpeechEncourage;
     /** 错误提示 */
@@ -255,20 +258,20 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_live_stand_speecheval_auto_question, null);
-        rgiv_livevideo_stand_readygo = view.findViewById(R.id.rgiv_livevideo_stand_readygo);
-        lav_livevideo_voiceans_team_mine = view.findViewById(R.id.lav_livevideo_voiceans_team_mine);
-        iv_livevideo_voiceans_team_mine = view.findViewById(R.id.iv_livevideo_voiceans_team_mine);
-        rl_livevideo_voiceans_content = view.findViewById(R.id.rl_livevideo_voiceans_content);
-        ll_livevideo_voiceans_team_left = view.findViewById(R.id.ll_livevideo_voiceans_team_left);
-        ll_livevideo_voiceans_team_right = view.findViewById(R.id.ll_livevideo_voiceans_team_right);
+        rgivLivevideoStandReadygo = view.findViewById(R.id.rgiv_livevideo_stand_readygo);
+        lavLivevideoVoiceansTeamMine = view.findViewById(R.id.lav_livevideo_voiceans_team_mine);
+        ivLivevideoVoiceansTeamMine = view.findViewById(R.id.iv_livevideo_voiceans_team_mine);
+        rlLivevideoVoiceansContent = view.findViewById(R.id.rl_livevideo_voiceans_content);
+        llLivevideoVoiceansTeamLeft = view.findViewById(R.id.ll_livevideo_voiceans_team_left);
+        llLivevideoVoiceansTeamRight = view.findViewById(R.id.ll_livevideo_voiceans_team_right);
         rlSpeectevalEncourage = (RelativeLayout) view.findViewById(R.id.rl_livevideo_speecteval_encourage);
         tvSpeectevalEncourage = (TextView) view.findViewById(R.id.tv_livevideo_speecteval_encourage);
         rlSpeectevalBg = (RelativeLayout) view.findViewById(R.id.rl_livevideo_speecteval_bg);
-        iv_livevideo_speecteval_wave = view.findViewById(R.id.iv_livevideo_speecteval_wave);
+        ivLivevideoSpeectevalWave = view.findViewById(R.id.iv_livevideo_speecteval_wave);
         rlSpeectevalTip = (RelativeLayout) view.findViewById(R.id.rl_livevideo_speecteval_tip);
         tvSpeectevalTip = (TextView) view.findViewById(R.id.tv_livevideo_speecteval_tip);
-        tv_livevideo_speecteval_countdown = (TextView) view.findViewById(R.id.tv_livevideo_speecteval_countdown);
-//        iv_livevideo_speecteval_wave.setBackgroundResource(R.drawable.bg_livevideo_speecteval_wave);
+        tvLivevideoSpeectevalCountdown = (TextView) view.findViewById(R.id.tv_livevideo_speecteval_countdown);
+//        ivLivevideoSpeectevalWave.setBackgroundResource(R.drawable.bg_livevideo_speecteval_wave);
         view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View view) {
@@ -314,7 +317,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             }
         });
         saveVideoFile = new File(dir, "ise" + System.currentTimeMillis() + ".mp3");
-        rgiv_livevideo_stand_readygo.setAnimationListener(new FrameAnimation.AnimationListener() {
+        rgivLivevideoStandReadygo.setAnimationListener(new FrameAnimation.AnimationListener() {
             @Override
             public void onAnimationStart() {
 
@@ -322,11 +325,11 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
             @Override
             public void onAnimationEnd() {
-                ViewGroup group = (ViewGroup) rgiv_livevideo_stand_readygo.getParent();
+                ViewGroup group = (ViewGroup) rgivLivevideoStandReadygo.getParent();
                 if (group != null) {
-                    group.removeView(rgiv_livevideo_stand_readygo);
+                    group.removeView(rgivLivevideoStandReadygo);
                 }
-                rgiv_livevideo_stand_readygo.destory();
+                rgivLivevideoStandReadygo.destory();
                 afterReadyGo();
             }
 
@@ -336,7 +339,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             }
         });
         liveSoundPool = LiveSoundPool.createSoundPool();
-        rgiv_livevideo_stand_readygo.start(liveSoundPool);
+        rgivLivevideoStandReadygo.start(liveSoundPool);
         if (speechEvalAction instanceof LiveStandSpeechEvalAction) {
             final LiveStandSpeechEvalAction liveStandSpeechEvalAction = (LiveStandSpeechEvalAction) speechEvalAction;
             mView.postDelayed(new Runnable() {
@@ -377,50 +380,50 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                                         LottieComposition.Factory.fromAssetFileName(mContext, path, new TeamOnCompositionLoadedListener(student, lottieAnimationView));
                                         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 //                                lp.weight = 1;
-                                        int countLeft = ll_livevideo_voiceans_team_left.getChildCount();
-                                        int countRight = ll_livevideo_voiceans_team_right.getChildCount();
+                                        int countLeft = llLivevideoVoiceansTeamLeft.getChildCount();
+                                        int countRight = llLivevideoVoiceansTeamRight.getChildCount();
                                         if (leftOrRight % 2 == 1) {
                                             boolean remove = false;
                                             int index = 0;
                                             if (countRight > 0) {
-                                                int rightWidth = ((View) ll_livevideo_voiceans_team_right.getParent()).getWidth();
-                                                View child = ll_livevideo_voiceans_team_right.getChildAt(0);
+                                                int rightWidth = ((View) llLivevideoVoiceansTeamRight.getParent()).getWidth();
+                                                View child = llLivevideoVoiceansTeamRight.getChildAt(0);
                                                 int childWidth = child.getWidth();
                                                 while (childWidth * (countRight + 1) > rightWidth) {
                                                     countRight--;
                                                     View view = rightView.remove(0);
                                                     lp.width = childWidth;
-                                                    index = ll_livevideo_voiceans_team_right.indexOfChild(view);
-                                                    ll_livevideo_voiceans_team_right.removeViewInLayout(view);
+                                                    index = llLivevideoVoiceansTeamRight.indexOfChild(view);
+                                                    llLivevideoVoiceansTeamRight.removeViewInLayout(view);
                                                     remove = true;
                                                 }
                                             }
                                             if (remove) {
-                                                ll_livevideo_voiceans_team_right.addView(lottieAnimationView, index, lp);
+                                                llLivevideoVoiceansTeamRight.addView(lottieAnimationView, index, lp);
                                             } else {
-                                                ll_livevideo_voiceans_team_right.addView(lottieAnimationView, lp);
+                                                llLivevideoVoiceansTeamRight.addView(lottieAnimationView, lp);
                                             }
                                             rightView.add(lottieAnimationView);
                                         } else {
                                             boolean remove = false;
                                             int index = 0;
                                             if (countLeft > 0) {
-                                                int leftWidth = ((View) ll_livevideo_voiceans_team_left.getParent()).getWidth();
-                                                View child = ll_livevideo_voiceans_team_left.getChildAt(countLeft - 1);
+                                                int leftWidth = ((View) llLivevideoVoiceansTeamLeft.getParent()).getWidth();
+                                                View child = llLivevideoVoiceansTeamLeft.getChildAt(countLeft - 1);
                                                 int childWidth = child.getWidth();
                                                 while (childWidth * (countLeft + 1) > leftWidth) {
                                                     countLeft--;
                                                     remove = true;
                                                     View view = leftView.remove(0);
                                                     lp.width = childWidth;
-                                                    index = ll_livevideo_voiceans_team_left.indexOfChild(view);
-                                                    ll_livevideo_voiceans_team_left.removeViewInLayout(view);
+                                                    index = llLivevideoVoiceansTeamLeft.indexOfChild(view);
+                                                    llLivevideoVoiceansTeamLeft.removeViewInLayout(view);
                                                 }
                                             }
                                             if (remove) {
-                                                ll_livevideo_voiceans_team_left.addView(lottieAnimationView, index, lp);
+                                                llLivevideoVoiceansTeamLeft.addView(lottieAnimationView, index, lp);
                                             } else {
-                                                ll_livevideo_voiceans_team_left.addView(lottieAnimationView, 0, lp);
+                                                llLivevideoVoiceansTeamLeft.addView(lottieAnimationView, 0, lp);
                                             }
                                             leftView.add(lottieAnimationView);
                                         }
@@ -630,9 +633,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 return;
             }
         }
-//        TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = (TeamOnCompositionLoadedListener) lav_livevideo_voiceans_team_mine.getTag();
+//        TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = (TeamOnCompositionLoadedListener) lavLivevideoVoiceansTeamMine.getTag();
 //        if (teamOnCompositionLoadedListener != null) {
-//            teamOnCompositionLoadedListener.updateScore(mContext, lav_livevideo_voiceans_team_mine, "" + resultEntity.getScore());
+//            teamOnCompositionLoadedListener.updateScore(mContext, lavLivevideoVoiceansTeamMine, "" + resultEntity.getScore());
 //        }
         tvSpeectevalTip.removeCallbacks(autoUploadRunnable);
 //        errorSetVisible();
@@ -700,8 +703,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             }
         }
         rlSpeectevalEncourage.setVisibility(View.INVISIBLE);
-//        iv_livevideo_speecteval_wave.stop
-        iv_livevideo_speecteval_wave.setVisibility(View.INVISIBLE);
+//        ivLivevideoSpeectevalWave.stop
+        ivLivevideoSpeectevalWave.setVisibility(View.INVISIBLE);
     }
 
     private Bitmap updateHead(final FrameAnimation frameAnimation, ResultEntity resultEntity, final String file, boolean havename, int gold) {
@@ -799,12 +802,14 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
     private void onSpeechEvalSuccess(final ResultEntity resultEntity, final int gold) {
         isSpeechSuccess = true;
-        iv_livevideo_speecteval_wave.setVisibility(View.INVISIBLE);
+        ivLivevideoSpeectevalWave.setVisibility(View.INVISIBLE);
         rlSpeectevalBg.setVisibility(View.GONE);
         rlSpeectevalBg.removeAllViews();
-        if (isLive) {//直播中显示左下角自己的分数
+        //直播中显示左下角自己的分数
+        if (isLive) {
             onSpeechEvalSuccessMe(resultEntity);
         }
+        StandLiveMethod.leaderBoard(liveSoundPool);
         int score = resultEntity.getScore();
         final RelativeLayout group = (RelativeLayout) mView;
         final View resultMine = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_stand_speech_mine, group, false);
@@ -835,21 +840,22 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }
             }
         }
-        LinearLayout ll_livevideo_speecteval_result_mine = resultMine.findViewById(R.id.ll_livevideo_speecteval_result_mine);
+        LinearLayout llLivevideoSpeectevalResultMine = resultMine.findViewById(R.id.ll_livevideo_speecteval_result_mine);
 //        bg_livevideo_speecteval_result_number_0
         for (int i = 0; i < ("" + score).length(); i++) {
             char c = ("" + score).charAt(i);
             ImageView imageView = new ImageView(mContext);
             String name = "bg_livevideo_speecteval_result_number_" + c;
             imageView.setImageResource(mContext.getResources().getIdentifier(name, "drawable", mContext.getPackageName()));
-            ll_livevideo_speecteval_result_mine.addView(imageView);
+            llLivevideoSpeectevalResultMine.addView(imageView);
         }
         ImageView imageViewScore = new ImageView(mContext);
         imageViewScore.setImageResource(R.drawable.bg_livevideo_speecteval_result_number_unit);
-        ll_livevideo_speecteval_result_mine.addView(imageViewScore);
+        llLivevideoSpeectevalResultMine.addView(imageViewScore);
         resultMine.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                StandLiveMethod.onClickVoice(liveSoundPool);
                 group.removeView(resultMine);
                 if (isEnd || !isLive) {
                     speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, id);
@@ -1016,7 +1022,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     private FrameAnimation createFromAees(String path, boolean isRepeat) {
-        return FrameAnimation.createFromAees(mContext, iv_livevideo_speecteval_wave, path, 50, isRepeat);
+        return FrameAnimation.createFromAees(mContext, ivLivevideoSpeectevalWave, path, 50, isRepeat);
     }
 
     /**
@@ -1025,34 +1031,34 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
      * @param resultEntity
      */
     private void onSpeechEvalSuccessMe(ResultEntity resultEntity) {
-        if (lav_livevideo_voiceans_team_mine.getVisibility() == View.VISIBLE) {
-            TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = (TeamOnCompositionLoadedListener) lav_livevideo_voiceans_team_mine.getTag();
-            teamOnCompositionLoadedListener.updateScore(mContext, lav_livevideo_voiceans_team_mine, "" + resultEntity.getScore());
+        if (lavLivevideoVoiceansTeamMine.getVisibility() == View.VISIBLE) {
+            TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = (TeamOnCompositionLoadedListener) lavLivevideoVoiceansTeamMine.getTag();
+            teamOnCompositionLoadedListener.updateScore(mContext, lavLivevideoVoiceansTeamMine, "" + resultEntity.getScore());
             return;
         }
-        lav_livevideo_voiceans_team_mine.setVisibility(View.VISIBLE);
-        iv_livevideo_voiceans_team_mine.setVisibility(View.VISIBLE);
-        iv_livevideo_voiceans_team_mine.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+        lavLivevideoVoiceansTeamMine.setVisibility(View.VISIBLE);
+        ivLivevideoVoiceansTeamMine.setVisibility(View.VISIBLE);
+        ivLivevideoVoiceansTeamMine.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
-                iv_livevideo_voiceans_team_mine.getViewTreeObserver().removeOnPreDrawListener(this);
+                ivLivevideoVoiceansTeamMine.getViewTreeObserver().removeOnPreDrawListener(this);
                 Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_live_stand_speech_mine_light_rotate);
                 LinearInterpolator lin = new LinearInterpolator();
                 animation.setInterpolator(lin);
-                iv_livevideo_voiceans_team_mine.startAnimation(animation);
+                ivLivevideoVoiceansTeamMine.startAnimation(animation);
                 return false;
             }
         });
         String path = "live_stand/lottie/live_stand_voice_team_right.json";
-        lav_livevideo_voiceans_team_mine.setImageAssetsFolder("live_stand/lottie/voice_answer/team_right");
+        lavLivevideoVoiceansTeamMine.setImageAssetsFolder("live_stand/lottie/voice_answer/team_right");
         GoldTeamStatus.Student student = new GoldTeamStatus.Student();
         student.setNickname(userName);
         student.setScore("" + resultEntity.getScore());
         student.setAvatar_path(headUrl);
-        TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = new TeamOnCompositionLoadedListener(student, lav_livevideo_voiceans_team_mine);
+        TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = new TeamOnCompositionLoadedListener(student, lavLivevideoVoiceansTeamMine);
         teamOnCompositionLoadedListener.isMe = true;
         LottieComposition.Factory.fromAssetFileName(mContext, path, teamOnCompositionLoadedListener);
-        lav_livevideo_voiceans_team_mine.setTag(teamOnCompositionLoadedListener);
+        lavLivevideoVoiceansTeamMine.setTag(teamOnCompositionLoadedListener);
 //        List<PhoneScore> lstPhonemeScore = resultEntity.getLstPhonemeScore();
 //        if (!lstPhonemeScore.isEmpty()) {
 //            String nbest = "";

@@ -7,8 +7,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -145,6 +146,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                         @Override
                         public void onClick(View v) {
 //                            group.removeView(rlResult);
+                            StandLiveMethod.onClickVoice(liveSoundPool);
                             questionBll.removeQuestionAnswerReslut(rlResult);
                         }
                     });
@@ -165,7 +167,13 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                             Loger.d(TAG, "onViewDetachedFromWindow right");
                             questionBll.removeBaseVoiceAnswerPager(baseVoiceAnswerPager);
                             liveSoundPool.stop(task);
-                            liveSoundPool.release();
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    liveSoundPool.release();
+                                }
+                            }, 500);
                         }
                     });
                 }
@@ -213,6 +221,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                         @Override
                         public void onClick(View v) {
 //                            group.removeView(rlResult);
+                            StandLiveMethod.onClickVoice(liveSoundPool);
                             questionBll.removeQuestionAnswerReslut(rlResult);
                         }
                     });
@@ -233,7 +242,13 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                             Loger.d(TAG, "onViewDetachedFromWindow error");
                             questionBll.removeBaseVoiceAnswerPager(baseVoiceAnswerPager);
                             liveSoundPool.stop(task);
-                            liveSoundPool.release();
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    liveSoundPool.release();
+                                }
+                            }, 500);
                         }
                     });
                 }
@@ -263,8 +278,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             img_7Bitmap.recycle();
             img_7Bitmap = creatBitmap;
         } catch (IOException e) {
-//            e.printStackTrace();
-            Log.e(TAG, "setRightGold", e);
+            Loger.e(TAG, "setRightGold", e);
             return;
         }
         lottieAnimationView.updateBitmap("image_22", img_7Bitmap);
@@ -290,8 +304,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             img_7Bitmap.recycle();
             img_7Bitmap = creatBitmap;
         } catch (IOException e) {
-//            e.printStackTrace();
-            Log.e(TAG, "setRightGold", e);
+            Loger.e(TAG, "setRightGold", e);
             return;
         }
         lottieAnimationView.updateBitmap("image_5", img_7Bitmap);
