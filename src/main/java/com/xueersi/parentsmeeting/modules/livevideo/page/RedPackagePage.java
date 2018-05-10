@@ -121,6 +121,9 @@ public class RedPackagePage extends BasePager {
                     int destory = animation.destory();
                     Loger.d(TAG, "onViewDetachedFromWindow:animation=" + animation.path + ",destory=" + destory);
                 }
+                if (soundPool != null) {
+                    soundPool.release();
+                }
             }
         });
         return mView;
@@ -191,7 +194,7 @@ public class RedPackagePage extends BasePager {
         btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
             @Override
             public void onAnimationStart() {
-
+                StandLiveMethod.redPocket(soundPool);
             }
 
             @Override
@@ -280,15 +283,13 @@ public class RedPackagePage extends BasePager {
                                 }
                             }, 60);
                         }
-                        StandLiveMethod.onClickVoice(soundPool);
+                        final LiveSoundPool.SoundPlayTask playTask = StandLiveMethod.redFly(soundPool);
                         FrameAnimation btframeAnimation3 = createFromAees(file3, false);
                         frameAnimations.add(btframeAnimation3);
                         btframeAnimation3.setAnimationListener(new FrameAnimation.AnimationListener() {
-                            LiveSoundPool.SoundPlayTask playTask;
 
                             @Override
                             public void onAnimationStart() {
-                                playTask = StandLiveMethod.redPocket(soundPool);
                             }
 
                             @Override

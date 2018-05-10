@@ -21,7 +21,7 @@ public class StandLiveConfig {
      * 前景音效的比列
      */
     public static final float MUSIC_VOLUME_RATIO_FRONT = 0.6f;
-    public static String version = "2018041509";
+    public static String version = "2018041510";
     public static VoicePath voicePath;
     private static String voiceDir;
 
@@ -70,7 +70,11 @@ public class StandLiveConfig {
         /**
          * 红包出场动画
          */
-        public final String VOICE_RED_POCKET = voiceDir + "/" + "redpocket.mp3";
+        public final String VOICE_RED_POCKET = voiceDir + "/" + "redpocket-01.mp3";
+        /**
+         * 红包中间点击
+         */
+        public final String VOICE_RED_FLY = voiceDir + "/" + "redpocket-02.mp3";
         /**
          * 正确声音
          */

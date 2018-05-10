@@ -282,6 +282,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     FrameAnimation animation = frameAnimations.get(i);
                     animation.destory();
                 }
+                if (liveSoundPool != null) {
+                    liveSoundPool.release();
+                }
             }
         });
         return view;

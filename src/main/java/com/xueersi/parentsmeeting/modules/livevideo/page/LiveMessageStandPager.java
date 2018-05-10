@@ -528,6 +528,14 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         initOpenBt(true);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (liveSoundPool != null) {
+            liveSoundPool.release();
+        }
+    }
+
     private void initFlower() {
         long before = System.currentTimeMillis();
         final ArrayList<FlowerEntity> flowerEntities = new ArrayList<>();

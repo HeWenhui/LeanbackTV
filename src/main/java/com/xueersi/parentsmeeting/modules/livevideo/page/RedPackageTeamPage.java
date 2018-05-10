@@ -143,6 +143,7 @@ public class RedPackageTeamPage extends BasePager {
                 }
                 if (shipFloatSoundId != null) {
                     soundPool.stop(shipFloatSoundId);
+                    soundPool.release();
                 }
             }
         });

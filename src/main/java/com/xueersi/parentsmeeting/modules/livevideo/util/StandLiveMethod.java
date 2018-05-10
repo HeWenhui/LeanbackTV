@@ -24,13 +24,20 @@ public class StandLiveMethod {
 
     public static LiveSoundPool.SoundPlayTask floatFloadating(LiveSoundPool soundPool) {
         String path = StandLiveConfig.voicePath.VOICE_SHIP_FLOATING;
-        LiveSoundPool.SoundPlayTask task = new LiveSoundPool.SoundPlayTask(path, StandLiveConfig.MUSIC_VOLUME_RATIO_FRONT, true);
+        LiveSoundPool.SoundPlayTask task = new LiveSoundPool.SoundPlayTask(path, StandLiveConfig.MUSIC_VOLUME_RATIO_FRONT, false);
         int soundId = LiveSoundPool.play(null, soundPool, task);
         return task;
     }
 
     public static LiveSoundPool.SoundPlayTask redPocket(LiveSoundPool soundPool) {
         String path = StandLiveConfig.voicePath.VOICE_RED_POCKET;
+        LiveSoundPool.SoundPlayTask task = new LiveSoundPool.SoundPlayTask(path, StandLiveConfig.MUSIC_VOLUME_RATIO_FRONT, false);
+        int soundId = LiveSoundPool.play(null, soundPool, task);
+        return task;
+    }
+
+    public static LiveSoundPool.SoundPlayTask redFly(LiveSoundPool soundPool) {
+        String path = StandLiveConfig.voicePath.VOICE_RED_FLY;
         LiveSoundPool.SoundPlayTask task = new LiveSoundPool.SoundPlayTask(path, StandLiveConfig.MUSIC_VOLUME_RATIO_FRONT, false);
         int soundId = LiveSoundPool.play(null, soundPool, task);
         return task;
@@ -45,6 +52,13 @@ public class StandLiveMethod {
 
     public static LiveSoundPool.SoundPlayTask readyGo(LiveSoundPool soundPool) {
         String path = StandLiveConfig.voicePath.VOICE_READYGO;
+        LiveSoundPool.SoundPlayTask task = new LiveSoundPool.SoundPlayTask(path, StandLiveConfig.MUSIC_VOLUME_RATIO_FRONT, false);
+        int soundId = LiveSoundPool.play(null, soundPool, task);
+        return task;
+    }
+
+    public static LiveSoundPool.SoundPlayTask leaderBoard(LiveSoundPool soundPool) {
+        String path = StandLiveConfig.voicePath.VOICE_LEADER_BOARD;
         LiveSoundPool.SoundPlayTask task = new LiveSoundPool.SoundPlayTask(path, StandLiveConfig.MUSIC_VOLUME_RATIO_FRONT, false);
         int soundId = LiveSoundPool.play(null, soundPool, task);
         return task;

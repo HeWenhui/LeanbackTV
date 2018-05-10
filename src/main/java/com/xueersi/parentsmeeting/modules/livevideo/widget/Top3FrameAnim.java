@@ -19,6 +19,8 @@ import android.widget.TextView;
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
+import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
@@ -41,6 +43,7 @@ public class Top3FrameAnim {
     private HashMap<String, Bitmap> stuHeadBitmap;
     private ArrayList<FrameAnimation> frameAnimations;
     private boolean isGold = true;
+    LiveSoundPool liveSoundPool;
 
     public Top3FrameAnim(Context mContext, View rl_livevideo_redpackage_bg, HashMap<String, Bitmap> stuHeadBitmap, ArrayList<FrameAnimation> frameAnimations) {
         this.mContext = mContext;
@@ -58,6 +61,7 @@ public class Top3FrameAnim {
     }
 
     public void start(final FrameAnimation.AnimationListener animationListener, final ArrayList<GoldTeamStatus.Student> students) {
+        liveSoundPool = LiveSoundPool.createSoundPool();
         final int size = students.size();
         Loger.d(TAG, "start:size=" + size);
         if (size < 3) {
@@ -138,6 +142,7 @@ public class Top3FrameAnim {
         btframeAnimation2.setAnimationListener(new FrameAnimation.AnimationListener() {
             @Override
             public void onAnimationStart() {
+                StandLiveMethod.leaderBoard(liveSoundPool);
                 animationListener.onAnimationStart();
             }
 
@@ -163,6 +168,7 @@ public class Top3FrameAnim {
                 btframeAnimation3.setAnimationListener(new FrameAnimation.AnimationListener() {
                     @Override
                     public void onAnimationStart() {
+                        liveSoundPool.release();
                         rl_livevideo_redpackage_bg.postDelayed(new Runnable() {
                             @Override
                             public void run() {

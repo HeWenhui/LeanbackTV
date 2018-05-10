@@ -41,7 +41,7 @@ public class LiveStandFrameAnim {
     String eventId = LiveVideoConfig.LIVE_STAND_RES_UPDATE;
     static String TAG = "LiveStandFrameAnim";
     Activity activity;
-    final String filePath = "/android_stand_live/" + StandLiveConfig.version + "/frame_anim5.zip";
+    final String filePath = "/android_stand_live/" + StandLiveConfig.version + "/frame_anim6.zip";
     /** 下载地址，阿里云 */
     final String aliyun = "http://xesftp.oss-cn-beijing.aliyuncs.com" + filePath;
     /** 下载地址，网校 */

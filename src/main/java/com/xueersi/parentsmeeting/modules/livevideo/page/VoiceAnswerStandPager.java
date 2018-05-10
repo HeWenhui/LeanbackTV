@@ -426,6 +426,9 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                     int destory = animation.destory();
                     Loger.d(TAG, "onViewDetachedFromWindow:animation=" + animation.path + ",destory=" + destory);
                 }
+                if (liveSoundPool != null) {
+                    liveSoundPool.release();
+                }
             }
         });
         return view;

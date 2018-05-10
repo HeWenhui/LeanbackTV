@@ -42,6 +42,14 @@ public class LiveSoundPool {
         return soundPool.load(context, resId, i);
     }
 
+    public void release() {
+        if (soundPool == null) {
+            Loger.e(TAG, "release", new Exception());
+            return;
+        }
+        soundPool.release();
+    }
+
     public void pause(SoundPlayTask task) {
         SoundInfo soundInfo = mSoundInfoMap.get(task);
         if (soundInfo != null) {
