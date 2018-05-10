@@ -63,4 +63,18 @@ public class StandLiveMethod {
         int soundId = LiveSoundPool.play(null, soundPool, task);
         return task;
     }
+
+    public static LiveSoundPool.SoundPlayTask voiceRight(LiveSoundPool soundPool) {
+        String path = StandLiveConfig.voicePath.VOICE_RIGHT;
+        LiveSoundPool.SoundPlayTask task = new LiveSoundPool.SoundPlayTask(path, StandLiveConfig.MUSIC_VOLUME_RATIO_FRONT, false);
+        int soundId = LiveSoundPool.play(null, soundPool, task);
+        return task;
+    }
+
+    public static LiveSoundPool.SoundPlayTask voiceWrong(LiveSoundPool soundPool) {
+        String path = StandLiveConfig.voicePath.VOICE_WRONG;
+        LiveSoundPool.SoundPlayTask task = new LiveSoundPool.SoundPlayTask(path, StandLiveConfig.MUSIC_VOLUME_RATIO_FRONT, false);
+        int soundId = LiveSoundPool.play(null, soundPool, task);
+        return task;
+    }
 }

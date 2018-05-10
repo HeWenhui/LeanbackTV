@@ -26,6 +26,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.FontCache;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
+import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -137,6 +139,8 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                     questionBll.initQuestionAnswerReslut(rlResult);
                     lottieAnimationView.playAnimation();
                     setRightGold(context, lottieAnimationView, entity.getGoldNum());
+                    final LiveSoundPool liveSoundPool = LiveSoundPool.createSoundPool();
+                    final LiveSoundPool.SoundPlayTask task = StandLiveMethod.voiceRight(liveSoundPool);
                     rlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -160,6 +164,8 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                         public void onViewDetachedFromWindow(View v) {
                             Loger.d(TAG, "onViewDetachedFromWindow right");
                             questionBll.removeBaseVoiceAnswerPager(baseVoiceAnswerPager);
+                            liveSoundPool.stop(task);
+                            liveSoundPool.release();
                         }
                     });
                 }
@@ -201,6 +207,8 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
 //                    group.addView(rlResult);
                     questionBll.initQuestionAnswerReslut(rlResult);
                     setWrongTip(context, lottieAnimationView, entity.getStandardAnswer());
+                    final LiveSoundPool liveSoundPool = LiveSoundPool.createSoundPool();
+                    final LiveSoundPool.SoundPlayTask task = StandLiveMethod.voiceWrong(liveSoundPool);
                     rlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -224,6 +232,8 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                         public void onViewDetachedFromWindow(View v) {
                             Loger.d(TAG, "onViewDetachedFromWindow error");
                             questionBll.removeBaseVoiceAnswerPager(baseVoiceAnswerPager);
+                            liveSoundPool.stop(task);
+                            liveSoundPool.release();
                         }
                     });
                 }

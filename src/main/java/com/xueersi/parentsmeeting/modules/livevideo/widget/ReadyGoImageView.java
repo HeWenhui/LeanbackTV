@@ -35,7 +35,7 @@ public class ReadyGoImageView extends ImageView {
         frameAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
             @Override
             public void onAnimationStart() {
-                animationListener.onAnimationEnd();
+                animationListener.onAnimationStart();
                 task = StandLiveMethod.readyGo(liveSoundPool);
             }
 

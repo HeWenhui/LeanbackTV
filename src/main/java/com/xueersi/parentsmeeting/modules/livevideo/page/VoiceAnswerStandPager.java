@@ -45,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
+import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView;
@@ -78,7 +79,6 @@ import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE4;
  * 语音答题
  * Created by linyuqiang on 2017/12/5.
  */
-
 public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     String eventId = LiveVideoConfig.LIVE_STAND_TEST_VOICE;
     private SpeechEvaluatorUtils mIse;
@@ -440,6 +440,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
             @Override
             public void onClick(View v) {
                 ivVoiceansSwitch.setClickable(false);
+                StandLiveMethod.onClickVoice(liveSoundPool);
                 VoiceAnswerStandLog.sno7(liveAndBackDebug, baseVideoQuestionEntity.getvQuestionID(), "" + (System.currentTimeMillis() - entranceTime) / 1000);
                 FrameAnimation frameAnimation1 =
                         FrameAnimation.createFromAees(mContext, v, file4, 50, false);
