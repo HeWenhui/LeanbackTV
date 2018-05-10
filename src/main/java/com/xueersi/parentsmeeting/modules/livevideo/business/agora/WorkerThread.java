@@ -332,7 +332,7 @@ public class WorkerThread extends Thread {
         }
 
         mReady = false;
-
+        RtcEngine.destroy();
         // TODO should remove all pending(read) messages
 
         Loger.d(TAG, "exit() > start");

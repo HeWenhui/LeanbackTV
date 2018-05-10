@@ -222,48 +222,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                     } catch (Exception e) {
                         Loger.d(TAG, "start:setOnEngineCreate", e);
                     }
-                    mWorkerThread.eventHandler().addEventHandler(new AGEventHandler() {
-                        @Override
-                        public void onFirstRemoteVideoDecoded(int uid, int width, int height, int elapsed) {
-                        }
-
-                        @Override
-                        public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
-                            logToFile.i("joinchannelsuccess:channel=" + channel + ",uid=" + uid);
-                            joinTime = System.currentTimeMillis();
-                            umsagentJoin();
-                        }
-
-                        @Override
-                        public void onUserJoined(int uid, int elapsed) {
-//                            String mainTeacherId = mGetInfo.getMainTeacherId();
-//                            Loger.i(TAG, "onUserJoined:uid=" + uid + ",mainTeacherId=" + mainTeacherId);
-//                            if (!("" + uid).equals(mainTeacherId)) {
-//                                int mute = mWorkerThread.getRtcEngine().muteRemoteAudioStream(uid, true);
-//                                Loger.i(TAG, "onUserJoined:uid=" + uid + ",mute=" + mute);
-//                            }
-                        }
-
-                        @Override
-                        public void onUserOffline(int uid, int reason) {
-                            logToFile.i("useroffline:uid=" + uid + ",reason=" + reason);
-                        }
-
-                        @Override
-                        public void onError(int err) {
-                            if (err == 1108) {
-                                XESToastUtils.showToast(activity, "请检查是否获取麦克风权限");
-                            }
-                            umsagentError(err);
-                            logToFile.i("onError:err=" + err);
-                            //SpeechFeedBackBll.this.stop();
-                        }
-
-                        @Override
-                        public void onVolume(int volume) {
-                            speechFeedBackPager.setVolume(volume / 4);
-                        }
-                    });
+                    mWorkerThread.eventHandler().addEventHandler(agEventHandler);
                     mWorkerThread.start();
                     mWorkerThread.waitForReady();
                     int vProfile = Constants.VIDEO_PROFILE_120P;
@@ -303,6 +262,49 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         }.start();
     }
 
+    private AGEventHandler agEventHandler = new AGEventHandler() {
+        @Override
+        public void onFirstRemoteVideoDecoded(int uid, int width, int height, int elapsed) {
+        }
+
+        @Override
+        public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
+            logToFile.i("joinchannelsuccess:channel=" + channel + ",uid=" + uid);
+            joinTime = System.currentTimeMillis();
+            umsagentJoin();
+        }
+
+        @Override
+        public void onUserJoined(int uid, int elapsed) {
+//                            String mainTeacherId = mGetInfo.getMainTeacherId();
+//                            Loger.i(TAG, "onUserJoined:uid=" + uid + ",mainTeacherId=" + mainTeacherId);
+//                            if (!("" + uid).equals(mainTeacherId)) {
+//                                int mute = mWorkerThread.getRtcEngine().muteRemoteAudioStream(uid, true);
+//                                Loger.i(TAG, "onUserJoined:uid=" + uid + ",mute=" + mute);
+//                            }
+        }
+
+        @Override
+        public void onUserOffline(int uid, int reason) {
+            logToFile.i("useroffline:uid=" + uid + ",reason=" + reason);
+        }
+
+        @Override
+        public void onError(int err) {
+            if (err == 1108) {
+                XESToastUtils.showToast(activity, "请检查是否获取麦克风权限");
+            }
+            umsagentError(err);
+            logToFile.i("onError:err=" + err);
+            //SpeechFeedBackBll.this.stop();
+        }
+
+        @Override
+        public void onVolume(int volume) {
+            speechFeedBackPager.setVolume(volume / 4);
+        }
+    };
+
     @Override
     public void stop() {
         if (!isStart) {
@@ -321,7 +323,13 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                     umsagentLeave();
                 }
             });
+            mWorkerThread.eventHandler().removeEventHandler(agEventHandler);
             mWorkerThread.exit();
+            try {
+                mWorkerThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         if (outputStream != null) {
             try {
