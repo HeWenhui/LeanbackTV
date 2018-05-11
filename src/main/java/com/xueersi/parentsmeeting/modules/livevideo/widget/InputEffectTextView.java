@@ -187,7 +187,8 @@ public class InputEffectTextView extends View {
         public void run() {
             if(characterIndex <= mContentText.length() && !canceled){
                 int lineIndex = characterIndex / lineMaxCharacterNum;
-               // Log.e("InputEffectTextView","========>lineIndex:"+lineIndex+":"+lines.size());
+              /*  Log.e("InputEffectTextView","========>lineIndex:"+lineIndex+":"
+                        +lines.size()+":"+characterIndex+":"+mContentText.length());*/
                 // 绘制已展示完的行
                 if(lineIndex > 0){
                     for (int i = 0; i < lineIndex; i++) {
@@ -197,7 +198,11 @@ public class InputEffectTextView extends View {
                 if(characterIndex > (lineIndex * lineMaxCharacterNum) && (characterIndex % lineMaxCharacterNum == 0)){
                     lines.get(lineIndex).setCharacterNum2Draw(lineMaxCharacterNum);
                 }else{
-                    lines.get(lineIndex).setCharacterNum2Draw(characterIndex % lineMaxCharacterNum);
+                    if(lineIndex < lines.size()){
+                        lines.get(lineIndex).setCharacterNum2Draw(characterIndex % lineMaxCharacterNum);
+                    }else{
+                        lines.get(lines.size()-1).setCharacterNum2Draw(lineMaxCharacterNum);
+                    }
                 }
                 invalidate();
                 characterIndex++;
