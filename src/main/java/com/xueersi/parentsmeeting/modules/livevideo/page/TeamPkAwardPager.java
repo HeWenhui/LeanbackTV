@@ -19,6 +19,7 @@ import android.media.SoundPool;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -54,6 +55,7 @@ import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import okhttp3.Call;
@@ -81,8 +83,8 @@ public class TeamPkAwardPager extends BasePager {
     private static final int SOUND_TYPE_BG = 1; //背景音效
     private static final int SOUND_TYPE_BOX_OPEN = 2; //宝箱打开音效
     private HashMap<Integer, SoundInfo> mSoundInfoMap;
-    private static final int DEFAULT_BG_VOLUME = 4;     //默认背景音效大小
-    private static final int DEFAULT_FRONT_VOLUME = 6;  //默认前景音效大小
+    private static final float DEFAULT_BG_VOLUME = 0.4f;     //默认背景音效大小
+    private static final float DEFAULT_FRONT_VOLUME = 0.6f;  //默认前景音效大小
     private ClassChestEntity classChestEntity;
     private final TeamPKBll teamPKBll;
     private boolean mIsWin;
@@ -344,7 +346,7 @@ public class TeamPkAwardPager extends BasePager {
      * @param volume
      * @param loop
      */
-    private void playMusic(final int soundType, int resId, final int volume, final boolean loop) {
+    private void playMusic(final int soundType, int resId, final float volume, final boolean loop) {
         if (soundPool == null) {
             soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
         }
@@ -366,6 +368,70 @@ public class TeamPkAwardPager extends BasePager {
             }
         });
     }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        pasueMusic();
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        resumeMusic();
+    }
+
+    /**
+     * 暂停音效
+     * 注 此处的暂停  只是将音量设置为0  （因为 动画和音效是 同步的）
+     */
+    private void pasueMusic(){
+        Log.e("TeamPkTeamSelectPager","======>pasueMusic called");
+        if(soundPool != null && mSoundInfoMap != null){
+            if(mSoundInfoMap.size() >0){
+                Iterator<Integer> it = mSoundInfoMap.keySet().iterator();
+                Integer key;
+                while(it.hasNext()){
+                    key = it.next();
+                    SoundInfo info =  mSoundInfoMap.get(key);
+                    Log.e("TeamPkTeamSelectPager","======>pasueMusic soundInfo:"+info.getStreamId());
+                    soundPool.setVolume(info.getStreamId(),0,0);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 恢复音乐播放
+     *  注释  将音量恢复为暂停之前的状态
+     */
+    private void resumeMusic(){
+        Log.e("TeamPkTeamSelectPager","======>resumeMusic called");
+        if(soundPool != null && mSoundInfoMap != null){
+            if(mSoundInfoMap.size() >0){
+                Iterator<Integer> it = mSoundInfoMap.keySet().iterator();
+                Integer key;
+                while(it.hasNext()){
+                    key = it.next();
+                    SoundInfo info =  mSoundInfoMap.get(key);
+                    Log.e("TeamPkTeamSelectPager","======>resumeMusic soundInfo:"+info.getStreamId());
+                    if(key == SOUND_TYPE_BG){
+                        soundPool.setVolume(info.getStreamId(),DEFAULT_BG_VOLUME,DEFAULT_BG_VOLUME);
+                    }else{
+                        soundPool.setVolume(info.getStreamId(),DEFAULT_FRONT_VOLUME,DEFAULT_FRONT_VOLUME);
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
 
     /**
      * 播放宝箱 循环抖动 动画

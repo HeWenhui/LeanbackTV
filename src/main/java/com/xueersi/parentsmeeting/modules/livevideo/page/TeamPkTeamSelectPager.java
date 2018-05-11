@@ -54,6 +54,7 @@ import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -108,7 +109,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
 
     @Override
     public View initView() {
-        View view = View.inflate(mContext, R.layout.page_livevideo_teampk_teamselect, null);
+        final View view = View.inflate(mContext, R.layout.page_livevideo_teampk_teamselect, null);
         ivBg = view.findViewById(R.id.iv_teampk_team_select_bg);
         ivBgMask = view.findViewById(R.id.iv_teampk_bgmask);
         lavTeamSelectAnimView = view.findViewById(R.id.lav_teampk_team_select);
@@ -269,6 +270,67 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
                 Log.e("TeamPkTeamSelectPager", "======>stopMusic:" + soundInfo.getStreamId());
             }
         }
+    }
+
+
+
+
+    /**
+     * 暂停音效
+     * 注 此处的暂停  只是将音量设置为0  （因为 动画和音效是 同步的）
+     */
+    private void pasueMusic(){
+        Log.e("TeamPkTeamSelectPager","======>pasueMusic called");
+        if(soundPool != null && mSoundInfoMap != null){
+            if(mSoundInfoMap.size() >0){
+                Iterator<Integer> it = mSoundInfoMap.keySet().iterator();
+                Integer key;
+                while(it.hasNext()){
+                    key = it.next();
+                    SoundInfo info =  mSoundInfoMap.get(key);
+                    Log.e("TeamPkTeamSelectPager","======>pasueMusic soundInfo:"+info.getStreamId());
+                    soundPool.setVolume(info.getStreamId(),0,0);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 恢复音乐播放
+     *  注释  将音量恢复为暂停之前的状态
+     */
+    private void resumeMusic(){
+        Log.e("TeamPkTeamSelectPager","======>resumeMusic called");
+        if(soundPool != null && mSoundInfoMap != null){
+            if(mSoundInfoMap.size() >0){
+                Iterator<Integer> it = mSoundInfoMap.keySet().iterator();
+                Integer key;
+                while(it.hasNext()){
+                    key = it.next();
+                    SoundInfo info =  mSoundInfoMap.get(key);
+                    Log.e("TeamPkTeamSelectPager","======>resumeMusic soundInfo:"+info.getStreamId());
+                    if(key == SOUND_TYPE_WAR_BG){
+                        soundPool.setVolume(info.getStreamId(),MUSIC_VOLUME_RATIO_BG,MUSIC_VOLUME_RATIO_BG);
+                    }else{
+                        soundPool.setVolume(info.getStreamId(),MUSIC_VOLUME_RATIO_FRONT,MUSIC_VOLUME_RATIO_FRONT);
+                    }
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        pasueMusic();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        resumeMusic();
     }
 
     /**

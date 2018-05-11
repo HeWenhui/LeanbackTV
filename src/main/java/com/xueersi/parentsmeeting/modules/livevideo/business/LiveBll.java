@@ -2810,6 +2810,24 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
     }
 
+
+    /**activity  stop*/
+    public void onStop(){
+        if(mTeamPKBll != null){
+            mTeamPKBll.onStop();
+        }
+    }
+
+    /**
+     * activity resume
+     */
+    public void onResume(){
+        if(mTeamPKBll != null){
+            mTeamPKBll.onReusme();
+        }
+    }
+
+
     /**
      * activity退出
      */

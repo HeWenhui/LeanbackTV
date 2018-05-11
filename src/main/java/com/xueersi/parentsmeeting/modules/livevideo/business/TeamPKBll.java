@@ -588,6 +588,25 @@ public class TeamPKBll {
         EventBus.getDefault().unregister(this);
     }
 
+    /**
+     * activity stop
+     */
+    public void onStop(){
+       if(mFoucesPager != null){
+           mFoucesPager.onStop();
+       }
+    }
+
+    /**
+     * activity resume
+     */
+    public void onReusme(){
+        if(mFoucesPager != null){
+            mFoucesPager.onResume();
+        }
+    }
+
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRoomH5CloseEvent(final LiveRoomH5CloseEvent event) {

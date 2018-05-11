@@ -47,6 +47,7 @@ import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -455,6 +456,70 @@ public class TeamPkResultPager extends BasePager {
             });
         }
     }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        pasueMusic();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        resumeMusic();
+    }
+
+
+    /**
+     * 暂停音效
+     * 注 此处的暂停  只是将音量设置为0  （因为 动画和音效是 同步的）
+     */
+    private void pasueMusic(){
+        Log.e("TeamPkResultPager","======>pasueMusic called");
+        if(soundPool != null && mSoundInfoMap != null){
+            if(mSoundInfoMap.size() >0){
+                Iterator<Integer> it = mSoundInfoMap.keySet().iterator();
+                Integer key;
+                while(it.hasNext()){
+                    key = it.next();
+                    SoundInfo info =  mSoundInfoMap.get(key);
+                    Log.e("TeamPkResultPager","======>pasueMusic soundInfo:"+info.getStreamId());
+                    soundPool.setVolume(info.getStreamId(),0,0);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 恢复音乐播放
+     *  注释  将音量恢复为暂停之前的状态
+     */
+    private void resumeMusic(){
+        Log.e("TeamPkResultPager","======>resumeMusic called");
+        if(soundPool != null && mSoundInfoMap != null){
+            if(mSoundInfoMap.size() >0){
+                Iterator<Integer> it = mSoundInfoMap.keySet().iterator();
+                Integer key;
+                while(it.hasNext()){
+                    key = it.next();
+                    SoundInfo info =  mSoundInfoMap.get(key);
+                    Log.e("TeamPkResultPager","======>resumeMusic soundInfo:"+info.getStreamId());
+                    if(key == SOUND_TYPE_BG){
+                        soundPool.setVolume(info.getStreamId(),SOUND_VOLUME_BG,SOUND_VOLUME_BG);
+                    }else{
+                        soundPool.setVolume(info.getStreamId(),SOUND_VOLUME_FRONT,SOUND_VOLUME_FRONT);
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
 
 
     @Override

@@ -591,6 +591,11 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             }
             onPauseNotStopVideo = false;
         }
+
+        if(mLiveBll != null){
+            mLiveBll.onResume();
+        }
+
     }
 
     @Override
@@ -628,6 +633,14 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         }
         if (liveRemarkBll != null) {
             liveRemarkBll.onPause();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(mLiveBll != null){
+            mLiveBll.onStop();
         }
     }
 
@@ -1560,6 +1573,8 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             mLiveBll.stopIRC();
         }
     }
+
+
 
     @Override
     public void onDestroy() {

@@ -185,9 +185,7 @@ public class InputEffectTextView extends View {
         @Override
         public void run() {
             if(characterIndex <= mContentText.length() && !canceled){
-
                 int lineIndex = characterIndex / lineMaxCharacterNum;
-
                 if(lineIndex > 0){
 
                     for (int i = 0; i < lineIndex; i++) {
@@ -197,9 +195,6 @@ public class InputEffectTextView extends View {
                 if(characterIndex > (lineIndex * lineMaxCharacterNum) && (characterIndex % lineMaxCharacterNum == 0)){
                     lines.get(lineIndex).setCharacterNum2Draw(lineMaxCharacterNum);
                 }else{
-                    if(lineIndex >= lines.size() && lines.size() >0){
-                        lineIndex = lines.size() -1;
-                    }
                     lines.get(lineIndex).setCharacterNum2Draw(characterIndex % lineMaxCharacterNum);
                 }
                 invalidate();
