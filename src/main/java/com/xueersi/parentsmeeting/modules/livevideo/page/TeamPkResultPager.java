@@ -262,7 +262,7 @@ public class TeamPkResultPager extends BasePager {
                 }
             });
             ImageLoader.with(ivMyTeamLogo.getContext()).load(data.getMyTeamEngerInfo().getImg()).into(ivMyTeamLogo);
-            ImageLoader.with(ivOtherTeamLogo.getContext()).load(data.getMyTeamEngerInfo().getImg()).into(ivOtherTeamLogo);
+            ImageLoader.with(ivOtherTeamLogo.getContext()).load(data.getCompetitorEngerInfo().getImg()).into(ivOtherTeamLogo);
             tvMyTeacherName.setText(data.getMyTeamEngerInfo().getTeacherName());
             tvOtherTeacherName.setText(data.getCompetitorEngerInfo().getTeacherName());
             tvMyTeamSlogan.setText(data.getMyTeamEngerInfo().getSlogon());
