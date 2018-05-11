@@ -143,12 +143,28 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
 
     }
 
+    /**
+     * 表情键盘item被点击
+     * @param position
+     * @param catogaryId
+     * @param expressionId
+     * @param exPressionUrl
+     * @param exPressionName
+     * @param exPressionGifUrl
+     * @param bottomId
+     */
+    protected void onExpressionClick(int position, int catogaryId, String expressionId,
+                                     int exPressionUrl, String exPressionName, int exPressionGifUrl, int bottomId) {
+
+    }
+
     @Override
     public void initData() {
         mExpressionView = new ExpressionView(mContext, mView.findViewById(R.id.layout_chat_expression), etMessageContent, new LiveExPressionEditData()) {
             @Override
             public void clickGridItem(int position, int catogaryId, String expressionId,
                                       int exPressionUrl, String exPressionName, int exPressionGifUrl, int bottomId) {
+                onExpressionClick(position, catogaryId, expressionId, exPressionUrl, exPressionName, exPressionGifUrl, bottomId);
                 int length = etMessageContent.getText().length();
                 if (length + exPressionName.length() <= 40) {
                     Bitmap bitmap11 = BitmapFactory.decodeResource(mContext.getResources(), exPressionUrl);

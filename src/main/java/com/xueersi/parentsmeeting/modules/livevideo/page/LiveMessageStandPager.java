@@ -74,11 +74,12 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
 import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
 
 /**
- * Created by linyuqiang on 2016/8/2.
+ * @author linyuqiang
+ * @date 2016/8/2
  * 直播聊天横屏-直播课和直播辅导
  */
 public class LiveMessageStandPager extends BaseLiveMessagePager {
-    private String TAG = "LiveMessageStandPager";
+    private static String TAG = "LiveMessageStandPager";
     /** 聊天，默认开启 */
     private Button btMesOpen;
     /** 聊天输入框的关闭按钮 */
@@ -342,15 +343,16 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             @Override
             public void onClick(View v) {
                 Loger.i(TAG, "onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
-                StandLiveMethod.onClickVoice(liveSoundPool);
                 Editable editable = etMessageContent.getText();
                 String msg = editable.toString();
                 if (!StringUtils.isSpace(msg)) {
                     if (getInfo != null && getInfo.getBlockChinese() && isChinese(msg)) {
                         addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, MESSAGE_CHINESE, "");
                         onTitleShow(true);
+                        StandLiveMethod.onClickVoice(liveSoundPool);
                         return;
                     }
+                    boolean isSend = false;
                     if (liveBll.openchat()) {
                         if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
                             boolean send = liveBll.sendMessage(msg, getInfo.getStandLiveName());
@@ -359,6 +361,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                                 addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, getInfo.getHeadImgPath());
                                 lastSendMsg = System.currentTimeMillis();
                                 onTitleShow(true);
+                                isSend = true;
                             } else {
 //                                XESToastUtils.showToast(mContext, "你已被禁言!");
                                 addMessage("提示", LiveMessageEntity.MESSAGE_TIP, "你被老师禁言了，请联系老师解除禁言！", "");
@@ -371,7 +374,13 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                     } else {
                         XESToastUtils.showToast(mContext, "老师未开启聊天");
                     }
+                    if (isSend) {
+                        StandLiveMethod.voiceSiu(liveSoundPool);
+                    } else {
+                        StandLiveMethod.onClickVoice(liveSoundPool);
+                    }
                 } else {
+                    StandLiveMethod.onClickVoice(liveSoundPool);
                     addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, MESSAGE_EMPTY, "");
                 }
             }
@@ -410,8 +419,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                         new KPSwitchConflictUtil.SwitchClickListener() {
                             @Override
                             public void onClickSwitch(boolean switchToPanel) {
-                                StandLiveMethod.onClickVoice(liveSoundPool);
+//                                StandLiveMethod.onClickVoice(liveSoundPool);
                                 if (switchToPanel) {
+                                    StandLiveMethod.voicePopup(liveSoundPool);
                                     btMessageExpress.setBackgroundResource(R.drawable.selector_live_stand_chat_input);
                                     etMessageContent.clearFocus();
                                 } else {
@@ -444,6 +454,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         ivExpressionCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                StandLiveMethod.onClickVoice(liveSoundPool);
                 int action = KeyEvent.ACTION_DOWN;
                 int code = KeyEvent.KEYCODE_DEL;
                 KeyEvent event = new KeyEvent(action, code);
@@ -671,6 +682,11 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                 }
             }, 10);
         }
+    }
+
+    @Override
+    protected void onExpressionClick(int position, int catogaryId, String expressionId, int exPressionUrl, String exPressionName, int exPressionGifUrl, int bottomId) {
+        StandLiveMethod.onClickVoice(liveSoundPool);
     }
 
     public void closeChat(final boolean close) {
@@ -941,7 +957,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                     if (openchat && !isAnaswer) {
 //                        btMesOpen.setAlpha(1.0f);
 //                        btMesOpen.setEnabled(true);
-                        liveStandMessageContent.setVisibility(View.VISIBLE);
+                        if (liveStandMessageContent.getVisibility() != View.VISIBLE) {
+                            liveStandMessageContent.setVisibility(View.VISIBLE);
+                            StandLiveMethod.voicePopup(liveSoundPool);
+                        }
                         btMesOpen.setVisibility(View.VISIBLE);
 //                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     } else {
@@ -1120,7 +1139,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                     btMesOpen.setVisibility(View.GONE);
                 } else {
                     if (liveBll.openchat()) {
-                        liveStandMessageContent.setVisibility(View.VISIBLE);
+                        if (liveStandMessageContent.getVisibility() != View.VISIBLE) {
+                            liveStandMessageContent.setVisibility(View.VISIBLE);
+                            StandLiveMethod.voicePopup(liveSoundPool);
+                        }
                         btMesOpen.setVisibility(View.VISIBLE);
                     }
                 }
