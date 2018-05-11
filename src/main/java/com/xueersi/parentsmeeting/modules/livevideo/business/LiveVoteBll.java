@@ -143,7 +143,7 @@ public class LiveVoteBll implements LiveVoteAction {
             public void onClick(View v) {
                 bottomContent.removeView(contentView);
                 contentView = null;
-                EventBus.getDefault().post(new NativeVoteRusltulCloseEvent());
+                EventBus.getDefault().post(new NativeVoteRusltulCloseEvent(answer>0));
             }
         });
         StableLogHashMap logHashMap = new StableLogHashMap("showVoteResult");

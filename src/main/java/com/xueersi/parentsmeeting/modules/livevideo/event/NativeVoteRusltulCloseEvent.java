@@ -6,4 +6,18 @@ package com.xueersi.parentsmeeting.modules.livevideo.event;
  * @author chenkun
  */
 public class NativeVoteRusltulCloseEvent {
+    /**用户是否参与了投票*/
+    boolean stuVoted;
+
+    public NativeVoteRusltulCloseEvent(boolean stuVoted){
+        this.stuVoted = stuVoted;
+    }
+
+    public void setStuVoted(boolean stuVoted) {
+        this.stuVoted = stuVoted;
+    }
+
+    public boolean isStuVoted() {
+        return stuVoted;
+    }
 }

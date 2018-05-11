@@ -70,7 +70,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
     private final float LAST_ANIMPUASE_FRACTION = 0.32f;    // 最后一次lottie 动画 暂停位置
     private final float TEAMINFOUI_HIDE_FRACTION = 0.57f;
     private final float LAST_ANIM_RESUME_FRACTION = 0.55f; // 最后一次 lottie 暂停后 复播位置
-    String mTeamInfoStr = "我们狮子是古老而骄傲的动物森林之王,永不言败!";
+    String mTeamInfoStr ;
     //分队仪式 资源在asset中的相对路径
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "team_pk/team_select/";
     private TeamPkRecyclerView teamsRecyclView;

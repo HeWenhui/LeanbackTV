@@ -1,32 +1,27 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/live_video_teampk_pkresult_bg"
-    >
+    android:background="@drawable/live_video_teampk_pkresult_bg">
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@id/lav_teampk_pkresult"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent" />
 
 
     <RelativeLayout
+        android:id="@id/rl_teampk_pkresult_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@id/rl_teampk_pkresult_root"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
 
         <RelativeLayout
+            android:id="@id/rl_teampk_pk_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:id="@id/rl_teampk_pk_result"
-            android:layout_marginTop="18dp"
-            >
+            android:layout_marginTop="18dp">
 
             <LinearLayout
                 android:id="@id/ll_teampk_pkresult_myteam"
@@ -34,80 +29,73 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
+
                 <ImageView
+                    android:id="@id/iv_teampk_pkresult_myteam_state"
                     android:layout_width="76dp"
                     android:layout_height="23dp"
-                    android:src="@drawable/livevideo_list_lead_img_disable"
-                    android:id="@id/iv_teampk_pkresult_myteam_state"
-                    />
+                    android:src="@drawable/livevideo_list_lead_img_disable" />
 
                 <RelativeLayout
                     android:layout_width="133dp"
                     android:layout_height="193dp"
-                    android:background="@drawable/livevideo_list_yellow_img_disable"
-                    >
+                    android:background="@drawable/livevideo_list_yellow_img_disable">
 
                     <ImageView
+                        android:id="@id/iv_teampk_pkresult_myteam_logo"
                         android:layout_width="64dp"
                         android:layout_height="71dp"
-                        android:scaleType="centerCrop"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="22dp"
-                        android:id="@id/iv_teampk_pkresult_myteam_logo"
-                        android:src="@drawable/live_video_teampk_team_logo"
-                        />
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/live_video_teampk_team_logo" />
 
 
                     <ImageView
-                        android:layout_width="23dp"
-                        android:layout_height="23dp"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginTop="10dp"
                         android:id="@id/iv_teampk_pkresult_myteam_teacher_head"
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
                         android:layout_below="@id/iv_teampk_pkresult_myteam_logo"
-                        />
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="10dp" />
 
                     <ImageView
                         android:layout_width="23dp"
                         android:layout_height="23dp"
+                        android:layout_below="@id/iv_teampk_pkresult_myteam_logo"
                         android:layout_marginLeft="30dp"
                         android:layout_marginTop="10dp"
-                        android:src="@drawable/live_video_teampk_yellow_headmask"
-                        android:layout_below="@id/iv_teampk_pkresult_myteam_logo"
-                        />
-                    
-                       <TextView
-                           android:layout_width="wrap_content"
-                           android:layout_height="10dp"
-                           android:layout_marginRight="30dp"
-                           android:text="费启明老师费启明老师"
-                           android:singleLine="true"
-                           android:ellipsize="end"
-                           android:layout_toRightOf="@id/iv_teampk_pkresult_myteam_teacher_head"
-                           android:layout_marginLeft="5dp"
-                           android:layout_alignTop="@id/iv_teampk_pkresult_myteam_teacher_head"
-                           android:layout_marginTop="7dp"
-                           android:textSize="8sp"
-                           android:textStyle="bold"
-                           android:textColor="@color/COLOR_7D5807"
-                           android:id="@id/tv_teampk_pkresult_myteacher_name"
-                           />
+                        android:src="@drawable/live_video_teampk_yellow_headmask" />
 
                     <TextView
+                        android:id="@id/tv_teampk_pkresult_myteacher_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="10dp"
+                        android:layout_alignTop="@id/iv_teampk_pkresult_myteam_teacher_head"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginTop="7dp"
+                        android:layout_toRightOf="@id/iv_teampk_pkresult_myteam_teacher_head"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="费启明老师费启明老师"
+                        android:textColor="@color/COLOR_7D5807"
+                        android:textSize="8sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@id/iv_teampk_pkresult_myteam_slogan"
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/iv_teampk_pkresult_myteam_teacher_head"
+                        android:layout_marginBottom="18dp"
                         android:layout_marginLeft="30dp"
                         android:layout_marginRight="25dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="18dp"
-                        android:text="一二三四,五六七八一二三四,五六七八"
-                        android:id="@id/iv_teampk_pkresult_myteam_slogan"
-                        android:layout_below="@id/iv_teampk_pkresult_myteam_teacher_head"
                         android:layout_marginTop="5dp"
-                        android:textSize="9sp"
-                        android:textStyle="bold"
                         android:textColor="@color/COLOR_7D5807"
-                        />
-                    
+                        android:textSize="9sp"
+                        android:textStyle="bold" />
+
                 </RelativeLayout>
 
             </LinearLayout>
@@ -128,190 +116,169 @@
                 android:layout_toRightOf="@id/ll_teampk_pkresult_vs"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
+
                 <ImageView
+                    android:id="@id/iv_teampk_pkresult_otherteam_state"
                     android:layout_width="76dp"
                     android:layout_height="23dp"
-                    android:src="@drawable/livevideo_list_catchup_img_disable"
-                    android:id="@id/iv_teampk_pkresult_otherteam_state"
-                    />
+                    android:src="@drawable/livevideo_list_catchup_img_disable" />
 
                 <RelativeLayout
                     android:layout_width="133dp"
                     android:layout_height="193dp"
-                    android:background="@drawable/livevideo_list_blue_img_disable"
-                    >
+                    android:background="@drawable/livevideo_list_blue_img_disable">
 
                     <ImageView
+                        android:id="@id/iv_teampk_pkresult_otherteam_logo"
                         android:layout_width="64dp"
                         android:layout_height="71dp"
-                        android:scaleType="centerCrop"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="22dp"
-                        android:id="@id/iv_teampk_pkresult_otherteam_logo"
-                        android:src="@drawable/live_video_teampk_team_logo"
-                        />
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/live_video_teampk_team_logo" />
 
                     <ImageView
-                        android:layout_width="23dp"
-                        android:layout_height="23dp"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginTop="10dp"
                         android:id="@id/iv_teampk_pkresult_otherteam_teacher_head"
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
                         android:layout_below="@id/iv_teampk_pkresult_otherteam_logo"
-                        />
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="10dp" />
 
                     <ImageView
                         android:layout_width="23dp"
                         android:layout_height="23dp"
+                        android:layout_below="@id/iv_teampk_pkresult_otherteam_logo"
                         android:layout_marginLeft="30dp"
                         android:layout_marginTop="10dp"
-                        android:src="@drawable/live_video_teampk_blue_headmask"
-                        android:layout_below="@id/iv_teampk_pkresult_otherteam_logo"
-                        />
+                        android:src="@drawable/live_video_teampk_blue_headmask" />
 
                     <TextView
+                        android:id="@id/tv_teampk_pkresult_otherteacher_name"
                         android:layout_width="wrap_content"
                         android:layout_height="10dp"
-                        android:layout_marginRight="30dp"
-                        android:text="冯提莫老师"
-                        android:singleLine="true"
-                        android:ellipsize="end"
-                        android:layout_toRightOf="@id/iv_teampk_pkresult_otherteam_teacher_head"
-                        android:layout_marginLeft="5dp"
                         android:layout_alignTop="@id/iv_teampk_pkresult_otherteam_teacher_head"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="30dp"
                         android:layout_marginTop="7dp"
-                        android:textSize="8sp"
-                        android:textStyle="bold"
+                        android:layout_toRightOf="@id/iv_teampk_pkresult_otherteam_teacher_head"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="冯提莫老师"
                         android:textColor="@color/COLOR_7D5807"
-                        android:id="@id/tv_teampk_pkresult_otherteacher_name"
-                        />
+                        android:textSize="8sp"
+                        android:textStyle="bold" />
 
                     <TextView
+                        android:id="@id/iv_teampk_pkresult_otherteam_slogan"
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/iv_teampk_pkresult_otherteam_teacher_head"
+                        android:layout_marginBottom="18dp"
                         android:layout_marginLeft="30dp"
                         android:layout_marginRight="25dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="18dp"
-                        android:text="一二三四,五六七八一二三四,五六七八"
-                        android:id="@id/iv_teampk_pkresult_otherteam_slogan"
-                        android:layout_below="@id/iv_teampk_pkresult_otherteam_teacher_head"
                         android:layout_marginTop="5dp"
-                        android:textSize="9sp"
-                        android:textStyle="bold"
                         android:textColor="@color/COLOR_7D5807"
-                        />
+                        android:textSize="9sp"
+                        android:textStyle="bold" />
 
                 </RelativeLayout>
-
-
-
-
             </LinearLayout>
 
         </RelativeLayout>
 
 
-
         <RelativeLayout
+            android:id="@id/rl_teampk_pkresult_bottom_pb_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rl_teampk_pk_result"
             android:layout_alignLeft="@id/rl_teampk_pk_result"
             android:layout_alignRight="@id/rl_teampk_pk_result"
-            android:id="@id/rl_teampk_pkresult_bottom_pb_container"
-            android:layout_marginTop="-8dp"
-            >
+            android:layout_below="@id/rl_teampk_pk_result"
+            android:layout_marginTop="-8dp">
 
-          <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:textSize="16sp"
-              android:text="3896"
-              android:id="@id/tv_teampk_myteam_energy"
-              android:textStyle="bold"
-              android:layout_marginLeft="20dp"
-              android:textColor="@color/white"
-              />
-
-            <TextView
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
+                android:id="@id/tv_teampk_myteam_energy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="3896"
+                android:textColor="@color/white"
                 android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@id/tv_teampk_otherteam_energy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
                 android:text="1461"
                 android:textColor="@color/white"
-                android:id="@id/tv_teampk_otherteam_energy"
-                android:textStyle="bold"
-                android:layout_marginRight="20dp"
-                />
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
             <TextView
+                android:id="@id/tv_teampk_myteam_add_energy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:text="+15"
-                android:id="@id/tv_teampk_myteam_add_energy"
-                android:layout_toRightOf="@id/tv_teampk_myteam_energy"
-                android:layout_marginLeft="10dp"
                 android:layout_alignBottom="@id/tv_teampk_myteam_energy"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/tv_teampk_myteam_energy"
+                android:text="+15"
+                android:textSize="12sp"
                 android:textStyle="bold"
-                android:visibility="gone"
-                />
+                android:visibility="gone" />
 
             <!--进度条的实际高度 比 布局文件中写的高 （额外空间 为展示缩放动画）-->
             <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar
+                android:id="@id/tpb_teampk_pkresult_pbbar"
                 android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_below="@id/tv_teampk_myteam_energy"
+                android:layout_centerHorizontal="true"
                 android:layout_marginLeft="18dp"
                 android:layout_marginRight="18dp"
-                android:layout_height="20dp"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@id/tv_teampk_myteam_energy"
-                android:id="@id/tpb_teampk_pkresult_pbbar"
+                android:layout_marginTop="-35dp"
                 app:innerProgressBarHeight="5dp"
                 app:sliderHeader="@drawable/livevideo_tool_energy_img_disable"
-                app:sliderHeaderBg="@drawable/livevideo_slider_bg"
-                android:layout_marginTop="-35dp"
-                />
+                app:sliderHeaderBg="@drawable/livevideo_slider_bg" />
 
         </RelativeLayout>
 
-           <android.support.v7.widget.RecyclerView
-               android:layout_width="match_parent"
-               android:layout_height="75dp"
-               android:layout_marginTop="-35dp"
-               android:id="@id/rcl_teampk_pkresult_contribution_rank"
-               android:layout_below="@id/rl_teampk_pkresult_bottom_pb_container"
-               android:scrollbars="none"
-               android:overScrollMode="never"
-               android:layout_marginRight="40dp"
-               android:layout_alignLeft="@id/rl_teampk_pkresult_bottom_pb_container"
-               />
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/rcl_teampk_pkresult_contribution_rank"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_alignLeft="@id/rl_teampk_pkresult_bottom_pb_container"
+            android:layout_below="@id/rl_teampk_pkresult_bottom_pb_container"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="-35dp"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
 
-            <ImageView
-               android:layout_width="40dp"
-               android:layout_height="45dp"
-               android:scaleType="centerCrop"
-               android:layout_alignTop="@id/rcl_teampk_pkresult_contribution_rank"
-               android:src="@drawable/livevideo_list_contribution_img_disable"
-               android:layout_toLeftOf="@id/rcl_teampk_pkresult_contribution_rank"
-               android:layout_marginTop="15dp"
-               />
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="45dp"
+            android:layout_alignTop="@id/rcl_teampk_pkresult_contribution_rank"
+            android:layout_marginTop="15dp"
+            android:layout_toLeftOf="@id/rcl_teampk_pkresult_contribution_rank"
+            android:scaleType="centerCrop"
+            android:src="@drawable/livevideo_list_contribution_img_disable" />
 
     </RelativeLayout>
 
 
-
-
     <com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView
+        android:id="@id/tv_teampk_pkresult_time_countdow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/white"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:textColor="@color/white"
-        android:id="@id/tv_teampk_pkresult_time_countdow"
-        android:visibility="gone"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        />
+        android:visibility="gone" />
 
 </RelativeLayout>

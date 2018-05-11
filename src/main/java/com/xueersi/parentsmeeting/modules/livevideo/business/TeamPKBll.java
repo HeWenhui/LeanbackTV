@@ -557,13 +557,14 @@ public class TeamPKBll {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVoteResultUIColse(NativeVoteRusltulCloseEvent event) {
-        showVoteEnergyAnim();
+        int addEnergy = event.isStuVoted() ? VOTE_ADD_ENERGY:0;
+        showVoteEnergyAnim(addEnergy);
     }
 
     /**
      * 展示 投票加能量 动画
      */
-    public void showVoteEnergyAnim() {
+    private void showVoteEnergyAnim(int addEnergy) {
         Log.e("LiveBll", "========> showVoteEnergyAnim");
         TeamPKAQResultPager aqAwardPager = new TeamPKAQResultPager(activity, TeamPKAQResultPager.AWARD_TYPE_VOTE,this);
         rlTeamPkContent.removeAllViews();
@@ -574,7 +575,7 @@ public class TeamPKBll {
         params.rightMargin = wradio;
         rlTeamPkContent.addView(aqAwardPager.getRootView(), params);
         mFoucesPager = aqAwardPager;
-        aqAwardPager.setData(0, VOTE_ADD_ENERGY);
+        aqAwardPager.setData(0, addEnergy);
     }
 
 
