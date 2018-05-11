@@ -96,6 +96,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     private RolePlayerPager mRolePlayerPager;
 
     private RolePlayerHttpManager mRolePlayerHttpManager;
+
     private RolePlayerHttpResponseParser mRolePlayerHttpResponseParser;
 
     public RolePlayerBll(Context context, RelativeLayout bottomContent, LiveBll liveBll) {
@@ -468,7 +469,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                             int fluency = obj.optInt("fluency");
                             int accuracy = obj.optInt("accuracy");
 
-                            if (totalScore > 0 && position >= 0 && position < mRolePlayerEntity
+                            if (position >= 0 && position < mRolePlayerEntity
                                     .getLstRolePlayerMessage().size()) {
                                 final RolePlayerEntity.RolePlayerMessage message = mRolePlayerEntity
                                         .getMessageByIndex(position);
