@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -185,7 +184,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
                     if (!TextUtils.isEmpty(goldNUmStr)) {
                         mGoldNum = Integer.parseInt(goldNUmStr.trim());
                     }
-                    Log.e("EnglishH5Courseware","======> shouldOverrideUrlLoading: mGoldNum="+mGoldNum);
+                    Loger.e("EnglishH5Courseware","======> shouldOverrideUrlLoading: mGoldNum="+mGoldNum);
                 }
                 int satrIndex2 = url.indexOf("energyNum=")+"energyNum=".length();
                 if (satrIndex2 != -1) {
@@ -199,7 +198,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
                     if (!TextUtils.isEmpty(energyNumStr)) {
                         mEnergyNum = Integer.parseInt(energyNumStr.trim());
                     }
-                    Log.e("EnglishH5Courseware","======> shouldOverrideUrlLoading: mEnergyNum="+mEnergyNum);
+                    Loger.e("EnglishH5Courseware","======> shouldOverrideUrlLoading: mEnergyNum="+mEnergyNum);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

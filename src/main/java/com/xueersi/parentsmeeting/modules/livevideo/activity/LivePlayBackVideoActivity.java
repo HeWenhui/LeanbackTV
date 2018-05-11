@@ -21,7 +21,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -278,11 +277,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             public void onReceive(Context context, Intent intent) {
                 // 04.12 弹出广告的时候，需要刷新广告列表
                 lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(), getDataCallBack);
-                Log.e("Duncan", "PaySuccessfully");
+                Loger.e("Duncan", "PaySuccessfully");
             }
         };
         registerReceiver(receiver, intentFilter);
-        Log.e("Duncan", "oncreating");
+        Loger.e("Duncan", "oncreating");
     }
 
     @Override

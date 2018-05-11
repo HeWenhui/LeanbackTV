@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -191,7 +190,7 @@ public class LiveStandAchievementBll implements StarInteractAction {
         LottieComposition.Factory.fromAssetFileName(activity, fileName, new OnCompositionLoadedListener() {
             @Override
             public void onCompositionLoaded(@Nullable LottieComposition composition) {
-                Log.d(TAG, "onCompositionLoaded:composition=" + composition);
+                Loger.d(TAG, "onCompositionLoaded:composition=" + composition);
                 if (composition == null) {
 //                    Toast.makeText(activity, "加载失败", Toast.LENGTH_SHORT).show();
                     return;

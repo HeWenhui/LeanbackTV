@@ -8,7 +8,6 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -218,12 +217,12 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
         starLottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
-                Log.d(TAG, "onCompositionLoaded:onAnimationStart");
+                Loger.d(TAG, "onCompositionLoaded:onAnimationStart");
             }
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                Log.d(TAG, "onCompositionLoaded:onAnimationEnd");
+                Loger.d(TAG, "onCompositionLoaded:onAnimationEnd");
                 starLottieAnimationView.setProgress(0);
                 haveGold.set(false);
             }
@@ -254,7 +253,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
         LottieComposition.Factory.fromAssetFileName(activity, fileName, new OnCompositionLoadedListener() {
             @Override
             public void onCompositionLoaded(@Nullable LottieComposition composition) {
-                Log.d(TAG, "onCompositionLoaded:composition=" + composition);
+                Loger.d(TAG, "onCompositionLoaded:composition=" + composition);
                 if (composition == null) {
 //                    Toast.makeText(activity, "加载失败", Toast.LENGTH_SHORT).show();
                     return;

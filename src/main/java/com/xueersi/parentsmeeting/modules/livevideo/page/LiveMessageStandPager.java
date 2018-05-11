@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -218,14 +217,14 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         if (lvMessage.getVisibility() == View.GONE) {
             btMesOpen.setEnabled(false);
             ivMessageClose.setEnabled(false);
-            Log.d(TAG, "initBtMesOpenAnimation:false");
+            Loger.d(TAG, "initBtMesOpenAnimation:false");
             btMesOpenAnimation = FrameAnimation.createFromAees(mContext, btMesOpen, "live_stand/frame_anim/openmsg", 50, false);
             btMesOpenAnimation.setDensity((int) (FrameAnimation.DEFAULT_DENSITY * 2.8f / ScreenUtils.getScreenDensity()));
 //            btMesOpenAnimation.restartAnimation();
             btMesOpenAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
                 @Override
                 public void onAnimationStart() {
-                    Log.d(TAG, "onAnimationStart");
+                    Loger.d(TAG, "onAnimationStart");
                 }
 
                 @Override
@@ -233,12 +232,12 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                     btMesOpen.setEnabled(true);
                     ivMessageClose.setEnabled(true);
                     initOpenBt(true);
-                    Log.d(TAG, "initBtMesOpenAnimation:true");
+                    Loger.d(TAG, "initBtMesOpenAnimation:true");
                 }
 
                 @Override
                 public void onAnimationRepeat() {
-                    Log.d(TAG, "onAnimationRepeat");
+                    Loger.d(TAG, "onAnimationRepeat");
                 }
             });
             lvMessage.setVisibility(View.VISIBLE);

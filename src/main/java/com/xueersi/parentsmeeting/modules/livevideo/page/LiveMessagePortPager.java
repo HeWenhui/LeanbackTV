@@ -19,7 +19,6 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -423,7 +422,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
              // 04.04 获取到数据之后的逻辑处理
             if(objData.length > 0){
                 mData = (MoreChoice) objData[0];
-                Log.e("Duncan","mData:"+ mData);
+                Loger.e("Duncan","mData:"+ mData);
                 mChoices.clear();
                 mChoices.addAll(mData.getCases());
                 LiveVideoConfig.MORE_COURSE = mChoices.size();

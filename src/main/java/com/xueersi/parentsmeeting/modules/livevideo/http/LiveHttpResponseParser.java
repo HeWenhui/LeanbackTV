@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.http.HttpResponseParser;
@@ -416,7 +415,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             teamPkEntity.setAllotpkman(alltopkman);
 
             int alloteam = status.optInt("alloteam");
-            Log.e("LiveHttpResponseParser", "====>alloteam:" + alloteam);
+            Loger.e("LiveHttpResponseParser", "====>alloteam:" + alloteam);
             int openbox = status.optInt("openbox");
             if (alloteam == 1) {
                 teamPkEntity.setAlloteam(alloteam);
@@ -1036,7 +1035,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @return
      */
     public HonorListEntity parseHonorList(ResponseEntity responseEntity) {
-        Log.i(TAG, "parseHonorList: " + responseEntity.getJsonObject());
+        Loger.i(TAG, "parseHonorList: " + responseEntity.getJsonObject());
         HonorListEntity honorListEntity = new HonorListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
@@ -1071,7 +1070,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      */
     public ThumbsUpListEntity parseThumbsUpList(ResponseEntity responseEntity) {
 
-        Log.i(TAG, "parseThumbsUpList: " + responseEntity.getJsonObject());
+        Loger.i(TAG, "parseThumbsUpList: " + responseEntity.getJsonObject());
         ThumbsUpListEntity thumbsUpListEntity = new ThumbsUpListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
@@ -1104,7 +1103,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @return
      */
     public ProgressListEntity parseProgressList(ResponseEntity responseEntity) {
-        Log.i(TAG, "parseProgressList: " + responseEntity.getJsonObject());
+        Loger.i(TAG, "parseProgressList: " + responseEntity.getJsonObject());
         ProgressListEntity progressListEntity = new ProgressListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
@@ -1139,7 +1138,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @return
      */
     public ThumbsUpProbabilityEntity parseThumbsUpProbability(ResponseEntity responseEntity) {
-        Log.i(TAG, "parseThumbsUpProbability: " + responseEntity.getJsonObject());
+        Loger.i(TAG, "parseThumbsUpProbability: " + responseEntity.getJsonObject());
         ThumbsUpProbabilityEntity thumbsUpProbabilityEntity = new ThumbsUpProbabilityEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {

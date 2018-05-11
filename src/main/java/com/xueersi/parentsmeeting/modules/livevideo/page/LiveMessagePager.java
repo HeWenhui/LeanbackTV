@@ -15,7 +15,6 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -1042,7 +1041,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_IMMSG);
             liveAndBackDebug.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_IMMSG, logHashMap.getData());
         }
-        Log.e("Duncan", "sender:" + sender);
+        Loger.e("Duncan", "sender:" + sender);
     }
 
     @Override
