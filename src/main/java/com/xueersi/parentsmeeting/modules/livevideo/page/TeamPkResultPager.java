@@ -421,6 +421,7 @@ public class TeamPkResultPager extends BasePager {
         if(!isSoundPoolbusy){
             playMusic(playTasks.remove(0));
         }
+
     }
 
     private void playMusic(final SoundPlayTask task){
