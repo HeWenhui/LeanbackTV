@@ -193,14 +193,15 @@ public class InputEffectTextView extends View {
                     for (int i = 0; i < lineIndex; i++) {
                         lines.get(i).setCharacterNum2Draw(lineMaxCharacterNum);
                     }
-
                 }
                 if(characterIndex > (lineIndex * lineMaxCharacterNum) && (characterIndex % lineMaxCharacterNum == 0)){
                     lines.get(lineIndex).setCharacterNum2Draw(lineMaxCharacterNum);
                 }else{
+                    if(lineIndex >= lines.size() && lines.size() >0){
+                        lineIndex = lines.size() -1;
+                    }
                     lines.get(lineIndex).setCharacterNum2Draw(characterIndex % lineMaxCharacterNum);
                 }
-
                 invalidate();
                 characterIndex++;
                 postDelayed(this,SINGLE_CHARACTER_DURATION);
