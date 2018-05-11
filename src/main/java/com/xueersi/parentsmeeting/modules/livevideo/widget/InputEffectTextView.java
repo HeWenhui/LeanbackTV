@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -186,8 +187,9 @@ public class InputEffectTextView extends View {
         public void run() {
             if(characterIndex <= mContentText.length() && !canceled){
                 int lineIndex = characterIndex / lineMaxCharacterNum;
+               // Log.e("InputEffectTextView","========>lineIndex:"+lineIndex+":"+lines.size());
+                // 绘制已展示完的行
                 if(lineIndex > 0){
-
                     for (int i = 0; i < lineIndex; i++) {
                         lines.get(i).setCharacterNum2Draw(lineMaxCharacterNum);
                     }
