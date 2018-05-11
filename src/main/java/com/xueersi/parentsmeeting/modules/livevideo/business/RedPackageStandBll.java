@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
-import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -75,11 +74,11 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     }
 
     @Override
-    public void onReadPackage(final int operateId) {
+    public void onReadPackage(final int operateId, final OnReceivePackage onReceivePackage) {
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
-                showRedPacket(operateId);
+                showRedPacket(operateId, onReceivePackage);
             }
         });
     }
@@ -124,7 +123,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     /**
      * 显示红包
      */
-    private void showRedPacket(final int operateId) {
+    private void showRedPacket(final int operateId, final OnReceivePackage onReceivePackage) {
         mLogtf.d("showRedPacket:operateId=" + operateId);
         RedPackageStandLog.sno1(liveAndBackDebug, "" + operateId);
         final RedPackagePage oldRedPackagePage = redPackagePage;
@@ -141,6 +140,9 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                     @Override
                     public void onDataSucess(Object... objData) {
                         VideoResultEntity entity = (VideoResultEntity) objData[0];
+                        if (onReceivePackage != null) {
+                            onReceivePackage.onReceivePackage(operateId);
+                        }
                         RedPackagePage redPackagePage = packagePageHashMap.get("" + operateId);
                         redPackagePage.onGetPackage(entity);
                         receiveGold.onReceiveGold();

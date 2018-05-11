@@ -59,11 +59,11 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
     }
 
     @Override
-    public void onReadPackage(final int operateId) {
+    public void onReadPackage(final int operateId, final OnReceivePackage onReceivePackage) {
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
-                showRedPacket(operateId);
+                showRedPacket(operateId, onReceivePackage);
             }
         });
     }
@@ -99,7 +99,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
     /**
      * 显示红包
      */
-    private void showRedPacket(final int operateId) {
+    private void showRedPacket(final int operateId, final OnReceivePackage onReceivePackage) {
         mLogtf.d("showRedPacket:operateId=" + operateId);
         rlRedpacketContent.removeAllViews();
         View view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_view, rlRedpacketContent, false);
@@ -114,6 +114,9 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
                 mLiveBll.sendReceiveGold(operateId, mVSectionID, new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
+                        if (onReceivePackage != null) {
+                            onReceivePackage.onReceivePackage(operateId);
+                        }
                         VideoResultEntity entity = (VideoResultEntity) objData[0];
                         onGetPackage(entity);
                     }

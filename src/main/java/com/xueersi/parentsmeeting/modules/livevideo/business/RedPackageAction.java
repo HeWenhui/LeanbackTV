@@ -1,9 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import com.xueersi.parentsmeeting.entity.VideoResultEntity;
-
 /**
- * Created by linyuqiang on 2016/9/23.
+ * @author linyuqiang
+ * @date 2016/9/23
  * 红包事件
  */
 public interface RedPackageAction {
@@ -11,7 +10,19 @@ public interface RedPackageAction {
      * 红包消息
      *
      * @param operateId
+     * @param onReceivePackage
      */
-    void onReadPackage(int operateId);
+    void onReadPackage(int operateId, OnReceivePackage onReceivePackage);
 
+    /**
+     * 请求到金币
+     */
+    interface OnReceivePackage {
+        /**
+         * 请求到金币
+         *
+         * @param operateId
+         */
+        void onReceivePackage(int operateId);
+    }
 }

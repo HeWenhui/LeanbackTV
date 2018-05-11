@@ -1887,7 +1887,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 
             }
         });
-        redPackageStandBll.onReadPackage(Integer.parseInt(mRedPacketId));
+        redPackageStandBll.onReadPackage(Integer.parseInt(mRedPacketId), null);
 //        mRedPacketDialog.setRedPacketConfirmListener(new RedPackagePage.RedPackagePageAction() {
 //            @Override
 //            public void onPackageClick(int operateId) {
