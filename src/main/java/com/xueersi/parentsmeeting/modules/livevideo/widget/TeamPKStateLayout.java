@@ -106,7 +106,7 @@ public class TeamPKStateLayout extends FrameLayout {
      * @param coinCrement  本地增加金币值
      * @param otherEnergyAdd 对手增加能量值
      */
-    private void updateData(int ownEnergyAdd, int otherEnergyAdd,int coinCrement) {
+    public void updateData(int ownEnergyAdd, int otherEnergyAdd,int coinCrement) {
         mMyteamAnergy += ownEnergyAdd;
         mOtherTeamAnergy += otherEnergyAdd;
         mCoinNum += coinCrement;

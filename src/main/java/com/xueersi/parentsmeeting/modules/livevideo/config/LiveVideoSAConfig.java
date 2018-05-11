@@ -137,7 +137,7 @@ public class LiveVideoSAConfig {
         /**获取本场次 金币，能量信息*/
         public   String URL_TEMPK_LIVESTUGOLDANDTOTALENERGY =HTTP_HOST+"/LiveCourse/liveStuGoldAndTotalEnergy";
         /**添加能能量值接口*/
-        public   String URL_TEMPK_ADDPERSONANDTEAMENERGY = HTTP_HOST+"/LiveCourse/addPersonAndTeamEnergyUrl";
+        public   String URL_TEMPK_ADDPERSONANDTEAMENERGY = HTTP_HOST+"/LiveCourse/addPersonAndTeamEnergy";
         /**学生开宝箱*/
         public   String URL_TEMPK_GETSTUCHESTURL = HTTP_HOST+"/LiveCourse/getStuChest";
         /**班级宝箱结果*/

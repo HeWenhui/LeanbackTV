@@ -576,6 +576,16 @@ public class TeamPKBll {
         rlTeamPkContent.addView(aqAwardPager.getRootView(), params);
         mFoucesPager = aqAwardPager;
         aqAwardPager.setData(0, addEnergy);
+        //上报服务器 怎加能量
+        mHttpManager.addPersonAndTeamEnergy(mLiveBll.getLiveId(), addEnergy,
+                roomInitInfo.getStudentLiveInfo().getTeamId(),
+                roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), new HttpCallBack() {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+
+                    }
+                });
+
     }
 
 

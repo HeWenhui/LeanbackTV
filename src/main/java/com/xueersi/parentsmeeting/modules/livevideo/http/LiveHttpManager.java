@@ -1036,18 +1036,17 @@ public class LiveHttpManager extends BaseHttpBusiness {
     /**
      * 投票 能量
      * @param liveId
-     * @param isWin
      * @param teamId
      * @param classId
      * @param stuId
      * @param requestCallBack
      */
-    public void addPersonAndTeamEnergy(String liveId,int isWin,String teamId,String classId,String stuId,HttpCallBack requestCallBack){
+    public void addPersonAndTeamEnergy(String liveId,int addEnergy,String teamId,String classId,String stuId,HttpCallBack requestCallBack){
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
-        params.addBodyParam("isWin", isWin+"");
+        params.addBodyParam("addEnergy", addEnergy+"");
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_TEMPK_ADDPERSONANDTEAMENERGY+"/"+liveId, params, requestCallBack);
     }
