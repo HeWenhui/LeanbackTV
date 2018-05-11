@@ -76,26 +76,32 @@ import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE1;
 import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE4;
 
 /**
- * 语音答题
- * Created by linyuqiang on 2017/12/5.
+ * 站立直播-语音答题
+ *
+ * @author linyuqiang
+ * @date 2017/12/5
  */
 public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     String eventId = LiveVideoConfig.LIVE_STAND_TEST_VOICE;
     private SpeechEvaluatorUtils mIse;
     BaseVideoQuestionEntity baseVideoQuestionEntity;
+    /** 所有帧动画 */
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
-    private ArrayList<FrameAnimation> waveFrameAnimations = new ArrayList<>();
+    /** 组内战况已经被加入的学生 */
     private ArrayList<GoldTeamStatus.Student> addStudents = new ArrayList<>();
     /** 手动答题切换动画 */
     FrameAnimation switchFrameAnimation;
-    ReadyGoImageView rgiv_livevideo_stand_readygo;
-    LottieAnimationView lav_livevideo_voiceans_team_mine;
-    ImageView iv_livevideo_voiceans_team_mine;
-    RelativeLayout rl_livevideo_voiceans_content;
+    /** readygo动画 */
+    ReadyGoImageView rgivStandReadygo;
+    /** 我的分数lottie动画 */
+    LottieAnimationView lavLivevideoVoiceansTeamMine;
+    /** 我的分数lottie动画背后光圈 */
+    ImageView ivLivevideoVoiceansTeamMine;
+    RelativeLayout rlLivevideoVoiceansVontent;
     /** 组内战况-左边 */
-    LinearLayout ll_livevideo_voiceans_team_left;
+    LinearLayout llLivevideoVoiceansTeamLeft;
     /** 组内战况-右边 */
-    LinearLayout ll_livevideo_voiceans_team_right;
+    LinearLayout llLivevideoVoiceansTeamRight;
     /** 错误提示 */
     RelativeLayout rlSpeectevalTip;
     /** 错误提示-文字 */
@@ -105,7 +111,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     /** 声音有点小，再来一次哦！ */
     int errorTip2 = R.drawable.live_stand_answer_voice_caution_02;
     /** 波形 */
-    ImageView iv_livevideo_speecteval_wave;
+    ImageView ivLivevideoSpeectevalWave;
     /** 答题切换 */
     ImageView ivVoiceansSwitch;
     QuestionSwitch questionSwitch;
@@ -188,7 +194,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 if (mIse == null) {
                     mIse = new SpeechEvaluatorUtils(true);
                 }
-                rgiv_livevideo_stand_readygo.setAnimationListener(new FrameAnimation.AnimationListener() {
+                rgivStandReadygo.setAnimationListener(new FrameAnimation.AnimationListener() {
                     @Override
                     public void onAnimationStart() {
 
@@ -196,12 +202,12 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
                     @Override
                     public void onAnimationEnd() {
-                        ViewGroup group = (ViewGroup) rgiv_livevideo_stand_readygo.getParent();
+                        ViewGroup group = (ViewGroup) rgivStandReadygo.getParent();
                         if (group != null) {
-                            group.removeView(rgiv_livevideo_stand_readygo);
+                            group.removeView(rgivStandReadygo);
                         }
-                        rgiv_livevideo_stand_readygo.destory();
-                        rl_livevideo_voiceans_content.setVisibility(View.VISIBLE);
+                        rgivStandReadygo.destory();
+                        rlLivevideoVoiceansVontent.setVisibility(View.VISIBLE);
                         afterReadGo();
                     }
 
@@ -210,7 +216,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
                     }
                 });
-                rgiv_livevideo_stand_readygo.start(liveSoundPool);
+                rgivStandReadygo.start(liveSoundPool);
             }
         });
     }
@@ -321,50 +327,50 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                         LottieComposition.Factory.fromAssetFileName(mContext, path, new TeamOnCompositionLoadedListener(student, lottieAnimationView));
                                         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 //                                lp.weight = 1;
-                                        int countLeft = ll_livevideo_voiceans_team_left.getChildCount();
-                                        int countRight = ll_livevideo_voiceans_team_right.getChildCount();
+                                        int countLeft = llLivevideoVoiceansTeamLeft.getChildCount();
+                                        int countRight = llLivevideoVoiceansTeamRight.getChildCount();
                                         if (leftOrRight % 2 == 1) {
                                             boolean remove = false;
                                             int index = 0;
                                             if (countRight > 0) {
-                                                int rightWidth = ((View) ll_livevideo_voiceans_team_right.getParent()).getWidth();
-                                                View child = ll_livevideo_voiceans_team_right.getChildAt(0);
+                                                int rightWidth = ((View) llLivevideoVoiceansTeamRight.getParent()).getWidth();
+                                                View child = llLivevideoVoiceansTeamRight.getChildAt(0);
                                                 int childWidth = child.getWidth();
                                                 while (childWidth * (countRight + 1) > rightWidth) {
                                                     countRight--;
                                                     View view = rightView.remove(0);
                                                     lp.width = childWidth;
-                                                    index = ll_livevideo_voiceans_team_right.indexOfChild(view);
-                                                    ll_livevideo_voiceans_team_right.removeViewInLayout(view);
+                                                    index = llLivevideoVoiceansTeamRight.indexOfChild(view);
+                                                    llLivevideoVoiceansTeamRight.removeViewInLayout(view);
                                                     remove = true;
                                                 }
                                             }
                                             if (remove) {
-                                                ll_livevideo_voiceans_team_right.addView(lottieAnimationView, index, lp);
+                                                llLivevideoVoiceansTeamRight.addView(lottieAnimationView, index, lp);
                                             } else {
-                                                ll_livevideo_voiceans_team_right.addView(lottieAnimationView, lp);
+                                                llLivevideoVoiceansTeamRight.addView(lottieAnimationView, lp);
                                             }
                                             rightView.add(lottieAnimationView);
                                         } else {
                                             boolean remove = false;
                                             int index = 0;
                                             if (countLeft > 0) {
-                                                int leftWidth = ((View) ll_livevideo_voiceans_team_left.getParent()).getWidth();
-                                                View child = ll_livevideo_voiceans_team_left.getChildAt(countLeft - 1);
+                                                int leftWidth = ((View) llLivevideoVoiceansTeamLeft.getParent()).getWidth();
+                                                View child = llLivevideoVoiceansTeamLeft.getChildAt(countLeft - 1);
                                                 int childWidth = child.getWidth();
                                                 while (childWidth * (countLeft + 1) > leftWidth) {
                                                     countLeft--;
                                                     remove = true;
                                                     View view = leftView.remove(0);
                                                     lp.width = childWidth;
-                                                    index = ll_livevideo_voiceans_team_left.indexOfChild(view);
-                                                    ll_livevideo_voiceans_team_left.removeViewInLayout(view);
+                                                    index = llLivevideoVoiceansTeamLeft.indexOfChild(view);
+                                                    llLivevideoVoiceansTeamLeft.removeViewInLayout(view);
                                                 }
                                             }
                                             if (remove) {
-                                                ll_livevideo_voiceans_team_left.addView(lottieAnimationView, index, lp);
+                                                llLivevideoVoiceansTeamLeft.addView(lottieAnimationView, index, lp);
                                             } else {
-                                                ll_livevideo_voiceans_team_left.addView(lottieAnimationView, 0, lp);
+                                                llLivevideoVoiceansTeamLeft.addView(lottieAnimationView, 0, lp);
                                             }
                                             leftView.add(lottieAnimationView);
                                         }
@@ -401,15 +407,15 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_stand_voice_answer, null);
-        rgiv_livevideo_stand_readygo = view.findViewById(R.id.rgiv_livevideo_stand_readygo);
-        lav_livevideo_voiceans_team_mine = view.findViewById(R.id.lav_livevideo_voiceans_team_mine);
-        iv_livevideo_voiceans_team_mine = view.findViewById(R.id.iv_livevideo_voiceans_team_mine);
-        rl_livevideo_voiceans_content = view.findViewById(R.id.rl_livevideo_voiceans_content);
-        ll_livevideo_voiceans_team_left = view.findViewById(R.id.ll_livevideo_voiceans_team_left);
-        ll_livevideo_voiceans_team_right = view.findViewById(R.id.ll_livevideo_voiceans_team_right);
+        rgivStandReadygo = view.findViewById(R.id.rgiv_livevideo_stand_readygo);
+        lavLivevideoVoiceansTeamMine = view.findViewById(R.id.lav_livevideo_voiceans_team_mine);
+        ivLivevideoVoiceansTeamMine = view.findViewById(R.id.iv_livevideo_voiceans_team_mine);
+        rlLivevideoVoiceansVontent = view.findViewById(R.id.rl_livevideo_voiceans_content);
+        llLivevideoVoiceansTeamLeft = view.findViewById(R.id.ll_livevideo_voiceans_team_left);
+        llLivevideoVoiceansTeamRight = view.findViewById(R.id.ll_livevideo_voiceans_team_right);
         rlSpeectevalTip = (RelativeLayout) view.findViewById(R.id.rl_livevideo_speecteval_tip);
         tvSpeectevalTip = (TextView) view.findViewById(R.id.tv_livevideo_speecteval_tip);
-        iv_livevideo_speecteval_wave = view.findViewById(R.id.iv_livevideo_speecteval_wave);
+        ivLivevideoSpeectevalWave = view.findViewById(R.id.iv_livevideo_speecteval_wave);
         ivVoiceansSwitch = view.findViewById(R.id.iv_livevideo_voiceans_switch);
 //        tvSpeectevalTip.setText("语音输入有点小问题，\n先手动答题哦（1131)");
         view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
@@ -481,8 +487,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     }
 
     private FrameAnimation createFromAees(String path, boolean isRepeat) {
-        FrameAnimation btframeAnimation1 = FrameAnimation.createFromAees(mContext, iv_livevideo_speecteval_wave, path, 50, isRepeat);
-        waveFrameAnimations.add(btframeAnimation1);
+        FrameAnimation btframeAnimation1 = FrameAnimation.createFromAees(mContext, ivLivevideoSpeectevalWave, path, 50, isRepeat);
         return btframeAnimation1;
     }
 
@@ -788,7 +793,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                 if (entity != null) {
                                     entity.setYourAnswer(option);
                                     entity.setStandardAnswer(answer);
-                                    iv_livevideo_speecteval_wave.setVisibility(View.INVISIBLE);
+                                    ivLivevideoSpeectevalWave.setVisibility(View.INVISIBLE);
                                     onCommit(entity, resultEntity.getSpeechDuration());
                                 }
                             }
@@ -894,7 +899,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                         public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
                             if (entity != null) {
                                 entity.setStandardAnswer(answer);
-                                iv_livevideo_speecteval_wave.setVisibility(View.INVISIBLE);
+                                ivLivevideoSpeectevalWave.setVisibility(View.INVISIBLE);
                                 onCommit(entity, resultEntity.getSpeechDuration());
                             }
                         }
@@ -972,39 +977,39 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         } else {
             isRight = false;
         }
-        if (lav_livevideo_voiceans_team_mine.getVisibility() == View.VISIBLE) {
-            TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = (TeamOnCompositionLoadedListener) lav_livevideo_voiceans_team_mine.getTag();
+        if (lavLivevideoVoiceansTeamMine.getVisibility() == View.VISIBLE) {
+            TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = (TeamOnCompositionLoadedListener) lavLivevideoVoiceansTeamMine.getTag();
             return;
         }
-        lav_livevideo_voiceans_team_mine.setVisibility(View.VISIBLE);
+        lavLivevideoVoiceansTeamMine.setVisibility(View.VISIBLE);
         String path;
         if (isRight) {
             path = "live_stand/lottie/live_stand_voice_team_right.json";
-            lav_livevideo_voiceans_team_mine.setImageAssetsFolder("live_stand/lottie/voice_answer/team_right");
+            lavLivevideoVoiceansTeamMine.setImageAssetsFolder("live_stand/lottie/voice_answer/team_right");
         } else {
             path = "live_stand/lottie/live_stand_voice_team_wrong.json";
-            lav_livevideo_voiceans_team_mine.setImageAssetsFolder("live_stand/lottie/voice_answer/team_wrong");
+            lavLivevideoVoiceansTeamMine.setImageAssetsFolder("live_stand/lottie/voice_answer/team_wrong");
         }
         GoldTeamStatus.Student student = new GoldTeamStatus.Student();
         student.setNickname(userName);
         student.setAvatar_path(headUrl);
-        TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = new TeamOnCompositionLoadedListener(student, lav_livevideo_voiceans_team_mine) {
+        TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = new TeamOnCompositionLoadedListener(student, lavLivevideoVoiceansTeamMine) {
             @Override
             public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
                 super.onCompositionLoaded(lottieComposition);
                 if (lottieComposition != null) {
-                    iv_livevideo_voiceans_team_mine.setVisibility(View.VISIBLE);
-                    iv_livevideo_voiceans_team_mine.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                    ivLivevideoVoiceansTeamMine.setVisibility(View.VISIBLE);
+                    ivLivevideoVoiceansTeamMine.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                         @Override
                         public boolean onPreDraw() {
-                            iv_livevideo_voiceans_team_mine.getViewTreeObserver().removeOnPreDrawListener(this);
-                            iv_livevideo_voiceans_team_mine.postDelayed(new Runnable() {
+                            ivLivevideoVoiceansTeamMine.getViewTreeObserver().removeOnPreDrawListener(this);
+                            ivLivevideoVoiceansTeamMine.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_live_stand_speech_mine_light_rotate);
                                     LinearInterpolator lin = new LinearInterpolator();
                                     animation.setInterpolator(lin);
-                                    iv_livevideo_voiceans_team_mine.startAnimation(animation);
+                                    ivLivevideoVoiceansTeamMine.startAnimation(animation);
                                 }
                             }, 300);
                             return false;
@@ -1015,7 +1020,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         };
         teamOnCompositionLoadedListener.isMe = true;
         LottieComposition.Factory.fromAssetFileName(mContext, path, teamOnCompositionLoadedListener);
-        lav_livevideo_voiceans_team_mine.setTag(teamOnCompositionLoadedListener);
+        lavLivevideoVoiceansTeamMine.setTag(teamOnCompositionLoadedListener);
         VoiceAnswerStandLog.sno5(liveAndBackDebug, baseVideoQuestionEntity.getvQuestionID(), isEnd ? "endPublish" : "autoSubmit", entity.getGoldNum(), isRight, speechDuration);
     }
 

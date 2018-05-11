@@ -5,15 +5,12 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.text.Editable;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.ImageSpan;
 import android.text.util.Linkify;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -58,7 +55,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
 import com.xueersi.xesalib.adapter.CommonAdapter;
@@ -73,9 +69,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
@@ -83,16 +76,17 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
 import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
 
 /**
- * Created by linyuqiang on 2016/8/2.
+ * @author linyuqiang
+ * @date 2016/8/2
  * 直播聊天横屏-直播课和直播辅导
  */
 public class LiveMessagePager extends BaseLiveMessagePager {
-    private String TAG = "LiveMessagePager";
+    private static String TAG = "LiveMessagePager";
     /** 聊天，默认开启 */
     private Button btMesOpen;
     /** 聊天常用语 */
     private Button btMsgCommon;
-    private RelativeLayout rl_livevideo_common_word;
+    private RelativeLayout rlLivevideoCommonWord;
     ListView lvCommonWord;
     /** 献花，默认关闭 */
     private Button btMessageFlowers;
@@ -191,7 +185,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void initListener() {
-        rl_livevideo_common_word = (RelativeLayout) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_word);
+        rlLivevideoCommonWord = (RelativeLayout) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_word);
 //        int screenWidth = ScreenUtils.getScreenWidth();
 //        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
 //        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
@@ -211,15 +205,15 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 liveMediaControllerBottom.onChildViewClick(v);
                 LiveMediaController controller = liveMediaControllerBottom.getController();
                 controller.show();
-                if (rl_livevideo_common_word.getVisibility() == View.VISIBLE) {
-                    rl_livevideo_common_word.setVisibility(View.INVISIBLE);
+                if (rlLivevideoCommonWord.getVisibility() == View.VISIBLE) {
+                    rlLivevideoCommonWord.setVisibility(View.INVISIBLE);
                     return;
                 }
                 int[] location = new int[2];
                 v.getLocationOnScreen(location);
                 //在控件上方显示
-                Loger.i(TAG, "onClick:Width=" + rl_livevideo_common_word.getWidth() + ",Height=" + rl_livevideo_common_word.getHeight());
-                rl_livevideo_common_word.setVisibility(View.VISIBLE);
+                Loger.i(TAG, "onClick:Width=" + rlLivevideoCommonWord.getWidth() + ",Height=" + rlLivevideoCommonWord.getHeight());
+                rlLivevideoCommonWord.setVisibility(View.VISIBLE);
 //                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_common_word.getLayoutParams();
 //                int left = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
 //                if (lp.leftMargin == left) {
@@ -240,7 +234,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 //                        }
 //                        lp.leftMargin = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
 //                        rl_livevideo_common_word.setLayoutParams(lp);
-//                        Loger.i(TAG, "onClick2:Width=" + rl_livevideo_common_word.getWidth() + ",Height=" + rl_livevideo_common_word.getHeight());
+//                        Loger.i(TAG, "onClick2:Width=" + rl_livevideo_common_word.getWidth() + ",Height=" + rlLivevideoCommonWord.getHeight());
 //                        return true;
 //                    }
 //                });
@@ -511,7 +505,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                             addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
                             lastSendMsg = System.currentTimeMillis();
                             onTitleShow(true);
-                            rl_livevideo_common_word.setVisibility(View.INVISIBLE);
+                            rlLivevideoCommonWord.setVisibility(View.INVISIBLE);
                         } else {
                             XESToastUtils.showToast(mContext, "你已被禁言!");
                         }

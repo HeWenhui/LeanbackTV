@@ -8,10 +8,10 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.xesalib.utils.log.Loger;
 
 
 /**
@@ -116,7 +116,7 @@ public class RoundProgressBar extends View {
         paint.setAntiAlias(true);  //消除锯齿
         canvas.drawCircle(centre, centre, radius, paint); //画出圆环
 
-        Log.e("log", centre + "");
+        Loger.e("log", centre + "");
 
         /**
          * 画进度百分比

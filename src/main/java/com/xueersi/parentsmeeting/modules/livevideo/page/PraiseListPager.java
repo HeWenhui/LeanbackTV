@@ -13,7 +13,6 @@ import android.os.Environment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -38,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTex
 import com.xueersi.xesalib.adapter.RCommonAdapter;
 import com.xueersi.xesalib.adapter.RItemViewInterface;
 import com.xueersi.xesalib.adapter.ViewHolder;
+import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
 import java.io.File;
@@ -528,7 +528,7 @@ public class PraiseListPager extends BasePager {
     public void startScrollAnimation(String stuName,String tecName) {
         if(!isOnList)
             return;
-        Log.i(TAG,"startScrollAnimation");
+        Loger.i(TAG,"startScrollAnimation");
 
         if(stuName!=null && stuName.length()>4){
             stuName=stuName.substring(0,3)+"...";

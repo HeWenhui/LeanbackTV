@@ -6,7 +6,6 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
@@ -37,7 +36,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by linyuqiang on 2017/8/23.
+ *
+ * @author linyuqiang
+ * @date 2017/8/23
  * 普通互动题，h5显示页面
  */
 public class QuestionWebPager extends BasePager {
@@ -163,7 +164,7 @@ public class QuestionWebPager extends BasePager {
             public void onViewDetachedFromWindow(View v) {
                 LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum,mEngerNum,LiveRoomH5CloseEvent.H5_TYPE_INTERACTION,testId);
                 if(questionBll != null && questionBll instanceof  QuestionBll){
-                    Log.e("webViewCloseByTeacher","=======> postEvent closeByTeacher:"+((QuestionBll)questionBll).isWebViewCloseByTeacher());
+                    Loger.e("webViewCloseByTeacher","=======> postEvent closeByTeacher:"+((QuestionBll)questionBll).isWebViewCloseByTeacher());
                     event.setCloseByTeahcer(((QuestionBll)questionBll).isWebViewCloseByTeacher());
                     ((QuestionBll)questionBll).setWebViewCloseByTeacher(false);
                 }

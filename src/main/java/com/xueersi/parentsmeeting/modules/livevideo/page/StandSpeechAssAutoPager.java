@@ -14,7 +14,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,7 +78,8 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * Created by linyuqiang on 2017/2/24.
+ * @author linyuqiang
+ * @date 2017/2/24
  * 语音评测-站立直播
  */
 public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
@@ -1368,10 +1368,10 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             lastScore = score;
             String text = score;
             AssetManager manager = context.getAssets();
-            Bitmap img_7Bitmap;
+            Bitmap img7Bitmap;
             try {
-                img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/voice_answer/team_right/img_0.png"));
-                Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+                img7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/voice_answer/team_right/img_0.png"));
+                Bitmap creatBitmap = Bitmap.createBitmap(img7Bitmap.getWidth(), img7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(creatBitmap);
                 int textColor;
                 if (isMe) {
@@ -1386,13 +1386,13 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 int y = (creatBitmap.getHeight() - textStrokeBitmap.getHeight()) / 2;
                 canvas.drawBitmap(textStrokeBitmap, x, y, null);
                 textStrokeBitmap.recycle();
-                img_7Bitmap.recycle();
-                img_7Bitmap = creatBitmap;
+                img7Bitmap.recycle();
+                img7Bitmap = creatBitmap;
             } catch (IOException e) {
-                Log.e(TAG, "updateScore", e);
+                Loger.e(TAG, "updateScore", e);
                 return;
             }
-            lottieAnimationView.updateBitmap("image_0", img_7Bitmap);
+            lottieAnimationView.updateBitmap("image_0", img7Bitmap);
         }
 
         @Override

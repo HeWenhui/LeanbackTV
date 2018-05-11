@@ -146,6 +146,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     private ImageView mUnapplyed;
     private Handler mHandler;
     private BroadcastReceiver receiver;
+
     public LiveMessagePortPager(Context context, QuestionBll questionBll,
                                 ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
         super(context);
@@ -162,7 +163,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
             @Override
             public void onReceive(Context context, Intent intent) {
                 // 04.12 弹出广告的时候，需要刷新广告列表
-                mHandler.postDelayed(MoreChoice,500);
+                mHandler.postDelayed(MoreChoice, 500);
             }
         };
         context.registerReceiver(receiver, intentFilter);
@@ -171,18 +172,18 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_message_port, null);
-        mAdvance = (LinearLayout)mView.findViewById(R.id.ll_advance);
-        mTvCoursename = (TextView)mView.findViewById(R.id.tv_coursename);
-        mCourseNum = (TextView)mView.findViewById(R.id.tv_morecourse_num);
+        mAdvance = (LinearLayout) mView.findViewById(R.id.ll_advance);
+        mTvCoursename = (TextView) mView.findViewById(R.id.tv_coursename);
+        mCourseNum = (TextView) mView.findViewById(R.id.tv_morecourse_num);
         mFirstSight = (RelativeLayout) mView.findViewById(R.id.ll_all_content);
         mSecondSight = (LinearLayout) mView.findViewById(R.id.ll_detail_list);
         mApplyButton = (Button) mView.findViewById(R.id.bt_to_apply);
         mMoreClassLayout = (RelativeLayout) mView.findViewById(R.id.more_class);
-        mApplyNum = (TextView)mView.findViewById(R.id.tv_apply_number);
-        mShutDowm = (ImageButton)mView.findViewById(R.id.ib_back);
-        mLimitnum = (TextView)mView.findViewById(R.id.tv_limitnum);
-        mUnapplyed = (ImageView)mView.findViewById(R.id.iv_unapply);
-        mMorecourse = (ListView)mView.findViewById(R.id.morecourse_list);
+        mApplyNum = (TextView) mView.findViewById(R.id.tv_apply_number);
+        mShutDowm = (ImageButton) mView.findViewById(R.id.ib_back);
+        mLimitnum = (TextView) mView.findViewById(R.id.tv_limitnum);
+        mUnapplyed = (ImageView) mView.findViewById(R.id.iv_unapply);
+        mMorecourse = (ListView) mView.findViewById(R.id.morecourse_list);
         tvMessageCount = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
         lvMessage = (ListView) mView.findViewById(R.id.lv_livevideo_message);
         dvMessageDanmaku = (DanmakuView) mView.findViewById(R.id.dv_livevideo_message_danmaku);
@@ -391,7 +392,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
         mMoreClassLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                liveBll.getMoreChoice(mPageDataLoadEntity,getDataCallBack);
+                liveBll.getMoreChoice(mPageDataLoadEntity, getDataCallBack);
                 Animation animation = AnimationUtils.loadAnimation(
                         liveVideoActivity, R.anim.anim_livevideo_lecture_morechoice);
                 mSecondSight.startAnimation(animation);
@@ -401,7 +402,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                         mSecondSight.setVisibility(View.VISIBLE);
                         mFirstSight.setVisibility(View.GONE);
                     }
-                },200);
+                }, 200);
 
 
             }
@@ -416,33 +417,33 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
         });
     }
 
-    AbstractBusinessDataCallBack getDataCallBack = new AbstractBusinessDataCallBack(){
+    AbstractBusinessDataCallBack getDataCallBack = new AbstractBusinessDataCallBack() {
         @Override
         public void onDataSucess(Object... objData) {
-             // 04.04 获取到数据之后的逻辑处理
-            if(objData.length > 0){
+            // 04.04 获取到数据之后的逻辑处理
+            if (objData.length > 0) {
                 mData = (MoreChoice) objData[0];
-                Loger.e("Duncan","mData:"+ mData);
+                Loger.e("Duncan", "mData:" + mData);
                 mChoices.clear();
                 mChoices.addAll(mData.getCases());
                 LiveVideoConfig.MORE_COURSE = mChoices.size();
-                if(mChoices.size() > 0){
-                    mTvCoursename.setText(mChoices.get(mChoices.size()-1).getSaleName());
-                    mLimitnum.setText(Html.fromHtml("<font color='#999999'>剩余名额</font>"+ "<font color='#F13232'>" +"  " + mChoices.get(mChoices.size()-1).getLimit()+ "</font>"));
+                if (mChoices.size() > 0) {
+                    mTvCoursename.setText(mChoices.get(mChoices.size() - 1).getSaleName());
+                    mLimitnum.setText(Html.fromHtml("<font color='#999999'>剩余名额</font>" + "<font color='#F13232'>" + "  " + mChoices.get(mChoices.size() - 1).getLimit() + "</font>"));
                     // 04.09 按钮不同状态的维护
-                    if(mChoices.get(mChoices.size()-1).getIsLearn() > 0){
+                    if (mChoices.get(mChoices.size() - 1).getIsLearn() > 0) {
                         mApplyButton.setText("已报名");
                         mApplyButton.setTextColor(Color.parseColor("#999999"));
                         mApplyButton.setBackgroundResource(R.drawable.bg_applyed);
-                    }else{
+                    } else {
                         mApplyButton.setText("立即报名");
                         mApplyButton.setTextColor(Color.parseColor("#F13232"));
                         mApplyButton.setBackgroundResource(R.drawable.bg_apply);
                     }
-                    if(mChoices.get(mChoices.size()-1).getLimit() == 0){
+                    if (mChoices.get(mChoices.size() - 1).getLimit() == 0) {
                         mApplyButton.setVisibility(View.GONE);
                         mUnapplyed.setVisibility(View.VISIBLE);
-                    }else{
+                    } else {
                         mApplyButton.setVisibility(View.VISIBLE);
                         mUnapplyed.setVisibility(View.GONE);
                     }
@@ -450,27 +451,27 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                     mApplyButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if(mChoices.get(mChoices.size()-1).getLimit() > 0 && mChoices.get(mChoices.size()-1).getIsLearn() == 0){
-                                EventBus.getDefault().post(new MiniEvent("Order",mChoices.get(mChoices.size()-1).getCourseId(),mChoices.get(mChoices.size()-1).getClassId(),mChoices.get(mChoices.size()-1).getAdId()));
+                            if (mChoices.get(mChoices.size() - 1).getLimit() > 0 && mChoices.get(mChoices.size() - 1).getIsLearn() == 0) {
+                                EventBus.getDefault().post(new MiniEvent("Order", mChoices.get(mChoices.size() - 1).getCourseId(), mChoices.get(mChoices.size() - 1).getClassId(), mChoices.get(mChoices.size() - 1).getAdId()));
                             }
 
                         }
                     });
                     mCourseNum.setText(mChoices.size() + "");
-                    mApplyNum.setText(Html.fromHtml("<font color='#333333'>正在报名中</font>"+ "<font color='#F13232'>" +"  " + mChoices.size() + "</font>"));
+                    mApplyNum.setText(Html.fromHtml("<font color='#333333'>正在报名中</font>" + "<font color='#F13232'>" + "  " + mChoices.size() + "</font>"));
                     mAdvance.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     mAdvance.setVisibility(View.GONE);
                 }
                 mCourseAdapter.updateData(mChoices);
-                if(LiveVideoConfig.isloading){
+                if (LiveVideoConfig.isloading) {
                     mFirstSight.setVisibility(View.GONE);
                     mSecondSight.setVisibility(View.VISIBLE);
                     LiveVideoConfig.isloading = !LiveVideoConfig.isloading;
                 }
             }
             // 双重校验去除竖屏时抽屉面板的影藏
-            EventBus.getDefault().post(new MiniEvent("Invisible","","",""));
+            EventBus.getDefault().post(new MiniEvent("Invisible", "", "", ""));
 
         }
     };
@@ -707,20 +708,20 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
             mCourseAdapter = new CommonAdapter<MoreChoice.Choice>(mChoices) {
                 @Override
                 public AdapterItemInterface<MoreChoice.Choice> getItemView(Object type) {
-                    MoreChoiceItem morelistItem = new MoreChoiceItem(mContext,mData);
+                    MoreChoiceItem morelistItem = new MoreChoiceItem(mContext, mData);
                     return morelistItem;
                 }
 
             };
             mMorecourse.setAdapter(mCourseAdapter);
         }
-        mHandler.postDelayed(MoreChoice,600);
+        mHandler.postDelayed(MoreChoice, 600);
     }
 
     private Runnable MoreChoice = new Runnable() {
         @Override
         public void run() {
-            liveBll.getMoreChoice(mPageDataLoadEntity,getDataCallBack);
+            liveBll.getMoreChoice(mPageDataLoadEntity, getDataCallBack);
         }
     };
 
@@ -1102,6 +1103,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
         });
     }
 
+    @Override
     public void onGetMyGoldDataEvent(String goldNum) {
         this.goldNum = goldNum;
         tvMessageGold.setText(goldNum);
