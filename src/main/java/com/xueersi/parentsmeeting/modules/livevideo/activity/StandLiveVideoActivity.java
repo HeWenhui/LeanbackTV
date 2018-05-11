@@ -491,9 +491,9 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         englishH5CoursewareBll.setLiveBll(mLiveBll);
         englishH5CoursewareBll.initData();
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
-//            rankBll = new RankBll(this);
-//            rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
-//            rankBll.setLiveBll(mLiveBll);
+            rankBll = new RankBll(this);
+            rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
+            rankBll.setLiveBll(mLiveBll);
             englishH5Cache = new EnglishH5Cache(this, mLiveBll, mVSectionID);
 //            englishH5Cache = new EnglishH5CacheZip(this, mLiveBll, mVSectionID);
         }
@@ -1005,6 +1005,9 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         String mode = mGetInfo.getMode();
         this.mode = mode;
         liveMediaControllerBottom.onModeChange(mode);
+        if (rankBll != null) {
+            rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
+        }
         if (LiveTopic.MODE_CLASS.equals(mode)) {
 //            liveMediaControllerBottom = new LiveStandMediaControllerBottom(this, mMediaController, this);
             liveMessageBll.initViewLiveStand(bottomContent);
@@ -1166,6 +1169,9 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
             @Override
             public void run() {
                 liveMediaControllerBottom.onModeChange(mode);
+                if (rankBll != null) {
+                    rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
+                }
                 if (LiveTopic.MODE_CLASS.equals(mode)) {
                     //主讲模式去掉外层的RelativeLayout换回FrameLayout
                     ViewGroup group = (ViewGroup) rlFirstBackgroundView.getParent();

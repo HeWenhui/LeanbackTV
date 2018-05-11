@@ -82,6 +82,10 @@ public class RankBll {
     public void setLiveMediaController(final LiveMediaController mMediaController, BaseLiveMediaControllerBottom liveMediaControllerBottom) {
         this.liveMediaControllerBottom = liveMediaControllerBottom;
         rl_livevideo_common_rank = (Button) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_rank);
+        if (rl_livevideo_common_rank == null) {
+            return;
+        }
+        rl_livevideo_common_rank.setVisibility(View.VISIBLE);
         rl_livevideo_common_rank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,7 +127,6 @@ public class RankBll {
 
     public void setGetInfo(LiveGetInfo getInfo) {
         this.mGetInfo = getInfo;
-        rl_livevideo_common_rank.setVisibility(View.VISIBLE);
     }
 
     public void initView(final RelativeLayout bottomContent, ViewGroup.LayoutParams lp2) {
@@ -132,7 +135,7 @@ public class RankBll {
 //        relativeLayout.setBackgroundColor(liveVideoActivity.getResources().getColor(R.color.translucent_black));
         lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         bottomContent.addView(relativeLayout, lp);
-        setVideoLayout(lp.width, lp.height);
+        setVideoLayout(lp2.width, lp2.height);
         //小组
         View rl_livevideo_rank_mygroup = relativeLayout.findViewById(R.id.rl_livevideo_rank_mygroup);
         final TextView tv_livevideo_rank_mygroup = (TextView) relativeLayout.findViewById(R.id.tv_livevideo_rank_mygroup);
