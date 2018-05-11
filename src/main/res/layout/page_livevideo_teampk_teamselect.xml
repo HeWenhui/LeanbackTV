@@ -41,9 +41,7 @@
         android:id="@id/rl_teampk_teaminfo_root"
         android:layout_width="240dp"
         android:layout_height="160dp"
-        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="38dp"
         android:visibility="gone"
         >
 

@@ -345,7 +345,8 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rclTeamMember.getLayoutParams();
         Point point = new Point();
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
-        layoutParams.topMargin = (int) (point.y * 0.32);
+        int realY = Math.min(point.x,point.y);
+        layoutParams.topMargin = (int) (realY * 0.32);
         Loger.e("TeamPkTeamSelectPager", "=======>showTeamMembers:" + point.x + ":" + point.y);
         rclTeamMember.setLayoutParams(layoutParams);
         rclTeamMember.setLayoutManager(new TeamMemberGridlayoutManager(mContext, 5,
@@ -433,10 +434,11 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rlTeamIntroduceRoot.getLayoutParams();
         Point point = new Point();
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
-        int topMargin = (int) (point.y * 0.456f);
+        int realY = Math.min(point.x,point.y);
+        int topMargin = (int) (realY * 0.456f);
         layoutParams.topMargin = topMargin;
         rlTeamIntroduceRoot.setLayoutParams(layoutParams);
-
+        Log.e("TeamPkTeamSelectPager","=====>showTeamIntroduce:"+topMargin);
         displayTeamInfo();
     }
 
@@ -686,12 +688,6 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
 
             switch (mAnimType) {
                 case ANIMTYPE_START:
-                  /*  mView.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            playWelcomeMusic();
-                        }
-                    }, 1000);*/
                     playWelcomeMusic();
                     break;
                 case ANIMTYPE_TEAM_SELECTED:

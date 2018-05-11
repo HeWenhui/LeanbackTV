@@ -289,7 +289,8 @@ public class TeamPkAwardPager extends BasePager {
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rlLuckystartRoot.getLayoutParams();
         Point point = new Point();
         ((Activity)mContext).getWindowManager().getDefaultDisplay().getSize(point);
-        int topMargin = (int) (point.y *0.36);
+        int realY = Math.min(point.x,point.y);
+        int topMargin = (int) (realY *0.36);
         layoutParams.topMargin = topMargin;
         rlLuckystartRoot.setLayoutParams(layoutParams);
 
@@ -462,7 +463,8 @@ public class TeamPkAwardPager extends BasePager {
                         }else{
                             Point point = new Point();
                             ((Activity)mContext).getWindowManager().getDefaultDisplay().getSize(point);
-                            int topMargin = (int) (point.y *0.8f);
+                            int realY = Math.min(point.x,point.y);
+                            int topMargin = (int) (realY *0.8f);
                             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) ivOpenstate.getLayoutParams();
                             layoutParams.topMargin = topMargin;
                             ivOpenstate.setVisibility(View.VISIBLE);
