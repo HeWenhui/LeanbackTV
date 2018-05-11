@@ -766,6 +766,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                             nextReadMessage();
                         } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
                             Loger.i("RolePlayerDemoTest", "测评失败，"+ ResultEntity.ERROR+"不上传自己的mp3");
+                            //提前开始下一条
+                            nextReadMessage();
                         }
 
                     }
