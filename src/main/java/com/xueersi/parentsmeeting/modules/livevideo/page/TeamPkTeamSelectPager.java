@@ -635,6 +635,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
 
     private void showTeamInfoWithInputEffect(RelativeLayout rlTeamInfo, String teamInfo) {
         InputEffectTextView inputEffectTextView = rlTeamInfo.findViewById(R.id.itv_teampk_team_info);
+         //teamInfo ="11111111111111111111111111";
         inputEffectTextView.setText(teamInfo, new InputEffectTextView.InputEffectListener() {
             @Override
             public void onFinish() {
