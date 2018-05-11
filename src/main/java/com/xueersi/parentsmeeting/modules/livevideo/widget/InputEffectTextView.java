@@ -196,7 +196,9 @@ public class InputEffectTextView extends View {
                     }
                 }
                 if(characterIndex > (lineIndex * lineMaxCharacterNum) && (characterIndex % lineMaxCharacterNum == 0)){
-                    lines.get(lineIndex).setCharacterNum2Draw(lineMaxCharacterNum);
+                    if(lineIndex < lines.size()){
+                        lines.get(lineIndex).setCharacterNum2Draw(lineMaxCharacterNum);
+                    }
                 }else{
                     if(lineIndex < lines.size()){
                         lines.get(lineIndex).setCharacterNum2Draw(characterIndex % lineMaxCharacterNum);
