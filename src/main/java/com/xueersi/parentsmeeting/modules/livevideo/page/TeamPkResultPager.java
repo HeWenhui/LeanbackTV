@@ -248,7 +248,7 @@ public class TeamPkResultPager extends BasePager {
                 }
             });
 
-            ImageLoader.with(ivOtherTeacherHead.getContext()).load(data.getMyTeamEngerInfo().getTeacherImg()).asBitmap(new SingleConfig.BitmapListener() {
+            ImageLoader.with(ivOtherTeacherHead.getContext()).load(data.getCompetitorEngerInfo().getTeacherImg()).asBitmap(new SingleConfig.BitmapListener() {
                 @Override
                 public void onSuccess(Drawable drawable) {
                     Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
