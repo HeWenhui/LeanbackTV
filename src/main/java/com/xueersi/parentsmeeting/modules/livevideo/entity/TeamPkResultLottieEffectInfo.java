@@ -140,7 +140,12 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
             ImageLoader.with(animationView.getContext()).load(url).asBitmap(new SingleConfig.BitmapListener() {
                 @Override
                 public void onSuccess(Drawable drawable) {
-                    Bitmap resultBitmap = ((BitmapDrawable) drawable).getBitmap();
+                    Bitmap resultBitmap = null;
+                    Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+                    if(bitmap != null){
+                        float ratio = width / (float)bitmap.getWidth();
+                        resultBitmap = scaleBitmap(bitmap,ratio);
+                    }
                     animationView.updateBitmap(bitmapId, resultBitmap);
                 }
 
@@ -153,7 +158,7 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
                 @Override
                 public void onSuccess(Drawable drawable) {
                     Bitmap resultBitmap = ((BitmapDrawable) drawable).getBitmap();
-                    Bitmap tempBitmap = scaleBitmap(resultBitmap, Math.min(width, height) / 2);
+                    Bitmap tempBitmap = circleBitmap(resultBitmap, Math.min(width, height) / 2);
                     animationView.updateBitmap(bitmapId, tempBitmap);
                 }
 
@@ -301,7 +306,7 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
         }
     }
 
-    public static Bitmap scaleBitmap(Bitmap input, int radius) {
+    public static Bitmap circleBitmap(Bitmap input, int radius) {
         Bitmap result = null;
         try {
             result = Bitmap.createBitmap(radius * 2, radius * 2, Bitmap.Config.ARGB_8888);

@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.util.Log;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -183,6 +184,16 @@ public class LottieEffectInfo {
     public Bitmap fetchTargetBitMap(LottieAnimationView animationView,String fileName,
                                     String bitmapId, int width, int height) {
         return null;
+    }
+
+
+    public static Bitmap scaleBitmap(Bitmap input, float scaleRatio) {
+        Bitmap result = null;
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleRatio, scaleRatio);
+        result = Bitmap.createBitmap(input, 0, 0,
+                input.getWidth(), input.getHeight(), matrix, true);
+        return result;
     }
 
 }

@@ -29,31 +29,35 @@ public class TeamSelectLottieEffectInfo extends LottieEffectInfo {
 
     @Override
     public Bitmap fetchTargetBitMap(LottieAnimationView animationView, String fileName, String bitmapId, int width, int height) {
-        updateTeamLog(bitmapId,animationView);
+        updateTeamLog(bitmapId, animationView, width, height);
         return null;
     }
 
     /**
      * 更新战队图片
+     *
      * @param bitmap_id
      * @param lavTeamSelectAnimView
      */
-    private void updateTeamLog(final String  bitmap_id, final LottieAnimationView lavTeamSelectAnimView) {
+    private void updateTeamLog(final String bitmap_id, final LottieAnimationView lavTeamSelectAnimView, final int width, int height) {
 
         ImageLoader.with(lavTeamSelectAnimView.getContext()).load(logoUrl).asBitmap(new SingleConfig.BitmapListener() {
             @Override
             public void onSuccess(Drawable drawable) {
-                Bitmap logo = ((BitmapDrawable)drawable).getBitmap();
-                lavTeamSelectAnimView.updateBitmap(bitmap_id,logo);
+                Bitmap logo = ((BitmapDrawable) drawable).getBitmap();
+                Bitmap resultBitmap = null;
+                if (logo != null) {
+                    float ratio = width / (float) logo.getWidth();
+                    resultBitmap = scaleBitmap(logo, ratio);
+                }
+                lavTeamSelectAnimView.updateBitmap(bitmap_id, resultBitmap);
             }
+
             @Override
             public void onFail() {
             }
         });
     }
-
-
-
 
 
 }
