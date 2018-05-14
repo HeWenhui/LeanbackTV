@@ -500,6 +500,8 @@ public class RolePlayerEntity {
         public static final int END_SPEECH = 4;
         /** 空 */
         public static final int EMPTY = 5;
+        /** 结果弹窗,去掉点赞按钮 */
+        public static final int CANCEL_DZ = 6;
     }
 
     /**

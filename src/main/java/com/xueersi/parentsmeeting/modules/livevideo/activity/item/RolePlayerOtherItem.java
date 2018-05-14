@@ -230,6 +230,8 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY:
+                rlMessageDZ.setVisibility(View.VISIBLE);
+                ivMessageDZ.setVisibility(View.VISIBLE);
                 vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_other_reading);
                 tvMessageContent.setTextColor(Color.WHITE);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_other_voice_white_anim);
@@ -286,6 +288,13 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                     ivMessageDZ.setOnClickListener(null);
                 }
                 showSpeechStar();
+                break;
+
+            case RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ:
+                Loger.i("RolePlayerDemoTest", "取消点赞按钮");
+                rlMessageDZ.setVisibility(View.GONE);
+                ivMessageDZ.setVisibility(View.GONE);
+                ivMessageDZ.setImageResource(R.drawable.livevideo_roleplay_result_ic_normal);
                 break;
             default:
                 break;

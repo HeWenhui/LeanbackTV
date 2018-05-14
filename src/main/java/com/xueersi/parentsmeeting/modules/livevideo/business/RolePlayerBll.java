@@ -98,6 +98,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     private RolePlayerHttpManager mRolePlayerHttpManager;
 
     private RolePlayerHttpResponseParser mRolePlayerHttpResponseParser;
+    private boolean mIsCancelDZ = false;//是否已经取消了点赞
 
     public RolePlayerBll(Context context, RelativeLayout bottomContent, LiveBll liveBll) {
         super(context);
@@ -607,19 +608,28 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                     int gold = jsonObject.optInt("gold");
                     mRolePlayerEntity.setGoldCount(gold);
-                    Loger.i("RolePlayerDemoTest", "onPmSuccess: gold  =" + gold);
+                    //遍历对话信息，取消点赞按钮
+                    cancelDZ();
+                    Loger.i("RolePlayerDemoTest", "onPmSuccess: gold  =" + gold+"取消点赞");
                 }
 
                 @Override
                 public void onFailure(Call call, IOException e) {
                     super.onFailure(call, e);
-                    Loger.i("RolePlayerDemoTest", "onFailure: e.getMessage()  =" + e.getMessage());
+                    //遍历对话信息，取消点赞按钮
+                    cancelDZ();
+                    Loger.i("RolePlayerDemoTest", "onFailure: e.getMessage()  =" + e.getMessage()+"取消点赞");
                 }
 
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
+                    //遍历对话信息，取消点赞按钮
+                    if(!mIsCancelDZ){
+                        cancelDZ();
+                        mIsCancelDZ = true;
+                    }
                     Loger.i("RolePlayerDemoTest", "onPmError: responseEntity.toString()  =" + responseEntity.toString
-                            ());
+                            ()+"取消点赞");
                     super.onPmError(responseEntity);
                 }
             });
@@ -627,6 +637,17 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * 返回结果之后，去掉点赞按钮
+     */
+    public synchronized void cancelDZ() {
+        RolePlayerEntity tempRolePlayerEntity = mRolePlayerEntity;
+        List<RolePlayerEntity.RolePlayerMessage> rolePlayerMessages =  tempRolePlayerEntity.getLstRolePlayerMessage();
+        for (int i = 0; i< rolePlayerMessages.size(); i++){
+            mRolePlayerEntity.getLstRolePlayerMessage().get(i).setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ);
+        }
     }
 
     /**

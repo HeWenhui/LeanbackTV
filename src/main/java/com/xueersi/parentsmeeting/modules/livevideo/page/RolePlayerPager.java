@@ -528,7 +528,9 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                     endRolePlayer();
                     return;
                 } else {
-                    lvReadList.smoothScrollToPosition(mCurrentReadIndex + 1);
+                    //lvReadList.smoothScrollToPosition(mCurrentReadIndex + 1);
+                    lvReadList.setSelection(mCurrentReadIndex);
+                    Loger.i("RolePlayerDemoTest", "滚动到下一条"+mCurrentReadIndex+1);
                 }
 
                 //取出当前这条的延时时间
@@ -577,6 +579,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      * 显示结果
      */
     public void showResult() {
+        mRolePlayBll.cancelDZ();
         vwvSpeechVolume.stop();
         rlSpeechVolumnMain.setVisibility(View.INVISIBLE);
         vwvSpeechVolume.setVisibility(View.GONE);
@@ -589,13 +592,13 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             if (head.getSpeechScore() >= 90) {
                 tvResultMsgTip.setText("Fantastic");
             } else if (head.getSpeechScore() >= 60) {
-                tvResultMsgTip.setText("Well done");
+                tvResultMsgTip.setText("Welldone");
             } else if (head.getSpeechScore() >= 40) {
                 tvResultMsgTip.setText("Very Good");
             } else if (head.getSpeechScore() >= 20) {
                 tvResultMsgTip.setText("Good!");
             } else {
-                tvResultMsgTip.setText("You can be better!");
+                tvResultMsgTip.setText("Fighting");
             }
 
             tvTotalScore.setText(head.getSpeechScore() + "分");
@@ -670,13 +673,13 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
 
         }
 
-
+        //结果弹窗5秒后消失
         rlResult.postDelayed(new Runnable() {
             @Override
             public void run() {
                 rlResult.setVisibility(View.GONE);
             }
-        }, 3000);
+        }, 5000);
         if (mWorkerThread != null) {
             mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLevelChannel() {
                 @Override

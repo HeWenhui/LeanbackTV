@@ -7,7 +7,9 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 
+import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.view.image.CircleImageView;
 
 
@@ -43,6 +45,7 @@ public class CountDownHeadImageView extends CircleImageView {
     private RectF finishedOuterRect = new RectF();
     /** 未完成的绘制区域 */
     private RectF unfinishedOuterRect = new RectF();
+    private int tempCountDownTime = 4;
 
     public CountDownHeadImageView(Context context) {
         super(context);
@@ -54,6 +57,14 @@ public class CountDownHeadImageView extends CircleImageView {
 
     public CountDownHeadImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
+
+    public void restore() {
+        Loger.i("RolePlayerSelfItemTest", "重置头像");
+        isBeginCountdownTime = false;
+        tempCountDownTime = 0;
+        postInvalidate();
+
     }
 
     /**
@@ -80,7 +91,7 @@ public class CountDownHeadImageView extends CircleImageView {
      *
      * @param countDownTime 毫秒
      */
-    public void startCountDown(int countDownTime, int endDownTime, final countDownTimeImpl downtimeImpl) {
+    public synchronized void startCountDown(final int countDownTime, int endDownTime, final countDownTimeImpl downtimeImpl) {
         isBeginCountdownTime = true;
         beginCountDownTime = System.currentTimeMillis() - (countDownTime - endDownTime);
         this.allCountDownTime = countDownTime;
@@ -97,13 +108,18 @@ public class CountDownHeadImageView extends CircleImageView {
                 invalidate();
 
                 if (downtimeImpl != null) {
-                    downtimeImpl.countTime((long) Math.ceil((double) CountDownHeadImageView.this.countDownTime / (double) 1000));
+                    long endTime = (long) Math.ceil((double) CountDownHeadImageView.this.countDownTime / (double) 1000);
+                    downtimeImpl.countTime(endTime);
+                    if(endTime <= 4){
+                        Loger.i("RolePlayerSelfItemTest", "去画圆弧");
+                        tempCountDownTime --;
+                    }
                 }
-                if (CountDownHeadImageView.this.countDownTime > 0 && isBeginCountdownTime) {
-                    postDelayed(this, 50);
+                if (isBeginCountdownTime) {
+                    postDelayed(this, 1000);
                 }
             }
-        }, 50);
+        }, 1000);
         invalidate();
     }
 
@@ -155,7 +171,7 @@ public class CountDownHeadImageView extends CircleImageView {
 //        if (mBorderWidth > 0 && countDownTime == 0) {
 //            canvas.drawCircle(getWidth() / 2, getHeight() / 2, mBorderRadius, mBorderPaint);
 //        } else
-        if (mBorderWidth > 0 && countDownTime > 0) {
+        if (mBorderWidth > 0 && (tempCountDownTime > 0 && tempCountDownTime <= 3)) {
             //画倒计时的圆弧
 
 //            rectF.left = strokeWidth / 2;
@@ -165,7 +181,7 @@ public class CountDownHeadImageView extends CircleImageView {
             int piding = 10;
             finishedOuterRect.set(mBorderWidth / 2 + piding, mBorderWidth / 2 + piding, (getWidth() - mBorderWidth / 2 - piding), (getHeight() - mBorderWidth / 2 - piding));
             unfinishedOuterRect.set(mBorderWidth / 2 + piding, mBorderWidth / 2 + piding, (getWidth() - mBorderWidth / 2 - piding), (getHeight() - mBorderWidth / 2 - piding));
-            float unFinishRange = ((float) countDownTime / (float) allCountDownTime) * 360;
+            float unFinishRange = ((float) tempCountDownTime / (float) 3) * 360;
             canvas.drawArc(unfinishedOuterRect, -90, unFinishRange, false, mUnFinishBorderPaint);
             canvas.drawArc(finishedOuterRect, unFinishRange - 90, 360 - unFinishRange, false, mFinishBorderPaint);
 
