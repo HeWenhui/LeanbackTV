@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
@@ -107,11 +108,22 @@ public class TeamPKStateLayout extends FrameLayout {
      * @param otherEnergyAdd 对手增加能量值
      */
     public void updateData(int ownEnergyAdd, int otherEnergyAdd,int coinCrement) {
+        Log.e("TeamPkStateLayout","====>updateData:"+ownEnergyAdd+":"+otherEnergyAdd+":"+coinCrement);
         mMyteamAnergy += ownEnergyAdd;
         mOtherTeamAnergy += otherEnergyAdd;
         mCoinNum += coinCrement;
-        tvMyteamEnergy.smoothAddNum(ownEnergyAdd);
-        tvOtherteamEnergy.smoothAddNum(otherEnergyAdd);
+        Log.e("TeamPkStateLayout","====>updateData22222:"+mMyteamAnergy+":"+mOtherTeamAnergy+":"+mCoinNum);
+
+        if(ownEnergyAdd > 0){
+            tvMyteamEnergy.smoothAddNum(ownEnergyAdd);
+        }else{
+            tvMyteamEnergy.setText(mMyteamAnergy+"");
+        }
+        if(otherEnergyAdd > 0){
+            tvOtherteamEnergy.smoothAddNum(otherEnergyAdd);
+        }else{
+            tvOtherteamEnergy.setText(mOtherTeamAnergy+"");
+        }
         if(coinCrement >=0){
             tvCoin.smoothAddNum(coinCrement);
         }else {
@@ -140,8 +152,8 @@ public class TeamPKStateLayout extends FrameLayout {
             initData(coinNum, myTeamAnergy, otherTeamAnergy);
         }else{
              int addCoin = (int) (coinNum - mCoinNum);
-             int ownEnergyAdd = (myTeamAnergy - mMyteamAnergy)<0?0: (int) (myTeamAnergy - mMyteamAnergy);
-             int otherEnergyAdd = (otherTeamAnergy - mOtherTeamAnergy)<0?0: (int) (otherTeamAnergy - mOtherTeamAnergy);
+             int ownEnergyAdd = (int) (myTeamAnergy - mMyteamAnergy);
+             int otherEnergyAdd =(int) (otherTeamAnergy - mOtherTeamAnergy);
              updateData(ownEnergyAdd,otherEnergyAdd,addCoin);
         }
     }
@@ -169,7 +181,7 @@ public class TeamPKStateLayout extends FrameLayout {
     private void upDataSateText(float ratio) {
         //tvState.setVisibility(ratio != 0.5f?VISIBLE:GONE);
         tvState.setVisibility(VISIBLE);
-        Log.e("teamPkStateLayout", "======>upDataSateText:" + ratio);
+        //Logger.e("teamPkStateLayout", "======>upDataSateText:" + ratio);
         if (mMyteamAnergy == 0 && mOtherTeamAnergy == 0) {
             tvState.setText("准备战斗");
             tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_ready_bg);

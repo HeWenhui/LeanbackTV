@@ -14,6 +14,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -148,9 +149,6 @@ public class TeamPkResultPager extends BasePager {
         tvAddEnergy.setVisibility(View.VISIBLE);
         tvAddEnergy.setText("+"+increment);
         tvAddEnergy.startAnimation(animation);
-
-
-
         tvMyTeamEnergy.smoothAddNum(increment);
     }
 
@@ -329,7 +327,7 @@ public class TeamPkResultPager extends BasePager {
         tpbEnergyBar.smoothAddProgress(addProgress);
         tvMyTeamEnergy.setText(myTeamOldEnergy + "");
         tvOtherTeamEnergy.setText(otherTeamEnergy + "");
-        int addEnergy = (int) (myTeamTotalEnergy - myTeamOldEnergy);
+        int addEnergy = (int) data.getMyTeamEngerInfo().getAddEnergy();
         Loger.e("TeamPkResult", "=======>showNewProgress: addEnergy=" + addEnergy);
         startAddEnergyEffect(addEnergy);
 
@@ -680,6 +678,10 @@ public class TeamPkResultPager extends BasePager {
 
         lottieEffectInfo.addLogo("img_15.png", mFinalPkRsult.getMyTeamResultInfo().getImg());
         lottieEffectInfo.addLogo("img_6.png", mFinalPkRsult.getCompetitorResultInfo().getImg());
+
+        Log.e("TeamPkResultPager","======>showWin myTeamLogoUrl:"+mFinalPkRsult.getMyTeamResultInfo().getImg());
+        Log.e("TeamPkResultPager","======>showWin otherTeamLogoUrl:"+mFinalPkRsult.getCompetitorResultInfo().getImg());
+
 
         lottieEffectInfo.addTeacherHead("img_12.png", mFinalPkRsult.getMyTeamResultInfo().getTeacherImg());
         lottieEffectInfo.addTeacherHead("img_8.png", mFinalPkRsult.getCompetitorResultInfo().getTeacherImg());
