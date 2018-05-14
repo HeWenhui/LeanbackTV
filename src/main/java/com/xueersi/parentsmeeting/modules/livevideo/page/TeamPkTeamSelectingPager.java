@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
@@ -15,9 +14,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
  * 分队进行中
  */
 public class TeamPkTeamSelectingPager extends BasePager implements View.OnClickListener {
-    private static final String TAG = "TeamPkTeamSelectingPager";
     private ImageView ivEnter;
     private final TeamPKBll mTeamPkBll;
+    /**呼吸动画持续时间*/
+    private static final int ANIM_DURATION = 1500;
 
     public TeamPkTeamSelectingPager(Context context, TeamPKBll pkBll) {
         super(context);
@@ -34,7 +34,7 @@ public class TeamPkTeamSelectingPager extends BasePager implements View.OnClickL
                 Animation.RELATIVE_TO_SELF, 0.5f);
         scaleAnimation.setRepeatMode(Animation.REVERSE);
         scaleAnimation.setRepeatCount(-1);
-        scaleAnimation.setDuration(1500);
+        scaleAnimation.setDuration(ANIM_DURATION);
         ivEnter.startAnimation(scaleAnimation);
 
         ImageView ivImg = view.findViewById(R.id.iv_teampk_enter_teamselect_anim);
@@ -59,12 +59,6 @@ public class TeamPkTeamSelectingPager extends BasePager implements View.OnClickL
      * 关闭当前页面
      */
     public void closeTeamSelectPager(){
-     /*   mView.post(new Runnable() {
-            @Override
-            public void run() {
-                ((ViewGroup) mView.getParent()).removeView(mView);
-            }
-        });*/
        mTeamPkBll.closeCurrentPager();
     }
 

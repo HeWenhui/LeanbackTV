@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SoundInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPKStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
@@ -45,24 +46,32 @@ public class TeamPKAQResultPager extends BasePager {
     private TeamPKStateLayout teamPKStateLayout;
     private ViewGroup decorView;
     private TeamPkProgressBar pkProgressBar;
-    private final int FLY_ANIM_DURATION = 700; // 飞行动画时间
+    /**飞行动画时间*/
+    private final int FLY_ANIM_DURATION = 700;
     private int controloffsetX;
     private int controloffsetY;
     private ScaleAnimation scaleAnimation;
-    private SoundPool soundPool;
-    private static final int SOUND_TYPE_COIN_GET = 1; //获得金币音效
+
+    /**获得金币音效*/
+    private static final int SOUND_TYPE_COIN_GET = 1;
     private HashMap<Integer, SoundInfo> mSoundInfoMap;
-    private static final int DEFAULT_VOLUME = 5;  //默认音量大小
+
+    /**默认音量大小*/
+    private static final float DEFAULT_VOLUME = 0.8f;
     private int mGoldNum;
     private int mEnergy;
-    public static final int AWARD_TYPE_VOTE = 1; //投票奖励
-    public static final int AWARD_TYPE_QUESTION = 2; //答题奖励
+    /** 投票奖励*/
+    public static final int AWARD_TYPE_VOTE = 1;
+    /** 答题奖励*/
+    public static final int AWARD_TYPE_QUESTION = 2;
 
+    /**奖励类型*/
     int awardType;
     private RelativeLayout rlVotRootView;
     private TextView tvVoteEnergy;
     private ImageView ivVoteEnergy;
     private final TeamPKBll mTeamPkBll;
+    private SoundPoolHelper soundPoolHelper;
 
 
     public TeamPKAQResultPager(Context context, int Type, TeamPKBll teamPKBll) {
@@ -120,33 +129,17 @@ public class TeamPKAQResultPager extends BasePager {
         mEnergy = energy;
     }
 
-    /**
-     * @param soundType
-     * @param volume
-     * @param loop
-     */
-    private void playMusic(final int soundType, final int volume, final boolean loop) {
-        if (soundPool == null) {
-            soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
+
+
+
+    private void playMusic(int resId,float volume,boolean loop){
+        if(soundPoolHelper == null) {
+            soundPoolHelper = new SoundPoolHelper(mContext,1, AudioManager.STREAM_MUSIC);
         }
-        if (mSoundInfoMap == null) {
-            mSoundInfoMap = new HashMap<Integer, SoundInfo>();
-        }
-        soundPool.load(mContext, R.raw.coin_get, 1);
-        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                int streamId = soundPool.play(sampleId, volume, volume, 0, loop ? -1 : 0, 1);
-                SoundInfo soundInfo = mSoundInfoMap.get(soundType);
-                if (soundInfo == null) {
-                    soundInfo = new SoundInfo(sampleId, streamId);
-                    mSoundInfoMap.put(soundType, soundInfo);
-                } else {
-                    soundInfo.setStreamId(streamId);
-                }
-            }
-        });
+        soundPoolHelper.playMusic(resId,volume,loop);
     }
+
+
 
     /**
      * 展示  答题奖励动画
@@ -373,10 +366,9 @@ public class TeamPKAQResultPager extends BasePager {
      * 清除资源
      */
     private void releaseRes() {
-        if (soundPool != null) {
-            soundPool.release();
-            soundPool = null;
-        }
+       if(soundPoolHelper != null){
+           soundPoolHelper.release();
+       }
     }
 
     /**

@@ -15,11 +15,9 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
-import android.media.SoundPool;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,14 +35,15 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieImageAsset;
 import com.airbnb.lottie.OnCompositionLoadedListener;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.SoundInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentChestEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CoinAwardDisplayer;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamMemberGridlayoutManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView;
@@ -54,8 +53,6 @@ import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import okhttp3.Call;
@@ -69,27 +66,36 @@ public class TeamPkAwardPager extends BasePager {
     private CoinAwardDisplayer cadTeamCoin;
     private LottieAnimationView lottieAnimationView;
     private TeamPkRecyclerView recyclerView;
-    private Rect mClickAbleRect;   // lottie 可点击区域
-
+    /**lottie 可点击区域*/
+    private Rect mClickAbleRect;
     private String lottieResDir = "team_pk/award/small_box";
     private ImageView ivBgMask;
     private WinnerAdapter adapter;
     private boolean startShowWinner;
     private CoinAwardDisplayer cadMycoin;
 
-    private static final long TIME_DELAY_SHOW_WINNER = 5 * 1000; //进入
-    private static final long TIME_DELAY_AUTO_FINISH = 10 * 1000; // 榜单显示时间
-    private SoundPool soundPool;
-    private static final int SOUND_TYPE_BG = 1; //背景音效
-    private static final int SOUND_TYPE_BOX_OPEN = 2; //宝箱打开音效
-    private HashMap<Integer, SoundInfo> mSoundInfoMap;
-    private static final float DEFAULT_BG_VOLUME = 0.4f;     //默认背景音效大小
-    private static final float DEFAULT_FRONT_VOLUME = 0.6f;  //默认前景音效大小
+    /**开宝箱结果展示时间*/
+    private static final long TIME_DELAY_SHOW_WINNER = 5 * 1000;
+    /** 榜单显示时间*/
+    private static final long TIME_DELAY_AUTO_FINISH = 10 * 1000;
+
+    /**默认背景音效大小*/
+    private static final float DEFAULT_BG_VOLUME = 0.4f;
+    /**默认前景音效大小*/
+    private static final float DEFAULT_FRONT_VOLUME = 0.6f;
+
     private ClassChestEntity classChestEntity;
     private final TeamPKBll teamPKBll;
     private boolean mIsWin;
     private ImageView ivOpenstate;
     private RelativeLayout rlLuckystartRoot;
+    private SoundPoolHelper soundPoolHelper;
+
+    int [] soundResArray = {
+            R.raw.war_bg,
+            R.raw.box_open
+    };
+
 
 
     public TeamPkAwardPager(Context context, TeamPKBll pkBll) {
@@ -130,7 +136,7 @@ public class TeamPkAwardPager extends BasePager {
     }
 
 
-    // 对lottie 拦截点击事件
+    /** 对lottie 拦截点击事件*/
     private void addInputEventInterceptor() {
         lottieAnimationView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -169,7 +175,7 @@ public class TeamPkAwardPager extends BasePager {
             @Override
             public void onAnimationEnd(Animator animation) {
                 // 播放开宝箱音效
-                playMusic(SOUND_TYPE_BOX_OPEN, R.raw.box_open, DEFAULT_FRONT_VOLUME, false);
+                playMusic(R.raw.box_open, DEFAULT_FRONT_VOLUME, false);
                 //开启背景循环动效
                 String lottieResPath = lottieResDir + "_after_open/images";
                 String lottieJsonPath = lottieResDir + "_after_open/data.json";
@@ -218,7 +224,7 @@ public class TeamPkAwardPager extends BasePager {
             ((ViewGroup) cadMycoin.getParent()).removeView(cadMycoin);
         }
 
-        playMusic(SOUND_TYPE_BG, R.raw.war_bg, DEFAULT_BG_VOLUME, true);
+        playMusic( R.raw.war_bg, DEFAULT_BG_VOLUME, true);
 
         // step 1 展示lottie
         String imgDir = lottieResDir + "_top_open/images";
@@ -332,48 +338,27 @@ public class TeamPkAwardPager extends BasePager {
      */
     public void closeAwardPager() {
         releaseRes();
-      /*  if (getRootView().getParent() != null) {
-            ((ViewGroup) getRootView().getParent()).removeView(getRootView());
-        }*/
-      teamPKBll.closeCurrentPager();
-
+        teamPKBll.closeCurrentPager();
     }
 
 
     /**
-     * @param soundType
      * @param resId
      * @param volume
      * @param loop
      */
-    private void playMusic(final int soundType, int resId, final float volume, final boolean loop) {
-        if (soundPool == null) {
-            soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
+    private void playMusic( int resId, final float volume, final boolean loop) {
+        if(soundPoolHelper == null){
+            soundPoolHelper = new SoundPoolHelper(mContext,2, AudioManager.STREAM_MUSIC);
         }
-        if (mSoundInfoMap == null) {
-            mSoundInfoMap = new HashMap<Integer, SoundInfo>();
-        }
-        soundPool.load(mContext, resId, 1);
-        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                int streamId = soundPool.play(sampleId, volume, volume, 0, loop ? -1 : 0, 1);
-                SoundInfo soundInfo = mSoundInfoMap.get(soundType);
-                if (soundInfo == null) {
-                    soundInfo = new SoundInfo(sampleId, streamId);
-                    mSoundInfoMap.put(soundType, soundInfo);
-                } else {
-                    soundInfo.setStreamId(streamId);
-                }
-            }
-        });
+        soundPoolHelper.playMusic(resId,volume,loop);
     }
 
 
     @Override
     public void onStop() {
         super.onStop();
-        pasueMusic();
+        pauseMusic();
     }
 
 
@@ -387,18 +372,11 @@ public class TeamPkAwardPager extends BasePager {
      * 暂停音效
      * 注 此处的暂停  只是将音量设置为0  （因为 动画和音效是 同步的）
      */
-    private void pasueMusic(){
-        Log.e("TeamPkTeamSelectPager","======>pasueMusic called");
-        if(soundPool != null && mSoundInfoMap != null){
-            if(mSoundInfoMap.size() >0){
-                Iterator<Integer> it = mSoundInfoMap.keySet().iterator();
-                Integer key;
-                while(it.hasNext()){
-                    key = it.next();
-                    SoundInfo info =  mSoundInfoMap.get(key);
-                    Log.e("TeamPkTeamSelectPager","======>pasueMusic soundInfo:"+info.getStreamId());
-                    soundPool.setVolume(info.getStreamId(),0,0);
-                }
+    private void pauseMusic(){
+        Loger.e("TeamPkTeamSelectPager","======>pauseMusic called");
+        if(soundPoolHelper != null){
+            for (int i = 0; i < soundResArray.length; i++) {
+                soundPoolHelper.setVolume(soundResArray[i],0);
             }
         }
     }
@@ -409,29 +387,18 @@ public class TeamPkAwardPager extends BasePager {
      *  注释  将音量恢复为暂停之前的状态
      */
     private void resumeMusic(){
-        Log.e("TeamPkTeamSelectPager","======>resumeMusic called");
-        if(soundPool != null && mSoundInfoMap != null){
-            if(mSoundInfoMap.size() >0){
-                Iterator<Integer> it = mSoundInfoMap.keySet().iterator();
-                Integer key;
-                while(it.hasNext()){
-                    key = it.next();
-                    SoundInfo info =  mSoundInfoMap.get(key);
-                    Log.e("TeamPkTeamSelectPager","======>resumeMusic soundInfo:"+info.getStreamId());
-                    if(key == SOUND_TYPE_BG){
-                        soundPool.setVolume(info.getStreamId(),DEFAULT_BG_VOLUME,DEFAULT_BG_VOLUME);
-                    }else{
-                        soundPool.setVolume(info.getStreamId(),DEFAULT_FRONT_VOLUME,DEFAULT_FRONT_VOLUME);
-                    }
+        Loger.e("TeamPkTeamSelectPager","======>resumeMusic called");
+        if(soundPoolHelper != null){
+            for (int i = 0; i < soundResArray.length; i++) {
+                if(soundResArray[i] == R.raw.war_bg){
+                    soundPoolHelper.setVolume(soundResArray[i],DEFAULT_BG_VOLUME);
+                }else{
+                    soundPoolHelper.setVolume(soundResArray[i],DEFAULT_FRONT_VOLUME);
                 }
+
             }
         }
     }
-
-
-
-
-
 
     /**
      * 播放宝箱 循环抖动 动画
@@ -441,7 +408,7 @@ public class TeamPkAwardPager extends BasePager {
      */
     private void startBoxLoopAnim(final String lottieResPath, String lottieJsonPath) {
         // step 0 播放背景音效
-        playMusic(SOUND_TYPE_BG, R.raw.war_bg, DEFAULT_BG_VOLUME, true);
+        playMusic(R.raw.war_bg, DEFAULT_BG_VOLUME, true);
         // step 1 展示背景遮罩
         AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.
                 loadAnimation(mContext, R.anim.anim_livevido_teampk_bg_mask);
@@ -669,13 +636,8 @@ public class TeamPkAwardPager extends BasePager {
     }
 
     private void releaseRes() {
-        if (soundPool != null) {
-            soundPool.release();
-            soundPool = null;
-        }
-        if (mSoundInfoMap != null) {
-            mSoundInfoMap.clear();
-            mSoundInfoMap = null;
+        if(soundPoolHelper != null){
+            soundPoolHelper.release();
         }
     }
 
