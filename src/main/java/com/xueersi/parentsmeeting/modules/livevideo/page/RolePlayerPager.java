@@ -761,20 +761,18 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                             nextReadMessage();
                         } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                             Loger.i("RolePlayerDemoTest", "测评失败，"+ ResultEntity.ERROR+" 不上传自己的mp3");
-                            XESToastUtils.showToast(mContext, "失败");
+                            XESToastUtils.showToast(mContext, "测评失败");
+                            message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
                             //提前开始下一条
                             nextReadMessage();
                         } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-                            Loger.i("RolePlayerDemoTest", "测评失败，"+ ResultEntity.ERROR+"不上传自己的mp3");
-                            //提前开始下一条
-                            nextReadMessage();
+                            Loger.i("RolePlayerDemoTest", "测评中");
                         }
 
                     }
 
                     @Override
                     public void onVolumeUpdate(int volume) {
-                        Loger.i("RolePlayerDemoTest", "测评中");
                         vwvSpeechVolume.setVolume(volume * 3);
                     }
 
