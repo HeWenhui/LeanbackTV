@@ -148,6 +148,7 @@ public class TeamPkResultPager extends BasePager {
         tvAddEnergy.setVisibility(View.VISIBLE);
         tvAddEnergy.setText("+"+increment);
         tvAddEnergy.startAnimation(animation);
+
         tvMyTeamEnergy.smoothAddNum(increment);
     }
 
