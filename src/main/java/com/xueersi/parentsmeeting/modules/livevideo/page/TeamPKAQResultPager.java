@@ -52,10 +52,6 @@ public class TeamPKAQResultPager extends BasePager {
     private int controloffsetY;
     private ScaleAnimation scaleAnimation;
 
-    /**获得金币音效*/
-    private static final int SOUND_TYPE_COIN_GET = 1;
-    private HashMap<Integer, SoundInfo> mSoundInfoMap;
-
     /**默认音量大小*/
     private static final float DEFAULT_VOLUME = 0.8f;
     private int mGoldNum;
@@ -337,7 +333,7 @@ public class TeamPKAQResultPager extends BasePager {
 
     private void doAnimEnd() {
         // 0 播发音效
-        playMusic(SOUND_TYPE_COIN_GET, DEFAULT_VOLUME, false);
+        playMusic(R.raw.coin_get, DEFAULT_VOLUME, false);
         // 1 聊天区域状态更新
         if (teamPKStateLayout != null && mTeamPkBll != null) {
             teamPKStateLayout.updateData(mEnergy,0,mGoldNum);
