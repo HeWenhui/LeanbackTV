@@ -1,9 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.base.BasePager;
@@ -265,7 +265,7 @@ public class TeamPKBll {
      * 开启分队仪式
      */
     public void startTeamSelect() {
-        Log.e("teamPkBll", "====>startTeamSelect:");
+        Loger.e("teamPkBll", "====>startTeamSelect:");
         getTeamInfo();
     }
 
@@ -286,9 +286,9 @@ public class TeamPKBll {
         mHttpManager.getTeamInfo(roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Log.e(TAG, "=====>getTeamInfo onPmSuccess:" + responseEntity.getJsonObject().toString());
+                Loger.e(TAG, "=====>getTeamInfo onPmSuccess:" + responseEntity.getJsonObject().toString());
                 teamInfoEntity = mHttpResponseParser.parseTeamInfo(responseEntity);
-                Log.e(TAG, "=====>getTeamInfo onPmSuccess:" + teamInfoEntity.getKey() + ":"
+                Loger.e(TAG, "=====>getTeamInfo onPmSuccess:" + teamInfoEntity.getKey() + ":"
                         + teamInfoEntity.getTeamLogoList().size() + ":" + teamInfoEntity.getTeamMembers().size());
                 showTeamSelectScene();
             }
@@ -319,7 +319,7 @@ public class TeamPKBll {
      */
     private void showTeamSelectScene() {
         if (mFoucesPager == null || !(mFoucesPager instanceof TeamPkTeamSelectingPager)) {
-            Log.e("teamPkBll", "====>showTeamSelectScene:" + mFoucesPager);
+            Loger.e("teamPkBll", "====>showTeamSelectScene:" + mFoucesPager);
             TeamPkTeamSelectPager teamSelectPager = new TeamPkTeamSelectPager(activity, this);
             mFoucesPager = teamSelectPager;
             teamSelectPager.setData(teamInfoEntity);
@@ -341,9 +341,9 @@ public class TeamPKBll {
         mHttpManager.getTeamInfo(roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Log.e(TAG, "=====>getTeamInfo onPmSuccess:" + responseEntity.getJsonObject().toString());
+                Loger.e(TAG, "=====>getTeamInfo onPmSuccess:" + responseEntity.getJsonObject().toString());
                 teamInfoEntity = mHttpResponseParser.parseTeamInfo(responseEntity);
-                Log.e(TAG, "=====>getTeamInfo onPmSuccess:" + teamInfoEntity.getKey() + ":"
+                Loger.e(TAG, "=====>getTeamInfo onPmSuccess:" + teamInfoEntity.getKey() + ":"
                         + teamInfoEntity.getTeamLogoList().size() + ":" + teamInfoEntity.getTeamMembers().size());
                 showTeamSelectedSence();
             }
@@ -388,10 +388,10 @@ public class TeamPKBll {
      * @param isWin
      */
     public void showAwardGetScene(int type, final Object data, final boolean isWin) {
-        Log.e("teampkBll", "======>showAwardGetScene called");
+        Loger.e("teampkBll", "======>showAwardGetScene called");
      //   if (mFoucesPager == null || !(mFoucesPager instanceof TeamPkAwardPager)) {
         if (mFoucesPager == null || !(mFoucesPager instanceof TeamPkAwardPager)) {
-            Log.e("teampkBll", "======>showAwardGetScene called 11111");
+            Loger.e("teampkBll", "======>showAwardGetScene called 11111");
             TeamPkAwardPager awardGetPager = new TeamPkAwardPager(activity, this);
             rlTeamPkContent.removeAllViews();
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -405,7 +405,7 @@ public class TeamPKBll {
                 awardGetPager.showClassChest((ClassChestEntity) data, isWin);
             } else if (type == CHEST_TYPE_STUDENT) {
                 awardGetPager.showBoxLoop(isWin);
-                Log.e("teampkBll", "======>showAwardGetScene called 3333");
+                Loger.e("teampkBll", "======>showAwardGetScene called 3333");
             }
         }else  if(mFoucesPager != null && (mFoucesPager instanceof TeamPkAwardPager)){
             //由开宝箱直接切换到幸运之星页面
@@ -435,16 +435,24 @@ public class TeamPKBll {
      */
     public void showTeamSelecting() {
         if (mFoucesPager == null || !(mFoucesPager instanceof TeamPkTeamSelectPager)) {
-            Log.e("teamPkBll", "====>showTeamSelecting:");
-            TeamPkTeamSelectingPager selectingPager = new TeamPkTeamSelectingPager(activity, this);
-            mFoucesPager = selectingPager;
-            rlTeamPkContent.removeAllViews();
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT);
-            int screenWidth = ScreenUtils.getScreenWidth();
-            int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
-            params.rightMargin = wradio;
-            rlTeamPkContent.addView(selectingPager.getRootView(), params);
+            Loger.e("teamPkBll", "====>showTeamSelecting:");
+             rlTeamPkContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    Loger.e("cksdd", "====>TeamPkBll showTeamSelecting:");
+                    final TeamPkTeamSelectingPager selectingPager = new TeamPkTeamSelectingPager(activity, TeamPKBll.this);
+                    mFoucesPager = selectingPager;
+                    rlTeamPkContent.removeAllViews();
+                    final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT);
+                    int screenWidth = ScreenUtils.getScreenWidth();
+                    int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
+                    params.rightMargin = wradio;
+                    rlTeamPkContent.addView(selectingPager.getRootView(), params);
+                    Loger.e("cksdd", "====>TeamPkBll showTeamSelecting addView finished:");
+                    rlTeamPkContent.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            });
         }
 
     }
@@ -470,7 +478,7 @@ public class TeamPKBll {
                     resultPager.showPkAdversary((TeamPkAdversaryEntity) data);
                     break;
                 case PK_RESULT_TYPE_FINAL_PKRESULT:
-                    //Log.e("PkResult", "======> TeamPkBll show finalPkResult:" + data);
+                    //Loger.e("PkResult", "======> TeamPkBll show finalPkResult:" + data);
                     resultPager.showFinalPkResult(((StudentPkResultEntity) data));
                     break;
                 case PK_RESULT_TYPE_PKRESULT:
@@ -517,7 +525,7 @@ public class TeamPKBll {
     }
 
     private void getPkState() {
-        Log.e("TeamPkBll","=====> getPkState:"+ roomInitInfo.getStuId());
+        Loger.e("TeamPkBll","=====> getPkState:"+ roomInitInfo.getStuId());
         mHttpManager.liveStuGoldAndTotalEnergy(mLiveBll.getLiveId(),
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(),
@@ -526,7 +534,7 @@ public class TeamPKBll {
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         StudentCoinAndTotalEnergyEntity energyEntity = mHttpResponseParser.parseStuCoinAndTotalEnergy(responseEntity);
                         if (pkStateRootView != null && energyEntity != null) {
-                            //Log.e("TeamPkBll","======>getPkState:"+energyEntity.getMyEnergy()+":"+energyEntity.getCompetitorEnergy()+":"+energyEntity.getStuLiveGold());
+                            //Loger.e("TeamPkBll","======>getPkState:"+energyEntity.getMyEnergy()+":"+energyEntity.getCompetitorEnergy()+":"+energyEntity.getStuLiveGold());
                             pkStateRootView.bindData(energyEntity.getStuLiveGold(), energyEntity.getMyEnergy(), energyEntity.getCompetitorEnergy());
                         }
                     }
@@ -565,7 +573,7 @@ public class TeamPKBll {
      * 展示 投票加能量 动画
      */
     private void showVoteEnergyAnim(int addEnergy) {
-        Log.e("LiveBll", "========> showVoteEnergyAnim");
+        Loger.e("LiveBll", "========> showVoteEnergyAnim");
         TeamPKAQResultPager aqAwardPager = new TeamPKAQResultPager(activity, TeamPKAQResultPager.AWARD_TYPE_VOTE,this);
         rlTeamPkContent.removeAllViews();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -620,7 +628,7 @@ public class TeamPKBll {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRoomH5CloseEvent(final LiveRoomH5CloseEvent event) {
-        Log.e("TeamPkBll", "=======>:onRoomH5CloseEvent:" + event.getId() + ":"
+        Loger.e("TeamPkBll", "=======>:onRoomH5CloseEvent:" + event.getId() + ":"
                 + event.getmGoldNum() + ":" + event.getmEnergyNum() + ":" + event.isCloseByTeacher());
         if (h5CloseEvents == null) {
             h5CloseEvents = new ArrayList<LiveRoomH5CloseEvent>();

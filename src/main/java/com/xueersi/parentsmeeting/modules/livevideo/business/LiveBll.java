@@ -8,7 +8,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
 import com.alibaba.fastjson.JSON;
@@ -942,7 +941,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 mLogtf.i("onTopic(equals):topicstr=" + topicstr);
                 return;
             }
-            Log.e("LiveBll", "======>onTopic:" + topicstr);
+            Loger.e("LiveBll", "======>onTopic:" + topicstr);
 
             if (TextUtils.isEmpty(topicstr)) {
                 return;
@@ -1164,19 +1163,20 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
                 // 战队pk  topic 逻辑
                 LiveTopic.TeamPkEntity teamPkEntity = liveTopic.getTeamPkEntity();
-                Log.e("LiveBll", "====>onTopic 112:" + teamPkEntity + ":" + mTeamPKBll);
+                Loger.e("LiveBll", "====>onTopic 112:" + teamPkEntity + ":" + mTeamPKBll);
                 if (teamPkEntity != null && mTeamPKBll != null) {
-                    Log.e("LiveBll", "====>onTopic 113:" + teamPkEntity);
+                    Loger.e("adb", "====>onTopic 113:" + teamPkEntity);
                     if (!mTeamPKBll.isTopicHandled()) {
                         if (teamPkEntity.getAlloteam() == 1) {
                             mTeamPKBll.setTopicHandled(true);
                             mTeamPKBll.showTeamSelecting();
+                            Loger.e("cksdd", "====>onTopic showTeamSelecting:");
                             return;
                         }
                         if (teamPkEntity.getAllotpkman() == 1) {
                             mTeamPKBll.setTopicHandled(true);
                             mTeamPKBll.startSelectAdversary();
-                            Log.e("LiveBll", "====>onTopic startSelectAdversary:");
+                            //Loger.e("LiveBll", "====>onTopic startSelectAdversary:");
                             return;
                         }
 
@@ -1207,7 +1207,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             try {
                 final JSONObject object = new JSONObject(notice);
                 int mtype = object.getInt("type");
-                Log.e("LiveBll", "=====>:onNotice:" + mtype);
+                Loger.e("LiveBll", "=====>:onNotice:" + mtype);
                 Loger.i("===========notice type" + mtype);
                 msg += ",mtype=" + mtype + ",voiceChatStatu=" + voiceChatStatus + ",";
                 switch (mtype) {
@@ -1284,7 +1284,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
                             if (mQuestionAction instanceof QuestionBll) {
                                 ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(false);
-                                Log.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: SENDQUESTION");
+                                Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: SENDQUESTION");
                             }
                         }
                         msg += "SENDQUESTION:id=" + videoQuestionLiveEntity.id + ",gold=" + videoQuestionLiveEntity.gold;
@@ -1298,7 +1298,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
                             if (mQuestionAction instanceof QuestionBll) {
                                 ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(true);
-                                Log.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: STOPQUESTION");
+                                Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: STOPQUESTION");
                             }
                         }
                         if (mAnswerRankBll != null) {
@@ -4579,7 +4579,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mHttpManager.uploadExperiencePlayingTime(liveId, termId, hbtime, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Log.e("Duncan", "uploadexperiencetime:" + responseEntity.getJsonObject());
+                Loger.e("Duncan", "uploadexperiencetime:" + responseEntity.getJsonObject());
             }
         });
     }
@@ -4611,7 +4611,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mHttpManager.getMoreChoiceCount(mLiveId, new HttpCallBack(pageDataLoadEntity) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Log.e("Duncan", "responseEntity:" + responseEntity);
+                Loger.e("Duncan", "responseEntity:" + responseEntity);
                 MoreChoice choiceEntity = mHttpResponseParser.parseMoreChoice(responseEntity);
                 if (choiceEntity != null) {
                     getDataCallBack.onDataSucess(choiceEntity);
