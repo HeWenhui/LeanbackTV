@@ -951,6 +951,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                 && "1".equals(mGetInfo.getIsShowCounselorWhisper())) {
 
             LiveAutoNoticeBll liveAutoNoticeBll = liveLazyBllCreat.createAutoNoticeBll();
+            liveAutoNoticeBll.setGrade(mGetInfo.getGrade());
             liveAutoNoticeBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
             liveAutoNoticeBll.setTeacherImg(mGetInfo.getTeacherIMG());
             liveAutoNoticeBll.setTeacherName(mGetInfo.getTeacherName());

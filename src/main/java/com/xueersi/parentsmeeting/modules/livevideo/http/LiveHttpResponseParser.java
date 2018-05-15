@@ -108,6 +108,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));
             //getInfo.setIsShowMarkPoint("0");
             getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
+            try {
+                getInfo.setGrade(Integer.parseInt(data.optString("gradeIds").split(",")[0]));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             //getInfo.setIsShowCounselorWhisper("1");
             if (data.has("followType")) {
                 JSONObject followType = data.getJSONObject("followType");

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
@@ -61,6 +60,7 @@ public class LiveAutoNoticeBll {
     private String liveId;
     private LiveBll mLiveBll;
     private Runnable mRunnable;
+    private int grade;
     String TAG = this.getClass().getSimpleName();
     Pattern pattern=Pattern.compile("#[0-9]#");
     String[] emojis={"\uD83D\uDE22","\uD83D\uDE44","\uD83D\uDE31","\uD83D\uDE02","\uD83D\uDE15"};
@@ -68,52 +68,14 @@ public class LiveAutoNoticeBll {
     /**
      * 文案
      */
-    String[] notice={"不要在上课期间发表不合适的言论。",
+    String[] noticeLowLevel={"不要在上课期间发表不合适的言论哦。",
+            "说不好的话会被禁言哦～",
+            "我看到啦，下次注意哦～",
+            "小心我禁言哦～"};
+    String[] noticeHighLevel={"不要在上课期间发表不合适的言论。",
             "禁止脏话及敏感词汇，你会被禁言。",
-            "尴尬了，我会收到你发的被屏蔽的留言，你还要发吗？",
-            "你需要找我聊聊人生了。"};
-    /*String[][] notice = {{"你不会是手抖输错了吧？据传说集中精神听课能治疗手抖，不信你试试!",
-            "你绝对是故意的\uD83D\uDE22（哭脸），错了不要紧，老师讲后懂了就是好样的。我会关注你的哦.",
-            "看来这个知识点你掌握的不是很牢固啊，记得下课看回放。"
-    }, {"你是如何做到用飞一样的速度做错的？\uD83D\uDE44",
-            "正确率才是最重要的。只追求快是无意义的。默读三遍，记在心间。",
-            "还是要认真审题，做完检查。才能避免这种很快错了的悲剧。",
-            "成为最快做错的同学，你真的开心吗？\uD83D\uDE31",
-            "你是如何做到连续5次成为最快做错的同学的。你也太厉害了。",
-            "\uD83D\uDE44\uD83D\uDE44\uD83D\uDE44你是根本没有用心做题吧。下课你需要和我聊聊了。"
-    }, {"先跟上老师讲课的节奏，没听懂的先标记下，下课再问哦。",
-            "看来今天你状态不佳，据说好好听课能提升状态值，你试试看。",
-            "你这不仅是状态不佳了，可能运气也不佳啊\uD83D\uDE02 ，坚持听课还有救的。",
-            "你今天的互动题正确率已经天下无敌了，下课看回放，问我题吧，我不嫌弃你，心疼的抱抱。"
-    }, {"你都全对了，为什么不主动提交呢。我猜你是找不到提交键，嘻嘻😁。",
-            "你还没找到提交键吗？要在结束前主动提交。相信自己哦。",
-            "下次主动提交吧，错了也没关系。你要相信自己错了也能改对。",
-            "做对了也不提交，看来你是故意不让老师表扬你。\uD83D\uDE02"
-    }, {"错了没关系，勇于面对自己的问题是更可贵的精神，下次主动提交哦。",
-            "在你犹豫的时刻，是不是时间就到了？下回不要犹豫啦。\uD83D\uDE02",
-            "好吧，你还是犹豫了，是不是你对这个知识点的掌握不够扎实呢？",
-            "老师认为，勇于尝试，错了真的没关系，毕竟你是认真学了的，加油！"
-    }, {"是不是网络问题导致你不能主动提交？刷新，退出重进都是解决好办法。",
-            "是时间来不急了吗？下回提高做题速度哦。",
-            "你又没提交\uD83D\uDE02 ，是不是真的没做完啊，下回做多少交多少。",
-            "不敢提交的原因，有没有一丢丢是不会呢？如果有，看回放，问老师。"
-    }, {}, {"是网络问题收不到互动题吗？刷新或退出重进试试看，如果都不行，联系我。",
-            "如果不是网络问题，那就是你的问题了，认真听课和做题，我会关注你的。",
-            "做错不可怕，可怕的是不做，态度不端正，怎么逆袭呢？",
-            "今天来了一个假的你吧？四道题不做。看啦你需要下课找我了。"
-    }, {"你太牛了，这题的正确率还不到30%，但是你做对了。",
-            "两次了，正确率那么低，但是你就是能做对，看来基本功扎实。",
-            "厉害了，我的娃，暴击3次低正确率。",
-            "老师已经开始膜拜你的能力了，暴击4次低正确率。"
-    }, {"状态不错，累计做对多道题了，继续加油！",
-            "累计做对的题目又多了，看看你能不能创造更好的记录。",
-            "厉害了，我的娃，累计多道题目全对get，你是我的小骄傲。",
-            "几乎全部题目都对的娃，膜拜中～给你个特殊大大的表扬。"
-    }, {"不要在上课期间发表不合适的言论。",
-            "禁止脏话及敏感词汇，你会被禁言。",
-            "尴尬了，我会收到你发的被屏蔽的留言，你还要发吗？",
-            "你需要找我聊聊人生了。"
-    }};*/
+            "我会收到你发的被屏蔽的留言，别发喽！",
+            "脏话及敏感词汇会被屏蔽掉，别再发了。"};
 
     public LiveAutoNoticeBll(Context context, RelativeLayout bottom) {
         this.mContext = context;
@@ -170,6 +132,10 @@ public class LiveAutoNoticeBll {
         this.liveId = liveId;
     }
 
+    public void setGrade(int grade) {
+        this.grade = grade;
+    }
+
     public void setTeacherImg(String teacherImg) {
         this.teacherImg = teacherImg;
     }
@@ -193,8 +159,16 @@ public class LiveAutoNoticeBll {
             if (Integer.parseInt(classId) < 0) {
                 return;
             }
+            String content=null;
             int i = ShareDataManager.getInstance().getInt("LiveAutoNotice_" + liveId, -1, ShareDataManager.SHAREDATA_USER);
-            showNotice(name, notice[(i + 1) % 4], head);
+            if(grade>=2&&grade<=3){
+                content=noticeLowLevel[(i + 1) % 4];
+            }else if(grade>=4&&grade<=7){
+                content=noticeHighLevel[(i + 1) % 4];
+            }else{
+                return;
+            }
+            showNotice(name, content, head);
             //showNotice(name,parseEmoji("不要#1#说#2#脏话哦#3###"),head);
             umsAgent(3, true);
             ShareDataManager.getInstance().put("LiveAutoNotice_" + liveId, i + 1, ShareDataManager.SHAREDATA_USER);

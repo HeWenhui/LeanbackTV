@@ -245,6 +245,15 @@ public class LiveGetInfo {
      */
     private String isAllowTeamPk;  // 1 :是pk 直播间  0 :非pk直播间
     private String[] subjectIds;//所有学科id
+    /**直播课年级*/
+    private int grade;
+    public int getGrade() {
+        return grade;
+    }
+
+    public void setGrade(int grade) {
+        this.grade = grade;
+    }
 
     public void setIsAllowTeamPk(String isAllowTeamPk) {
         this.isAllowTeamPk = isAllowTeamPk;
