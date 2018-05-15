@@ -793,6 +793,10 @@ public class LiveGetInfo {
         this.subjectIds = subjectIds;
     }
 
+    public String[] getSubjectIds() {
+        return subjectIds;
+    }
+
     public static class MainTeacherInfo {
         String teacherId;//"teacherId":"1434",
         String teacherName; //"teacherName":"小琪老师",

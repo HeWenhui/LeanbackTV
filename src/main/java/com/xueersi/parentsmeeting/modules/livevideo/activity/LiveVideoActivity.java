@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tal.speech.speechrecognizer.Constants;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.entity.FooterIconEntity;
@@ -592,7 +593,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             onPauseNotStopVideo = false;
         }
 
-        if(mLiveBll != null){
+        if (mLiveBll != null) {
             mLiveBll.onResume();
         }
 
@@ -639,7 +640,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
     @Override
     public void onStop() {
         super.onStop();
-        if(mLiveBll != null){
+        if (mLiveBll != null) {
             mLiveBll.onStop();
         }
     }
@@ -1014,6 +1015,19 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             mIse = new SpeechEvaluatorUtils(true);
             questionBll.setIse(mIse);
             englishH5CoursewareBll.setIse(mIse);
+        } else {
+            if (!IS_SCIENCE) {
+                String[] subjectIds = getInfo.getSubjectIds();
+                if (subjectIds != null) {
+                    for (int i = 0; i < subjectIds.length; i++) {
+                        String subjectId = subjectIds[i];
+                        if (LiveVideoConfig.SubjectIds.SUBJECT_ID_CH.equals(subjectId)) {
+                            mIse = new SpeechEvaluatorUtils(true, Constants.ASSESS_PARAM_LANGUAGE_CH);
+                            break;
+                        }
+                    }
+                }
+            }
         }
         mMediaController.setFileName(getInfo.getName());
         if (getInfo.isCloseChat()) {
@@ -1573,7 +1587,6 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             mLiveBll.stopIRC();
         }
     }
-
 
 
     @Override

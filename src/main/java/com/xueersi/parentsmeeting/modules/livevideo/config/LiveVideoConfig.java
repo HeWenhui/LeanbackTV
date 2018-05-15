@@ -154,4 +154,11 @@ public class LiveVideoConfig {
     public static Boolean isloading = false;
     /** 讲座直播广告Id */
     public static String LECTUREADID;
+
+    public static interface SubjectIds {
+        /**
+         * 学科id，语文
+         */
+        public String SUBJECT_ID_CH = "1";
+    }
 }
