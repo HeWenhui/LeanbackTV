@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.xesalib.utils.app.ContextManager;
+import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.xesalib.utils.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.xesalib.utils.listener.OnAlphaTouchListener;
@@ -102,6 +103,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                     Loger.i("RolePlayerDemoTest", "点击自己语音：url  = " + mEntity.getWebVoiceUrl());
                     voiceClick();
                 }else {
+                    XESToastUtils.showToast(mContext, "没有检测到音频文件");
                     Loger.i("RolePlayerDemoTest", "点击自己语音：url为空 ");
                 }
             }

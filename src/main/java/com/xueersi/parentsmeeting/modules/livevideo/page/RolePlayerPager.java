@@ -252,7 +252,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             dir.mkdirs();
         }
         mWorkerThread = new WorkerThread(ContextManager.getApplication(), Integer.parseInt(UserBll.getInstance()
-                .getMyUserInfoEntity().getStuId()), true, true);
+                .getMyUserInfoEntity().getStuId()), false, true);
 
 
     }
@@ -341,7 +341,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                         roleConfirmPage(); //确定角色开始RolePlayer
                     } else {
                         rlMatchPager.setVisibility(View.GONE);
-                        Loger.i("RolePlayerDemoTest","无朗读数据,进人机");
+                        Loger.i("RolePlayerDemoTest", "无朗读数据,进人机");
                         XESToastUtils.showToast(mContext, "无朗读数据,进人机");
                         //进入人机
                         mRolePlayBll.goToRobot();
@@ -531,7 +531,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 } else {
                     //lvReadList.smoothScrollToPosition(mCurrentReadIndex + 1);
                     lvReadList.setSelection(mCurrentReadIndex);
-                    Loger.i("RolePlayerDemoTest", "滚动到下一条"+mCurrentReadIndex+1);
+                    Loger.i("RolePlayerDemoTest", "滚动到下一条" + mCurrentReadIndex + 1);
                 }
 
                 //取出当前这条的延时时间
@@ -765,8 +765,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                             //提前开始下一条
                             nextReadMessage();
                         } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                            Loger.i("RolePlayerDemoTest", "测评失败，"+ ResultEntity.ERROR+" 不上传自己的mp3");
-                            XESToastUtils.showToast(mContext, "测评失败");
+                            Loger.i("RolePlayerDemoTest", "测评失败，" + ResultEntity.ERROR + " 不上传自己的mp3");
+                            //XESToastUtils.showToast(mContext, "测评失败");
                             message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
                             //提前开始下一条
                             nextReadMessage();
@@ -791,8 +791,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                             dest[i * 2] = (byte) (shorts[i]);
                             dest[i * 2 + 1] = (byte) (shorts[i] >> 8);
                         }
-                        RtcEngine rtcEngine =  mWorkerThread.getRtcEngine();
-                        if(rtcEngine != null){
+                        RtcEngine rtcEngine = mWorkerThread.getRtcEngine();
+                        if (rtcEngine != null) {
                             rtcEngine.pushExternalAudioFrame(dest, System.currentTimeMillis());
                         }
 
