@@ -503,6 +503,7 @@ public class TeamPkAwardPager extends BasePager {
                             ivOpenstate.setVisibility(View.VISIBLE);
                             ivOpenstate.setLayoutParams(layoutParams);
                         }
+                        Loger.e("coinNum","====> Awardpager update pkstateLayout");
                         updatePkStateLayout();
                     }
 

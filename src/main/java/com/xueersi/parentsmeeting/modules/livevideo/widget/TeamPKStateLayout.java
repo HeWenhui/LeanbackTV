@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +12,8 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
 /**
@@ -108,11 +107,11 @@ public class TeamPKStateLayout extends FrameLayout {
      * @param otherEnergyAdd 对手增加能量值
      */
     public void updateData(int ownEnergyAdd, int otherEnergyAdd,int coinCrement) {
-        Log.e("TeamPkStateLayout","====>updateData:"+ownEnergyAdd+":"+otherEnergyAdd+":"+coinCrement);
+        Loger.e("coinNum","====>updateData:"+ownEnergyAdd+":"+otherEnergyAdd+":"+coinCrement);
         mMyteamAnergy += ownEnergyAdd;
         mOtherTeamAnergy += otherEnergyAdd;
         mCoinNum += coinCrement;
-        Log.e("TeamPkStateLayout","====>updateData22222:"+mMyteamAnergy+":"+mOtherTeamAnergy+":"+mCoinNum);
+        Loger.e("coinNum","====>updateData22222:"+mMyteamAnergy+":"+mOtherTeamAnergy+":"+mCoinNum);
 
         if(ownEnergyAdd > 0){
             tvMyteamEnergy.smoothAddNum(ownEnergyAdd);
@@ -124,7 +123,7 @@ public class TeamPKStateLayout extends FrameLayout {
         }else{
             tvOtherteamEnergy.setText(mOtherTeamAnergy+"");
         }
-        if(coinCrement >=0){
+        if(coinCrement >0){
             tvCoin.smoothAddNum(coinCrement);
         }else {
             tvCoin.setText(mCoinNum+"");
@@ -147,6 +146,7 @@ public class TeamPKStateLayout extends FrameLayout {
      * @param otherTeamAnergy 当前对手能量值
      */
     public void bindData(long coinNum, long myTeamAnergy, long otherTeamAnergy) {
+        Loger.e("coinNum","====> PkstateLayout bindData 111:"+coinNum+":"+ myTeamAnergy+":"+ otherTeamAnergy);
         if(!dataInited){
             dataInited = true;
             initData(coinNum, myTeamAnergy, otherTeamAnergy);
@@ -154,7 +154,8 @@ public class TeamPKStateLayout extends FrameLayout {
              int addCoin = (int) (coinNum - mCoinNum);
              int ownEnergyAdd = (int) (myTeamAnergy - mMyteamAnergy);
              int otherEnergyAdd =(int) (otherTeamAnergy - mOtherTeamAnergy);
-             updateData(ownEnergyAdd,otherEnergyAdd,addCoin);
+            Loger.e("coinNum","====> PkstateLayout bindData 222:"+addCoin+":"+ ownEnergyAdd+":"+ otherEnergyAdd);
+            updateData(ownEnergyAdd,otherEnergyAdd,addCoin);
         }
     }
 

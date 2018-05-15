@@ -535,6 +535,7 @@ public class TeamPKBll {
                         StudentCoinAndTotalEnergyEntity energyEntity = mHttpResponseParser.parseStuCoinAndTotalEnergy(responseEntity);
                         if (pkStateRootView != null && energyEntity != null) {
                             //Loger.e("TeamPkBll","======>getPkState:"+energyEntity.getMyEnergy()+":"+energyEntity.getCompetitorEnergy()+":"+energyEntity.getStuLiveGold());
+                            Loger.e("coinNum","====> TeamPkBll onPmSuccess:"+energyEntity.getStuLiveGold()+":"+ energyEntity.getMyEnergy()+":"+energyEntity.getCompetitorEnergy());
                             pkStateRootView.bindData(energyEntity.getStuLiveGold(), energyEntity.getMyEnergy(), energyEntity.getCompetitorEnergy());
                         }
                     }

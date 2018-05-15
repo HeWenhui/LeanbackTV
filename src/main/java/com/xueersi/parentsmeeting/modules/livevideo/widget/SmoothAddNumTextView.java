@@ -92,9 +92,7 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
                 currentNum += increment;
                 SmoothAddNumTextView.this.postDelayed(this, timeGap);
             }else{
-                if(currentNum > endNum){
-                    SmoothAddNumTextView.this.setText(endNum + "");
-                }
+                SmoothAddNumTextView.this.setText(endNum + "");
             }
         }
     }
