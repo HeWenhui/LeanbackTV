@@ -9,7 +9,6 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.AudioManager;
-import android.media.SoundPool;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -24,14 +23,12 @@ import android.widget.TextView;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.SoundInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPKStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
-import java.util.HashMap;
 
 /**
  * 战队pk 实时答题
@@ -330,16 +327,20 @@ public class TeamPKAQResultPager extends BasePager {
         });
     }
 
-
+    boolean animEndCalled =false;
     private void doAnimEnd() {
-        // 0 播发音效
-        playMusic(R.raw.coin_get, DEFAULT_VOLUME, false);
-        // 1 聊天区域状态更新
-        if (teamPKStateLayout != null && mTeamPkBll != null) {
-            teamPKStateLayout.updateData(mEnergy,0,mGoldNum);
-            //mTeamPkBll.updatePkStateLayout();
+        if(!animEndCalled){
+            animEndCalled = true;
+            // 0 播发音效
+            playMusic(R.raw.coin_get, DEFAULT_VOLUME, false);
+            // 1 聊天区域状态更新
+            if (teamPKStateLayout != null && mTeamPkBll != null) {
+                teamPKStateLayout.updateData(mEnergy,0,mGoldNum);
+                //mTeamPkBll.updatePkStateLayout();
+            }
+            closePager();
         }
-        closePager();
+
     }
 
     private void closePager() {

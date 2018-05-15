@@ -108,6 +108,7 @@ public class TeamPKStateLayout extends FrameLayout {
      */
     public void updateData(int ownEnergyAdd, int otherEnergyAdd,int coinCrement) {
         Loger.e("coinNum","====>updateData:"+ownEnergyAdd+":"+otherEnergyAdd+":"+coinCrement);
+        Loger.e("coinNum","====>updateData3333:"+mMyteamAnergy+":"+mOtherTeamAnergy+":"+mCoinNum);
         mMyteamAnergy += ownEnergyAdd;
         mOtherTeamAnergy += otherEnergyAdd;
         mCoinNum += coinCrement;
@@ -147,6 +148,8 @@ public class TeamPKStateLayout extends FrameLayout {
      */
     public void bindData(long coinNum, long myTeamAnergy, long otherTeamAnergy) {
         Loger.e("coinNum","====> PkstateLayout bindData 111:"+coinNum+":"+ myTeamAnergy+":"+ otherTeamAnergy);
+        Loger.e("coinNum","====> PkstateLayout bindData 333:"+mCoinNum+":"+ mMyteamAnergy+":"+ mOtherTeamAnergy);
+
         if(!dataInited){
             dataInited = true;
             initData(coinNum, myTeamAnergy, otherTeamAnergy);
