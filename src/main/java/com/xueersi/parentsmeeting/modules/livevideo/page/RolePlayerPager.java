@@ -54,6 +54,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.agora.rtc.Constants;
+import io.agora.rtc.RtcEngine;
 
 
 /**
@@ -790,7 +791,11 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                             dest[i * 2] = (byte) (shorts[i]);
                             dest[i * 2 + 1] = (byte) (shorts[i] >> 8);
                         }
-                        mWorkerThread.getRtcEngine().pushExternalAudioFrame(dest, System.currentTimeMillis());
+                        RtcEngine rtcEngine =  mWorkerThread.getRtcEngine();
+                        if(rtcEngine != null){
+                            rtcEngine.pushExternalAudioFrame(dest, System.currentTimeMillis());
+                        }
+
                     }
                 });
     }
