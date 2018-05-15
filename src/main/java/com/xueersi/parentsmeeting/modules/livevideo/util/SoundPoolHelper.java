@@ -220,38 +220,44 @@ public class SoundPoolHelper {
 
 
     private void playMusic(final SoundPlayTask task) {
-        initSoundPoolInNeed();
-        if (mSoundInfoMap == null) {
-            mSoundInfoMap = new HashMap<Object, SoundInfo>();
-        }
-        isResOnLoading = true;
-        SoundInfo soundInfo = mSoundInfoMap.get(task.getCacheKey());
-        if (soundInfo != null) {
-            int streamId = mSoundPool.play(soundInfo.getSoundId(), task.volume, task.volume, 0, task.loop ? -1 : 0, 1);
-            soundInfo.setStreamId(streamId);
-            mSoundInfoMap.put(task.getCacheKey(), soundInfo);
-            isResOnLoading = false;
-            if (playTasks.size() > 0) {
-                playMusic(playTasks.remove(0));
+        try {
+            initSoundPoolInNeed();
+            if (mSoundInfoMap == null) {
+                mSoundInfoMap = new HashMap<Object, SoundInfo>();
             }
-        } else {
-            if (task.resType == SoundPlayTask.RESTYPE_RAW) {
-                mSoundPool.load(mContext, task.resId, 1);
-            } else {
-                mSoundPool.load(task.path, 1);
-            }
-            mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-                @Override
-                public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                    int streamId = soundPool.play(sampleId, task.volume, task.volume, 0, task.loop ? -1 : 0, 1);
-                    SoundInfo soundInfo = new SoundInfo(sampleId, streamId);
-                    mSoundInfoMap.put(task.getCacheKey(), soundInfo);
-                    isResOnLoading = false;
-                    if (playTasks.size() > 0) {
-                        playMusic(playTasks.remove(0));
-                    }
+            isResOnLoading = true;
+            SoundInfo soundInfo = mSoundInfoMap.get(task.getCacheKey());
+            if (soundInfo != null) {
+                int streamId = mSoundPool.play(soundInfo.getSoundId(), task.volume, task.volume, 0, task.loop ? -1 : 0, 1);
+                soundInfo.setStreamId(streamId);
+                mSoundInfoMap.put(task.getCacheKey(), soundInfo);
+                isResOnLoading = false;
+                if (playTasks.size() > 0) {
+                    playMusic(playTasks.remove(0));
                 }
-            });
+            } else {
+                if (task.resType == SoundPlayTask.RESTYPE_RAW) {
+                    if(mContext != null){
+                        mSoundPool.load(mContext, task.resId, 1);
+                    }
+                } else {
+                    mSoundPool.load(task.path, 1);
+                }
+                mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+                    @Override
+                    public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                        int streamId = soundPool.play(sampleId, task.volume, task.volume, 0, task.loop ? -1 : 0, 1);
+                        SoundInfo soundInfo = new SoundInfo(sampleId, streamId);
+                        mSoundInfoMap.put(task.getCacheKey(), soundInfo);
+                        isResOnLoading = false;
+                        if (playTasks.size() > 0) {
+                            playMusic(playTasks.remove(0));
+                        }
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

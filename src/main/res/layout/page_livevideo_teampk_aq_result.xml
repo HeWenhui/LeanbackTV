@@ -10,7 +10,7 @@
         android:background="@drawable/shape_livevideo_teampk_aq_result_bg"
         android:layout_centerInParent="true"
         android:id="@id/rl_answer_question_award_root"
-        android:visibility="gone"
+        android:visibility="visible"
         >
 
         <ImageView

@@ -760,7 +760,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         teamsRecyclView.setAdapter(teamAdapter);
         teamsRecyclView.setVisibility(View.VISIBLE);
 
-        teamsRecyclView.addItemDecoration(new RecyclerView.ItemDecoration() {
+        /*teamsRecyclView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                 int itemPosition = parent.getChildAdapterPosition(view);
@@ -774,7 +774,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
                 }
                 outRect.set(left, top, right, bottom);
             }
-        });
+        });*/
 
         GridLayoutAnimationController animationController = (GridLayoutAnimationController)
                 AnimationUtils.loadLayoutAnimation(mContext, R.anim.anim_livevido_teampk_team_list);

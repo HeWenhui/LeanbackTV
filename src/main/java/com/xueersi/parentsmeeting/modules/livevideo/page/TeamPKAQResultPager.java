@@ -144,8 +144,8 @@ public class TeamPKAQResultPager extends BasePager {
         scaleAnimation = (ScaleAnimation) AnimationUtils.
                 loadAnimation(mContext, R.anim.anim_livevido_teampk_aq_award);
         scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
-        rlQuestionRootView.setVisibility(View.VISIBLE);
         rlVotRootView.setVisibility(View.GONE);
+        rlQuestionRootView.setVisibility(View.VISIBLE);
         rlQuestionRootView.startAnimation(scaleAnimation);
 
         scaleAnimation.setAnimationListener(new Animation.AnimationListener() {

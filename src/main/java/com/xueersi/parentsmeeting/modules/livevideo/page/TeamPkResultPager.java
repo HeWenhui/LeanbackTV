@@ -318,19 +318,24 @@ public class TeamPkResultPager extends BasePager {
         float newRatio = 0;
         if ((myTeamTotalEnergy + otherTeamEnergy) > 0) {
             newRatio = myTeamTotalEnergy / (float) (myTeamTotalEnergy + otherTeamEnergy);
+        }else{
+            if (newRatio == 0) {
+                newRatio = 0.5f;
+            }
         }
-        if (newRatio == 0) {
-            newRatio = 0.5f;
-        }
+
         int currentProgress = (int) (newRatio * tpbEnergyBar.getMaxProgress() + 0.5);
         int addProgress = currentProgress - tpbEnergyBar.getProgress();
-        tpbEnergyBar.smoothAddProgress(addProgress);
+        if(addProgress > 0){
+            tpbEnergyBar.smoothAddProgress(addProgress);
+        }else{
+            tpbEnergyBar.setProgress(currentProgress);
+        }
         tvMyTeamEnergy.setText(myTeamOldEnergy + "");
         tvOtherTeamEnergy.setText(otherTeamEnergy + "");
         int addEnergy = (int) data.getMyTeamEngerInfo().getAddEnergy();
         Loger.e("TeamPkResult", "=======>showNewProgress: addEnergy=" + addEnergy);
         startAddEnergyEffect(addEnergy);
-
     }
 
 

@@ -34,7 +34,8 @@
         android:layout_marginTop="60dp"
         android:overScrollMode="never"
         android:scrollbars="none"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
 
     <RelativeLayout
@@ -213,16 +214,6 @@
 
     </RelativeLayout>
 
-   <!-- <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView
-        android:id="@id/rcl_teampk_teammember"
-        android:layout_width="440dp"
-        android:layout_height="180dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="48dp"
-        android:overScrollMode="never"
-        android:scrollbars="none"
-        android:visibility="gone" />-->
 
     <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView
         android:id="@id/rcl_teampk_teammember"

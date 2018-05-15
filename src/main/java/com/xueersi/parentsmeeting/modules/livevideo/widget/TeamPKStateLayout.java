@@ -129,13 +129,19 @@ public class TeamPKStateLayout extends FrameLayout {
         }else {
             tvCoin.setText(mCoinNum+"");
         }
-        float ratio = 0;
+        float ratio;
         if ((mMyteamAnergy + mOtherTeamAnergy) > 0) {
             ratio = mMyteamAnergy / (float) (mMyteamAnergy + mOtherTeamAnergy);
+        }else{
+            ratio = 0.5f;
         }
         upDataSateText(ratio);
         int addProgress = (int) (ratio * 100 + 0.5f) - pkProgressBar.getProgress();
-        pkProgressBar.smoothAddProgress(addProgress);
+        if(addProgress > 0){
+            pkProgressBar.smoothAddProgress(addProgress);
+        }else{
+            pkProgressBar.setProgress((int) (ratio * 100));
+        }
     }
 
 
