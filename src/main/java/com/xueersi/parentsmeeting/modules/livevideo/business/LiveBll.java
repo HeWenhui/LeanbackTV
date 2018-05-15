@@ -2420,6 +2420,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         } else {
             isAllowTeamPk = false;
         }
+
         liveGetPlayServerFirst();
     }
 
