@@ -251,7 +251,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             dir.mkdirs();
         }
         mWorkerThread = new WorkerThread(ContextManager.getApplication(), Integer.parseInt(UserBll.getInstance()
-                .getMyUserInfoEntity().getStuId()), false, true);
+                .getMyUserInfoEntity().getStuId()), true, true);
 
 
     }
@@ -579,6 +579,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      * 显示结果
      */
     public void showResult() {
+        Loger.i("RolePlayerDemoTest", "显示结果");
         mRolePlayBll.cancelDZ();
         vwvSpeechVolume.stop();
         rlSpeechVolumnMain.setVisibility(View.INVISIBLE);

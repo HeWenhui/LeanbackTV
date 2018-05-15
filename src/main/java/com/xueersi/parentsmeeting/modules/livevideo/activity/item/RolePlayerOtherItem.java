@@ -224,12 +224,15 @@ public class RolePlayerOtherItem extends RolePlayerItem {
         tvUserNickName.setText(entity.getRolePlayer().getNickName());
         tvMessageContent.setTextColor(Color.parseColor("#333333"));
         rlMessageDZ.setVisibility(View.GONE);
+        setDZbtClick(entity);
         switch (entity.getMsgStatus()) {
             case RolePlayerEntity.RolePlayerMessageStatus.WAIT_NORMAL:
+              //  Loger.i("RolePlayerDemoTest", "等待朗读");
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_other_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY:
+               // Loger.i("RolePlayerDemoTest", "开始朗读");
                 rlMessageDZ.setVisibility(View.VISIBLE);
                 ivMessageDZ.setVisibility(View.VISIBLE);
                 vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_other_reading);
@@ -242,47 +245,14 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 }
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY:
+               // Loger.i("RolePlayerDemoTest", "结束朗读");
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_other_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
                 rlMessageDZ.setVisibility(View.VISIBLE);
                 ivMessageDZ.setVisibility(View.VISIBLE);
                 if (!entity.isDZ()) {
                     ivMessageDZ.setImageResource(R.drawable.livevideo_roleplay_result_ic_normal);
-                    ivMessageDZ.setOnClickListener(new View.OnClickListener() {
 
-                        @Override
-                        public void onClick(View view) {
-                            Loger.i("RolePlayerDemoTest", "给他人点赞");
-                            bllRolePlayerBll.toOtherDZ(mEntity.getRolePlayer().getRoleId(), mEntity.getPosition());
-                            ivMessageDZ.setVisibility(View.GONE);
-                            lavMessageDZ.setVisibility(View.VISIBLE);
-                            entity.setDZ(true);
-                            lavMessageDZ.addAnimatorListener(new Animator.AnimatorListener() {
-                                @Override
-                                public void onAnimationStart(Animator animator) {
-                                }
-
-                                @Override
-                                public void onAnimationEnd(Animator animator) {
-                                    lavMessageDZ.setVisibility(View.GONE);
-                                    ivMessageDZ.setVisibility(View.VISIBLE);
-                                    ivMessageDZ.setImageResource(R.drawable.livevideo_roleplay_result_ic_focsed);
-                                    ivMessageDZ.setOnClickListener(null);
-                                }
-
-                                @Override
-                                public void onAnimationCancel(Animator animator) {
-
-                                }
-
-                                @Override
-                                public void onAnimationRepeat(Animator animator) {
-
-                                }
-                            });
-                            lavMessageDZ.playAnimation();
-                        }
-                    });
                 } else {
                     ivMessageDZ.setImageResource(R.drawable.livevideo_roleplay_result_ic_focsed);
                     ivMessageDZ.setOnClickListener(null);
@@ -291,10 +261,13 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 break;
 
             case RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ:
-                Loger.i("RolePlayerDemoTest", "取消点赞按钮");
+               // Loger.i("RolePlayerDemoTest", "取消点赞按钮");
+                ivMessageDZ.setImageResource(R.drawable.livevideo_roleplay_result_ic_normal);
                 rlMessageDZ.setVisibility(View.GONE);
                 ivMessageDZ.setVisibility(View.GONE);
-                ivMessageDZ.setImageResource(R.drawable.livevideo_roleplay_result_ic_normal);
+                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_other_item_bubble);
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
+                tvMessageContent.setTextColor(Color.parseColor("#333333"));
                 break;
             default:
                 break;
@@ -330,5 +303,48 @@ public class RolePlayerOtherItem extends RolePlayerItem {
 //        } else {
 //            vVoiceMain.setBackgroundResource(R.drawable.bg_chat_bubble_left_white);
 //        }
+    }
+
+    /**
+     * 点赞按钮的点击事件
+     * @param entity
+     */
+    private void setDZbtClick(final RolePlayerEntity.RolePlayerMessage entity) {
+
+        ivMessageDZ.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Loger.i("RolePlayerDemoTest", "给他人点赞");
+                bllRolePlayerBll.toOtherDZ(mEntity.getRolePlayer().getRoleId(), mEntity.getPosition());
+                ivMessageDZ.setVisibility(View.GONE);
+                lavMessageDZ.setVisibility(View.VISIBLE);
+                entity.setDZ(true);
+                lavMessageDZ.addAnimatorListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+                        lavMessageDZ.setVisibility(View.GONE);
+                        ivMessageDZ.setVisibility(View.VISIBLE);
+                        ivMessageDZ.setImageResource(R.drawable.livevideo_roleplay_result_ic_focsed);
+                        ivMessageDZ.setOnClickListener(null);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {
+
+                    }
+                });
+                lavMessageDZ.playAnimation();
+            }
+        });
     }
 }
