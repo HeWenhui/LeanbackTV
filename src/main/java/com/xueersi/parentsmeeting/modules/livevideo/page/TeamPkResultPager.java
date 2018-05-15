@@ -3,12 +3,14 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -104,6 +106,9 @@ public class TeamPkResultPager extends BasePager {
             R.raw.lose,
             R.raw.win
     };
+    private RelativeLayout rlLottieRootView;
+    private TeamPkProgressBar tpbFinalProgress;
+    private RelativeLayout rlFinalPbBarContainer;
 
 
     public TeamPkResultPager(Context context, TeamPKBll pkBll) {
@@ -114,9 +119,15 @@ public class TeamPkResultPager extends BasePager {
     @Override
     public View initView() {
         final View view = View.inflate(mContext, R.layout.page_livevideo_teampk_pkresult, null);
+        rlLottieRootView = view.findViewById(R.id.rl_teampk_pk_result_lottie_root);
         lottieAnimationView = view.findViewById(R.id.lav_teampk_pkresult);
-        rlResultRootView = view.findViewById(R.id.rl_teampk_pkresult_root);
+        tpbFinalProgress = view.findViewById(R.id.tpb_teampk_pkresult_pbbar_final);
+        tpbFinalProgress.setMaxProgress(100);
+        rlFinalPbBarContainer = view.findViewById(R.id.rl_teampk_pkresult_final_pbbar_container);
 
+
+
+        rlResultRootView = view.findViewById(R.id.rl_teampk_pkresult_root);
         ivMyteamState = view.findViewById(R.id.iv_teampk_pkresult_myteam_state);
         ivOtherTeamState = view.findViewById(R.id.iv_teampk_pkresult_otherteam_state);
         ivMyTeamLogo = view.findViewById(R.id.iv_teampk_pkresult_myteam_logo);
@@ -171,12 +182,37 @@ public class TeamPkResultPager extends BasePager {
      * @param data
      */
     public void showFinalPkResult(StudentPkResultEntity data) {
-
         if (data == null || data.getMyTeamResultInfo() == null || data.getCompetitorResultInfo() == null) {
             return;
         }
+
         Loger.e("PkResult", "======> ResultPager show finalPkResult" + data.getMyTeamResultInfo().getEnergy() + ":" + data.getCompetitorResultInfo().getEnergy());
         mFinalPkRsult = data;
+
+        // 显示最终pk 进度值
+        rlLottieRootView.setVisibility(View.VISIBLE);
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rlFinalPbBarContainer.getLayoutParams();
+        Point point = new Point();
+        ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
+        int realY = Math.min(point.x, point.y);
+        layoutParams.topMargin = (int) (realY * 0.8);
+        rlFinalPbBarContainer.setLayoutParams(layoutParams);
+
+        int myTeamEnergy = (int) data.getMyTeamResultInfo().getEnergy();
+        int otherTeamEnergy = (int) data.getCompetitorResultInfo().getEnergy();
+        float ratio;
+        if(myTeamEnergy+otherTeamEnergy > 0){
+            ratio =  myTeamEnergy/(float)(myTeamEnergy+otherTeamEnergy);
+        }else{
+            ratio = 0.5f;
+        }
+        tpbFinalProgress.setProgress((int) (ratio * tpbFinalProgress.getMaxProgress()));
+        TextView tvMyTeamFinalEngergy = rlLottieRootView.findViewById(R.id.tv_teampk_pkresult_myteam_final_anergy);
+        tvMyTeamFinalEngergy.setText(myTeamEnergy+"");
+        TextView tvOtherTeamFinalEngergy = rlLottieRootView.findViewById(R.id.tv_teampk_pkresult_otherteam_final_anergy);
+        tvOtherTeamFinalEngergy.setText(otherTeamEnergy+"");
+
+
         int pkResult = (int) (data.getMyTeamResultInfo().getEnergy() - data.getCompetitorResultInfo().getEnergy());
         if (pkResult == 0) {
             showDrawAnim();
@@ -199,7 +235,8 @@ public class TeamPkResultPager extends BasePager {
 
         if (data != null) {
             rlResultRootView.setVisibility(View.VISIBLE);
-            lottieAnimationView.setVisibility(View.GONE);
+            //lottieAnimationView.setVisibility(View.GONE);
+            rlLottieRootView.setVisibility(View.GONE);
             //显示贡献之星
             if (data.getContributionStarList() != null) {
                 mView.postDelayed(new Runnable() {
@@ -821,6 +858,7 @@ public class TeamPkResultPager extends BasePager {
         lottieAnimationView.cancelAnimation();
         lottieAnimationView.removeAllAnimatorListeners();
         lottieAnimationView.setVisibility(View.GONE);
+        rlLottieRootView.setVisibility(View.GONE);
     }
 
     @Override

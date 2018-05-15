@@ -568,6 +568,14 @@
     <item name="ll_teampk_pkresult_othreteam" type="id"/>
     <item name="tpb_teampk_pkresult_pbbar" type="id"/>
     <item name="rl_teampk_pk_result" type="id"/>
+    <item name="rl_teampk_pk_result_lottie_root" type="id"/>
+
+    <item name="tpb_teampk_pkresult_pbbar_final" type="id"/>
+    <item name="tv_teampk_pkresult_myteam_final_anergy" type="id"/>
+    <item name="tv_teampk_pkresult_otherteam_final_anergy" type="id"/>
+    <item name="rl_teampk_pkresult_final_pbbar_container" type="id"/>
+
+
 
     <item name="tv_teampk_myteam_energy" type="id"/>
     <item name="tv_teampk_myteam_add_energy" type="id"/>

@@ -4,10 +4,61 @@
     android:layout_height="match_parent"
     android:background="@drawable/live_video_teampk_pkresult_bg">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@id/lav_teampk_pkresult"
+    <RelativeLayout
+        android:id="@id/rl_teampk_pk_result_lottie_root"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@id/lav_teampk_pkresult"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <RelativeLayout
+            android:layout_width="360dp"
+            android:layout_height="wrap_content"
+            android:id="@id/rl_teampk_pkresult_final_pbbar_container"
+            android:layout_centerHorizontal="true"
+            >
+
+            <TextView
+                android:id="@id/tv_teampk_pkresult_myteam_final_anergy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="1461"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginLeft="3dp"
+                />
+
+            <TextView
+                android:id="@id/tv_teampk_pkresult_otherteam_final_anergy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="13647"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:layout_marginRight="3dp"
+                />
+
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar
+                android:id="@id/tpb_teampk_pkresult_pbbar_final"
+                android:layout_width="360dp"
+                android:layout_height="20dp"
+                app:innerProgressBarHeight="5dp"
+                app:sliderHeader="@drawable/livevideo_tool_energy_img_disable"
+                android:layout_below="@id/tv_teampk_pkresult_myteam_final_anergy"
+                />
+
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
 
 
     <RelativeLayout
