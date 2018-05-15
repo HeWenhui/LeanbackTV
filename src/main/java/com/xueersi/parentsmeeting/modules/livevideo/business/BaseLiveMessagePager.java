@@ -143,8 +143,13 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
 
     }
 
+    public void setGetInfo(LiveGetInfo getInfo) {
+        this.getInfo = getInfo;
+    }
+
     /**
      * 表情键盘item被点击
+     *
      * @param position
      * @param catogaryId
      * @param expressionId
@@ -457,7 +462,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
         dvMessageDanmaku.addDanmaku(danmaku);
     }
 
-    private SpannableStringBuilder createSpannable(int ftype, String name, Drawable drawable) {
+    protected SpannableStringBuilder createSpannable(int ftype, String name, Drawable drawable) {
 //        Loger.i(TAG, "createSpannable:name=" + name + ",ftype=" + ftype);
         String tip = "";
         switch (ftype) {

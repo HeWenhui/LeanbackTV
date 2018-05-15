@@ -5,12 +5,15 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.Editable;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.ImageSpan;
 import android.text.util.Linkify;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -50,6 +53,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -469,14 +473,15 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         initCommonWord();
         Loger.i(TAG, "initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        mView.post(new Runnable() {
-            @Override
-            public void run() {
-                initFlower();
-            }
-        });
-        Loger.i(TAG, "initData:time5=" + (System.currentTimeMillis() - before));
-        before = System.currentTimeMillis();
+    }
+
+    @Override
+    public void setGetInfo(LiveGetInfo getInfo) {
+        super.setGetInfo(getInfo);
+        if (getInfo != null) {
+            String educationStage = getInfo.getEducationStage();
+            initFlower(educationStage);
+        }
     }
 
     private void initCommonWord() {
@@ -521,12 +526,73 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         });
     }
 
-    private void initFlower() {
+    @Override
+    protected SpannableStringBuilder createSpannable(int ftype, String name, Drawable drawable) {
+        String educationStage = getInfo.getEducationStage();
+        if ("1".equals(educationStage) || "2".equals(educationStage)) {
+
+        } else if ("3".equals(educationStage) || "4".equals(educationStage)) {
+
+        } else {
+            return super.createSpannable(ftype, name, drawable);
+        }
+        String tip = "";
+        switch (ftype) {
+            case FLOWERS_SMALL:
+            case FLOWERS_MIDDLE:
+            case FLOWERS_BIG:
+                tip = flowsTips[ftype - 2];
+                break;
+        }
+        String msg = name + " " + tip;
+        TypeSpannableStringBuilder spannableStringBuilder = new TypeSpannableStringBuilder(msg, name, ftype);
+        spannableStringBuilder.append(msg);
+        ImageSpan span = new ImageSpan(drawable);//ImageSpan.ALIGN_BOTTOM);
+        spannableStringBuilder.setSpan(span, msg.length(), spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+//        spannableStringBuilder.setSpan(new BackgroundColorSpan(Color.parseColor("#8A2233B1")), 0, spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        return spannableStringBuilder;
+    }
+
+    private void initFlower(String educationStage) {
         long before = System.currentTimeMillis();
         final ArrayList<FlowerEntity> flowerEntities = new ArrayList<>();
-        flowerEntities.add(new FlowerEntity(FLOWERS_SMALL, flowsDrawTips[0], "1支玫瑰", 10));
-        flowerEntities.add(new FlowerEntity(FLOWERS_MIDDLE, flowsDrawTips[1], "1束玫瑰", 50));
-        flowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "1束蓝色妖姬", 100));
+        //1 2小学
+        if ("1".equals(educationStage) || "2".equals(educationStage)) {
+            flowsDrawTips[0] = R.drawable.bg_livevideo_heart_small;
+            flowsDrawTips[1] = R.drawable.bg_livevideo_tea_middle;
+            flowsDrawTips[2] = R.drawable.bg_livevideo_icecream_big;
+
+            flowsDrawLittleTips[0] = R.drawable.bg_livevideo_heart_small2;
+            flowsDrawLittleTips[1] = R.drawable.bg_livevideo_tea_middle2;
+            flowsDrawLittleTips[2] = R.drawable.bg_livevideo_icecream_big2;
+
+            flowsTips[0] = "送老师一颗小心心，老师也喜欢你哟~";
+            flowsTips[1] = "送老师一杯暖心茉莉茶，老师嗓子好舒服~";
+            flowsTips[2] = "送老师一个冰激凌，夏天好凉爽~";
+            flowerEntities.add(new FlowerEntity(FLOWERS_SMALL, flowsDrawTips[0], "小心心", 10));
+            flowerEntities.add(new FlowerEntity(FLOWERS_MIDDLE, flowsDrawTips[1], "暖心茉莉茶", 50));
+            flowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "冰淇淋", 100));
+            //3 4初高中
+        } else if ("3".equals(educationStage) || "4".equals(educationStage)) {
+            flowsDrawTips[0] = R.drawable.bg_livevideo_sugar_small;
+            flowsDrawTips[1] = R.drawable.bg_livevideo_flower_3_4_middle;
+            flowsDrawTips[2] = R.drawable.bg_livevideo_mic_big;
+
+            flowsDrawLittleTips[0] = R.drawable.bg_livevideo_sugar_small2;
+            flowsDrawLittleTips[1] = R.drawable.bg_livevideo_flower_3_4_middle2;
+            flowsDrawLittleTips[2] = R.drawable.bg_livevideo_mic_big2;
+
+            flowsTips[0] = "送老师一颗润喉糖，老师嗓子很舒服并想高歌一曲！";
+            flowsTips[1] = "送老师一朵鲜花，老师超感动并回了一个么么哒！";
+            flowsTips[2] = "送老师一个金话筒，老师讲课更有劲儿了！";
+            flowerEntities.add(new FlowerEntity(FLOWERS_SMALL, flowsDrawTips[0], "润喉糖", 10));
+            flowerEntities.add(new FlowerEntity(FLOWERS_MIDDLE, flowsDrawTips[1], "鲜花", 50));
+            flowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "金话筒", 100));
+        } else {
+            flowerEntities.add(new FlowerEntity(FLOWERS_SMALL, flowsDrawTips[0], "1支玫瑰", 10));
+            flowerEntities.add(new FlowerEntity(FLOWERS_MIDDLE, flowsDrawTips[1], "1束玫瑰", 50));
+            flowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "1束蓝色妖姬", 100));
+        }
         PopupWindow flowerWindow = new PopupWindow(mContext);
         flowerWindow.setBackgroundDrawable(new BitmapDrawable());
         flowerWindow.setOutsideTouchable(true);

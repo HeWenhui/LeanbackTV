@@ -70,7 +70,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @param getInfo
      */
     public void parseLiveGetInfoScience(JSONObject data, LiveTopic liveTopic, LiveGetInfo getInfo) {
-
+        getInfo.setEducationStage(data.optString("educationStage", "0"));
     }
 
     /**

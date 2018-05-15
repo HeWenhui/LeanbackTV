@@ -111,7 +111,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
         mLiveMessagePager = liveMessagePager;
         Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
 
-        mLiveMessagePager.getInfo = getInfo;
+        mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
         mLiveMessagePager.setMessageBll(LiveMessageBll.this);
@@ -165,7 +165,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
         mLiveMessagePager = liveMessagePager;
         Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
 
-        mLiveMessagePager.getInfo = getInfo;
+        mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
         mLiveMessagePager.setMessageBll(LiveMessageBll.this);
@@ -224,7 +224,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
         } else {
             mLiveMessagePager = new LiveMessagePortPager(activity, questionBll, liveMessagePortEntities, liveMessageLandEntities);
         }
-        mLiveMessagePager.getInfo = getInfo;
+        mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
         mLiveMessagePager.setMessageBll(LiveMessageBll.this);
@@ -259,7 +259,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
         urlclick = getInfo.getUrlClick();
         if (mLiveMessagePager != null) {
             mLiveMessagePager.urlclick = urlclick;
-            mLiveMessagePager.getInfo = getInfo;
+            mLiveMessagePager.setGetInfo(getInfo);
         }
     }
 

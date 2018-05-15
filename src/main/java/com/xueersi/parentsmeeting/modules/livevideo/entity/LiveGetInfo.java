@@ -245,6 +245,8 @@ public class LiveGetInfo {
      */
     private String isAllowTeamPk;  // 1 :是pk 直播间  0 :非pk直播间
     private String[] subjectIds;//所有学科id
+    /** 小学理科改版，教育阶段，区分献花 */
+    private String educationStage;
     /**直播课年级*/
     private int grade;
     public int getGrade() {
@@ -804,6 +806,14 @@ public class LiveGetInfo {
 
     public String[] getSubjectIds() {
         return subjectIds;
+    }
+
+    public String getEducationStage() {
+        return educationStage;
+    }
+
+    public void setEducationStage(String educationStage) {
+        this.educationStage = educationStage;
     }
 
     public static class MainTeacherInfo {
