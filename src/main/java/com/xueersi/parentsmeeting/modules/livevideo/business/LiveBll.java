@@ -2420,6 +2420,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         } else {
             isAllowTeamPk = false;
         }
+        liveGetPlayServerFirst();
     }
 
     /**
@@ -2806,9 +2807,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     }
 
 
-    /**activity  stop*/
-    public void onStop(){
-        if(mTeamPKBll != null){
+    /** activity  stop */
+    public void onStop() {
+        if (mTeamPKBll != null) {
             mTeamPKBll.onStop();
         }
     }
@@ -2816,8 +2817,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /**
      * activity resume
      */
-    public void onResume(){
-        if(mTeamPKBll != null){
+    public void onResume() {
+        if (mTeamPKBll != null) {
             mTeamPKBll.onReusme();
         }
     }
