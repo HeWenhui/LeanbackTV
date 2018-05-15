@@ -509,6 +509,7 @@ public class TeamPkAwardPager extends BasePager {
                                         R.drawable.livevideo_alertview_goldwenzi_img_disable);
                                 Animation alphaAnimation = AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_teampk_open_box_coin_in);
                                 cadMycoin.startAnimation(alphaAnimation);
+                                ivOpenstate.setVisibility(View.GONE);
                             }catch (Exception e){
                                 e.printStackTrace();
                             }

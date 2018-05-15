@@ -109,24 +109,33 @@ public class TeamPKStateLayout extends FrameLayout {
     public void updateData(int ownEnergyAdd, int otherEnergyAdd,int coinCrement) {
         Loger.e("coinNum","====>updateData:"+ownEnergyAdd+":"+otherEnergyAdd+":"+coinCrement);
         Loger.e("coinNum","====>updateData3333:"+mMyteamAnergy+":"+mOtherTeamAnergy+":"+mCoinNum);
-        mMyteamAnergy += ownEnergyAdd;
-        mOtherTeamAnergy += otherEnergyAdd;
-        mCoinNum += coinCrement;
+        mMyteamAnergy = mMyteamAnergy + ownEnergyAdd;
+        mOtherTeamAnergy = mOtherTeamAnergy+otherEnergyAdd;
+        mCoinNum = mCoinNum + coinCrement;
         Loger.e("coinNum","====>updateData22222:"+mMyteamAnergy+":"+mOtherTeamAnergy+":"+mCoinNum);
 
         if(ownEnergyAdd > 0){
             tvMyteamEnergy.smoothAddNum(ownEnergyAdd);
         }else{
+            if(tvMyteamEnergy.isAnimRunning()){
+                tvMyteamEnergy.cancleAnim();
+            }
             tvMyteamEnergy.setText(mMyteamAnergy+"");
         }
         if(otherEnergyAdd > 0){
             tvOtherteamEnergy.smoothAddNum(otherEnergyAdd);
         }else{
+            if(tvOtherteamEnergy.isAnimRunning()){
+                tvOtherteamEnergy.cancleAnim();
+            }
             tvOtherteamEnergy.setText(mOtherTeamAnergy+"");
         }
         if(coinCrement >0){
             tvCoin.smoothAddNum(coinCrement);
         }else {
+            if(tvCoin.isAnimRunning()){
+                tvCoin.cancleAnim();
+            }
             tvCoin.setText(mCoinNum+"");
         }
         float ratio;

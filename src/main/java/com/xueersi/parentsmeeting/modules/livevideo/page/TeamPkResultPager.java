@@ -191,6 +191,8 @@ public class TeamPkResultPager extends BasePager {
 
         // 显示最终pk 进度值
         rlLottieRootView.setVisibility(View.VISIBLE);
+        rlFinalPbBarContainer.setVisibility(View.VISIBLE);
+
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rlFinalPbBarContainer.getLayoutParams();
         Point point = new Point();
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
@@ -510,6 +512,7 @@ public class TeamPkResultPager extends BasePager {
         if (data == null) {
             return;
         }
+        rlLottieRootView.setVisibility(View.VISIBLE);
         // 播放背景音乐
         //playMusic(SOUND_TYPE_BG, R.raw.war_bg, SOUND_VOLUME_BG, true);
          playMusic( R.raw.war_bg, SOUND_VOLUME_BG, true);

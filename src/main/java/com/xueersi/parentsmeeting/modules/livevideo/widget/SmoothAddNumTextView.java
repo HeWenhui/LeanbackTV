@@ -49,6 +49,9 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
      */
     public void smoothAddNum(int numIncrement) {
         try {
+            if(isAnimRunning()){
+                cancleAnim();
+            }
             if (!TextUtils.isEmpty(this.getText().toString())) {
                 if(numIncrement >0){
                     int currentEnergy = Integer.parseInt(this.getText().toString());
@@ -75,6 +78,7 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
         long timeGap;
         int increment;
         int currentNum;
+        boolean isRunning;
 
         IncrementTask(int startNum, int addNum, int increment, long timeGap) {
             this.startNum = startNum;
@@ -83,19 +87,48 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
             this.increment = increment;
             this.endNum = startNum + addNum;
             this.currentNum = startNum;
+            isRunning = false;
         }
 
         @Override
         public void run() {
             if (currentNum <= endNum) {
+                isRunning = true;
                 SmoothAddNumTextView.this.setText(currentNum + "");
                 currentNum += increment;
                 SmoothAddNumTextView.this.postDelayed(this, timeGap);
             }else{
                 SmoothAddNumTextView.this.setText(endNum + "");
+                isRunning = false;
             }
         }
+
+        public void cancel(){
+            currentNum = endNum;
+            SmoothAddNumTextView.this.setText(endNum + "");
+        }
+
+        public boolean isRunning(){
+            return isRunning;
+        }
+
     }
+
+
+    public boolean isAnimRunning(){
+        return task != null && task.isRunning();
+    }
+
+
+    public void cancleAnim(){
+      if(task != null){
+          task.cancel();
+          removeCallbacks(task);
+      }
+
+    }
+
+
 
     @Override
     protected void onDetachedFromWindow() {
