@@ -29,7 +29,7 @@ public class TeamPkTeamSelectingPager extends BasePager implements View.OnClickL
         View view = View.inflate(mContext, R.layout.page_livevideo_teampk_teamselecting, null);
         ivEnter = view.findViewById(R.id.iv_teampk_enter_teamselect);
         ivEnter.setOnClickListener(this);
-        ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 1.12f, 1.0f, 1.12f,
+        ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 1.3f, 1.0f, 1.3f,
                 Animation.RELATIVE_TO_SELF, 0.5f,
                 Animation.RELATIVE_TO_SELF, 0.5f);
         scaleAnimation.setRepeatMode(Animation.REVERSE);
