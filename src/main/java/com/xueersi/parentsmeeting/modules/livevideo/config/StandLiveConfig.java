@@ -16,11 +16,11 @@ public class StandLiveConfig {
     /**
      * 背景音乐 占系统音量的 比列
      */
-    public static final float MUSIC_VOLUME_RATIO_BG = 0.3f;
+    public static final float MUSIC_VOLUME_RATIO_BG = 0.6f;
     /**
      * 前景音效的比列
      */
-    public static final float MUSIC_VOLUME_RATIO_FRONT = 0.6f;
+    public static final float MUSIC_VOLUME_RATIO_FRONT = 1f;
     public static String version = "2018041510";
     public static VoicePath voicePath;
     private static String voiceDir;

@@ -23,6 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.FontCache;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.file.FileUtils;
@@ -63,9 +64,17 @@ public class LiveStandFrameAnim {
     int progHeight;
     /** 进度条里面进度的高度 */
     int progWidth;
+    LiveSoundPool liveSoundPool;
+    LiveSoundPool.SoundPlayTask loadTask;
 
     public LiveStandFrameAnim(Activity activity) {
         this.activity = activity;
+    }
+
+    public LiveSoundPool.SoundPlayTask loading(LiveSoundPool soundPool) {
+        loadTask = new LiveSoundPool.SoundPlayTask(R.raw.live_stand_loading, StandLiveConfig.MUSIC_VOLUME_RATIO_FRONT, true);
+        int soundId = LiveSoundPool.play(activity, liveSoundPool, loadTask);
+        return loadTask;
     }
 
     public void check(LiveBll liveBll, final AbstractBusinessDataCallBack callBack) {
@@ -100,6 +109,8 @@ public class LiveStandFrameAnim {
             if (saveFile.exists()) {
                 callBack.onDataSucess("");
             } else {
+                liveSoundPool = LiveSoundPool.createSoundPool();
+                loading(liveSoundPool);
                 fontFace = FontCache.getTypeface(activity, "fangzhengyouyuan.ttf");
                 //activity_video_live_stand_check
                 ViewStub vs_live_stand_update = activity.findViewById(R.id.vs_live_stand_update);
@@ -117,6 +128,8 @@ public class LiveStandFrameAnim {
                 zipExtractorTask.execute();
             }
         } else {
+            liveSoundPool = LiveSoundPool.createSoundPool();
+            loading(liveSoundPool);
             fontFace = FontCache.getTypeface(activity, "fangzhengyouyuan.ttf");
             //activity_video_live_stand_check
             ViewStub vs_live_stand_update = activity.findViewById(R.id.vs_live_stand_update);
@@ -243,6 +256,9 @@ public class LiveStandFrameAnim {
                     }, 1000);
                 } else {
                     XESToastUtils.showToast(activity, "下载失败，请检查您的网络或联络辅导老师");
+                    liveSoundPool.stop(loadTask);
+                    liveSoundPool.release();
+                    liveSoundPool = null;
                     view.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -374,6 +390,9 @@ public class LiveStandFrameAnim {
                     iv_live_stand_update_prog_light.setLayoutParams(lp2);
                 }
                 saveFileTemp.renameTo(saveFile);
+                liveSoundPool.stop(loadTask);
+                liveSoundPool.release();
+                liveSoundPool = null;
                 pb_live_stand_update.post(new Runnable() {
                     @Override
                     public void run() {
@@ -386,6 +405,9 @@ public class LiveStandFrameAnim {
                         @Override
                         public void run() {
                             XESToastUtils.showToast(pb_live_stand_update.getContext(), "解压失败，请联络辅导老师");
+                            liveSoundPool.stop(loadTask);
+                            liveSoundPool.release();
+                            liveSoundPool = null;
                             pb_live_stand_update.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -441,6 +463,11 @@ public class LiveStandFrameAnim {
         if (zipExtractorTask != null) {
             Loger.d(TAG, "onDestory:cancle");
             zipExtractorTask.cancle = true;
+        }
+        if (liveSoundPool != null && loadTask != null) {
+            liveSoundPool.stop(loadTask);
+            liveSoundPool.release();
+            liveSoundPool = null;
         }
     }
 }
