@@ -318,7 +318,7 @@ public class TeamPkResultPager extends BasePager {
 
             // 更新左侧pk 状态栏
             if(mTeamPkBll != null){
-                mTeamPkBll.updatePkStateLayout();
+                mTeamPkBll.updatePkStateLayout(true);
             }
         }
     }

@@ -144,18 +144,19 @@ public class TeamPKStateLayout extends FrameLayout {
         }
     }
 
-
+     private boolean showPopWindow;
     /**
      * 绑定数据
      *
      * @param coinNum         当前战队 金币总数
      * @param myTeamAnergy    当前战队 能量值
      * @param otherTeamAnergy 当前对手能量值
+     * @param  showPopWindow   是否显示顶部进度状态
      */
-    public void bindData(long coinNum, long myTeamAnergy, long otherTeamAnergy) {
+    public void bindData(long coinNum, long myTeamAnergy, long otherTeamAnergy,boolean showPopWindow) {
         Loger.e("coinNum","====> PkstateLayout bindData 111:"+coinNum+":"+ myTeamAnergy+":"+ otherTeamAnergy);
         Loger.e("coinNum","====> PkstateLayout bindData 333:"+mCoinNum+":"+ mMyteamAnergy+":"+ mOtherTeamAnergy);
-
+        this.showPopWindow = showPopWindow;
         if(!dataInited){
             dataInited = true;
             initData(coinNum, myTeamAnergy, otherTeamAnergy);
@@ -190,23 +191,33 @@ public class TeamPKStateLayout extends FrameLayout {
 
     private void upDataSateText(float ratio) {
         //tvState.setVisibility(ratio != 0.5f?VISIBLE:GONE);
-        tvState.setVisibility(VISIBLE);
-        //Logger.e("teamPkStateLayout", "======>upDataSateText:" + ratio);
-        if (mMyteamAnergy == 0 && mOtherTeamAnergy == 0) {
-            tvState.setText("准备战斗");
-            tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_ready_bg);
-        } else {
-            if (ratio > 0.5f) {
-                tvState.setText("暂时领先");
-                tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
-            } else if (ratio < 0.5f) {
-                tvState.setText("全力追赶");
-                tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_follow_bg);
-            } else if (ratio == 0.5f) {
-                tvState.setText("打成平手");
-                tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
+        if(this.showPopWindow){
+            this.showPopWindow = false;
+            tvState.setVisibility(VISIBLE);
+            tvState.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    tvState.setVisibility(GONE);
+                }
+            },30*1000);
+            //Logger.e("teamPkStateLayout", "======>upDataSateText:" + ratio);
+            if (mMyteamAnergy == 0 && mOtherTeamAnergy == 0) {
+                tvState.setText("准备战斗");
+                tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_ready_bg);
+            } else {
+                if (ratio > 0.5f) {
+                    tvState.setText("暂时领先");
+                    tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
+                } else if (ratio < 0.5f) {
+                    tvState.setText("全力追赶");
+                    tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_follow_bg);
+                } else if (ratio == 0.5f) {
+                    tvState.setText("打成平手");
+                    tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
+                }
             }
         }
+
     }
 
 }

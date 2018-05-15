@@ -95,14 +95,13 @@ public class TeamPkAwardPager extends BasePager {
             R.raw.war_bg,
             R.raw.box_open
     };
-
+    private ImageView ivClose;
 
 
     public TeamPkAwardPager(Context context, TeamPKBll pkBll) {
         super(context);
         teamPKBll = pkBll;
     }
-
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_teampk_awardget, null);
@@ -115,6 +114,15 @@ public class TeamPkAwardPager extends BasePager {
         ivOpenstate.setVisibility(View.GONE);
         ivBgMask = view.findViewById(R.id.iv_teampk_open_box_bg_mask);
         ivBgMask.setVisibility(View.GONE);
+        ivClose = view.findViewById(R.id.iv_teampk_open_box_close);
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeAwardPager();
+            }
+        });
+
+
         addInputEventInterceptor();
         return view;
     }
@@ -130,6 +138,16 @@ public class TeamPkAwardPager extends BasePager {
         } else {
             lottieResDir = "team_pk/award/small_box";
         }
+
+        ivClose.setVisibility(View.VISIBLE);
+        Point point = new Point();
+        ((Activity)mContext).getWindowManager().getDefaultDisplay().getSize(point);
+        int realY = Math.min(point.x,point.y);
+        int topMargin = (int) (realY *0.8f);
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) ivOpenstate.getLayoutParams();
+        layoutParams.topMargin = topMargin;
+        ivOpenstate.setVisibility(View.VISIBLE);
+        ivOpenstate.setImageResource(R.drawable.live_video_get_coin);
         String lottieResPath = lottieResDir + "_loop/images/";
         String lottieJsonPath = lottieResDir + "_loop/data.json";
         startBoxLoopAnim(lottieResPath, lottieJsonPath);
@@ -214,6 +232,7 @@ public class TeamPkAwardPager extends BasePager {
 
 
     private void showWinners() {
+        ivClose.setVisibility(View.GONE);
         if(ivBgMask.getVisibility() != View.VISIBLE){
             ivBgMask.setVisibility(View.VISIBLE);
         }
@@ -467,7 +486,7 @@ public class TeamPkAwardPager extends BasePager {
 
     private void updatePkStateLayout() {
         if(teamPKBll != null){
-          teamPKBll.updatePkStateLayout();
+          teamPKBll.updatePkStateLayout(false);
         }
     }
 
@@ -501,6 +520,7 @@ public class TeamPkAwardPager extends BasePager {
                             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) ivOpenstate.getLayoutParams();
                             layoutParams.topMargin = topMargin;
                             ivOpenstate.setVisibility(View.VISIBLE);
+                            ivOpenstate.setImageResource(R.drawable.livevideo_alertview_kaiguo_img_disable);
                             ivOpenstate.setLayoutParams(layoutParams);
                         }
                         Loger.e("coinNum","====> Awardpager update pkstateLayout");

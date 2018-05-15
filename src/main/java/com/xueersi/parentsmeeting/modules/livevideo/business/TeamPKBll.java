@@ -514,17 +514,18 @@ public class TeamPKBll {
             pkStateRootView.setVisibility(View.VISIBLE);
         }
         // step 2  初始化 又测 pk 状态栏
-        updatePkStateLayout();
+        updatePkStateLayout(false);
     }
 
     /**
      * 刷新pk状态栏
+     * @param showPopWindow  是否展示顶部  进度描述:领先，打平 .....
      */
-    public void updatePkStateLayout(){
-        getPkState();
+    public void updatePkStateLayout(boolean showPopWindow){
+        getPkState(showPopWindow);
     }
 
-    private void getPkState() {
+    private void getPkState(final boolean showPopWindow) {
         Loger.e("TeamPkBll","=====> getPkState:"+ roomInitInfo.getStuId());
         mHttpManager.liveStuGoldAndTotalEnergy(mLiveBll.getLiveId(),
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
@@ -536,7 +537,7 @@ public class TeamPKBll {
                         if (pkStateRootView != null && energyEntity != null) {
                             //Loger.e("TeamPkBll","======>getPkState:"+energyEntity.getMyEnergy()+":"+energyEntity.getCompetitorEnergy()+":"+energyEntity.getStuLiveGold());
                             Loger.e("coinNum","====> TeamPkBll onPmSuccess:"+energyEntity.getStuLiveGold()+":"+ energyEntity.getMyEnergy()+":"+energyEntity.getCompetitorEnergy());
-                            pkStateRootView.bindData(energyEntity.getStuLiveGold(), energyEntity.getMyEnergy(), energyEntity.getCompetitorEnergy());
+                            pkStateRootView.bindData(energyEntity.getStuLiveGold(), energyEntity.getMyEnergy(), energyEntity.getCompetitorEnergy(),showPopWindow);
                         }
                     }
 

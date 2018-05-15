@@ -1221,7 +1221,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                     public void onReceivePackage(int operateId) {
                                         // 更新右侧 金币信息
                                         if (mTeamPKBll != null) {
-                                            mTeamPKBll.updatePkStateLayout();
+                                            mTeamPKBll.updatePkStateLayout(false);
                                         }
                                     }
                                 });

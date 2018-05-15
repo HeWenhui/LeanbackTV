@@ -70,4 +70,18 @@
       android:id="@id/iv_teampk_open_box_open_state"
       />
   
+  <ImageView
+      android:layout_width="40dp"
+      android:layout_height="40dp"
+      android:src="@drawable/livevideo_alertview_close_bth_normal"
+      android:scaleType="centerCrop"
+      android:layout_alignParentRight="true"
+      android:layout_marginTop="15dp"
+      android:layout_marginRight="15dp"
+      android:padding="3dp"
+      android:id="@id/iv_teampk_open_box_close"
+      android:visibility="gone"
+      />
+  
+  
 </RelativeLayout>
