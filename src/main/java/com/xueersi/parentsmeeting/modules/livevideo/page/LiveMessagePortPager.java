@@ -639,7 +639,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                 if (entity != null) {
                     if (LiveTopic.MODE_CLASS.equals(liveBll.getMode())) {
                         if (liveBll.isOpenbarrage()) {
-                            liveBll.praiseTeacher(entity.getFtype() + "", new HttpCallBack(false) {
+                            liveBll.praiseTeacher(entity.getFtype() + "", "", new HttpCallBack(false) {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) {
                                     tvFlowersDisable.setVisibility(View.VISIBLE);

@@ -494,7 +494,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_LIVE_USER_SIGN, params, requestCallBack);
     }
 
-    public void praiseTeacher(int type, String enstuId, String liveId, String teacherId, String ftype, HttpCallBack
+    public void praiseTeacher(int type, String enstuId, String liveId, String teacherId, String ftype, String educationStage, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         String url;
@@ -512,6 +512,9 @@ public class LiveHttpManager extends BaseHttpBusiness {
             return;
         }
         params.addBodyParam("teacherId", teacherId);
+        if (!StringUtils.isEmpty(educationStage)) {
+            params.addBodyParam("educationStage", educationStage);
+        }
 //        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("type", ftype);
         sendPost(url, params, requestCallBack);
@@ -925,11 +928,12 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 获取分队信息
+     *
      * @param classId
      * @param teamId
      * @param requestCallBack
      */
-    public void getTeamInfo(String id,String classId, String teamId,  HttpCallBack requestCallBack) {
+    public void getTeamInfo(String id, String classId, String teamId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
@@ -970,10 +974,11 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 获取pk 对手信息
+     *
      * @param classId
      * @param teamId
      */
-    public void getPkAdversary(String classId,String teamId,HttpCallBack requestCallBack){
+    public void getPkAdversary(String classId, String teamId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
@@ -983,26 +988,27 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 学生获取自己宝箱
+     *
      * @param isWin
      * @param classId
      * @param teamId
      * @param stuId
      */
-    public void getStuChest(int isWin, String classId, String teamId, String stuId,String liveId,HttpCallBack requestCallBack) {
+    public void getStuChest(int isWin, String classId, String teamId, String stuId, String liveId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
-        params.addBodyParam("isWin", isWin+"");
+        params.addBodyParam("isWin", isWin + "");
         params.addBodyParam("stuId", stuId);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_TEMPK_GETSTUCHESTURL+"/"+liveId, params, requestCallBack);
+        sendPost(liveVideoSAConfigInner.URL_TEMPK_GETSTUCHESTURL + "/" + liveId, params, requestCallBack);
 
     }
 
-    public void getEnergyNumAndContributionStar(String liveId,String teamId,
-                                                String classId,String stuId,
-                                                String testId,String testPlan ,
-                                                HttpCallBack requestCallBack){
+    public void getEnergyNumAndContributionStar(String liveId, String teamId,
+                                                String classId, String stuId,
+                                                String testId, String testPlan,
+                                                HttpCallBack requestCallBack) {
 
 
         HttpRequestParams params = new HttpRequestParams();
@@ -1010,77 +1016,80 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_TEMPK_GETSTUCHESTURL+"/"+liveId, params, requestCallBack);
-
+        sendPost(liveVideoSAConfigInner.URL_TEMPK_GETSTUCHESTURL + "/" + liveId, params, requestCallBack);
 
 
     }
 
     /**
      * 获取战队开宝箱结果
+     *
      * @param liveId
      * @param stuId
      * @param teamId
      * @param classId
      */
-    public void getClassChestResult(String liveId,String stuId,String teamId,String classId,HttpCallBack requestCallBack){
+    public void getClassChestResult(String liveId, String stuId, String teamId, String classId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_TEMPK_GETCLASSCHESTRESULT+"/"+liveId, params, requestCallBack);
+        sendPost(liveVideoSAConfigInner.URL_TEMPK_GETCLASSCHESTRESULT + "/" + liveId, params, requestCallBack);
     }
 
 
     /**
      * 投票 能量
+     *
      * @param liveId
      * @param teamId
      * @param classId
      * @param stuId
      * @param requestCallBack
      */
-    public void addPersonAndTeamEnergy(String liveId,int addEnergy,String teamId,String classId,String stuId,HttpCallBack requestCallBack){
+    public void addPersonAndTeamEnergy(String liveId, int addEnergy, String teamId, String classId, String stuId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
-        params.addBodyParam("addEnergy", addEnergy+"");
+        params.addBodyParam("addEnergy", addEnergy + "");
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_TEMPK_ADDPERSONANDTEAMENERGY+"/"+liveId, params, requestCallBack);
+        sendPost(liveVideoSAConfigInner.URL_TEMPK_ADDPERSONANDTEAMENERGY + "/" + liveId, params, requestCallBack);
     }
 
 
     /**
      * 请求 学生当前场次 的总能量值 和自己金币 及对手总能量值
+     *
      * @param liveId
      * @param teamId
      * @param classId
      * @param stuId
      * @param requestCallBack
      */
-    public void liveStuGoldAndTotalEnergy(String liveId,String teamId,String classId,String stuId,HttpCallBack requestCallBack){
+    public void liveStuGoldAndTotalEnergy(String liveId, String teamId, String classId, String stuId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_TEMPK_LIVESTUGOLDANDTOTALENERGY+"/"+liveId, params, requestCallBack);
+        sendPost(liveVideoSAConfigInner.URL_TEMPK_LIVESTUGOLDANDTOTALENERGY + "/" + liveId, params, requestCallBack);
     }
 
     /**
      * 每题战队能量 和贡献之星
+     *
      * @param liveId
      * @param teamId
      * @param classId
      * @param stuId
      * @param testId
-     * @param testPlan  互动课件或者互动题时 testPlan= ''; 测试卷请求时testId= ' '
+     * @param testPlan        互动课件或者互动题时 testPlan= ''; 测试卷请求时testId= ' '
      * @param requestCallBack
      */
-    public void teamEnergyNumAndContributionStar(String liveId,String teamId,String classId,String stuId,String testId,
-                                                 String testPlan,HttpCallBack requestCallBack){
+    public void teamEnergyNumAndContributionStar(String liveId, String teamId, String classId, String stuId, String testId,
+                                                 String testPlan, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
@@ -1088,23 +1097,24 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testId", testId);
         params.addBodyParam("testPlan", testPlan);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR+"/"+liveId, params, requestCallBack);
+        sendPost(liveVideoSAConfigInner.URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR + "/" + liveId, params, requestCallBack);
     }
 
 
     /**
      * 每题pk 结果
+     *
      * @param liveId
      * @param teamId
      * @param classId
      * @param requestCallBack
      */
-    public void stuPKResult(String liveId,String teamId,String classId,HttpCallBack requestCallBack){
+    public void stuPKResult(String liveId, String teamId, String classId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_TEMPK_STUPKRESULT+"/"+liveId, params, requestCallBack);
+        sendPost(liveVideoSAConfigInner.URL_TEMPK_STUPKRESULT + "/" + liveId, params, requestCallBack);
     }
 
 

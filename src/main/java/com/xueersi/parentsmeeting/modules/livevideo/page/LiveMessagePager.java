@@ -263,16 +263,16 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     OtherModulesEnter.requestGoldTotal(mContext);
                 }
                 if (questionBll.isAnaswer()) {
-                    XESToastUtils.showToast(mContext, "正在答题，不能献花");
+                    commonAction.isAnaswer();
                     return;
                 }
                 if (LiveTopic.MODE_CLASS.equals(liveBll.getMode())) {
                     if (!liveBll.isOpenbarrage()) {
-                        XESToastUtils.showToast(mContext, "老师未开启献花");
+                        commonAction.clickIsnotOpenbarrage();
                         return;
                     }
                 } else {
-                    XESToastUtils.showToast(mContext, "辅导模式不能献花");
+                    commonAction.clickTran();
                     return;
                 }
                 mFlowerWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
@@ -558,6 +558,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         final ArrayList<FlowerEntity> flowerEntities = new ArrayList<>();
         //1 2小学
         if ("1".equals(educationStage) || "2".equals(educationStage)) {
+            commonAction = new GiftDisable();
             flowsDrawTips[0] = R.drawable.bg_livevideo_heart_small;
             flowsDrawTips[1] = R.drawable.bg_livevideo_tea_middle;
             flowsDrawTips[2] = R.drawable.bg_livevideo_icecream_big;
@@ -574,6 +575,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             flowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "冰淇淋", 100));
             //3 4初高中
         } else if ("3".equals(educationStage) || "4".equals(educationStage)) {
+            commonAction = new GiftDisable();
             flowsDrawTips[0] = R.drawable.bg_livevideo_sugar_small;
             flowsDrawTips[1] = R.drawable.bg_livevideo_flower_3_4_middle;
             flowsDrawTips[2] = R.drawable.bg_livevideo_mic_big;
@@ -651,7 +653,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 if (entity != null) {
                     if (LiveTopic.MODE_CLASS.equals(liveBll.getMode())) {
                         if (liveBll.isOpenbarrage()) {
-                            liveBll.praiseTeacher(entity.getFtype() + "", new HttpCallBack(false) {
+                            String educationStage = getInfo.getEducationStage();
+                            liveBll.praiseTeacher(entity.getFtype() + "", educationStage, new HttpCallBack(false) {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) {
                                     if (goldNum == null) {
@@ -689,13 +692,13 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                             });
 //                        liveBll.sendFlowerMessage(entity.getFtype());
                         } else {
-                            XESToastUtils.showToast(mContext, "老师未开启献花");
+                            commonAction.clickIsnotOpenbarrage();
                         }
                     } else {
-                        XESToastUtils.showToast(mContext, "辅导模式不能献花");
+                        commonAction.clickTran();
                     }
                 } else {
-                    XESToastUtils.showToast(mContext, "请选择一束花");
+                    commonAction.clickNoChoice();
                 }
             }
         });
@@ -1037,14 +1040,14 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 if (LiveTopic.MODE_CLASS.equals(liveBll.getMode())) {
                     if (openbarrage) {
                         if (fromNotice) {
-                            XESToastUtils.showToast(mContext, "老师开启了献花");
+                            commonAction.onOpenbarrage(true);
                         }
                         btMessageFlowers.setTag("1");
                         btMessageFlowers.setAlpha(1.0f);
                         btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
                     } else {
                         if (fromNotice) {
-                            XESToastUtils.showToast(mContext, "老师关闭了献花");
+                            commonAction.onOpenbarrage(false);
                         }
                         btMessageFlowers.setTag("0");
                         btMessageFlowers.setAlpha(0.4f);
@@ -1053,6 +1056,93 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 }
             }
         });
+    }
+
+    FlowerAction commonAction = new CommonDisable();
+
+    class CommonDisable implements FlowerAction {
+
+        @Override
+        public void onOpenbarrage(boolean openbarrage) {
+            if (openbarrage) {
+                XESToastUtils.showToast(mContext, "老师开启了献花");
+            } else {
+                XESToastUtils.showToast(mContext, "老师关闭了献花");
+            }
+        }
+
+        @Override
+        public void isAnaswer() {
+            XESToastUtils.showToast(mContext, "正在答题，不能献花");
+        }
+
+        @Override
+        public void clickIsnotOpenbarrage() {
+            XESToastUtils.showToast(mContext, "老师未开启献花");
+        }
+
+        @Override
+        public void clickTran() {
+            XESToastUtils.showToast(mContext, "辅导模式不能献花");
+        }
+
+        @Override
+        public void clickNoChoice() {
+            XESToastUtils.showToast(mContext, "请选择一束花");
+        }
+    }
+
+    class GiftDisable implements FlowerAction {
+
+        @Override
+        public void onOpenbarrage(boolean openbarrage) {
+            if (openbarrage) {
+                XESToastUtils.showToast(mContext, "老师开启了送礼物功能");
+            } else {
+                XESToastUtils.showToast(mContext, "老师关闭了送礼物功能");
+            }
+        }
+
+        @Override
+        public void isAnaswer() {
+            XESToastUtils.showToast(mContext, "正在答题，不能送礼物");
+        }
+
+        @Override
+        public void clickIsnotOpenbarrage() {
+            XESToastUtils.showToast(mContext, "老师未开启送礼物功能");
+        }
+
+        @Override
+        public void clickTran() {
+            XESToastUtils.showToast(mContext, "辅导模式不能送礼物");
+        }
+
+        @Override
+        public void clickNoChoice() {
+            XESToastUtils.showToast(mContext, "请选择一个礼物");
+        }
+    }
+
+    interface FlowerAction {
+        /**
+         * 开启关闭献花
+         *
+         * @param openbarrage
+         */
+        void onOpenbarrage(boolean openbarrage);
+
+        /** 正在答题 */
+        void isAnaswer();
+
+        /** 点击没有开启献花时 */
+        void clickIsnotOpenbarrage();
+
+        /** 点击是辅导状态时 */
+        void clickTran();
+
+        /** 点击没有选择时 */
+        void clickNoChoice();
     }
 
     /*添加聊天信息，超过120，移除60个*/

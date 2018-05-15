@@ -3045,10 +3045,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
     }
 
-    public void praiseTeacher(String ftype, final HttpCallBack callBack) {
+    public void praiseTeacher(String ftype, String educationStage, final HttpCallBack callBack) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String teacherId = mGetInfo.getMainTeacherInfo().getTeacherId();
-        mHttpManager.praiseTeacher(mLiveType, enstuId, mLiveId, teacherId, ftype, new HttpCallBack() {
+        mHttpManager.praiseTeacher(mLiveType, enstuId, mLiveId, teacherId, ftype, educationStage, new HttpCallBack() {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
