@@ -131,8 +131,9 @@ public class TeamPkAwardPager extends BasePager {
      * @param isWin
      */
     public void showBoxLoop(boolean isWin) {
-        mIsWin = isWin;
-        if (isWin) {
+       // mIsWin = isWin;
+        mIsWin = teamPKBll.isWin();
+        if (mIsWin) {
             lottieResDir = "team_pk/award/big_box";
         } else {
             lottieResDir = "team_pk/award/small_box";
@@ -568,8 +569,9 @@ public class TeamPkAwardPager extends BasePager {
      */
     public void showClassChest(ClassChestEntity data, boolean isWin) {
         classChestEntity = data;
-        mIsWin = isWin;
-        if (isWin) {
+        //mIsWin = isWin;
+        mIsWin = teamPKBll.isWin();
+        if (mIsWin) {
             lottieResDir = "team_pk/award/big_box";
         } else {
             lottieResDir = "team_pk/award/small_box";
