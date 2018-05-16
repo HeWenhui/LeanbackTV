@@ -1182,7 +1182,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
                         if (teamPkEntity.getOpenbox() == 1) {
                             mTeamPKBll.setTopicHandled(true);
-                            mTeamPKBll.resumeOpenBoxScene();
+                            //mTeamPKBll.resumeOpenBoxScene();
+                            mTeamPKBll.showPkResult();
                             return;
                         }
                         mTeamPKBll.setTopicHandled(true);

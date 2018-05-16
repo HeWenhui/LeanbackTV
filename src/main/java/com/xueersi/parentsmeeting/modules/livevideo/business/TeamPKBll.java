@@ -154,6 +154,8 @@ public class TeamPKBll {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         StudentPkResultEntity resultEntity = mHttpResponseParser.parseStuPkResult(responseEntity);
+                        TeamPKBll.this.isWin = resultEntity.getMyTeamResultInfo().getEnergy() >= resultEntity
+                                .getCompetitorResultInfo().getEnergy();
                         showPkResultScene(resultEntity, PK_RESULT_TYPE_FINAL_PKRESULT);
                     }
 
@@ -168,8 +170,11 @@ public class TeamPKBll {
      * 显示开宝箱场景
      */
     public void showOpenBoxScene(boolean isWin) {
-        this.isWin = isWin;
         showAwardGetScene(CHEST_TYPE_STUDENT, null, isWin);
+    }
+
+    public boolean isWin() {
+        return isWin;
     }
 
     /**
@@ -376,11 +381,28 @@ public class TeamPKBll {
         //   if (mFocusPager == null || !(mFocusPager instanceof TeamPkAwardPager)) {
         if (mFocusPager == null || !(mFocusPager instanceof TeamPkAwardPager)) {
             Loger.e("teampkBll", "======>showAwardGetScene called 11111");
-            TeamPkAwardPager awardGetPager = new TeamPkAwardPager(mActivity, this);
-            addPager(awardGetPager);
+
             if (type == CHEST_TYPE_CLASS) {
-                awardGetPager.showClassChest((ClassChestEntity) data, isWin);
+                //从pk结果页面直接跳到 贡献之星
+                if (mFocusPager != null && mFocusPager instanceof TeamPkResultPager) {
+                    ((TeamPkResultPager) mFocusPager).closePkResultPager();
+                    rlTeamPkContent.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            TeamPkAwardPager awardGetPager = new TeamPkAwardPager(mActivity, TeamPKBll.this);
+                            addPager(awardGetPager);
+                            awardGetPager.showClassChest((ClassChestEntity) data, isWin);
+                        }
+                    }, 1000);
+                } else {
+                    TeamPkAwardPager awardGetPager = new TeamPkAwardPager(mActivity, this);
+                    addPager(awardGetPager);
+                    awardGetPager.showClassChest((ClassChestEntity) data, isWin);
+                }
+
             } else if (type == CHEST_TYPE_STUDENT) {
+                TeamPkAwardPager awardGetPager = new TeamPkAwardPager(mActivity, this);
+                addPager(awardGetPager);
                 awardGetPager.showBoxLoop(isWin);
                 Loger.e("teampkBll", "======>showAwardGetScene called 3333");
             }
