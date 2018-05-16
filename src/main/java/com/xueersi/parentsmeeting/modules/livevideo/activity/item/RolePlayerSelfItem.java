@@ -25,6 +25,7 @@ import com.xueersi.xesalib.utils.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.xesalib.utils.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.xesalib.utils.listener.OnAlphaTouchListener;
 import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
 
@@ -99,7 +100,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
         vVoiceMain.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!TextUtils.isEmpty(mEntity.getWebVoiceUrl())) {
+                if (!TextUtils.isEmpty(mEntity.getWebVoiceUrl()) && NetWorkHelper.isNetworkAvailable(mContext)) {
                     Loger.i("RolePlayerDemoTest", "点击自己语音：url  = " + mEntity.getWebVoiceUrl());
                     voiceClick();
                 }else {
@@ -116,17 +117,20 @@ public class RolePlayerSelfItem extends RolePlayerItem {
         AudioPlayerManager.get(ContextManager.getApplication()).start(mEntity.getWebVoiceUrl(), new PlayerCallback() {
             @Override
             public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
+                Loger.i("RolePlayerDemoTest", "完成播放");
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
             }
 
             @Override
             public void onStop(Object dataSource, AudioPlayerManager manager) {
                 super.onStop(dataSource, manager);
+                Loger.i("RolePlayerDemoTest", "停止播放");
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
             }
 
             @Override
             public void onPreparing(Object dataSource, AudioPlayerManager manager) {
+                Loger.i("RolePlayerDemoTest", "准备播放");
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_self_voice_white_anim);
                 AnimationDrawable selfVoiceAnimationDrawable = null;
                 selfVoiceAnimationDrawable = (AnimationDrawable) ivVoiceAnimtor.getBackground();

@@ -243,6 +243,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      * 排名3名字
      */
     private TextView tvResultRoleName3;
+    private boolean mIsEvaluatoring;//标记正在测评中
 
     public RolePlayerPager(Context context, RolePlayerEntity obj, boolean isNewView, RolePlayerBll rolePlayerBll) {
         super(context, obj, isNewView);
@@ -531,7 +532,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 } else {
                     //lvReadList.smoothScrollToPosition(mCurrentReadIndex + 1);
                     lvReadList.setSelection(mCurrentReadIndex);
-                    Loger.i("RolePlayerDemoTest", "滚动到下一条" + mCurrentReadIndex + 1);
+                    Loger.i("RolePlayerDemoTest", "滚动到下一条" + mCurrentReadIndex );
                 }
 
                 //取出当前这条的延时时间
@@ -580,6 +581,10 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      * 显示结果
      */
     public void showResult() {
+        if(rlResult.getVisibility() == View.VISIBLE){
+            Loger.i("RolePlayerDemoTest", "结果页已经在显示");
+            return;
+        }
         Loger.i("RolePlayerDemoTest", "显示结果");
         mRolePlayBll.cancelDZ();
         vwvSpeechVolume.stop();
@@ -730,6 +735,10 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             return;
         }
 
+        if(mIsEvaluatoring){
+            Loger.i("RolePlayerDemoTest", "正在测评中，不接受新的测评请求");
+            return;
+        }
 
         rlSpeechVolumnMain.setVisibility(View.VISIBLE);
         vwvSpeechVolume.setVisibility(View.VISIBLE);
@@ -751,6 +760,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                     public void onResult(ResultEntity resultEntity) {
                         if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
                             Loger.i("RolePlayerDemoTest", "测评成功，开始上传自己的mp3");
+                            mIsEvaluatoring = false;
                             message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
                             message.setSpeechScore(resultEntity.getScore());
                             message.setLstPhoneScore(resultEntity.getLstPhonemeScore());
@@ -767,11 +777,13 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                         } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                             Loger.i("RolePlayerDemoTest", "测评失败，" + ResultEntity.ERROR + " 不上传自己的mp3");
                             //XESToastUtils.showToast(mContext, "测评失败");
+                            mIsEvaluatoring = false;
                             message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
                             //提前开始下一条
                             nextReadMessage();
                         } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
                             Loger.i("RolePlayerDemoTest", "测评中");
+                            mIsEvaluatoring = true;
                         }
 
                     }
