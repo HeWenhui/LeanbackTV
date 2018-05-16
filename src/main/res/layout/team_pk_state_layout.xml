@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:paddingLeft="14dp"
     android:paddingRight="14dp"
-    android:background="@color/COLOR_323B47"
+    android:background="@color/COLOR_333333"
     >
 
     <RelativeLayout

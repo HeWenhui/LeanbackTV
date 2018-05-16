@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -167,8 +170,8 @@ public class TeamPKStateLayout extends FrameLayout {
         Loger.e("coinNum","====> PkstateLayout bindData 333:"+mCoinNum+":"+ mMyteamAnergy+":"+ mOtherTeamAnergy);
         this.showPopWindow = showPopWindow;
         if(!dataInited){
-            dataInited = true;
             initData(coinNum, myTeamAnergy, otherTeamAnergy);
+            dataInited = true;
         }else{
              int addCoin = (int) (coinNum - mCoinNum);
              int ownEnergyAdd = (int) (myTeamAnergy - mMyteamAnergy);
@@ -200,15 +203,8 @@ public class TeamPKStateLayout extends FrameLayout {
 
     private void upDataSateText(float ratio) {
         //tvState.setVisibility(ratio != 0.5f?VISIBLE:GONE);
-        if(this.showPopWindow){
+        if(this.showPopWindow || !dataInited){
             this.showPopWindow = false;
-            tvState.setVisibility(VISIBLE);
-            tvState.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    tvState.setVisibility(GONE);
-                }
-            },30*1000);
             //Logger.e("teamPkStateLayout", "======>upDataSateText:" + ratio);
             if (mMyteamAnergy == 0 && mOtherTeamAnergy == 0) {
                 tvState.setText("准备战斗");
@@ -225,8 +221,40 @@ public class TeamPKStateLayout extends FrameLayout {
                     tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
                 }
             }
+            showPkSateBar();
         }
 
     }
 
+    /**
+     * 淡入 淡出展示  当前pk 状态
+     */
+    private void showPkSateBar() {
+        tvState.setVisibility(VISIBLE);
+        AlphaAnimation alphaIn = (AlphaAnimation) AnimationUtils.
+                loadAnimation(getContext(), R.anim.anim_livevido_teampk_pkstate_in);
+        tvState.startAnimation(alphaIn);
+        tvState.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                AlphaAnimation alphaOut = (AlphaAnimation) AnimationUtils.
+                        loadAnimation(getContext(), R.anim.anim_livevido_teampk_pkstate_out);
+                alphaOut.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        tvState.setVisibility(GONE);
+                    }
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                tvState.startAnimation(alphaOut);
+            }
+        },30*1000);
+    }
 }

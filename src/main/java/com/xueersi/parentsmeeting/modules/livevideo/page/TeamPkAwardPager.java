@@ -35,7 +35,6 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieImageAsset;
 import com.airbnb.lottie.OnCompositionLoadedListener;
-import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
@@ -221,13 +220,13 @@ public class TeamPkAwardPager extends BasePager {
                 lottieAnimationView.playAnimation();
             }
         });
-
-        lottieAnimationView.postDelayed(new Runnable() {
+       //不再自动关闭
+       /* lottieAnimationView.postDelayed(new Runnable() {
             @Override
             public void run() {
                 closeAwardPager(); //自动关闭
             }
-        }, TIME_DELAY_SHOW_WINNER);
+        }, TIME_DELAY_SHOW_WINNER);*/
     }
 
 

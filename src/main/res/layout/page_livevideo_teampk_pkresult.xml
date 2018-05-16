@@ -16,7 +16,7 @@
             android:layout_height="match_parent" />
 
         <RelativeLayout
-            android:layout_width="360dp"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
             android:id="@id/rl_teampk_pkresult_final_pbbar_container"
             android:layout_centerHorizontal="true"
@@ -49,17 +49,13 @@
 
             <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar
                 android:id="@id/tpb_teampk_pkresult_pbbar_final"
-                android:layout_width="360dp"
+                android:layout_width="320dp"
                 android:layout_height="20dp"
                 app:innerProgressBarHeight="5dp"
                 app:sliderHeader="@drawable/livevideo_tool_energy_img_disable"
                 android:layout_below="@id/tv_teampk_pkresult_myteam_final_anergy"
                 />
-
-
         </RelativeLayout>
-
-
     </RelativeLayout>
 
 
