@@ -497,6 +497,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                         RolePlayerEntity.RolePlayerMessage upMessage = mEntity.getLstRolePlayerMessage().get
                                 (mCurrentReadIndex - 1);
                         if ((mCurrentReadIndex - 1) == mEntity.getSelfLastIndex()) {
+                            Loger.i("RolePlayerDemoTest", "提交结果");
                             mRolePlayBll.requestResult();
                         }
                         if (upMessage.getMsgStatus() != RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH) {
@@ -600,10 +601,6 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 tvResultMsgTip.setText("Fantastic");
             } else if (head.getSpeechScore() >= 60) {
                 tvResultMsgTip.setText("Welldone");
-            } else if (head.getSpeechScore() >= 40) {
-                tvResultMsgTip.setText("Very Good");
-            } else if (head.getSpeechScore() >= 20) {
-                tvResultMsgTip.setText("Good!");
             } else {
                 tvResultMsgTip.setText("Fighting");
             }
@@ -713,6 +710,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      */
     private void endRolePlayer() {
         if (!mEntity.isResult()) {
+            Loger.i("RolePlayerDemoTest", "结束RolePlayer,结果还未提交，再次提交结果");
             mRolePlayBll.requestResult();
         } else {
             showResult();
