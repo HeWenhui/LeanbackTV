@@ -112,7 +112,7 @@ public class LiveVideoSAConfig {
         /** 删除标记点 */
         public String URL_LIVE_DELETE_MARK_POINT = HTTP_HOST + "/Live/deleteMarkpoint";
         /** 获取智能私信 */
-        public String URL_LIVE_GET_AUTO_NOTICE = HTTP_HOST + "/LiveCourse/counselorWhisper";
+        public String URL_LIVE_GET_AUTO_NOTICE = HTTP_HOST + "/LiveCourse/counselorWhisperNew";
         /** 智能私信警告统计 */
         public String URL_LIVE_STATISTICS_AUTO_NOTICE = HTTP_HOST + "/LiveCourse/whisperStatisc";
         /** 语音反馈保存录音地址 */
