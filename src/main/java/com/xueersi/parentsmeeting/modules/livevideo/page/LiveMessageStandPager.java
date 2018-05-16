@@ -1083,7 +1083,20 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                                         @Override
                                         public void run() {
 //                                            lvMessage.smoothScrollToPosition(lvMessage.getCount() - 1);
-                                            lvMessage.setSelection(lvMessage.getCount() - 1);
+//                                            lvMessage.setSelection(lvMessage.getCount() - 1);
+                                            int childrenCount = lvMessage.getChildCount();
+                                            if (childrenCount > 0) {
+                                                View child = lvMessage.getChildAt(childrenCount - 1);
+                                                int childBottom = child.getBottom();
+                                                int paddingBottom = lvMessage.getPaddingBottom();
+//                                                Loger.d(TAG, "addMessage:lvMessage=" + paddingBottom + "," + lvMessage.getScrollY() + "," + lvMessage.getHeight()
+//                                                        + ",child=" + child.getHeight() + "," + childBottom);
+                                                if (childBottom + paddingBottom > lvMessage.getHeight()) {
+                                                    int offset = (childBottom + paddingBottom) - lvMessage.getHeight();
+//                                                    Loger.d(TAG, "addMessage:offset=" + offset);
+                                                    lvMessage.smoothScrollByOffset(offset);
+                                                }
+                                            }
                                         }
                                     }, 200);
                                 }
