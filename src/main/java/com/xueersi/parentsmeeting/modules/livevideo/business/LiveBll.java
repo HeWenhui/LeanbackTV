@@ -47,8 +47,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveArtsHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveScienceHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
@@ -113,6 +115,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private LecAdvertAction lecAdvertAction;
     private RolePlayAction rolePlayAction;
     private LiveHttpManager mHttpManager;
+    private LiveScienceHttpManager liveScienceHttpManager;
+    private LiveArtsHttpManager liveArtsHttpManager;
     private LiveVideoSAConfig liveVideoSAConfig;
     private LiveHttpResponseParser mHttpResponseParser;
     private IRCMessage mIRCMessage;
@@ -2297,6 +2301,13 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             appID = UmsConstants.LIVE_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
         }
+        if (mLiveType == LIVE_TYPE_LIVE) {
+            if (mGetInfo.getIsArts() == 1) {
+                liveArtsHttpManager = new LiveArtsHttpManager(mHttpManager);
+            } else {
+                liveScienceHttpManager = new LiveScienceHttpManager(mHttpManager);
+            }
+        }
         //判断是否有智能私信功能
         Loger.i("LiveAutoNoticeBll", "isshowNotice:" + mGetInfo.getIsShowCounselorWhisper());
         sysTimeOffset = (long) mGetInfo.getNowTime() - System.currentTimeMillis() / 1000;
@@ -3738,6 +3749,14 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 Loger.d(TAG, "saveStuTalkSource:onPmError" + responseEntity.getErrorMsg());
             }
         });
+    }
+
+    public LiveScienceHttpManager getLiveScienceHttpManager() {
+        return liveScienceHttpManager;
+    }
+
+    public LiveArtsHttpManager getLiveArtsHttpManager() {
+        return liveArtsHttpManager;
     }
 
     public Call download(final String url, final String saveDir, DownloadCallBack downloadCallBack) {

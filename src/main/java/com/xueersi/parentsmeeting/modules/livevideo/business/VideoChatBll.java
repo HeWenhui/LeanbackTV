@@ -17,6 +17,8 @@ import android.widget.RelativeLayout;
 
 import com.umeng.analytics.MobclickAgent;
 import com.xueersi.parentsmeeting.base.BaseApplication;
+import com.xueersi.parentsmeeting.http.HttpCallBack;
+import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
@@ -27,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.dialog.RaiseHandDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveScienceHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.AgoraVideoChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VideoChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
@@ -40,8 +43,11 @@ import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+
+import okhttp3.Call;
 
 import static com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE;
 
@@ -52,44 +58,44 @@ import static com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog.TITLE
  * 直播接麦
  */
 public class VideoChatBll implements VideoChatAction {
-    private String TAG = "VideoChatBll";
-    String eventId = LiveVideoConfig.LIVE_LINK_MIRCO;
+    private static String TAG = "VideoChatBll";
+    private String eventId = LiveVideoConfig.LIVE_LINK_MIRCO;
     private LiveVideoActivityBase activity;
     private Button btRaiseHands;
     private LiveBll liveBll;
     private LiveGetInfo getInfo;
     private boolean raisehand = false;
     private RaiseHandDialog raiseHandDialog;
-    /*暂时没用*/
+    /** 暂时没用 */
     private int times = 0;
     private LogToFile mLogtf;
     private long startTime;
     private VideoChatInter videoChatInter;
     private RelativeLayout bottomContent;
     private BaseLiveMediaControllerBottom baseLiveMediaControllerBottom;
-    /*麦克风权限*/
+    /** 麦克风权限 */
     boolean isHasPermission = true;
-    /*举麦权限提示*/
+    /** 举麦权限提示 */
     boolean permissionPrompt = false;
-    /*举麦失败*/
+    /** 举麦失败 */
     boolean isFail = false;
     boolean isSuccess = false;
-    /*举麦包含我*/
+    /** 举麦包含我 */
     boolean containMe = false;
-    /*连麦状态*/
+    /** 连麦状态 */
     String onMic = "off";
     static int nativeLibLoaded = 2;
     /*举麦耳机提示*/
     boolean headsetPrompt = false;
-    /*连麦人数*/
+    /** 连麦人数 */
     ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
-    /*连麦人数变化*/
+    /** 连麦人数变化 */
     boolean classmateChange = true;
-    /*举手人数*/
+    /** 举手人数 */
     int raiseHandCount = 0;
-    /*举手来源*/
+    /** 举手来源 */
     private String from;
-    /*接麦耳机判断*/
+    /** 接麦耳机判断 */
     private boolean hasWiredHeadset = false;
     WiredHeadsetReceiver wiredHeadsetReceiver;
     String openhandsStatus = "off";
@@ -306,6 +312,27 @@ public class VideoChatBll implements VideoChatAction {
                             VideoChatLog.sno4(liveBll, nonce);
                             raisehand = true;
                             liveBll.requestMicro(nonce, from);
+                            LiveScienceHttpManager liveScienceHttpManager = liveBll.getLiveScienceHttpManager();
+                            if (liveScienceHttpManager != null) {
+                                liveScienceHttpManager.chatHandAdd(new HttpCallBack(false) {
+                                    @Override
+                                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                        Loger.d(TAG, "chatHandAdd:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+                                    }
+
+                                    @Override
+                                    public void onPmError(ResponseEntity responseEntity) {
+                                        super.onPmError(responseEntity);
+                                        Loger.d(TAG, "chatHandAdd:onPmError:responseEntity=" + responseEntity.getErrorMsg());
+                                    }
+
+                                    @Override
+                                    public void onPmFailure(Throwable error, String msg) {
+                                        super.onPmFailure(error, msg);
+                                        Loger.e(TAG, "chatHandAdd:onPmFailure:responseEntity=" + msg);
+                                    }
+                                });
+                            }
                             BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
                             raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
                             raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);

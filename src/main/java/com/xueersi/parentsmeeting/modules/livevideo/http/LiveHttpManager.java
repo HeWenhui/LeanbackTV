@@ -50,7 +50,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         defaultKey.put(key, value);
     }
 
-    private void setDefaultParameter(HttpRequestParams httpRequestParams) {
+    void setDefaultParameter(HttpRequestParams httpRequestParams) {
         for (String key : defaultKey.keySet()) {
             String value = defaultKey.get(key);
             httpRequestParams.addBodyParam(key, value);
@@ -1116,6 +1116,5 @@ public class LiveHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_TEMPK_STUPKRESULT + "/" + liveId, params, requestCallBack);
     }
-
 
 }
