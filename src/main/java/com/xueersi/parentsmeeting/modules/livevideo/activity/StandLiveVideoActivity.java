@@ -24,10 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tal.speech.language.TalLanguage;
-import com.tal.speech.speechrecognizer.Constants;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.business.AppBll;
-import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.event.AppEvent;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
@@ -62,7 +60,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageStandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackAction;
-import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.StandSpeechTop3Bll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.StarInteractAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
@@ -443,7 +440,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
 //        liveMediaControllerBottom = new LiveMediaControllerBottom(this, mMediaController, this);
         liveMediaControllerBottom = new LiveStandMediaControllerBottom(this, mMediaController, this);
         liveMediaControllerBottom.setVisibility(View.INVISIBLE);
-        liveMediaControllerBottom.onModeChange(mode);
+        liveMediaControllerBottom.onModeChange(mode, mGetInfo);
         liveMessageBll = new LiveMessageBll(this, liveType);
         liveMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
         questionBll = new QuestionBll(this, vStuCourseID);
@@ -1005,7 +1002,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveStandVoiceAnswerCreat(mLiveBll, englishH5CoursewareBll.new LiveStandQuestionSwitchImpl(), getInfo.getHeadImgPath(), getInfo.getStandLiveName()));
         String mode = mGetInfo.getMode();
         this.mode = mode;
-        liveMediaControllerBottom.onModeChange(mode);
+        liveMediaControllerBottom.onModeChange(mode, mGetInfo);
         if (rankBll != null) {
             rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
         }
@@ -1169,7 +1166,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
 
             @Override
             public void run() {
-                liveMediaControllerBottom.onModeChange(mode);
+                liveMediaControllerBottom.onModeChange(mode, mGetInfo);
                 if (rankBll != null) {
                     rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
                 }

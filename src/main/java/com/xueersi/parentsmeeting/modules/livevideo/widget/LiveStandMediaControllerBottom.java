@@ -1,21 +1,16 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController.MediaPlayerControl;
 import com.xueersi.xesalib.utils.log.Loger;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * 直播播放器控制栏底部区域
@@ -25,6 +20,7 @@ public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBotto
     View tranLiveView;
     View mainLiveView;
     String mode = LiveTopic.MODE_TRANING;
+    private Button btRaiseHands;
 
     public LiveStandMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
         super(context, controller, player);
@@ -57,11 +53,16 @@ public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBotto
         return view;
     }
 
-    public void onModeChange(String mode) {
+    public void onModeChange(String mode, LiveGetInfo getInfo) {
         this.mode = mode;
         removeAllViews();
         inflateLayout();
         findViewItems();
+        btRaiseHands = findViewById(R.id.bt_livevideo_voicechat_raise_hands);
+        if (btRaiseHands != null && getInfo != null) {
+            boolean allowLinkMic = getInfo.isAllowLinkMic();
+            btRaiseHands.setVisibility(allowLinkMic ? VISIBLE : GONE);
+        }
     }
 
     @Override
