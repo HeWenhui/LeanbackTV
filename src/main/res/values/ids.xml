@@ -235,6 +235,7 @@
     <item name="tv_livevideo_message_flower2" type="id" />
     <item name="tv_livevideo_message_gold_lable" type="id" />
     <item name="tv_livevideo_message_gold" type="id" />
+    <item name="tv_livevideo_message_gold_word" type="id" />
     <item name="bt_livevideo_message_flowersend" type="id" />
     <!--直播-公开表扬-->
     <item name="iv_livevideo_public_praise_bg" type="id" />

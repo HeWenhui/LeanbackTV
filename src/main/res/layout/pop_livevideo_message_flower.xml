@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@id/ll_livevideo_message_flower"
@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:background="#99000000"
         android:gravity="bottom"
-        android:orientation="horizontal"/>
+        android:orientation="horizontal" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/transparent_80"/>
+            android:background="@color/transparent_80" />
 
         <TextView
             android:id="@id/tv_livevideo_message_gold_lable"
@@ -30,7 +30,7 @@
             android:text="余额:"
             android:textColor="@color/white"
             android:textSize="14sp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <TextView
             android:id="@id/tv_livevideo_message_gold"
@@ -42,7 +42,19 @@
             android:text="0"
             android:textColor="@color/COLOR_F13232"
             android:textSize="14sp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@id/tv_livevideo_message_gold_word"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="2dp"
+            android:layout_toRightOf="@id/tv_livevideo_message_gold"
+            android:text="金币"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:visibility="gone" />
 
         <Button
             android:id="@id/bt_livevideo_message_flowersend"
@@ -54,7 +66,7 @@
             android:background="@drawable/shape_livevideo_message_send"
             android:text="发送"
             android:textColor="@color/white"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
     </RelativeLayout>
 </RelativeLayout>

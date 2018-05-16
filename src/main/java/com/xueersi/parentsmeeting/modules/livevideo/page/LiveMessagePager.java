@@ -528,36 +528,14 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     protected SpannableStringBuilder createSpannable(int ftype, String name, Drawable drawable) {
-        String educationStage = getInfo.getEducationStage();
-        if ("1".equals(educationStage) || "2".equals(educationStage)) {
-
-        } else if ("3".equals(educationStage) || "4".equals(educationStage)) {
-
-        } else {
-            return super.createSpannable(ftype, name, drawable);
-        }
-        String tip = "";
-        switch (ftype) {
-            case FLOWERS_SMALL:
-            case FLOWERS_MIDDLE:
-            case FLOWERS_BIG:
-                tip = flowsTips[ftype - 2];
-                break;
-        }
-        String msg = name + " " + tip;
-        TypeSpannableStringBuilder spannableStringBuilder = new TypeSpannableStringBuilder(msg, name, ftype);
-        spannableStringBuilder.append(msg);
-        ImageSpan span = new ImageSpan(drawable);//ImageSpan.ALIGN_BOTTOM);
-        spannableStringBuilder.setSpan(span, msg.length(), spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-//        spannableStringBuilder.setSpan(new BackgroundColorSpan(Color.parseColor("#8A2233B1")), 0, spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        return spannableStringBuilder;
+        return commonAction.createSpannable(ftype, name, drawable);
     }
 
     private void initFlower(String educationStage) {
         long before = System.currentTimeMillis();
         final ArrayList<FlowerEntity> flowerEntities = new ArrayList<>();
         //1 2小学
-        if ("1".equals(educationStage) || "2".equals(educationStage)) {
+        if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationStage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationStage)) {
             commonAction = new GiftDisable();
             flowsDrawTips[0] = R.drawable.bg_livevideo_heart_small;
             flowsDrawTips[1] = R.drawable.bg_livevideo_tea_middle;
@@ -569,12 +547,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
             flowsTips[0] = "送老师一颗小心心，老师也喜欢你哟~";
             flowsTips[1] = "送老师一杯暖心茉莉茶，老师嗓子好舒服~";
-            flowsTips[2] = "送老师一个冰激凌，夏天好凉爽~";
+            flowsTips[2] = "送老师一个冰淇淋，夏天好凉爽~";
             flowerEntities.add(new FlowerEntity(FLOWERS_SMALL, flowsDrawTips[0], "小心心", 10));
             flowerEntities.add(new FlowerEntity(FLOWERS_MIDDLE, flowsDrawTips[1], "暖心茉莉茶", 50));
             flowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "冰淇淋", 100));
             //3 4初高中
-        } else if ("3".equals(educationStage) || "4".equals(educationStage)) {
+        } else if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationStage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationStage)) {
             commonAction = new GiftDisable();
             flowsDrawTips[0] = R.drawable.bg_livevideo_sugar_small;
             flowsDrawTips[1] = R.drawable.bg_livevideo_flower_3_4_middle;
@@ -645,7 +623,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         }
         Loger.i(TAG, "initFlower:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        flowerContentView.findViewById(R.id.bt_livevideo_message_flowersend).setOnClickListener(new View
+        TextView flowerSend = flowerContentView.findViewById(R.id.bt_livevideo_message_flowersend);
+        flowerSend.setText(commonAction.getFlowerSendText());
+        flowerSend.setOnClickListener(new View
                 .OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1090,6 +1070,16 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         public void clickNoChoice() {
             XESToastUtils.showToast(mContext, "请选择一束花");
         }
+
+        @Override
+        public SpannableStringBuilder createSpannable(int ftype, String name, Drawable drawable) {
+            return LiveMessagePager.super.createSpannable(ftype, name, drawable);
+        }
+
+        @Override
+        public String getFlowerSendText() {
+            return "发送";
+        }
     }
 
     class GiftDisable implements FlowerAction {
@@ -1097,9 +1087,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         @Override
         public void onOpenbarrage(boolean openbarrage) {
             if (openbarrage) {
-                XESToastUtils.showToast(mContext, "老师开启了送礼物功能");
+                XESToastUtils.showToast(mContext, "主讲老师开启了送礼物功能");
             } else {
-                XESToastUtils.showToast(mContext, "老师关闭了送礼物功能");
+                XESToastUtils.showToast(mContext, "主讲老师关闭了送礼物功能");
             }
         }
 
@@ -1122,6 +1112,30 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         public void clickNoChoice() {
             XESToastUtils.showToast(mContext, "请选择一个礼物");
         }
+
+        @Override
+        public SpannableStringBuilder createSpannable(int ftype, String name, Drawable drawable) {
+            String tip = "";
+            switch (ftype) {
+                case FLOWERS_SMALL:
+                case FLOWERS_MIDDLE:
+                case FLOWERS_BIG:
+                    tip = flowsTips[ftype - 2];
+                    break;
+            }
+            String msg = name + " " + tip;
+            TypeSpannableStringBuilder spannableStringBuilder = new TypeSpannableStringBuilder(msg, name, ftype);
+            spannableStringBuilder.append(msg);
+            ImageSpan span = new ImageSpan(drawable);//ImageSpan.ALIGN_BOTTOM);
+            spannableStringBuilder.setSpan(span, msg.length(), spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+//        spannableStringBuilder.setSpan(new BackgroundColorSpan(Color.parseColor("#8A2233B1")), 0, spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            return spannableStringBuilder;
+        }
+
+        @Override
+        public String getFlowerSendText() {
+            return "赠送";
+        }
     }
 
     interface FlowerAction {
@@ -1143,6 +1157,10 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
         /** 点击没有选择时 */
         void clickNoChoice();
+
+        String getFlowerSendText();
+
+        SpannableStringBuilder createSpannable(int ftype, String name, Drawable drawable);
     }
 
     /*添加聊天信息，超过120，移除60个*/
@@ -1209,6 +1227,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         tvMessageGold.setText(goldNum);
         tvMessageGold.setVisibility(View.VISIBLE);
         tvMessageGoldLable.setVisibility(View.VISIBLE);
+        flowerContentView.findViewById(R.id.tv_livevideo_message_gold_word).setVisibility(View.VISIBLE);
     }
 
 

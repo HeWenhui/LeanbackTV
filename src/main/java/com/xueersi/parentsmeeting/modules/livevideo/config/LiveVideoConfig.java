@@ -161,4 +161,13 @@ public class LiveVideoConfig {
          */
         public String SUBJECT_ID_CH = "1";
     }
+
+    /** 教育阶段1 */
+    public final static String EDUCATION_STAGE_1 = "1";
+    /** 教育阶段2 */
+    public final static String EDUCATION_STAGE_2 = "2";
+    /** 教育阶段3 */
+    public final static String EDUCATION_STAGE_3 = "3";
+    /** 教育阶段4 */
+    public final static String EDUCATION_STAGE_4 = "4";
 }
