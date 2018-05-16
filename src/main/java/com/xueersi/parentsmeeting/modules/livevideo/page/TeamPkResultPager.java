@@ -59,13 +59,21 @@ public class TeamPkResultPager extends BasePager {
     private LottieAnimationView lottieAnimationView;
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "team_pk/pkresult/";
     private final TeamPKBll mTeamPkBll;
-    /**老师点赞动画*/
+    /**
+     * 老师点赞动画
+     */
     private static final int ANIM_TYPE_PRIASE = 1;
-    /**pk 对手动画*/
+    /**
+     * pk 对手动画
+     */
     private static final int ANIM_TYPE_PK_ADVERSARY = 2;
-    /**pk 结果*/
+    /**
+     * pk 结果
+     */
     private static final int ANIM_TYPE_PK_REUSLT = 3;
-    /**pk 结果 信息 根节点*/
+    /**
+     * pk 结果 信息 根节点
+     */
     private RelativeLayout rlResultRootView;
     private ImageView ivMyteamState;
     private ImageView ivOtherTeamState;
@@ -83,19 +91,27 @@ public class TeamPkResultPager extends BasePager {
     private TeamPkProgressBar tpbEnergyBar;
     private RecyclerView rclContributionRank;
 
-    /**背景音效大小*/
+    /**
+     * 背景音效大小
+     */
     private static final float SOUND_VOLUME_BG = 0.3f;
-    /**前景音效大小*/
+    /**
+     * 前景音效大小
+     */
     private static final float SOUND_VOLUME_FRONT = 0.6f;
     private TimeCountDowTextView timeCountDowTextView;
-    /**pk 对手 展示时间*/
+    /**
+     * pk 对手 展示时间
+     */
     private static final int TIME_DELAY_AUTO_CLOSE = 8;
-    /** 每题pk 结果页显示时长*/
+    /**
+     * 每题pk 结果页显示时长
+     */
     private static final int CURRENT_PK_RESULT_AUTO_CLOSE_DRUATION = 10;
-    private StudentPkResultEntity mFinalPkRsult;
+    private StudentPkResultEntity mFinalPkResult;
     private PkResultAdapter pkResultAdapter;
     private List<TeamEnergyAndContributionStarEntity.ContributionStar> mContributions;
-    private ContributionLayoutManager layoutmanager;
+    private ContributionLayoutManager mLayoutManager;
     private SoundPoolHelper soundPoolHelper;
 
     /**
@@ -125,7 +141,6 @@ public class TeamPkResultPager extends BasePager {
         tpbFinalProgress = view.findViewById(R.id.tpb_teampk_pkresult_pbbar_final);
         tpbFinalProgress.setMaxProgress(100);
         rlFinalPbBarContainer = view.findViewById(R.id.rl_teampk_pkresult_final_pbbar_container);
-
 
 
         rlResultRootView = view.findViewById(R.id.rl_teampk_pkresult_root);
@@ -159,20 +174,21 @@ public class TeamPkResultPager extends BasePager {
         Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_teampk_add_energy);
         animation.setFillAfter(true);
         tvAddEnergy.setVisibility(View.VISIBLE);
-        tvAddEnergy.setText("+"+increment);
+        tvAddEnergy.setText("+" + increment);
         tvAddEnergy.startAnimation(animation);
         tvMyTeamEnergy.smoothAddNum(increment);
     }
 
-
     private void initRecycleView() {
         mContributions = new ArrayList<TeamEnergyAndContributionStarEntity.ContributionStar>();
-        layoutmanager = new ContributionLayoutManager(5);
-        int itemWidth = rclContributionRank.getMeasuredWidth() / 5;
-        layoutmanager.setItemWidth(itemWidth);
+        //一行显示item 个数
+        int spanCount = 5;
+        mLayoutManager = new ContributionLayoutManager(spanCount);
+        int itemWidth = rclContributionRank.getMeasuredWidth() / spanCount;
+        mLayoutManager.setItemWidth(itemWidth);
         Loger.e("TeamPkResultPager", "======>initRecycleView:" + itemWidth);
-        rclContributionRank.setLayoutManager(layoutmanager);
-        pkResultAdapter = new PkResultAdapter(mContributions,itemWidth);
+        rclContributionRank.setLayoutManager(mLayoutManager);
+        pkResultAdapter = new PkResultAdapter(mContributions, itemWidth);
         rclContributionRank.setAdapter(pkResultAdapter);
     }
 
@@ -186,15 +202,15 @@ public class TeamPkResultPager extends BasePager {
         if (data == null || data.getMyTeamResultInfo() == null || data.getCompetitorResultInfo() == null) {
             return;
         }
-
-        Loger.e("PkResult", "======> ResultPager show finalPkResult" + data.getMyTeamResultInfo().getEnergy() + ":" + data.getCompetitorResultInfo().getEnergy());
-        mFinalPkRsult = data;
-
+      /*  Loger.e("PkResult", "======> ResultPager show finalPkResult" + data.getMyTeamResultInfo().getEnergy() + ":" +
+                data.getCompetitorResultInfo().getEnergy());*/
+        mFinalPkResult = data;
         // 显示最终pk 进度值
         rlLottieRootView.setVisibility(View.VISIBLE);
         rlFinalPbBarContainer.setVisibility(View.VISIBLE);
 
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rlFinalPbBarContainer.getLayoutParams();
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rlFinalPbBarContainer
+                .getLayoutParams();
         Point point = new Point();
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
         int realY = Math.min(point.x, point.y);
@@ -204,16 +220,17 @@ public class TeamPkResultPager extends BasePager {
         int myTeamEnergy = (int) data.getMyTeamResultInfo().getEnergy();
         int otherTeamEnergy = (int) data.getCompetitorResultInfo().getEnergy();
         float ratio;
-        if(myTeamEnergy+otherTeamEnergy > 0){
-            ratio =  myTeamEnergy/(float)(myTeamEnergy+otherTeamEnergy);
-        }else{
+        if (myTeamEnergy + otherTeamEnergy > 0) {
+            ratio = myTeamEnergy / (float) (myTeamEnergy + otherTeamEnergy);
+        } else {
             ratio = 0.5f;
         }
         tpbFinalProgress.setProgress((int) (ratio * tpbFinalProgress.getMaxProgress()));
         TextView tvMyTeamFinalEngergy = rlLottieRootView.findViewById(R.id.tv_teampk_pkresult_myteam_final_anergy);
-        tvMyTeamFinalEngergy.setText(myTeamEnergy+"");
-        TextView tvOtherTeamFinalEngergy = rlLottieRootView.findViewById(R.id.tv_teampk_pkresult_otherteam_final_anergy);
-        tvOtherTeamFinalEngergy.setText(otherTeamEnergy+"");
+        tvMyTeamFinalEngergy.setText(myTeamEnergy + "");
+        TextView tvOtherTeamFinalEngergy = rlLottieRootView.findViewById(R.id
+                .tv_teampk_pkresult_otherteam_final_anergy);
+        tvOtherTeamFinalEngergy.setText(otherTeamEnergy + "");
 
 
         int pkResult = (int) (data.getMyTeamResultInfo().getEnergy() - data.getCompetitorResultInfo().getEnergy());
@@ -221,10 +238,10 @@ public class TeamPkResultPager extends BasePager {
             showDrawAnim();
             Loger.e("PkResult", "======> ResultPager show showDraw");
         } else if (pkResult > 0) {
-             showWinAnim();
+            showWinAnim();
             Loger.e("PkResult", "======> ResultPager show showWin");
         } else {
-             showLoseAnim();
+            showLoseAnim();
             Loger.e("PkResult", "======> ResultPager show showLose");
         }
     }
@@ -266,52 +283,52 @@ public class TeamPkResultPager extends BasePager {
             // 初始战队信息
             long myTeamTotalEnergy = data.getMyTeamEngerInfo().getTotalEnergy();
             long otherTeamTotalEnergy = data.getCompetitorEngerInfo().getTotalEnergy();
-            if (myTeamTotalEnergy == otherTeamTotalEnergy) {
-                ivMyteamState.setVisibility(View.GONE);
-                ivOtherTeamState.setVisibility(View.GONE);
-            } else {
-                ivMyteamState.setVisibility(View.VISIBLE);
-                ivOtherTeamState.setVisibility(View.VISIBLE);
-                if (myTeamTotalEnergy > otherTeamTotalEnergy) {
-                    ivMyteamState.setImageResource(R.drawable.livevideo_list_lead_img_disable);
-                    ivOtherTeamState.setImageResource(R.drawable.livevideo_list_catchup_img_disable);
-                } else if (otherTeamTotalEnergy > myTeamTotalEnergy) {
-                    ivOtherTeamState.setImageResource(R.drawable.livevideo_list_lead_img_disable);
-                    ivMyteamState.setImageResource(R.drawable.livevideo_list_catchup_img_disable);
-                } else {
-                    ivOtherTeamState.setImageResource(R.drawable.livevideo_alertview_pingshou_img_disable);
-                    ivMyteamState.setImageResource(R.drawable.livevideo_alertview_pingshou_img_disable);
-                }
+            ivMyteamState.setVisibility(View.VISIBLE);
+            ivOtherTeamState.setVisibility(View.VISIBLE);
+            if (myTeamTotalEnergy > otherTeamTotalEnergy) {
+                ivMyteamState.setImageResource(R.drawable.livevideo_list_lead_img_disable);
+                ivOtherTeamState.setImageResource(R.drawable.livevideo_list_catchup_img_disable);
+            } else if (otherTeamTotalEnergy > myTeamTotalEnergy) {
+                ivOtherTeamState.setImageResource(R.drawable.livevideo_list_lead_img_disable);
+                ivMyteamState.setImageResource(R.drawable.livevideo_list_catchup_img_disable);
+            } else if(myTeamTotalEnergy == otherTeamTotalEnergy){
+                ivOtherTeamState.setImageResource(R.drawable.livevideo_alertview_pingshou_img_disable);
+                ivMyteamState.setImageResource(R.drawable.livevideo_alertview_pingshou_img_disable);
             }
-            ImageLoader.with(ivMyTeacherHead.getContext()).load(data.getMyTeamEngerInfo().getTeacherImg()).asBitmap(new SingleConfig.BitmapListener() {
-                @Override
-                public void onSuccess(Drawable drawable) {
-                    Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                    Bitmap resultBitmap = scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap.getHeight()) / 2);
-                    ivMyTeacherHead.setImageBitmap(resultBitmap);
-                }
+            ImageLoader.with(ivMyTeacherHead.getContext()).load(data.getMyTeamEngerInfo().getTeacherImg()).asBitmap
+                    (new SingleConfig.BitmapListener() {
+                        @Override
+                        public void onSuccess(Drawable drawable) {
+                            Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                            Bitmap resultBitmap = scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap
+                                    .getHeight()) / 2);
+                            ivMyTeacherHead.setImageBitmap(resultBitmap);
+                        }
 
-                @Override
-                public void onFail() {
+                        @Override
+                        public void onFail() {
 
-                }
-            });
+                        }
+                    });
 
-            ImageLoader.with(ivOtherTeacherHead.getContext()).load(data.getCompetitorEngerInfo().getTeacherImg()).asBitmap(new SingleConfig.BitmapListener() {
-                @Override
-                public void onSuccess(Drawable drawable) {
-                    Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                    Bitmap resultBitmap = scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap.getHeight()) / 2);
-                    ivOtherTeacherHead.setImageBitmap(resultBitmap);
-                }
+            ImageLoader.with(ivOtherTeacherHead.getContext()).load(data.getCompetitorEngerInfo().getTeacherImg())
+                    .asBitmap(new SingleConfig.BitmapListener() {
+                        @Override
+                        public void onSuccess(Drawable drawable) {
+                            Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                            Bitmap resultBitmap = scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap
+                                    .getHeight()) / 2);
+                            ivOtherTeacherHead.setImageBitmap(resultBitmap);
+                        }
 
-                @Override
-                public void onFail() {
+                        @Override
+                        public void onFail() {
 
-                }
-            });
+                        }
+                    });
             ImageLoader.with(ivMyTeamLogo.getContext()).load(data.getMyTeamEngerInfo().getImg()).into(ivMyTeamLogo);
-            ImageLoader.with(ivOtherTeamLogo.getContext()).load(data.getCompetitorEngerInfo().getImg()).into(ivOtherTeamLogo);
+            ImageLoader.with(ivOtherTeamLogo.getContext()).load(data.getCompetitorEngerInfo().getImg()).into
+                    (ivOtherTeamLogo);
             tvMyTeacherName.setText(data.getMyTeamEngerInfo().getTeacherName());
             tvOtherTeacherName.setText(data.getCompetitorEngerInfo().getTeacherName());
             tvMyTeamSlogan.setText(data.getMyTeamEngerInfo().getSlogon());
@@ -320,7 +337,7 @@ public class TeamPkResultPager extends BasePager {
             timeCountDowTextView.setVisibility(View.INVISIBLE);
 
             // 更新左侧pk 状态栏
-            if(mTeamPkBll != null){
+            if (mTeamPkBll != null) {
                 mTeamPkBll.updatePkStateLayout(true);
             }
         }
@@ -328,8 +345,10 @@ public class TeamPkResultPager extends BasePager {
 
     private void updateProgressBar(final TeamEnergyAndContributionStarEntity data) {
         //显示之前的pk 进度
-        final long myTeamOldEnergy = data.getMyTeamEngerInfo().getTotalEnergy() - data.getMyTeamEngerInfo().getAddEnergy();
-        long otherTeamOldEnergy = data.getCompetitorEngerInfo().getTotalEnergy() - data.getCompetitorEngerInfo().getAddEnergy();
+        final long myTeamOldEnergy = data.getMyTeamEngerInfo().getTotalEnergy() - data.getMyTeamEngerInfo()
+                .getAddEnergy();
+        long otherTeamOldEnergy = data.getCompetitorEngerInfo().getTotalEnergy() - data.getCompetitorEngerInfo()
+                .getAddEnergy();
         Loger.e("TeamPkResultPager", "========>updateProgressBar:" + myTeamOldEnergy + ":" + otherTeamOldEnergy);
         float ratio = 0f;
         if ((myTeamOldEnergy + otherTeamOldEnergy) > 0) {
@@ -358,7 +377,7 @@ public class TeamPkResultPager extends BasePager {
         float newRatio = 0;
         if ((myTeamTotalEnergy + otherTeamEnergy) > 0) {
             newRatio = myTeamTotalEnergy / (float) (myTeamTotalEnergy + otherTeamEnergy);
-        }else{
+        } else {
             if (newRatio == 0) {
                 newRatio = 0.5f;
             }
@@ -366,9 +385,9 @@ public class TeamPkResultPager extends BasePager {
 
         int currentProgress = (int) (newRatio * tpbEnergyBar.getMaxProgress() + 0.5);
         int addProgress = currentProgress - tpbEnergyBar.getProgress();
-        if(addProgress > 0){
+        if (addProgress > 0) {
             tpbEnergyBar.smoothAddProgress(addProgress);
-        }else{
+        } else {
             tpbEnergyBar.setProgress(currentProgress);
         }
         tvMyTeamEnergy.setText(myTeamOldEnergy + "");
@@ -377,7 +396,6 @@ public class TeamPkResultPager extends BasePager {
         Loger.e("TeamPkResult", "=======>showNewProgress: addEnergy=" + addEnergy);
         startAddEnergyEffect(addEnergy);
     }
-
 
 
     static class ItemHolder extends RecyclerView.ViewHolder {
@@ -393,11 +411,13 @@ public class TeamPkResultPager extends BasePager {
         }
 
         public void bindData(TeamEnergyAndContributionStarEntity.ContributionStar data) {
-            ImageLoader.with(ivHead.getContext()).load(data.getAvaterPath()).asBitmap(new SingleConfig.BitmapListener() {
+            ImageLoader.with(ivHead.getContext()).load(data.getAvaterPath()).asBitmap(new SingleConfig.BitmapListener
+                    () {
                 @Override
                 public void onSuccess(Drawable drawable) {
                     Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                    Bitmap resultBitmap = scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap.getHeight()) / 2);
+                    Bitmap resultBitmap = scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap
+                            .getHeight()) / 2);
                     ivHead.setImageBitmap(resultBitmap);
                 }
 
@@ -414,7 +434,8 @@ public class TeamPkResultPager extends BasePager {
 
         List<TeamEnergyAndContributionStarEntity.ContributionStar> mData;
         int itemWidth;
-        PkResultAdapter(List<TeamEnergyAndContributionStarEntity.ContributionStar> data,int itemWidth) {
+
+        PkResultAdapter(List<TeamEnergyAndContributionStarEntity.ContributionStar> data, int itemWidth) {
             mData = data;
             this.itemWidth = itemWidth;
         }
@@ -428,10 +449,10 @@ public class TeamPkResultPager extends BasePager {
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                 ViewGroup.LayoutParams layoutParams =holder.itemView.getLayoutParams();
-                 layoutParams.width = itemWidth;
-                 holder.itemView.setLayoutParams(layoutParams);
-                ((ItemHolder) holder).bindData(mData.get(position));
+            ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+            layoutParams.width = itemWidth;
+            holder.itemView.setLayoutParams(layoutParams);
+            ((ItemHolder) holder).bindData(mData.get(position));
         }
 
         @Override
@@ -441,16 +462,12 @@ public class TeamPkResultPager extends BasePager {
     }
 
 
-
-
-
-    private void playMusic(int resId,float volume,boolean loop){
-        if(soundPoolHelper == null){
-            soundPoolHelper = new SoundPoolHelper(mContext,2, AudioManager.STREAM_MUSIC);
+    private void playMusic(int resId, float volume, boolean loop) {
+        if (soundPoolHelper == null) {
+            soundPoolHelper = new SoundPoolHelper(mContext, 2, AudioManager.STREAM_MUSIC);
         }
-        soundPoolHelper.playMusic(resId,volume,loop);
+        soundPoolHelper.playMusic(resId, volume, loop);
     }
-
 
 
     @Override
@@ -470,11 +487,11 @@ public class TeamPkResultPager extends BasePager {
      * 暂停音效
      * 注 此处的暂停  只是将音量设置为0  （因为 动画和音效是 同步的）
      */
-    private void pauseMusic(){
-        Loger.e("TeamPkResultPager","======>pauseMusic called");
-        if(soundPoolHelper != null){
+    private void pauseMusic() {
+        Loger.e("TeamPkResultPager", "======>pauseMusic called");
+        if (soundPoolHelper != null) {
             for (int i = 0; i < soundResArray.length; i++) {
-                soundPoolHelper.setVolume(soundResArray[i],0);
+                soundPoolHelper.setVolume(soundResArray[i], 0);
             }
         }
 
@@ -483,21 +500,20 @@ public class TeamPkResultPager extends BasePager {
 
     /**
      * 恢复音乐播放
-     *  注释  将音量恢复为暂停之前的状态
+     * 注释  将音量恢复为暂停之前的状态
      */
-    private void resumeMusic(){
-        Loger.e("TeamPkResultPager","======>resumeMusic called");
-        if(soundPoolHelper != null){
+    private void resumeMusic() {
+        Loger.e("TeamPkResultPager", "======>resumeMusic called");
+        if (soundPoolHelper != null) {
             for (int i = 0; i < soundResArray.length; i++) {
-                if(soundResArray[i] == R.raw.war_bg){
-                    soundPoolHelper.setVolume(soundResArray[i],SOUND_VOLUME_BG);
-                }else {
-                    soundPoolHelper.setVolume(soundResArray[i],SOUND_VOLUME_FRONT);
+                if (soundResArray[i] == R.raw.war_bg) {
+                    soundPoolHelper.setVolume(soundResArray[i], SOUND_VOLUME_BG);
+                } else {
+                    soundPoolHelper.setVolume(soundResArray[i], SOUND_VOLUME_FRONT);
                 }
             }
         }
     }
-
 
 
     @Override
@@ -514,7 +530,7 @@ public class TeamPkResultPager extends BasePager {
             return;
         }
         // 显示准备战斗 状态
-        ViewGroup viewGroup = (ViewGroup) ((Activity)mContext).getWindow().getDecorView();
+        ViewGroup viewGroup = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
         TeamPKStateLayout pkStateRootView = viewGroup.findViewById(R.id.tpkL_teampk_pkstate_root);
         if (pkStateRootView != null) {
             pkStateRootView.showPkReady();
@@ -523,7 +539,7 @@ public class TeamPkResultPager extends BasePager {
         rlLottieRootView.setVisibility(View.VISIBLE);
         // 播放背景音乐
         //playMusic(SOUND_TYPE_BG, R.raw.war_bg, SOUND_VOLUME_BG, true);
-         playMusic( R.raw.war_bg, SOUND_VOLUME_BG, true);
+        playMusic(R.raw.war_bg, SOUND_VOLUME_BG, true);
 
         final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "pk_adversary/images";
         String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "pk_adversary/data.json";
@@ -532,10 +548,10 @@ public class TeamPkResultPager extends BasePager {
         final TeamPkResultLottieEffectInfo lottieEffectInfo =
                 new TeamPkResultLottieEffectInfo(lottieResPath, lottieJsonPath);
         lottieEffectInfo.setTargetFileFilter(targetFileNames);
-        lottieEffectInfo.setTextSize("img_3.png",30);
-        lottieEffectInfo.setTextSize("img_9.png",30);
-        lottieEffectInfo.setTextSize("img_4.png",40);
-        lottieEffectInfo.setTextSize("img_10.png",40);
+        lottieEffectInfo.setTextSize("img_3.png", 30);
+        lottieEffectInfo.setTextSize("img_9.png", 30);
+        lottieEffectInfo.setTextSize("img_4.png", 40);
+        lottieEffectInfo.setTextSize("img_10.png", 40);
 
         int color = Color.parseColor("#73510A");
         lottieEffectInfo.setTextColor(color);
@@ -612,25 +628,25 @@ public class TeamPkResultPager extends BasePager {
         final TeamPkResultLottieEffectInfo lottieEffectInfo =
                 new TeamPkResultLottieEffectInfo(lottieResPath, lottieJsonPath);
         lottieEffectInfo.setTargetFileFilter(targetFileNames);
-        lottieEffectInfo.setTextSize("img_15.png",26);
-        lottieEffectInfo.setTextSize("img_10.png",26);
+        lottieEffectInfo.setTextSize("img_15.png", 26);
+        lottieEffectInfo.setTextSize("img_10.png", 26);
 
-        lottieEffectInfo.setTextSize("img_16.png",32);
-        lottieEffectInfo.setTextSize("img_11.png",32);
+        lottieEffectInfo.setTextSize("img_16.png", 32);
+        lottieEffectInfo.setTextSize("img_11.png", 32);
 
         int color = Color.parseColor("#73510A");
         lottieEffectInfo.setTextColor(color);
-        lottieEffectInfo.addTeacherName("img_15.png", mFinalPkRsult.getMyTeamResultInfo().getTeacherName());
-        lottieEffectInfo.addTeacherName("img_10.png", mFinalPkRsult.getCompetitorResultInfo().getTeacherName());
+        lottieEffectInfo.addTeacherName("img_15.png", mFinalPkResult.getMyTeamResultInfo().getTeacherName());
+        lottieEffectInfo.addTeacherName("img_10.png", mFinalPkResult.getCompetitorResultInfo().getTeacherName());
 
-        lottieEffectInfo.addSlogan("img_16.png", mFinalPkRsult.getMyTeamResultInfo().getSlogon());
-        lottieEffectInfo.addSlogan("img_11.png", mFinalPkRsult.getCompetitorResultInfo().getSlogon());
+        lottieEffectInfo.addSlogan("img_16.png", mFinalPkResult.getMyTeamResultInfo().getSlogon());
+        lottieEffectInfo.addSlogan("img_11.png", mFinalPkResult.getCompetitorResultInfo().getSlogon());
 
-        lottieEffectInfo.addLogo("img_17.png", mFinalPkRsult.getMyTeamResultInfo().getImg());
-        lottieEffectInfo.addLogo("img_7.png", mFinalPkRsult.getCompetitorResultInfo().getImg());
+        lottieEffectInfo.addLogo("img_17.png", mFinalPkResult.getMyTeamResultInfo().getImg());
+        lottieEffectInfo.addLogo("img_7.png", mFinalPkResult.getCompetitorResultInfo().getImg());
 
-        lottieEffectInfo.addTeacherHead("img_14.png", mFinalPkRsult.getMyTeamResultInfo().getTeacherImg());
-        lottieEffectInfo.addTeacherHead("img_9.png", mFinalPkRsult.getCompetitorResultInfo().getTeacherImg());
+        lottieEffectInfo.addTeacherHead("img_14.png", mFinalPkResult.getMyTeamResultInfo().getTeacherImg());
+        lottieEffectInfo.addTeacherHead("img_9.png", mFinalPkResult.getCompetitorResultInfo().getTeacherImg());
 
         try {
             lottieAnimationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext));
@@ -664,25 +680,25 @@ public class TeamPkResultPager extends BasePager {
         final TeamPkResultLottieEffectInfo lottieEffectInfo =
                 new TeamPkResultLottieEffectInfo(lottieResPath, lottieJsonPath);
         lottieEffectInfo.setTargetFileFilter(targetFileNames);
-        lottieEffectInfo.setTextSize("img_14.png",26);
-        lottieEffectInfo.setTextSize("img_9.png",26);
+        lottieEffectInfo.setTextSize("img_14.png", 26);
+        lottieEffectInfo.setTextSize("img_9.png", 26);
 
-        lottieEffectInfo.setTextSize("img_15.png",35);
-        lottieEffectInfo.setTextSize("img_10.png",35);
+        lottieEffectInfo.setTextSize("img_15.png", 35);
+        lottieEffectInfo.setTextSize("img_10.png", 35);
 
         int color = Color.parseColor("#73510A");
         lottieEffectInfo.setTextColor(color);
-        lottieEffectInfo.addTeacherName("img_14.png", mFinalPkRsult.getMyTeamResultInfo().getTeacherName());
-        lottieEffectInfo.addTeacherName("img_9.png", mFinalPkRsult.getCompetitorResultInfo().getTeacherName());
+        lottieEffectInfo.addTeacherName("img_14.png", mFinalPkResult.getMyTeamResultInfo().getTeacherName());
+        lottieEffectInfo.addTeacherName("img_9.png", mFinalPkResult.getCompetitorResultInfo().getTeacherName());
 
-        lottieEffectInfo.addSlogan("img_15.png", mFinalPkRsult.getMyTeamResultInfo().getSlogon());
-        lottieEffectInfo.addSlogan("img_10.png", mFinalPkRsult.getCompetitorResultInfo().getSlogon());
+        lottieEffectInfo.addSlogan("img_15.png", mFinalPkResult.getMyTeamResultInfo().getSlogon());
+        lottieEffectInfo.addSlogan("img_10.png", mFinalPkResult.getCompetitorResultInfo().getSlogon());
 
-        lottieEffectInfo.addLogo("img_16.png", mFinalPkRsult.getMyTeamResultInfo().getImg());
-        lottieEffectInfo.addLogo("img_6.png", mFinalPkRsult.getCompetitorResultInfo().getImg());
+        lottieEffectInfo.addLogo("img_16.png", mFinalPkResult.getMyTeamResultInfo().getImg());
+        lottieEffectInfo.addLogo("img_6.png", mFinalPkResult.getCompetitorResultInfo().getImg());
 
-        lottieEffectInfo.addTeacherHead("img_13.png", mFinalPkRsult.getMyTeamResultInfo().getTeacherImg());
-        lottieEffectInfo.addTeacherHead("img_8.png", mFinalPkRsult.getCompetitorResultInfo().getTeacherImg());
+        lottieEffectInfo.addTeacherHead("img_13.png", mFinalPkResult.getMyTeamResultInfo().getTeacherImg());
+        lottieEffectInfo.addTeacherHead("img_8.png", mFinalPkResult.getCompetitorResultInfo().getTeacherImg());
 
         try {
             lottieAnimationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext));
@@ -714,30 +730,31 @@ public class TeamPkResultPager extends BasePager {
                 new TeamPkResultLottieEffectInfo(lottieResPath, lottieJsonPath);
         lottieEffectInfo.setTargetFileFilter(targetFileNames);
 
-        lottieEffectInfo.setTextSize("img_13.png",26);
-        lottieEffectInfo.setTextSize("img_9.png",21);
+        lottieEffectInfo.setTextSize("img_13.png", 26);
+        lottieEffectInfo.setTextSize("img_9.png", 21);
 
 
-        lottieEffectInfo.setTextSize("img_14.png",35);
-        lottieEffectInfo.setTextSize("img_10.png",27);
+        lottieEffectInfo.setTextSize("img_14.png", 35);
+        lottieEffectInfo.setTextSize("img_10.png", 27);
 
         int color = Color.parseColor("#73510A");
         lottieEffectInfo.setTextColor(color);
-        lottieEffectInfo.addTeacherName("img_13.png", mFinalPkRsult.getMyTeamResultInfo().getTeacherName());
-        lottieEffectInfo.addTeacherName("img_9.png", mFinalPkRsult.getCompetitorResultInfo().getTeacherName());
+        lottieEffectInfo.addTeacherName("img_13.png", mFinalPkResult.getMyTeamResultInfo().getTeacherName());
+        lottieEffectInfo.addTeacherName("img_9.png", mFinalPkResult.getCompetitorResultInfo().getTeacherName());
 
-        lottieEffectInfo.addSlogan("img_14.png", mFinalPkRsult.getMyTeamResultInfo().getSlogon());
-        lottieEffectInfo.addSlogan("img_10.png", mFinalPkRsult.getCompetitorResultInfo().getSlogon());
+        lottieEffectInfo.addSlogan("img_14.png", mFinalPkResult.getMyTeamResultInfo().getSlogon());
+        lottieEffectInfo.addSlogan("img_10.png", mFinalPkResult.getCompetitorResultInfo().getSlogon());
 
-        lottieEffectInfo.addLogo("img_15.png", mFinalPkRsult.getMyTeamResultInfo().getImg());
-        lottieEffectInfo.addLogo("img_6.png", mFinalPkRsult.getCompetitorResultInfo().getImg());
+        lottieEffectInfo.addLogo("img_15.png", mFinalPkResult.getMyTeamResultInfo().getImg());
+        lottieEffectInfo.addLogo("img_6.png", mFinalPkResult.getCompetitorResultInfo().getImg());
 
-        Log.e("TeamPkResultPager","======>showWin myTeamLogoUrl:"+mFinalPkRsult.getMyTeamResultInfo().getImg());
-        Log.e("TeamPkResultPager","======>showWin otherTeamLogoUrl:"+mFinalPkRsult.getCompetitorResultInfo().getImg());
+        Log.e("TeamPkResultPager", "======>showWin myTeamLogoUrl:" + mFinalPkResult.getMyTeamResultInfo().getImg());
+        Log.e("TeamPkResultPager", "======>showWin otherTeamLogoUrl:" + mFinalPkResult.getCompetitorResultInfo()
+                .getImg());
 
 
-        lottieEffectInfo.addTeacherHead("img_12.png", mFinalPkRsult.getMyTeamResultInfo().getTeacherImg());
-        lottieEffectInfo.addTeacherHead("img_8.png", mFinalPkRsult.getCompetitorResultInfo().getTeacherImg());
+        lottieEffectInfo.addTeacherHead("img_12.png", mFinalPkResult.getMyTeamResultInfo().getTeacherImg());
+        lottieEffectInfo.addTeacherHead("img_8.png", mFinalPkResult.getCompetitorResultInfo().getTeacherImg());
 
         try {
             lottieAnimationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext));
@@ -807,9 +824,9 @@ public class TeamPkResultPager extends BasePager {
 
     private void releaseSoundRes() {
 
-      if(soundPoolHelper != null){
-          soundPoolHelper.release();
-      }
+        if (soundPoolHelper != null) {
+            soundPoolHelper.release();
+        }
 
     }
 
@@ -840,7 +857,7 @@ public class TeamPkResultPager extends BasePager {
                             turn2openBox();
                             closePkResultPager();
                         }
-                    },500);
+                    }, 500);
                     break;
             }
         }
@@ -857,11 +874,11 @@ public class TeamPkResultPager extends BasePager {
     }
 
     private void turn2openBox() {
-        if (mFinalPkRsult != null && mFinalPkRsult.getMyTeamResultInfo()
-                != null && mFinalPkRsult.getCompetitorResultInfo() != null) {
+        if (mFinalPkResult != null && mFinalPkResult.getMyTeamResultInfo()
+                != null && mFinalPkResult.getCompetitorResultInfo() != null) {
             Loger.e("teamPkResultPager", "======>turn2openBox called");
-            mTeamPkBll.showOpenBoxScene(mFinalPkRsult.getMyTeamResultInfo().getEnergy()
-                    >= mFinalPkRsult.getCompetitorResultInfo().getEnergy());
+            mTeamPkBll.showOpenBoxScene(mFinalPkResult.getMyTeamResultInfo().getEnergy()
+                    >= mFinalPkResult.getCompetitorResultInfo().getEnergy());
         }
     }
 
