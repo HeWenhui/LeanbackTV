@@ -79,6 +79,7 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
         int increment;
         int currentNum;
         boolean isRunning;
+        boolean canceled;
 
         IncrementTask(int startNum, int addNum, int increment, long timeGap) {
             this.startNum = startNum;
@@ -92,6 +93,10 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
 
         @Override
         public void run() {
+            if(canceled)
+            {
+                return;
+            }
             if (currentNum <= endNum) {
                 isRunning = true;
                 SmoothAddNumTextView.this.setText(currentNum + "");
@@ -104,6 +109,7 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
         }
 
         public void cancel(){
+            canceled = true;
             currentNum = endNum;
             SmoothAddNumTextView.this.setText(endNum + "");
         }
@@ -119,13 +125,11 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
         return task != null && task.isRunning();
     }
 
-
     public void cancleAnim(){
       if(task != null){
           task.cancel();
           removeCallbacks(task);
       }
-
     }
 
 

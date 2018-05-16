@@ -151,8 +151,14 @@ public class TeamPKStateLayout extends FrameLayout {
         int addProgress = (int) (ratio * 100 + 0.5f) - pkProgressBar.getProgress();
         if(addProgress > 0){
             pkProgressBar.smoothAddProgress(addProgress);
+            Loger.e("coinNum","====>updateData smoothAddProgress:"+addProgress+":"+pkProgressBar.getProgress());
+
         }else{
+            if(pkProgressBar.isAnimRunning()){
+                pkProgressBar.cancle();
+            }
             pkProgressBar.setProgress((int) (ratio * 100));
+            Loger.e("coinNum","====>updateData setProgress:"+(int) (ratio * 100));
         }
     }
 

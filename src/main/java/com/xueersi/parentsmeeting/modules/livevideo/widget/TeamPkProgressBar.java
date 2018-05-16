@@ -247,6 +247,7 @@ public class TeamPkProgressBar extends View {
      * @param progress 进度增量
      */
     public void smoothAddProgress(int progress) {
+        canceled = false;
         mProgress += progress;
         float endBound = progressRect.width() * getProgress() / getMaxProgress();
         if (anim != null) {
@@ -258,12 +259,26 @@ public class TeamPkProgressBar extends View {
     }
 
 
+    boolean animRunning;
+    boolean canceled;
+
+    public boolean isAnimRunning(){
+        return animRunning;
+    }
+
+    public void cancle(){
+        canceled = true;
+        animRunning = false;
+        setProgress(mProgress);
+    }
+
     float tempOffsetX;
 
     @Override
     public void computeScroll() {
 
-        if (anim != null && (tempOffsetX = anim.computeProgress()) > 0) {
+        if (anim != null && (tempOffsetX = anim.computeProgress()) > 0 && !canceled) {
+            animRunning = true;
             //动画时间进行了一半
             if (anim.getAnimRatio() > 0.5f) {
 
@@ -275,6 +290,8 @@ public class TeamPkProgressBar extends View {
             setProgressRightBound(tempOffsetX);
             // Log.e("TeamPkProgressBar", "=========>computeScroll:" + tempOffsetX + ":" + sliderBgScaleRatio);
             invalidate();
+        }else{
+            animRunning = false;
         }
     }
 

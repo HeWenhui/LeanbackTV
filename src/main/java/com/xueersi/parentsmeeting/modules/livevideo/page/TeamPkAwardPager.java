@@ -495,7 +495,7 @@ public class TeamPkAwardPager extends BasePager {
     private void getStuChestInfo() {
         teamPKBll.getmHttpManager().getStuChest(mIsWin?1:0, teamPKBll.getRoomInitInfo().getStudentLiveInfo().getClassId()
                 , teamPKBll.getRoomInitInfo().getStudentLiveInfo().getTeamId(),
-                teamPKBll.getRoomInitInfo().getStuId(), teamPKBll.getmLiveBll().getLiveId(), new HttpCallBack() {
+                teamPKBll.getRoomInitInfo().getStuId(), teamPKBll.getLiveBll().getLiveId(), new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         StudentChestEntity studentChestEntity = teamPKBll.getmHttpResponseParser().parseStuChest(responseEntity);

@@ -29,7 +29,7 @@ public class TimeCountDowTextView extends android.support.v7.widget.AppCompatTex
     }
     /**
      *
-     * @param time
+     * @param time 倒计时总时长
      */
     public void setTimeDuration(int time){
         mDuration = time;
