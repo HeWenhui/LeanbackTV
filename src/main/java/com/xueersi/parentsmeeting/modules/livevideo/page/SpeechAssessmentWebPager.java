@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
+import android.webkit.JsResult;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -31,6 +32,7 @@ import com.xueersi.xesalib.utils.audio.AudioPlayerListening;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.utils.string.StringUtils;
+import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -198,21 +200,36 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
     }
 
     public class MyWebChromeClient extends android.webkit.WebChromeClient {
-//        @Override
-//        public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
-//            VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext,
-// mBaseApplication, false, MESSAGE_VERIFY_TYPE);
-//            verifyCancelAlertDialog.initInfo(message);
-//            verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    wvSubjectWeb.reload();
-//                }
-//            });
-//            verifyCancelAlertDialog.showDialog();
-//            result.confirm();
-//            return true;
-//        }
+        @Override
+        public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
+            VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext,
+                    mBaseApplication, false, VerifyCancelAlertDialog.MESSAGE_VERIFY_TYPE);
+            verifyCancelAlertDialog.initInfo(message);
+            verifyCancelAlertDialog.showDialog();
+            result.confirm();
+            return true;
+        }
+
+        @Override
+        public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
+            VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext,
+                    mBaseApplication, false, VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+            verifyCancelAlertDialog.initInfo(message);
+            verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    result.confirm();
+                }
+            });
+            verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    result.cancel();
+                }
+            });
+            verifyCancelAlertDialog.showDialog();
+            return true;
+        }
 
         @Override
         public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
