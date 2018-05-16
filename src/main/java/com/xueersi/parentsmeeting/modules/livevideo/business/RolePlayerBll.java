@@ -27,8 +27,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpResponseP
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayerPager;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.permission.PermissionCallback;
+import com.xueersi.parentsmeeting.permission.PermissionItem;
 import com.xueersi.parentsmeeting.permission.XesPermission;
 import com.xueersi.parentsmeeting.permission.config.PermissionConfig;
+import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 
@@ -37,6 +39,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,6 +102,9 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
     private RolePlayerHttpResponseParser mRolePlayerHttpResponseParser;
     private boolean mIsCancelDZ = false;//是否已经取消了点赞
+    private boolean mIsBeginSocket;
+    private boolean isStart;//是否开始了申请权限
+    private boolean isGoToRobot;//是否开始了人机
 
     public RolePlayerBll(Context context, RelativeLayout bottomContent, LiveBll liveBll) {
         super(context);
@@ -113,9 +119,79 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      */
     @Override
     public void teacherRead(String liveId, String stuCouId) {
+        if (isStart) {
+            return;
+        }
+        isStart = true;
         this.mLiveId = liveId;
         this.mStuCouId = stuCouId;
-        boolean isHasVideo = XesPermission.checkPermissionNoAlert(mContext, new PermissionCallback() {
+
+        final List<PermissionItem> unList = new ArrayList<>();
+
+        List<PermissionItem> unPermissionItems = XesPermission.checkPermissionUnPerList(mContext, new
+                PermissionCallback() {
+
+            @Override
+            public void onFinish() {
+                Loger.i("RolePlayerDemoTest", "onFinish");
+                if (unList.isEmpty() && isStart && !SpeechEvaluatorUtils.isOfflineFail()) {
+                    Loger.i("RolePlayerDemoTest", "开启了录音拍照权限，且离线加载成功开始去请求分组");
+                    beginConWebSocket();
+                } else {
+                    Loger.i("RolePlayerDemoTest", "走人机");
+                    goToRobot();
+                }
+            }
+
+            @Override
+            public void onDeny(String permission, int position) {
+                XESToastUtils.showToast(mContext, "没开启录音权限无法参与RolePlayer");
+                Loger.i("RolePlayerDemoTest", "没开启录音权限无法参与RolePlayer");
+            }
+
+            @Override
+            public void onGuarantee(String permission, int position) {
+                Loger.i("RolePlayerDemoTest", "开启了" + permission + "权限");
+                unList.remove(0);
+
+
+            }
+        }, PermissionConfig.PERMISSION_CODE_AUDIO, PermissionConfig.PERMISSION_CODE_CAMERA);
+
+        Loger.i("RolePlayerDemoTest", "permissionItems " + unPermissionItems.size());
+
+        unList.addAll(unPermissionItems);
+        if (unList.isEmpty() && !SpeechEvaluatorUtils.isOfflineFail()) {
+            Loger.i("RolePlayerDemoTest", "开启了录音拍照权限，且离线加载成功开始去请求分组");
+            beginConWebSocket();
+        } else {
+            Loger.i("RolePlayerDemoTest", "走人机");
+            goToRobot();
+        }
+
+
+        /*  Loger.i("RolePlayerDemoTest", "isHasVideo "+isHasVideo+" SpeechEvaluatorUtils.isOfflineFail() "
+        +SpeechEvaluatorUtils.isOfflineFail());
+          if (isHasVideo && !SpeechEvaluatorUtils.isOfflineFail()) {
+                Loger.i("RolePlayerDemoTest", "isHasVideo = " + isHasVideo+" 拍照，录音，权限授予；离线加载成功，请求分组");
+                beginConWebSocket();
+                mIsBeginSocket = true;
+            } else {
+                Loger.i("RolePlayerDemoTest", "isHasVideo = " + isHasVideo+" 拍照，录音，权限未授予；或离线加载失败，不再请求分组，进人机");
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        XesPermission.checkPermission(mContext, PermissionConfig.PERMISSION_CODE_AUDIO,
+                        PermissionConfig.PERMISSION_CODE_CAMERA);
+                        if (mIsBeginSocket) {
+                            Loger.i("RolePlayerDemoTest", "延迟了3秒去再次请求权限");
+                            beginConWebSocket();
+                        }
+                    }
+                }, 3000);
+            }*/
+
+       /* boolean isHasVideo = XesPermission.checkPermission(mContext, new PermissionCallback() {
 
             @Override
             public void onFinish() {
@@ -131,25 +207,29 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             @Override
             public void onGuarantee(String permission, int position) {
                 Loger.i("RolePlayerDemoTest", "开启了录音权限，开始去请求分组");
-                beginConWebSocket();
+                //beginConWebSocket();
             }
-        }, PermissionConfig.PERMISSION_CODE_AUDIO);
-
-        if (isHasVideo) {
-            Loger.i("RolePlayerDemoTest", "isHasVideo = " + isHasVideo);
+        }, PermissionConfig.PERMISSION_CODE_AUDIO,PermissionConfig.PERMISSION_CODE_CAMERA);
+        Loger.i("RolePlayerDemoTest", "isHasVideo "+isHasVideo+" SpeechEvaluatorUtils.isOfflineFail() "
+        +SpeechEvaluatorUtils.isOfflineFail());
+        if (isHasVideo && !SpeechEvaluatorUtils.isOfflineFail()) {
+            Loger.i("RolePlayerDemoTest", "isHasVideo = " + isHasVideo+" 拍照，录音，权限授予；离线加载成功，请求分组");
             beginConWebSocket();
+            mIsBeginSocket = true;
         } else {
-            Loger.i("RolePlayerDemoTest", "isHasVideo = " + isHasVideo);
+            Loger.i("RolePlayerDemoTest", "isHasVideo = " + isHasVideo+" 拍照，录音，权限未授予；或离线加载失败，不再请求分组，进人机");
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (XesPermission.checkPermissionNoAlert(mContext, PermissionConfig.PERMISSION_CODE_AUDIO)) {
-                        Loger.i("RolePlayerDemoTest", "延迟了3秒去请求分组");
+                    XesPermission.checkPermission(mContext, PermissionConfig.PERMISSION_CODE_AUDIO,PermissionConfig
+                    .PERMISSION_CODE_CAMERA);
+                    if (mIsBeginSocket) {
+                        Loger.i("RolePlayerDemoTest", "延迟了3秒去再次请求权限");
                         beginConWebSocket();
                     }
                 }
             }, 3000);
-        }
+        }*/
 
     }
 
@@ -208,6 +288,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      */
     @Override
     public void goToRobot() {
+
         Loger.d(TAG, "进人机");
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
@@ -225,6 +306,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             oldvideoQuestionLiveEntity.multiRolePlay = "0";
             videoQuestionLiveEntity = null;
             onError.onError(oldvideoQuestionLiveEntity);
+
         }
     }
 
@@ -609,19 +691,19 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                     int gold = jsonObject.optInt("gold");
                     mRolePlayerEntity.setGoldCount(gold);
-                    Loger.i("RolePlayerDemoTest", "onPmSuccess: gold  =" + gold+"取消点赞");
+                    Loger.i("RolePlayerDemoTest", "onPmSuccess: gold  =" + gold + "取消点赞");
                 }
 
                 @Override
                 public void onFailure(Call call, IOException e) {
                     super.onFailure(call, e);
-                    Loger.i("RolePlayerDemoTest", "onFailure: e.getMessage()  =" + e.getMessage()+"取消点赞");
+                    Loger.i("RolePlayerDemoTest", "onFailure: e.getMessage()  =" + e.getMessage() + "取消点赞");
                 }
 
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
                     Loger.i("RolePlayerDemoTest", "onPmError: responseEntity.toString()  =" + responseEntity.toString
-                            ()+"取消点赞");
+                            () + "取消点赞");
                     super.onPmError(responseEntity);
                 }
             });
@@ -636,11 +718,12 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      */
     public synchronized void cancelDZ() {
         RolePlayerEntity tempRolePlayerEntity = mRolePlayerEntity;
-        List<RolePlayerEntity.RolePlayerMessage> rolePlayerMessages =  tempRolePlayerEntity.getLstRolePlayerMessage();
-        for (int i = 0; i< rolePlayerMessages.size(); i++){
+        List<RolePlayerEntity.RolePlayerMessage> rolePlayerMessages = tempRolePlayerEntity.getLstRolePlayerMessage();
+        for (int i = 0; i < rolePlayerMessages.size(); i++) {
             RolePlayerEntity.RolePlayerHead head = mRolePlayerEntity.getLstRolePlayerMessage().get(i).getRolePlayer();
-            if(!head.isSelfRole()){
-                mRolePlayerEntity.getLstRolePlayerMessage().get(i).setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ);
+            if (!head.isSelfRole()) {
+                mRolePlayerEntity.getLstRolePlayerMessage().get(i).setMsgStatus(RolePlayerEntity
+                        .RolePlayerMessageStatus.CANCEL_DZ);
                 mRolePlayerPager.updateRolePlayList(rolePlayerMessages.get(i));
             }
 
