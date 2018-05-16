@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -35,6 +36,8 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
     private RelativeLayout rlLiveMessageContent;
     private LiveBll mLiveBll;
     private boolean openchat;
+    /** 是不是正在答题 */
+    private boolean isAnaswer = false;
     private String mode = null;
     /** 横屏聊天信息 */
     private ArrayList<LiveMessageEntity> liveMessageLandEntities = new ArrayList<>();
@@ -46,6 +49,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
     /** 聊天中老师连接是否可以点击 */
     public int urlclick = 0;
     public LiveGetInfo getInfo;
+    Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public LiveMessageBll(Activity activity, int liveType) {
         this.activity = activity;
@@ -128,11 +132,19 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
             mLiveMessagePager.onUserList("", new User[peopleCount.get()]);
         }
         mLiveMessagePager.closeChat(isCloseChat);
-
+        mLiveMessagePager.onQuestionShow(isAnaswer);
         if (mode != null) {
             mLiveMessagePager.onopenchat(openchat, mode, false);
         }
-        rlLiveMessageContent.addView(mLiveMessagePager.getRootView(), params);
+        final View view = mLiveMessagePager.getRootView();
+        view.setVisibility(View.INVISIBLE);
+        rlLiveMessageContent.addView(view, params);
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                view.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     public void initViewLive(RelativeLayout bottomContent) {
@@ -485,6 +497,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
 
     @Override
     public void onQuestionShow(boolean isShow) {
+        isAnaswer = isShow;
         if (mLiveMessagePager != null) {
             mLiveMessagePager.onQuestionShow(isShow);
         }

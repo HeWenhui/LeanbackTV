@@ -945,7 +945,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     /** 关闭开启聊天 */
     public void onopenchat(final boolean openchat, final String mode, final boolean fromNotice) {
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (liveBll.isDisable()) {
@@ -1144,7 +1144,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     @Override
     public void onQuestionShow(final boolean isShow) {
         isAnaswer = isShow;
-        mView.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (isShow) {
