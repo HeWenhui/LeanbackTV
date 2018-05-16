@@ -126,17 +126,20 @@ public class RolePlayerOtherItem extends RolePlayerItem {
         AudioPlayerManager.get(ContextManager.getApplication()).start(mEntity.getWebVoiceUrl(), new PlayerCallback() {
             @Override
             public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
+                Loger.i("RolePlayerDemoTest", "完成播放");
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
             }
 
             @Override
             public void onStop(Object dataSource, AudioPlayerManager manager) {
                 super.onStop(dataSource, manager);
+                Loger.i("RolePlayerDemoTest", "停止播放");
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
             }
 
             @Override
             public void onPreparing(Object dataSource, AudioPlayerManager manager) {
+                Loger.i("RolePlayerDemoTest", "准备播放");
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_other_voice_white_anim);
                 AnimationDrawable animationDrawable = null;
                 animationDrawable = (AnimationDrawable) ivVoiceAnimtor.getBackground();
