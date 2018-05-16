@@ -203,7 +203,7 @@ public class TeamPKStateLayout extends FrameLayout {
 
     private void upDataSateText(float ratio) {
         //tvState.setVisibility(ratio != 0.5f?VISIBLE:GONE);
-        if(this.showPopWindow || !dataInited){
+        if(this.showPopWindow){
             this.showPopWindow = false;
             //Logger.e("teamPkStateLayout", "======>upDataSateText:" + ratio);
             if (mMyteamAnergy == 0 && mOtherTeamAnergy == 0) {
@@ -225,6 +225,17 @@ public class TeamPKStateLayout extends FrameLayout {
         }
 
     }
+
+
+    /**
+     * 显示 准备战斗提示
+     */
+    public void showPkReady(){
+        tvState.setText("准备战斗");
+        tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_ready_bg);
+        showPkSateBar();
+    }
+
 
     /**
      * 淡入 淡出展示  当前pk 状态

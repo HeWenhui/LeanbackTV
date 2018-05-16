@@ -39,6 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkResultLottieEff
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ContributionLayoutManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPKStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -512,6 +513,13 @@ public class TeamPkResultPager extends BasePager {
         if (data == null) {
             return;
         }
+        // 显示准备战斗 状态
+        ViewGroup viewGroup = (ViewGroup) ((Activity)mContext).getWindow().getDecorView();
+        TeamPKStateLayout pkStateRootView = viewGroup.findViewById(R.id.tpkL_teampk_pkstate_root);
+        if (pkStateRootView != null) {
+            pkStateRootView.showPkReady();
+        }
+
         rlLottieRootView.setVisibility(View.VISIBLE);
         // 播放背景音乐
         //playMusic(SOUND_TYPE_BG, R.raw.war_bg, SOUND_VOLUME_BG, true);

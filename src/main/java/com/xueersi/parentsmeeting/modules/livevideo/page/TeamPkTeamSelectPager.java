@@ -8,7 +8,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.media.AudioManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -75,7 +74,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
      * 分队仪式 资源在asset中的相对路径
      */
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "team_pk/team_select/";
-    private TeamPkRecyclerView teamsRecyclView;
+    private TeamPkRecyclerView teamsRecyclerView;
     private TeamAdapter teamAdapter;
 
     private static final int ANIMTYPE_START = 1;
@@ -753,14 +752,14 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         lavTeamSelectAnimView.setVisibility(View.GONE);
         lavTeamSelectAnimView.setImageDrawable(null);
 
-        teamsRecyclView = getRootView().findViewById(R.id.rcl_teampk_team);
-        teamsRecyclView.setLayoutManager(new GridLayoutManager(mContext, spanCount,
+        teamsRecyclerView = getRootView().findViewById(R.id.rcl_teampk_team);
+        teamsRecyclerView.setLayoutManager(new GridLayoutManager(mContext, spanCount,
                 LinearLayoutManager.VERTICAL, false));
         teamAdapter = new TeamAdapter(ADAPTER_TYPE_TEAM);
-        teamsRecyclView.setAdapter(teamAdapter);
-        teamsRecyclView.setVisibility(View.VISIBLE);
+        teamsRecyclerView.setAdapter(teamAdapter);
+        teamsRecyclerView.setVisibility(View.VISIBLE);
 
-        /*teamsRecyclView.addItemDecoration(new RecyclerView.ItemDecoration() {
+        /*teamsRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                 int itemPosition = parent.getChildAdapterPosition(view);
@@ -778,10 +777,10 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
 
         GridLayoutAnimationController animationController = (GridLayoutAnimationController)
                 AnimationUtils.loadLayoutAnimation(mContext, R.anim.anim_livevido_teampk_team_list);
-        teamsRecyclView.setLayoutAnimation(animationController);
-        teamsRecyclView.scheduleLayoutAnimation();
+        teamsRecyclerView.setLayoutAnimation(animationController);
+        teamsRecyclerView.scheduleLayoutAnimation();
 
-        teamsRecyclView.postDelayed(new Runnable() {
+        teamsRecyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {
                 playMarquee();
@@ -855,8 +854,8 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
             teamItemAnimInfoList.clear();
         }
 
-        if (teamsRecyclView != null && teamsRecyclView.getParent() != null) {
-            ((ViewGroup) teamsRecyclView.getParent()).removeView(teamsRecyclView);
+        if (teamsRecyclerView != null && teamsRecyclerView.getParent() != null) {
+            ((ViewGroup) teamsRecyclerView.getParent()).removeView(teamsRecyclerView);
         }
     }
 
@@ -875,7 +874,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
             teamItemAnimInfoList = new ArrayList<TeamItemAnimInfo>();
         }
         int adapterPosition = mTeamIndex % teamAdapter.getItemCount();
-        RecyclerView.ViewHolder viewHolder = teamsRecyclView.findViewHolderForAdapterPosition(adapterPosition);
+        RecyclerView.ViewHolder viewHolder = teamsRecyclerView.findViewHolderForAdapterPosition(adapterPosition);
         if (teamItemAnimInfoList.size() >= teamAdapter.getItemCount()) {
             TeamItemAnimInfo animInfo = teamItemAnimInfoList.get(adapterPosition);
             animInfo.mUpdateListener.reset();
