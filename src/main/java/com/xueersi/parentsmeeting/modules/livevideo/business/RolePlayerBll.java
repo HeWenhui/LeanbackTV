@@ -103,7 +103,6 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     private RolePlayerHttpResponseParser mRolePlayerHttpResponseParser;
     private boolean mIsCancelDZ = false;//是否已经取消了点赞
     private boolean mIsBeginSocket;
-    private boolean isStart;//是否开始了申请权限
     private boolean isGoToRobot;//是否开始了人机
 
     public RolePlayerBll(Context context, RelativeLayout bottomContent, LiveBll liveBll) {
@@ -119,10 +118,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      */
     @Override
     public void teacherRead(String liveId, String stuCouId) {
-        if (isStart) {
-            return;
-        }
-        isStart = true;
+        isGoToRobot = false;
+
         this.mLiveId = liveId;
         this.mStuCouId = stuCouId;
 
@@ -134,13 +131,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             @Override
             public void onFinish() {
                 Loger.i("RolePlayerDemoTest", "onFinish");
-                if (unList.isEmpty() && isStart && !SpeechEvaluatorUtils.isOfflineFail()) {
-                    Loger.i("RolePlayerDemoTest", "开启了录音拍照权限，且离线加载成功开始去请求分组");
-                    beginConWebSocket();
-                } else {
-                    Loger.i("RolePlayerDemoTest", "走人机");
-                    goToRobot();
-                }
+
             }
 
             @Override
@@ -153,19 +144,32 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             public void onGuarantee(String permission, int position) {
                 Loger.i("RolePlayerDemoTest", "开启了" + permission + "权限");
                 unList.remove(0);
+                if (unList.isEmpty() && !SpeechEvaluatorUtils.isOfflineFail()) {
+                    Loger.i("RolePlayerDemoTest", "开启了录音拍照权限，且离线加载成功开始去请求分组");
+                    beginConWebSocket();
+                } else {
+                    if(isGoToRobot){
+                        return;
+                    }
+                    Loger.i("RolePlayerDemoTest", "没有权限或者离线包失败，走人机");
+                    goToRobot();
+                }
 
 
             }
         }, PermissionConfig.PERMISSION_CODE_AUDIO, PermissionConfig.PERMISSION_CODE_CAMERA);
 
-        Loger.i("RolePlayerDemoTest", "permissionItems " + unPermissionItems.size());
+        Loger.i("RolePlayerDemoTest", "permissionItems " + unPermissionItems.size()+"  SpeechEvaluatorUtils.isOfflineFail() = "+SpeechEvaluatorUtils.isOfflineFail());
 
         unList.addAll(unPermissionItems);
         if (unList.isEmpty() && !SpeechEvaluatorUtils.isOfflineFail()) {
             Loger.i("RolePlayerDemoTest", "开启了录音拍照权限，且离线加载成功开始去请求分组");
             beginConWebSocket();
         } else {
-            Loger.i("RolePlayerDemoTest", "走人机");
+            if(isGoToRobot){
+                return;
+            }
+            Loger.i("RolePlayerDemoTest", "没有权限或者离线包失败，走人机");
             goToRobot();
         }
 
@@ -288,7 +292,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      */
     @Override
     public void goToRobot() {
-
+        isGoToRobot = true;
         Loger.d(TAG, "进人机");
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
