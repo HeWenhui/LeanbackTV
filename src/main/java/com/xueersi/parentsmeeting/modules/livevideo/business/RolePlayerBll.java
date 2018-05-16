@@ -159,7 +159,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             }
         }, PermissionConfig.PERMISSION_CODE_AUDIO, PermissionConfig.PERMISSION_CODE_CAMERA);
 
-        Loger.i("RolePlayerDemoTest", "permissionItems " + unPermissionItems.size()+"  SpeechEvaluatorUtils.isOfflineFail() = "+SpeechEvaluatorUtils.isOfflineFail());
+        Loger.i("RolePlayerDemoTest", "unpermissionItems " + unPermissionItems.size()+"  SpeechEvaluatorUtils.isOfflineFail() = "+SpeechEvaluatorUtils.isOfflineFail());
 
         unList.addAll(unPermissionItems);
         if (unList.isEmpty() && !SpeechEvaluatorUtils.isOfflineFail()) {

@@ -22,6 +22,9 @@ import com.xueersi.xesalib.utils.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.xesalib.utils.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.xesalib.utils.listener.OnAlphaTouchListener;
 import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.xesalib.utils.network.NetWorkHelper;
+
+import ren.yale.android.cachewebviewlib.utils.NetworkUtils;
 
 
 /**
@@ -103,8 +106,8 @@ public class RolePlayerOtherItem extends RolePlayerItem {
 
             @Override
             public void onClick(View view) {
-                if (!TextUtils.isEmpty(mEntity.getWebVoiceUrl())) {
-                    //只有当这个URL不为空时才可以点击播放
+                if (!TextUtils.isEmpty(mEntity.getWebVoiceUrl()) && NetWorkHelper.isNetworkAvailable(mContext)) {
+                    //只有当这个URL不为空时且有网才可以点击播放
                     Loger.i("RolePlayerDemoTest", "点击他人语音：url = " + mEntity.getWebVoiceUrl());
 
                     voiceClick();

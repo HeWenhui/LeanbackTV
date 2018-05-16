@@ -25,6 +25,7 @@ import com.xueersi.xesalib.utils.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.xesalib.utils.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.xesalib.utils.listener.OnAlphaTouchListener;
 import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
 
@@ -99,7 +100,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
         vVoiceMain.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!TextUtils.isEmpty(mEntity.getWebVoiceUrl())) {
+                if (!TextUtils.isEmpty(mEntity.getWebVoiceUrl()) && NetWorkHelper.isNetworkAvailable(mContext)) {
                     Loger.i("RolePlayerDemoTest", "点击自己语音：url  = " + mEntity.getWebVoiceUrl());
                     voiceClick();
                 }else {
