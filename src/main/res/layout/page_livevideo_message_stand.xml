@@ -13,11 +13,12 @@
     <RelativeLayout
         android:id="@id/rl_live_stand_message_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@id/bt_livevideo_message_open">
 
         <RelativeLayout
             android:id="@id/rl_livevideo_info"
-            android:layout_width="265dp"
+            android:layout_width="230dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
@@ -102,8 +103,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/rl_livevideo_message_panelcontent"
-            android:layout_marginLeft="230dp"
-            android:layout_marginRight="109dp"
+            android:layout_marginRight="20dp"
+            android:layout_toRightOf="@id/rl_livevideo_info"
             android:gravity="center"
             android:paddingBottom="15dp"
             android:visibility="visible">
