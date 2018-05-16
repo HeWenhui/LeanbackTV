@@ -309,7 +309,10 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
 
             @Override
             public void onViewDetachedFromWindow(View view) {
-                Loger.i("RolePlayerDemoTest", "离开连麦界面");
+                Loger.i("RolePlayerDemoTest", "离开连麦界面，清除数据");
+                if(mEntity != null){
+                    mEntity = null;//防止结果页数据错乱，尤其点赞个数
+                }
                 mReadHandler.removeMessages(READ_MESSAGE);
                 mRolePlayBll.realease();
 
@@ -1000,10 +1003,14 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Loger.i("RolePlayerDemoTest", "Roleplayer destory，清除数据");
         if (mIse != null) {
             mIse.cancel();
         }
         mReadHandler.removeMessages(READ_MESSAGE);
+        if(mEntity != null){
+            mEntity = null;//防止结果页数据错乱，尤其点赞个数
+        }
     }
 
     /**
