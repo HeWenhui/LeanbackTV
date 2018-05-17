@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -588,6 +589,23 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     }
 
     /**
+     * 获取字体
+     *
+     * @param context
+     * @return
+     */
+    public Typeface getTypeface(Context context) {
+        Typeface tf = null;
+        try {
+            tf = Typeface.createFromAsset(context.getAssets(), "fangzhengcuyuan.ttf");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return tf;
+    }
+
+    /**
      * 显示结果
      */
     public void showResult() {
@@ -606,7 +624,15 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
 
         List<RolePlayerEntity.RolePlayerHead> lstHead = mEntity.getResultRoleList();
         RolePlayerEntity.RolePlayerHead head = mEntity.getSelfRoleHead();
+
+
+
         if (head != null) {
+            Typeface tFace = getTypeface(mContext);
+            if(tFace!=null) {
+                tvResultMsgTip.setTypeface(getTypeface(mContext));
+                tvTotalScore.setTypeface(getTypeface(mContext));
+            }
             if (head.getSpeechScore() >= 90) {
                 tvResultMsgTip.setText("Fantastic");
             } else if (head.getSpeechScore() >= 60) {
