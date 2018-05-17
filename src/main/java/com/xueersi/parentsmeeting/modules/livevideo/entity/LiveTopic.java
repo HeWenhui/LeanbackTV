@@ -579,41 +579,65 @@ public class LiveTopic {
 
     /**战队pk topic中的信息*/
     public static class TeamPkEntity{
-        private int alloteam;
-        private int allotpkman;
-        private int openbox;
+        /**主讲老师topic 信息*/
+        RoomInfo roomInfo1;
+        /**辅助讲老师 topic信息*/
+        RoomInfo roomInfo2;
+
         public TeamPkEntity(){
 
         }
-        public TeamPkEntity(int alloteam, int allotpkman, int openbox) {
-            this.alloteam = alloteam;
-            this.allotpkman = allotpkman;
-            this.openbox = openbox;
+
+        public void setRoomInfo1(RoomInfo roomInfo1) {
+            this.roomInfo1 = roomInfo1;
         }
 
-        public int getAlloteam() {
-            return alloteam;
+
+        public RoomInfo getRoomInfo1() {
+            return roomInfo1;
         }
 
-        public void setAlloteam(int alloteam) {
-            this.alloteam = alloteam;
+
+        public void setRoomInfo2(RoomInfo roomInfo2) {
+            this.roomInfo2 = roomInfo2;
         }
 
-        public int getAllotpkman() {
-            return allotpkman;
+
+        public RoomInfo getRoomInfo2() {
+            return roomInfo2;
         }
 
-        public void setAllotpkman(int allotpkman) {
-            this.allotpkman = allotpkman;
+        public static class RoomInfo{
+            private int alloteam;
+            private int allotpkman;
+            private int openbox;
+
+            public void setAlloteam(int alloteam) {
+                this.alloteam = alloteam;
+            }
+
+            public int getAlloteam() {
+                return alloteam;
+            }
+
+            public void setAllotpkman(int allotpkman) {
+                this.allotpkman = allotpkman;
+            }
+
+            public int getAllotpkman() {
+                return allotpkman;
+            }
+
+            public void setOpenbox(int openbox) {
+                this.openbox = openbox;
+            }
+
+            public int getOpenbox() {
+                return openbox;
+            }
         }
 
-        public int getOpenbox() {
-            return openbox;
-        }
-
-        public void setOpenbox(int openbox) {
-            this.openbox = openbox;
-        }
     }
+
 
 }
