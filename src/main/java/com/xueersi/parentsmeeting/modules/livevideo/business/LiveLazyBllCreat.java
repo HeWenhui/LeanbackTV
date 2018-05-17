@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.app.Activity;
 import android.widget.RelativeLayout;
 
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 
 /**
@@ -98,8 +97,8 @@ public class LiveLazyBllCreat {
         return praiseListBll;
     }
 
-    public TeamPKBll createTeamPkBll(){
-        return new TeamPKBll(liveVideoActivity, bottomContent);
+    public TeamPkBll createTeamPkBll(){
+        return new TeamPkBll(liveVideoActivity, bottomContent);
     }
 
 }
