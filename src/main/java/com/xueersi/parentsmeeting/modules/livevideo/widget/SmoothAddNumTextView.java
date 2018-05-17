@@ -5,17 +5,31 @@ import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 /**
  * 平滑递增 数字展示器
+ *
+ * @author chekun
+ * created  at 2018/4/17 10:09
  */
 public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTextView {
-    private long duration = 1500; // 动画时间
+
+    /**
+     * 动画时间
+     */
+    private long duration = 1500;
     private int maxAddCount = 30;
     private IncrementTask task;
+
+
+    /**每次刷新的时间间隔*/
+    int timeGap;
+    /**递增次数*/
+    int addTimes;
+    /**增量*/
+    int increment;
 
     public SmoothAddNumTextView(Context context) {
         this(context, null);
@@ -27,18 +41,17 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
 
     public SmoothAddNumTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
         try {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.SmoothAddNumTextView);
-            if(typedArray != null){
+            if (typedArray != null) {
                 String durationStr = typedArray.getString(R.styleable.SmoothAddNumTextView_anim_duration);
-                if(!TextUtils.isEmpty(durationStr)){
+                if (!TextUtils.isEmpty(durationStr)) {
                     duration = Long.parseLong(durationStr);
                 }
                 maxAddCount = typedArray.getInteger(R.styleable.SmoothAddNumTextView_max_add_count, 30);
                 typedArray.recycle();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -49,15 +62,18 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
      */
     public void smoothAddNum(int numIncrement) {
         try {
-            if(isAnimRunning()){
-                cancleAnim();
+            if (isAnimRunning()) {
+                cancelAnim();
             }
             if (!TextUtils.isEmpty(this.getText().toString())) {
-                if(numIncrement >0){
+                if (numIncrement > 0) {
                     int currentEnergy = Integer.parseInt(this.getText().toString());
                     addTimes = numIncrement > maxAddCount ? maxAddCount : numIncrement;
                     timeGap = (int) (duration / addTimes);
                     increment = numIncrement / addTimes;
+                    if(task != null && task.isRunning){
+                        task.cancel();
+                    }
                     task = new IncrementTask(currentEnergy, numIncrement, increment, timeGap);
                     this.post(task);
                 }
@@ -67,9 +83,7 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
         }
     }
 
-    int timeGap;
-    int addTimes;
-    int increment;
+
 
     class IncrementTask implements Runnable {
         int startNum;
@@ -93,8 +107,7 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
 
         @Override
         public void run() {
-            if(canceled)
-            {
+            if (canceled) {
                 return;
             }
             if (currentNum <= endNum) {
@@ -102,36 +115,35 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
                 SmoothAddNumTextView.this.setText(currentNum + "");
                 currentNum += increment;
                 SmoothAddNumTextView.this.postDelayed(this, timeGap);
-            }else{
+            } else {
                 SmoothAddNumTextView.this.setText(endNum + "");
                 isRunning = false;
             }
         }
 
-        public void cancel(){
+        public void cancel() {
             canceled = true;
             currentNum = endNum;
             SmoothAddNumTextView.this.setText(endNum + "");
         }
 
-        public boolean isRunning(){
+        public boolean isRunning() {
             return isRunning;
         }
 
     }
 
 
-    public boolean isAnimRunning(){
+    public boolean isAnimRunning() {
         return task != null && task.isRunning();
     }
 
-    public void cancleAnim(){
-      if(task != null){
-          task.cancel();
-          removeCallbacks(task);
-      }
+    public void cancelAnim() {
+        if (task != null) {
+            task.cancel();
+            removeCallbacks(task);
+        }
     }
-
 
 
     @Override

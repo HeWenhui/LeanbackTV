@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ${tags}
+ * 每题pk结果页面 贡献之星布局管理器
+ * 具备 不足一行 居中显示功能
  *
  * @author chenkun
  * @version 1.0, 18/4/21 下午8:45
@@ -20,21 +21,42 @@ import java.util.List;
 
 public class ContributionLayoutManager extends RecyclerView.LayoutManager {
 
-    private static final String Tag = "ContributionLayoutManager";
-    public int mLineSize;  //每行item个数
-    private int lineNum; //行数
-    private SparseArray<Rect> allItemRects = new SparseArray<Rect>();
+    /**
+     * 每行item个数
+     */
+    public int mLineSize;
+    /**
+     * 行数
+     */
+    private int lineNum;
+    private SparseArray<Rect> allItemRect = new SparseArray<Rect>();
     private SparseBooleanArray itemVisibilities = new SparseBooleanArray();
 
-
+    /**
+     * 所有内容的总高度
+     */
     private int totalHeight;
+
+    List<Line> mLines;
+    /**
+     * 垂直方向上 间隔
+     */
+    private int minHdevidWithd = 20;
+    /**
+     * 竖直方向上的滚动偏移量
+     */
+    private int mVerticalOffset;
+
+    /**
+     * 每个item 的宽度
+     */
+    private int itemWith;
+
 
     public ContributionLayoutManager(int lineSize) {
         mLineSize = lineSize;
     }
 
-    List<Line> lines;
-    private int minHdevidWithd =20;
 
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
@@ -54,18 +76,17 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
     }
 
 
-    private int mVerticalOffset;//竖直方向上的滚动偏移量
-
     private void layoutChild(RecyclerView.Recycler recycler) {
         //清空之前的view
         detachAndScrapAttachedViews(recycler);
         calculateChildrenSite(recycler);
-
     }
 
 
     /**
      * 计算子view 的摆放位置
+     *
+     * @param recycler
      */
     private void calculateChildrenSite(RecyclerView.Recycler recycler) {
         View firstView = recycler.getViewForPosition(0);
@@ -73,19 +94,22 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
         //获取 itemView 的尺寸信息
         measureChild(firstView, 0, 0);
         int itemHeight = getDecoratedMeasuredHeight(firstView);
-        lines = new ArrayList<Line>();
+        mLines = new ArrayList<Line>();
         Line line = null;
+        // 将item 按个数分行
         for (int i = 0; i < getItemCount(); i++) {
             if (i % mLineSize == 0) {
-                line = new Line(0, lineNum * itemHeight,lineNum);
-                lines.add(line);
+                line = new Line(0, lineNum * itemHeight, lineNum);
+                mLines.add(line);
                 lineNum++;
             }
             line.addItemView(firstView);
         }
+
+        // 计算整个 内容高度
         totalHeight = lineNum * itemHeight;
-        for (int i = 0; i < lines.size(); i++) {
-            lines.get(i).layoutItemView();
+        for (int i = 0; i < mLines.size(); i++) {
+            mLines.get(i).layoutItemView();
         }
     }
 
@@ -99,13 +123,18 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
         detachAndScrapAttachedViews(recycler);
         if (mVerticalOffset + dy < 0) {
             dy = -mVerticalOffset;
-        }else if(totalHeight <= getVerticalSpace()){
-            dy = 0;// 内容区间 小于 recyleview 的空间不支持向上滑动
-        } else if (mVerticalOffset + dy > totalHeight - getVerticalSpace()) {//如果滑动到最底部
+        }
+        // 内容区间 小于 recyleview 的空间不支持向上滑动
+        else if (totalHeight <= getVerticalSpace()) {
+            dy = 0;
+        }
+        //如果滑动到最底部
+        else if (mVerticalOffset + dy > totalHeight - getVerticalSpace()) {
             dy = totalHeight - getVerticalSpace() - mVerticalOffset;
         }
         offsetChildrenVertical(-dy);
-        recycleAndFill(recycler, state); //回收并显示View
+        //回收并显示View
+        recycleAndFill(recycler, state);
         mVerticalOffset += dy;
         return dy;
     }
@@ -117,47 +146,48 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
             return;
         }
         // 当前scroll offset状态下的显示区域
-        Rect displayRect = new Rect(0, mVerticalOffset, getHorizontalSpace(),  mVerticalOffset + getVerticalSpace());
+        Rect displayRect = new Rect(0, mVerticalOffset, getHorizontalSpace(), mVerticalOffset + getVerticalSpace());
         //重新显示需要出现在屏幕的子View
         for (int i = 0; i < getItemCount(); i++) {
             //判断ItemView的位置和当前显示区域是否重合
-            if (Rect.intersects(displayRect, allItemRects.get(i))) {
+            if (Rect.intersects(displayRect, allItemRect.get(i))) {
                 //获得Recycler中缓存的View
                 View itemView = recycler.getViewForPosition(i);//
                 measureChildWithMargins(itemView, 0, 0);
                 //添加View到RecyclerView上
                 addView(itemView);
                 //取出先前存好的ItemView的位置矩形
-                Rect rect = allItemRects.get(i);
+                Rect rect = allItemRect.get(i);
                 //将这个item布局出来
                 layoutDecoratedWithMargins(itemView,
                         rect.left,
                         rect.top - mVerticalOffset,
                         rect.right,
                         rect.bottom - mVerticalOffset);
-                itemVisibilities.put(i, true); //更新该View的状态为依附
+                //更新该View的状态为依附
+                itemVisibilities.put(i, true);
             }
         }
     }
 
-    int itemWith;
 
-    public void setItemWidth(int width){
+
+    public void setItemWidth(int width) {
         itemWith = width;
     }
 
 
     private class Line {
         private List<View> list;
-        private int mlineTop;
+        private int mLineTop;
         private int mItemWidth;
         private int mItemHeight;
         private int mItemTotalWidth;
         private boolean averageShareSpce = true;
         private int lineIndex;
 
-        public Line(int lineLeft, int lineTop,int index) {
-            mlineTop = lineTop;
+        public Line(int lineLeft, int lineTop, int index) {
+            mLineTop = lineTop;
             lineIndex = index;
 
         }
@@ -173,43 +203,37 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
 
         public void layoutItemView() {
             View itemView;
-            int itemLeft = 0;
-            int preleft = 0;
-
+            int itemLeft;
+            int preLeft = 0;
+            Rect mTmpRect  = null;
             for (int i = 0; i < list.size(); i++) {
                 itemView = list.get(i);
-
-                Rect mTmpRect =  mTmpRect = new Rect();
+                mTmpRect = new Rect();
                 if (i == 0) {
                     measureChild(itemView, 0, 0);
-                    mItemWidth = itemWith;//getDecoratedMeasuredWidth(itemView);
+                    mItemWidth = itemWith;
                     mItemHeight = getDecoratedMeasuredHeight(itemView);
-                    mItemTotalWidth = mItemWidth * list.size(); //+  minHdevidWithd;
+                    mItemTotalWidth = mItemWidth * list.size();
                     averageShareSpce = minHdevidWithd == 0;
                 }
 
                 if (list.size() < mLineSize) {
                     //不再均分,采用整体居中
                     itemLeft = (ContributionLayoutManager.this.getWidth() - mItemTotalWidth) / 2 + i * mItemWidth;
-                    if (i > 0) {
-                        //itemLeft += minHdevidWithd;
-                    }
-                    mTmpRect.set(itemLeft, mlineTop, itemLeft + mItemWidth, mlineTop + mItemHeight);
-
-
+                    mTmpRect.set(itemLeft, mLineTop, itemLeft + mItemWidth, mLineTop + mItemHeight);
                 } else {
                     int lineWidth = ContributionLayoutManager.this.getWidth();
                     int middle = (lineWidth / (list.size() * 2)) * (2 * i + 1);
                     itemLeft = middle - mItemWidth / 2;
                     //获取 最新 水平间距
                     if (i == 1) {
-                        minHdevidWithd = minHdevidWithd == 0 ? itemLeft - preleft - mItemWidth : Math.min(minHdevidWithd, itemLeft - preleft - mItemWidth);
+                        minHdevidWithd = minHdevidWithd == 0 ? itemLeft - preLeft - mItemWidth : Math.min
+                                (minHdevidWithd, itemLeft - preLeft - mItemWidth);
                     }
-                    preleft = itemLeft;
-                    //SignLayoutManager.this.layoutDecorated(itemView, itemLeft, mlineTop, itemLeft + mItemWidth, mlineTop + mItemHeight);
-                    mTmpRect.set(itemLeft, mlineTop, itemLeft + mItemWidth, mlineTop + mItemHeight);
+                    preLeft = itemLeft;
+                    mTmpRect.set(itemLeft, mLineTop, itemLeft + mItemWidth, mLineTop + mItemHeight);
                 }
-                allItemRects.put(lineIndex*mLineSize+i, mTmpRect);
+                allItemRect.put(lineIndex * mLineSize + i, mTmpRect);
                 itemVisibilities.put(i, false);
             }
         }

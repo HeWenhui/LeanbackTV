@@ -65,32 +65,42 @@ public class TeamPkAwardPager extends BasePager {
     private CoinAwardDisplayer cadTeamCoin;
     private LottieAnimationView lottieAnimationView;
     private TeamPkRecyclerView recyclerView;
-    /**lottie 可点击区域*/
+    /**
+     * lottie 可点击区域
+     */
     private Rect mClickAbleRect;
     private String lottieResDir = "team_pk/award/small_box";
     private ImageView ivBgMask;
-    private WinnerAdapter adapter;
+    private WinnerAdapter mAdapter;
     private boolean startShowWinner;
-    private CoinAwardDisplayer cadMycoin;
+    private CoinAwardDisplayer cadMyCoin;
 
-    /**开宝箱结果展示时间*/
+    /**
+     * 开宝箱结果展示时间
+     */
     private static final long TIME_DELAY_SHOW_WINNER = 5 * 1000;
-    /** 榜单显示时间*/
+    /**
+     * 榜单显示时间
+     */
     private static final long TIME_DELAY_AUTO_FINISH = 10 * 1000;
 
-    /**默认背景音效大小*/
+    /**
+     * 默认背景音效大小
+     */
     private static final float DEFAULT_BG_VOLUME = 0.4f;
-    /**默认前景音效大小*/
+    /**
+     * 默认前景音效大小
+     */
     private static final float DEFAULT_FRONT_VOLUME = 0.6f;
 
     private ClassChestEntity classChestEntity;
     private final TeamPKBll teamPKBll;
     private boolean mIsWin;
-    private ImageView ivOpenstate;
-    private RelativeLayout rlLuckystartRoot;
+    private ImageView ivOpenState;
+    private RelativeLayout rlLuckyStartRoot;
     private SoundPoolHelper soundPoolHelper;
 
-    int [] soundResArray = {
+    int[] soundResArray = {
             R.raw.war_bg,
             R.raw.box_open
     };
@@ -101,16 +111,17 @@ public class TeamPkAwardPager extends BasePager {
         super(context);
         teamPKBll = pkBll;
     }
+
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_teampk_awardget, null);
-        rlLuckystartRoot = view.findViewById(R.id.rl_teampk_open_box_lucy_start_root);
+        rlLuckyStartRoot = view.findViewById(R.id.rl_teampk_open_box_lucy_start_root);
         cadTeamCoin = view.findViewById(R.id.cad_teampk_open_box_team_coin);
-        cadMycoin = view.findViewById(R.id.cad_teampk_open_box_my_coin);
+        cadMyCoin = view.findViewById(R.id.cad_teampk_open_box_my_coin);
         recyclerView = view.findViewById(R.id.rcl_teampk_open_box_rank);
         lottieAnimationView = view.findViewById(R.id.lav_teampk_open_box);
-        ivOpenstate = view.findViewById(R.id.iv_teampk_open_box_open_state);
-        ivOpenstate.setVisibility(View.GONE);
+        ivOpenState = view.findViewById(R.id.iv_teampk_open_box_open_state);
+        ivOpenState.setVisibility(View.GONE);
         ivBgMask = view.findViewById(R.id.iv_teampk_open_box_bg_mask);
         ivBgMask.setVisibility(View.GONE);
         ivClose = view.findViewById(R.id.iv_teampk_open_box_close);
@@ -128,10 +139,8 @@ public class TeamPkAwardPager extends BasePager {
 
     /**
      * 显示开宝箱动画
-     * @param isWin
      */
-    public void showBoxLoop(boolean isWin) {
-       // mIsWin = isWin;
+    public void showBoxLoop() {
         mIsWin = teamPKBll.isWin();
         if (mIsWin) {
             lottieResDir = "team_pk/award/big_box";
@@ -141,20 +150,22 @@ public class TeamPkAwardPager extends BasePager {
 
         ivClose.setVisibility(View.VISIBLE);
         Point point = new Point();
-        ((Activity)mContext).getWindowManager().getDefaultDisplay().getSize(point);
-        int realY = Math.min(point.x,point.y);
-        int topMargin = (int) (realY *0.8f);
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) ivOpenstate.getLayoutParams();
+        ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
+        int realY = Math.min(point.x, point.y);
+        int topMargin = (int) (realY * 0.8f);
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) ivOpenState.getLayoutParams();
         layoutParams.topMargin = topMargin;
-        ivOpenstate.setVisibility(View.VISIBLE);
-        ivOpenstate.setImageResource(R.drawable.live_video_get_coin);
+        ivOpenState.setVisibility(View.VISIBLE);
+        ivOpenState.setImageResource(R.drawable.live_video_get_coin);
         String lottieResPath = lottieResDir + "_loop/images/";
         String lottieJsonPath = lottieResDir + "_loop/data.json";
         startBoxLoopAnim(lottieResPath, lottieJsonPath);
     }
 
 
-    /** 对lottie 拦截点击事件*/
+    /**
+     * 对lottie 拦截点击事件
+     */
     private void addInputEventInterceptor() {
         lottieAnimationView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -221,7 +232,7 @@ public class TeamPkAwardPager extends BasePager {
                 lottieAnimationView.playAnimation();
             }
         });
-       //不再自动关闭
+        //不再自动关闭
        /* lottieAnimationView.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -233,17 +244,17 @@ public class TeamPkAwardPager extends BasePager {
 
     private void showWinners() {
         ivClose.setVisibility(View.GONE);
-        if(ivBgMask.getVisibility() != View.VISIBLE){
+        if (ivBgMask.getVisibility() != View.VISIBLE) {
             ivBgMask.setVisibility(View.VISIBLE);
         }
         if (classChestEntity == null) {
             return;
         }
-        if (cadMycoin.getParent() != null) {
-            ((ViewGroup) cadMycoin.getParent()).removeView(cadMycoin);
+        if (cadMyCoin.getParent() != null) {
+            ((ViewGroup) cadMyCoin.getParent()).removeView(cadMyCoin);
         }
 
-        playMusic( R.raw.war_bg, DEFAULT_BG_VOLUME, true);
+        playMusic(R.raw.war_bg, DEFAULT_BG_VOLUME, true);
 
         // step 1 展示lottie
         String imgDir = lottieResDir + "_top_open/images";
@@ -312,20 +323,21 @@ public class TeamPkAwardPager extends BasePager {
             return;
         }
 
-        rlLuckystartRoot.setVisibility(View.VISIBLE);
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rlLuckystartRoot.getLayoutParams();
+        rlLuckyStartRoot.setVisibility(View.VISIBLE);
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rlLuckyStartRoot.getLayoutParams();
         Point point = new Point();
-        ((Activity)mContext).getWindowManager().getDefaultDisplay().getSize(point);
-        int realY = Math.min(point.x,point.y);
-        int topMargin = (int) (realY *0.36);
+        ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
+        int realY = Math.min(point.x, point.y);
+        int topMargin = (int) (realY * 0.36);
         layoutParams.topMargin = topMargin;
-        rlLuckystartRoot.setLayoutParams(layoutParams);
+        rlLuckyStartRoot.setLayoutParams(layoutParams);
 
         // step 2 展示 获得金币信息
         //cadTeamCoin.setVisibility(View.VISIBLE);
         cadTeamCoin.setAwardInfo(R.drawable.livevideo_alertview_guafen_img_disable, (int)
-                data.getSumGold(),R.drawable.livevideo_alertview_gegoldwenzi_img_disable);
-        Animation alphaAnimation = AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_teampk_open_box_coin_in);
+                data.getSumGold(), R.drawable.livevideo_alertview_gegoldwenzi_img_disable);
+        Animation alphaAnimation = AnimationUtils.loadAnimation(mContext, R.anim
+                .anim_livevideo_teampk_open_box_coin_in);
         cadTeamCoin.startAnimation(alphaAnimation);
         // step 3 展示队员信息
         recyclerView.setLayoutManager(new TeamMemberGridlayoutManager(mContext, 3,
@@ -334,13 +346,13 @@ public class TeamPkAwardPager extends BasePager {
         GridLayoutAnimationController animationController = (GridLayoutAnimationController)
                 AnimationUtils.loadLayoutAnimation(mContext, R.anim.anim_livevido_teampk_teammember_list);
         recyclerView.setLayoutAnimation(animationController);
-        if (adapter == null) {
-            adapter = new WinnerAdapter(data.getSubChestEntityList());
-            recyclerView.setAdapter(adapter);
+        if (mAdapter == null) {
+            mAdapter = new WinnerAdapter(data.getSubChestEntityList());
+            recyclerView.setAdapter(mAdapter);
         } else {
-            adapter.getData().clear();
-            adapter.getData().addAll(data.getSubChestEntityList());
-            adapter.notifyDataSetChanged();
+            mAdapter.getData().clear();
+            mAdapter.getData().addAll(data.getSubChestEntityList());
+            mAdapter.notifyDataSetChanged();
         }
         recyclerView.scheduleLayoutAnimation();
 
@@ -366,11 +378,11 @@ public class TeamPkAwardPager extends BasePager {
      * @param volume
      * @param loop
      */
-    private void playMusic( int resId, final float volume, final boolean loop) {
-        if(soundPoolHelper == null){
-            soundPoolHelper = new SoundPoolHelper(mContext,2, AudioManager.STREAM_MUSIC);
+    private void playMusic(int resId, final float volume, final boolean loop) {
+        if (soundPoolHelper == null) {
+            soundPoolHelper = new SoundPoolHelper(mContext, 2, AudioManager.STREAM_MUSIC);
         }
-        soundPoolHelper.playMusic(resId,volume,loop);
+        soundPoolHelper.playMusic(resId, volume, loop);
     }
 
 
@@ -391,11 +403,11 @@ public class TeamPkAwardPager extends BasePager {
      * 暂停音效
      * 注 此处的暂停  只是将音量设置为0  （因为 动画和音效是 同步的）
      */
-    private void pauseMusic(){
-        Loger.e("TeamPkTeamSelectPager","======>pauseMusic called");
-        if(soundPoolHelper != null){
+    private void pauseMusic() {
+        Loger.e("TeamPkTeamSelectPager", "======>pauseMusic called");
+        if (soundPoolHelper != null) {
             for (int i = 0; i < soundResArray.length; i++) {
-                soundPoolHelper.setVolume(soundResArray[i],0);
+                soundPoolHelper.setVolume(soundResArray[i], 0);
             }
         }
     }
@@ -403,16 +415,16 @@ public class TeamPkAwardPager extends BasePager {
 
     /**
      * 恢复音乐播放
-     *  注释  将音量恢复为暂停之前的状态
+     * 注释  将音量恢复为暂停之前的状态
      */
-    private void resumeMusic(){
-        Loger.e("TeamPkTeamSelectPager","======>resumeMusic called");
-        if(soundPoolHelper != null){
+    private void resumeMusic() {
+        Loger.e("TeamPkTeamSelectPager", "======>resumeMusic called");
+        if (soundPoolHelper != null) {
             for (int i = 0; i < soundResArray.length; i++) {
-                if(soundResArray[i] == R.raw.war_bg){
-                    soundPoolHelper.setVolume(soundResArray[i],DEFAULT_BG_VOLUME);
-                }else{
-                    soundPoolHelper.setVolume(soundResArray[i],DEFAULT_FRONT_VOLUME);
+                if (soundResArray[i] == R.raw.war_bg) {
+                    soundPoolHelper.setVolume(soundResArray[i], DEFAULT_BG_VOLUME);
+                } else {
+                    soundPoolHelper.setVolume(soundResArray[i], DEFAULT_FRONT_VOLUME);
                 }
 
             }
@@ -485,8 +497,8 @@ public class TeamPkAwardPager extends BasePager {
     }
 
     private void updatePkStateLayout() {
-        if(teamPKBll != null){
-          teamPKBll.updatePkStateLayout(false);
+        if (teamPKBll != null) {
+            teamPKBll.updatePkStateLayout(false);
         }
     }
 
@@ -494,37 +506,41 @@ public class TeamPkAwardPager extends BasePager {
      * 获取学生宝箱信息
      */
     private void getStuChestInfo() {
-        teamPKBll.getmHttpManager().getStuChest(mIsWin?1:0, teamPKBll.getRoomInitInfo().getStudentLiveInfo().getClassId()
+        teamPKBll.getmHttpManager().getStuChest(mIsWin ? 1 : 0, teamPKBll.getRoomInitInfo().getStudentLiveInfo()
+                        .getClassId()
                 , teamPKBll.getRoomInitInfo().getStudentLiveInfo().getTeamId(),
                 teamPKBll.getRoomInitInfo().getStuId(), teamPKBll.getLiveBll().getLiveId(), new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        StudentChestEntity studentChestEntity = teamPKBll.getmHttpResponseParser().parseStuChest(responseEntity);
-                        if(studentChestEntity.getIsGet().equals("0")){
+                        StudentChestEntity studentChestEntity = teamPKBll.getmHttpResponseParser().parseStuChest
+                                (responseEntity);
+                        if (studentChestEntity.getIsGet().equals("0")) {
                             //展示 获得金币数
-                            cadMycoin.setVisibility(View.VISIBLE);
+                            cadMyCoin.setVisibility(View.VISIBLE);
                             try {
-                                int gold =  Integer.parseInt( studentChestEntity.getGold()) ;
-                                cadMycoin.setAwardInfo(R.drawable.livevideo_alertview_tosmoke_img_disable, gold,
+                                int gold = Integer.parseInt(studentChestEntity.getGold());
+                                cadMyCoin.setAwardInfo(R.drawable.livevideo_alertview_tosmoke_img_disable, gold,
                                         R.drawable.livevideo_alertview_goldwenzi_img_disable);
-                                Animation alphaAnimation = AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_teampk_open_box_coin_in);
-                                cadMycoin.startAnimation(alphaAnimation);
-                                ivOpenstate.setVisibility(View.GONE);
-                            }catch (Exception e){
+                                Animation alphaAnimation = AnimationUtils.loadAnimation(mContext, R.anim
+                                        .anim_livevideo_teampk_open_box_coin_in);
+                                cadMyCoin.startAnimation(alphaAnimation);
+                                ivOpenState.setVisibility(View.GONE);
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        }else{
+                        } else {
                             Point point = new Point();
-                            ((Activity)mContext).getWindowManager().getDefaultDisplay().getSize(point);
-                            int realY = Math.min(point.x,point.y);
-                            int topMargin = (int) (realY *0.8f);
-                            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) ivOpenstate.getLayoutParams();
+                            ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
+                            int realY = Math.min(point.x, point.y);
+                            int topMargin = (int) (realY * 0.8f);
+                            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) ivOpenState
+                                    .getLayoutParams();
                             layoutParams.topMargin = topMargin;
-                            ivOpenstate.setVisibility(View.VISIBLE);
-                            ivOpenstate.setImageResource(R.drawable.livevideo_alertview_kaiguo_img_disable);
-                            ivOpenstate.setLayoutParams(layoutParams);
+                            ivOpenState.setVisibility(View.VISIBLE);
+                            ivOpenState.setImageResource(R.drawable.livevideo_alertview_kaiguo_img_disable);
+                            ivOpenState.setLayoutParams(layoutParams);
                         }
-                        Loger.e("coinNum","====> Awardpager update pkstateLayout");
+                        //Loger.e("coinNum", "====> Awardpager update pkstateLayout");
                         updatePkStateLayout();
                     }
 
@@ -532,6 +548,7 @@ public class TeamPkAwardPager extends BasePager {
                     public void onFailure(Call call, IOException e) {
                         super.onFailure(call, e);
                     }
+
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         super.onPmError(responseEntity);
@@ -542,7 +559,6 @@ public class TeamPkAwardPager extends BasePager {
 
     /**
      * 初始化 宝箱可点击范围
-     *
      * @param width
      * @param height
      */
@@ -558,18 +574,15 @@ public class TeamPkAwardPager extends BasePager {
 
     @Override
     public void initData() {
-        Loger.e(TAG, "======> initData called");
     }
 
     /**
      * 显示班级获奖列表
      *
      * @param data
-     * @param isWin 是否获胜
      */
-    public void showClassChest(ClassChestEntity data, boolean isWin) {
+    public void showClassChest(ClassChestEntity data) {
         classChestEntity = data;
-        //mIsWin = isWin;
         mIsWin = teamPKBll.isWin();
         if (mIsWin) {
             lottieResDir = "team_pk/award/big_box";
@@ -600,7 +613,8 @@ public class TeamPkAwardPager extends BasePager {
                         @Override
                         public void onSuccess(Drawable drawable) {
                             Bitmap resultBitmap = ((BitmapDrawable) drawable).getBitmap();
-                            Bitmap circleBitmap = scaleBitmap(resultBitmap, Math.min(resultBitmap.getWidth(), resultBitmap.getHeight()) / 2);
+                            Bitmap circleBitmap = scaleBitmap(resultBitmap, Math.min(resultBitmap.getWidth(),
+                                    resultBitmap.getHeight()) / 2);
                             ivHead.setImageBitmap(circleBitmap);
                         }
 
@@ -610,24 +624,24 @@ public class TeamPkAwardPager extends BasePager {
                     });
             ivLuckyStar.setVisibility(postion <= 4 ? View.VISIBLE : View.GONE);
             tvName.setText(data.getStuName());
-            tvCoin.setText("+"+data.getGold());
+            tvCoin.setText("+" + data.getGold());
         }
     }
 
     static class WinnerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        private List<ClassChestEntity.SubChestEntity> data;
+        private List<ClassChestEntity.SubChestEntity> mData;
 
         WinnerAdapter(List<ClassChestEntity.SubChestEntity> data) {
-            this.data = data;
+            this.mData = data;
         }
 
         public List<ClassChestEntity.SubChestEntity> getData() {
-            return data;
+            return mData;
         }
 
         public void setData(List<ClassChestEntity.SubChestEntity> data) {
-            this.data = data;
+            this.mData = data;
         }
 
         @Override
@@ -638,16 +652,12 @@ public class TeamPkAwardPager extends BasePager {
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            ((ItemHolder) holder).bindData(data.get(position), position);
+            ((ItemHolder) holder).bindData(mData.get(position), position);
         }
 
         @Override
         public int getItemCount() {
-            int itemCount = 0;
-            if (data != null) {
-                itemCount = data.size();
-            }
-            return itemCount;
+            return mData == null ? 0 : mData.size();
         }
     }
 
@@ -659,7 +669,7 @@ public class TeamPkAwardPager extends BasePager {
     }
 
     private void releaseRes() {
-        if(soundPoolHelper != null){
+        if (soundPoolHelper != null) {
             soundPoolHelper.release();
         }
     }

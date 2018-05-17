@@ -24,10 +24,11 @@ import java.util.List;
 
 
 public class CoinAwardDisplayer extends View {
+    private Paint mPaint;
+    private int mHeight = 0;
+    private int mWidth = 0;
+    List<DrawableInfo> drawableInfoList;
 
-
-    int height = 0;
-    int width  = 0;
 
     int[] numberResIds = {
             R.drawable.livevideo_alertview_gold0_img_disable,
@@ -41,9 +42,6 @@ public class CoinAwardDisplayer extends View {
             R.drawable.livevideo_alertview_gold8_img_disable,
             R.drawable.livevideo_alertview_gold9_img_disable,
     };
-
-
-    private Paint paint;
 
 
     public CoinAwardDisplayer(Context context) {
@@ -61,20 +59,18 @@ public class CoinAwardDisplayer extends View {
 
 
     private void initPaint() {
-        paint = new Paint();
-        paint.setFilterBitmap(true);
-        paint.setAntiAlias(true);
+        mPaint = new Paint();
+        mPaint.setFilterBitmap(true);
+        mPaint.setAntiAlias(true);
     }
 
 
     class DrawableInfo {
-
         Bitmap bitmap;
-        float  left;
-        float  top;
+        float left;
+        float top;
 
         DrawableInfo(Bitmap bitmap) {
-
             this.bitmap = bitmap;
         }
 
@@ -88,17 +84,17 @@ public class CoinAwardDisplayer extends View {
         }
 
         public void draw(Canvas canvas) {
-            canvas.drawBitmap(bitmap, left, top, paint);
+            canvas.drawBitmap(bitmap, left, top, mPaint);
         }
 
 
-        public int getWidth(){
-            return bitmap == null?0:bitmap.getWidth();
+        public int getWidth() {
+            return bitmap == null ? 0 : bitmap.getWidth();
         }
 
 
-        public int getHeight(){
-            return bitmap == null?0:bitmap.getHeight();
+        public int getHeight() {
+            return bitmap == null ? 0 : bitmap.getHeight();
         }
     }
 
@@ -108,38 +104,37 @@ public class CoinAwardDisplayer extends View {
 
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        int contentWidth ;
+        int contentWidth;
         int contentHeight;
-        if(widthMode == MeasureSpec.EXACTLY){
+        if (widthMode == MeasureSpec.EXACTLY) {
             contentWidth = MeasureSpec.getSize(widthMeasureSpec);
-        }else{
-            contentWidth = Math.min(MeasureSpec.getSize(widthMeasureSpec),width);
+        } else {
+            contentWidth = Math.min(MeasureSpec.getSize(widthMeasureSpec), mWidth);
         }
 
-        if(heightMode == MeasureSpec.EXACTLY){
+        if (heightMode == MeasureSpec.EXACTLY) {
             contentHeight = MeasureSpec.getSize(heightMeasureSpec);
-        }else{
-            contentHeight = Math.min(MeasureSpec.getSize(heightMeasureSpec), height);
+        } else {
+            contentHeight = Math.min(MeasureSpec.getSize(heightMeasureSpec), mHeight);
         }
-        int wMeasureSpec =  MeasureSpec.makeMeasureSpec(contentWidth,MeasureSpec.EXACTLY);
-        int hMeasureSpec = MeasureSpec.makeMeasureSpec(contentHeight,MeasureSpec.EXACTLY);
+        int wMeasureSpec = MeasureSpec.makeMeasureSpec(contentWidth, MeasureSpec.EXACTLY);
+        int hMeasureSpec = MeasureSpec.makeMeasureSpec(contentHeight, MeasureSpec.EXACTLY);
         super.onMeasure(wMeasureSpec, hMeasureSpec);
-
-
     }
 
-    List<DrawableInfo> drawableInfoList;
+
     /**
-     * @param prefixResId
-     * @param coinNum
-     * @param suffixResId
+     * 展示获奖信息
+     *
+     * @param prefixResId 金币前缀 图片资源id
+     * @param coinNum     金币数
+     * @param suffixResId 金币数后缀 图片资源id
      */
     public void setAwardInfo(int prefixResId, int coinNum, int suffixResId) {
 
-        if(drawableInfoList == null){
+        if (drawableInfoList == null) {
             drawableInfoList = new ArrayList<DrawableInfo>();
         }
-
         // 获取前缀Bitmap
         Bitmap prefixBitmap = BitmapFactory.decodeResource(getContext().getResources(), prefixResId);
         DrawableInfo drawableInfo = new DrawableInfo(prefixBitmap);
@@ -148,44 +143,38 @@ public class CoinAwardDisplayer extends View {
         drawableInfo.setTop(0f);
         drawableInfoList.add(drawableInfo);
         // 默认前缀 bitmap 的高度 就为整个 布局的高度
-        height = prefixBitmap.getHeight();
-        width = prefixBitmap.getWidth();
-
-        String coinNumStr = coinNum +"";
+        mHeight = prefixBitmap.getHeight();
+        mWidth = prefixBitmap.getWidth();
+        String coinNumStr = coinNum + "";
         Bitmap numBitmap;
-
         // 获取 数字 对应的 bitMap
         for (char c : coinNumStr.toCharArray()) {
-            numBitmap =  BitmapFactory.decodeResource(getContext().getResources(),
+            numBitmap = BitmapFactory.decodeResource(getContext().getResources(),
                     numberResIds[Integer.parseInt(String.valueOf(c))]);
             drawableInfo = new DrawableInfo(numBitmap);
             drawableInfoList.add(drawableInfo);
-            drawableInfo.left = width;
-            drawableInfo.top = (height - numBitmap.getHeight())/2;
-            width += numBitmap.getWidth();
+            drawableInfo.left = mWidth;
+            drawableInfo.top = (mHeight - numBitmap.getHeight()) / 2;
+            mWidth += numBitmap.getWidth();
         }
 
         // 获取前缀Bitmap
         Bitmap suffixBitmap = BitmapFactory.decodeResource(getContext().getResources(), suffixResId);
         drawableInfo = new DrawableInfo(suffixBitmap);
         drawableInfo.setTop(0);
-        drawableInfo.setLeft(width);
-
+        drawableInfo.setLeft(mWidth);
         drawableInfoList.add(drawableInfo);
-        width += suffixBitmap.getWidth();
+        mWidth += suffixBitmap.getWidth();
         //重新布局
         requestLayout();
-
     }
-
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if(drawableInfoList != null && drawableInfoList.size() >0){
+        if (drawableInfoList != null && drawableInfoList.size() > 0) {
             for (DrawableInfo drawableInfo : drawableInfoList) {
                 drawableInfo.draw(canvas);
             }
         }
     }
-
 }

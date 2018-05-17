@@ -333,6 +333,7 @@ public class TeamPKBll {
             Loger.e("teamPkBll", "====>showTeamSelectScene:" + mFocusPager);
             TeamPkTeamSelectPager teamSelectPager = new TeamPkTeamSelectPager(mActivity, this);
             addPager(teamSelectPager);
+            teamSelectPager.setData(teamInfoEntity);
             teamSelectPager.startTeamSelect();
         }
     }
@@ -391,19 +392,19 @@ public class TeamPKBll {
                         public void run() {
                             TeamPkAwardPager awardGetPager = new TeamPkAwardPager(mActivity, TeamPKBll.this);
                             addPager(awardGetPager);
-                            awardGetPager.showClassChest((ClassChestEntity) data, isWin);
+                            awardGetPager.showClassChest((ClassChestEntity) data);
                         }
                     }, 1000);
                 } else {
                     TeamPkAwardPager awardGetPager = new TeamPkAwardPager(mActivity, this);
                     addPager(awardGetPager);
-                    awardGetPager.showClassChest((ClassChestEntity) data, isWin);
+                    awardGetPager.showClassChest((ClassChestEntity) data);
                 }
 
             } else if (type == CHEST_TYPE_STUDENT) {
                 TeamPkAwardPager awardGetPager = new TeamPkAwardPager(mActivity, this);
                 addPager(awardGetPager);
-                awardGetPager.showBoxLoop(isWin);
+                awardGetPager.showBoxLoop();
                 Loger.e("teampkBll", "======>showAwardGetScene called 3333");
             }
         } else if (mFocusPager != null && (mFocusPager instanceof TeamPkAwardPager)) {
@@ -415,7 +416,7 @@ public class TeamPKBll {
                     public void run() {
                         TeamPkAwardPager awardGetPager = new TeamPkAwardPager(mActivity, TeamPKBll.this);
                         addPager(awardGetPager);
-                        awardGetPager.showClassChest((ClassChestEntity) data, isWin);
+                        awardGetPager.showClassChest((ClassChestEntity) data);
                     }
                 }, 1000);
             }

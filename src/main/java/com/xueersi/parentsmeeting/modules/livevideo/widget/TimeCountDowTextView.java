@@ -7,13 +7,16 @@ import android.util.AttributeSet;
 
 /**
  * 倒计时 展示控件
+ *
+ * @author chekun
+ * created  at 2018/4/24 10:19
  */
 public class TimeCountDowTextView extends android.support.v7.widget.AppCompatTextView {
 
     private int mDuration;
     private String mTimePrefix;
     private String mTimeSuffix;
-    TimeCountDowListener  listener;
+    TimeCountDowListener mListener;
     private TimeCountDowTask mTask;
 
     public TimeCountDowTextView(Context context) {
@@ -27,59 +30,62 @@ public class TimeCountDowTextView extends android.support.v7.widget.AppCompatTex
     public TimeCountDowTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
+
     /**
-     *
      * @param time 倒计时总时长
      */
-    public void setTimeDuration(int time){
+    public void setTimeDuration(int time) {
         mDuration = time;
     }
 
     /**
-     *  倒计时前缀文字
+     * 倒计时前缀文字
      * @param prefix
      */
-    public void setTimePrefix(String prefix){
+    public void setTimePrefix(String prefix) {
         mTimePrefix = prefix;
     }
 
     /**
      * 倒计时 后最文字
+     *
      * @param suffix
      */
-    public void setTimeSuffix(String suffix){
+    public void setTimeSuffix(String suffix) {
         mTimeSuffix = suffix;
     }
 
 
-    class TimeCountDowTask implements Runnable{
+    class TimeCountDowTask implements Runnable {
         int mTime;
-        TimeCountDowTask(int time){
+
+        TimeCountDowTask(int time) {
             mTime = time;
         }
+
         @Override
         public void run() {
-             if(mTime >0){
-                  String prefix = TextUtils.isEmpty(mTimePrefix)?"":mTimePrefix;
-                 String suffix = TextUtils.isEmpty(mTimeSuffix)?"":mTimeSuffix;
-                 TimeCountDowTextView.this.setText(prefix+mTime+suffix);
-                 mTime --;
-                 postDelayed(this,1000);
-             }else{
-                 setVisibility(GONE);
-                 if (listener != null) {
-                     listener.onFinish();
-                 }
-             }
+            if (mTime > 0) {
+                String prefix = TextUtils.isEmpty(mTimePrefix) ? "" : mTimePrefix;
+                String suffix = TextUtils.isEmpty(mTimeSuffix) ? "" : mTimeSuffix;
+                TimeCountDowTextView.this.setText(prefix + mTime + suffix);
+                mTime--;
+                postDelayed(this, 1000);
+            } else {
+                setVisibility(GONE);
+                if (mListener != null) {
+                    mListener.onFinish();
+                }
+            }
         }
     }
 
     /**
      * 开始倒计时
      */
-    public void startCountDow(){
+    public void startCountDow() {
         setVisibility(VISIBLE);
-        if(mTask != null){
+        if (mTask != null) {
             removeCallbacks(mTask);
             mTask = null;
         }
@@ -87,33 +93,32 @@ public class TimeCountDowTextView extends android.support.v7.widget.AppCompatTex
         post(mTask);
     }
 
-    public void startCountDow(long delay){
+    public void startCountDow(long delay) {
         setVisibility(VISIBLE);
-        if(mTask != null){
+        if (mTask != null) {
             removeCallbacks(mTask);
             mTask = null;
         }
         mTask = new TimeCountDowTask(mDuration);
-        postDelayed(mTask,delay);
+        postDelayed(mTask, delay);
     }
 
 
-
-    public void setTimeCountDowListener(TimeCountDowListener listener){
-        this.listener = listener;
+    public void setTimeCountDowListener(TimeCountDowListener listener) {
+        this.mListener = listener;
     }
 
-    public interface  TimeCountDowListener{
-         void onFinish();
+    public interface TimeCountDowListener {
+        void onFinish();
     }
 
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if(mTask != null){
+        if (mTask != null) {
             removeCallbacks(mTask);
         }
-        this.listener = null;
+        this.mListener = null;
     }
 }

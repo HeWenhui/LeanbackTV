@@ -15,25 +15,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * 打字效果  文本展示控件
- *   具备 居中显示功能
+ * 具备 居中显示功能
+ *
  * @author chenkun
  * @version 1.0, 2018/4/11 下午4:04
  */
 
 public class InputEffectTextView extends View {
 
-    private   int LINE_V_GAP = 20;// 行间距
-    private   String  mTextColor = "#73510A";
-    private   int textsize   = 12; // 字体大小
-    private   int lineMaxCharacterNum = 13; //每行大字符数
-    private static  final  long  SINGLE_CHARACTER_DURATION = 200;//打字效果，字符显示 时间间隔
-    private Paint paint;
-    private InputTask task;
+
+    /**行间距*/
+    private int LINE_V_GAP = 20;
+    private String mTextColor = "#73510A";
+    /**字体大小*/
+    private int textsize = 12;
+    /**每行大字符数*/
+    private int lineMaxCharacterNum = 13;
+    /**打字效果，字符显示 时间间隔*/
+    private static final long SINGLE_CHARACTER_DURATION = 200;
+    private Paint mPaint;
+    private InputTask mTask;
     private float mWidth = 0;
     private float mHeight = 0;
-    private String mContentText;   //
+    private String mContentText;
 
     public InputEffectTextView(Context context) {
         this(context, null);
@@ -49,26 +54,23 @@ public class InputEffectTextView extends View {
     }
 
     private void init() {
-
-        paint = new Paint();
-        paint.setAntiAlias(true);
-        paint.setTextAlign(Paint.Align.LEFT);
-        paint.setTypeface(Typeface.DEFAULT_BOLD);
-        paint.setColor(Color.parseColor(mTextColor));
-        float scale=getContext().getResources().getDisplayMetrics().density;
-        int textSize =  (int)(textsize*scale+0.5f);
-        paint.setTextSize(textSize);
+        mPaint = new Paint();
+        mPaint.setAntiAlias(true);
+        mPaint.setTextAlign(Paint.Align.LEFT);
+        mPaint.setTypeface(Typeface.DEFAULT_BOLD);
+        mPaint.setColor(Color.parseColor(mTextColor));
+        float scale = getContext().getResources().getDisplayMetrics().density;
+        int textSize = (int) (textsize * scale + 0.5f);
+        mPaint.setTextSize(textSize);
     }
 
 
-
     class Line {
-
-        String       contentText;
+        String contentText;
         StringBuffer currentTextBuf;
-        float        startX;
-        float        startY;
-        int          characterNum2Draw;
+        float startX;
+        float startY;
+        int characterNum2Draw;
 
         Line(String text, float startX, float startY) {
             this.contentText = text;
@@ -78,44 +80,38 @@ public class InputEffectTextView extends View {
         }
 
         public void drawText(Canvas canvas) {
-            try {
-
-            }catch (Exception e){
-                e.printStackTrace();
-            }
             String str2Draw = getDrawStr();
-            if(!TextUtils.isEmpty(str2Draw)){
-                canvas.drawText(getDrawStr(), startX, startY, paint);
+            if (!TextUtils.isEmpty(str2Draw)) {
+                canvas.drawText(getDrawStr(), startX, startY, mPaint);
             }
         }
 
-        private  String getDrawStr(){
-
-           if(characterNum2Draw == contentText.length()){
+        private String getDrawStr() {
+            if (characterNum2Draw == contentText.length()) {
                 return contentText;
             }
             currentTextBuf.setLength(0);
-            if(characterNum2Draw > contentText.length()){
+            if (characterNum2Draw > contentText.length()) {
                 characterNum2Draw = contentText.length();
             }
-            currentTextBuf.append(contentText.substring(0,characterNum2Draw));
+            currentTextBuf.append(contentText.substring(0, characterNum2Draw));
 
-            return  currentTextBuf.toString();
+            return currentTextBuf.toString();
         }
 
 
-        public void setCharacterNum2Draw(int characterNum){
+        public void setCharacterNum2Draw(int characterNum) {
             characterNum2Draw = characterNum;
         }
 
     }
 
 
-    List<Line> lines = new ArrayList<Line>();
+    List<Line> mLines = new ArrayList<Line>();
     List<String> lineStrList;
 
 
-    public void setLineText(List<String> list){
+    public void setLineText(List<String> list) {
         this.lineStrList = list;
         spilt2Lines();
         startInputEffect();
@@ -123,28 +119,28 @@ public class InputEffectTextView extends View {
     }
 
 
-
     public interface InputEffectListener {
         void onFinish();
     }
 
 
-    private InputEffectListener  mInputEffectListener;
+    private InputEffectListener mInputEffectListener;
+
     /**
      * 设置文本内容
+     *
      * @param text
      */
-    public void setText(String text,InputEffectListener inputStateListener){
+    public void setText(String text, InputEffectListener inputStateListener) {
 
-        if(TextUtils.isEmpty(text)){
+        if (TextUtils.isEmpty(text)) {
             return;
         }
         this.mInputEffectListener = inputStateListener;
         mContentText = text;
-        List<String> resultList = getStrList(text,lineMaxCharacterNum);
+        List<String> resultList = getStrList(text, lineMaxCharacterNum);
         setLineText(resultList);
     }
-
 
 
     private List<String> getStrList(String text, int length) {
@@ -176,38 +172,38 @@ public class InputEffectTextView extends View {
     }
 
 
-    private  int characterIndex = 1;
+    private int characterIndex = 1;
 
-    class InputTask implements Runnable{
+    class InputTask implements Runnable {
 
         private boolean canceled = false;
 
         @Override
         public void run() {
-            if(characterIndex <= mContentText.length() && !canceled){
+            if (characterIndex <= mContentText.length() && !canceled) {
                 int lineIndex = characterIndex / lineMaxCharacterNum;
                 // 绘制已展示完的行
-                if(lineIndex > 0){
+                if (lineIndex > 0) {
                     for (int i = 0; i < lineIndex; i++) {
-                        lines.get(i).setCharacterNum2Draw(lineMaxCharacterNum);
+                        mLines.get(i).setCharacterNum2Draw(lineMaxCharacterNum);
                     }
                 }
-                if(characterIndex > (lineIndex * lineMaxCharacterNum) && (characterIndex % lineMaxCharacterNum == 0)){
-                    if(lineIndex < lines.size()){
-                        lines.get(lineIndex).setCharacterNum2Draw(lineMaxCharacterNum);
+                if (characterIndex > (lineIndex * lineMaxCharacterNum) && (characterIndex % lineMaxCharacterNum == 0)) {
+                    if (lineIndex < mLines.size()) {
+                        mLines.get(lineIndex).setCharacterNum2Draw(lineMaxCharacterNum);
                     }
-                }else{
-                    if(lineIndex < lines.size()){
-                        lines.get(lineIndex).setCharacterNum2Draw(characterIndex % lineMaxCharacterNum);
-                    }else{
-                        lines.get(lines.size()-1).setCharacterNum2Draw(lineMaxCharacterNum);
+                } else {
+                    if (lineIndex < mLines.size()) {
+                        mLines.get(lineIndex).setCharacterNum2Draw(characterIndex % lineMaxCharacterNum);
+                    } else {
+                        mLines.get(mLines.size() - 1).setCharacterNum2Draw(lineMaxCharacterNum);
                     }
                 }
                 invalidate();
                 characterIndex++;
-                postDelayed(this,SINGLE_CHARACTER_DURATION);
-            }else {
-                if(mInputEffectListener != null){
+                postDelayed(this, SINGLE_CHARACTER_DURATION);
+            } else {
+                if (mInputEffectListener != null) {
                     mInputEffectListener.onFinish();
                 }
             }
@@ -221,48 +217,47 @@ public class InputEffectTextView extends View {
 
 
     private void startInputEffect() {
-        if(task == null){
-            task = new InputTask();
+        if (mTask == null) {
+            mTask = new InputTask();
         }
-       this.post(task);
+        this.post(mTask);
     }
 
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int realWitdhMeasureSpec;
+        int realWidthMeasureSpec;
         int realHeightMeasureSpec;
 
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
 
-        if(widthMode == MeasureSpec.EXACTLY){
-            if(width < mWidth){
-                realWitdhMeasureSpec = MeasureSpec.makeMeasureSpec((int) mWidth,MeasureSpec.EXACTLY);
-            }else{
-                realWitdhMeasureSpec = widthMeasureSpec;
+        if (widthMode == MeasureSpec.EXACTLY) {
+            if (width < mWidth) {
+                realWidthMeasureSpec = MeasureSpec.makeMeasureSpec((int) mWidth, MeasureSpec.EXACTLY);
+            } else {
+                realWidthMeasureSpec = widthMeasureSpec;
             }
-        }else{
-            realWitdhMeasureSpec = MeasureSpec.makeMeasureSpec((int) mWidth,widthMode);
+        } else {
+            realWidthMeasureSpec = MeasureSpec.makeMeasureSpec((int) mWidth, widthMode);
         }
 
         int height = MeasureSpec.getSize(heightMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        if(heightMode == MeasureSpec.EXACTLY){
+        if (heightMode == MeasureSpec.EXACTLY) {
 
-             if(height < mHeight){
-                 realHeightMeasureSpec = MeasureSpec.makeMeasureSpec((int) mHeight,MeasureSpec.EXACTLY);
-             }else {
-                 realHeightMeasureSpec = heightMeasureSpec;
-             }
+            if (height < mHeight) {
+                realHeightMeasureSpec = MeasureSpec.makeMeasureSpec((int) mHeight, MeasureSpec.EXACTLY);
+            } else {
+                realHeightMeasureSpec = heightMeasureSpec;
+            }
 
-        }else{
-            realHeightMeasureSpec = MeasureSpec.makeMeasureSpec((int) mHeight,heightMode);
+        } else {
+            realHeightMeasureSpec = MeasureSpec.makeMeasureSpec((int) mHeight, heightMode);
         }
 
-        super.onMeasure(realWitdhMeasureSpec, realHeightMeasureSpec);
+        super.onMeasure(realWidthMeasureSpec, realHeightMeasureSpec);
     }
-
 
 
     public void spilt2Lines() {
@@ -272,27 +267,25 @@ public class InputEffectTextView extends View {
         float contentHeight = 0f;
         //find  maxLineWidth
         for (int i = 0; i < lineStrList.size(); i++) {
-            tempLineWidth = paint.measureText(lineStrList.get(i));
+            tempLineWidth = mPaint.measureText(lineStrList.get(i));
             if (tempLineWidth > maxLineWidth) {
                 maxLineWidth = tempLineWidth;
             }
         }
-
         mWidth = maxLineWidth;
-
         Rect fontBound = new Rect();
-        paint.getTextBounds(lineStrList.get(0), 0, lineStrList.get(0).length(), fontBound);
+        mPaint.getTextBounds(lineStrList.get(0), 0, lineStrList.get(0).length(), fontBound);
         Line line;
         int lineHeight = fontBound.bottom - fontBound.top;
         for (int i = 0; i < lineStrList.size(); i++) {
-            float startX = (maxLineWidth - paint.measureText(lineStrList.get(i))) / 2;
+            float startX = (maxLineWidth - mPaint.measureText(lineStrList.get(i))) / 2;
             float startY = i * (lineHeight + LINE_V_GAP) + lineHeight;
 
-            if(i == lineStrList.size() -1){
+            if (i == lineStrList.size() - 1) {
                 contentHeight = startY + lineHeight - LINE_V_GAP;
             }
             line = new Line(lineStrList.get(i), startX, startY);
-            lines.add(line);
+            mLines.add(line);
         }
         mHeight = contentHeight;
         requestLayout();
@@ -300,8 +293,8 @@ public class InputEffectTextView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if(lines != null && lines.size() > 0){
-            for (Line line : lines) {
+        if (mLines != null && mLines.size() > 0) {
+            for (Line line : mLines) {
                 line.drawText(canvas);
             }
         }
@@ -316,9 +309,9 @@ public class InputEffectTextView extends View {
     }
 
     private void releaseRes() {
-        if(task != null){
-            task.cancel();
-            removeCallbacks(task);
+        if (mTask != null) {
+            mTask.cancel();
+            removeCallbacks(mTask);
         }
     }
 }

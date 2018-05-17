@@ -9,17 +9,28 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
 
+/**
+ * 战队pk  队员列表 布局管理器
+ *
+ * @author chekun
+ * created  at 2018/4/17 10:15
+ */
 public class TeamMemberGridlayoutManager extends GridLayoutManager {
-    private float MILLISECONDS_PER_INCH;
+
+    /**是否为快速滑动的 标准*/
+    private float milliseconds_per_inch;
     private InnerScroller linearSmoothScroller;
+
     public TeamMemberGridlayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context);
     }
+
     private void init(Context context) {
-        float scale=context.getResources().getDisplayMetrics().density;
-        MILLISECONDS_PER_INCH =  40*scale+0.5f;
+        float scale = context.getResources().getDisplayMetrics().density;
+        milliseconds_per_inch = 40 * scale + 0.5f;
     }
+
     public TeamMemberGridlayoutManager(Context context, int spanCount) {
         super(context, spanCount);
         init(context);
@@ -38,15 +49,16 @@ public class TeamMemberGridlayoutManager extends GridLayoutManager {
             linearSmoothScroller = new InnerScroller(recyclerView.getContext());
         }
 
-        linearSmoothScroller .setTargetPosition(position);
+        linearSmoothScroller.setTargetPosition(position);
         startSmoothScroll(linearSmoothScroller);
     }
 
 
-    private class  InnerScroller extends LinearSmoothScroller{
+    private class InnerScroller extends LinearSmoothScroller {
         public InnerScroller(Context context) {
             super(context);
         }
+
         @Override
         public PointF computeScrollVectorForPosition(int targetPosition) {
             return TeamMemberGridlayoutManager.this.computeScrollVectorForPosition(targetPosition);
@@ -54,18 +66,17 @@ public class TeamMemberGridlayoutManager extends GridLayoutManager {
 
         @Override
         protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
-
             View view = getChildAt(0);
-            if(view != null) {
-                final int firstChildPos = getPosition(getChildAt(0)); //获取当前item的position
-                int delta = Math.abs(getTargetPosition() - firstChildPos);//算出需要滑动的item数量
-                if(delta == 0)
+            if (view != null) {
+                //获取当前item的position
+                final int firstChildPos = getPosition(getChildAt(0));
+                //算出需要滑动的item数量
+                int delta = Math.abs(getTargetPosition() - firstChildPos);
+                if (delta == 0)
                     delta = 1;
-                return (MILLISECONDS_PER_INCH/delta) / displayMetrics.densityDpi;
-            }
-            else
-            {
-                return MILLISECONDS_PER_INCH / displayMetrics.densityDpi;
+                return (milliseconds_per_inch / delta) / displayMetrics.densityDpi;
+            } else {
+                return milliseconds_per_inch / displayMetrics.densityDpi;
             }
         }
     }

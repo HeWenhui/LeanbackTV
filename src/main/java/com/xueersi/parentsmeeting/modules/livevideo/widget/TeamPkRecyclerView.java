@@ -11,6 +11,7 @@ import android.view.animation.GridLayoutAnimationController;
 
 /**
  * 战队成员 展示 recyclerView
+ *
  * @author chenkun
  * @version 1.0, 2018/4/13 上午10:27
  */

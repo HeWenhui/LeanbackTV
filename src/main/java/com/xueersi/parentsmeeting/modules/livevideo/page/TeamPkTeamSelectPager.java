@@ -48,6 +48,7 @@ import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by chenkun on 2018/4/12
@@ -781,6 +782,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
     }
 
     private void showMarquee() {
+        Loger.e(TAG,"========> showMarquee");
         ((ViewGroup) mView).setClipChildren(false);
         final int spanCount = 3;
         lavTeamSelectAnimView.cancelAnimation();
@@ -795,21 +797,6 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         teamsRecyclerView.setAdapter(teamAdapter);
         teamsRecyclerView.setVisibility(View.VISIBLE);
 
-        /*teamsRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                int itemPosition = parent.getChildAdapterPosition(view);
-                int topGap = getTopGap(parent, spanCount);
-                int left = 0;
-                int right = 0;
-                int top = 0;
-                int bottom = 0;
-                if (itemPosition >= spanCount) {
-                    top = topGap;
-                }
-                outRect.set(left, top, right, bottom);
-            }
-        });*/
 
         GridLayoutAnimationController animationController = (GridLayoutAnimationController)
                 AnimationUtils.loadLayoutAnimation(mContext, R.anim.anim_livevido_teampk_team_list);
@@ -895,6 +882,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         if (teamsRecyclerView != null && teamsRecyclerView.getParent() != null) {
             ((ViewGroup) teamsRecyclerView.getParent()).removeView(teamsRecyclerView);
         }
+        Loger.e(TAG, "======>cancelMarquee done");
     }
 
     /**
@@ -935,7 +923,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
 
 
     private void showTimeCutdown() {
-        //Loger.e(TAG, "===>show time cut down");
+        Loger.e(TAG, "===>show time cut down");
         String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "time_cutdown/images";
         String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "time_cutdown/data.json";
         lavTeamSelectAnimView.cancelAnimation();

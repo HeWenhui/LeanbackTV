@@ -43,22 +43,32 @@ public class TeamPKAQResultPager extends BasePager {
     private TeamPKStateLayout teamPKStateLayout;
     private ViewGroup decorView;
     private TeamPkProgressBar pkProgressBar;
-    /**飞行动画时间*/
+    /**
+     * 飞行动画时间
+     */
     private final int FLY_ANIM_DURATION = 700;
-    private int controloffsetX;
-    private int controloffsetY;
+    private int controlOffsetX;
+    private int controlOffsetY;
     private ScaleAnimation scaleAnimation;
 
-    /**默认音量大小*/
+    /**
+     * 默认音量大小
+     */
     private static final float DEFAULT_VOLUME = 0.8f;
     private int mGoldNum;
     private int mEnergy;
-    /** 投票奖励*/
+    /**
+     * 投票奖励
+     */
     public static final int AWARD_TYPE_VOTE = 1;
-    /** 答题奖励*/
+    /**
+     * 答题奖励
+     */
     public static final int AWARD_TYPE_QUESTION = 2;
 
-    /**奖励类型*/
+    /**
+     * 奖励类型
+     */
     int awardType;
     private RelativeLayout rlVotRootView;
     private TextView tvVoteEnergy;
@@ -66,6 +76,16 @@ public class TeamPKAQResultPager extends BasePager {
     private final TeamPKBll mTeamPkBll;
     private SoundPoolHelper soundPoolHelper;
 
+    /**
+     * 飞星动画 控制点坐标  单位dp
+     */
+    private static final int CONTROL_X_DP = 70;
+    private static final int CONTROL_Y_DP = 120;
+
+    /**
+     * 缩放动画弹性系数
+     */
+    private static final float SCALE_ANIM_FACTOR = 0.23f;
 
     public TeamPKAQResultPager(Context context, int Type, TeamPKBll teamPKBll) {
         super(context);
@@ -76,8 +96,8 @@ public class TeamPKAQResultPager extends BasePager {
     @Override
     public View initView() {
 
-        controloffsetX = SizeUtils.Dp2Px(mContext, 70);
-        controloffsetY = SizeUtils.Dp2Px(mContext, 120);
+        controlOffsetX = SizeUtils.Dp2Px(mContext, CONTROL_X_DP);
+        controlOffsetY = SizeUtils.Dp2Px(mContext, CONTROL_Y_DP);
 
         final View view = View.inflate(mContext, R.layout.page_livevideo_teampk_aq_result, null);
         rlQuestionRootView = view.findViewById(R.id.rl_answer_question_award_root);
@@ -123,15 +143,12 @@ public class TeamPKAQResultPager extends BasePager {
     }
 
 
-
-
-    private void playMusic(int resId,float volume,boolean loop){
-        if(soundPoolHelper == null) {
-            soundPoolHelper = new SoundPoolHelper(mContext,1, AudioManager.STREAM_MUSIC);
+    private void playMusic(int resId, float volume, boolean loop) {
+        if (soundPoolHelper == null) {
+            soundPoolHelper = new SoundPoolHelper(mContext, 1, AudioManager.STREAM_MUSIC);
         }
-        soundPoolHelper.playMusic(resId,volume,loop);
+        soundPoolHelper.playMusic(resId, volume, loop);
     }
-
 
 
     /**
@@ -143,7 +160,7 @@ public class TeamPKAQResultPager extends BasePager {
 
         scaleAnimation = (ScaleAnimation) AnimationUtils.
                 loadAnimation(mContext, R.anim.anim_livevido_teampk_aq_award);
-        scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
+        scaleAnimation.setInterpolator(new SpringScaleInterpolator(SCALE_ANIM_FACTOR));
         rlVotRootView.setVisibility(View.GONE);
         rlQuestionRootView.setVisibility(View.VISIBLE);
         rlQuestionRootView.startAnimation(scaleAnimation);
@@ -174,7 +191,7 @@ public class TeamPKAQResultPager extends BasePager {
         tvVoteEnergy.setText("+" + mEnergy);
         scaleAnimation = (ScaleAnimation) AnimationUtils.
                 loadAnimation(mContext, R.anim.anim_livevido_teampk_aq_award);
-        scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
+        scaleAnimation.setInterpolator(new SpringScaleInterpolator(SCALE_ANIM_FACTOR));
         rlQuestionRootView.setVisibility(View.GONE);
         rlVotRootView.setVisibility(View.VISIBLE);
         rlVotRootView.startAnimation(scaleAnimation);
@@ -235,7 +252,7 @@ public class TeamPKAQResultPager extends BasePager {
             if (mGoldNum > 0) {
                 playFlayAnim(ivCoin, coinEndRect);
             }
-        }else{
+        } else {
             closePager();
         }
     }
@@ -291,8 +308,8 @@ public class TeamPKAQResultPager extends BasePager {
 
         Point endPoint = new Point(des[0] + offsetX, des[1] + offsetY);
 
-        int controlX = (startPoint.x + endPoint.x) / 2 - controloffsetX;
-        int controlY = endPoint.y - controloffsetY;
+        int controlX = (startPoint.x + endPoint.x) / 2 - controlOffsetX;
+        int controlY = endPoint.y - controlOffsetY;
         Point controlPoint = new Point(controlX, controlY);
 
         ValueAnimator valueAnimator = ValueAnimator.ofObject(new BezierEvaluator(controlPoint)
@@ -327,15 +344,16 @@ public class TeamPKAQResultPager extends BasePager {
         });
     }
 
-    boolean animEndCalled =false;
+    boolean animEndCalled = false;
+
     private void doAnimEnd() {
-        if(!animEndCalled){
+        if (!animEndCalled) {
             animEndCalled = true;
             // 0 播发音效
             playMusic(R.raw.coin_get, DEFAULT_VOLUME, false);
             // 1 聊天区域状态更新
             if (teamPKStateLayout != null && mTeamPkBll != null) {
-                teamPKStateLayout.updateData(mEnergy,0,mGoldNum);
+                teamPKStateLayout.updateData(mEnergy, 0, mGoldNum);
                 //mTeamPkBll.updatePkStateLayout();
             }
             closePager();
@@ -345,7 +363,7 @@ public class TeamPKAQResultPager extends BasePager {
 
     private void closePager() {
         try {
-            if (((ViewGroup) mView.getParent()) != null) {
+            if (mView.getParent() != null) {
                 ((ViewGroup) mView.getParent()).removeView(mView);
             }
         } catch (Exception e) {
@@ -363,9 +381,9 @@ public class TeamPKAQResultPager extends BasePager {
      * 清除资源
      */
     private void releaseRes() {
-       if(soundPoolHelper != null){
-           soundPoolHelper.release();
-       }
+        if (soundPoolHelper != null) {
+            soundPoolHelper.release();
+        }
     }
 
     /**
@@ -383,8 +401,10 @@ public class TeamPKAQResultPager extends BasePager {
 
         @Override
         public Point evaluate(float fraction, Point startValue, Point endValue) {
-            int x = (int) ((1 - fraction) * (1 - fraction) * startValue.x + 2 * fraction * (1 - fraction) * controlPoint.x + fraction * fraction * endValue.x);
-            int y = (int) ((1 - fraction) * (1 - fraction) * startValue.y + 2 * fraction * (1 - fraction) * controlPoint.y + fraction * fraction * endValue.y);
+            int x = (int) ((1 - fraction) * (1 - fraction) * startValue.x + 2 * fraction * (1 - fraction) *
+                    controlPoint.x + fraction * fraction * endValue.x);
+            int y = (int) ((1 - fraction) * (1 - fraction) * startValue.y + 2 * fraction * (1 - fraction) *
+                    controlPoint.y + fraction * fraction * endValue.y);
             return new Point(x, y);
         }
     }

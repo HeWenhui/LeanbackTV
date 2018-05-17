@@ -21,23 +21,45 @@ import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
 /**
  * 战队pk  右侧状态栏
+ *
+ * @author chekun
+ * created  at 2018/4/16 18:38
  */
 public class TeamPKStateLayout extends FrameLayout {
 
     private TeamPkProgressBar pkProgressBar;
-    private SmoothAddNumTextView tvMyteamEnergy;
-    private SmoothAddNumTextView tvOtherteamEnergy;
+    private SmoothAddNumTextView tvMyTeamEnergy;
+    private SmoothAddNumTextView tvOtherTeamEnergy;
     private SmoothAddNumTextView tvCoin;
 
-    private long mMyteamAnergy;
-    private long mOtherTeamAnergy;
+    private long mMyTeamEnergy;
+    private long mOtherTeamEnergy;
     private long mCoinNum;
-    private TextView tvState;  // 当前pk状态
+    /**
+     * 当前pk状态
+     */
+    private TextView tvState;
     private View statBarRootView;
 
-    public static final int PK_STATE_FOLLOW = 1; // 全力追赶
-    public static final int PK_STATE_LEAD = 2;    //暂时领先
-    public static final int pk_state_replay = 3;  // 回放中
+    /**
+     * 是否显示顶部 pk状态
+     */
+    private boolean showPopWindow;
+
+    /**
+     * 顶部pk状态栏 (打成平手 ，全力追赶...)高度
+     */
+    private static final int STATE_BAR_HEIGHT = 17;
+    /**
+     * 状态兰底部 margin 值
+     */
+    private static final int STATE_BAR_BOTTOM_MARGIN = 6;
+
+    /**
+     * pk状态栏显示时间
+     */
+    private static final long PK_STATE_DISPLAY_DURATION = 30 * 1000;
+
     private boolean dataInited = false;
 
     public TeamPKStateLayout(@NonNull Context context) {
@@ -60,8 +82,8 @@ public class TeamPKStateLayout extends FrameLayout {
     private void initView() {
         LayoutInflater.from(getContext()).inflate(R.layout.team_pk_state_layout, this);
         pkProgressBar = findViewById(R.id.tpb_teampk_pkstate_energy_bar);
-        tvMyteamEnergy = findViewById(R.id.tv_teampk_pkstate_myteam_energy);
-        tvOtherteamEnergy = findViewById(R.id.tv_teampk_pkstate_otherteam_energy);
+        tvMyTeamEnergy = findViewById(R.id.tv_teampk_pkstate_myteam_energy);
+        tvOtherTeamEnergy = findViewById(R.id.tv_teampk_pkstate_otherteam_energy);
         tvCoin = findViewById(R.id.tv_teampk_pkstate_coin_num);
         pkProgressBar.setMaxProgress(100);
         this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -77,14 +99,16 @@ public class TeamPKStateLayout extends FrameLayout {
         });
     }
 
+
     /**
      * 添加视屏区域 pk 状态UI
      */
     private void addPkStatBar() {
         statBarRootView = View.inflate(getContext(), R.layout.team_pk_state_bar_layout, null);
         ViewGroup rootView = (ViewGroup) this.getParent().getParent();
-        int stateBarHeight = SizeUtils.Dp2Px(getContext(), 17);
-        int gapAbovePkStateLayout = SizeUtils.Dp2Px(getContext(), 6);
+
+        int stateBarHeight = SizeUtils.Dp2Px(getContext(), STATE_BAR_HEIGHT);
+        int gapAbovePkStateLayout = SizeUtils.Dp2Px(getContext(), STATE_BAR_BOTTOM_MARGIN);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(this.getLayoutParams().width, stateBarHeight);
         int[] location = new int[2];
         this.getLocationInWindow(location);
@@ -105,102 +129,104 @@ public class TeamPKStateLayout extends FrameLayout {
 
     /**
      * 刷新 能量，金币
-     * @param ownEnergyAdd 本队新增能量值
-     * @param coinCrement  本地增加金币值
+     *
+     * @param ownEnergyAdd   本队新增能量值
+     * @param coinAdd        本地增加金币值
      * @param otherEnergyAdd 对手增加能量值
      */
-    public void updateData(int ownEnergyAdd, int otherEnergyAdd,int coinCrement) {
-        Loger.e("coinNum","====>updateData:"+ownEnergyAdd+":"+otherEnergyAdd+":"+coinCrement);
-        Loger.e("coinNum","====>updateData3333:"+mMyteamAnergy+":"+mOtherTeamAnergy+":"+mCoinNum);
-        mMyteamAnergy = mMyteamAnergy + ownEnergyAdd;
-        mOtherTeamAnergy = mOtherTeamAnergy+otherEnergyAdd;
-        mCoinNum = mCoinNum + coinCrement;
-        Loger.e("coinNum","====>updateData22222:"+mMyteamAnergy+":"+mOtherTeamAnergy+":"+mCoinNum);
+    public void updateData(int ownEnergyAdd, int otherEnergyAdd, int coinAdd) {
+        //Loger.e("coinNum", "====>updateData:" + ownEnergyAdd + ":" + otherEnergyAdd + ":" + coinCrement);
+        //Loger.e("coinNum", "====>updateData3333:" + mMyTeamEnergy + ":" + mOtherTeamEnergy + ":" + mCoinNum);
+        mMyTeamEnergy = mMyTeamEnergy + ownEnergyAdd;
+        mOtherTeamEnergy = mOtherTeamEnergy + otherEnergyAdd;
+        mCoinNum = mCoinNum + coinAdd;
+        Loger.e("coinNum", "====>updateData22222:" + mMyTeamEnergy + ":" + mOtherTeamEnergy + ":" + mCoinNum);
 
-        if(ownEnergyAdd > 0){
-            tvMyteamEnergy.smoothAddNum(ownEnergyAdd);
-        }else{
-            if(tvMyteamEnergy.isAnimRunning()){
-                tvMyteamEnergy.cancleAnim();
+        //正 增长 显示动画 ，负增涨 不显示动画
+        if (ownEnergyAdd > 0) {
+            tvMyTeamEnergy.smoothAddNum(ownEnergyAdd);
+        } else {
+            if (tvMyTeamEnergy.isAnimRunning()) {
+                tvMyTeamEnergy.cancelAnim();
             }
-            tvMyteamEnergy.setText(mMyteamAnergy+"");
+            tvMyTeamEnergy.setText(mMyTeamEnergy + "");
         }
-        if(otherEnergyAdd > 0){
-            tvOtherteamEnergy.smoothAddNum(otherEnergyAdd);
-        }else{
-            if(tvOtherteamEnergy.isAnimRunning()){
-                tvOtherteamEnergy.cancleAnim();
+        if (otherEnergyAdd > 0) {
+            tvOtherTeamEnergy.smoothAddNum(otherEnergyAdd);
+        } else {
+            if (tvOtherTeamEnergy.isAnimRunning()) {
+                tvOtherTeamEnergy.cancelAnim();
             }
-            tvOtherteamEnergy.setText(mOtherTeamAnergy+"");
+            tvOtherTeamEnergy.setText(mOtherTeamEnergy + "");
         }
-        if(coinCrement >0){
-            tvCoin.smoothAddNum(coinCrement);
-        }else {
-            if(tvCoin.isAnimRunning()){
-                tvCoin.cancleAnim();
+        if (coinAdd > 0) {
+            tvCoin.smoothAddNum(coinAdd);
+        } else {
+            if (tvCoin.isAnimRunning()) {
+                tvCoin.cancelAnim();
             }
-            tvCoin.setText(mCoinNum+"");
+            tvCoin.setText(mCoinNum + "");
         }
         float ratio;
-        if ((mMyteamAnergy + mOtherTeamAnergy) > 0) {
-            ratio = mMyteamAnergy / (float) (mMyteamAnergy + mOtherTeamAnergy);
-        }else{
+        if ((mMyTeamEnergy + mOtherTeamEnergy) > 0) {
+            ratio = mMyTeamEnergy / (float) (mMyTeamEnergy + mOtherTeamEnergy);
+        } else {
             ratio = 0.5f;
         }
         upDataSateText(ratio);
         int addProgress = (int) (ratio * 100 + 0.5f) - pkProgressBar.getProgress();
-        if(addProgress > 0){
+        if (addProgress > 0) {
             pkProgressBar.smoothAddProgress(addProgress);
-            Loger.e("coinNum","====>updateData smoothAddProgress:"+addProgress+":"+pkProgressBar.getProgress());
+            Loger.e("coinNum", "====>updateData smoothAddProgress:" + addProgress + ":" + pkProgressBar.getProgress());
 
-        }else{
-            if(pkProgressBar.isAnimRunning()){
-                pkProgressBar.cancle();
-            }
+        } else {
+           /* if (pkProgressBar.isAnimRunning()) {
+                pkProgressBar.cancel();
+            }*/
             pkProgressBar.setProgress((int) (ratio * 100));
-            Loger.e("coinNum","====>updateData setProgress:"+(int) (ratio * 100));
+            Loger.e("coinNum", "====>updateData setProgress:" + (int) (ratio * 100));
         }
     }
 
-     private boolean showPopWindow;
+
     /**
      * 绑定数据
      *
      * @param coinNum         当前战队 金币总数
-     * @param myTeamAnergy    当前战队 能量值
-     * @param otherTeamAnergy 当前对手能量值
-     * @param  showPopWindow   是否显示顶部进度状态
+     * @param myTeamEnergy    当前战队 能量值
+     * @param otherTeamEnergy 当前对手能量值
+     * @param showPopWindow   是否显示顶部进度状态
      */
-    public void bindData(long coinNum, long myTeamAnergy, long otherTeamAnergy,boolean showPopWindow) {
-        Loger.e("coinNum","====> PkstateLayout bindData 111:"+coinNum+":"+ myTeamAnergy+":"+ otherTeamAnergy);
-        Loger.e("coinNum","====> PkstateLayout bindData 333:"+mCoinNum+":"+ mMyteamAnergy+":"+ mOtherTeamAnergy);
+    public void bindData(long coinNum, long myTeamEnergy, long otherTeamEnergy, boolean showPopWindow) {
+        Loger.e("coinNum", "====> PkstateLayout bindData 111:" + coinNum + ":" + myTeamEnergy + ":" + otherTeamEnergy);
+        Loger.e("coinNum", "====> PkstateLayout bindData 333:" + mCoinNum + ":" + mMyTeamEnergy + ":" +
+                mOtherTeamEnergy);
         this.showPopWindow = showPopWindow;
-        if(!dataInited){
-            initData(coinNum, myTeamAnergy, otherTeamAnergy);
+        if (!dataInited) {
+            initData(coinNum, myTeamEnergy, otherTeamEnergy);
             dataInited = true;
-        }else{
-             int addCoin = (int) (coinNum - mCoinNum);
-             int ownEnergyAdd = (int) (myTeamAnergy - mMyteamAnergy);
-             int otherEnergyAdd =(int) (otherTeamAnergy - mOtherTeamAnergy);
-            Loger.e("coinNum","====> PkstateLayout bindData 222:"+addCoin+":"+ ownEnergyAdd+":"+ otherEnergyAdd);
-            updateData(ownEnergyAdd,otherEnergyAdd,addCoin);
+        } else {
+            int addCoin = (int) (coinNum - mCoinNum);
+            int ownEnergyAdd = (int) (myTeamEnergy - mMyTeamEnergy);
+            int otherEnergyAdd = (int) (otherTeamEnergy - mOtherTeamEnergy);
+            Loger.e("coinNum", "====> PkstateLayout bindData 222:" + addCoin + ":" + ownEnergyAdd + ":" +
+                    otherEnergyAdd);
+            updateData(ownEnergyAdd, otherEnergyAdd, addCoin);
         }
     }
 
     private void initData(long coinNum, long myTeamAnergy, long otherTeamAnergy) {
         this.mCoinNum = coinNum;
-        this.mMyteamAnergy = myTeamAnergy;
-        this.mOtherTeamAnergy = otherTeamAnergy;
+        this.mMyTeamEnergy = myTeamAnergy;
+        this.mOtherTeamEnergy = otherTeamAnergy;
         tvCoin.setText(mCoinNum + "");
-        tvMyteamEnergy.setText(mMyteamAnergy + "");
-        tvOtherteamEnergy.setText(otherTeamAnergy + "");
-        float ratio = 0;
-        if ((mMyteamAnergy + mOtherTeamAnergy) > 0) {
-            ratio = mMyteamAnergy / (float) (mMyteamAnergy + mOtherTeamAnergy);
+        tvMyTeamEnergy.setText(mMyTeamEnergy + "");
+        tvOtherTeamEnergy.setText(otherTeamAnergy + "");
+        float ratio;
+        if ((mMyTeamEnergy + mOtherTeamEnergy) > 0) {
+            ratio = mMyTeamEnergy / (float) (mMyTeamEnergy + mOtherTeamEnergy);
         } else {
-            if (ratio == 0) {
-                ratio = 0.5f;
-            }
+            ratio = 0.5f;
         }
         upDataSateText(ratio);
         int currentProgress = (int) (ratio * 100);
@@ -208,24 +234,17 @@ public class TeamPKStateLayout extends FrameLayout {
     }
 
     private void upDataSateText(float ratio) {
-        //tvState.setVisibility(ratio != 0.5f?VISIBLE:GONE);
-        if(this.showPopWindow){
+        if (this.showPopWindow) {
             this.showPopWindow = false;
-            //Logger.e("teamPkStateLayout", "======>upDataSateText:" + ratio);
-            if (mMyteamAnergy == 0 && mOtherTeamAnergy == 0) {
-                tvState.setText("准备战斗");
-                tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_ready_bg);
-            } else {
-                if (ratio > 0.5f) {
-                    tvState.setText("暂时领先");
-                    tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
-                } else if (ratio < 0.5f) {
-                    tvState.setText("全力追赶");
-                    tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_follow_bg);
-                } else if (ratio == 0.5f) {
-                    tvState.setText("打成平手");
-                    tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
-                }
+            if (ratio > 0.5f) {
+                tvState.setText("暂时领先");
+                tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
+            } else if (ratio < 0.5f) {
+                tvState.setText("全力追赶");
+                tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_follow_bg);
+            } else if (ratio == 0.5f) {
+                tvState.setText("打成平手");
+                tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
             }
             showPkSateBar();
         }
@@ -236,7 +255,7 @@ public class TeamPKStateLayout extends FrameLayout {
     /**
      * 显示 准备战斗提示
      */
-    public void showPkReady(){
+    public void showPkReady() {
         tvState.setText("准备战斗");
         tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_ready_bg);
         showPkSateBar();
@@ -265,6 +284,7 @@ public class TeamPKStateLayout extends FrameLayout {
                     public void onAnimationEnd(Animation animation) {
                         tvState.setVisibility(GONE);
                     }
+
                     @Override
                     public void onAnimationRepeat(Animation animation) {
 
@@ -272,6 +292,6 @@ public class TeamPKStateLayout extends FrameLayout {
                 });
                 tvState.startAnimation(alphaOut);
             }
-        },30*1000);
+        }, PK_STATE_DISPLAY_DURATION);
     }
 }
