@@ -257,7 +257,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                     @Override
                     public void countTime(long time) {
                         tvCountTime.setText(time + "");
-                        if (time >0 && time <= 3) {
+                        if (time <= 3) {
 
                             tvCountTime.setVisibility(View.VISIBLE);
                         }
