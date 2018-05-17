@@ -594,7 +594,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             return;
         }
         Loger.i("RolePlayerDemoTest", "显示结果");
-        mRolePlayBll.cancelDZ();
+        tvBeginTipMsg.setVisibility(View.GONE);//readgo不再占位
+        mRolePlayBll.cancelDZ();//取消点赞
         vwvSpeechVolume.stop();
         rlSpeechVolumnMain.setVisibility(View.INVISIBLE);
         vwvSpeechVolume.setVisibility(View.GONE);
