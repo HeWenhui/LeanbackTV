@@ -45,7 +45,7 @@ public class CountDownHeadImageView extends CircleImageView {
     private RectF finishedOuterRect = new RectF();
     /** 未完成的绘制区域 */
     private RectF unfinishedOuterRect = new RectF();
-    private int tempCountDownTime = 4;
+    private int tempCountDownTime = 4000;
 
     public CountDownHeadImageView(Context context) {
         super(context);
@@ -112,14 +112,14 @@ public class CountDownHeadImageView extends CircleImageView {
                     downtimeImpl.countTime(endTime);
                     if(endTime <= 4){
                         Loger.i("RolePlayerSelfItemTest", "去画圆弧");
-                        tempCountDownTime --;
+                        tempCountDownTime -=50;
                     }
                 }
                 if (isBeginCountdownTime) {
-                    postDelayed(this, 1000);
+                    postDelayed(this, 50);
                 }
             }
-        }, 1000);
+        }, 50);
         invalidate();
     }
 
@@ -171,7 +171,7 @@ public class CountDownHeadImageView extends CircleImageView {
 //        if (mBorderWidth > 0 && countDownTime == 0) {
 //            canvas.drawCircle(getWidth() / 2, getHeight() / 2, mBorderRadius, mBorderPaint);
 //        } else
-        if (mBorderWidth > 0 && (tempCountDownTime > 0 && tempCountDownTime <= 3)) {
+        if (mBorderWidth > 0 && (tempCountDownTime > 0 && tempCountDownTime <= 3000)) {
             //画倒计时的圆弧
 
 //            rectF.left = strokeWidth / 2;
@@ -181,7 +181,7 @@ public class CountDownHeadImageView extends CircleImageView {
             int piding = 10;
             finishedOuterRect.set(mBorderWidth / 2 + piding, mBorderWidth / 2 + piding, (getWidth() - mBorderWidth / 2 - piding), (getHeight() - mBorderWidth / 2 - piding));
             unfinishedOuterRect.set(mBorderWidth / 2 + piding, mBorderWidth / 2 + piding, (getWidth() - mBorderWidth / 2 - piding), (getHeight() - mBorderWidth / 2 - piding));
-            float unFinishRange = ((float) tempCountDownTime / (float) 3) * 360;
+            float unFinishRange = ((float) tempCountDownTime / (float) 3000) * 360;
             canvas.drawArc(unfinishedOuterRect, -90, unFinishRange, false, mUnFinishBorderPaint);
             canvas.drawArc(finishedOuterRect, unFinishRange - 90, 360 - unFinishRange, false, mFinishBorderPaint);
 

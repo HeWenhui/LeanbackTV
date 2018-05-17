@@ -664,6 +664,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             obj.put("type", 1);
             obj.put("roler", roleName);
             JSONArray arrAnswer = new JSONArray();
+            //TODO:
             int i = 1;
             for (RolePlayerEntity.RolePlayerMessage message : mRolePlayerEntity.getLstRolePlayerMessage()) {
                 JSONObject objAn = new JSONObject();

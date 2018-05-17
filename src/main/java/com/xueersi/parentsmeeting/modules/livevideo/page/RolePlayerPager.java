@@ -419,6 +419,9 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
 //                    //倒计时结束，时钟正走
 //                    return;
 //                }
+                if(mEntity == null){
+                    return;
+                }
                 mEntity.setCountDownSecond(mEntity.getCountDownSecond() - 1);
                 tvCountTime.setText(getCountDownTime());
                 tvCountTime.postDelayed(this, 1000);

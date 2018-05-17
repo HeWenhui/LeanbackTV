@@ -267,7 +267,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 
                     }
                 });
-                civUserHead.invalidate();
+                //civUserHead.invalidate();
 
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY:
