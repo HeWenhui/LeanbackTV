@@ -1006,6 +1006,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         if (rankBll != null) {
             rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
         }
+        videoChatBll.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
         if (LiveTopic.MODE_CLASS.equals(mode)) {
 //            liveMediaControllerBottom = new LiveStandMediaControllerBottom(this, mMediaController, this);
             liveMessageBll.initViewLiveStand(bottomContent);
@@ -1170,6 +1171,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                 if (rankBll != null) {
                     rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
                 }
+                videoChatBll.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom());
                 if (LiveTopic.MODE_CLASS.equals(mode)) {
                     //主讲模式去掉外层的RelativeLayout换回FrameLayout
                     ViewGroup group = (ViewGroup) rlFirstBackgroundView.getParent();

@@ -296,84 +296,90 @@ public class VideoChatBll implements VideoChatAction {
         }
     }
 
-    public void setControllerBottom(final BaseLiveMediaControllerBottom liveMediaControllerBottom) {
-        this.baseLiveMediaControllerBottom = liveMediaControllerBottom;
-        btRaiseHands = (Button) liveMediaControllerBottom.findViewById(R.id.bt_livevideo_voicechat_raise_hands);
-        btRaiseHands.setAlpha(0.4f);
-        btRaiseHands.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                liveMediaControllerBottom.onChildViewClick(v);
-                if (btRaiseHands.getAlpha() == 1.0f && videoChatInter == null && isHasPermission && (!isSuccess && !isFail)) {
-                    final Runnable runnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            String nonce = StableLogHashMap.creatNonce();
-                            VideoChatLog.sno4(liveBll, nonce);
-                            raisehand = true;
-                            liveBll.requestMicro(nonce, from);
-                            LiveScienceHttpManager liveScienceHttpManager = liveBll.getLiveScienceHttpManager();
-                            if (liveScienceHttpManager != null) {
-                                liveScienceHttpManager.chatHandAdd(new HttpCallBack(false) {
-                                    @Override
-                                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                        Loger.d(TAG, "chatHandAdd:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
-                                    }
-
-                                    @Override
-                                    public void onPmError(ResponseEntity responseEntity) {
-                                        super.onPmError(responseEntity);
-                                        Loger.d(TAG, "chatHandAdd:onPmError:responseEntity=" + responseEntity.getErrorMsg());
-                                    }
-
-                                    @Override
-                                    public void onPmFailure(Throwable error, String msg) {
-                                        super.onPmFailure(error, msg);
-                                        Loger.e(TAG, "chatHandAdd:onPmFailure:responseEntity=" + msg);
-                                    }
-                                });
-                            }
-                            BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
-                            raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
-                            raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
-                            raiseHandDialog.setRaiseHandsCount(raiseHandCount);
-                            raiseHandDialog.showDialog();
-                            if ("on".equals(onMic)) {
-                                final RaiseHandDialog finalRaiseHandDialog = raiseHandDialog;
-                                bottomContent.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (finalRaiseHandDialog == raiseHandDialog) {
-                                            finalRaiseHandDialog.cancelDialog();
-                                            raiseHandDialog = null;
-                                        }
-                                    }
-                                }, 3000);
-                            }
-                        }
-                    };
-                    if (nativeLibLoaded == -1) {
-                        checkNativeLibLoaded();
-                    }
-                    if (!hasWiredHeadset) {
-                        if (!headsetPrompt) {
-                            headsetPrompt = true;
-                            VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(), false, TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
-                            verifyCancelAlertDialog.initInfo("提醒", "插上耳麦再举手吧，否则上麦会有杂音。");
-                            verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
+    View.OnClickListener btRaiseHandsListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            baseLiveMediaControllerBottom.onChildViewClick(v);
+            if (btRaiseHands.getAlpha() == 1.0f && videoChatInter == null && isHasPermission && (!isSuccess && !isFail)) {
+                final Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        String nonce = StableLogHashMap.creatNonce();
+                        VideoChatLog.sno4(liveBll, nonce);
+                        raisehand = true;
+                        liveBll.requestMicro(nonce, from);
+                        LiveScienceHttpManager liveScienceHttpManager = liveBll.getLiveScienceHttpManager();
+                        if (liveScienceHttpManager != null) {
+                            liveScienceHttpManager.chatHandAdd(new HttpCallBack(false) {
                                 @Override
-                                public void onClick(View v) {
-                                    runnable.run();
+                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                    Loger.d(TAG, "chatHandAdd:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+                                }
+
+                                @Override
+                                public void onPmError(ResponseEntity responseEntity) {
+                                    super.onPmError(responseEntity);
+                                    Loger.d(TAG, "chatHandAdd:onPmError:responseEntity=" + responseEntity.getErrorMsg());
+                                }
+
+                                @Override
+                                public void onPmFailure(Throwable error, String msg) {
+                                    super.onPmFailure(error, msg);
+                                    Loger.e(TAG, "chatHandAdd:onPmFailure:responseEntity=" + msg);
                                 }
                             });
-                            verifyCancelAlertDialog.showDialog();
-                            return;
+                        }
+                        BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
+                        raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
+                        raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
+                        raiseHandDialog.setRaiseHandsCount(raiseHandCount);
+                        raiseHandDialog.showDialog();
+                        if ("on".equals(onMic)) {
+                            final RaiseHandDialog finalRaiseHandDialog = raiseHandDialog;
+                            bottomContent.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (finalRaiseHandDialog == raiseHandDialog) {
+                                        finalRaiseHandDialog.cancelDialog();
+                                        raiseHandDialog = null;
+                                    }
+                                }
+                            }, 3000);
                         }
                     }
-                    runnable.run();
+                };
+                if (nativeLibLoaded == -1) {
+                    checkNativeLibLoaded();
                 }
+                if (!hasWiredHeadset) {
+                    if (!headsetPrompt) {
+                        headsetPrompt = true;
+                        VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(), false, TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
+                        verifyCancelAlertDialog.initInfo("提醒", "插上耳麦再举手吧，否则上麦会有杂音。");
+                        verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                runnable.run();
+                            }
+                        });
+                        verifyCancelAlertDialog.showDialog();
+                        return;
+                    }
+                }
+                runnable.run();
             }
-        });
+        }
+    };
+
+    public void setControllerBottom(final BaseLiveMediaControllerBottom liveMediaControllerBottom) {
+        this.baseLiveMediaControllerBottom = liveMediaControllerBottom;
+        Button oldBtRaiseHands = btRaiseHands;
+        btRaiseHands = liveMediaControllerBottom.findViewById(R.id.bt_livevideo_voicechat_raise_hands);
+        btRaiseHands.setAlpha(0.4f);
+        btRaiseHands.setOnClickListener(btRaiseHandsListener);
+        if (oldBtRaiseHands != null) {
+            Loger.d(TAG, "setControllerBottom:old=" + oldBtRaiseHands.hashCode() + "," + btRaiseHands.hashCode());
+        }
     }
 
     RaiseHandDialog.RaiseHandGiveup raiseHandGiveup = new RaiseHandDialog.RaiseHandGiveup() {
