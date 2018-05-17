@@ -243,7 +243,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      * 排名3名字
      */
     private TextView tvResultRoleName3;
-    private boolean mIsEvaluatoring;//标记正在测评中
+    //private boolean mIsEvaluatoring;//标记正在测评中
 
     public RolePlayerPager(Context context, RolePlayerEntity obj, boolean isNewView, RolePlayerBll rolePlayerBll) {
         super(context, obj, isNewView);
@@ -530,7 +530,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
 
                     }
                     if (mIse != null) {
-                        mIse.stop();
+
+                        mIse.cancel();
                     }
                 }
                 if (mCurrentReadIndex == (mEntity.getLstRolePlayerMessage().size())) {
@@ -553,6 +554,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 mCurrentReadIndex++;
                 Message temp = mReadHandler.obtainMessage();
                 temp.what = READ_MESSAGE;
+                Loger.i("RolePlayerDemoTest", "currentMessage.getMaxReadTime() = " + currentMessage.getMaxReadTime() );
                 mReadHandler.sendMessageDelayed(temp, (currentMessage.getMaxReadTime()) * 1000);
                 mReadHandler.sendEmptyMessageDelayed(GO_SPEECH, (currentMessage.getMaxReadTime() - 1) * 1000);
             } else if (msg.what == GO_SPEECH) {
@@ -740,11 +742,10 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             vwvSpeechVolume.setVisibility(View.GONE);
             return;
         }
-
-        if(mIsEvaluatoring){
+        /*if(mIsEvaluatoring){
             Loger.i("RolePlayerDemoTest", "正在测评中，不接受新的测评请求");
             return;
-        }
+        }*/
 
         rlSpeechVolumnMain.setVisibility(View.VISIBLE);
         vwvSpeechVolume.setVisibility(View.VISIBLE);
@@ -754,7 +755,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             saveVideoFile = new File(dir, "roleplayer" + System.currentTimeMillis() + ".mp3");
         }
         mIse.cancel();
-        mIsEvaluatoring = true;
+        //mIsEvaluatoring = true;
         speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(spechMsg, saveVideoFile.getAbsolutePath(), false,
                 new RoleEvaluatorListener() {
                     @Override
@@ -767,7 +768,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                     public void onResult(ResultEntity resultEntity) {
                         if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
                             Loger.i("RolePlayerDemoTest", "测评成功，开始上传自己的mp3");
-                            mIsEvaluatoring = false;
+                            //mIsEvaluatoring = false;
                             message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
                             message.setSpeechScore(resultEntity.getScore());
                             message.setLstPhoneScore(resultEntity.getLstPhonemeScore());
@@ -784,7 +785,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                         } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                             Loger.i("RolePlayerDemoTest", "测评失败，" + ResultEntity.ERROR + " 不上传自己的mp3");
                             //XESToastUtils.showToast(mContext, "测评失败");
-                            mIsEvaluatoring = false;
+                            //mIsEvaluatoring = false;
                             message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
                             //提前开始下一条
                             nextReadMessage();

@@ -144,7 +144,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             public void onGuarantee(String permission, int position) {
                 Loger.i("RolePlayerDemoTest", "开启了" + permission + "权限");
                 unList.remove(0);
-                if (unList.isEmpty() && !SpeechEvaluatorUtils.isOfflineFail()) {
+                if (unList.isEmpty() && SpeechEvaluatorUtils.isOfflineSuccess()) {
                     Loger.i("RolePlayerDemoTest", "开启了录音拍照权限，且离线加载成功开始去请求分组");
                     beginConWebSocket();
                 } else {
@@ -159,10 +159,10 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             }
         }, PermissionConfig.PERMISSION_CODE_AUDIO, PermissionConfig.PERMISSION_CODE_CAMERA);
 
-        Loger.i("RolePlayerDemoTest", "unpermissionItems " + unPermissionItems.size()+"  SpeechEvaluatorUtils.isOfflineFail() = "+SpeechEvaluatorUtils.isOfflineFail());
+        Loger.i("RolePlayerDemoTest", "unpermissionItems " + unPermissionItems.size()+"  SpeechEvaluatorUtils.isOfflineSuccess() = "+SpeechEvaluatorUtils.isOfflineSuccess());
 
         unList.addAll(unPermissionItems);
-        if (unList.isEmpty() && !SpeechEvaluatorUtils.isOfflineFail()) {
+        if (unList.isEmpty() && SpeechEvaluatorUtils.isOfflineSuccess()) {
             Loger.i("RolePlayerDemoTest", "开启了录音拍照权限，且离线加载成功开始去请求分组");
             beginConWebSocket();
         } else {
@@ -636,7 +636,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                         @Override
                         public void onPmError(ResponseEntity responseEntity) {
                             super.onPmError(responseEntity);
-                            Loger.i("RolePlayerDemoTest", "onPmError:" + responseEntity.toString());
+                            Loger.i("RolePlayerDemoTest", "onPmError:" + responseEntity.getErrorMsg());
                         }
 
                         @Override
