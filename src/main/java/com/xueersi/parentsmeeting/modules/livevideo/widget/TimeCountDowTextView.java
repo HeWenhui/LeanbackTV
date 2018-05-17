@@ -109,6 +109,9 @@ public class TimeCountDowTextView extends android.support.v7.widget.AppCompatTex
     }
 
     public interface TimeCountDowListener {
+        /**
+         * 动画结束
+         */
         void onFinish();
     }
 

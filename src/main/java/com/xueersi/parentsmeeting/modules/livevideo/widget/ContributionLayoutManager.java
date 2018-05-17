@@ -152,7 +152,7 @@ public class ContributionLayoutManager extends RecyclerView.LayoutManager {
             //判断ItemView的位置和当前显示区域是否重合
             if (Rect.intersects(displayRect, allItemRect.get(i))) {
                 //获得Recycler中缓存的View
-                View itemView = recycler.getViewForPosition(i);//
+                View itemView = recycler.getViewForPosition(i);
                 measureChildWithMargins(itemView, 0, 0);
                 //添加View到RecyclerView上
                 addView(itemView);

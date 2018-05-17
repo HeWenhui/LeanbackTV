@@ -229,7 +229,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /**
      * 战队pk业务
      */
-    private TeamPKBll mTeamPKBll;
+    private TeamPkBll mTeamPKBll;
     private TeacherPraiseBll mTeacherPraiseBll1;
 
     public static boolean isAllowTeamPk = false;
@@ -1206,13 +1206,15 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         openBoxStateCode = teamPkEntity.getRoomInfo1().getOpenbox();
                         alloteamStateCode = teamPkEntity.getRoomInfo1().getAlloteam();
                         allotpkmanStateCode = teamPkEntity.getRoomInfo1().getAllotpkman();
-                        Loger.e("LiveBll", "====>onTopic teampk main_teacher_info:"+openBoxStateCode+":"+alloteamStateCode+":"+allotpkmanStateCode);
+                        Loger.e("LiveBll", "====>onTopic teampk main_teacher_info:" + openBoxStateCode + ":" +
+                                alloteamStateCode + ":" + allotpkmanStateCode);
                     } else {
                         if (teamPkEntity.getRoomInfo2() != null) {
                             openBoxStateCode = teamPkEntity.getRoomInfo2().getOpenbox();
                             alloteamStateCode = teamPkEntity.getRoomInfo2().getAlloteam();
                             allotpkmanStateCode = teamPkEntity.getRoomInfo2().getAllotpkman();
-                            Loger.e("LiveBll", "====>onTopic teampk assist_teacher_info:"+openBoxStateCode+":"+alloteamStateCode+":"+allotpkmanStateCode);
+                            Loger.e("LiveBll", "====>onTopic teampk assist_teacher_info:" + openBoxStateCode + ":" +
+                                    alloteamStateCode + ":" + allotpkmanStateCode);
                         }
                     }
 

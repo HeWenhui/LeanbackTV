@@ -9,6 +9,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.AudioManager;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -22,25 +23,27 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPKStateLayout;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
 
 /**
- * 战队pk 实时答题
- */
-public class TeamPKAQResultPager extends BasePager {
+*战队pk 实时答题
+*@author chekun
+*created  at 2018/4/17 16:26
+*/
+public class TeamPkAqResultPager extends BasePager {
 
     private RelativeLayout rlQuestionRootView;
     private ImageView ivEnergy;
     private ImageView ivCoin;
     private TextView tvEnergy;
     private TextView tvCoin;
-    private TeamPKStateLayout teamPKStateLayout;
+    private TeamPkStateLayout teamPKStateLayout;
     private ViewGroup decorView;
     private TeamPkProgressBar pkProgressBar;
     /**
@@ -73,7 +76,7 @@ public class TeamPKAQResultPager extends BasePager {
     private RelativeLayout rlVotRootView;
     private TextView tvVoteEnergy;
     private ImageView ivVoteEnergy;
-    private final TeamPKBll mTeamPkBll;
+    private final TeamPkBll mTeamPkBll;
     private SoundPoolHelper soundPoolHelper;
 
     /**
@@ -87,9 +90,9 @@ public class TeamPKAQResultPager extends BasePager {
      */
     private static final float SCALE_ANIM_FACTOR = 0.23f;
 
-    public TeamPKAQResultPager(Context context, int Type, TeamPKBll teamPKBll) {
+    public TeamPkAqResultPager(Context context, int type, TeamPkBll teamPKBll) {
         super(context);
-        this.awardType = Type;
+        this.awardType = type;
         mTeamPkBll = teamPKBll;
     }
 
@@ -123,7 +126,12 @@ public class TeamPKAQResultPager extends BasePager {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
+                    view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }else{
+                    view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
             }
         });
 

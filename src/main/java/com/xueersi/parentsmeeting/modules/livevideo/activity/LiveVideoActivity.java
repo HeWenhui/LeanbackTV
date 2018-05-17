@@ -58,9 +58,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBllOld;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeacherPraiseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
@@ -97,9 +95,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
@@ -465,7 +461,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         mLiveBll.setLiveLazyBllCreat(liveLazyBllCreat);
 
         // 初始战队pk
-        //teamPKBll = new TeamPKBll(this);
+        //teamPKBll = new TeamPkBll(this);
         //setTeamPkBll(teamPKBll);
         //老师点赞
         teacherPraiseBll = new TeacherPraiseBll(this);

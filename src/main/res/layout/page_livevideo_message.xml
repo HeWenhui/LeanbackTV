@@ -29,7 +29,7 @@
         </RelativeLayout>
 
         <!--战队pk-->
-        <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPKStateLayout
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@id/tpkL_teampk_pkstate_root"

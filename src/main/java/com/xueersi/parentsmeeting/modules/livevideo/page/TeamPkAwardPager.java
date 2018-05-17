@@ -39,7 +39,7 @@ import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
@@ -57,8 +57,10 @@ import java.util.List;
 import okhttp3.Call;
 
 /**
- * Created by chenkun on 2018/4/12
  * 开宝箱页面
+ *
+ * @author chekun
+ * created  at 2018/4/17 16:21
  */
 public class TeamPkAwardPager extends BasePager {
     private static final String TAG = "TeamPkAwardPager";
@@ -94,7 +96,7 @@ public class TeamPkAwardPager extends BasePager {
     private static final float DEFAULT_FRONT_VOLUME = 0.6f;
 
     private ClassChestEntity classChestEntity;
-    private final TeamPKBll teamPKBll;
+    private final TeamPkBll teamPKBll;
     private boolean mIsWin;
     private ImageView ivOpenState;
     private RelativeLayout rlLuckyStartRoot;
@@ -107,7 +109,7 @@ public class TeamPkAwardPager extends BasePager {
     private ImageView ivClose;
 
 
-    public TeamPkAwardPager(Context context, TeamPKBll pkBll) {
+    public TeamPkAwardPager(Context context, TeamPkBll pkBll) {
         super(context);
         teamPKBll = pkBll;
     }
@@ -272,10 +274,11 @@ public class TeamPkAwardPager extends BasePager {
             }
         });
 
+        final float frationShowDetail = 0.7f;
         lottieAnimationView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                if (!startShowWinner && animation.getAnimatedFraction() > 0.7) {
+                if (!startShowWinner && animation.getAnimatedFraction() > frationShowDetail) {
                     startShowWinner = true;
                     showDetailInfo(classChestEntity);
                 }
@@ -449,7 +452,8 @@ public class TeamPkAwardPager extends BasePager {
 
         // step 2 展示lottie 动画
         lottieAnimationView.setImageAssetsFolder(lottieResPath);
-        lottieAnimationView.setRepeatCount(-1); //设置循环播放
+        //设置循环播放
+        lottieAnimationView.setRepeatCount(-1);
         LottieComposition.Factory.fromAssetFileName(mContext, lottieJsonPath, new OnCompositionLoadedListener() {
             @Override
             public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
@@ -458,10 +462,11 @@ public class TeamPkAwardPager extends BasePager {
             }
         });
 
+        final String targetImgName = "img_0.png";
         lottieAnimationView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                if (lottieImageAsset.getFileName().equals("img_0.png") && mClickAbleRect == null) {
+                if (targetImgName.equals(lottieImageAsset.getFileName()) && mClickAbleRect == null) {
                     initClickAbleRect(lottieImageAsset.getWidth(), lottieImageAsset.getHeight());
                 }
                 Bitmap reusltBitmap = null;
@@ -514,7 +519,8 @@ public class TeamPkAwardPager extends BasePager {
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         StudentChestEntity studentChestEntity = teamPKBll.getmHttpResponseParser().parseStuChest
                                 (responseEntity);
-                        if (studentChestEntity.getIsGet().equals("0")) {
+                        String  strUnGetGoldState = "0";
+                        if (strUnGetGoldState.equals(studentChestEntity.getIsGet())) {
                             //展示 获得金币数
                             cadMyCoin.setVisibility(View.VISIBLE);
                             try {
@@ -559,6 +565,7 @@ public class TeamPkAwardPager extends BasePager {
 
     /**
      * 初始化 宝箱可点击范围
+     *
      * @param width
      * @param height
      */

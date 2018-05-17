@@ -26,7 +26,7 @@ public class InputEffectTextView extends View {
 
 
     /**行间距*/
-    private int LINE_V_GAP = 20;
+    private static final int LINE_V_GAP = 20;
     private String mTextColor = "#73510A";
     /**字体大小*/
     private int textsize = 12;
@@ -120,6 +120,9 @@ public class InputEffectTextView extends View {
 
 
     public interface InputEffectListener {
+        /**
+         * 动画执行结束
+         */
         void onFinish();
     }
 
@@ -162,8 +165,9 @@ public class InputEffectTextView extends View {
     }
 
     private String substring(String text, int f, int t) {
-        if (f > text.length())
+        if (f > text.length()){
             return null;
+        }
         if (t > text.length()) {
             return text.substring(f, text.length());
         } else {
