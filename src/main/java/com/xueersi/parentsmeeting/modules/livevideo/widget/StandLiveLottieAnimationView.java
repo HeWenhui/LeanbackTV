@@ -33,7 +33,7 @@ public class StandLiveLottieAnimationView extends LottieAnimationView {
         paint = new Paint();
         paint.setTextSize(24);
         paint.setColor(Color.WHITE);
-        fontFace = FontCache.getTypeface(context, "fangzhengyouyuan.ttf");
+        fontFace = FontCache.getTypeface(context, "fangzhengcuyuan.ttf");
     }
 
     /**

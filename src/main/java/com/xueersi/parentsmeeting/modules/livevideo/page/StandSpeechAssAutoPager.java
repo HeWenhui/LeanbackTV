@@ -298,7 +298,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         animSpeechEncourage = AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_speech_encourage);
         animSpeechEncourage.setInterpolator(new OvershootInterpolator());
         content2 = content.replace("\n", " ");
-        fontFace = FontCache.getTypeface(mContext, "fangzhengyouyuan.ttf");
+        fontFace = FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf");
         tvSpeectevalEncourage.setTypeface(fontFace);
         File dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/livevideo/");
         FileUtils.deleteDir(dir);

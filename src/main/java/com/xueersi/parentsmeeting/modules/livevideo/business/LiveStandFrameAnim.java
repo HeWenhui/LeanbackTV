@@ -111,7 +111,7 @@ public class LiveStandFrameAnim {
             } else {
                 liveSoundPool = LiveSoundPool.createSoundPool();
                 loading(liveSoundPool);
-                fontFace = FontCache.getTypeface(activity, "fangzhengyouyuan.ttf");
+                fontFace = FontCache.getTypeface(activity, "fangzhengcuyuan.ttf");
                 //activity_video_live_stand_check
                 ViewStub vs_live_stand_update = activity.findViewById(R.id.vs_live_stand_update);
                 View view = vs_live_stand_update.inflate();
@@ -130,7 +130,7 @@ public class LiveStandFrameAnim {
         } else {
             liveSoundPool = LiveSoundPool.createSoundPool();
             loading(liveSoundPool);
-            fontFace = FontCache.getTypeface(activity, "fangzhengyouyuan.ttf");
+            fontFace = FontCache.getTypeface(activity, "fangzhengcuyuan.ttf");
             //activity_video_live_stand_check
             ViewStub vs_live_stand_update = activity.findViewById(R.id.vs_live_stand_update);
             final View view = vs_live_stand_update.inflate();

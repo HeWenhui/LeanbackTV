@@ -514,7 +514,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         entranceTime = System.currentTimeMillis();
         final String questionID = baseVideoQuestionEntity.getvQuestionID();
         Loger.d(TAG, "initData:questionID=" + questionID);
-        fontFace = FontCache.getTypeface(mContext, "fangzhengyouyuan.ttf");
+        fontFace = FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf");
         dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/voice/");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {

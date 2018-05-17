@@ -263,7 +263,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             spStarResult.setIsWord();
         }
         Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(),
-                "fangzhengyouyuan.ttf");
+                "fangzhengcuyuan.ttf");
         tvSpeectevalEncourage.setTypeface(fontFace);
         File dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/livevideo/");
         FileUtils.deleteDir(dir);

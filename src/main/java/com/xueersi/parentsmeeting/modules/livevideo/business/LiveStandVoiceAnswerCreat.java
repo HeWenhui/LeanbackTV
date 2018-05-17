@@ -271,7 +271,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             Paint paint = new Paint();
             paint.setTextSize(48);
             paint.setColor(0xffCC6E12);
-            Typeface fontFace = FontCache.getTypeface(context, "fangzhengyouyuan.ttf");
+            Typeface fontFace = FontCache.getTypeface(context, "fangzhengcuyuan.ttf");
             paint.setTypeface(fontFace);
             float width = paint.measureText(num);
             canvas.drawText(num, (img_7Bitmap.getWidth() - width) / 2, (img_7Bitmap.getHeight() + paint.measureText("a")) / 2, paint);
@@ -297,7 +297,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             Paint paint = new Paint();
             paint.setTextSize(48);
             paint.setColor(0xff5586A3);
-            Typeface fontFace = FontCache.getTypeface(context, "fangzhengyouyuan.ttf");
+            Typeface fontFace = FontCache.getTypeface(context, "fangzhengcuyuan.ttf");
             paint.setTypeface(fontFace);
             float width = paint.measureText(num);
             canvas.drawText(num, (img_7Bitmap.getWidth() - width) / 2, (img_7Bitmap.getHeight() + paint.measureText("a")) / 2, paint);
