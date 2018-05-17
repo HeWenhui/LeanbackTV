@@ -460,11 +460,12 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
 //        lvReadList.setSelection(0);
 
 
+
         //整个前奏3秒后开始
         tvBeginTipMsg.postDelayed(new Runnable() {
             @Override
             public void run() {
-                tvBeginTipMsg.setVisibility(View.GONE);
+                tvBeginTipMsg.setVisibility(View.INVISIBLE);
                 beginRolePlayer();
             }
         }, 3000);
@@ -749,6 +750,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             saveVideoFile = new File(dir, "roleplayer" + System.currentTimeMillis() + ".mp3");
         }
         mIse.cancel();
+        mIsEvaluatoring = true;
         speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(spechMsg, saveVideoFile.getAbsolutePath(), false,
                 new RoleEvaluatorListener() {
                     @Override
@@ -784,7 +786,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                             nextReadMessage();
                         } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
                             Loger.i("RolePlayerDemoTest", "测评中");
-                            mIsEvaluatoring = true;
+
                         }
 
                     }
