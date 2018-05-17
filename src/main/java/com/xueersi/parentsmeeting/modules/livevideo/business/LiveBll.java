@@ -4712,6 +4712,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             jsonObject.put("type", "" + XESCODE.TEAM_PK_STUDENT_READY);
             jsonObject.put("stuId", "" + mGetInfo.getStuId());
             mIRCMessage.sendNotice(mCounTeacherStr, jsonObject.toString());
+            mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
         } catch (Exception e) {
             mLogtf.e("sendStudentReady", e);
         }
