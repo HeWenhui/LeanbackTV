@@ -851,6 +851,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             return;
         } else {
             if (speechAssessmentPagerUserBack != null) {
+                havePager = true;
                 String id = speechAssessmentPagerUserBack.getId();
                 if (speechEndAction != null) {
                     speechEndAction.examSubmitAll(speechAssessmentPagerUserBack, id);
@@ -1252,7 +1253,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 speechEndAction.onStopSpeech(speechAssessmentPager, num, new SpeechEndAction.OnTop3End() {
                     @Override
                     public void onShowEnd() {
-                        Loger.d(TAG, "stopSpeech:onShowEnd=" + num + ",isAnaswer=" + isAnaswer);
+                        speechAssessmentPagerUserBack = null;
+                        mLogtf.d("stopSpeech:onShowEnd=" + num + ",isAnaswer=" + isAnaswer + ",UserBack=" + (speechAssessmentPagerUserBack == null));
                         if (!isAnaswer) {
                             onQuestionShow(false, "stopSpeech:onShowEnd");
                         }
@@ -1264,6 +1266,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
             }
             if (speechAssessmentPager.getId().equals(num)) {
+                speechAssessmentPagerUserBack = speechAssessmentPager;
                 setHaveSpeech(false);
             }
         }
@@ -1330,16 +1333,16 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity2, String result) {
             mLiveBll.liveSubmitTestAnswer((VideoQuestionLiveEntity) videoQuestionLiveEntity2, mVSectionID, result,
                     false, false, new QuestionSwitch.OnAnswerReslut() {
-                @Override
-                public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
-                    //onSubmit();
-                }
+                        @Override
+                        public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+                            //onSubmit();
+                        }
 
-                @Override
-                public void onAnswerFailure() {
+                        @Override
+                        public void onAnswerFailure() {
 
-                }
-            });
+                        }
+                    });
         }
     };
 
