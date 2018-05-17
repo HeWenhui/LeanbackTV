@@ -487,11 +487,11 @@ public class FrameAnimation {
     }
 
     /**
-     * <p>Binds an animation listener to this animation. The animation listener
+     * <p>Binds an animation mListener to this animation. The animation mListener
      * is notified of animation events such as the end of the animation or the
      * repetition of the animation.</p>
      *
-     * @param listener the animation listener to be notified
+     * @param listener the animation mListener to be notified
      */
     public void setAnimationListener(AnimationListener listener) {
         this.mAnimationListener = listener;
