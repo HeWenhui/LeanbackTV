@@ -247,9 +247,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 }
                 tvCountTime.setText(entity.getMaxReadTime() + "");
 
-                if (entity.getMaxReadTime() <= 3) {
-                    entity.setMaxReadTime(entity.getReadMsg().length()/5 +3);
-                }
+
                 civUserHead.setFinishBorderColor(Color.parseColor("#C8E7D4"));
                 civUserHead.setUnFinishBorderColor(Color.parseColor("#36BC9B"));
                 civUserHead.startCountDown(entity.getMaxReadTime()*1000, entity.getEndReadTime() * 1000, new

@@ -37,6 +37,12 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
                 String roleName = objMsg.optString("role");
                 String msgContent = objMsg.optString("text");
                 int maxTime = objMsg.optInt("time");
+
+                //不满三秒，也要保证至少三秒
+                if (maxTime < 3) {
+                    maxTime = (msgContent.length()/5) +3;
+                }
+
                 RolePlayerEntity.RolePlayerHead head = rolePlayerEntity.getMapRoleHeadInfo().get(roleName);
                 if (head == null) {
                     head = new RolePlayerEntity.RolePlayerHead();
