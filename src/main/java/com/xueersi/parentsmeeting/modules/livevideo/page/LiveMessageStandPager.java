@@ -956,9 +956,11 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                             liveStandMessageContent.setVisibility(View.VISIBLE);
                             StandLiveMethod.voicePopup(liveSoundPool);
                         }
+                        //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.VISIBLE);
                     } else {
                         liveStandMessageContent.setVisibility(View.GONE);
+                        //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.GONE);
                     }
                     if (fromNotice) {
@@ -1140,6 +1142,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             public void run() {
                 if (isShow) {
                     liveStandMessageContent.setVisibility(View.GONE);
+                    //现在的隐藏显示和liveStandMessageContent一致
                     btMesOpen.setVisibility(View.GONE);
                 } else {
                     if (liveBll.openchat()) {
@@ -1147,6 +1150,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                             liveStandMessageContent.setVisibility(View.VISIBLE);
                             StandLiveMethod.voicePopup(liveSoundPool);
                         }
+                        //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.VISIBLE);
                     }
                 }
