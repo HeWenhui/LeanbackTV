@@ -18,7 +18,7 @@ import android.view.View;
 public class TeamMemberGridlayoutManager extends GridLayoutManager {
 
     /**是否为快速滑动的 标准*/
-    private float milliseconds_per_inch;
+    private float millisecondsPerInch;
     private InnerScroller linearSmoothScroller;
 
     public TeamMemberGridlayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -28,7 +28,7 @@ public class TeamMemberGridlayoutManager extends GridLayoutManager {
 
     private void init(Context context) {
         float scale = context.getResources().getDisplayMetrics().density;
-        milliseconds_per_inch = 40 * scale + 0.5f;
+        millisecondsPerInch = 40 * scale + 0.5f;
     }
 
     public TeamMemberGridlayoutManager(Context context, int spanCount) {
@@ -72,11 +72,12 @@ public class TeamMemberGridlayoutManager extends GridLayoutManager {
                 final int firstChildPos = getPosition(getChildAt(0));
                 //算出需要滑动的item数量
                 int delta = Math.abs(getTargetPosition() - firstChildPos);
-                if (delta == 0)
+                if (delta == 0){
                     delta = 1;
-                return (milliseconds_per_inch / delta) / displayMetrics.densityDpi;
+                }
+                return (millisecondsPerInch / delta) / displayMetrics.densityDpi;
             } else {
-                return milliseconds_per_inch / displayMetrics.densityDpi;
+                return millisecondsPerInch / displayMetrics.densityDpi;
             }
         }
     }
