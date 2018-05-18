@@ -302,8 +302,14 @@ public class TeamPkProgressBar extends View {
             @Override
             public void onAnimFinish() {
                 if (mCacheProgress != -1) {
-                    setProgress(mCacheProgress);
-                    mCacheProgress = -1;
+                    postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            setProgress(mCacheProgress);
+                            mCacheProgress = -1;
+                            invalidate();
+                        }
+                    },100);
                 }
             }
         });

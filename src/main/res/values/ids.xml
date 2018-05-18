@@ -694,5 +694,6 @@
     <!--老师点赞-->
     <item name="lav_teacher_priase" type="id"/>
 
+    <item name="tv_teampk_pkstate_adversary" type="id"/>
 
 </resources>
