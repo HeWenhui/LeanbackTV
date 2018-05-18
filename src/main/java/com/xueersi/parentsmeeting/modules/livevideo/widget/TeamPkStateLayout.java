@@ -20,6 +20,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
+import java.util.logging.Logger;
+
 /**
  * 战队pk  右侧状态栏
  *
@@ -111,7 +113,7 @@ public class TeamPkStateLayout extends FrameLayout {
      */
     private void addPkStatBar() {
         statBarRootView = View.inflate(getContext(), R.layout.team_pk_state_bar_layout, null);
-        ViewGroup rootView = (ViewGroup) this.getParent().getParent();
+        ViewGroup rootView = (ViewGroup) this.getParent().getParent().getParent();
 
         int stateBarHeight = SizeUtils.Dp2Px(getContext(), STATE_BAR_HEIGHT);
         int gapAbovePkStateLayout = SizeUtils.Dp2Px(getContext(), STATE_BAR_BOTTOM_MARGIN);
@@ -121,7 +123,7 @@ public class TeamPkStateLayout extends FrameLayout {
         lp.topMargin = location[1] - (gapAbovePkStateLayout + stateBarHeight);
         rootView.addView(statBarRootView, lp);
         tvState = statBarRootView.findViewById(R.id.tv_answer_question_state);
-        tvState.setVisibility(GONE);
+        //tvState.setVisibility(GONE);
     }
 
 
