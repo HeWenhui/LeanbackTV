@@ -18,6 +18,9 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.xesalib.utils.log.Loger;
+
+import java.util.logging.Logger;
 
 
 /**
@@ -161,6 +164,7 @@ public class TeamPkProgressBar extends View {
 
 
     public void setProgress(int progress) {
+        Loger.e("8888", "====>isAnimRunning:"+isAnimRunning());
         if (!isAnimRunning()) {
             this.mProgress = progress;
             setProgressRightBound(-1);
@@ -290,6 +294,7 @@ public class TeamPkProgressBar extends View {
      * @param progress 进度增量
      */
     public void smoothAddProgress(int progress) {
+        animRunning = true;
         canceled = false;
         mProgress += progress;
         float endBound = progressRect.width() * getProgress() / getMaxProgress();
@@ -301,6 +306,7 @@ public class TeamPkProgressBar extends View {
         anim.setAnimListener(new ProgressAnim.ProgressAnimListener() {
             @Override
             public void onAnimFinish() {
+                animRunning = false;
                 if (mCacheProgress != -1) {
                     postDelayed(new Runnable() {
                         @Override
@@ -308,6 +314,7 @@ public class TeamPkProgressBar extends View {
                             setProgress(mCacheProgress);
                             mCacheProgress = -1;
                             invalidate();
+                           // Loger.e("8888","=====onAnimFinish 99999 called:");
                         }
                     },100);
                 }
@@ -320,6 +327,7 @@ public class TeamPkProgressBar extends View {
      * @param cacheProgress
      */
     private void cacheProgress(int cacheProgress) {
+        Loger.e("8888", "====>cacheProgress:"+mCacheProgress);
         mCacheProgress = cacheProgress;
     }
 
