@@ -125,6 +125,14 @@ public class RolePlayerOtherItem extends RolePlayerItem {
     }
 
     private void voiceClick() {
+        vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_other_reading);
+        ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_other_voice_white_anim);
+        AnimationDrawable animationDrawable = null;
+        animationDrawable = (AnimationDrawable) ivVoiceAnimtor.getBackground();
+        if (animationDrawable != null && !animationDrawable.isRunning()) {
+            animationDrawable.start();
+        }
+        tvMessageContent.setTextColor(Color.WHITE);
 
         //播放
         AudioPlayerManager.get(ContextManager.getApplication()).start(mEntity.getWebVoiceUrl(), new PlayerCallback() {
@@ -132,6 +140,8 @@ public class RolePlayerOtherItem extends RolePlayerItem {
             public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
                 Loger.i("RolePlayerDemoTest", "完成播放");
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
+                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                tvMessageContent.setTextColor(Color.parseColor("#333333"));
             }
 
             @Override
@@ -139,17 +149,22 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 super.onStop(dataSource, manager);
                 Loger.i("RolePlayerDemoTest", "停止播放");
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
+                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                tvMessageContent.setTextColor(Color.parseColor("#333333"));
             }
 
             @Override
             public void onPreparing(Object dataSource, AudioPlayerManager manager) {
                 Loger.i("RolePlayerDemoTest", "准备播放");
-                ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_other_voice_white_anim);
-                AnimationDrawable animationDrawable = null;
-                animationDrawable = (AnimationDrawable) ivVoiceAnimtor.getBackground();
-                if (animationDrawable != null && !animationDrawable.isRunning()) {
-                    animationDrawable.start();
-                }
+
+            }
+
+            @Override
+            public void onError(String msg, Object dataSource, AudioPlayerManager manager) {
+                super.onError(msg, dataSource, manager);
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
+                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                tvMessageContent.setTextColor(Color.parseColor("#333333"));
             }
         });
 
@@ -228,6 +243,12 @@ public class RolePlayerOtherItem extends RolePlayerItem {
 
     @Override
     public void updateViews(final RolePlayerEntity.RolePlayerMessage entity, int position, Object objTag) {
+        if(entity.getMsgStatus() == RolePlayerEntity.RolePlayerMessageStatus.STOP_UPDATE){
+            rlMessageDZ.setVisibility(View.GONE);
+            ivMessageDZ.setVisibility(View.GONE);
+            Loger.i("RolePlayerDemoTest", "停止刷新");
+            return;
+        }
         super.updateViews(entity, position, objTag);
         updateUserHeadImage(civUserHead, entity.getRolePlayer().getHeadImg()); // 绑定用户头像
 
@@ -243,6 +264,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 //  Loger.i("RolePlayerDemoTest", "等待朗读");
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_other_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
+
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY:
                 // Loger.i("RolePlayerDemoTest", "开始朗读");
@@ -271,6 +293,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                     ivMessageDZ.setOnClickListener(null);
                 }
                 showSpeechStar();
+                Loger.i("RolePlayerDemoTest", "END_ROLEPLAY:显示星星");
                 break;
 
             case RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ:
@@ -281,6 +304,9 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_other_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
                 tvMessageContent.setTextColor(Color.parseColor("#333333"));
+                showSpeechStar();
+                Loger.i("RolePlayerDemoTest", "CANCEL_DZ:显示星星");
+                entity.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.STOP_UPDATE);
                 break;
             default:
                 break;

@@ -550,10 +550,11 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
                             final int position = msgObj.optInt("index");
 
-                            JSONObject obj = msgObj.optJSONObject("data");
-                            int totalScore = obj.optInt("totalScore");
-                            int fluency = obj.optInt("fluency");
-                            int accuracy = obj.optInt("accuracy");
+                            String strData = msgObj.optString("data");
+                            JSONObject jsonData = new JSONObject(strData);
+                            int totalScore = jsonData.optInt("totalScore");
+                            int fluency = jsonData.optInt("fluency");
+                            int accuracy = jsonData.optInt("accuracy");
 
                             Loger.i("RolePlayerDemoTest", "收到 " + from + " 读完 "  + position +" totalScore = "+totalScore +" fluency = "+fluency+" accuracy = "+accuracy);
 
@@ -799,7 +800,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             data.put("totalScore", totalScore);
             data.put("fluency", fluency);
             data.put("accuracy", accuracy);
-            obj.put("data", data);
+            obj.put("data", data.toString());
 
             List<RolePlayerEntity.RolePlayerHead> rolePlayerHeads = entity.getLstRoleInfo();
             int roleSize = rolePlayerHeads.size();

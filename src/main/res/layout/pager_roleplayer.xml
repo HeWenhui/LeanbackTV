@@ -72,7 +72,7 @@
             android:id="@id/lv_live_roleplayer_read_list"
             style="@style/listview_common_style"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_below="@id/tv_live_roleplayer_countdown_tip"
             android:layout_marginBottom="23dp"
             android:divider="@null"

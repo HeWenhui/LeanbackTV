@@ -526,7 +526,7 @@ public class RolePlayerEntity {
          * @return
          */
         public int getStars() {
-            if (speechScore >= 1 && speechScore < 40) {
+            if (speechScore >= 0 && speechScore < 40) {
                 return 1;
             }
             if (speechScore >= 40 && speechScore < 60) {
@@ -574,6 +574,11 @@ public class RolePlayerEntity {
          * 结果弹窗,去掉点赞按钮
          */
         public static final int CANCEL_DZ = 6;
+
+        /**
+         * 对话结束后，停止刷新界面
+         */
+        public static final int STOP_UPDATE = -1;
     }
 
     /**

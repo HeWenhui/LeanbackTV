@@ -116,12 +116,20 @@ public class RolePlayerSelfItem extends RolePlayerItem {
     }
 
     private void voiceClick() {
+        ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_self_voice_white_anim);
+        vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_me_reading);
+        AnimationDrawable selfVoiceAnimationDrawable = null;
+        selfVoiceAnimationDrawable = (AnimationDrawable) ivVoiceAnimtor.getBackground();
+        if (selfVoiceAnimationDrawable != null && !selfVoiceAnimationDrawable.isRunning()) {
+            selfVoiceAnimationDrawable.start();
+        }
         //播放
         AudioPlayerManager.get(ContextManager.getApplication()).start(mEntity.getWebVoiceUrl(), new PlayerCallback() {
             @Override
             public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
                 Loger.i("RolePlayerDemoTest", "完成播放");
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
             }
 
             @Override
@@ -129,17 +137,20 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 super.onStop(dataSource, manager);
                 Loger.i("RolePlayerDemoTest", "停止播放");
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
             }
 
             @Override
             public void onPreparing(Object dataSource, AudioPlayerManager manager) {
                 Loger.i("RolePlayerDemoTest", "准备播放");
-                ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_self_voice_white_anim);
-                AnimationDrawable selfVoiceAnimationDrawable = null;
-                selfVoiceAnimationDrawable = (AnimationDrawable) ivVoiceAnimtor.getBackground();
-                if (selfVoiceAnimationDrawable != null && !selfVoiceAnimationDrawable.isRunning()) {
 
-                }
+            }
+
+            @Override
+            public void onError(String msg, Object dataSource, AudioPlayerManager manager) {
+                super.onError(msg, dataSource, manager);
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
             }
         });
 //        if (mEntity.isVoiceIsplay()) {

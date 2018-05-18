@@ -245,6 +245,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      */
     private TextView tvResultRoleName3;
     private ImageView ivRoleplayerResultStar;//显示成绩结果星星旗帜
+    private boolean isShowResult;//标记是否正在显示结果页
     //private boolean mIsEvaluatoring;//标记正在测评中
 
     public RolePlayerPager(Context context, RolePlayerEntity obj, boolean isNewView, RolePlayerBll rolePlayerBll) {
@@ -614,11 +615,14 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     /**
      * 显示结果
      */
-    public void showResult() {
-        if (rlResult.getVisibility() == View.VISIBLE) {
+    public  void showResult() {
+
+        if (isShowResult) {
             Loger.i("RolePlayerDemoTest", "结果页已经在显示");
             return;
         }
+
+        isShowResult = true;
         Loger.i("RolePlayerDemoTest", "显示结果");
         tvBeginTipMsg.setVisibility(View.GONE);//readgo不再占位
         mRolePlayBll.cancelDZ();//取消点赞
@@ -647,7 +651,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 tvResultMsgTip.setText("Fighting");
             }
 
-            if (head.getSpeechScore() >= 1 && head.getSpeechScore() < 40) {
+            if (head.getSpeechScore() >= 0 && head.getSpeechScore() < 40) {
                 ivRoleplayerResultStar.setImageResource(R.drawable.livevideo_roleplay_alertview_pic_xingxing1);
             }
             if (head.getSpeechScore() >= 40 && head.getSpeechScore() < 60) {
@@ -741,6 +745,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             @Override
             public void run() {
                 rlResult.setVisibility(View.GONE);
+                isShowResult = false;
             }
         }, 5000);
         if (mWorkerThread != null) {
