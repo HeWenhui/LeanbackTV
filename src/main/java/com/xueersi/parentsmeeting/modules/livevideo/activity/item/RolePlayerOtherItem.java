@@ -113,7 +113,11 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                     voiceClick();
                 } else {
                     XESToastUtils.showToast(mContext, "没有检测到音频文件");
-                    Loger.i("RolePlayerDemoTest", "点击他人语音：url 为空");
+                    if (mEntity != null) {
+                        Loger.i("RolePlayerDemoTest", "点击他人语音：url = " + mEntity.getWebVoiceUrl() + " NetWorkHelper" +
+                                ".isNetworkAvailable(mContext) = " + NetWorkHelper.isNetworkAvailable(mContext));
+                    }
+
                 }
             }
         });
@@ -236,12 +240,12 @@ public class RolePlayerOtherItem extends RolePlayerItem {
         setDZbtClick(entity);
         switch (entity.getMsgStatus()) {
             case RolePlayerEntity.RolePlayerMessageStatus.WAIT_NORMAL:
-              //  Loger.i("RolePlayerDemoTest", "等待朗读");
+                //  Loger.i("RolePlayerDemoTest", "等待朗读");
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_other_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY:
-               // Loger.i("RolePlayerDemoTest", "开始朗读");
+                // Loger.i("RolePlayerDemoTest", "开始朗读");
                 rlMessageDZ.setVisibility(View.VISIBLE);
                 ivMessageDZ.setVisibility(View.VISIBLE);
                 vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_other_reading);
@@ -254,7 +258,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 }
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY:
-               // Loger.i("RolePlayerDemoTest", "结束朗读");
+                // Loger.i("RolePlayerDemoTest", "结束朗读");
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_other_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
                 rlMessageDZ.setVisibility(View.VISIBLE);
@@ -270,7 +274,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 break;
 
             case RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ:
-               // Loger.i("RolePlayerDemoTest", "取消点赞按钮");
+                // Loger.i("RolePlayerDemoTest", "取消点赞按钮");
                 ivMessageDZ.setImageResource(R.drawable.livevideo_roleplay_result_ic_normal);
                 rlMessageDZ.setVisibility(View.GONE);
                 ivMessageDZ.setVisibility(View.GONE);
@@ -316,6 +320,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
 
     /**
      * 点赞按钮的点击事件
+     *
      * @param entity
      */
     private void setDZbtClick(final RolePlayerEntity.RolePlayerMessage entity) {

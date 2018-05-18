@@ -244,6 +244,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      * 排名3名字
      */
     private TextView tvResultRoleName3;
+    private ImageView ivRoleplayerResultStar;//显示成绩结果星星旗帜
     //private boolean mIsEvaluatoring;//标记正在测评中
 
     public RolePlayerPager(Context context, RolePlayerEntity obj, boolean isNewView, RolePlayerBll rolePlayerBll) {
@@ -282,6 +283,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         civResultHeadImg = view.findViewById(R.id.civ_livevideo_roleplayer_result_headimg);
         tvResultMsgTip = view.findViewById(R.id.tv_livevideo_roleplayer_result_msgtip);
 
+        ivRoleplayerResultStar = view.findViewById(R.id.iv_live_roleplayer_result_star);
+
         rlResultRole1 = view.findViewById(R.id.rl_livevideo_roleplayer_result_role_1);
         civResultRoleHeadImg1 = view.findViewById(R.id.civ_livevideo_roleplayer_result_role_head_1);
         tvResultRoleScore1 = view.findViewById(R.id.tv_livevideo_roleplayer_result_role_score_1);
@@ -311,7 +314,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             @Override
             public void onViewDetachedFromWindow(View view) {
                 Loger.i("RolePlayerDemoTest", "离开连麦界面，清除数据");
-                if(mEntity != null){
+                if (mEntity != null) {
                     mEntity = null;//防止结果页数据错乱，尤其点赞个数
                 }
                 mReadHandler.removeMessages(READ_MESSAGE);
@@ -398,7 +401,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         tvCountTime.setText(getCountDownTime());
         rlRoleReadMain.setVisibility(View.VISIBLE);
         Typeface tFace = getTypeface(mContext);
-        if(tFace!=null) {
+        if (tFace != null) {
             tvBeginTipMsg.setTypeface(getTypeface(mContext));
         }
         if (mEntity.getLstRolePlayerMessage().get(0).getRolePlayer().isSelfRole()) {
@@ -424,7 +427,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
 //                    //倒计时结束，时钟正走
 //                    return;
 //                }
-                if(mEntity == null){
+                if (mEntity == null) {
                     return;
                 }
                 mEntity.setCountDownSecond(mEntity.getCountDownSecond() - 1);
@@ -466,7 +469,6 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
 //        int rop = ScreenUtils.getScreenHeight() / 2;
 //        lvReadList.smoothScrollToPositionFromTop(0, -rop);
 //        lvReadList.setSelection(0);
-
 
 
         //整个前奏3秒后开始
@@ -546,7 +548,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 } else {
                     //lvReadList.smoothScrollToPosition(mCurrentReadIndex + 1);
                     lvReadList.setSelection(mCurrentReadIndex);
-                    Loger.i("RolePlayerDemoTest", "滚动到下一条" + mCurrentReadIndex );
+                    Loger.i("RolePlayerDemoTest", "滚动到下一条" + mCurrentReadIndex);
                 }
 
                 //取出当前这条的延时时间
@@ -559,7 +561,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 mCurrentReadIndex++;
                 Message temp = mReadHandler.obtainMessage();
                 temp.what = READ_MESSAGE;
-                Loger.i("RolePlayerDemoTest", "currentMessage.getMaxReadTime() = " + currentMessage.getMaxReadTime() );
+                Loger.i("RolePlayerDemoTest", "currentMessage.getMaxReadTime() = " + currentMessage.getMaxReadTime());
                 mReadHandler.sendMessageDelayed(temp, (currentMessage.getMaxReadTime()) * 1000);
                 mReadHandler.sendEmptyMessageDelayed(GO_SPEECH, (currentMessage.getMaxReadTime() - 1) * 1000);
             } else if (msg.what == GO_SPEECH) {
@@ -613,7 +615,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      * 显示结果
      */
     public void showResult() {
-        if(rlResult.getVisibility() == View.VISIBLE){
+        if (rlResult.getVisibility() == View.VISIBLE) {
             Loger.i("RolePlayerDemoTest", "结果页已经在显示");
             return;
         }
@@ -630,20 +632,37 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         RolePlayerEntity.RolePlayerHead head = mEntity.getSelfRoleHead();
 
 
-
         if (head != null) {
             Typeface tFace = getTypeface(mContext);
-            if(tFace!=null) {
+            if (tFace != null) {
                 tvResultMsgTip.setTypeface(getTypeface(mContext));
                 tvTotalScore.setTypeface(getTypeface(mContext));
             }
             if (head.getSpeechScore() >= 90) {
                 tvResultMsgTip.setText("Fantastic");
+
             } else if (head.getSpeechScore() >= 60) {
                 tvResultMsgTip.setText("Welldone");
             } else {
                 tvResultMsgTip.setText("Fighting");
             }
+
+            if (head.getSpeechScore() >= 1 && head.getSpeechScore() < 40) {
+                ivRoleplayerResultStar.setImageResource(R.drawable.livevideo_roleplay_alertview_pic_xingxing1);
+            }
+            if (head.getSpeechScore() >= 40 && head.getSpeechScore() < 60) {
+                ivRoleplayerResultStar.setImageResource(R.drawable.livevideo_roleplay_alertview_pic_xingxing2);
+            }
+            if (head.getSpeechScore() >= 60 && head.getSpeechScore() < 75) {
+                ivRoleplayerResultStar.setImageResource(R.drawable.livevideo_roleplay_alertview_pic_xingxing3);
+            }
+            if (head.getSpeechScore() >= 75 && head.getSpeechScore() < 90) {
+                ivRoleplayerResultStar.setImageResource(R.drawable.livevideo_roleplay_alertview_pic_xingxing4);
+            }
+            if (head.getSpeechScore() >= 90) {
+                ivRoleplayerResultStar.setImageResource(R.drawable.livevideo_roleplay_alertview_pic_xingxing5);
+            }
+
 
             tvTotalScore.setText(head.getSpeechScore() + "分");
             tvDzCount.setText(mEntity.getPullDZCount() + "");
@@ -820,7 +839,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                             //提前开始下一条
                             nextReadMessage();
                         } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-                           // Loger.i("RolePlayerDemoTest", "测评中");
+                            // Loger.i("RolePlayerDemoTest", "测评中");
 
                         }
 
@@ -833,7 +852,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
 
                     @Override
                     public void onRecordPCMData(short[] shorts, int readSize) {
-                       // Loger.i("RolePlayerDemoTest", "通过声网走");
+                        // Loger.i("RolePlayerDemoTest", "通过声网走");
                         //通过声网走
                         byte[] dest = new byte[readSize * 2];
                         int count = readSize;
@@ -1045,7 +1064,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             mIse.cancel();
         }
         mReadHandler.removeMessages(READ_MESSAGE);
-        if(mEntity != null){
+        if (mEntity != null) {
             mEntity = null;//防止结果页数据错乱，尤其点赞个数
         }
     }

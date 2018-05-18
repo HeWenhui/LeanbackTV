@@ -103,9 +103,12 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 if (!TextUtils.isEmpty(mEntity.getWebVoiceUrl()) && NetWorkHelper.isNetworkAvailable(mContext)) {
                     Loger.i("RolePlayerDemoTest", "点击自己语音：url  = " + mEntity.getWebVoiceUrl());
                     voiceClick();
-                }else {
+                } else {
                     XESToastUtils.showToast(mContext, "没有检测到音频文件");
-                    Loger.i("RolePlayerDemoTest", "点击自己语音：url为空 ");
+                    if (mEntity != null) {
+                        Loger.i("RolePlayerDemoTest", "点击自己语音：url = " + mEntity.getWebVoiceUrl() + " NetWorkHelper" +
+                                ".isNetworkAvailable(mContext) = " + NetWorkHelper.isNetworkAvailable(mContext));
+                    }
                 }
             }
         });
@@ -250,20 +253,20 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 
                 civUserHead.setFinishBorderColor(Color.parseColor("#C8E7D4"));
                 civUserHead.setUnFinishBorderColor(Color.parseColor("#36BC9B"));
-                civUserHead.startCountDown(entity.getMaxReadTime()*1000, entity.getEndReadTime() * 1000, new
+                civUserHead.startCountDown(entity.getMaxReadTime() * 1000, entity.getEndReadTime() * 1000, new
                         CountDownHeadImageView.countDownTimeImpl() {
-                    @Override
-                    public void countTime(long time) {
-                        tvCountTime.setText(time + "");
-                        if (time <= 3) {
+                            @Override
+                            public void countTime(long time) {
+                                tvCountTime.setText(time + "");
+                                if (time <= 3) {
 
-                            tvCountTime.setVisibility(View.VISIBLE);
-                        }
-                        Loger.i("RolePlayerSelfItemTest", mPosition + " / " + time);
-                        entity.setEndReadTime((int) time);
+                                    tvCountTime.setVisibility(View.VISIBLE);
+                                }
+                                Loger.i("RolePlayerSelfItemTest", mPosition + " / " + time);
+                                entity.setEndReadTime((int) time);
 
-                    }
-                });
+                            }
+                        });
                 //civUserHead.invalidate();
 
                 break;
