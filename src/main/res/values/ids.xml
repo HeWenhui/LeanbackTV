@@ -201,6 +201,7 @@
     <item name="bt_livevideo_message_flowers" type="id" />
     <item name="tv_livevideo_message_flowers_disable" type="id" />
     <item name="cb_livevideo_message_clock" type="id" />
+    <item name="rl_livevideo_message_top" type="id" />
     <item name="rl_livevideo_star_content" type="id" />
     <item name="rl_livevideo_english_content" type="id" />
     <item name="rl_livevideo_message_status" type="id" />
@@ -522,137 +523,132 @@
     <item name="ll_roleplayer_message_self_head_main" type="id" />
 
     <!--战队pk-->
-    <item name="cad_livevideo_teampk_coinaward" type="id"/>
-    <item name="iv_teampk_team_select_bg" type="id"/>
-    <item name="rl_teampk_team_selecteing" type="id"/>
-    <item name="lav_teampk_team_select" type="id"/>
-    <item name="iv_teampk_bgmask" type="id"/>
-    <item name="lav_teampk_team_selecting" type="id"/>
-    <item name="rcl_teampk_teams" type="id"/>
-    <item name="rl_teampk_teaminfo_root" type="id"/>
-    <item name="rl_teampk_team_introduce" type="id"/>
-    <item name="rl_teampk_rule" type="id"/>
-    <item name="tv_teampk_team_name" type="id"/>
-    <item name="itv_teampk_team_info" type="id"/>
-    <item name="tv_teampk_rule_title" type="id"/>
-    <item name="iv_teampk_team_logo" type="id"/>
+    <item name="cad_livevideo_teampk_coinaward" type="id" />
+    <item name="iv_teampk_team_select_bg" type="id" />
+    <item name="rl_teampk_team_selecteing" type="id" />
+    <item name="lav_teampk_team_select" type="id" />
+    <item name="iv_teampk_bgmask" type="id" />
+    <item name="lav_teampk_team_selecting" type="id" />
+    <item name="rcl_teampk_teams" type="id" />
+    <item name="rl_teampk_teaminfo_root" type="id" />
+    <item name="rl_teampk_team_introduce" type="id" />
+    <item name="rl_teampk_rule" type="id" />
+    <item name="tv_teampk_team_name" type="id" />
+    <item name="itv_teampk_team_info" type="id" />
+    <item name="tv_teampk_rule_title" type="id" />
+    <item name="iv_teampk_team_logo" type="id" />
 
-    <item name="rl_teampk_rule_1" type="id"/>
-    <item name="tv_teampk_rule_1" type="id"/>
-    <item name="tv_teampk_award_1" type="id"/>
-    <item name="rl_teampk_rule_2" type="id"/>
-    <item name="tv_teampk_rule_2" type="id"/>
-    <item name="tv_teampk_award_2" type="id"/>
-    <item name="rl_teampk_rule_3" type="id"/>
-    <item name="tv_teampk_rule_3" type="id"/>
-    <item name="tv_teampk_award_3" type="id"/>
+    <item name="rl_teampk_rule_1" type="id" />
+    <item name="tv_teampk_rule_1" type="id" />
+    <item name="tv_teampk_award_1" type="id" />
+    <item name="rl_teampk_rule_2" type="id" />
+    <item name="tv_teampk_rule_2" type="id" />
+    <item name="tv_teampk_award_2" type="id" />
+    <item name="rl_teampk_rule_3" type="id" />
+    <item name="tv_teampk_rule_3" type="id" />
+    <item name="tv_teampk_award_3" type="id" />
 
-   <item name="tv_teampk_team_ready" type="id"/>
-    <item name="iv_teampk_btn_ok" type="id"/>
-    <item name="rcl_teampk_team" type="id"/>
-    <item name="rcl_teampk_teammember" type="id"/>
-    <item name="iv_teampk_member_head" type="id"/>
-    <item name="iv_teampk_member_head_mask" type="id"/>
-    <item name="tv_teampk_member_name" type="id"/>
-    <item name="iv_teampk_finish_team_select" type="id"/>
-    <item name="tv_teampk_team_select_timecoutdown" type="id"/>
+    <item name="tv_teampk_team_ready" type="id" />
+    <item name="iv_teampk_btn_ok" type="id" />
+    <item name="rcl_teampk_team" type="id" />
+    <item name="rcl_teampk_teammember" type="id" />
+    <item name="iv_teampk_member_head" type="id" />
+    <item name="iv_teampk_member_head_mask" type="id" />
+    <item name="tv_teampk_member_name" type="id" />
+    <item name="iv_teampk_finish_team_select" type="id" />
+    <item name="tv_teampk_team_select_timecoutdown" type="id" />
 
 
     <!--分队进行中-->
-    <item name="iv_teampk_enter_teamselect"  type="id"/>
-    <item name="iv_teampk_enter_teamselect_anim" type="id"/>
+    <item name="iv_teampk_enter_teamselect" type="id" />
+    <item name="iv_teampk_enter_teamselect_anim" type="id" />
 
     <!--pk 结果-->
-    <item name="lav_teampk_pkresult" type="id"/>
-    <item name="ll_teampk_pkresult_myteam" type="id"/>
-    <item name="ll_teampk_pkresult_vs" type="id"/>
-    <item name="ll_teampk_pkresult_othreteam" type="id"/>
-    <item name="tpb_teampk_pkresult_pbbar" type="id"/>
-    <item name="rl_teampk_pk_result" type="id"/>
-    <item name="rl_teampk_pk_result_lottie_root" type="id"/>
+    <item name="lav_teampk_pkresult" type="id" />
+    <item name="ll_teampk_pkresult_myteam" type="id" />
+    <item name="ll_teampk_pkresult_vs" type="id" />
+    <item name="ll_teampk_pkresult_othreteam" type="id" />
+    <item name="tpb_teampk_pkresult_pbbar" type="id" />
+    <item name="rl_teampk_pk_result" type="id" />
+    <item name="rl_teampk_pk_result_lottie_root" type="id" />
 
-    <item name="tpb_teampk_pkresult_pbbar_final" type="id"/>
-    <item name="tv_teampk_pkresult_myteam_final_anergy" type="id"/>
-    <item name="tv_teampk_pkresult_otherteam_final_anergy" type="id"/>
-    <item name="rl_teampk_pkresult_final_pbbar_container" type="id"/>
-
-
-
-    <item name="tv_teampk_myteam_energy" type="id"/>
-    <item name="tv_teampk_myteam_add_energy" type="id"/>
-    <item name="tv_teampk_otherteam_energy" type="id"/>
-    <item name="rl_teampk_pkresult_bottom_pb_container" type="id"/>
-    <item name="rcl_teampk_pkresult_contribution_rank" type="id"/>
-    <item name="iv_teampk_pkresult_myteam_logo" type="id"/>
-    <item name="iv_teampk_pkresult_otherteam_logo" type="id"/>
-
-    <item name="iv_teampk_pkresult_myteam_teacher_head" type="id"/>
-    <item name="iv_teampk_pkresult_myteam_slogan" type="id"/>
-    <item name="iv_teampk_pkresult_otherteam_slogan" type="id"/>
-
-    <item name="iv_teampk_pkresult_otherteam_teacher_head" type="id"/>
-    <item name="tv_teampk_pkresult_myteacher_name" type="id"/>
-    <item name="tv_teampk_pkresult_otherteacher_name" type="id"/>
-    <item name="rl_teampk_pkresult_root" type="id"/>
-
-    <item name="iv_teampk_pkresult_myteam_state" type="id"/>
-    <item name="iv_teampk_pkresult_otherteam_state" type="id"/>
-
-    <item name="iv_teampk_pkresult_student_head" type="id"/>
-    <item name="iv_teampk_pkresult_student_name" type="id"/>
-    <item name="iv_teampk_pkresult_student_energy" type="id"/>
-    <item name="tv_teampk_pkresult_time_countdow" type="id"/>
-    <item name="tv_teampk_pkresult_contribution_name" type="id"/>
+    <item name="tpb_teampk_pkresult_pbbar_final" type="id" />
+    <item name="tv_teampk_pkresult_myteam_final_anergy" type="id" />
+    <item name="tv_teampk_pkresult_otherteam_final_anergy" type="id" />
+    <item name="rl_teampk_pkresult_final_pbbar_container" type="id" />
 
 
+    <item name="tv_teampk_myteam_energy" type="id" />
+    <item name="tv_teampk_myteam_add_energy" type="id" />
+    <item name="tv_teampk_otherteam_energy" type="id" />
+    <item name="rl_teampk_pkresult_bottom_pb_container" type="id" />
+    <item name="rcl_teampk_pkresult_contribution_rank" type="id" />
+    <item name="iv_teampk_pkresult_myteam_logo" type="id" />
+    <item name="iv_teampk_pkresult_otherteam_logo" type="id" />
 
-    <item name="tv_teampk_student_add_energy" type="id"/>
-    <item name="iv_teampk_pkstate_coin" type="id"/>
-    <item name="tv_teampk_pkstate_coin_num" type="id"/>
-    <item name="tv_teampk_pkstate_myteam_coin_prefix" type="id"/>
-    <item name="tv_teampk_pkstate_myteam_energy" type="id"/>
-    <item name="tv_teampk_pkstate_otherteam_energy" type="id"/>
-    <item name="tpkL_teampk_pkstate_root" type="id"/>
-    <item name="rl_teampk_pkstate_container_1" type="id"/>
-    <item name="rl_teampk_pkstate_container_2" type="id"/>
-    <item name="tpb_teampk_pkstate_energy_bar" type="id"/>
-    <item name="v_teampk_pkstate_devide_line" type="id"/>
+    <item name="iv_teampk_pkresult_myteam_teacher_head" type="id" />
+    <item name="iv_teampk_pkresult_myteam_slogan" type="id" />
+    <item name="iv_teampk_pkresult_otherteam_slogan" type="id" />
+
+    <item name="iv_teampk_pkresult_otherteam_teacher_head" type="id" />
+    <item name="tv_teampk_pkresult_myteacher_name" type="id" />
+    <item name="tv_teampk_pkresult_otherteacher_name" type="id" />
+    <item name="rl_teampk_pkresult_root" type="id" />
+
+    <item name="iv_teampk_pkresult_myteam_state" type="id" />
+    <item name="iv_teampk_pkresult_otherteam_state" type="id" />
+
+    <item name="iv_teampk_pkresult_student_head" type="id" />
+    <item name="iv_teampk_pkresult_student_name" type="id" />
+    <item name="iv_teampk_pkresult_student_energy" type="id" />
+    <item name="tv_teampk_pkresult_time_countdow" type="id" />
+    <item name="tv_teampk_pkresult_contribution_name" type="id" />
+
+
+    <item name="tv_teampk_student_add_energy" type="id" />
+    <item name="iv_teampk_pkstate_coin" type="id" />
+    <item name="tv_teampk_pkstate_coin_num" type="id" />
+    <item name="tv_teampk_pkstate_myteam_coin_prefix" type="id" />
+    <item name="tv_teampk_pkstate_myteam_energy" type="id" />
+    <item name="tv_teampk_pkstate_otherteam_energy" type="id" />
+    <item name="tpkL_teampk_pkstate_root" type="id" />
+    <item name="rl_teampk_pkstate_container_1" type="id" />
+    <item name="rl_teampk_pkstate_container_2" type="id" />
+    <item name="tpb_teampk_pkstate_energy_bar" type="id" />
+    <item name="v_teampk_pkstate_devide_line" type="id" />
     <!--实时答题-->
-    <item name="rl_answer_question_award_root" type="id"/>
-    <item name="iv_answer_question_energy" type="id"/>
-    <item name="tv_answer_question_energy" type="id"/>
+    <item name="rl_answer_question_award_root" type="id" />
+    <item name="iv_answer_question_energy" type="id" />
+    <item name="tv_answer_question_energy" type="id" />
 
-    <item name="iv_answer_question_coin" type="id"/>
-    <item name="tv_answer_question_coin" type="id"/>
-    <item name="tv_answer_question_state" type="id"/>
-
-
-    <item name="rl_vote_award_root" type="id"/>
-    <item name="tv_vote_award_energy" type="id"/>
-    <item name="iv_vote_award_energy" type="id"/>
+    <item name="iv_answer_question_coin" type="id" />
+    <item name="tv_answer_question_coin" type="id" />
+    <item name="tv_answer_question_state" type="id" />
 
 
-
+    <item name="rl_vote_award_root" type="id" />
+    <item name="tv_vote_award_energy" type="id" />
+    <item name="iv_vote_award_energy" type="id" />
 
 
     <!--开宝箱-->
-    <item name="lav_teampk_open_box" type="id"/>
-    <item name="cad_teampk_open_box_team_coin" type="id"/>
+    <item name="lav_teampk_open_box" type="id" />
+    <item name="cad_teampk_open_box_team_coin" type="id" />
 
-    <item name="cad_teampk_open_box_my_coin" type="id"/>
-   <item name="iv_teampk_open_box_open_state" type="id"/>
+    <item name="cad_teampk_open_box_my_coin" type="id" />
+    <item name="iv_teampk_open_box_open_state" type="id" />
 
-    <item name="rcl_teampk_open_box_rank" type="id"/>
-    <item name="iv_teampk_open_box_bg" type="id"/>
-    <item name="iv_teampk_open_box_bg_mask" type="id"/>
+    <item name="rcl_teampk_open_box_rank" type="id" />
+    <item name="iv_teampk_open_box_bg" type="id" />
+    <item name="iv_teampk_open_box_bg_mask" type="id" />
 
-    <item name="iv_teampk_open_box_close" type="id"/>
+    <item name="iv_teampk_open_box_close" type="id" />
 
-    <item name="iv_teampk_open_box_winner_head" type="id"/>
-    <item name="tv_teampk_open_box_winner_name" type="id"/>
-    <item name="tv_teampk_open_box_winner_coin" type="id"/>
-    <item name="iv_teampk_open_box_lucky_guy" type="id"/>
-    <item name="rl_teampk_open_box_lucy_start_root" type="id"/>
+    <item name="iv_teampk_open_box_winner_head" type="id" />
+    <item name="tv_teampk_open_box_winner_name" type="id" />
+    <item name="tv_teampk_open_box_winner_coin" type="id" />
+    <item name="iv_teampk_open_box_lucky_guy" type="id" />
+    <item name="rl_teampk_open_box_lucy_start_root" type="id" />
 
     <item name="iv_roleplayer_item_shadow" type="id" />
     <item name="tv_live_roleplayer_match_tip2" type="id" />
@@ -692,7 +688,7 @@
     <item name="civ_livevideo_roleplayer_result_headimg" type="id" />
     <item name="tv_livevideo_roleplayer_result_msgtip" type="id" />
     <!--老师点赞-->
-    <item name="lav_teacher_priase" type="id"/>
+    <item name="lav_teacher_priase" type="id" />
 
     <item name="tv_teampk_pkstate_adversary" type="id"/>
 
