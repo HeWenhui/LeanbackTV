@@ -2,19 +2,18 @@ package ren.yale.android.cachewebviewlib;
 
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
-import android.net.http.SslError;
 import android.os.Build;
 import android.os.Message;
 import android.view.KeyEvent;
-import android.webkit.ClientCertRequest;
-import android.webkit.HttpAuthHandler;
-import android.webkit.SslErrorHandler;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+
+import com.tencent.smtt.export.external.interfaces.ClientCertRequest;
+import com.tencent.smtt.export.external.interfaces.HttpAuthHandler;
+import com.tencent.smtt.export.external.interfaces.WebResourceError;
+import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
+import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
+import com.tencent.smtt.sdk.WebSettings;
+import com.tencent.smtt.sdk.WebView;
+import com.tencent.smtt.sdk.WebViewClient;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -201,16 +200,16 @@ final class CacheWebViewClient extends WebViewClient {
         super.onLoadResource(view, url);
     }
 
-    @Override
-    public void onPageCommitVisible(WebView view, String url) {
-        if (mCustomWebViewClient!=null){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                mCustomWebViewClient.onPageCommitVisible(view,url);
-                return;
-            }
-        }
-        super.onPageCommitVisible(view, url);
-    }
+//    @Override
+//    public void onPageCommitVisible(WebView view, String url) {
+//        if (mCustomWebViewClient!=null){
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                mCustomWebViewClient.onPageCommitVisible(view,url);
+//                return;
+//            }
+//        }
+//        super.onPageCommitVisible(view, url);
+//    }
 
     public void setCacheStrategy(WebViewCache.CacheStrategy cacheStrategy){
         mCacheStrategy =cacheStrategy;
@@ -325,15 +324,15 @@ final class CacheWebViewClient extends WebViewClient {
         super.doUpdateVisitedHistory(view, url, isReload);
     }
 
-    @Override
-    public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-
-        if (mCustomWebViewClient!=null){
-            mCustomWebViewClient.onReceivedSslError( view,  handler,  error);
-            return;
-        }
-        super.onReceivedSslError( view,  handler,  error);
-    }
+//    @Override
+//    public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+//
+//        if (mCustomWebViewClient!=null){
+//            mCustomWebViewClient.onReceivedSslError( view,  handler,  error);
+//            return;
+//        }
+//        super.onReceivedSslError( view,  handler,  error);
+//    }
 
     @Override
     public void onReceivedClientCertRequest(WebView view, ClientCertRequest request) {
