@@ -687,7 +687,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                 i++;
             }
             obj.put("answers", arrAnswer);
-
+            Loger.i("RolePlayerDemoTest", "mStuCouId = " + mStuCouId +" mLiveId = "+mLiveId+" mRolePlayerEntity.getTestId() = "+mRolePlayerEntity.getTestId()
+            +" obj = "+obj.toString());
 
             mRolePlayerHttpManager.requestResult(mStuCouId, mLiveId, mRolePlayerEntity.getTestId(), roleName, obj
                     .toString(), new HttpCallBack() {
