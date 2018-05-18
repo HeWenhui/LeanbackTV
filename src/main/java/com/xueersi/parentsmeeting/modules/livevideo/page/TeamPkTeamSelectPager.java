@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.media.AudioManager;
 import android.os.Build;
 import android.support.v7.widget.GridLayoutManager;
@@ -808,6 +809,24 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         teamsRecyclerView.setVisibility(View.VISIBLE);
 
 
+        teamsRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                int itemPosition = parent.getChildAdapterPosition(view);
+                int left = 0;
+                int right = 0;
+                int top = 0;
+                int bottom = 0;
+                if (itemPosition >= spanCount) {
+                    top = getTopGap(teamsRecyclerView,spanCount);
+                    top = top <0?0:top;
+                }
+                Loger.e("cksdd","top:"+top);
+                outRect.set(left, top, right, bottom);
+            }
+        });
+
+
         GridLayoutAnimationController animationController = (GridLayoutAnimationController)
                 AnimationUtils.loadLayoutAnimation(mContext, R.anim.anim_livevido_teampk_team_list);
         teamsRecyclerView.setLayoutAnimation(animationController);
@@ -840,7 +859,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
             int rowNum = (recyclerView.getAdapter().getItemCount() % spanCount == 0) ? recyclerView.getAdapter()
                     .getItemCount()
                     / spanCount : recyclerView.getAdapter().getItemCount() / spanCount + 1;
-            mTopGap = rowNum > 1 ? (recyclerView.getMeasuredHeight() - rowNum * SizeUtils.Dp2Px(mContext, 97)) /
+            mTopGap = rowNum > 1 ? (recyclerView.getLayoutParams().height - rowNum * SizeUtils.Dp2Px(mContext, 97)) /
                     (rowNum - 1) : 0;
         }
         return mTopGap;
