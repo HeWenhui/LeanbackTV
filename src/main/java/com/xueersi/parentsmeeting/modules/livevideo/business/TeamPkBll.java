@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
+import android.graphics.Rect;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkAwardPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkTeamSelectPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkTeamSelectingPager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
@@ -139,6 +141,9 @@ public class TeamPkBll {
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         mRootView.addView(rlTeamPkContent, params);
         showPkStateLayout();
+        Loger.e("cksdd", "registLayotListener called");
+        registLayotListener();
+
     }
 
     /**
@@ -322,6 +327,7 @@ public class TeamPkBll {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         bottomContent.addView(rlTeamPkContent, params);
+
     }
 
     /**
@@ -585,6 +591,44 @@ public class TeamPkBll {
         rlTeamPkContent.addView(aqAwardPager.getRootView(), params);
         mFocusPager = aqAwardPager;
     }
+    private  void registLayotListener(){
+        Loger.e("cksdd", "registLayotListener 222233344 called");
+        rlTeamPkContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                ViewGroup viewGroup = (ViewGroup) mActivity.getWindow().getDecorView();
+                View  videoView = viewGroup.findViewById(R.id.vv_course_video_video);
+                ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+                setVideoLayout(lp.width,lp.height);
+                Loger.e("cksdd", "onGlobalLayout called");
+            }
+        });
+    }
+
+
+    public void setVideoLayout(int width, int height) {
+        final View contentView = mActivity.findViewById(android.R.id.content);
+        final View actionBarOverlayLayout = (View) contentView.getParent();
+        Rect r = new Rect();
+        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
+        int screenWidth = (r.right - r.left);
+        Loger.e("cksdd", "setVideoWidthAndHeigh:screenWidth=" + screenWidth + ",width=" + width + "," + height );
+        if (width > 0 && mFocusPager != null) {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mFocusPager.getRootView().getLayoutParams();
+            int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
+            wradio += (screenWidth - width) / 2;
+            Loger.e("cksdd", "setVideoWidthAndHeigh:screenWidth=" + screenWidth + ",width=" + width + "," + height
+                    + ",wradio=" + wradio + "," + params.width);
+            if (wradio != params.rightMargin) {
+                params.rightMargin = wradio;
+                LayoutParamsUtil.setViewLayoutParams(mFocusPager.getRootView(), params);
+            }
+        }
+
+    }
+
+
+
 
 
     public void onDestroy() {
