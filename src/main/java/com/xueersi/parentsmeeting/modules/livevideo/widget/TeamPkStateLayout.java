@@ -123,7 +123,7 @@ public class TeamPkStateLayout extends FrameLayout {
         lp.topMargin = location[1] - (gapAbovePkStateLayout + stateBarHeight);
         rootView.addView(statBarRootView, lp);
         tvState = statBarRootView.findViewById(R.id.tv_answer_question_state);
-        //tvState.setVisibility(GONE);
+        tvState.setVisibility(GONE);
     }
 
 
