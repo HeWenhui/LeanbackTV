@@ -397,6 +397,10 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
 
         tvCountTime.setText(getCountDownTime());
         rlRoleReadMain.setVisibility(View.VISIBLE);
+        Typeface tFace = getTypeface(mContext);
+        if(tFace!=null) {
+            tvBeginTipMsg.setTypeface(getTypeface(mContext));
+        }
         if (mEntity.getLstRolePlayerMessage().get(0).getRolePlayer().isSelfRole()) {
             tvBeginTipMsg.setText("You go first. Are you ready?");
             tvBeginTipMsg.postDelayed(new Runnable() {
@@ -671,7 +675,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 tvResultRoleScore1.setText(head1.getSpeechScore() + "分");
                 tvResultRoleName1.setText(head1.getNickName());
                 ImageLoader.with(ContextManager.getApplication()).load(head1.getHeadImg()).into(civResultRoleHeadImg1);
-                civResultRoleHeadImg1.setBorderWidth(SizeUtils.Dp2Px(mContext, 3));
+                civResultRoleHeadImg1.setBorderWidth(SizeUtils.Dp2Px(mContext, 2));
                 if (head1.isSelfRole()) {
                     civResultRoleHeadImg1.setBorderColor(Color.parseColor("#FAD2D1"));
                 } else {
@@ -686,7 +690,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 tvResultRoleScore2.setText(head2.getSpeechScore() + "分");
                 tvResultRoleName2.setText(head2.getNickName());
                 ImageLoader.with(ContextManager.getApplication()).load(head2.getHeadImg()).into(civResultRoleHeadImg2);
-                civResultRoleHeadImg2.setBorderWidth(SizeUtils.Dp2Px(mContext, 3));
+                civResultRoleHeadImg2.setBorderWidth(SizeUtils.Dp2Px(mContext, 2));
                 if (head2.isSelfRole()) {
                     civResultRoleHeadImg2.setBorderColor(Color.parseColor("#FAD2D1"));
                 } else {
@@ -701,7 +705,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 tvResultRoleScore3.setText(head3.getSpeechScore() + "分");
                 tvResultRoleName3.setText(head3.getNickName());
                 ImageLoader.with(ContextManager.getApplication()).load(head3.getHeadImg()).into(civResultRoleHeadImg3);
-                civResultRoleHeadImg3.setBorderWidth(SizeUtils.Dp2Px(mContext, 3));
+                civResultRoleHeadImg3.setBorderWidth(SizeUtils.Dp2Px(mContext, 2));
                 if (head3.isSelfRole()) {
                     civResultRoleHeadImg3.setBorderColor(Color.parseColor("#FAD2D1"));
                 } else {
@@ -816,7 +820,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                             //提前开始下一条
                             nextReadMessage();
                         } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-                            Loger.i("RolePlayerDemoTest", "测评中");
+                           // Loger.i("RolePlayerDemoTest", "测评中");
 
                         }
 
@@ -829,7 +833,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
 
                     @Override
                     public void onRecordPCMData(short[] shorts, int readSize) {
-                        Loger.i("RolePlayerDemoTest", "通过声网走");
+                       // Loger.i("RolePlayerDemoTest", "通过声网走");
                         //通过声网走
                         byte[] dest = new byte[readSize * 2];
                         int count = readSize;

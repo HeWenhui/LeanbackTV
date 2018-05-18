@@ -16,34 +16,56 @@ import java.util.Map;
  */
 public class RolePlayerEntity {
 
-    /** 自己的角色ID */
+    /**
+     * 自己的角色ID
+     */
     private int selfRoleId;
-    /** 试题ID */
+    /**
+     * 试题ID
+     */
     private String testId;
-    /** 小组编号 */
+    /**
+     * 小组编号
+     */
     private int teamId;
-    /** 直播ID */
+    /**
+     * 直播ID
+     */
     private int liveId;
 
-    /** RolePlayer倒计时秒数 */
+    /**
+     * RolePlayer倒计时秒数
+     */
     private long countDownSecond;
-    /** 收到的点赞数 */
+    /**
+     * 收到的点赞数
+     */
     private int pullDZCount;
-    /** 金币数 */
+    /**
+     * 金币数
+     */
     private int goldCount;
 
-    /** 自己最后一段话的index */
+    /**
+     * 自己最后一段话的index
+     */
     private int selfLastIndex;
 
-    /** 已提交取得结果 */
+    /**
+     * 已提交取得结果
+     */
     private boolean isResult;
 
-    /** 所有的角色信息 */
+    /**
+     * 所有的角色信息
+     */
     private List<RolePlayerHead> lstRoleInfo = new ArrayList<>();
 
     private Map<String, RolePlayerHead> mapRoleHeadInfo = new HashMap<>();
 
-    /** 所有的对话信息 */
+    /**
+     * 所有的对话信息
+     */
     private List<RolePlayerMessage> lstRolePlayerMessage = new ArrayList<>();
 
     public long getCountDownSecond() {
@@ -196,21 +218,37 @@ public class RolePlayerEntity {
      */
     public static class RolePlayerHead {
 
-        /** 用户昵称 */
+        /**
+         * 用户昵称
+         */
         private String nickName;
-        /** 头像地址 */
+        /**
+         * 头像地址
+         */
         private String headImg;
-        /** 角色名称 */
+        /**
+         * 角色名称
+         */
         private String roleName;
-        /** 是否是自己扮演的角色 */
+        /**
+         * 是否是自己扮演的角色
+         */
         private boolean isSelfRole;
-        /** 角色ID */
+        /**
+         * 角色ID
+         */
         private int roleId;
-        /** 平均分 */
+        /**
+         * 平均分
+         */
         private int speechScore;
-        /** 流畅性 */
+        /**
+         * 流畅性
+         */
         private int fluency;
-        /** 准确性 */
+        /**
+         * 准确性
+         */
         private int accuracy;
 
 
@@ -263,11 +301,9 @@ public class RolePlayerEntity {
             if (speechScore <= 1) {
                 return;
             }
-            if (speechScore == 0) {
-                this.speechScore = speechScore;
-            } else {
-                this.speechScore = ((speechScore + this.speechScore) / 2);
-            }
+
+            this.speechScore = ((speechScore + this.speechScore) / (this.speechScore == 0 ? 1 : 2));
+
         }
 
         public int getFluency() {
@@ -278,11 +314,9 @@ public class RolePlayerEntity {
             if (fluency <= 1) {
                 return;
             }
-            if (fluency == 0) {
-                this.fluency = fluency;
-            } else {
-                this.fluency = ((fluency + this.fluency) / 2);
-            }
+
+            this.fluency = ((fluency + this.fluency) / (this.fluency == 0 ? 1 : 2));
+
         }
 
         public int getAccuracy() {
@@ -293,11 +327,9 @@ public class RolePlayerEntity {
             if (accuracy <= 1) {
                 return;
             }
-            if (accuracy == 0) {
-                this.accuracy = accuracy;
-            } else {
-                this.accuracy = ((accuracy + this.accuracy) / 2);
-            }
+
+            this.accuracy = ((accuracy + this.accuracy) / (this.accuracy == 0 ? 1 : 2));
+
         }
     }
 
@@ -306,33 +338,61 @@ public class RolePlayerEntity {
      */
     public static class RolePlayerMessage {
 
-        /** 角色信息 */
+        /**
+         * 角色信息
+         */
         private RolePlayerHead rolePlayer;
-        /** 朗读的短语 */
+        /**
+         * 朗读的短语
+         */
         private String readMsg;
-        /** 用来朗读倒计时的最长时长 */
+        /**
+         * 用来朗读倒计时的最长时长
+         */
         private int maxReadTime;
-        /** 剩下的秒数 */
+        /**
+         * 剩下的秒数
+         */
         private int endReadTime;
-        /** 是否已赞 */
+        /**
+         * 是否已赞
+         */
         private boolean isFavour;
-        /** 测评分数 */
+        /**
+         * 测评分数
+         */
         private int speechScore;
-        /** 流畅度 */
+        /**
+         * 流畅度
+         */
         private int fluency;
-        /** 准确度 */
+        /**
+         * 准确度
+         */
         private int accuracy;
-        /** 当前对话所处的状态 RolePlayerMessageStatus */
+        /**
+         * 当前对话所处的状态 RolePlayerMessageStatus
+         */
         private int msgStatus;
-        /** 网络播放地址（用于回放） */
+        /**
+         * 网络播放地址（用于回放）
+         */
         private String webVoiceUrl;
-        /** 是否被点赞 */
+        /**
+         * 是否被点赞
+         */
         private boolean isDZ;
-        /** 每个音素的分数 */
+        /**
+         * 每个音素的分数
+         */
         private List<PhoneScore> lstPhoneScore = new ArrayList<>();
-        /** 下标 */
+        /**
+         * 下标
+         */
         private int position;
-        /** 级别 */
+        /**
+         * 级别
+         */
         private int level;
 
         public RolePlayerMessage(RolePlayerHead head, String msg, int maxTime) {
@@ -490,17 +550,29 @@ public class RolePlayerEntity {
      */
     public static class RolePlayerMessageStatus {
 
-        /** 等待朗读中 */
+        /**
+         * 等待朗读中
+         */
         public static final int WAIT_NORMAL = 1;
-        /** 进入角色朗读状态 */
+        /**
+         * 进入角色朗读状态
+         */
         public static final int BEGIN_ROLEPLAY = 2;
-        /** 朗读完成 */
+        /**
+         * 朗读完成
+         */
         public static final int END_ROLEPLAY = 3;
-        /** 测评结束 */
+        /**
+         * 测评结束
+         */
         public static final int END_SPEECH = 4;
-        /** 空 */
+        /**
+         * 空
+         */
         public static final int EMPTY = 5;
-        /** 结果弹窗,去掉点赞按钮 */
+        /**
+         * 结果弹窗,去掉点赞按钮
+         */
         public static final int CANCEL_DZ = 6;
     }
 

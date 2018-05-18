@@ -547,14 +547,15 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                             break;
                         case 110:
                             //收到对方读完的消息
-                            Loger.i("RolePlayerDemoTest", "收到 " + from + " 读完 " + " mRolePlayerEntity" +
-                                    ".getLstRolePlayerMessage().size() = " + mRolePlayerEntity
-                                    .getLstRolePlayerMessage().size());
+
                             final int position = msgObj.optInt("index");
+
                             JSONObject obj = msgObj.optJSONObject("data");
                             int totalScore = obj.optInt("totalScore");
                             int fluency = obj.optInt("fluency");
                             int accuracy = obj.optInt("accuracy");
+
+                            Loger.i("RolePlayerDemoTest", "收到 " + from + " 读完 "  + position +" totalScore = "+totalScore +" fluency = "+fluency+" accuracy = "+accuracy);
 
                             if (position >= 0 && position < mRolePlayerEntity
                                     .getLstRolePlayerMessage().size()) {
@@ -696,7 +697,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                     int gold = jsonObject.optInt("gold");
                     mRolePlayerEntity.setGoldCount(gold);
-                    Loger.i("RolePlayerDemoTest", "onPmSuccess: gold  =" + gold + "取消点赞");
+                    Loger.i("RolePlayerDemoTest", "onPmSuccess: gold  =" + gold);
                 }
 
                 @Override

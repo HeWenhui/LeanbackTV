@@ -197,7 +197,7 @@
                             android:layout_marginRight="30dp"
                             android:src="@drawable/ic_default_head_square"
                             app:border_color="#FAD2D1"
-                            app:border_width="7px" />
+                            app:border_width="4dp" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -244,7 +244,7 @@
                         android:layout_below="@id/tv_livevideo_roleplayer_result_head"
                         android:layout_marginBottom="20dp"
                         android:layout_marginTop="24dp"
-                        android:background="#F4F4F4"
+                        android:background="#FFF4F4F4"
                         android:orientation="horizontal"
                         android:paddingLeft="19dp"
                         android:paddingRight="19dp">
@@ -283,7 +283,7 @@
                                     style="@style/text_font11_333333_style"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="6dp"
+                                    android:layout_marginTop="5dp"
                                     android:ellipsize="end"
                                     android:maxLength="5"
                                     android:singleLine="true"
