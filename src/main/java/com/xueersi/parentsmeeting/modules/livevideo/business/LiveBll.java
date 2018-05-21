@@ -52,6 +52,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveScienceHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.PraiseListPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
@@ -1206,13 +1207,15 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         openBoxStateCode = teamPkEntity.getRoomInfo1().getOpenbox();
                         alloteamStateCode = teamPkEntity.getRoomInfo1().getAlloteam();
                         allotpkmanStateCode = teamPkEntity.getRoomInfo1().getAllotpkman();
-                        Loger.e("LiveBll", "====>onTopic teampk main_teacher_info:"+openBoxStateCode+":"+alloteamStateCode+":"+allotpkmanStateCode);
+                        Loger.e("LiveBll", "====>onTopic teampk main_teacher_info:" + openBoxStateCode + ":" +
+                                alloteamStateCode + ":" + allotpkmanStateCode);
                     } else {
                         if (teamPkEntity.getRoomInfo2() != null) {
                             openBoxStateCode = teamPkEntity.getRoomInfo2().getOpenbox();
                             alloteamStateCode = teamPkEntity.getRoomInfo2().getAlloteam();
                             allotpkmanStateCode = teamPkEntity.getRoomInfo2().getAllotpkman();
-                            Loger.e("LiveBll", "====>onTopic teampk assist_teacher_info:"+openBoxStateCode+":"+alloteamStateCode+":"+allotpkmanStateCode);
+                            Loger.e("LiveBll", "====>onTopic teampk assist_teacher_info:" + openBoxStateCode + ":" +
+                                    alloteamStateCode + ":" + allotpkmanStateCode);
                         }
                     }
 
@@ -1258,7 +1261,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             try {
                 final JSONObject object = new JSONObject(notice);
                 int mtype = object.getInt("type");
-                Loger.e("LiveBll", "=====>:onNotice:" + mtype);
+                Loger.e("LiveBll", "=====>:onNotice:" + notice);
                 Loger.i("===========notice type" + mtype);
                 msg += ",mtype=" + mtype + ",voiceChatStatu=" + voiceChatStatus + ",";
                 switch (mtype) {
@@ -2024,6 +2027,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     case XESCODE.TEACHER_PRAISE: {
                         if (mTeacherPraiseBll1 != null) {
                             mTeacherPraiseBll1.showTeacherPraise();
+                            String nonce = object.optString("nonce","");
+                            TeamPkLog.receiveVoicePraise(LiveBll.this,nonce);
                         }
                         break;
                     }
@@ -2034,10 +2039,13 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
                         if (mTeamPKBll != null) {
                             String open = object.optString("open");
+                            String nonce = object.optString("nonce", "");
                             if (open.equals("1")) {
                                 mTeamPKBll.startTeamSelect();
+                                TeamPkLog.receiveCreateTeam(LiveBll.this, nonce, true);
                             } else if (open.equals("0")) {
                                 mTeamPKBll.stopTeamSelect();
+                                TeamPkLog.receiveCreateTeam(LiveBll.this, nonce, false);
                             }
                         }
                         break;
@@ -2045,22 +2053,29 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     case XESCODE.TEAM_PK_SELECT_PKADVERSARY: {
                         String open = object.optString("open");
                         if (mTeamPKBll != null) {
+                            String nonce = object.optString("nonce", "");
                             if (open.equals("1")) {
                                 mTeamPKBll.startSelectAdversary();
+                                TeamPkLog.receiveMatchOpponent(LiveBll.this,nonce,true);
                                 Loger.e("LiveBll", "====>onNotice startSelectAdversary:");
                             } else if (open.equals("0")) {
                                 mTeamPKBll.stopSelectAdversary();
+                                TeamPkLog.receiveMatchOpponent(LiveBll.this,nonce,false);
                             }
                         }
                         break;
                     }
                     case XESCODE.TEAM_PK_PUBLIC_PK_RESULT:
                         if (mTeamPKBll != null) {
+                            String nonce = object.optString("nonce", "");
+                            TeamPkLog.receivePkResult(LiveBll.this,nonce);
                             mTeamPKBll.showPkResult();
                         }
                         break;
                     case XESCODE.TEAM_PK_PUBLIC_CONTRIBUTION_STAR: {
                         if (mTeamPKBll != null) {
+                            String nonce = object.optString("nonce", "");
+                            TeamPkLog.receiveClassBoxInfo(LiveBll.this,nonce);
                             mTeamPKBll.showClassChest();
                         }
                         break;
@@ -4713,6 +4728,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         } catch (Exception e) {
             mLogtf.e("sendStudentReady", e);
         }
+        TeamPkLog.sendReady(this);
     }
 
 

@@ -42,6 +42,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentChestEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CoinAwardDisplayer;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamMemberGridlayoutManager;
@@ -489,6 +490,9 @@ public class TeamPkAwardPager extends BasePager {
             @Override
             public void onClick(View v) {
                 getStuChestInfo();
+                if(teamPKBll != null){
+                    TeamPkLog.clickTreasureBox(teamPKBll.getLiveBll(),mIsWin);
+                }
                 String lottieResPath = lottieResDir + "_open/images";
                 String lottieJsonPath = lottieResDir + "_open/data.json";
                 startOpenBoxAnim(lottieResPath, lottieJsonPath);
@@ -542,6 +546,10 @@ public class TeamPkAwardPager extends BasePager {
                         }
                         //Loger.e("coinNum", "====> Awardpager update pkstateLayout");
                         updatePkStateLayout();
+                        if(teamPKBll != null){
+                            TeamPkLog.openTreasureBox(teamPKBll.getLiveBll(),studentChestEntity.getGold());
+                        }
+
                     }
 
                     @Override

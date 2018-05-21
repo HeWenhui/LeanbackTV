@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 
 /**
  * Created by chenkun on 2018/4/12
@@ -53,6 +54,7 @@ public class TeamPkTeamSelectingPager extends BasePager implements View.OnClickL
     @Override
     public void onClick(View v) {
         mTeamPkBll.enterTeamSelectScene();
+        TeamPkLog.clickFastEnter(mTeamPkBll.getLiveBll());
     }
 
     /**

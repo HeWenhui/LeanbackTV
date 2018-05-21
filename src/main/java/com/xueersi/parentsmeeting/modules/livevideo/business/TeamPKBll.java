@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkAwardPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkTeamSelectPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkTeamSelectingPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPKStateLayout;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
@@ -157,6 +158,7 @@ public class TeamPKBll {
                         TeamPKBll.this.isWin = resultEntity.getMyTeamResultInfo().getEnergy() >= resultEntity
                                 .getCompetitorResultInfo().getEnergy();
                         showPkResultScene(resultEntity, PK_RESULT_TYPE_FINAL_PKRESULT);
+                        TeamPkLog.showPkResult(mLiveBll, isWin);
                     }
 
                     @Override
@@ -220,6 +222,7 @@ public class TeamPKBll {
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         ClassChestEntity classChestEntity = mHttpResponseParser.parseClassChest(responseEntity);
                         showAwardGetScene(CHEST_TYPE_CLASS, classChestEntity, isWin);
+                        TeamPkLog.showClassGoldInfo(mLiveBll, classChestEntity.isMe());
                     }
 
                     @Override
@@ -258,6 +261,10 @@ public class TeamPKBll {
                                 TeamEnergyAndContributionStarEntity entity = mHttpResponseParser
                                         .parseTeanEnergyAndContribution(responseEntity);
                                 showPkResultScene(entity, PK_RESULT_TYPE_PKRESULT);
+                                if (mLiveBll != null && entity != null) {
+                                    TeamPkLog.showPerTestPk(mLiveBll, entity.isMe());
+                                }
+
                             }
                         });
     }
@@ -335,6 +342,7 @@ public class TeamPKBll {
             addPager(teamSelectPager);
             teamSelectPager.setData(teamInfoEntity);
             teamSelectPager.startTeamSelect();
+            TeamPkLog.showCreateTeam(mLiveBll);
         }
     }
 
@@ -367,6 +375,7 @@ public class TeamPKBll {
             addPager(teamSelectPager);
             teamSelectPager.setData(teamInfoEntity);
             teamSelectPager.showTeamSelectedScene(true);
+            TeamPkLog.showCreateTeam(mLiveBll);
         }
     }
 
@@ -679,6 +688,16 @@ public class TeamPKBll {
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         TeamPkAdversaryEntity pkAdversaryEntity = mHttpResponseParser.
                                 parsePkAdversary(responseEntity);
+                        try {
+                            if (mLiveBll != null && pkAdversaryEntity.getOpponent() != null) {
+                                long teamId = Long.parseLong(pkAdversaryEntity.getOpponent().getTeamId());
+                                long classId = Long.parseLong(pkAdversaryEntity.getOpponent().getClassId());
+                                boolean isComputer = (teamId < 0 && classId < 0);
+                                TeamPkLog.showOpponent(mLiveBll, isComputer);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         showPkResultScene(pkAdversaryEntity, PK_RESULT_TYPE_ADVERSARY);
                     }
 

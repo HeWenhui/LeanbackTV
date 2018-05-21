@@ -3,11 +3,14 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 import java.util.List;
 
 /**
- * @author
- * 战队开宝箱结果
+ * @author 战队开宝箱结果
  */
 public class ClassChestEntity {
     private long sumGold;
+    /**
+     * 自己是否是幸运之星
+     */
+    private boolean isMe;
     private List<SubChestEntity> subChestEntityList;
 
     public long getSumGold() {
@@ -27,12 +30,12 @@ public class ClassChestEntity {
     }
 
 
-    public static  class SubChestEntity{
+    public static class SubChestEntity {
 
-        private  long gold;
-        private  String stuName;
-        private  String avatarPath;
-        private  String stuId;
+        private long gold;
+        private String stuName;
+        private String avatarPath;
+        private String stuId;
 
 
         public SubChestEntity(long gold, String stuName, String avatarPath, String stuId) {
@@ -75,9 +78,11 @@ public class ClassChestEntity {
         }
     }
 
+    public void setIsMe(boolean isMe) {
+        this.isMe = isMe;
+    }
 
-
-
-
-
+    public boolean isMe() {
+        return isMe;
+    }
 }

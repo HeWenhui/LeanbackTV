@@ -11,6 +11,10 @@ public class TeamEnergyAndContributionStarEntity {
     private List<ContributionStar> contributionStarList;
     private TeamEnergyInfo myTeamEngerInfo;
     private TeamEnergyInfo competitorEngerInfo;
+    /**
+     * 自己是否是贡献之星
+     */
+    private boolean isMe;
 
     public TeamEnergyAndContributionStarEntity(){}
 
@@ -200,6 +204,7 @@ public class TeamEnergyAndContributionStarEntity {
             this.img = img;
         }
 
+
         public String getTeacherName() {
             return teacherName;
         }
@@ -217,4 +222,12 @@ public class TeamEnergyAndContributionStarEntity {
         }
     }
 
+
+    public void setIsMe (boolean isMe){
+        this.isMe = isMe;
+    }
+
+    public boolean isMe() {
+        return isMe;
+    }
 }

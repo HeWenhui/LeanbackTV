@@ -1307,6 +1307,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 }
                 classChestEntity.setSubChestEntityList(list);
             }
+
+            if(data.has("isMe")){
+                classChestEntity.setIsMe(data.optInt("isMe",0) == 1);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1417,7 +1421,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 }
                 entity.setCompetitorEngerInfo(teamEnergyInfo);
             }
-
+            if(data.has("isMe")){
+                entity.setIsMe(data.optInt("isMe",0) == 1);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

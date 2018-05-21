@@ -170,4 +170,6 @@ public class LiveVideoConfig {
     public final static String EDUCATION_STAGE_3 = "3";
     /** 教育阶段4 */
     public final static String EDUCATION_STAGE_4 = "4";
+
+    public final static String LIVE_PK = "live_pk";
 }
