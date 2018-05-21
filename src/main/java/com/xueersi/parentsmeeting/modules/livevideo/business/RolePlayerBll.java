@@ -834,7 +834,6 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         if (mWebSocket != null && mWebSocket.isOpen()) {
             mWebSocket.close();
         }
-        mRolePlayerEntity = null;
     }
 
     /**
