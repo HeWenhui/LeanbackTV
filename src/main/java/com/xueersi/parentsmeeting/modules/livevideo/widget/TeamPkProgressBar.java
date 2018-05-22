@@ -44,7 +44,7 @@ public class TeamPkProgressBar extends View {
     /**
      * 边线 宽度
      */
-    private float strokeWidth = 5;
+    private float strokeWidth = 6;
     private Paint currentProgressPaint;
     private Paint totalProgressPaint;
 
@@ -401,9 +401,9 @@ public class TeamPkProgressBar extends View {
             }
 
             if (totalProgressPaintShader == null) {
-                totalProgressPaintShader = new LinearGradient(progressRect.left, progressRect.height() / 2
-                        , progressRect.right, progressRect.height() / 2, Color.parseColor("#55B1f4"),
-                        Color.parseColor("#5278DC"), Shader.TileMode.CLAMP);
+                totalProgressPaintShader = new LinearGradient(progressRect.centerX(), progressRect.top
+                        , progressRect.centerX(), progressRect.bottom, Color.parseColor("#6DBCFF"),
+                        Color.parseColor("#0094E0"), Shader.TileMode.CLAMP);
                 totalProgressPaint.setShader(totalProgressPaintShader);
             }
 
@@ -417,10 +417,10 @@ public class TeamPkProgressBar extends View {
                 offsetX = progressRect.width() * getProgress() / getMaxProgress();
                 setProgressRightBound(offsetX);
             }
-            currentProgressPaintShader = new LinearGradient(progressRect.left, progressRect.height() / 2,
-                    offsetX, progressRect.height() / 2,
-                    Color.parseColor("#F3AD45"),
-                    Color.parseColor("#DA722c"), Shader.TileMode.CLAMP);
+            currentProgressPaintShader = new LinearGradient(progressRect.left + offsetX/2, progressRect.top,
+                    progressRect.left + offsetX/2, progressRect.bottom,
+                    Color.parseColor("#FFCF1B"),
+                    Color.parseColor("#FF881B"), Shader.TileMode.CLAMP);
             currentProgressPaint.setShader(currentProgressPaintShader);
 
             if (currentPorgressRect == null) {

@@ -57,7 +57,9 @@
         android:id="@id/rl_teampk_pkstate_container_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/v_teampk_pkstate_devide_line">
+        android:layout_below="@id/v_teampk_pkstate_devide_line"
+        android:layout_marginTop="5dp"
+        >
 
         <TextView
             android:id="@id/tv_teampk_pkstate_myteam_coin_prefix"
@@ -110,7 +112,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/rl_teampk_pkstate_container_2"
         android:layout_marginTop="3dp"
-        app:innerProgressBarHeight="5dp"
+        app:innerProgressBarHeight="3dp"
         app:sliderHeader="@drawable/livevideo_tool_energyname_img_disable" />
 
     <View
