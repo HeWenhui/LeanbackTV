@@ -949,26 +949,19 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (liveBll.isDisable()) {
-//                    btMesOpen.setAlpha(0.4f);
-//                    btMesOpen.setEnabled(false);
-//                    liveStandMessageContent.setVisibility(View.GONE);
-//                    btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
+
                 } else {
                     if (openchat && !isAnaswer) {
-//                        btMesOpen.setAlpha(1.0f);
-//                        btMesOpen.setEnabled(true);
                         if (liveStandMessageContent.getVisibility() != View.VISIBLE) {
                             liveStandMessageContent.setVisibility(View.VISIBLE);
                             StandLiveMethod.voicePopup(liveSoundPool);
                         }
+                        //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.VISIBLE);
-//                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     } else {
-//                        btMesOpen.setAlpha(0.4f);
-//                        btMesOpen.setEnabled(false);
                         liveStandMessageContent.setVisibility(View.GONE);
+                        //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.GONE);
-//                        btMesOpen.setBackgroundResource(R.drawable.bg_live_chat_input_open_normal);
                     }
                     if (fromNotice) {
                         if (LiveTopic.MODE_CLASS.equals(mode)) {
@@ -1149,6 +1142,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             public void run() {
                 if (isShow) {
                     liveStandMessageContent.setVisibility(View.GONE);
+                    //现在的隐藏显示和liveStandMessageContent一致
                     btMesOpen.setVisibility(View.GONE);
                 } else {
                     if (liveBll.openchat()) {
@@ -1156,6 +1150,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                             liveStandMessageContent.setVisibility(View.VISIBLE);
                             StandLiveMethod.voicePopup(liveSoundPool);
                         }
+                        //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.VISIBLE);
                     }
                 }

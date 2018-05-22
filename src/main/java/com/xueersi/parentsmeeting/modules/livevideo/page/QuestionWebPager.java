@@ -21,7 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
@@ -315,7 +315,7 @@ public class QuestionWebPager extends BasePager {
                 return false;
             }
 
-            if (url.contains(TeamPKBll.TEAMPK_URL_FIFTE)) {
+            if (url.contains(TeamPkBll.TEAMPK_URL_FIFTE)) {
                 try {
                     int startIndex = url.indexOf("goldNum=")+"goldNum=".length();
                     if (startIndex != -1) {

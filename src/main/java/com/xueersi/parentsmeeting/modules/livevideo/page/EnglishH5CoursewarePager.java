@@ -14,7 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
@@ -174,7 +174,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         }
 
 
-        if (url.contains(TeamPKBll.TEAMPK_URL_FIFTE)) {
+        if (url.contains(TeamPkBll.TEAMPK_URL_FIFTE)) {
             try {
                 int startIndex = url.indexOf("goldNum=")+"goldNum=".length();
                 if (startIndex != -1) {

@@ -116,20 +116,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                >
 
                 <ImageView
                     android:id="@id/iv_live_roleplayer_message_speech_start5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/livevideo_roleplay_result_ic"
-                    android:visibility="gone" />
+                    android:layout_marginTop="4dp"
+                    android:visibility="gone"  />
 
                 <ImageView
                     android:id="@id/iv_live_roleplayer_message_speech_start4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/livevideo_roleplay_result_ic"
+                    android:layout_marginTop="4dp"
                     android:visibility="gone" />
 
                 <ImageView
@@ -137,6 +140,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/livevideo_roleplay_result_ic"
+                    android:layout_marginTop="4dp"
                     android:visibility="gone" />
 
                 <ImageView
@@ -144,6 +148,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/livevideo_roleplay_result_ic"
+                    android:layout_marginTop="4dp"
                     android:visibility="gone" />
 
                 <ImageView
@@ -151,6 +156,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/livevideo_roleplay_result_ic"
+                    android:layout_marginTop="4dp"
                     android:visibility="gone" />
 
 

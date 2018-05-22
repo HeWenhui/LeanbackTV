@@ -1,20 +1,17 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="67dp"
+    android:background="@color/COLOR_333333"
     android:orientation="vertical"
     android:paddingLeft="14dp"
-    android:paddingRight="14dp"
-    android:background="@color/COLOR_333333"
-    >
+    android:paddingRight="14dp">
 
     <RelativeLayout
+        android:id="@id/rl_teampk_pkstate_container_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:id="@id/rl_teampk_pkstate_container_1"
-        >
+        android:layout_marginTop="6dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:text="789"
+            android:text="0"
             android:textColor="@color/white"
             android:textSize="9sp"
             android:textStyle="bold" />
@@ -48,68 +45,77 @@
     </RelativeLayout>
 
     <View
+        android:id="@id/v_teampk_pkstate_devide_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/COLOR_979797"
-        android:layout_marginTop="5dp"
         android:layout_below="@id/rl_teampk_pkstate_container_1"
-        android:id="@id/v_teampk_pkstate_devide_line"
-        />
+        android:layout_marginTop="5dp"
+        android:background="@color/COLOR_979797" />
 
 
     <RelativeLayout
+        android:id="@id/rl_teampk_pkstate_container_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/v_teampk_pkstate_devide_line"
-        android:id="@id/rl_teampk_pkstate_container_2"
-        >
+        android:layout_below="@id/v_teampk_pkstate_devide_line">
+
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@id/tv_teampk_pkstate_myteam_coin_prefix"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="本队"
-            android:textSize="9sp"
             android:textColor="@color/white"
-            android:textStyle="bold"
-            />
+            android:textSize="9sp"
+            android:textStyle="bold" />
+
         <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@id/tv_teampk_pkstate_myteam_energy"
-            android:text="798"
-            android:textSize="9sp"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:layout_toRightOf="@id/tv_teampk_pkstate_myteam_coin_prefix"
-            android:layout_marginLeft="5dp"
-            />
-
-
-        <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@id/tv_teampk_pkstate_otherteam_energy"
-            android:text="798对手"
-            android:textSize="9sp"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/tv_teampk_pkstate_myteam_coin_prefix"
+            android:text="0"
             android:textColor="@color/white"
-            android:textStyle="bold"
+            android:textSize="9sp"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@id/tv_teampk_pkstate_adversary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            />
+            android:text="对手"
+            android:textColor="@color/white"
+            android:textSize="9sp"
+            android:textStyle="bold" />
+
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
+            android:id="@id/tv_teampk_pkstate_otherteam_energy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/tv_teampk_pkstate_adversary"
+            android:layout_marginRight="5dp"
+            android:text="0"
+            android:textColor="@color/white"
+            android:textSize="9sp"
+            android:textStyle="bold" />
+
+
     </RelativeLayout>
 
-   <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       app:innerProgressBarHeight="5dp"
-       app:sliderHeader="@drawable/livevideo_tool_energyname_img_disable"
-       android:layout_marginTop="3dp"
-       android:id="@id/tpb_teampk_pkstate_energy_bar"
-       android:layout_below="@id/rl_teampk_pkstate_container_2"
-       />
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar
+        android:id="@id/tpb_teampk_pkstate_energy_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_teampk_pkstate_container_2"
+        android:layout_marginTop="3dp"
+        app:innerProgressBarHeight="5dp"
+        app:sliderHeader="@drawable/livevideo_tool_energyname_img_disable" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/COLOR_979797"
         android:layout_alignParentBottom="true"
-        />
+        android:background="@color/COLOR_979797" />
 </RelativeLayout>

@@ -22,7 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideo.util.FontCache;
+import com.xueersi.parentsmeeting.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
@@ -111,7 +111,7 @@ public class LiveStandFrameAnim {
             } else {
                 liveSoundPool = LiveSoundPool.createSoundPool();
                 loading(liveSoundPool);
-                fontFace = FontCache.getTypeface(activity, "fangzhengyouyuan.ttf");
+                fontFace = FontCache.getTypeface(activity, "fangzhengcuyuan.ttf");
                 //activity_video_live_stand_check
                 ViewStub vs_live_stand_update = activity.findViewById(R.id.vs_live_stand_update);
                 View view = vs_live_stand_update.inflate();
@@ -130,7 +130,7 @@ public class LiveStandFrameAnim {
         } else {
             liveSoundPool = LiveSoundPool.createSoundPool();
             loading(liveSoundPool);
-            fontFace = FontCache.getTypeface(activity, "fangzhengyouyuan.ttf");
+            fontFace = FontCache.getTypeface(activity, "fangzhengcuyuan.ttf");
             //activity_video_live_stand_check
             ViewStub vs_live_stand_update = activity.findViewById(R.id.vs_live_stand_update);
             final View view = vs_live_stand_update.inflate();

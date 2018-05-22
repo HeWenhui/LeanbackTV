@@ -103,9 +103,12 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 if (!TextUtils.isEmpty(mEntity.getWebVoiceUrl()) && NetWorkHelper.isNetworkAvailable(mContext)) {
                     Loger.i("RolePlayerDemoTest", "点击自己语音：url  = " + mEntity.getWebVoiceUrl());
                     voiceClick();
-                }else {
+                } else {
                     XESToastUtils.showToast(mContext, "没有检测到音频文件");
-                    Loger.i("RolePlayerDemoTest", "点击自己语音：url为空 ");
+                    if (mEntity != null) {
+                        Loger.i("RolePlayerDemoTest", "点击自己语音：url = " + mEntity.getWebVoiceUrl() + " NetWorkHelper" +
+                                ".isNetworkAvailable(mContext) = " + NetWorkHelper.isNetworkAvailable(mContext));
+                    }
                 }
             }
         });
@@ -113,12 +116,20 @@ public class RolePlayerSelfItem extends RolePlayerItem {
     }
 
     private void voiceClick() {
+        ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_self_voice_white_anim);
+        vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_me_reading);
+        AnimationDrawable selfVoiceAnimationDrawable = null;
+        selfVoiceAnimationDrawable = (AnimationDrawable) ivVoiceAnimtor.getBackground();
+        if (selfVoiceAnimationDrawable != null && !selfVoiceAnimationDrawable.isRunning()) {
+            selfVoiceAnimationDrawable.start();
+        }
         //播放
         AudioPlayerManager.get(ContextManager.getApplication()).start(mEntity.getWebVoiceUrl(), new PlayerCallback() {
             @Override
             public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
                 Loger.i("RolePlayerDemoTest", "完成播放");
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
             }
 
             @Override
@@ -126,17 +137,20 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 super.onStop(dataSource, manager);
                 Loger.i("RolePlayerDemoTest", "停止播放");
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
             }
 
             @Override
             public void onPreparing(Object dataSource, AudioPlayerManager manager) {
                 Loger.i("RolePlayerDemoTest", "准备播放");
-                ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_self_voice_white_anim);
-                AnimationDrawable selfVoiceAnimationDrawable = null;
-                selfVoiceAnimationDrawable = (AnimationDrawable) ivVoiceAnimtor.getBackground();
-                if (selfVoiceAnimationDrawable != null && !selfVoiceAnimationDrawable.isRunning()) {
 
-                }
+            }
+
+            @Override
+            public void onError(String msg, Object dataSource, AudioPlayerManager manager) {
+                super.onError(msg, dataSource, manager);
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
             }
         });
 //        if (mEntity.isVoiceIsplay()) {
@@ -247,26 +261,23 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 }
                 tvCountTime.setText(entity.getMaxReadTime() + "");
 
-                if (entity.getMaxReadTime() <= 3) {
-                    tvCountTime.setVisibility(View.VISIBLE);
-                    entity.setMaxReadTime(entity.getReadMsg().length()/5 +3);
-                }
+
                 civUserHead.setFinishBorderColor(Color.parseColor("#C8E7D4"));
                 civUserHead.setUnFinishBorderColor(Color.parseColor("#36BC9B"));
-                civUserHead.startCountDown(entity.getMaxReadTime()*1000, entity.getEndReadTime() * 1000, new
+                civUserHead.startCountDown(entity.getMaxReadTime() * 1000, entity.getEndReadTime() * 1000, new
                         CountDownHeadImageView.countDownTimeImpl() {
-                    @Override
-                    public void countTime(long time) {
-                        tvCountTime.setText(time + "");
-                        if (time >0 && time <= 3) {
+                            @Override
+                            public void countTime(long time) {
+                                tvCountTime.setText(time + "");
+                                if (time <= 3) {
 
-                            tvCountTime.setVisibility(View.VISIBLE);
-                        }
-                        Loger.i("RolePlayerSelfItemTest", mPosition + " / " + time);
-                        entity.setEndReadTime((int) time);
+                                    tvCountTime.setVisibility(View.VISIBLE);
+                                }
+                                Loger.i("RolePlayerSelfItemTest", mPosition + " / " + time);
+                                entity.setEndReadTime((int) time);
 
-                    }
-                });
+                            }
+                        });
                 //civUserHead.invalidate();
 
                 break;

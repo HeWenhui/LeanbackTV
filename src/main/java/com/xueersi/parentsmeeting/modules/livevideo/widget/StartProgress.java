@@ -3,13 +3,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.widget;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.support.annotation.IntDef;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -158,7 +154,7 @@ public class StartProgress extends RelativeLayout {
         tv_live_star_result_fluent = (TextView) findViewById(R.id.tv_live_star_result_fluent);
         tv_live_star_result_accuracy = (TextView) findViewById(R.id.tv_live_star_result_accuracy);
         Typeface fontFace = Typeface.createFromAsset(getContext().getAssets(),
-                "fangzhengyouyuan.ttf");
+                "fangzhengcuyuan.ttf");
         tv_live_star_result_sorce.setTypeface(fontFace);
         tv_live_star_result_count.setTypeface(fontFace);
         tv_live_star_result_fluent.setTypeface(fontFace);

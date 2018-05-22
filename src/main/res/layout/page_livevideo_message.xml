@@ -1,45 +1,49 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
 
     <RelativeLayout
         android:id="@id/rl_livevideo_info"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_alignParentRight="true">
+        android:layout_alignParentRight="true"
+        android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@id/rl_livevideo_star_content"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@color/COLOR_333333"
-            android:visibility="gone">
+            android:id="@+id/rl_livevideo_message_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@id/rl_livevideo_star_content"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/COLOR_333333"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:id="@id/rl_livevideo_english_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rl_livevideo_star_content"
+                android:background="@color/COLOR_333333"
+                android:visibility="gone" />
+
+            <!--战队pk-->
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout
+                android:id="@id/tpkL_teampk_pkstate_root"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@id/rl_livevideo_english_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/rl_livevideo_star_content"
-            android:background="@color/COLOR_333333"
-            android:visibility="gone">
-        </RelativeLayout>
-
-        <!--战队pk-->
-        <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPKStateLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@id/tpkL_teampk_pkstate_root"
-            android:visibility="gone"
-            />
         <RelativeLayout
             android:id="@id/rl_livevideo_message_status"
             android:layout_width="match_parent"
             android:layout_height="25dp"
-            android:layout_below="@id/tpkL_teampk_pkstate_root"
+            android:layout_below="@id/rl_livevideo_message_top"
             android:background="@color/COLOR_333333">
 
             <TextView
@@ -48,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="5dp"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white" />
 
             <ImageView
                 android:id="@id/iv_livevideo_message_online"
@@ -57,7 +61,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="5dp"
-                android:src="@drawable/bg_livevideo_message_offline"/>
+                android:src="@drawable/bg_livevideo_message_offline" />
         </RelativeLayout>
 
         <View
@@ -65,7 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:layout_below="@id/rl_livevideo_message_status"
-            android:background="#5C5C5C"/>
+            android:background="#5C5C5C" />
 
         <ListView
             android:id="@id/lv_livevideo_message"
@@ -81,7 +85,7 @@
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
             android:paddingTop="10dp"
-            android:scrollbars="none"/>
+            android:scrollbars="none" />
 
     </RelativeLayout>
 
@@ -101,7 +105,7 @@
                 android:id="@id/layout_chat_expression"
                 layout="@layout/include_livechat_expression"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
         </cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout>
     </RelativeLayout>
 
@@ -123,7 +127,7 @@
             android:layout_marginRight="6dp"
             android:background="@drawable/shape_livevideo_message_send"
             android:text="发送"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white" />
 
         <Button
             android:id="@id/bt_livevideo_message_express"
@@ -133,7 +137,7 @@
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@id/bt_livevideo_message_send"
             android:background="@drawable/selector_chat_expression"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white" />
 
         <EditText
             android:id="@id/et_livevideo_message_content"
@@ -150,13 +154,13 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:singleLine="true"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
     </RelativeLayout>
 
     <master.flame.danmaku.danmaku.ui.widget.DanmakuView
         android:id="@id/dv_livevideo_message_danmaku"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_toLeftOf="@id/rl_livevideo_info"/>
+        android:layout_toLeftOf="@id/rl_livevideo_info" />
 
 </RelativeLayout>

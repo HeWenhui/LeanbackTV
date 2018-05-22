@@ -16,7 +16,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
@@ -39,7 +38,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkResultLottieEff
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ContributionLayoutManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPKStateLayout;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -51,14 +50,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by chenkun on 2018/4/12
- * 战队 pk 结果页
- */
+*战队 pk 结果页
+*@author chekun
+*created  at 2018/4/17 16:15
+*/
 public class TeamPkResultPager extends BasePager {
     private static final String TAG = "TeamPkResultPager";
     private LottieAnimationView lottieAnimationView;
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "team_pk/pkresult/";
-    private final TeamPKBll mTeamPkBll;
+    private final TeamPkBll mTeamPkBll;
     /**
      * 老师点赞动画
      */
@@ -128,7 +128,7 @@ public class TeamPkResultPager extends BasePager {
     private RelativeLayout rlFinalPbBarContainer;
 
 
-    public TeamPkResultPager(Context context, TeamPKBll pkBll) {
+    public TeamPkResultPager(Context context, TeamPkBll pkBll) {
         super(context);
         mTeamPkBll = pkBll;
     }
@@ -255,7 +255,6 @@ public class TeamPkResultPager extends BasePager {
 
         if (data != null) {
             rlResultRootView.setVisibility(View.VISIBLE);
-            //lottieAnimationView.setVisibility(View.GONE);
             rlLottieRootView.setVisibility(View.GONE);
             //显示贡献之星
             if (data.getContributionStarList() != null) {
@@ -523,6 +522,11 @@ public class TeamPkResultPager extends BasePager {
         closePkResultPager();
     }
 
+    /**老师昵称最大字符数*/
+    private static final int TEACHER_NAME_MAXLEN = 6;
+    /**pk 对手音效进入时间点*/
+    private static final float FRACTION_MUSIC_IN = 0.11f;
+
     /**
      * 展示pk对手 lottie动画
      */
@@ -532,7 +536,7 @@ public class TeamPkResultPager extends BasePager {
         }
         // 显示准备战斗 状态
         ViewGroup viewGroup = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
-        TeamPKStateLayout pkStateRootView = viewGroup.findViewById(R.id.tpkL_teampk_pkstate_root);
+        TeamPkStateLayout pkStateRootView = viewGroup.findViewById(R.id.tpkL_teampk_pkstate_root);
         if (pkStateRootView != null) {
             pkStateRootView.showPkReady();
         }
@@ -557,12 +561,12 @@ public class TeamPkResultPager extends BasePager {
         lottieEffectInfo.setTextColor(color);
 
         String myTeacherName = data.getSelf().getTeacherName();
-        if (myTeacherName.length() > 6) {
+        if (myTeacherName.length() > TEACHER_NAME_MAXLEN) {
             myTeacherName = myTeacherName.substring(0, 6);
         }
 
         String otherTeacherName = data.getOpponent().getTeacherName();
-        if (otherTeacherName.length() > 6) {
+        if (otherTeacherName.length() > TEACHER_NAME_MAXLEN) {
             otherTeacherName = myTeacherName.substring(0, 6);
         }
 
@@ -605,7 +609,7 @@ public class TeamPkResultPager extends BasePager {
 
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                if (!soundPlayed && animation.getAnimatedFraction() > 0.11f) {
+                if (!soundPlayed && animation.getAnimatedFraction() > FRACTION_MUSIC_IN) {
                     soundPlayed = true;
                     playMusic(R.raw.pk_adversary, SOUND_VOLUME_FRONT, false);
                 }

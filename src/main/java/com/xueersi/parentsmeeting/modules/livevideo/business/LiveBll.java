@@ -230,7 +230,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /**
      * 战队pk业务
      */
-    private TeamPKBll mTeamPKBll;
+    private TeamPkBll mTeamPKBll;
     private TeacherPraiseBll mTeacherPraiseBll1;
 
     public static boolean isAllowTeamPk = false;
@@ -4725,6 +4725,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             jsonObject.put("type", "" + XESCODE.TEAM_PK_STUDENT_READY);
             jsonObject.put("stuId", "" + mGetInfo.getStuId());
             mIRCMessage.sendNotice(mCounTeacherStr, jsonObject.toString());
+            mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
         } catch (Exception e) {
             mLogtf.e("sendStudentReady", e);
         }

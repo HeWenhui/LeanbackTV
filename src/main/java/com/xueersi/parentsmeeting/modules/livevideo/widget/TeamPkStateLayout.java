@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -19,13 +20,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
+import java.util.logging.Logger;
+
 /**
  * 战队pk  右侧状态栏
  *
  * @author chekun
  * created  at 2018/4/16 18:38
  */
-public class TeamPKStateLayout extends FrameLayout {
+public class TeamPkStateLayout extends FrameLayout {
 
     private TeamPkProgressBar pkProgressBar;
     private SmoothAddNumTextView tvMyTeamEnergy;
@@ -62,18 +65,18 @@ public class TeamPKStateLayout extends FrameLayout {
 
     private boolean dataInited = false;
 
-    public TeamPKStateLayout(@NonNull Context context) {
+    public TeamPkStateLayout(@NonNull Context context) {
         super(context);
         initView();
     }
 
 
-    public TeamPKStateLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public TeamPkStateLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initView();
     }
 
-    public TeamPKStateLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TeamPkStateLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView();
     }
@@ -94,7 +97,12 @@ public class TeamPKStateLayout extends FrameLayout {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                TeamPKStateLayout.this.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    TeamPkStateLayout.this.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    TeamPkStateLayout.this.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
             }
         });
     }
@@ -105,7 +113,7 @@ public class TeamPKStateLayout extends FrameLayout {
      */
     private void addPkStatBar() {
         statBarRootView = View.inflate(getContext(), R.layout.team_pk_state_bar_layout, null);
-        ViewGroup rootView = (ViewGroup) this.getParent().getParent();
+        ViewGroup rootView = (ViewGroup) this.getParent().getParent().getParent();
 
         int stateBarHeight = SizeUtils.Dp2Px(getContext(), STATE_BAR_HEIGHT);
         int gapAbovePkStateLayout = SizeUtils.Dp2Px(getContext(), STATE_BAR_BOTTOM_MARGIN);
@@ -135,8 +143,6 @@ public class TeamPKStateLayout extends FrameLayout {
      * @param otherEnergyAdd 对手增加能量值
      */
     public void updateData(int ownEnergyAdd, int otherEnergyAdd, int coinAdd) {
-        //Loger.e("coinNum", "====>updateData:" + ownEnergyAdd + ":" + otherEnergyAdd + ":" + coinCrement);
-        //Loger.e("coinNum", "====>updateData3333:" + mMyTeamEnergy + ":" + mOtherTeamEnergy + ":" + mCoinNum);
         mMyTeamEnergy = mMyTeamEnergy + ownEnergyAdd;
         mOtherTeamEnergy = mOtherTeamEnergy + otherEnergyAdd;
         mCoinNum = mCoinNum + coinAdd;
@@ -233,16 +239,18 @@ public class TeamPKStateLayout extends FrameLayout {
         pkProgressBar.setProgress(currentProgress);
     }
 
+    private static final float HALF_PROGRESS = 0.5f;
+
     private void upDataSateText(float ratio) {
         if (this.showPopWindow) {
             this.showPopWindow = false;
-            if (ratio > 0.5f) {
+            if (ratio > HALF_PROGRESS) {
                 tvState.setText("暂时领先");
                 tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
-            } else if (ratio < 0.5f) {
+            } else if (ratio < HALF_PROGRESS) {
                 tvState.setText("全力追赶");
                 tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_follow_bg);
-            } else if (ratio == 0.5f) {
+            } else if (ratio == HALF_PROGRESS) {
                 tvState.setText("打成平手");
                 tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
             }

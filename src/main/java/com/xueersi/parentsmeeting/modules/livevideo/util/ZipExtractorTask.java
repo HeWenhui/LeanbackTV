@@ -103,7 +103,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
                 outStream.close();
             }
             if (isBreak) {
-                return new Exception("cancle");
+                return new Exception("cancel");
             } else {
                 return null;
             }

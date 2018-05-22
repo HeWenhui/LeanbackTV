@@ -38,15 +38,22 @@ public class TeacherPraiseBll {
      */
     public void showTeacherPraise() {
         try {
-            if (!isAnimStart) {
-                isAnimStart = true;
-                decorView = (ViewGroup) mActivity.getWindow().getDecorView();
-                praiseRootView = View.inflate(mActivity, R.layout.teacher_praise_layout, null);
-                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT);
-                decorView.addView(praiseRootView, lp);
-                animationView = praiseRootView.findViewById(R.id.lav_teacher_priase);
-                startAnim();
+            if(mActivity != null){
+                mActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!isAnimStart) {
+                            isAnimStart = true;
+                            decorView = (ViewGroup) mActivity.getWindow().getDecorView();
+                            praiseRootView = View.inflate(mActivity, R.layout.teacher_praise_layout, null);
+                            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.MATCH_PARENT);
+                            decorView.addView(praiseRootView, lp);
+                            animationView = praiseRootView.findViewById(R.id.lav_teacher_priase);
+                            startAnim();
+                        }
+                    }
+                });
             }
         } catch (Exception e) {
             e.printStackTrace();

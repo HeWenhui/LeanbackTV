@@ -18,6 +18,9 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.xesalib.utils.log.Loger;
+
+import java.util.logging.Logger;
 
 
 /**
@@ -161,6 +164,7 @@ public class TeamPkProgressBar extends View {
 
 
     public void setProgress(int progress) {
+        Loger.e("8888", "====>isAnimRunning:"+isAnimRunning());
         if (!isAnimRunning()) {
             this.mProgress = progress;
             setProgressRightBound(-1);
@@ -276,6 +280,9 @@ public class TeamPkProgressBar extends View {
 
 
         interface ProgressAnimListener {
+            /**
+             * 动画执行结束
+             */
             void onAnimFinish();
         }
     }
@@ -287,6 +294,7 @@ public class TeamPkProgressBar extends View {
      * @param progress 进度增量
      */
     public void smoothAddProgress(int progress) {
+        animRunning = true;
         canceled = false;
         mProgress += progress;
         float endBound = progressRect.width() * getProgress() / getMaxProgress();
@@ -298,9 +306,17 @@ public class TeamPkProgressBar extends View {
         anim.setAnimListener(new ProgressAnim.ProgressAnimListener() {
             @Override
             public void onAnimFinish() {
+                animRunning = false;
                 if (mCacheProgress != -1) {
-                    setProgress(mCacheProgress);
-                    mCacheProgress = -1;
+                    postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            setProgress(mCacheProgress);
+                            mCacheProgress = -1;
+                            invalidate();
+                           // Loger.e("8888","=====onAnimFinish 99999 called:");
+                        }
+                    },100);
                 }
             }
         });
@@ -311,6 +327,7 @@ public class TeamPkProgressBar extends View {
      * @param cacheProgress
      */
     private void cacheProgress(int cacheProgress) {
+        Loger.e("8888", "====>cacheProgress:"+mCacheProgress);
         mCacheProgress = cacheProgress;
     }
 
@@ -328,14 +345,14 @@ public class TeamPkProgressBar extends View {
     }
 
     float tempOffsetX;
-
+     private static final float HALF_PROGRESS = 0.5f;
     @Override
     public void computeScroll() {
 
         if (anim != null && (tempOffsetX = anim.computeProgress()) > 0 && !canceled) {
             animRunning = true;
             //动画时间进行了一半
-            if (anim.getAnimRatio() > 0.5f) {
+            if (anim.getAnimRatio() > HALF_PROGRESS) {
 
                 sliderBgScaleRatio = Math.abs(1.0f - anim.getAnimRatio()) * 2 * MAX_SCALE_RATIO;
 
@@ -343,7 +360,6 @@ public class TeamPkProgressBar extends View {
                 sliderBgScaleRatio = anim.getAnimRatio() * 2 * MAX_SCALE_RATIO;
             }
             setProgressRightBound(tempOffsetX);
-            // Log.e("TeamPkProgressBar", "=========>computeScroll:" + tempOffsetX + ":" + sliderBgScaleRatio);
             invalidate();
         } else {
             animRunning = false;
@@ -366,7 +382,6 @@ public class TeamPkProgressBar extends View {
     protected void onDraw(Canvas canvas) {
 
         try {
-            //Log.e("teamPk", "====>totalWidth:" + getMeasuredWidth() + ":" + (animExtraSpace / 2 + strokeWidth));
             // step 1 draw border
             if (borderRect == null) {
                 borderRect = new RectF();
@@ -413,7 +428,7 @@ public class TeamPkProgressBar extends View {
             }
             currentPorgressRect.left = progressRect.left;
             currentPorgressRect.top = progressRect.top;
-            currentPorgressRect.right = progressRect.left + offsetX;//offsetX;
+            currentPorgressRect.right = progressRect.left + offsetX;
             currentPorgressRect.bottom = progressRect.bottom;
 
             canvas.drawRoundRect(currentPorgressRect, currentPorgressRect.height() / 2,
@@ -433,8 +448,9 @@ public class TeamPkProgressBar extends View {
                 float startX = currentPorgressRect.right - sliderBgWidth / 2;
                 float startY = (getMeasuredHeight() - sliderBgHeight) / 2;
 
-                if (startX > (getMeasuredWidth() - animExtraSpace / 2 - mSliderWidth / 2)) {
-                    startX = (getMeasuredWidth() - animExtraSpace / 2 - mSliderWidth / 2);
+                float rightBound = getMeasuredWidth() - (animExtraSpace + mSliderWidth) / 2;
+                if (startX > rightBound) {
+                    startX = rightBound;
                 }
                 sliderBgMatrix.postTranslate(startX, startY);
                 canvas.drawBitmap(sliderBg, sliderBgMatrix, currentProgressPaint);
@@ -445,17 +461,19 @@ public class TeamPkProgressBar extends View {
                 float startX = currentPorgressRect.right - mSliderWidth / 2;
                 float startY = (getMeasuredHeight() - mSliderHeight) / 2;
 
+                float  leftBound = animExtraSpace / 2;
                 if (animExtraSpace != 0) {
-                    if (startX < animExtraSpace / 2) {
-                        startX = animExtraSpace / 2;
+                    if (startX < leftBound) {
+                        startX = leftBound;
                     }
                 } else {
                     if (startX < 0) {
                         startX = 0;
                     }
                 }
-                if (startX > (getMeasuredWidth() - animExtraSpace / 2 - mSliderWidth)) {
-                    startX = (getMeasuredWidth() - animExtraSpace / 2 - mSliderWidth);
+                float rightBound = getMeasuredWidth() - animExtraSpace / 2 - mSliderWidth;
+                if (startX > rightBound) {
+                    startX = rightBound;
                 }
 
                 // 记录当前滑动头的位置

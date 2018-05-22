@@ -12,6 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
 import com.xueersi.xesalib.utils.app.ContextManager;
+import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 
@@ -95,6 +96,7 @@ public abstract class RolePlayerItem implements AdapterItemInterface<RolePlayerE
      * 显示评价星星
      */
     protected void showSpeechStar() {
+        Loger.i("RolePlayerDemoTest", "showSpeechStar:mEntity.getStars() = "+mEntity.getStars());
         if (mEntity.getStars() >= 1) {
             ivSpeechStart1.setVisibility(View.VISIBLE);
         }

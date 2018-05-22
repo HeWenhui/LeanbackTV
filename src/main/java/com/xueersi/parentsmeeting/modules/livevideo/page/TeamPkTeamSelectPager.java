@@ -8,7 +8,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.media.AudioManager;
+import android.os.Build;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,7 +34,7 @@ import com.airbnb.lottie.LottieImageAsset;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamSelectLottieEffectInfo;
@@ -48,7 +50,6 @@ import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Created by chenkun on 2018/4/12
@@ -56,7 +57,7 @@ import java.util.logging.Logger;
  */
 public class TeamPkTeamSelectPager extends BasePager implements View.OnClickListener {
     private static final String TAG = "TeamPkTeamSelectPager";
-    private TeamPKBll mPKBll;
+    private TeamPkBll mPKBll;
     private ImageView ivBg;
     private ImageView ivBgMask;
     /**
@@ -155,7 +156,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
     };
 
 
-    public TeamPkTeamSelectPager(Context context, TeamPKBll pkBll) {
+    public TeamPkTeamSelectPager(Context context, TeamPkBll pkBll) {
         super(context);
         mPKBll = pkBll;
     }
@@ -380,7 +381,12 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
                     // 队员显示完毕 显示关闭按钮
                     finishTeamSelect();
                 }
-                rclTeamMember.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    rclTeamMember.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    rclTeamMember.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
             }
         });
 
@@ -514,6 +520,9 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
                         startAutoEnterNextStep();
                     }
                     break;
+                default:
+                    break;
+
             }
         }
 
@@ -599,12 +608,12 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         if (teamInfoAnimList == null) {
             teamInfoAnimList = new ArrayList<AnimInfo>();
         }
-        RelativeLayout rlRule_1 = rlRul.findViewById(R.id.rl_teampk_rule_1);
-        RelativeLayout rlRule_2 = rlRul.findViewById(R.id.rl_teampk_rule_2);
-        RelativeLayout rlRule_3 = rlRul.findViewById(R.id.rl_teampk_rule_3);
+        RelativeLayout rlRule1 = rlRul.findViewById(R.id.rl_teampk_rule_1);
+        RelativeLayout rlRule2 = rlRul.findViewById(R.id.rl_teampk_rule_2);
+        RelativeLayout rlRule3 = rlRul.findViewById(R.id.rl_teampk_rule_3);
         TextView tvReady = rlRul.findViewById(R.id.tv_teampk_team_ready);
 
-        teamInfoAnimList.addAll(bindAnim2View(rlRule_1, rlRule_2, rlRule_3, tvReady));
+        teamInfoAnimList.addAll(bindAnim2View(rlRule1, rlRule2, rlRule3, tvReady));
 
         ImageView ivReadyBtn = rlRul.findViewById(R.id.iv_teampk_btn_ok);
         ivReadyBtn.setVisibility(View.INVISIBLE);
@@ -612,9 +621,9 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
                 loadAnimation(mContext, R.anim.anim_livevido_teampk_click_btn);
         scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.19f));
 
-        AnimInfo animInfoRule_5 = new AnimInfo(ivReadyBtn, scaleAnimation, TEAM_INFO_ANIM_TYPE_RUL,
+        AnimInfo animInfoRule5 = new AnimInfo(ivReadyBtn, scaleAnimation, TEAM_INFO_ANIM_TYPE_RUL,
                 teamInfoAnimListener);
-        teamInfoAnimList.add(animInfoRule_5);
+        teamInfoAnimList.add(animInfoRule5);
 
     }
 
@@ -672,6 +681,8 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
                 case ANIMTYPE_TEAM_SELECTED:
                     playCheering();
                     break;
+                 default:
+                     break;
             }
         }
 
@@ -782,7 +793,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
     }
 
     private void showMarquee() {
-        Loger.e(TAG,"========> showMarquee");
+        Loger.e(TAG, "========> showMarquee");
         ((ViewGroup) mView).setClipChildren(false);
         final int spanCount = 3;
         lavTeamSelectAnimView.cancelAnimation();
@@ -796,6 +807,24 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         teamAdapter = new TeamAdapter(ADAPTER_TYPE_TEAM);
         teamsRecyclerView.setAdapter(teamAdapter);
         teamsRecyclerView.setVisibility(View.VISIBLE);
+
+
+        teamsRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                int itemPosition = parent.getChildAdapterPosition(view);
+                int left = 0;
+                int right = 0;
+                int top = 0;
+                int bottom = 0;
+                if (itemPosition >= spanCount) {
+                    top = getTopGap(teamsRecyclerView,spanCount);
+                    top = top <0?0:top;
+                }
+                Loger.e("cksdd","top:"+top);
+                outRect.set(left, top, right, bottom);
+            }
+        });
 
 
         GridLayoutAnimationController animationController = (GridLayoutAnimationController)
@@ -830,7 +859,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
             int rowNum = (recyclerView.getAdapter().getItemCount() % spanCount == 0) ? recyclerView.getAdapter()
                     .getItemCount()
                     / spanCount : recyclerView.getAdapter().getItemCount() / spanCount + 1;
-            mTopGap = rowNum > 1 ? (recyclerView.getMeasuredHeight() - rowNum * SizeUtils.Dp2Px(mContext, 97)) /
+            mTopGap = rowNum > 1 ? (recyclerView.getLayoutParams().height - rowNum * SizeUtils.Dp2Px(mContext, 97)) /
                     (rowNum - 1) : 0;
         }
         return mTopGap;

@@ -11,7 +11,7 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.xueersi.parentsmeeting.modules.livevideo.util.FontCache;
+import com.xueersi.parentsmeeting.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.PaintTextUtil;
 import com.xueersi.xesalib.utils.log.Loger;
 
@@ -33,7 +33,7 @@ public class StandLiveLottieAnimationView extends LottieAnimationView {
         paint = new Paint();
         paint.setTextSize(24);
         paint.setColor(Color.WHITE);
-        fontFace = FontCache.getTypeface(context, "fangzhengyouyuan.ttf");
+        fontFace = FontCache.getTypeface(context, "fangzhengcuyuan.ttf");
     }
 
     /**
