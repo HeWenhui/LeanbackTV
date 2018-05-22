@@ -59,7 +59,7 @@
                 android:singleLine="true"
                 android:text="恭喜你成为“小神龙队”的一员！"
                 android:textColor="@color/COLOR_73510A"
-                android:textSize="14sp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
             <com.xueersi.parentsmeeting.modules.livevideo.widget.InputEffectTextView
@@ -215,7 +215,7 @@
 
     <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView
         android:id="@id/rcl_teampk_teammember"
-        android:layout_width="440dp"
+        android:layout_width="400dp"
         android:layout_height="180dp"
         android:layout_centerHorizontal="true"
         android:overScrollMode="never"

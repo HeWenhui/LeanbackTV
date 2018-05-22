@@ -1,40 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    >
+    android:layout_height="wrap_content">
 
-    <ImageView
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:id="@id/iv_teampk_member_head"
-        android:scaleType="centerCrop"
+    <RelativeLayout
+        android:layout_width="62dp"
+        android:layout_height="62dp"
         android:layout_centerHorizontal="true"
-        />
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/live_video_teampk_headmask"
-        android:layout_centerHorizontal="true"
-        android:scaleType="centerCrop"
-        android:id="@id/iv_teampk_member_head_mask"
-        />
+        android:id="@id/rl_teampk_head_container"
+        >
+
+        <ImageView
+            android:id="@id/iv_teampk_member_head"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerInParent="true"
+            android:scaleType="centerCrop" />
+
+        <ImageView
+            android:id="@id/iv_teampk_member_head_mask"
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:layout_centerInParent="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/live_video_teampk_headmask" />
+    </RelativeLayout>
 
     <TextView
+        android:id="@id/tv_teampk_member_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxWidth="50dp"
-        android:gravity="center"
-        android:text="宋珂珂宋珂珂宋珂珂"
-        android:id="@id/tv_teampk_member_name"
+        android:layout_below="@id/rl_teampk_head_container"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/iv_teampk_member_head"
-        android:layout_marginTop="7dp"
-        android:singleLine="true"
+        android:layout_marginTop="3dp"
         android:ellipsize="end"
-        android:textSize="10sp"
+        android:gravity="center"
+        android:maxWidth="62dp"
+        android:singleLine="true"
+        android:text="宋珂珂宋珂珂宋珂珂"
         android:textColor="@color/white"
-        android:textStyle="bold"
-        />
+        android:textSize="13sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>
