@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
@@ -60,8 +61,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     Handler handler = new Handler(Looper.getMainLooper());
     /** 互动题作答成功的布局 */
     private RelativeLayout rlQuestionResContent;
-    EnglishH5CoursewarePager h5CoursewarePager;
-    private EnglishH5CoursewarePager curPager;
+    BaseEnglishH5CoursewarePager h5CoursewarePager;
+    private BaseEnglishH5CoursewarePager curPager;
     private BaseVoiceAnswerPager voiceAnswerPager;
     /** 创建语音答题 */
     private BaseVoiceAnswerCreat baseVoiceAnswerCreat;
@@ -101,7 +102,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     }
 
     public void setWebViewCloseByTeacher(boolean webViewCloseByTeacher) {
-        if(h5CoursewarePager != null){
+        if (h5CoursewarePager != null) {
             this.webViewCloseByTeacher = webViewCloseByTeacher;
         }
     }
@@ -176,7 +177,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
     public boolean onBack() {
         if (h5CoursewarePager != null) {
-            if (h5CoursewarePager.isFinish) {
+            if (h5CoursewarePager.isFinish()) {
                 h5CoursewarePager.close();
                 onQuestionShow(false);
             } else {
@@ -348,22 +349,23 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     }
 
     private boolean isPageOnCloseing = false;
+
     /**
      * 战队pk 自动关闭答题结果页
      */
-    private void closePageByTeamPk(){
-       // Log.e("EnglishH5CoursewareBll","=======>closePageByTeamPk:"+isTeamPkAllowed);
-        if(isTeamPkAllowed && !isPageOnCloseing){
+    private void closePageByTeamPk() {
+        // Log.e("EnglishH5CoursewareBll","=======>closePageByTeamPk:"+isTeamPkAllowed);
+        if (isTeamPkAllowed && !isPageOnCloseing) {
             isPageOnCloseing = true;
             bottomContent.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if(h5CoursewarePager != null && h5CoursewarePager == curPager){
+                    if (h5CoursewarePager != null && h5CoursewarePager == curPager) {
                         bottomContent.removeView(h5CoursewarePager.getRootView());
                     }
                     isPageOnCloseing = false;
                 }
-            },6000);
+            }, 6000);
         }
     }
 
@@ -376,8 +378,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         logHashMap.put("coursewaretype", videoQuestionH5Entity.courseware_type);
         logHashMap.put("loadurl", videoQuestionH5Entity.url);
         mLiveBll.umsAgentDebugInter(eventId, logHashMap.getData());
-        h5CoursewarePager = new EnglishH5CoursewarePager(context, false, mVSectionID, videoQuestionH5Entity.url, videoQuestionH5Entity.id,
-                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, new OnH5ResultClose() {
+        OnH5ResultClose onH5ResultClose = new OnH5ResultClose() {
             @Override
             public void onH5ResultClose() {
                 if (h5CoursewarePager == null) {
@@ -405,7 +406,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     webViewRequest.releaseWebView();
                 }
             }
-        }, this, mAnswerRankBll == null ? "0" : mAnswerRankBll.getIsShow(), IS_SCIENCE);
+        };
+        h5CoursewarePager = new EnglishH5CoursewarePager(context, false, mVSectionID, videoQuestionH5Entity.url, videoQuestionH5Entity.id,
+                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, this, mAnswerRankBll == null ? "0" : mAnswerRankBll.getIsShow(), IS_SCIENCE);
         h5CoursewarePager.setEnglishH5CoursewareBll(this);
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         bottomContent.addView(h5CoursewarePager.getRootView(), lp);
@@ -629,12 +632,12 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     public void run() {
                         try {
                             if (h5CoursewarePager != null) {
-                                EnglishH5CoursewarePager oldh5CoursewarePager = h5CoursewarePager;
+                                BaseEnglishH5CoursewarePager oldh5CoursewarePager = h5CoursewarePager;
                                 if (h5CoursewarePager == curPager) {
                                     bottomContent.removeView(h5CoursewarePager.getRootView());
                                     h5CoursewarePager = null;
                                     curPager = null;
-                                    if (oldh5CoursewarePager.isFinish) {
+                                    if (oldh5CoursewarePager.isFinish()) {
                                         onQuestionShow(false);
                                     }
                                 } else if (curPager != null) {
@@ -790,7 +793,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 stopVoiceAnswerPager();
             }
             showH5Paper(videoQuestionLiveEntity1);
-            return h5CoursewarePager;
+            return h5CoursewarePager.getBasePager();
         }
 
         @Override
