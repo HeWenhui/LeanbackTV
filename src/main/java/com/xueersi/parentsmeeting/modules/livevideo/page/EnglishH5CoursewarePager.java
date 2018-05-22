@@ -84,6 +84,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager implements BaseEn
         wvSubjectWeb.onPause();
     }
 
+    @Override
     public void destroy() {
         wvSubjectWeb.destroy();
     }
@@ -93,6 +94,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager implements BaseEn
         wvSubjectWeb.onResume();
     }
 
+    @Override
     public String getUrl() {
         return url;
     }
@@ -104,6 +106,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager implements BaseEn
         return view;
     }
 
+    @Override
     public void submitData() {
         isFinish = true;
         wvSubjectWeb.loadUrl(jsSubmitData);
@@ -304,6 +307,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager implements BaseEn
      *
      * @param color
      */
+    @Override
     public void setWebBackgroundColor(int color) {
         wvSubjectWeb.setBackgroundColor(color);
     }

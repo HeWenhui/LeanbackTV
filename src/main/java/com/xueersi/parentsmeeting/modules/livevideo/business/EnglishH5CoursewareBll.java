@@ -30,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
@@ -407,7 +408,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 }
             }
         };
-        h5CoursewarePager = new EnglishH5CoursewarePager(context, false, mVSectionID, videoQuestionH5Entity.url, videoQuestionH5Entity.id,
+//        h5CoursewarePager = new EnglishH5CoursewarePager(context, false, mVSectionID, videoQuestionH5Entity.url, videoQuestionH5Entity.id,
+//                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, this, mAnswerRankBll == null ? "0" : mAnswerRankBll.getIsShow(), IS_SCIENCE);
+        h5CoursewarePager = new EnglishH5CoursewareX5Pager(context, false, mVSectionID, videoQuestionH5Entity.url, videoQuestionH5Entity.id,
                 videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, this, mAnswerRankBll == null ? "0" : mAnswerRankBll.getIsShow(), IS_SCIENCE);
         h5CoursewarePager.setEnglishH5CoursewareBll(this);
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -745,11 +748,12 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     public class LiveStandQuestionSwitchImpl extends LiveQuestionSwitchImpl implements LiveStandQuestionSwitch {
         @Override
         public BasePager questionSwitch(BaseVideoQuestionEntity baseQuestionEntity) {
-            EnglishH5CoursewarePager h5CoursewarePager = (EnglishH5CoursewarePager) super.questionSwitch(baseQuestionEntity);
+            BaseEnglishH5CoursewarePager h5CoursewarePager = (BaseEnglishH5CoursewarePager) super.questionSwitch(baseQuestionEntity);
             if (h5CoursewarePager != null) {
                 h5CoursewarePager.setWebBackgroundColor(0);
+                return h5CoursewarePager.getBasePager();
             }
-            return h5CoursewarePager;
+            return null;
         }
 
         @Override

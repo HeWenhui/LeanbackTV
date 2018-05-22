@@ -33,4 +33,6 @@ public interface BaseEnglishH5CoursewarePager {
     void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll);
 
     BasePager getBasePager();
+
+    void setWebBackgroundColor(int color);
 }
