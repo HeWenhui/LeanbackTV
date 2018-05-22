@@ -7,7 +7,6 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -29,13 +28,13 @@ import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.xueersi.parentsmeeting.base.BasePager;
-import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerSelfItem;
-import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
@@ -246,11 +245,14 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     private TextView tvResultRoleName3;
     private ImageView ivRoleplayerResultStar;//显示成绩结果星星旗帜
     private boolean isShowResult;//标记是否正在显示结果页
+    private LiveGetInfo mLiveGetInfo;//用于获取学科字段，以此判断roleplay进入哪个学科的连麦
     //private boolean mIsEvaluatoring;//标记正在测评中
 
-    public RolePlayerPager(Context context, RolePlayerEntity obj, boolean isNewView, RolePlayerBll rolePlayerBll) {
+    public RolePlayerPager(Context context, RolePlayerEntity obj, boolean isNewView, RolePlayerBll rolePlayerBll,
+                           LiveGetInfo liveGetInfo) {
         super(context, obj, isNewView);
         this.mRolePlayBll = rolePlayerBll;
+        mLiveGetInfo = liveGetInfo;
         dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/liveSpeech/");
         if (!dir.exists()) {
             dir.mkdirs();
@@ -501,6 +503,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if(mEntity == null){
+                Loger.i("RolePlayerDemoTest", "数据实体已经销毁，handler不再处理剩余消息");
                 return;
             }
             if (msg.what == READ_MESSAGE) {
@@ -807,12 +810,34 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         rlSpeechVolumnMain.setVisibility(View.VISIBLE);
         vwvSpeechVolume.setVisibility(View.VISIBLE);
         String spechMsg = message.getReadMsg().replace("\n", "");
-        if (mIse == null) {
+
+        if(mLiveGetInfo != null){
+            if (1 == mLiveGetInfo.getIsEnglish()) {
+                Loger.i("RolePlayerDemoTest", "走英语离线测评");
+                //走英语离线测评
+                mIse = new SpeechEvaluatorUtils(true);
+                saveVideoFile = new File(dir, "roleplayer" + System.currentTimeMillis() + ".mp3");
+            }else{
+                String[] arrSubIds =  mLiveGetInfo.getSubjectIds();
+                for (String subId : arrSubIds){
+                    if (LiveVideoConfig.SubjectIds.SUBJECT_ID_CH.equals(subId)) {
+                        //走语文离线测评
+                        mIse = new SpeechEvaluatorUtils(true, com.tal.speech.speechrecognizer.Constants.ASSESS_PARAM_LANGUAGE_CH);
+                        saveVideoFile = new File(dir, "roleplayer" + System.currentTimeMillis() + ".mp3");
+                        Loger.i("RolePlayerDemoTest", "走英语离线测评");
+                        break;
+                    }
+                }
+            }
+
+        }else {
+            //默认走英语离线测评
+            Loger.i("RolePlayerDemoTest", "走英语离线测评");
             mIse = new SpeechEvaluatorUtils(true);
             saveVideoFile = new File(dir, "roleplayer" + System.currentTimeMillis() + ".mp3");
         }
+
         mIse.cancel();
-        //mIsEvaluatoring = true;
         speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(spechMsg, saveVideoFile.getAbsolutePath(), false,
                 new RoleEvaluatorListener() {
                     @Override
@@ -1074,6 +1099,9 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         mReadHandler.removeMessages(READ_MESSAGE);
         if (mEntity != null) {
             mEntity = null;//防止结果页数据错乱，尤其点赞个数
+        }
+        if(mLiveGetInfo != null){
+            mLiveGetInfo = null;
         }
     }
 

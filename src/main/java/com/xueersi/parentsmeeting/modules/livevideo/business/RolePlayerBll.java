@@ -7,7 +7,6 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
-import com.tal.speech.speechrecognizer.PhoneScore;
 import com.xueersi.parentsmeeting.base.BaseBll;
 import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.cloud.XesCloudUploadBusiness;
@@ -16,10 +15,9 @@ import com.xueersi.parentsmeeting.cloud.config.XesCloudConfig;
 import com.xueersi.parentsmeeting.cloud.entity.CloudUploadEntity;
 import com.xueersi.parentsmeeting.cloud.entity.XesCloudResult;
 import com.xueersi.parentsmeeting.cloud.listener.XesStsUploadListener;
-import com.xueersi.parentsmeeting.entity.AnswerEntity;
-import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpManager;
@@ -40,9 +38,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import okhttp3.Call;
 
@@ -54,6 +50,7 @@ import okhttp3.Call;
 public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
 
+    private final LiveGetInfo mLiveGetInfo;
     /**
      * 是否已经通过权限判断进入连接WebSocket
      */
@@ -105,10 +102,11 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     private boolean mIsBeginSocket;
     private boolean isGoToRobot;//是否开始了人机
 
-    public RolePlayerBll(Context context, RelativeLayout bottomContent, LiveBll liveBll) {
+    public RolePlayerBll(Context context, RelativeLayout bottomContent, LiveBll liveBll, LiveGetInfo liveGetInfo) {
         super(context);
         this.bottomContent = bottomContent;
         this.mLiveBll = liveBll;
+        this.mLiveGetInfo = liveGetInfo;
         mRolePlayerHttpManager = new RolePlayerHttpManager(mContext);
         mRolePlayerHttpResponseParser = new RolePlayerHttpResponseParser();
     }
@@ -245,7 +243,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
         //拉取试题a
         requestTestInfos();
-        mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this);
+        mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this,mLiveGetInfo);
         mRolePlayerPager.initData();
         if (bottomContent != null) {
             bottomContent.addView(mRolePlayerPager.getRootView());
