@@ -2027,8 +2027,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     case XESCODE.TEACHER_PRAISE: {
                         if (mTeacherPraiseBll1 != null) {
                             mTeacherPraiseBll1.showTeacherPraise();
-                            String nonce = object.optString("nonce","");
-                            TeamPkLog.receiveVoicePraise(LiveBll.this,nonce);
+                            String nonce = object.optString("nonce", "");
+                            TeamPkLog.receiveVoicePraise(LiveBll.this, nonce);
                         }
                         break;
                     }
@@ -2056,11 +2056,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             String nonce = object.optString("nonce", "");
                             if (open.equals("1")) {
                                 mTeamPKBll.startSelectAdversary();
-                                TeamPkLog.receiveMatchOpponent(LiveBll.this,nonce,true);
+                                TeamPkLog.receiveMatchOpponent(LiveBll.this, nonce, true);
                                 Loger.e("LiveBll", "====>onNotice startSelectAdversary:");
                             } else if (open.equals("0")) {
                                 mTeamPKBll.stopSelectAdversary();
-                                TeamPkLog.receiveMatchOpponent(LiveBll.this,nonce,false);
+                                TeamPkLog.receiveMatchOpponent(LiveBll.this, nonce, false);
                             }
                         }
                         break;
@@ -2068,14 +2068,14 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     case XESCODE.TEAM_PK_PUBLIC_PK_RESULT:
                         if (mTeamPKBll != null) {
                             String nonce = object.optString("nonce", "");
-                            TeamPkLog.receivePkResult(LiveBll.this,nonce);
+                            TeamPkLog.receivePkResult(LiveBll.this, nonce);
                             mTeamPKBll.showPkResult();
                         }
                         break;
                     case XESCODE.TEAM_PK_PUBLIC_CONTRIBUTION_STAR: {
                         if (mTeamPKBll != null) {
                             String nonce = object.optString("nonce", "");
-                            TeamPkLog.receiveClassBoxInfo(LiveBll.this,nonce);
+                            TeamPkLog.receiveClassBoxInfo(LiveBll.this, nonce);
                             mTeamPKBll.showClassChest();
                         }
                         break;
@@ -2470,6 +2470,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
         mIRCMessage = new IRCMessage(netWorkType, channel, mGetInfo.getStuName(), nickname);
         mIRCMessage.setNewTalkConf(newTalkConf);
+        IRCTalkConf ircTalkConf = new IRCTalkConf(getInfo, mLiveType, mHttpManager, getInfo.getNewTalkConfHosts());
+        mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
         s += ",newTalkConf=" + newTalkConf.size();

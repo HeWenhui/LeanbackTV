@@ -4,6 +4,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
@@ -34,6 +35,7 @@ public class IRCMessage {
     private String mNickname;
     /** 备用用户聊天服务配置列表 */
     private List<NewTalkConfEntity> mNewTalkConf;
+    private IRCTalkConf ircTalkConf;
     /** 从上面的列表选择一个服务器 */
     private int mSelectTalk = 0;
     private LogToFile mLogtf;
@@ -362,6 +364,7 @@ public class IRCMessage {
         if (connectError || !mConnection.isConnected()) {
             mLogtf.d("connect:method=" + method + ",connectError=" + connectError);
             new Thread() {
+                @Override
                 public void run() {
                     try {
                         Thread.sleep(2000);
@@ -384,6 +387,18 @@ public class IRCMessage {
     /** 设置备用用户聊天服务配置列表 */
     public void setNewTalkConf(List<NewTalkConfEntity> newTalkConf) {
         this.mNewTalkConf = newTalkConf;
+    }
+
+    AbstractBusinessDataCallBack businessDataCallBack = new AbstractBusinessDataCallBack() {
+        @Override
+        public void onDataSucess(Object... objData) {
+            mNewTalkConf = (List<NewTalkConfEntity>) objData[0];
+        }
+    };
+
+    public void setIrcTalkConf(IRCTalkConf ircTalkConf) {
+        this.ircTalkConf = ircTalkConf;
+        ircTalkConf.getserver(businessDataCallBack);
     }
 
     /**

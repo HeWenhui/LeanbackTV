@@ -6,6 +6,7 @@ import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.http.HttpResponseParser;
 import com.xueersi.parentsmeeting.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.BuildConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
@@ -19,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentCoinAndTotalEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
@@ -110,7 +112,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
             try {
                 getInfo.setGrade(Integer.parseInt(data.optString("gradeIds").split(",")[0]));
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             //getInfo.setIsShowCounselorWhisper("1");
@@ -233,6 +235,24 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     newTalkConf.add(talkConfEntity);
                 }
                 getInfo.setNewTalkConf(newTalkConf);
+            }
+            if (data.has("liveChatDispatchUrl")) {
+                JSONArray array = data.optJSONArray("liveChatDispatchUrl");
+                ArrayList<TalkConfHost> newTalkConfHosts = new ArrayList<>();
+//                if (AppConfig.DEBUG) {
+//                    TalkConfHost talkConfHost = new TalkConfHost();
+//                    talkConfHost.setHost("10.99.1.86");
+//                    newTalkConfHosts.add(talkConfHost);
+//                }
+                if (array != null) {
+                    for (int i = 0; i < array.length(); i++) {
+                        String host = array.getString(i);
+                        TalkConfHost talkConfHost = new TalkConfHost();
+                        talkConfHost.setHost(host);
+                        newTalkConfHosts.add(talkConfHost);
+                    }
+                }
+                getInfo.setNewTalkConfHosts(newTalkConfHosts);
             }
             getInfo.setHbTime(data.getInt("hbTime"));
             getInfo.setClientLog(data.optString("clientLog", LiveVideoConfig.URL_LIVE_ON_LOAD_LOGS));
@@ -420,7 +440,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             roomInfo1.setOpenbox(status.optInt("openbox"));
             roomInfo1.setAllotpkman(status.optInt("allotpkman"));
             teamPkEntity.setRoomInfo1(roomInfo1);
-
 
 
             if (status.has("exam")) {
@@ -1308,8 +1327,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 classChestEntity.setSubChestEntityList(list);
             }
 
-            if(data.has("isMe")){
-                classChestEntity.setIsMe(data.optInt("isMe",0) == 1);
+            if (data.has("isMe")) {
+                classChestEntity.setIsMe(data.optInt("isMe", 0) == 1);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1421,8 +1440,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 }
                 entity.setCompetitorEngerInfo(teamEnergyInfo);
             }
-            if(data.has("isMe")){
-                entity.setIsMe(data.optInt("isMe",0) == 1);
+            if (data.has("isMe")) {
+                entity.setIsMe(data.optInt("isMe", 0) == 1);
             }
         } catch (Exception e) {
             e.printStackTrace();
