@@ -29,7 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkTeamSelectPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkTeamSelectingPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPKStateLayout;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 import com.xueersi.xesalib.utils.log.Loger;
