@@ -179,10 +179,10 @@ public class CacheWebView extends WebView {
             cookieManager.setAcceptThirdPartyCookies(this,true);
         }
         setWebViewDefaultCacheMode();
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            webSettings.setMixedContentMode(
-//                    WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webSettings.setMixedContentMode(
+                    android.webkit.WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
+        }
         setCachePath();
 
     }
