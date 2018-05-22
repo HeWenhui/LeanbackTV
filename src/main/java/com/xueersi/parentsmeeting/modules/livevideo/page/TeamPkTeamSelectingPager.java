@@ -7,14 +7,15 @@ import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPKBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 
 /**
- * Created by chenkun on 2018/4/12
- * 分队进行中
- */
+* 分队进行中
+*@author chekun
+*created  at 2018/4/17 11:31
+*/
 public class TeamPkTeamSelectingPager extends BasePager implements View.OnClickListener {
     private ImageView ivEnter;
     private final TeamPkBll mTeamPkBll;
