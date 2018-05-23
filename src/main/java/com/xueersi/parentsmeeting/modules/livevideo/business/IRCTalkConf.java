@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -13,10 +14,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.xesalib.utils.network.NetWorkHelper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +31,7 @@ import java.util.List;
  */
 public class IRCTalkConf {
     private static String TAG = "IRCTalkConf";
+    private LogToFile mLogtf;
     private BaseHttpBusiness baseHttpBusiness;
     private ArrayList<TalkConfHost> hosts;
     /** 从上面的列表选择一个服务器 */
@@ -40,6 +44,15 @@ public class IRCTalkConf {
     private AbstractBusinessDataCallBack businessDataCallBack;
     private String baseHost = null;
     private static final int GET_SERVER = 1;
+    private static final int GET_SERVER_TIMEOUT = 2000;
+    private static final int GET_SERVER_NEXT = 2000;
+    private static final int GET_SERVER_NEXT_LOOP = 30000;
+    /** 网络类型 */
+    private int netWorkType;
+    /** 调度是不是在无网络下失败 */
+    private boolean connectError = false;
+    /** 播放器是不是销毁 */
+    private boolean mIsDestory = false;
     Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -54,6 +67,8 @@ public class IRCTalkConf {
         this.mLiveType = mLiveType;
         this.baseHttpBusiness = baseHttpBusiness;
         this.hosts = hosts;
+        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+                + ".txt"));
         LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = liveGetInfo.getStudentLiveInfo();
         if (studentLiveInfo != null) {
             classid = studentLiveInfo.getClassId();
@@ -72,14 +87,18 @@ public class IRCTalkConf {
 
     public void getserver(final AbstractBusinessDataCallBack businessDataCallBack) {
         this.businessDataCallBack = businessDataCallBack;
-        Loger.d(TAG, "getserver:hosts=" + hosts.size());
+        mLogtf.d("getserver:hosts=" + hosts.size());
         if (hosts.isEmpty()) {
             return;
         }
         getserver();
     }
 
+    /** 调度获得服务器列表 */
     private void getserver() {
+        if (mIsDestory) {
+            return;
+        }
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveid", liveId);
         if (mLiveType == LiveBll.LIVE_TYPE_LIVE) {
@@ -89,12 +108,15 @@ public class IRCTalkConf {
         }
 //        params.addBodyParam("location", liveId);
         params.addBodyParam("classid", classid);
-        params.setWriteAndreadTimeOut(2000);
+        params.setWriteAndreadTimeOut(GET_SERVER_TIMEOUT);
         TalkConfHost talkConfHost = hosts.get(mSelectTalk++ % hosts.size());
-        String host = talkConfHost.getHost();
+        final String host = talkConfHost.getHost();
         String url = "http://" + host + "/getserver";
         if (talkConfHost.isIp()) {
             params.addHeaderParam("Host", baseHost);
+        }
+        if (mSelectTalk == hosts.size()) {
+            mSelectTalk = 0;
         }
         callBack = new HttpCallBack(false) {
             @Override
@@ -146,10 +168,42 @@ public class IRCTalkConf {
 
             void reTry() {
                 handler.removeMessages(GET_SERVER);
-                handler.sendEmptyMessageDelayed(GET_SERVER, 2000);
+                mLogtf.d("reTry:netWorkType=" + netWorkType);
+                if (netWorkType == NetWorkHelper.NO_NETWORK) {
+                    connectError = true;
+                    return;
+                }
+                if (mSelectTalk == hosts.size()) {
+                    mSelectTalk = 0;
+                    handler.sendEmptyMessageDelayed(GET_SERVER, GET_SERVER_NEXT_LOOP);
+                } else {
+                    handler.sendEmptyMessageDelayed(GET_SERVER, GET_SERVER_NEXT);
+                }
             }
         };
         baseHttpBusiness.sendGet(url, params, callBack);
-        handler.sendEmptyMessageDelayed(GET_SERVER, 2000);
+        handler.sendEmptyMessageDelayed(GET_SERVER, GET_SERVER_TIMEOUT);
+    }
+
+    /**
+     * 网络变化
+     *
+     * @param netWorkType
+     */
+    public void onNetWorkChange(int netWorkType) {
+        this.netWorkType = netWorkType;
+        if (netWorkType != NetWorkHelper.NO_NETWORK) {
+            mLogtf.d("onNetWorkChange:connectError=" + connectError);
+            if (connectError) {
+                connectError = false;
+                getserver();
+            }
+        }
+    }
+
+    /** 播放器销毁 */
+    public void destory() {
+        mIsDestory = true;
+        handler.removeMessages(GET_SERVER);
     }
 }

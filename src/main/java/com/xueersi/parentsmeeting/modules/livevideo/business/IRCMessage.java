@@ -76,6 +76,11 @@ public class IRCMessage {
         return mConnection != null && mConnection.isConnected();
     }
 
+    /**
+     * 网络变化
+     *
+     * @param netWorkType
+     */
     public void onNetWorkChange(int netWorkType) {
         this.netWorkType = netWorkType;
         if (netWorkType != NetWorkHelper.NO_NETWORK) {
@@ -90,8 +95,10 @@ public class IRCMessage {
                 }.start();
             }
         }
+        ircTalkConf.onNetWorkChange(netWorkType);
     }
 
+    /** 自己发的消息，如果没发送出去，暂时保存下来 */
     Vector<String> privMsg = new Vector<>();
 
     public void create() {
@@ -307,11 +314,7 @@ public class IRCMessage {
                 }
             }
         });
-        new Thread() {
-            public void run() {
-                connect("create");
-            }
-        }.start();
+        ircTalkConf.getserver(businessDataCallBack);
     }
 
     private synchronized void connect(String method) {
@@ -389,16 +392,24 @@ public class IRCMessage {
         this.mNewTalkConf = newTalkConf;
     }
 
+    /**
+     * 直播服务器调度返回
+     */
     AbstractBusinessDataCallBack businessDataCallBack = new AbstractBusinessDataCallBack() {
         @Override
         public void onDataSucess(Object... objData) {
             mNewTalkConf = (List<NewTalkConfEntity>) objData[0];
+            new Thread() {
+                @Override
+                public void run() {
+                    connect("create");
+                }
+            }.start();
         }
     };
 
     public void setIrcTalkConf(IRCTalkConf ircTalkConf) {
         this.ircTalkConf = ircTalkConf;
-        ircTalkConf.getserver(businessDataCallBack);
     }
 
     /**
@@ -448,6 +459,7 @@ public class IRCMessage {
         if (mConnection != null) {
             mConnection.disconnect();
         }
+        ircTalkConf.destory();
     }
 
     public void setCallback(IRCCallback ircCallback) {
