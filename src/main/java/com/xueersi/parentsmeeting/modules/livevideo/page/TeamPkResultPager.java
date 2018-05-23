@@ -86,8 +86,8 @@ public class TeamPkResultPager extends BasePager {
     private TextView tvMyTeamSlogan;
     private TextView tvOtherTeamSlogan;
     private SmoothAddNumTextView tvMyTeamEnergy;
-    private TextView tvOtherTeamEnergy;
-    private TextView tvAddEnergy;
+    private SmoothAddNumTextView tvOtherTeamEnergy;
+    private SmoothAddNumTextView tvAddEnergy;
     private TeamPkProgressBar tpbEnergyBar;
     private RecyclerView rclContributionRank;
 
@@ -226,9 +226,9 @@ public class TeamPkResultPager extends BasePager {
             ratio = 0.5f;
         }
         tpbFinalProgress.setProgress((int) (ratio * tpbFinalProgress.getMaxProgress()));
-        TextView tvMyTeamFinalEngergy = rlLottieRootView.findViewById(R.id.tv_teampk_pkresult_myteam_final_anergy);
+        SmoothAddNumTextView tvMyTeamFinalEngergy = rlLottieRootView.findViewById(R.id.tv_teampk_pkresult_myteam_final_anergy);
         tvMyTeamFinalEngergy.setText(myTeamEnergy + "");
-        TextView tvOtherTeamFinalEngergy = rlLottieRootView.findViewById(R.id
+        SmoothAddNumTextView tvOtherTeamFinalEngergy = rlLottieRootView.findViewById(R.id
                 .tv_teampk_pkresult_otherteam_final_anergy);
         tvOtherTeamFinalEngergy.setText(otherTeamEnergy + "");
 

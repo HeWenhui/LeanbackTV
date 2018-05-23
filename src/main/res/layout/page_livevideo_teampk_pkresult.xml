@@ -21,7 +21,7 @@
             android:layout_centerHorizontal="true"
             android:visibility="invisible">
 
-            <TextView
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
                 android:id="@id/tv_teampk_pkresult_myteam_final_anergy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <TextView
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
                 android:id="@id/tv_teampk_pkresult_otherteam_final_anergy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -247,9 +247,9 @@
                 android:text="3896"
                 android:textColor="@color/white"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                />
 
-            <TextView
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
                 android:id="@id/tv_teampk_otherteam_energy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -260,7 +260,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <TextView
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
                 android:id="@id/tv_teampk_myteam_add_energy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

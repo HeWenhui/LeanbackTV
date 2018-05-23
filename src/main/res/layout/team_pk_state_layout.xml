@@ -31,7 +31,7 @@
             android:text="0"
             android:textColor="@color/white"
             android:textSize="9sp"
-            android:textStyle="bold" />
+            />
 
         <ImageView
             android:id="@id/iv_teampk_pkstate_coin"
@@ -79,8 +79,9 @@
             android:text="0"
             android:textColor="@color/white"
             android:textSize="9sp"
-            android:textStyle="bold" />
-
+            android:layout_alignBottom="@id/tv_teampk_pkstate_myteam_coin_prefix"
+            android:layout_marginBottom="1dp"
+            />
 
         <TextView
             android:id="@id/tv_teampk_pkstate_adversary"
@@ -101,8 +102,9 @@
             android:text="0"
             android:textColor="@color/white"
             android:textSize="9sp"
-            android:textStyle="bold" />
-
+            android:layout_alignBottom="@id/tv_teampk_pkstate_adversary"
+            android:layout_marginBottom="1dp"
+            />
 
     </RelativeLayout>
 
