@@ -169,6 +169,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
     /** 是否显示移动网络提示 */
     private boolean mIsShowMobileAlert = true;
+    /** 是否显示无网络提示 */
+    private boolean mIsShowNoWifiAlert = true;
 
     /** 我的课程业务层 */
     LectureLivePlayBackBll lectureLivePlayBackBll;
@@ -559,6 +561,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                         AppBll.getInstance(mBaseApplication);
                         playNewVideo(Uri.parse(mWebPath), mSectionName);
                     } else {
+                        mIsShowNoWifiAlert = false;
                         AppBll.getInstance(mBaseApplication);
                     }
                     return false;
@@ -1691,6 +1694,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 EventBus.getDefault().post(new AppEvent.OnlyWIFIEvent());
             } else if (AppBll.getInstance().getAppInfoEntity().isNotificationMobileAlert()) {
                 EventBus.getDefault().post(new AppEvent.NowMobileEvent());
+            }
+        } else if (event.netWorkType == NetWorkHelper.WIFI_STATE) {
+            if (!mIsShowNoWifiAlert) {
+                mIsShowNoWifiAlert = true;
+                playNewVideo(Uri.parse(mWebPath), mSectionName);
             }
         }
     }
