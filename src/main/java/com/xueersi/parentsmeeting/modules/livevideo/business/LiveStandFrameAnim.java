@@ -350,7 +350,7 @@ public class LiveStandFrameAnim {
 
         @Override
         public void setCancle(boolean cancle) {
-//            this.cancle = cancle;
+            this.cancle = cancle;
         }
 
         @Override
