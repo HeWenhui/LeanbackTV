@@ -85,13 +85,14 @@ public class IRCTalkConf {
         }
     }
 
-    public void getserver(final AbstractBusinessDataCallBack businessDataCallBack) {
+    public boolean getserver(final AbstractBusinessDataCallBack businessDataCallBack) {
         this.businessDataCallBack = businessDataCallBack;
         mLogtf.d("getserver:hosts=" + hosts.size());
         if (hosts.isEmpty()) {
-            return;
+            return false;
         }
         getserver();
+        return true;
     }
 
     /** 调度获得服务器列表 */

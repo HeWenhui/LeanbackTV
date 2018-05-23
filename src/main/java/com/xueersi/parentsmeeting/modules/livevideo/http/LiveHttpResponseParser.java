@@ -236,14 +236,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 }
                 getInfo.setNewTalkConf(newTalkConf);
             }
+            ArrayList<TalkConfHost> newTalkConfHosts = new ArrayList<>();
             if (data.has("liveChatDispatchUrl")) {
                 JSONArray array = data.optJSONArray("liveChatDispatchUrl");
-                ArrayList<TalkConfHost> newTalkConfHosts = new ArrayList<>();
-//                if (AppConfig.DEBUG) {
-//                    TalkConfHost talkConfHost = new TalkConfHost();
-//                    talkConfHost.setHost("10.99.1.86");
-//                    newTalkConfHosts.add(talkConfHost);
-//                }
                 if (array != null) {
                     for (int i = 0; i < array.length(); i++) {
                         String host = array.getString(i);
@@ -252,8 +247,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         newTalkConfHosts.add(talkConfHost);
                     }
                 }
-                getInfo.setNewTalkConfHosts(newTalkConfHosts);
             }
+            getInfo.setNewTalkConfHosts(newTalkConfHosts);
             getInfo.setHbTime(data.getInt("hbTime"));
             getInfo.setClientLog(data.optString("clientLog", LiveVideoConfig.URL_LIVE_ON_LOAD_LOGS));
             getInfo.setGslbServerUrl(data.getString("gslbServerUrl"));

@@ -314,7 +314,15 @@ public class IRCMessage {
                 }
             }
         });
-        ircTalkConf.getserver(businessDataCallBack);
+        boolean getserver = ircTalkConf.getserver(businessDataCallBack);
+        if (!getserver) {
+            new Thread() {
+                @Override
+                public void run() {
+                    connect("create");
+                }
+            }.start();
+        }
     }
 
     private synchronized void connect(String method) {
