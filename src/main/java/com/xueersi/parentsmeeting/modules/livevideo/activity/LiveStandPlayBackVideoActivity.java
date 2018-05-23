@@ -19,6 +19,7 @@ import android.text.style.AbsoluteSizeSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -53,6 +54,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Courseware
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertPagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandVoiceAnswerCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PutQuestion;
@@ -228,6 +230,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
     private RelativeLayout bottom;
     String showName = "";
     String headUrl = "";
+    LiveStandFrameAnim liveStandFrameAnim;
 
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
@@ -454,7 +457,25 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //                attachMediaController();
 //            }
 //        });
+        liveStandFrameAnim = new LiveStandFrameAnim(this);
+        liveStandFrameAnim.check(new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objData) {
+                View rl_live_stand_update = findViewById(R.id.vs_live_stand_update);
+                if (rl_live_stand_update != null) {
+                    ViewGroup group = (ViewGroup) rl_live_stand_update.getParent();
+                    group.removeView(rl_live_stand_update);
+                } else {
+                    rl_live_stand_update = findViewById(R.id.rl_live_stand_update);
+                    ViewGroup group = (ViewGroup) rl_live_stand_update.getParent();
+                    group.removeView(rl_live_stand_update);
+                }
+                afterLoad();
+            }
+        });
+    }
 
+    private void afterLoad() {
         if (islocal) {
             // 互动题播放地址
             playNewVideo(Uri.parse(mWebPath), mSectionName);
@@ -2395,6 +2416,9 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
             } catch (Exception e) {
 
             }
+        }
+        if (liveStandFrameAnim != null) {
+            liveStandFrameAnim.onDestory();
         }
     }
 

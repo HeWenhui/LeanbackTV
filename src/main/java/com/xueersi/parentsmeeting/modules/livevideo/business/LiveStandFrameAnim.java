@@ -77,7 +77,7 @@ public class LiveStandFrameAnim {
         return loadTask;
     }
 
-    public void check(LiveBll liveBll, final AbstractBusinessDataCallBack callBack) {
+    public void check(final AbstractBusinessDataCallBack callBack) {
         StandLiveConfig.createVoice(activity);
         File alldir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/live_stand");
         if (alldir == null) {

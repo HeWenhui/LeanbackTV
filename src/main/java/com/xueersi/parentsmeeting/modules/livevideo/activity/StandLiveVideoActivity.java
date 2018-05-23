@@ -217,6 +217,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
     String mode = LiveTopic.MODE_TRANING;
     LiveStandFrameAnim liveStandFrameAnim;
 
+    @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         long before = System.currentTimeMillis();
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -241,7 +242,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         Loger.d(TAG, "onVideoCreate:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         initView();
-        liveStandFrameAnim.check(mLiveBll, new AbstractBusinessDataCallBack() {
+        liveStandFrameAnim.check(new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
                 View rl_live_stand_update = findViewById(R.id.vs_live_stand_update);
