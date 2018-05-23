@@ -254,6 +254,9 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                     ViewGroup group = (ViewGroup) vsLiveStandUpdate.getParent();
                     group.removeView(vsLiveStandUpdate);
                 }
+                if (isFinishing()) {
+                    return;
+                }
                 mLiveBll.getInfo(mGetInfo);
             }
         });

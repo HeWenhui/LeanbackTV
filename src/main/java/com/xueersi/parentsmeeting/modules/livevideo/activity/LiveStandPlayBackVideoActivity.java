@@ -470,6 +470,9 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                     ViewGroup group = (ViewGroup) vsLiveStandUpdate.getParent();
                     group.removeView(vsLiveStandUpdate);
                 }
+                if (isFinishing()) {
+                    return;
+                }
                 afterLoad();
             }
         });

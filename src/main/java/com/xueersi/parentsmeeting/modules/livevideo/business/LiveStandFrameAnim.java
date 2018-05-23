@@ -71,10 +71,12 @@ public class LiveStandFrameAnim {
         this.activity = activity;
     }
 
-    public LiveSoundPool.SoundPlayTask loading(LiveSoundPool soundPool) {
+    /**
+     * 加载音效
+     */
+    public void loading() {
         loadTask = new LiveSoundPool.SoundPlayTask(R.raw.live_stand_loading, StandLiveConfig.MUSIC_VOLUME_RATIO_FRONT, true);
         int soundId = LiveSoundPool.play(activity, liveSoundPool, loadTask);
-        return loadTask;
     }
 
     public void check(final AbstractBusinessDataCallBack callBack) {
@@ -110,7 +112,7 @@ public class LiveStandFrameAnim {
                 callBack.onDataSucess("");
             } else {
                 liveSoundPool = LiveSoundPool.createSoundPool();
-                loading(liveSoundPool);
+                loading();
                 fontFace = FontCache.getTypeface(activity, "fangzhengcuyuan.ttf");
                 //activity_video_live_stand_check
                 ViewStub vsLiveStandUpdate = activity.findViewById(R.id.vs_live_stand_update);
@@ -129,7 +131,7 @@ public class LiveStandFrameAnim {
             }
         } else {
             liveSoundPool = LiveSoundPool.createSoundPool();
-            loading(liveSoundPool);
+            loading();
             fontFace = FontCache.getTypeface(activity, "fangzhengcuyuan.ttf");
             //activity_video_live_stand_check
             ViewStub vsLiveStandUpdate = activity.findViewById(R.id.vs_live_stand_update);
@@ -256,13 +258,17 @@ public class LiveStandFrameAnim {
                     }, 1000);
                 } else {
                     XESToastUtils.showToast(activity, "下载失败，请检查您的网络或联络辅导老师");
-                    liveSoundPool.stop(loadTask);
-                    liveSoundPool.release();
-                    liveSoundPool = null;
+                    if (liveSoundPool != null) {
+                        liveSoundPool.stop(loadTask);
+                        liveSoundPool.release();
+                        liveSoundPool = null;
+                    }
                     view.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            callBack.onDataSucess("");
+                            if (!cancle) {
+                                callBack.onDataSucess("");
+                            }
                         }
                     }, 1000);
                 }
@@ -293,10 +299,10 @@ public class LiveStandFrameAnim {
     /**
      * 进度条变化，更新上面的文字和光的位置
      *
-     * @param progLeft                        进度条左边
-     * @param rlLiveStandUpdateProg       进度条上文字布局
+     * @param progLeft                   进度条左边
+     * @param rlLiveStandUpdateProg      进度条上文字布局
      * @param ivLiveStandUpdateProgLight 光的布局
-     * @param progress                        进度
+     * @param progress                   进度
      */
     private void onProgress(int progLeft, RelativeLayout rlLiveStandUpdateProg, ImageView ivLiveStandUpdateProgLight, int progress) {
         int progTipWidth = rlLiveStandUpdateProg.getWidth();
@@ -340,6 +346,11 @@ public class LiveStandFrameAnim {
             //解压开始，要删除以前旧的
             FileUtils.deleteDir(saveFile);
             FileUtils.deleteDir(saveFileTemp);
+        }
+
+        @Override
+        public void setCancle(boolean cancle) {
+//            this.cancle = cancle;
         }
 
         @Override
@@ -390,9 +401,11 @@ public class LiveStandFrameAnim {
                     ivLiveStandUpdateProgLight.setLayoutParams(lp2);
                 }
                 saveFileTemp.renameTo(saveFile);
-                liveSoundPool.stop(loadTask);
-                liveSoundPool.release();
-                liveSoundPool = null;
+                if (liveSoundPool != null) {
+                    liveSoundPool.stop(loadTask);
+                    liveSoundPool.release();
+                    liveSoundPool = null;
+                }
                 pbLiveStandUpdate.post(new Runnable() {
                     @Override
                     public void run() {
@@ -404,16 +417,20 @@ public class LiveStandFrameAnim {
                     pbLiveStandUpdate.post(new Runnable() {
                         @Override
                         public void run() {
-                            XESToastUtils.showToast(pbLiveStandUpdate.getContext(), "解压失败，请联络辅导老师");
-                            liveSoundPool.stop(loadTask);
-                            liveSoundPool.release();
-                            liveSoundPool = null;
-                            pbLiveStandUpdate.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    callBack.onDataSucess("");
+                            if (!cancle) {
+                                XESToastUtils.showToast(pbLiveStandUpdate.getContext(), "解压失败，请联络辅导老师");
+                                if (liveSoundPool != null) {
+                                    liveSoundPool.stop(loadTask);
+                                    liveSoundPool.release();
+                                    liveSoundPool = null;
                                 }
-                            }, 1000);
+                                pbLiveStandUpdate.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        callBack.onDataSucess("");
+                                    }
+                                }, 1000);
+                            }
                         }
                     });
                 }
@@ -427,6 +444,8 @@ public class LiveStandFrameAnim {
         void onPostExecute(Exception exception);
 
         void setMax(int max);
+
+        void setCancle(boolean cancle);
     }
 
     static class StandLiveZipExtractorTask extends ZipExtractorTask {
@@ -443,6 +462,7 @@ public class LiveStandFrameAnim {
         protected void onProgressUpdate(Integer... values) {
             if (cancle) {
                 setCancle(true);
+                zipProg.setCancle(true);
                 Loger.d(TAG, "onProgressUpdate:cancle");
                 return;
             }
