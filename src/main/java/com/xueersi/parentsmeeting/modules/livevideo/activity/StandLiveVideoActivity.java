@@ -245,14 +245,14 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         liveStandFrameAnim.check(new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                View rl_live_stand_update = findViewById(R.id.vs_live_stand_update);
-                if (rl_live_stand_update != null) {
-                    ViewGroup group = (ViewGroup) rl_live_stand_update.getParent();
-                    group.removeView(rl_live_stand_update);
+                View vsLiveStandUpdate = findViewById(R.id.vs_live_stand_update);
+                if (vsLiveStandUpdate != null) {
+                    ViewGroup group = (ViewGroup) vsLiveStandUpdate.getParent();
+                    group.removeView(vsLiveStandUpdate);
                 } else {
-                    rl_live_stand_update = findViewById(R.id.rl_live_stand_update);
-                    ViewGroup group = (ViewGroup) rl_live_stand_update.getParent();
-                    group.removeView(rl_live_stand_update);
+                    vsLiveStandUpdate = findViewById(R.id.rl_live_stand_update);
+                    ViewGroup group = (ViewGroup) vsLiveStandUpdate.getParent();
+                    group.removeView(vsLiveStandUpdate);
                 }
                 mLiveBll.getInfo(mGetInfo);
             }

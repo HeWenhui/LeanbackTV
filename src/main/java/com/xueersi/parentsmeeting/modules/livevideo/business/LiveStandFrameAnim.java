@@ -42,30 +42,30 @@ public class LiveStandFrameAnim {
     String eventId = LiveVideoConfig.LIVE_STAND_RES_UPDATE;
     static String TAG = "LiveStandFrameAnim";
     Activity activity;
-    final String filePath = "/android_stand_live/" + StandLiveConfig.version + "/frame_anim6.zip";
+    private final String filePath = "/android_stand_live/" + StandLiveConfig.version + "/frame_anim6.zip";
     /** 下载地址，阿里云 */
-    final String aliyun = "http://xesftp.oss-cn-beijing.aliyuncs.com" + filePath;
+    private final String aliyun = "http://xesftp.oss-cn-beijing.aliyuncs.com" + filePath;
     /** 下载地址，网校 */
-    final String xuersi = "http://client.xesimg.com" + filePath;
+    private final String xuersi = "http://client.xesimg.com" + filePath;
     /** 更新回调 */
     AbstractBusinessDataCallBack callBack;
     /** 解压任务 */
-    StandLiveZipExtractorTask zipExtractorTask;
+    private StandLiveZipExtractorTask zipExtractorTask;
     /** 是不是取消 */
-    boolean cancle = false;
+    private boolean cancle = false;
     /** 下载开始时间 */
-    long downloadStart;
+    private long downloadStart;
     /** 下载文件大小 */
-    long downloadSize = 117780122;
-    Typeface fontFace;
+    private long downloadSize = 117780122;
+    private Typeface fontFace;
     /** 进度条背景和里面进度的差值 */
-    int progGap;
+    private int progGap;
     /** 进度条里面进度的高度 */
-    int progHeight;
+    private int progHeight;
     /** 进度条里面进度的高度 */
-    int progWidth;
-    LiveSoundPool liveSoundPool;
-    LiveSoundPool.SoundPlayTask loadTask;
+    private int progWidth;
+    private LiveSoundPool liveSoundPool;
+    private LiveSoundPool.SoundPlayTask loadTask;
 
     public LiveStandFrameAnim(Activity activity) {
         this.activity = activity;
@@ -113,8 +113,8 @@ public class LiveStandFrameAnim {
                 loading(liveSoundPool);
                 fontFace = FontCache.getTypeface(activity, "fangzhengcuyuan.ttf");
                 //activity_video_live_stand_check
-                ViewStub vs_live_stand_update = activity.findViewById(R.id.vs_live_stand_update);
-                View view = vs_live_stand_update.inflate();
+                ViewStub vsLiveStandUpdate = activity.findViewById(R.id.vs_live_stand_update);
+                View view = vsLiveStandUpdate.inflate();
                 init(view);
 //                view.setVisibility(View.INVISIBLE);
                 view.findViewById(R.id.iv_live_stand_update_back).setOnClickListener(new View.OnClickListener() {
@@ -132,8 +132,8 @@ public class LiveStandFrameAnim {
             loading(liveSoundPool);
             fontFace = FontCache.getTypeface(activity, "fangzhengcuyuan.ttf");
             //activity_video_live_stand_check
-            ViewStub vs_live_stand_update = activity.findViewById(R.id.vs_live_stand_update);
-            final View view = vs_live_stand_update.inflate();
+            ViewStub vsLiveStandUpdate = activity.findViewById(R.id.vs_live_stand_update);
+            final View view = vsLiveStandUpdate.inflate();
 //            view.setVisibility(View.INVISIBLE);
             view.findViewById(R.id.iv_live_stand_update_back).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -142,7 +142,7 @@ public class LiveStandFrameAnim {
                 }
             });
             init(view);
-            final ProgressBar pb_live_stand_update = view.findViewById(R.id.pb_live_stand_update);
+            final ProgressBar pbLiveStandUpdate = view.findViewById(R.id.pb_live_stand_update);
             int netWorkType = NetWorkHelper.getNetWorkState(activity);
             if (netWorkType == NetWorkHelper.MOBILE_STATE) {
                 final VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(), false,
@@ -159,10 +159,10 @@ public class LiveStandFrameAnim {
                         download(view, saveFileZip, tempFileZip, saveFile, saveFileTemp);
                     }
                 });
-                pb_live_stand_update.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                pbLiveStandUpdate.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                     @Override
                     public boolean onPreDraw() {
-                        pb_live_stand_update.getViewTreeObserver().removeOnPreDrawListener(this);
+                        pbLiveStandUpdate.getViewTreeObserver().removeOnPreDrawListener(this);
                         cancelDialog.setCancelShowText("取消").setVerifyShowText("继续观看").initInfo("您当前使用的是3G/4G网络，是否继续观看？",
                                 VerifyCancelAlertDialog.CANCEL_SELECTED).showDialog();
                         return false;
@@ -175,13 +175,13 @@ public class LiveStandFrameAnim {
     }
 
     private void init(View view) {
-        ProgressBar pb_live_stand_update = view.findViewById(R.id.pb_live_stand_update);
-        ViewGroup.LayoutParams layoutParams = pb_live_stand_update.getLayoutParams();
+        ProgressBar pbLiveStandUpdate = view.findViewById(R.id.pb_live_stand_update);
+        ViewGroup.LayoutParams layoutParams = pbLiveStandUpdate.getLayoutParams();
         Bitmap bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.bg_live_stand_update_prog_bg);
         Bitmap bitmap2 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.bg_live_stand_update_prog);
         //设置进度条宽度
         layoutParams.width = bitmap.getWidth();
-        pb_live_stand_update.setLayoutParams(layoutParams);
+        pbLiveStandUpdate.setLayoutParams(layoutParams);
         //进度条背景和里面进度的差值
         progGap = (bitmap.getWidth() - bitmap2.getWidth()) / 2;
         progHeight = bitmap2.getHeight();
@@ -194,17 +194,17 @@ public class LiveStandFrameAnim {
         final BaseHttp baseHttp = new BaseHttp(activity);
         final AtomicInteger times = new AtomicInteger();
         final String[] urls = new String[]{aliyun, xuersi};
-        final ProgressBar pb_live_stand_update = view.findViewById(R.id.pb_live_stand_update);
-        final RelativeLayout rl_live_stand_update_prog = view.findViewById(R.id.rl_live_stand_update_prog);
-        final ImageView iv_live_stand_update_prog_light = view.findViewById(R.id.iv_live_stand_update_prog_light);
-        final TextView tv_live_stand_update_prog = view.findViewById(R.id.tv_live_stand_update_prog);
-        tv_live_stand_update_prog.setTypeface(fontFace);
+        final ProgressBar pbLiveStandUpdate = view.findViewById(R.id.pb_live_stand_update);
+        final RelativeLayout rlLiveStandUpdateProg = view.findViewById(R.id.rl_live_stand_update_prog);
+        final ImageView ivLiveStandUpdateProgLight = view.findViewById(R.id.iv_live_stand_update_prog_light);
+        final TextView tvLiveStandUpdateProg = view.findViewById(R.id.tv_live_stand_update_prog);
+        tvLiveStandUpdateProg.setTypeface(fontFace);
         downloadStart = System.currentTimeMillis();
-        pb_live_stand_update.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+        pbLiveStandUpdate.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
-                pb_live_stand_update.getViewTreeObserver().removeOnPreDrawListener(this);
-                onProgress(pb_live_stand_update.getLeft(), rl_live_stand_update_prog, iv_live_stand_update_prog_light, pb_live_stand_update.getProgress());
+                pbLiveStandUpdate.getViewTreeObserver().removeOnPreDrawListener(this);
+                onProgress(pbLiveStandUpdate.getLeft(), rlLiveStandUpdateProg, ivLiveStandUpdateProgLight, pbLiveStandUpdate.getProgress());
                 return false;
             }
         });
@@ -230,7 +230,7 @@ public class LiveStandFrameAnim {
                 logHashMap.put("version", "" + StandLiveConfig.version);
                 logHashMap.put("downloadsize", "" + downloadSize);
                 Loger.d(activity, eventId, logHashMap.getData(), true);
-                onProgress(pb_live_stand_update.getLeft(), rl_live_stand_update_prog, iv_live_stand_update_prog_light, 50);
+                onProgress(pbLiveStandUpdate.getLeft(), rlLiveStandUpdateProg, ivLiveStandUpdateProgLight, 50);
                 LiveZip liveZip = new LiveZip(view, callBack, saveFile, saveFileTemp);
                 zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, activity, liveZip);
                 zipExtractorTask.execute();
@@ -270,19 +270,19 @@ public class LiveStandFrameAnim {
 
             @Override
             protected void onDownloading(int progress) {
-                if (rl_live_stand_update_prog.getVisibility() != View.VISIBLE) {
-                    rl_live_stand_update_prog.setVisibility(View.VISIBLE);
-                    iv_live_stand_update_prog_light.setVisibility(View.VISIBLE);
+                if (rlLiveStandUpdateProg.getVisibility() != View.VISIBLE) {
+                    rlLiveStandUpdateProg.setVisibility(View.VISIBLE);
+                    ivLiveStandUpdateProgLight.setVisibility(View.VISIBLE);
                 }
                 progress = progress / 2;
-                if (pb_live_stand_update.getProgress() != progress) {
-                    pb_live_stand_update.setProgress(progress);
-                    tv_live_stand_update_prog.setText(progress + "%");
+                if (pbLiveStandUpdate.getProgress() != progress) {
+                    pbLiveStandUpdate.setProgress(progress);
+                    tvLiveStandUpdateProg.setText(progress + "%");
                     final int finalProgress = progress;
-                    tv_live_stand_update_prog.post(new Runnable() {
+                    tvLiveStandUpdateProg.post(new Runnable() {
                         @Override
                         public void run() {
-                            onProgress(pb_live_stand_update.getLeft(), rl_live_stand_update_prog, iv_live_stand_update_prog_light, finalProgress);
+                            onProgress(pbLiveStandUpdate.getLeft(), rlLiveStandUpdateProg, ivLiveStandUpdateProgLight, finalProgress);
                         }
                     });
                 }
@@ -294,27 +294,27 @@ public class LiveStandFrameAnim {
      * 进度条变化，更新上面的文字和光的位置
      *
      * @param progLeft                        进度条左边
-     * @param rl_live_stand_update_prog       进度条上文字布局
-     * @param iv_live_stand_update_prog_light 光的布局
+     * @param rlLiveStandUpdateProg       进度条上文字布局
+     * @param ivLiveStandUpdateProgLight 光的布局
      * @param progress                        进度
      */
-    private void onProgress(int progLeft, RelativeLayout rl_live_stand_update_prog, ImageView iv_live_stand_update_prog_light, int progress) {
-        int progTipWidth = rl_live_stand_update_prog.getWidth();
-        int lightWidth = iv_live_stand_update_prog_light.getWidth();
+    private void onProgress(int progLeft, RelativeLayout rlLiveStandUpdateProg, ImageView ivLiveStandUpdateProgLight, int progress) {
+        int progTipWidth = rlLiveStandUpdateProg.getWidth();
+        int lightWidth = ivLiveStandUpdateProgLight.getWidth();
         Loger.d(TAG, "onProgress:progLeft=" + progLeft + ",progTipWidth=" + progTipWidth + ",lightWidth=" + lightWidth);
         int left = (int) (((float) progWidth) * (float) progress / 100.0f);
         Loger.d(TAG, "onProgress:progress=" + progress + ",left=" + left);
         {
-            RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) rl_live_stand_update_prog.getLayoutParams();
-//                        int left = pb_live_stand_update.getWidth() * progress / 100;
+            RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) rlLiveStandUpdateProg.getLayoutParams();
+//                        int left = pbLiveStandUpdate.getWidth() * progress / 100;
             lp2.leftMargin = left - progTipWidth / 2 + progLeft + progGap - progHeight / 2;
-            rl_live_stand_update_prog.setLayoutParams(lp2);
+            rlLiveStandUpdateProg.setLayoutParams(lp2);
         }
         {
-            RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) iv_live_stand_update_prog_light.getLayoutParams();
-//                        int left = pb_live_stand_update.getWidth() * progress / 100;
+            RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) ivLiveStandUpdateProgLight.getLayoutParams();
+//                        int left = pbLiveStandUpdate.getWidth() * progress / 100;
             lp2.leftMargin = left - lightWidth / 2 + progLeft + progGap - progHeight / 2;
-            iv_live_stand_update_prog_light.setLayoutParams(lp2);
+            ivLiveStandUpdateProgLight.setLayoutParams(lp2);
         }
     }
 
@@ -322,18 +322,18 @@ public class LiveStandFrameAnim {
         AbstractBusinessDataCallBack callBack;
         File saveFile;
         File saveFileTemp;
-        ProgressBar pb_live_stand_update;
-        RelativeLayout rl_live_stand_update_prog;
-        ImageView iv_live_stand_update_prog_light;
-        TextView tv_live_stand_update_prog;
+        ProgressBar pbLiveStandUpdate;
+        RelativeLayout rlLiveStandUpdateProg;
+        ImageView ivLiveStandUpdateProgLight;
+        TextView tvLiveStandUpdateProg;
         boolean cancle = false;
         int max;
 
         public LiveZip(View view, AbstractBusinessDataCallBack callBack, File saveFile, File saveFileTemp) {
-            pb_live_stand_update = view.findViewById(R.id.pb_live_stand_update);
-            rl_live_stand_update_prog = view.findViewById(R.id.rl_live_stand_update_prog);
-            iv_live_stand_update_prog_light = view.findViewById(R.id.iv_live_stand_update_prog_light);
-            tv_live_stand_update_prog = view.findViewById(R.id.tv_live_stand_update_prog);
+            pbLiveStandUpdate = view.findViewById(R.id.pb_live_stand_update);
+            rlLiveStandUpdateProg = view.findViewById(R.id.rl_live_stand_update_prog);
+            ivLiveStandUpdateProgLight = view.findViewById(R.id.iv_live_stand_update_prog_light);
+            tvLiveStandUpdateProg = view.findViewById(R.id.tv_live_stand_update_prog);
             this.callBack = callBack;
             this.saveFile = saveFile;
             this.saveFileTemp = saveFileTemp;
@@ -350,20 +350,20 @@ public class LiveStandFrameAnim {
         @Override
         public void onProgressUpdate(Integer... values) {
             if (values.length == 1) {
-                if (rl_live_stand_update_prog.getVisibility() != View.VISIBLE) {
-                    rl_live_stand_update_prog.setVisibility(View.VISIBLE);
-                    iv_live_stand_update_prog_light.setVisibility(View.VISIBLE);
+                if (rlLiveStandUpdateProg.getVisibility() != View.VISIBLE) {
+                    rlLiveStandUpdateProg.setVisibility(View.VISIBLE);
+                    ivLiveStandUpdateProgLight.setVisibility(View.VISIBLE);
                 }
                 float progressF = (50 + (float) values[0] * 100f / (float) max / 2);
 //                Loger.d(TAG, "onProgressUpdate:progress=" + ((float) values[0] * 100f / (float) max));
                 final int progress = (int) progressF;
-                if (pb_live_stand_update.getProgress() != progress) {
-                    pb_live_stand_update.setProgress(progress);
-                    tv_live_stand_update_prog.setText(progress + "%");
-                    tv_live_stand_update_prog.post(new Runnable() {
+                if (pbLiveStandUpdate.getProgress() != progress) {
+                    pbLiveStandUpdate.setProgress(progress);
+                    tvLiveStandUpdateProg.setText(progress + "%");
+                    tvLiveStandUpdateProg.post(new Runnable() {
                         @Override
                         public void run() {
-                            onProgress(pb_live_stand_update.getLeft(), rl_live_stand_update_prog, iv_live_stand_update_prog_light, progress);
+                            onProgress(pbLiveStandUpdate.getLeft(), rlLiveStandUpdateProg, ivLiveStandUpdateProgLight, progress);
                         }
                     });
                 }
@@ -374,26 +374,26 @@ public class LiveStandFrameAnim {
         public void onPostExecute(Exception exception) {
             if (exception == null) {
                 int progress = 100;
-                int progTipWidth = rl_live_stand_update_prog.getWidth();
-                int lightWidth = iv_live_stand_update_prog_light.getWidth();
+                int progTipWidth = rlLiveStandUpdateProg.getWidth();
+                int lightWidth = ivLiveStandUpdateProgLight.getWidth();
                 int left = (int) (((float) progWidth) * (float) progress / 100.0f);
                 {
-                    RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) rl_live_stand_update_prog.getLayoutParams();
-//                        int left = pb_live_stand_update.getWidth() * progress / 100;
-                    lp2.leftMargin = left - progTipWidth / 2 + pb_live_stand_update.getLeft() + progGap - progHeight / 2;
-                    rl_live_stand_update_prog.setLayoutParams(lp2);
+                    RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) rlLiveStandUpdateProg.getLayoutParams();
+//                        int left = pbLiveStandUpdate.getWidth() * progress / 100;
+                    lp2.leftMargin = left - progTipWidth / 2 + pbLiveStandUpdate.getLeft() + progGap - progHeight / 2;
+                    rlLiveStandUpdateProg.setLayoutParams(lp2);
                 }
                 {
-                    RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) iv_live_stand_update_prog_light.getLayoutParams();
-//                        int left = pb_live_stand_update.getWidth() * progress / 100;
-                    lp2.leftMargin = left - lightWidth / 2 + pb_live_stand_update.getLeft() + progGap - progHeight / 2;
-                    iv_live_stand_update_prog_light.setLayoutParams(lp2);
+                    RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) ivLiveStandUpdateProgLight.getLayoutParams();
+//                        int left = pbLiveStandUpdate.getWidth() * progress / 100;
+                    lp2.leftMargin = left - lightWidth / 2 + pbLiveStandUpdate.getLeft() + progGap - progHeight / 2;
+                    ivLiveStandUpdateProgLight.setLayoutParams(lp2);
                 }
                 saveFileTemp.renameTo(saveFile);
                 liveSoundPool.stop(loadTask);
                 liveSoundPool.release();
                 liveSoundPool = null;
-                pb_live_stand_update.post(new Runnable() {
+                pbLiveStandUpdate.post(new Runnable() {
                     @Override
                     public void run() {
                         callBack.onDataSucess("");
@@ -401,14 +401,14 @@ public class LiveStandFrameAnim {
                 });
             } else {
                 if (!cancle) {
-                    pb_live_stand_update.post(new Runnable() {
+                    pbLiveStandUpdate.post(new Runnable() {
                         @Override
                         public void run() {
-                            XESToastUtils.showToast(pb_live_stand_update.getContext(), "解压失败，请联络辅导老师");
+                            XESToastUtils.showToast(pbLiveStandUpdate.getContext(), "解压失败，请联络辅导老师");
                             liveSoundPool.stop(loadTask);
                             liveSoundPool.release();
                             liveSoundPool = null;
-                            pb_live_stand_update.postDelayed(new Runnable() {
+                            pbLiveStandUpdate.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     callBack.onDataSucess("");
