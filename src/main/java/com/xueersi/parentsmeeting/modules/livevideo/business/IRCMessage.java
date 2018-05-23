@@ -316,6 +316,7 @@ public class IRCMessage {
         });
         boolean getserver = ircTalkConf.getserver(businessDataCallBack);
         if (!getserver) {
+            ircTalkConf = null;
             new Thread() {
                 @Override
                 public void run() {
@@ -345,6 +346,13 @@ public class IRCMessage {
         // connection.setLogin2(login);
         mConnection.setLogin2(mNickname);
         mConnection.setNickname(mNickname);
+        if (mNewTalkConf.isEmpty()) {
+            mLogtf.d("connect:mNewTalkConf.isEmpty:ircTalkConf=" + (ircTalkConf == null) + ",method=" + method);
+            if (ircTalkConf != null) {
+                ircTalkConf.getserver(businessDataCallBack);
+            }
+            return;
+        }
         int index = mSelectTalk++ % mNewTalkConf.size();
         NewTalkConfEntity talkConfEntity = mNewTalkConf.get(index);
         //是不是连接错误
@@ -373,7 +381,10 @@ public class IRCMessage {
             mLogtf.e("connecte:method=" + method + ",name=" + mConnection.getName() + ",server=" + talkConfEntity.getHost() + "," + e.getMessage(), e);
         }
         if (connectError || !mConnection.isConnected()) {
-            mLogtf.d("connect:method=" + method + ",connectError=" + connectError);
+            if (netWorkType != NetWorkHelper.NO_NETWORK && ircTalkConf != null) {
+                mNewTalkConf.remove(index);
+            }
+            mLogtf.d("connect:method=" + method + ",connectError=" + connectError + ",netWorkType=" + netWorkType + ",conf=" + (ircTalkConf == null));
             new Thread() {
                 @Override
                 public void run() {
@@ -467,7 +478,9 @@ public class IRCMessage {
         if (mConnection != null) {
             mConnection.disconnect();
         }
-        ircTalkConf.destory();
+        if (ircTalkConf != null) {
+            ircTalkConf.destory();
+        }
     }
 
     public void setCallback(IRCCallback ircCallback) {
