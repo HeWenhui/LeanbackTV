@@ -95,7 +95,7 @@ public class IRCMessage {
                 }.start();
             }
         }
-        if(ircTalkConf != null){
+        if (ircTalkConf != null) {
             ircTalkConf.onNetWorkChange(netWorkType);
         }
     }

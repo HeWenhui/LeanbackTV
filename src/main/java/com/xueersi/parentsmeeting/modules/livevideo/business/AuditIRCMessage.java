@@ -4,6 +4,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -35,6 +36,7 @@ public class AuditIRCMessage {
     private String childName;
     /** 备用用户聊天服务配置列表 */
     private List<NewTalkConfEntity> mNewTalkConf;
+    private IRCTalkConf ircTalkConf;
     /** 从上面的列表选择一个服务器 */
     private int mSelectTalk = 0;
     private LogToFile mLogtf;
@@ -85,6 +87,9 @@ public class AuditIRCMessage {
                     }
                 }.start();
             }
+        }
+        if (ircTalkConf != null) {
+            ircTalkConf.onNetWorkChange(netWorkType);
         }
     }
 
@@ -354,11 +359,16 @@ public class AuditIRCMessage {
                 }
             }
         });
-        new Thread() {
-            public void run() {
-                connect("create");
-            }
-        }.start();
+        boolean getserver = ircTalkConf.getserver(businessDataCallBack);
+        if (!getserver) {
+            ircTalkConf = null;
+            new Thread() {
+                @Override
+                public void run() {
+                    connect("create");
+                }
+            }.start();
+        }
     }
 
     public void startVideo() {
@@ -421,6 +431,13 @@ public class AuditIRCMessage {
         // connection.setLogin2(login);
         mConnection.setLogin2("p_" + mNickname);
         mConnection.setNickname("p_" + mNickname);
+        if (mNewTalkConf.isEmpty()) {
+            mLogtf.d("connect:mNewTalkConf.isEmpty:ircTalkConf=" + (ircTalkConf == null) + ",method=" + method);
+            if (ircTalkConf != null) {
+                ircTalkConf.getserver(businessDataCallBack);
+            }
+            return;
+        }
         int index = mSelectTalk++ % mNewTalkConf.size();
         NewTalkConfEntity talkConfEntity = mNewTalkConf.get(index);
         try {
@@ -445,6 +462,10 @@ public class AuditIRCMessage {
             mLogtf.e("connecte:name=" + mConnection.getName() + ",server=" + talkConfEntity.getHost() + "," + e.getMessage(), e);
         }
         if (!mIsDestory && !mConnection.isConnected()) {
+            if (netWorkType != NetWorkHelper.NO_NETWORK && ircTalkConf != null) {
+                mNewTalkConf.remove(index);
+            }
+            mLogtf.d("connect:method=" + method + ",connectError=" + connectError + ",netWorkType=" + netWorkType + ",conf=" + (ircTalkConf == null));
             new Thread() {
                 public void run() {
                     try {
@@ -468,6 +489,26 @@ public class AuditIRCMessage {
     /** 设置备用用户聊天服务配置列表 */
     public void setNewTalkConf(List<NewTalkConfEntity> newTalkConf) {
         this.mNewTalkConf = newTalkConf;
+    }
+
+    /**
+     * 直播服务器调度返回
+     */
+    AbstractBusinessDataCallBack businessDataCallBack = new AbstractBusinessDataCallBack() {
+        @Override
+        public void onDataSucess(Object... objData) {
+            mNewTalkConf = (List<NewTalkConfEntity>) objData[0];
+            new Thread() {
+                @Override
+                public void run() {
+                    connect("create");
+                }
+            }.start();
+        }
+    };
+
+    public void setIrcTalkConf(IRCTalkConf ircTalkConf) {
+        this.ircTalkConf = ircTalkConf;
     }
 
     /**
@@ -537,6 +578,9 @@ public class AuditIRCMessage {
         }
         if (mConnection != null) {
             mConnection.disconnect();
+        }
+        if (ircTalkConf != null) {
+            ircTalkConf.destory();
         }
     }
 

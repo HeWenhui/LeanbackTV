@@ -53,7 +53,7 @@ public class IRCTalkConf {
     private boolean connectError = false;
     /** 播放器是不是销毁 */
     private boolean mIsDestory = false;
-    Handler handler = new Handler(Looper.getMainLooper()) {
+    private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -91,7 +91,8 @@ public class IRCTalkConf {
         if (hosts.isEmpty()) {
             return false;
         }
-        getserver();
+        handler.removeMessages(GET_SERVER);
+        handler.sendEmptyMessage(GET_SERVER);
         return true;
     }
 
@@ -141,7 +142,9 @@ public class IRCTalkConf {
 
                     }
                 }
-                businessDataCallBack.onDataSucess(mNewTalkConf);
+                if (!mIsDestory) {
+                    businessDataCallBack.onDataSucess(mNewTalkConf);
+                }
 //                if (callBack != this) {
 //                    return;
 //                }
@@ -197,7 +200,7 @@ public class IRCTalkConf {
             mLogtf.d("onNetWorkChange:connectError=" + connectError);
             if (connectError) {
                 connectError = false;
-                getserver();
+                handler.sendEmptyMessage(GET_SERVER);
             }
         }
     }
