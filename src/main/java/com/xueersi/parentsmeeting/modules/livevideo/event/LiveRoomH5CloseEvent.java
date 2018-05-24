@@ -4,14 +4,21 @@ package com.xueersi.parentsmeeting.modules.livevideo.event;
  *@author  chenkun
  * */
 public class LiveRoomH5CloseEvent {
-    private int mGoldNum; //h5 返回的 金币
-    private int mEnergyNum; // h5返回的 能量
+    /**h5 返回的 金币*/
+    private int mGoldNum;
+    /**h5返回的 能量*/
+    private int mEnergyNum;
     private int h5Type;
-    public  static  final int H5_TYPE_INTERACTION = 1; //互动题
-    public  static  final int H5_TYPE_EXAM = 2; //测试卷
-    public  static  final int H5_TYPE_COURSE= 3; //课件
-    private String id; // testId/ testPlan
-    private boolean closeByTeacher;// 是否是老师发起的关闭
+    /**互动题*/
+    public  static  final int H5_TYPE_INTERACTION = 1;
+    /**测试卷*/
+    public  static  final int H5_TYPE_EXAM = 2;
+    /**课件*/
+    public  static  final int H5_TYPE_COURSE= 3;
+    /** testId/ testPlan*/
+    private String id;
+    /** 是否是老师发起的关闭*/
+    private boolean closeByTeacher;
 
     public void setCloseByTeahcer(boolean closeByTeacher) {
         this.closeByTeacher = closeByTeacher;

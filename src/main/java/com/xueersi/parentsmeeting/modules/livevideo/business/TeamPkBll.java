@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.app.Activity;
 import android.graphics.Rect;
 import android.os.Build;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -99,6 +100,14 @@ public class TeamPkBll {
      * 直播间内答题 H5 答题结果页面关闭事件队列
      */
     private List<LiveRoomH5CloseEvent> h5CloseEvents;
+
+
+    /**
+     * log埋点 nonce
+     *   主要记录 老师结束答题时下发的 nonce  作为 埋点上传log 参数
+     */
+    private String nonce;
+
 
     public TeamPkBll(Activity activity) {
         this.mActivity = activity;
@@ -229,6 +238,7 @@ public class TeamPkBll {
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         ClassChestEntity classChestEntity = mHttpResponseParser.parseClassChest(responseEntity);
                         showAwardGetScene(CHEST_TYPE_CLASS, classChestEntity, isWin);
+                        TeamPkLog.showClassGoldInfo(mLiveBll,classChestEntity.isMe());
                     }
 
                     @Override
@@ -257,6 +267,8 @@ public class TeamPkBll {
         } else {
             testId = event.getId();
         }
+        final String eventId = getLogEventId(event.getH5Type());
+
         mHttpManager.teamEnergyNumAndContributionStar(mLiveBll.getLiveId(),
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), testId, testPlan, new
@@ -267,12 +279,36 @@ public class TeamPkBll {
                                         .parseTeanEnergyAndContribution(responseEntity);
                                 showPkResultScene(entity, PK_RESULT_TYPE_PKRESULT);
                                 if (mLiveBll != null && entity != null) {
-                                    TeamPkLog.showPerTestPk(mLiveBll, entity.isMe());
+                                    TeamPkLog.showPerTestPk(mLiveBll, entity.isMe(),getNonce(),eventId);
                                 }
 
                             }
                         });
     }
+
+    /**
+     * 获取答题结果 埋点统计eventId
+     * @param h5Type
+     * @return
+     */
+    private String getLogEventId(int h5Type) {
+      String eventId;
+        switch (h5Type) {
+            case  LiveRoomH5CloseEvent.H5_TYPE_EXAM:
+                eventId = "live_exam";
+                break;
+            case  LiveRoomH5CloseEvent.H5_TYPE_COURSE:
+                eventId = "live_h5waretest";
+                break;
+            case  LiveRoomH5CloseEvent.H5_TYPE_INTERACTION:
+                eventId = "live_h5test";
+                break;
+            default:
+                eventId = "";
+        }
+        return eventId;
+    }
+
 
     public void setTopicHandled(boolean topicHandled) {
         isTopicHandled = topicHandled;
@@ -355,6 +391,7 @@ public class TeamPkBll {
      * 中途进入战斗选择
      */
     public void enterTeamSelectScene() {
+        TeamPkLog.clickFastEnter(mLiveBll);
         mHttpManager.getTeamInfo(roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(),
                 roomInitInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
                     @Override
@@ -787,4 +824,18 @@ public class TeamPkBll {
             mLiveBll.sendStudentReady();
         }
     }
+
+
+    /**
+     * 设置 埋点统计nonce
+     */
+    public void setNonce(String nonce){
+      this.nonce = nonce;
+    }
+
+    private String getNonce(){
+        return TextUtils.isEmpty(nonce)?"":nonce;
+    }
+
+
 }

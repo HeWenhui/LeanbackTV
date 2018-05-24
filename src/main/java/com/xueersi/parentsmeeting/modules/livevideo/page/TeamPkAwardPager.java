@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
@@ -496,7 +497,8 @@ public class TeamPkAwardPager extends BasePager {
             public void onClick(View v) {
                 getStuChestInfo();
                 if(teamPKBll != null){
-                    TeamPkLog.clickTreasureBox(teamPKBll.getLiveBll(),mIsWin);
+                    nonce = StableLogHashMap.creatNonce();
+                    TeamPkLog.clickTreasureBox(teamPKBll.getLiveBll(),mIsWin,nonce);
                 }
                 String lottieResPath = lottieResDir + "_open/images";
                 String lottieJsonPath = lottieResDir + "_open/data.json";
@@ -504,6 +506,13 @@ public class TeamPkAwardPager extends BasePager {
             }
         });
     }
+
+    /**
+     * 日志埋点所需参数
+     */
+    private String nonce;
+
+
 
     private void updatePkStateLayout() {
         if (teamPKBll != null) {
@@ -553,7 +562,7 @@ public class TeamPkAwardPager extends BasePager {
                         //Loger.e("coinNum", "====> Awardpager update pkstateLayout");
                         updatePkStateLayout();
                         if(teamPKBll != null){
-                            TeamPkLog.openTreasureBox(teamPKBll.getLiveBll(),studentChestEntity.getGold());
+                            TeamPkLog.openTreasureBox(teamPKBll.getLiveBll(),studentChestEntity.getGold(),nonce,true);
                         }
 
                     }
@@ -561,11 +570,17 @@ public class TeamPkAwardPager extends BasePager {
                     @Override
                     public void onFailure(Call call, IOException e) {
                         super.onFailure(call, e);
+                        if(teamPKBll != null){
+                            TeamPkLog.openTreasureBox(teamPKBll.getLiveBll(),"",nonce,false);
+                        }
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         super.onPmError(responseEntity);
+                        if(teamPKBll != null){
+                            TeamPkLog.openTreasureBox(teamPKBll.getLiveBll(),"",nonce,false);
+                        }
                     }
                 });
     }
