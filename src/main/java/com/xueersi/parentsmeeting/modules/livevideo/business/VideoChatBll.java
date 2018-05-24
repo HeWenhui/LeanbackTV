@@ -258,44 +258,55 @@ public class VideoChatBll implements VideoChatAction {
         if (nativeLibLoaded != 2) {
             activity.setVolume(0, 0);
         }
-        if (nativeLibLoaded == 1) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (nativeLibLoaded == 1) {
 //            videoChatInter = new LicodeVideoChatPager(activity, this, classmateEntities, getInfo, liveBll, baseLiveMediaControllerBottom);
-        } else if (nativeLibLoaded == 0) {
-            videoChatInter = new VideoChatPager(activity, liveBll, getInfo);
-        } else {
-            videoChatInter = new AgoraVideoChatPager(activity, liveBll, getInfo);
-        }
-        startTime = System.currentTimeMillis();
-        int height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        int screenWidth = ScreenUtils.getScreenWidth();
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
-        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        final View rootView = videoChatInter.getRootView();
-        if (nativeLibLoaded == 2) {
-
-        } else {
-            int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
-            lp.rightMargin = wradio;
-            bottomContent.addView(rootView, lp);
-        }
-        getInfo.setStuLinkMicNum(getInfo.getStuLinkMicNum() + 1);
-        videoChatInter.startRecord("onLiveInit", room, nonce);
-        if (nativeLibLoaded != 2) {
-            rootView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    View vMediacontrolBottom = baseLiveMediaControllerBottom.findViewById(R.id.v_livevideo_mediacontrol_bottom);
-                    rootView.getViewTreeObserver().removeOnPreDrawListener(this);
-                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) vMediacontrolBottom.getLayoutParams();
-                    int height = rootView.getHeight();
-                    if (lp.height != height) {
-                        lp.height = height;
-//                        vMediacontrolBottom.setLayoutParams(lp);
-                        LayoutParamsUtil.setViewLayoutParams(vMediacontrolBottom, lp);
-                    }
-                    return false;
+                } else if (nativeLibLoaded == 0) {
+                    videoChatInter = new VideoChatPager(activity, liveBll, getInfo);
+                } else {
+                    videoChatInter = new AgoraVideoChatPager(activity, liveBll, getInfo);
                 }
-            });
+                startTime = System.currentTimeMillis();
+                int height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                int screenWidth = ScreenUtils.getScreenWidth();
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
+                lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                final View rootView = videoChatInter.getRootView();
+                if (nativeLibLoaded == 2) {
+
+                } else {
+                    int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
+                    lp.rightMargin = wradio;
+                    bottomContent.addView(rootView, lp);
+                }
+                getInfo.setStuLinkMicNum(getInfo.getStuLinkMicNum() + 1);
+                if (isHasPermission) {
+                    videoChatInter.startRecord("onLiveInit", room, nonce);
+                }
+                if (nativeLibLoaded != 2) {
+                    rootView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                        @Override
+                        public boolean onPreDraw() {
+                            View vMediacontrolBottom = baseLiveMediaControllerBottom.findViewById(R.id.v_livevideo_mediacontrol_bottom);
+                            rootView.getViewTreeObserver().removeOnPreDrawListener(this);
+                            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) vMediacontrolBottom.getLayoutParams();
+                            int height = rootView.getHeight();
+                            if (lp.height != height) {
+                                lp.height = height;
+//                        vMediacontrolBottom.setLayoutParams(lp);
+                                LayoutParamsUtil.setViewLayoutParams(vMediacontrolBottom, lp);
+                            }
+                            return false;
+                        }
+                    });
+                }
+            }
+        };
+        checkPermissionUnPerList(new OnJoinPermissionFinish(onMic, openhandsStatus, room, from, runnable));
+        if (isHasPermission) {
+            runnable.run();
         }
     }
 
