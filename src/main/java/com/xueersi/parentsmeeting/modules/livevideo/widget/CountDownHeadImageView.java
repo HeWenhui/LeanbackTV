@@ -38,6 +38,7 @@ public class CountDownHeadImageView extends CircleImageView {
     protected final Paint mUnFinishBorderPaint = new Paint();
     /** 倒计时上的小圆 */
     protected final Paint mUnFinishCirclePaint = new Paint();
+    Paint mGreyPaint = new Paint();
 
     protected int mCountDownBorder = DEFAULT_BORDER_COLOR;
 
@@ -132,6 +133,10 @@ public class CountDownHeadImageView extends CircleImageView {
         mFinishBorderPaint.setStyle(Paint.Style.STROKE);
         mFinishBorderPaint.setAntiAlias(true);
         mFinishBorderPaint.setStrokeWidth(mBorderWidth);
+
+        mGreyPaint.setColor(0x88000000);
+        mGreyPaint.setAntiAlias(true);
+        mGreyPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         invalidate();
     }
 
@@ -184,6 +189,8 @@ public class CountDownHeadImageView extends CircleImageView {
             double arg = (unFinishRange - 90) * Math.PI / 180;
             int x = (int) (Math.cos(arg) * ((getWidth() - piding * 2 - mBorderWidth) / 2) + (getWidth()) / 2);
             int y = (int) (Math.sin(arg) * ((getHeight() - piding * 2 - mBorderWidth) / 2) + (getHeight()) / 2);
+
+            canvas.drawCircle(getWidth() / 2, getHeight() / 2, mDrawableRadius-mBorderWidth, mGreyPaint);
             canvas.drawCircle(x, y, mBorderWidth, mUnFinishCirclePaint);
 
         } else if (mBitmapWidth > 0) {

@@ -172,4 +172,7 @@ public class LiveVideoConfig {
     public final static String EDUCATION_STAGE_4 = "4";
 
     public final static String LIVE_PK = "live_pk";
+
+    /** 直播-roleplay */
+    public static String LIVE_ROLE_PLAY = "live_mutiroleplay";
 }

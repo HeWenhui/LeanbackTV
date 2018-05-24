@@ -95,7 +95,9 @@ public class IRCMessage {
                 }.start();
             }
         }
-        ircTalkConf.onNetWorkChange(netWorkType);
+        if(ircTalkConf != null){
+            ircTalkConf.onNetWorkChange(netWorkType);
+        }
     }
 
     /** 自己发的消息，如果没发送出去，暂时保存下来 */

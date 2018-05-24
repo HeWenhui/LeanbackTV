@@ -67,6 +67,8 @@ public class RolePlayerEntity {
      * 所有的对话信息
      */
     private List<RolePlayerMessage> lstRolePlayerMessage = new ArrayList<>();
+    private int resultStar;
+    private double selfSpeechTime;
 
     public long getCountDownSecond() {
         return countDownSecond;
@@ -212,6 +214,18 @@ public class RolePlayerEntity {
 
     }
 
+    /**
+     * 设置自己每一句的朗读有效时间
+     * @param selfSpeechTime
+     */
+    public void setSelfValidSpeechTime(double selfSpeechTime) {
+        this.selfSpeechTime += selfSpeechTime;
+    }
+
+    public double getSelfValidSpeechTime() {
+        return selfSpeechTime;
+    }
+
 
     /**
      * 角色信息
@@ -250,6 +264,10 @@ public class RolePlayerEntity {
          * 准确性
          */
         private int accuracy;
+        /**
+         * 结果页显示的星星个数
+         */
+        private int resultStar;
 
 
         public String getNickName() {
@@ -331,6 +349,14 @@ public class RolePlayerEntity {
             this.accuracy = ((accuracy + this.accuracy) / (this.accuracy == 0 ? 1 : 2));
 
         }
+
+        public void setResultStar(int resultStar) {
+            this.resultStar  = resultStar;
+        }
+
+        public int getResultStar() {
+            return resultStar;
+        }
     }
 
     /**
@@ -394,6 +420,7 @@ public class RolePlayerEntity {
          * 级别
          */
         private int level;
+        private String testId;
 
         public RolePlayerMessage(RolePlayerHead head, String msg, int maxTime) {
             this.rolePlayer = head;
@@ -542,6 +569,18 @@ public class RolePlayerEntity {
                 return 5;
             }
             return 0;
+        }
+
+        /**
+         * 对话信息也存入试题id
+         * @param testId
+         */
+        public void setTestId(String testId) {
+            this.testId = testId;
+        }
+
+        public String getTestId() {
+            return testId;
         }
     }
 

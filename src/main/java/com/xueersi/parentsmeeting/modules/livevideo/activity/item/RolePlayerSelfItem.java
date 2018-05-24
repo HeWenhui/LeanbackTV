@@ -116,6 +116,8 @@ public class RolePlayerSelfItem extends RolePlayerItem {
     }
 
     private void voiceClick() {
+        //点击语音的时候记录日志
+        //RolePlayLog.sno8(mEntity,mContext,null);
         ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_self_voice_white_anim);
         vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_me_reading);
         AnimationDrawable selfVoiceAnimationDrawable = null;

@@ -76,8 +76,8 @@
 
         <RelativeLayout
             android:id="@id/rl_live_roleplayer_message_dz"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginLeft="13dp"
             android:layout_marginTop="4dp"
             android:layout_toRightOf="@id/rl_live_roleplayer_message_voice_main"
@@ -89,16 +89,17 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/livevideo_roleplay_result_ic_normal"
                 android:visibility="gone"
-                android:layout_centerInParent="true"/>
+
+                />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@id/lav_live_roleplayer_message_dz"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
                 android:visibility="gone"
                 app:lottie_fileName="live_stand_roleplayer_dz.json"
-                app:lottie_imageAssetsFolder="Images/roleplayer_dz" />
+                app:lottie_imageAssetsFolder="Images/roleplayer_dz"
+                />
         </RelativeLayout>
 
         <LinearLayout
@@ -107,6 +108,7 @@
             android:layout_below="@id/rl_live_roleplayer_message_voice_main"
             android:layout_gravity="right"
             android:layout_marginLeft="19dp"
+            android:layout_marginTop="4dp"
             android:layout_toRightOf="@id/ll_live_roleplayer_message_user_name"
             android:orientation="horizontal">
 

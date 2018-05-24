@@ -508,8 +508,8 @@
             <!--角色分配列表-->
             <com.xueersi.xesalib.view.gridview.AutohGridview
                 android:id="@id/gv_live_roleplayer_headshow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_centerHorizontal="true"
                 android:layout_centerInParent="true"
                 android:horizontalSpacing="42dp"

@@ -1,11 +1,13 @@
 package com.xueersi.parentsmeeting.modules.livevideo.activity.item;
 
 import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -125,6 +127,8 @@ public class RolePlayerOtherItem extends RolePlayerItem {
     }
 
     private void voiceClick() {
+        //点击语音的时候记录日志
+        //RolePlayLog.sno8(mEntity,mContext,null);
         vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_other_reading);
         ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_other_voice_white_anim);
         AnimationDrawable animationDrawable = null;
@@ -243,12 +247,12 @@ public class RolePlayerOtherItem extends RolePlayerItem {
 
     @Override
     public void updateViews(final RolePlayerEntity.RolePlayerMessage entity, int position, Object objTag) {
-        if(entity.getMsgStatus() == RolePlayerEntity.RolePlayerMessageStatus.STOP_UPDATE){
+       /* if(entity.getMsgStatus() == RolePlayerEntity.RolePlayerMessageStatus.STOP_UPDATE){
             rlMessageDZ.setVisibility(View.GONE);
             ivMessageDZ.setVisibility(View.GONE);
             Loger.i("RolePlayerDemoTest", "停止刷新");
             return;
-        }
+        }*/
         super.updateViews(entity, position, objTag);
         updateUserHeadImage(civUserHead, entity.getRolePlayer().getHeadImg()); // 绑定用户头像
 
@@ -306,7 +310,6 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 tvMessageContent.setTextColor(Color.parseColor("#333333"));
                 showSpeechStar();
                 Loger.i("RolePlayerDemoTest", "CANCEL_DZ:显示星星");
-                entity.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.STOP_UPDATE);
                 break;
             default:
                 break;
@@ -355,7 +358,13 @@ public class RolePlayerOtherItem extends RolePlayerItem {
 
             @Override
             public void onClick(View view) {
-                Loger.i("RolePlayerDemoTest", "给他人点赞");
+                Loger.i("RolePlayerDemoTest", "给他人点赞" + lavMessageDZ.getDuration());
+                final ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, 0.5f, 0.5f);
+                //lavMessageDZ.getAnimation().setDuration(500);
+                //scaleAnimation.setDuration(lavMessageDZ.getDuration()/4);
+                scaleAnimation.setDuration(lavMessageDZ.getDuration() / 4);
+                scaleAnimation.setFillAfter(false);
+                lavMessageDZ.setAnimation(scaleAnimation);
                 bllRolePlayerBll.toOtherDZ(mEntity.getRolePlayer().getRoleId(), mEntity.getPosition());
                 ivMessageDZ.setVisibility(View.GONE);
                 lavMessageDZ.setVisibility(View.VISIBLE);
@@ -363,18 +372,31 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 lavMessageDZ.addAnimatorListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animator) {
+                        scaleAnimation.start();
+                        Loger.i("RolePlayerDemoTest", "onAnimationStart");
+
                     }
 
                     @Override
                     public void onAnimationEnd(Animator animator) {
+                        Loger.i("RolePlayerDemoTest", "onAnimationEnd");
                         lavMessageDZ.setVisibility(View.GONE);
                         ivMessageDZ.setVisibility(View.VISIBLE);
                         ivMessageDZ.setImageResource(R.drawable.livevideo_roleplay_result_ic_focsed);
                         ivMessageDZ.setOnClickListener(null);
+                        scaleAnimation.cancel();
+                        if (RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ == mEntity.getMsgStatus()) {
+                            ivMessageDZ.setVisibility(View.GONE);
+                        }
                     }
 
                     @Override
                     public void onAnimationCancel(Animator animator) {
+                        Loger.i("RolePlayerDemoTest", "onAnimationCancel");
+                        lavMessageDZ.setVisibility(View.GONE);
+                        ivMessageDZ.setVisibility(View.GONE);
+                        ivMessageDZ.setOnClickListener(null);
+                        scaleAnimation.cancel();
 
                     }
 
@@ -382,6 +404,8 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                     public void onAnimationRepeat(Animator animator) {
 
                     }
+
+
                 });
                 lavMessageDZ.playAnimation();
             }
