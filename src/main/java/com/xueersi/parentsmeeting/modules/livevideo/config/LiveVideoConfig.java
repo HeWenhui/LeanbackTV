@@ -122,6 +122,8 @@ public class LiveVideoConfig {
     public static String STAND_LIVE_GRANT = "standlive_grant";
     /** 直播-包括ip地址的播放地址 https://wiki.xesv5.com/pages/viewpage.action?pageId=11403335 */
     public static String LIVE_GSLB = "live_gslb";
+    /** 调度请求错误失败上报日志 */
+    public static String LIVE_CHAT_GSLB = "live_chatgslb";
     /** 站立直播-帧动画 */
     public static String LIVE_FRAME_ANIM = "live_frame_anim";
     /** 直播时间-当天据算，live_expe_time按单个场次计算 */

@@ -6,12 +6,14 @@ import android.os.Looper;
 import android.os.Message;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
+import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseHttpBusiness;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.HttpRequestParams;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
@@ -20,7 +22,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 /**
@@ -31,6 +38,7 @@ import java.util.List;
  */
 public class IRCTalkConf {
     private static String TAG = "IRCTalkConf";
+    private static String eventId = LiveVideoConfig.LIVE_CHAT_GSLB;
     private LogToFile mLogtf;
     private BaseHttpBusiness baseHttpBusiness;
     private ArrayList<TalkConfHost> hosts;
@@ -53,6 +61,7 @@ public class IRCTalkConf {
     private boolean connectError = false;
     /** 播放器是不是销毁 */
     private boolean mIsDestory = false;
+    private static String hostIp = null;
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -108,7 +117,7 @@ public class IRCTalkConf {
         } else {
             params.addBodyParam("appid", "2");
         }
-//        params.addBodyParam("location", liveId);
+        params.addBodyParam("ip", getHostIP());
         params.addBodyParam("classid", classid);
         params.setWriteAndreadTimeOut(GET_SERVER_TIMEOUT);
         TalkConfHost talkConfHost = hosts.get(mSelectTalk++ % hosts.size());
@@ -157,6 +166,13 @@ public class IRCTalkConf {
                 if (callBack != this) {
                     return;
                 }
+                if (netWorkType != NetWorkHelper.NO_NETWORK) {
+                    StableLogHashMap stableLogHashMap = new StableLogHashMap();
+                    stableLogHashMap.put("gslburl", url);
+                    stableLogHashMap.put("errmsg", msg);
+                    stableLogHashMap.put("ip", getHostIP());
+                    Loger.d(BaseApplication.getContext(), eventId, stableLogHashMap.getData(), true);
+                }
                 reTry();
             }
 
@@ -166,6 +182,13 @@ public class IRCTalkConf {
                 Loger.d(TAG, "onPmError:responseEntity=" + responseEntity.getErrorMsg());
                 if (callBack != this) {
                     return;
+                }
+                if (netWorkType != NetWorkHelper.NO_NETWORK) {
+                    StableLogHashMap stableLogHashMap = new StableLogHashMap();
+                    stableLogHashMap.put("gslburl", url);
+                    stableLogHashMap.put("errmsg", responseEntity.getErrorMsg());
+                    stableLogHashMap.put("ip", getHostIP());
+                    Loger.d(BaseApplication.getContext(), eventId, stableLogHashMap.getData(), true);
                 }
                 reTry();
             }
@@ -196,6 +219,7 @@ public class IRCTalkConf {
      */
     public void onNetWorkChange(int netWorkType) {
         this.netWorkType = netWorkType;
+        hostIp = null;
         if (netWorkType != NetWorkHelper.NO_NETWORK) {
             mLogtf.d("onNetWorkChange:connectError=" + connectError);
             if (connectError) {
@@ -209,5 +233,41 @@ public class IRCTalkConf {
     public void destory() {
         mIsDestory = true;
         handler.removeMessages(GET_SERVER);
+    }
+
+    /**
+     * 获取ip地址
+     *
+     * @return
+     */
+    public static String getHostIP() {
+        if (hostIp != null) {
+            return hostIp;
+        }
+        String hostIp = null;
+        try {
+            Enumeration nis = NetworkInterface.getNetworkInterfaces();
+            InetAddress ia = null;
+            while (nis.hasMoreElements()) {
+                NetworkInterface ni = (NetworkInterface) nis.nextElement();
+                Enumeration<InetAddress> ias = ni.getInetAddresses();
+                while (ias.hasMoreElements()) {
+                    ia = ias.nextElement();
+                    if (ia instanceof Inet6Address) {
+                        continue;// skip ipv6
+                    }
+                    String ip = ia.getHostAddress();
+                    if (!"127.0.0.1".equals(ip)) {
+                        hostIp = ia.getHostAddress();
+                        break;
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            Loger.e("yao", "SocketException");
+            e.printStackTrace();
+        }
+        return hostIp;
+
     }
 }
