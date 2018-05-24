@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.stablelog;
 
+import android.text.TextUtils;
+
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -29,7 +31,7 @@ public class TeamPkLog {
     public static void receiveCreateTeam(LiveAndBackDebug liveAndBackDebug, String nonce, boolean isOpen) {
         if (UPLOAD_OPEN && liveAndBackDebug != null) {
             StableLogHashMap logHashMap = new StableLogHashMap("receiveCreateTeam");
-            logHashMap.addExY().addSno("2").addNonce(nonce);
+            logHashMap.addExY().addSno("2").addNonce(TextUtils.isEmpty(nonce)?"":nonce);
             logHashMap.addStable("1");
             logHashMap.put("isopen", isOpen ? "1" : "0");
             liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
@@ -75,7 +77,7 @@ public class TeamPkLog {
     public static void receiveMatchOpponent(LiveAndBackDebug liveAndBackDebug, String nonce, boolean isOpen) {
         if (UPLOAD_OPEN && liveAndBackDebug != null) {
             StableLogHashMap logHashMap = new StableLogHashMap("receiveMatchOpponent");
-            logHashMap.addSno("5").addNonce(nonce).addExY();
+            logHashMap.addSno("5").addNonce(TextUtils.isEmpty(nonce)?"":nonce).addExY();
             logHashMap.addStable("1");
             logHashMap.put("isopen", isOpen ? "1" : "0");
             liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
@@ -111,7 +113,7 @@ public class TeamPkLog {
             logHashMap.put("isstar", isStar ? "1" : "0");
             logHashMap.addStable("1");
             logHashMap.addSno("7");
-            logHashMap.addNonce(nonce);
+            logHashMap.addNonce(TextUtils.isEmpty(nonce)?"":nonce);
             logHashMap.addExY();
             liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
         }
@@ -129,7 +131,7 @@ public class TeamPkLog {
             StableLogHashMap logHashMap = new StableLogHashMap("receiveVoicePraise");
             logHashMap.addSno("7");
             logHashMap.addExY();
-            logHashMap.addNonce(nonce);
+            logHashMap.addNonce(TextUtils.isEmpty(nonce)?"":nonce);
             logHashMap.addStable("1");
             liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
         }
@@ -146,7 +148,7 @@ public class TeamPkLog {
         if (UPLOAD_OPEN && liveAndBackDebug != null) {
             StableLogHashMap logHashMap = new StableLogHashMap("receivePkResult");
             logHashMap.addSno("9");
-            logHashMap.addNonce(nonce);
+            logHashMap.addNonce(TextUtils.isEmpty(nonce)?"":nonce);
             logHashMap.addStable("1");
             logHashMap.addExY();
             logHashMap.put("isopen", isOpen ? "1" : "0");
@@ -185,7 +187,7 @@ public class TeamPkLog {
             logHashMap.addSno("10");
             logHashMap.addStable("1");
             logHashMap.addExY();
-            logHashMap.addNonce(nonce);
+            logHashMap.addNonce(TextUtils.isEmpty(nonce)?"":nonce);
             logHashMap.put("expect", "1");
             liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
         }
@@ -205,7 +207,7 @@ public class TeamPkLog {
             StableLogHashMap logHashMap = new StableLogHashMap("openTreasureBox");
             logHashMap.put("gold", goldNum);
             logHashMap.addSno("11");
-            logHashMap.addNonce(nonce);
+            logHashMap.addNonce(TextUtils.isEmpty(nonce)?"":nonce);
             logHashMap.addStable("1");
             if (ex) {
                 logHashMap.addExY();
@@ -229,7 +231,7 @@ public class TeamPkLog {
             logHashMap.addSno("13");
             logHashMap.addExY();
             logHashMap.addStable("1");
-            logHashMap.addNonce(nonce);
+            logHashMap.addNonce(TextUtils.isEmpty(nonce)?"":nonce);
             logHashMap.put("isopen", isOpen ? "1" : "0");
             liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
         }
