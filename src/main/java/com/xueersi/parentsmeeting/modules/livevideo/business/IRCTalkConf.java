@@ -244,7 +244,7 @@ public class IRCTalkConf {
         if (hostIp != null) {
             return hostIp;
         }
-        String hostIp = null;
+        hostIp = null;
         try {
             Enumeration nis = NetworkInterface.getNetworkInterfaces();
             InetAddress ia = null;

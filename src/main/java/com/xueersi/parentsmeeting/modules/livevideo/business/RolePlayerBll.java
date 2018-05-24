@@ -274,6 +274,12 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             public void run() {
                 if (bottomContent != null) {
                     bottomContent.removeView(mRolePlayerPager.getRootView());
+                    mRolePlayerPager.onDestroy();
+                    mRolePlayerPager = null;
+                    if (mContext instanceof AudioRequest) {
+                        AudioRequest audioRequest = (AudioRequest) mContext;
+                        audioRequest.release();
+                    }
                 }
             }
         });
