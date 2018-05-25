@@ -1174,8 +1174,18 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         speechAssessmentPagerUserBack = speechAssessmentPager;
                         setHaveSpeech(false);
                         if (speechAssessmentPagerUserBack != null && speechEndAction != null) {
+                            final String num = speechAssessmentPagerUserBack.getId();
                             speechEndAction.onStopSpeech(speechAssessmentPagerUserBack, speechAssessmentPagerUserBack
-                                    .getId(), null);
+                                    .getId(), new SpeechEndAction.OnTop3End() {
+                                @Override
+                                public void onShowEnd() {
+                                    mLogtf.d("onBack:onShowEnd=" + num + ",isAnaswer=" + isAnaswer + ",UserBack=" + (speechAssessmentPagerUserBack == null));
+                                    speechAssessmentPagerUserBack = null;
+                                    if (!isAnaswer) {
+                                        onQuestionShow(false, "stopSpeech:onShowEnd");
+                                    }
+                                }
+                            });
                         }
                     } else {
                         setHaveWebQuestion(false);
@@ -1253,8 +1263,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 speechEndAction.onStopSpeech(speechAssessmentPager, num, new SpeechEndAction.OnTop3End() {
                     @Override
                     public void onShowEnd() {
-                        speechAssessmentPagerUserBack = null;
                         mLogtf.d("stopSpeech:onShowEnd=" + num + ",isAnaswer=" + isAnaswer + ",UserBack=" + (speechAssessmentPagerUserBack == null));
+                        speechAssessmentPagerUserBack = null;
                         if (!isAnaswer) {
                             onQuestionShow(false, "stopSpeech:onShowEnd");
                         }
