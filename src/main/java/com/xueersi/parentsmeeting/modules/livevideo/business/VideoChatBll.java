@@ -304,7 +304,7 @@ public class VideoChatBll implements VideoChatAction {
                 }
             }
         };
-        checkPermissionUnPerList(new OnJoinPermissionFinish(onMic, openhandsStatus, room, from, runnable));
+        checkPermissionUnPerList(new OnJoinPermissionFinish(onMic, openhandsStatus, room, from, containMe, runnable));
         if (isHasPermission) {
             runnable.run();
         }
@@ -558,7 +558,7 @@ public class VideoChatBll implements VideoChatAction {
                             }
                         };
                         if (!openhands.equals(oldOpenhandsStatus)) {
-                            checkPermissionUnPerList(new OnJoinPermissionFinish(onmic, openhands, room, from, runnable));
+                            checkPermissionUnPerList(new OnJoinPermissionFinish(onmic, openhands, room, from, finalContain, runnable));
                             VideoChatLog.sno3(liveBll, from, "", isHasPermission);
                         }
                         if (!isHasPermission) {
@@ -866,7 +866,12 @@ public class VideoChatBll implements VideoChatAction {
         }
     }
 
-    class RaiseHandPermissionFinish implements OnPermissionFinish {
+    RaiseHandPermissionFinish currentPermission;
+
+    /**
+     * 举手权限回调
+     */
+    private class RaiseHandPermissionFinish implements OnPermissionFinish {
         String status;
         String from;
         Runnable runnable;
@@ -875,36 +880,49 @@ public class VideoChatBll implements VideoChatAction {
             this.status = status;
             this.from = from;
             this.runnable = runnable;
+            currentPermission = this;
         }
 
         @Override
         public void onFinish() {
             if (status.equals(VideoChatBll.this.openhandsStatus) && from.equals(VideoChatBll.this.from)) {
-                runnable.run();
+                if (currentPermission == this) {
+                    runnable.run();
+                }
             }
         }
     }
 
-    class OnJoinPermissionFinish implements OnPermissionFinish {
+    OnJoinPermissionFinish currentPermission2;
+
+    /**
+     * 加入房间权限回调
+     */
+    private class OnJoinPermissionFinish implements OnPermissionFinish {
         String onmic;
         String openhands;
         String room;
         String from;
+        boolean contain;
         Runnable runnable;
 
-        public OnJoinPermissionFinish(String onmic, String openhands, String room, String from, Runnable runnable) {
+        public OnJoinPermissionFinish(String onmic, String openhands, String room, String from, boolean contain, Runnable runnable) {
             this.onmic = onmic;
             this.openhands = openhands;
             this.room = room;
             this.from = from;
+            this.contain = contain;
             this.runnable = runnable;
+            currentPermission2 = this;
         }
 
         @Override
         public void onFinish() {
             if (onmic.equals(VideoChatBll.this.onMic) && openhands.equals(VideoChatBll.this.openhandsStatus)
-                    && room.equals(VideoChatBll.this.room) && from.equals(VideoChatBll.this.from)) {
-                runnable.run();
+                    && room.equals(VideoChatBll.this.room) && from.equals(VideoChatBll.this.from) && contain == containMe) {
+                if (currentPermission2 == this) {
+                    runnable.run();
+                }
             }
         }
     }
