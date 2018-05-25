@@ -1106,17 +1106,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         mQuestionAction.showQuestion(null);
                     }
                 }
-                if (LiveTopic.MODE_CLASS.equals(getMode())) {
-                    if (mRoomAction != null) {
-                        mRoomAction.onopenchat(mLiveTopic.getMainRoomstatus().isOpenchat(), LiveTopic.MODE_CLASS,
-                                false);
-                    }
-                } else {
-                    if (mRoomAction != null) {
-                        mRoomAction.onopenchat(mLiveTopic.getCoachRoomstatus().isOpenchat(), LiveTopic.MODE_TRANING,
-                                false);
-                    }
-                }
                 if (mRoomAction != null) {
                     mRoomAction.onOpenbarrage(mLiveTopic.getMainRoomstatus().isOpenbarrage(), false);
                     mRoomAction.onDisable(have, false);
@@ -1164,6 +1153,17 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         }
                     }
                     englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
+                }
+                if (LiveTopic.MODE_CLASS.equals(getMode())) {
+                    if (mRoomAction != null) {
+                        mRoomAction.onopenchat(mLiveTopic.getMainRoomstatus().isOpenchat(), LiveTopic.MODE_CLASS,
+                                false);
+                    }
+                } else {
+                    if (mRoomAction != null) {
+                        mRoomAction.onopenchat(mLiveTopic.getCoachRoomstatus().isOpenchat(), LiveTopic.MODE_TRANING,
+                                false);
+                    }
                 }
                 if (mLecLearnReportAction != null) {
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
@@ -1352,7 +1352,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 //                        mGetInfo.getLiveTopic().setTopic(null);
 
                         if (mTeamPKBll != null) {
-                            mTeamPKBll.setNonce(object.optString("nonce",""));
+                            mTeamPKBll.setNonce(object.optString("nonce", ""));
                             mTeamPKBll.showCurrentPkResult();
                             Loger.e("TeamPkBll", "======>showCurrentPkResult: called in STOPQUESTION");
                         }
@@ -1574,7 +1574,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     case XESCODE.EXAM_STOP: {
                         msg += "EXAM_STOP";
                         if (mTeamPKBll != null) {
-                            mTeamPKBll.setNonce(object.optString("nonce",""));
+                            mTeamPKBll.setNonce(object.optString("nonce", ""));
                             mTeamPKBll.showCurrentPkResult();
                             Loger.e("TeamPkBll", "======>showCurrentPkResult: called in EXAM_STOP");
                         }
@@ -1654,7 +1654,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 if (mTeamPKBll != null) {
                                     mTeamPKBll.showCurrentPkResult();
                                     if (mTeamPKBll != null) {
-                                        mTeamPKBll.setNonce(object.optString("nonce",""));
+                                        mTeamPKBll.setNonce(object.optString("nonce", ""));
                                         mTeamPKBll.showCurrentPkResult();
                                         Loger.e("TeamPkBll", "======>showCurrentPkResult: called in " +
                                                 "ENGLISH_H5_COURSEWARE");
@@ -2075,14 +2075,14 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     case XESCODE.TEAM_PK_PUBLIC_PK_RESULT:
                         if (mTeamPKBll != null) {
                             String nonce = object.optString("nonce", "");
-                            TeamPkLog.receivePkResult(LiveBll.this, nonce,true);
+                            TeamPkLog.receivePkResult(LiveBll.this, nonce, true);
                             mTeamPKBll.showPkResult();
                         }
                         break;
                     case XESCODE.TEAM_PK_PUBLIC_CONTRIBUTION_STAR: {
                         if (mTeamPKBll != null) {
                             String nonce = object.optString("nonce", "");
-                            TeamPkLog.receiveClassBoxInfo(LiveBll.this, nonce,true);
+                            TeamPkLog.receiveClassBoxInfo(LiveBll.this, nonce, true);
                             mTeamPKBll.showClassChest();
                         }
                         break;
