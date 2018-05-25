@@ -182,7 +182,7 @@ public class SpeechAssessmentWebPager extends BaseSpeechAssessmentPager {
             url += "?stuCouId=" + stuCouId;
         }
         if (isStandingLive) {
-            url += "&isStandingLive=1";
+            url += "&isStandingLive=1&isAudio=1";
         }
         wvSubjectWeb.loadUrl(url);
     }
