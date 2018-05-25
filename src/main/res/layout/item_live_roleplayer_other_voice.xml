@@ -78,28 +78,27 @@
             android:id="@id/rl_live_roleplayer_message_dz"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginLeft="13dp"
-            android:layout_marginTop="4dp"
-            android:layout_toRightOf="@id/rl_live_roleplayer_message_voice_main"
-            android:visibility="gone">
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="-8dp"
+            android:layout_toEndOf="@+id/rl_live_roleplayer_message_voice_main"
+            android:layout_toRightOf="@+id/rl_live_roleplayer_message_voice_main"
+            >
 
             <ImageView
                 android:id="@id/iv_live_roleplayer_message_dz"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/livevideo_roleplay_result_ic_normal"
-                android:visibility="gone"
+                android:layout_centerInParent="true"
 
                 />
 
-            <com.airbnb.lottie.LottieAnimationView
+           <!-- <com.airbnb.lottie.LottieAnimationView
                 android:id="@id/lav_live_roleplayer_message_dz"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 app:lottie_fileName="live_stand_roleplayer_dz.json"
-                app:lottie_imageAssetsFolder="Images/roleplayer_dz"
-                />
+                app:lottie_imageAssetsFolder="Images/roleplayer_dz" />-->
         </RelativeLayout>
 
         <LinearLayout

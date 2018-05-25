@@ -65,6 +65,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.RolePlayConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
@@ -1012,6 +1013,9 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             mIse = new SpeechEvaluatorUtils(true);
             questionBll.setIse(mIse);
             englishH5CoursewareBll.setIse(mIse);
+            //记录当前正在走的模型，留给界面更新使用
+            ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
+                    RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
         } else {
             if (!IS_SCIENCE) {
                 String[] subjectIds = getInfo.getSubjectIds();
@@ -1020,6 +1024,9 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                         String subjectId = subjectIds[i];
                         if (LiveVideoConfig.SubjectIds.SUBJECT_ID_CH.equals(subjectId)) {
                             mIse = new SpeechEvaluatorUtils(true, Constants.ASSESS_PARAM_LANGUAGE_CH);
+                            //记录当前正在走的模型，留给界面更新使用
+                            ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
+                                    RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
                             break;
                         }
                     }

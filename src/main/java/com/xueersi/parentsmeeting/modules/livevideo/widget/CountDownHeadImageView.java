@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
 
@@ -47,6 +49,9 @@ public class CountDownHeadImageView extends CircleImageView {
     /** 未完成的绘制区域 */
     private RectF unfinishedOuterRect = new RectF();
     private int tempCountDownTime = 4000;
+    private long remainTime;//倒计时剩下的时间
+    private Rect mBound;
+    private Paint mTextPaint;
 
     public CountDownHeadImageView(Context context) {
         super(context);
@@ -58,6 +63,8 @@ public class CountDownHeadImageView extends CircleImageView {
 
     public CountDownHeadImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+
     }
 
     public void restore() {
@@ -109,7 +116,8 @@ public class CountDownHeadImageView extends CircleImageView {
                 invalidate();
 
                 if (downtimeImpl != null) {
-                    downtimeImpl.countTime((long) Math.ceil((double) CountDownHeadImageView.this.countDownTime / (double) 1000));
+                    remainTime = (long) Math.ceil((double) CountDownHeadImageView.this.countDownTime / (double) 1000);
+                    downtimeImpl.countTime(remainTime);
                 }
                 if (CountDownHeadImageView.this.countDownTime > 0 && isBeginCountdownTime) {
                     postDelayed(this, 50);
@@ -137,6 +145,9 @@ public class CountDownHeadImageView extends CircleImageView {
         mGreyPaint.setColor(0x88000000);
         mGreyPaint.setAntiAlias(true);
         mGreyPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+
+
+
         invalidate();
     }
 
@@ -158,6 +169,14 @@ public class CountDownHeadImageView extends CircleImageView {
         mUnFinishCirclePaint.setColor(mUnFinishBorderColor);
         mUnFinishCirclePaint.setStyle(Paint.Style.FILL);
         mUnFinishCirclePaint.setStrokeWidth(mBorderWidth + 5);
+
+        mBound = new Rect();
+        mTextPaint = new Paint();
+        mTextPaint.setColor(mFinishBorderColor);
+        mTextPaint.setStyle(Paint.Style.FILL);
+        mTextPaint.setStrokeWidth(mBorderWidth);
+        mTextPaint.setTextSize(50);
+        mTextPaint.getTextBounds(String.valueOf(remainTime),0,String.valueOf(remainTime).length(),mBound);
 
         invalidate();
     }
@@ -190,8 +209,11 @@ public class CountDownHeadImageView extends CircleImageView {
             int x = (int) (Math.cos(arg) * ((getWidth() - piding * 2 - mBorderWidth) / 2) + (getWidth()) / 2);
             int y = (int) (Math.sin(arg) * ((getHeight() - piding * 2 - mBorderWidth) / 2) + (getHeight()) / 2);
 
-            canvas.drawCircle(getWidth() / 2, getHeight() / 2, mDrawableRadius-mBorderWidth, mGreyPaint);
-            canvas.drawCircle(x, y, mBorderWidth, mUnFinishCirclePaint);
+            float startX = getWidth()/2 - mBound.width()/2;
+            float startY = getHeight()*2/3 - mBound.height()/5;
+
+            canvas.drawCircle(x, y, mBorderWidth, mUnFinishCirclePaint);//进度小滑块
+            canvas.drawCircle(getWidth() / 2, getHeight() / 2, mDrawableRadius, mGreyPaint);//画灰色蒙板
 
         } else if (mBitmapWidth > 0) {
             canvas.drawCircle(getWidth() / 2, getHeight() / 2, mBorderRadius, mBorderPaint);

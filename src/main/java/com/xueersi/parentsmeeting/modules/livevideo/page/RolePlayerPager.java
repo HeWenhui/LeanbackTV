@@ -31,13 +31,17 @@ import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerSelfItem;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.RolePlayConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
+import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
@@ -246,10 +250,14 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     private ImageView ivRoleplayerResultStar;//显示成绩结果星星旗帜
     private boolean isShowResult;//标记是否正在显示结果页
     private LiveGetInfo mLiveGetInfo;//用于获取学科字段，以此判断roleplay进入哪个学科的连麦
+    private RolePlayerSelfItem mRolePlayerSelfItem;
+    private RolePlayerOtherItem mRolePlayerOtherItem;
+    private ImageView iv_live_roleplayer_title;//roleplay标题icon
+    private final LiveBll mLiveBll;//只为记录日志调用方便
     //private boolean mIsEvaluatoring;//标记正在测评中
 
     public RolePlayerPager(Context context, RolePlayerEntity obj, boolean isNewView, RolePlayerBll rolePlayerBll,
-                           LiveGetInfo liveGetInfo) {
+                           LiveGetInfo liveGetInfo, LiveBll liveBll) {
         super(context, obj, isNewView);
         this.mRolePlayBll = rolePlayerBll;
         mLiveGetInfo = liveGetInfo;
@@ -260,6 +268,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         mWorkerThread = new WorkerThread(ContextManager.getApplication(), Integer.parseInt(UserBll.getInstance()
                 .getMyUserInfoEntity().getStuId()), false, true);
 
+        mLiveBll = liveBll;
 
     }
 
@@ -308,6 +317,26 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         vwvSpeechVolume.setColors(colors);
         vwvSpeechVolume.setBackColor(Color.TRANSPARENT);
         rlResult = view.findViewById(R.id.rl_live_roleplayer_result_main);
+
+        iv_live_roleplayer_title = view.findViewById(R.id.iv_live_roleplayer_title);
+        ///获取当前应该走的离线模型
+        final int curSubModEva = ShareDataManager.getInstance().getInt(RolePlayConfig
+                .KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager
+                .SHAREDATA_NOT_CLEAR);
+        switch (curSubModEva) {
+            case RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA:
+                //当前是英语离线测评
+                iv_live_roleplayer_title.setImageResource(R.drawable.livevideo_roleplay_title);
+                break;
+            case RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA:
+                //当前是语文离线测评
+                iv_live_roleplayer_title.setImageResource(R.drawable.live_role_play_title);
+                break;
+            default:
+                //默认走英语离线测评
+                iv_live_roleplayer_title.setImageResource(R.drawable.livevideo_roleplay_title);
+                break;
+        }
         view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View view) {
@@ -322,6 +351,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 if (mEntity != null) {
                     mEntity = null;//防止结果页数据错乱，尤其点赞个数
                 }
+
+                onDestroy();
 
             }
         });
@@ -400,6 +431,14 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      * 准备好朗读数据显示，3秒倒计时准备RolePlayer
      */
     private void waitRolePlayer() {
+
+        ///获取当前应该走的离线模型
+
+        final int curSubModEva = ShareDataManager.getInstance().getInt(RolePlayConfig
+                .KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager
+                .SHAREDATA_NOT_CLEAR);
+
+
         rlMatchPager.setVisibility(View.GONE);
         rlRoleReadMain.setVisibility(View.VISIBLE);
 
@@ -410,19 +449,35 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             tvBeginTipMsg.setTypeface(getTypeface(mContext));
         }
         if (mEntity.getLstRolePlayerMessage().get(0).getRolePlayer().isSelfRole()) {
-            tvBeginTipMsg.setText("You go first. Are you ready?");
+            tvBeginTipMsg.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "你先开始.准备好了吗？":"You go first. Are you ready?");
             tvBeginTipMsg.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    tvBeginTipMsg.setBackgroundResource(R.drawable.shape_livevideo_roleplayer_ready_go_bg);
-                    tvBeginTipMsg.setText("GO");
+                    switch (curSubModEva) {
+                        case RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA:
+                            //当前是英语离线测评
+                            tvBeginTipMsg.setBackgroundResource(R.drawable.shape_livevideo_roleplayer_ready_go_bg);
+                            tvBeginTipMsg.setText("GO");
+                            break;
+                        case RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA:
+                            //当前是语文离线测评
+                            tvBeginTipMsg.setBackgroundResource(R.drawable.shape_livevideo_roleplayer_ready_go_bg);
+                            tvBeginTipMsg.setText("开始");
+                            break;
+                        default:
+                            //默认走英语离线测评
+                            tvBeginTipMsg.setBackgroundResource(R.drawable.shape_livevideo_roleplayer_ready_go_bg);
+                            tvBeginTipMsg.setText("GO");
+                            break;
+                    }
+
                     //tvBeginTipMsg.setPadding(60, 10, 60, 15);
                     tvBeginTipMsg.setGravity(Gravity.CENTER);
 
                 }
             }, 2000);
         } else {
-            tvBeginTipMsg.setText("Don't hurry. Not your turn yet.");
+            tvBeginTipMsg.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "别着急.还没到你.":"Don't hurry. Not your turn yet.");
         }
         //开始倒计时，1秒更新一次
         tvCountTime.postDelayed(new Runnable() {
@@ -448,10 +503,12 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             public AdapterItemInterface<RolePlayerEntity.RolePlayerMessage> getItemView(Object type) {
                 if ((boolean) type) {
                     //自己朗读的
-                    return new RolePlayerSelfItem(mContext, mRolePlayBll);
+                    mRolePlayerSelfItem = new RolePlayerSelfItem(mContext, mRolePlayBll,mLiveBll);
+                    return mRolePlayerSelfItem;
                 } else {
                     //他人朗读的
-                    return new RolePlayerOtherItem(mContext, mRolePlayBll);
+                    mRolePlayerOtherItem = new RolePlayerOtherItem(mContext, mRolePlayBll,mLiveBll);
+                    return mRolePlayerOtherItem;
                 }
             }
 
@@ -632,9 +689,9 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         }
 
         isShowResult = true;
-        Loger.i("RolePlayerDemoTest", "显示结果");
+        Loger.i("RolePlayerDemoTestlog", "显示结果,记录日志");
         //显示结果的时候记录日志
-        //RolePlayLog.sno7(mEntity,mContext,null);
+        RolePlayLog.sno7(mLiveBll,mEntity,mContext);
         tvBeginTipMsg.setVisibility(View.GONE);//readgo不再占位
         mRolePlayBll.cancelDZ();//取消点赞
         vwvSpeechVolume.stop();
@@ -642,6 +699,11 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         vwvSpeechVolume.setVisibility(View.GONE);
         //XESToastUtils.showToast(mContext, "结束");
         rlResult.setVisibility(View.VISIBLE);
+
+        ///获取当前应该走的离线模型
+        final int curSubModEva = ShareDataManager.getInstance().getInt(RolePlayConfig
+                .KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager
+                .SHAREDATA_NOT_CLEAR);
 
         List<RolePlayerEntity.RolePlayerHead> lstHead = mEntity.getResultRoleList();
         RolePlayerEntity.RolePlayerHead head = mEntity.getSelfRoleHead();
@@ -654,12 +716,12 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 tvTotalScore.setTypeface(getTypeface(mContext));
             }
             if (head.getSpeechScore() >= 90) {
-                tvResultMsgTip.setText("Fantastic");
+                tvResultMsgTip.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "天才":"Fantastic");
 
             } else if (head.getSpeechScore() >= 60) {
-                tvResultMsgTip.setText("Welldone");
+                tvResultMsgTip.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "很棒":"Welldone");
             } else {
-                tvResultMsgTip.setText("Fighting");
+                tvResultMsgTip.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "加油":"Fighting");
             }
 
             if (head.getSpeechScore() >= 0 && head.getSpeechScore() < 40) {
@@ -819,6 +881,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         if (!message.getRolePlayer().isSelfRole()) {
             if (rtcEngine != null) {
                 rtcEngine.muteLocalAudioStream(true);
+                Loger.i("RolePlayerDemoTest", "别人在朗读，停止音频流");
             }
             //对方朗读则隐藏
             rlSpeechVolumnMain.setVisibility(View.INVISIBLE);
@@ -828,6 +891,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
 
         if (rtcEngine != null) {
             rtcEngine.muteLocalAudioStream(false);
+            rtcEngine.adjustRecordingSignalVolume(400);
+            Loger.i("RolePlayerDemoTest", "自己在朗读，开启音频流");
         }
 
         /*if(mIsEvaluatoring){
@@ -846,6 +911,9 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 mIse = new SpeechEvaluatorUtils(
                         true);
                 saveVideoFile = new File(dir, "roleplayer" + System.currentTimeMillis() + ".mp3");
+                //记录当前正在走的模型，留给界面更新使用
+                ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig
+                        .VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
             } else {
                 String[] arrSubIds = mLiveGetInfo.getSubjectIds();
                 for (String subId : arrSubIds) {
@@ -854,6 +922,9 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                         mIse = new SpeechEvaluatorUtils(true, com.tal.speech.speechrecognizer.Constants
                                 .ASSESS_PARAM_LANGUAGE_CH);
                         saveVideoFile = new File(dir, "roleplayer" + System.currentTimeMillis() + ".mp3");
+                        //记录当前正在走的模型，留给界面更新使用
+                        ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
+                                RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
                         Loger.i("RolePlayerDemoTest", "走语文离线测评");
                         break;
                     }
@@ -864,6 +935,9 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             //默认走英语离线测评
             Loger.i("RolePlayerDemoTest", "走英语离线测评");
             mIse = new SpeechEvaluatorUtils(true);
+            //记录当前正在走的模型，留给界面更新使用
+            ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig
+                    .VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
             saveVideoFile = new File(dir, "roleplayer" + System.currentTimeMillis() + ".mp3");
         }
 
@@ -927,6 +1001,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                         RtcEngine rtcEngine = mWorkerThread.getRtcEngine();
                         if (rtcEngine != null) {
                             rtcEngine.pushExternalAudioFrame(dest, System.currentTimeMillis());
+                            rtcEngine.adjustRecordingSignalVolume(400);
                         }
 
                     }
@@ -1128,6 +1203,11 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         if (mIse != null) {
             mIse.cancel();
         }
+
+        if (mRolePlayBll != null) {
+            mRolePlayBll.realease();
+        }
+
         mReadHandler.removeMessages(READ_MESSAGE);
         if (mEntity != null) {
             mEntity = null;//防止结果页数据错乱，尤其点赞个数
@@ -1136,6 +1216,13 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             mLiveGetInfo = null;
         }
         isShowResult = false;
+
+        if (mRolePlayerSelfItem != null) {
+            mRolePlayerSelfItem.stopVoicePlay();
+        }
+        if (mRolePlayerOtherItem != null) {
+            mRolePlayerOtherItem.stopVoicePlay();
+        }
     }
 
     /**

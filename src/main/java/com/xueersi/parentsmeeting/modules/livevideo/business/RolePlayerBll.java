@@ -23,6 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.permission.PermissionCallback;
 import com.xueersi.parentsmeeting.permission.PermissionItem;
@@ -39,6 +40,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 
@@ -241,17 +243,18 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      */
     @Override
     public void teacherPushTest(VideoQuestionLiveEntity videoQuestionLiveEntity) {
-        //用户弹出答题框
-        // RolePlayLog.sno4(mRolePlayerEntity,mContext,null);
-
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
         //拉取试题a
         requestTestInfos();
-        mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this, mLiveGetInfo);
+        mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this, mLiveGetInfo,mLiveBll);
         mRolePlayerPager.initData();
         if (bottomContent != null) {
             bottomContent.addView(mRolePlayerPager.getRootView());
         }
+        //用户弹出答题框
+        Loger.i("RolePlayerDemoTestlog", "用户弹出答题框,记录日志");
+        RolePlayLog.sno4(mLiveBll,videoQuestionLiveEntity,mContext);
+
     }
 
     @Override
@@ -355,8 +358,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             public void onOpen() {
                 isBeginConnWebSocket = true;
                 Loger.i("RolePlayerDemoTest", "open");
-                //学生连接socket成功 todo: appid是啥？？？？
-                // RolePlayLog.sno2(mRolePlayerEntity,mContext,null);
+
             }
 
             @Override
@@ -596,8 +598,14 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                 case 2000:
                     //分组结果
                     if (mRolePlayerEntity != null) {
+
                         mRolePlayerEntity.getLstRoleInfo().clear();
-                        mRolePlayerEntity.setTestId(msgObj.optString("testId"));
+                        String testId = msgObj.optString("testId");
+
+                        Loger.i("RolePlayerDemoTestlog", "学生连接socket成功,记录日志");
+                        RolePlayLog.sno2(mLiveBll,testId,mContext);
+
+                        mRolePlayerEntity.setTestId(testId);
                         mRolePlayerEntity.setTeamId(msgObj.optInt("team"));
                         JSONArray arrRole = msgObj.optJSONArray("teamUsers");
                         if (arrRole != null && arrRole.length() > 0) {
@@ -666,8 +674,9 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      */
     public void requestResult() {
         Loger.i("RolePlayerDemoTest", "提交结果");
+        Loger.i("RolePlayerDemoTestlog", "用户提交结果,记录日志");
         //提交结果的时候，记录日志信息
-        //RolePlayLog.sno6(mRolePlayerEntity,mContext,null);
+        RolePlayLog.sno6(mLiveBll,mRolePlayerEntity,mContext);
         mRolePlayerEntity.setResult(true);
         JSONObject obj = new JSONObject();
         try {
@@ -862,4 +871,6 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     public void setRolePlayPager(RolePlayerPager pager) {
         this.mRolePlayerPager = pager;
     }
+
+
 }
