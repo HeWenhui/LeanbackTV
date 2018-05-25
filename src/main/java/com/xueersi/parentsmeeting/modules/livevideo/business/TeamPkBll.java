@@ -279,7 +279,8 @@ public class TeamPkBll {
                                         .parseTeanEnergyAndContribution(responseEntity);
                                 showPkResultScene(entity, PK_RESULT_TYPE_PKRESULT);
                                 if (mLiveBll != null && entity != null) {
-                                    TeamPkLog.showPerTestPk(mLiveBll, entity.isMe(),getNonce(),eventId);
+                                    TeamPkLog.showPerTestPk(mLiveBll, entity.isMe(),getNonce(),eventId,
+                                            entity.getMyTeamEngerInfo().getTeamName());
                                 }
 
                             }
@@ -777,7 +778,9 @@ public class TeamPkBll {
                                 long teamId = Long.parseLong(pkAdversaryEntity.getOpponent().getTeamId());
                                 long classId = Long.parseLong(pkAdversaryEntity.getOpponent().getClassId());
                                 boolean isComputer = (teamId < 0 && classId < 0);
-                                TeamPkLog.showOpponent(mLiveBll, isComputer);
+                                TeamPkLog.showOpponent(mLiveBll, isComputer,pkAdversaryEntity.getSelf().getTeamName(),
+                                        pkAdversaryEntity.getOpponent().getTeamName(),pkAdversaryEntity.getOpponent()
+                                                .getTeamId());
                             }
                         } catch (Exception e) {
                             e.printStackTrace();

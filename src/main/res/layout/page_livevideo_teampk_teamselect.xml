@@ -59,7 +59,7 @@
                 android:singleLine="true"
                 android:text="恭喜你成为“小神龙队”的一员！"
                 android:textColor="@color/COLOR_73510A"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <com.xueersi.parentsmeeting.modules.livevideo.widget.InputEffectTextView
