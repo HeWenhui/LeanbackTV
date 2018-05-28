@@ -78,10 +78,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.ExamQuestionPlaybackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.H5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
@@ -203,7 +205,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     /** nb实验的页面 */
     private H5CoursewarePager h5CoursewarePager;
     /** 英语课件的页面 */
-    private EnglishH5CoursewarePager englishH5CoursewarePager;
+    private BaseEnglishH5CoursewarePager englishH5CoursewarePager;
     /** 文科主观题结果的页面 */
     private SubjectResultPager subjectResultPager;
     /** 讲座购课广告的页面 */
@@ -1186,7 +1188,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (rlQuestionContent != null && mQuestionEntity != null) {
             Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showEnglishH5CoursewarePager");
             mPlayVideoControlHandler.sendMessage(msg);
-            englishH5CoursewarePager = new EnglishH5CoursewarePager(LivePlayBackVideoActivity.this, true, mVideoEntity.getLiveId(), mQuestionEntity.getEnglishH5Play_url(),
+            englishH5CoursewarePager = new EnglishH5CoursewareX5Pager(LivePlayBackVideoActivity.this, true, mVideoEntity.getLiveId(), mQuestionEntity.getEnglishH5Play_url(),
                     mQuestionEntity.getvQuestionID(), mQuestionEntity.getvQuestionType(), "", new
                     EnglishH5CoursewareBll.OnH5ResultClose() {
                         @Override
@@ -1200,7 +1202,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     .MATCH_PARENT,
                     LayoutParams.WRAP_CONTENT));
             rlQuestionContent.setVisibility(View.VISIBLE);
-            return englishH5CoursewarePager;
+            return englishH5CoursewarePager.getBasePager();
         }
         return null;
     }
