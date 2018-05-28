@@ -31,7 +31,9 @@
                 android:id="@id/tv_live_roleplayer_message_username"
                 style="@style/text_style_chat__name_style"
                 android:layout_gravity="center_horizontal"
+                android:layout_width="54dp"
                 android:layout_marginTop="4dp"
+                android:gravity="center"
                 android:textColor="#078EC2"
                 android:textSize="11sp" />
 
@@ -71,7 +73,7 @@
                 android:layout_toRightOf="@id/iv_live_roleplayer_message_voice_main"
                 android:maxWidth="200dp"
                 android:textColor="#333333"
-                android:textSize="14sp" />
+                android:textSize="17sp" />
 
         </LinearLayout>
 
@@ -117,35 +119,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/livevideo_roleplay_result_ic"
-                android:visibility="gone" />
+                android:visibility="invisible" />
 
             <ImageView
                 android:id="@id/iv_live_roleplayer_message_speech_start2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/livevideo_roleplay_result_ic"
-                android:visibility="gone" />
+                android:visibility="invisible" />
 
             <ImageView
                 android:id="@id/iv_live_roleplayer_message_speech_start3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/livevideo_roleplay_result_ic"
-                android:visibility="gone" />
+                android:visibility="invisible" />
 
             <ImageView
                 android:id="@id/iv_live_roleplayer_message_speech_start4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/livevideo_roleplay_result_ic"
-                android:visibility="gone" />
+                android:visibility="invisible" />
 
             <ImageView
                 android:id="@id/iv_live_roleplayer_message_speech_start5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/livevideo_roleplay_result_ic"
-                android:visibility="gone" />
+                android:visibility="invisible" />
 
 
         </LinearLayout>

@@ -51,10 +51,13 @@
             <TextView
                 android:id="@id/tv_live_roleplayer_message_username"
                 style="@style/text_style_chat__name_style"
+                android:layout_width="54dp"
                 android:layout_gravity="center_horizontal"
+                android:gravity="center"
                 android:layout_marginTop="2dp"
                 android:textColor="#108479"
-                android:textSize="11sp" />
+                android:textSize="11sp"
+                />
 
         </LinearLayout>
 
@@ -83,13 +86,15 @@
                 android:gravity="center_vertical"
                 android:maxWidth="200dp"
                 android:textColor="@color/black"
-                android:textSize="14sp" />
+                android:textSize="17sp"
+                android:layout_weight="1"
+                />
 
             <ImageView
                 android:id="@id/iv_live_roleplayer_message_voice_main"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_gravity="right"
                 android:layout_marginLeft="0dp"
                 android:layout_marginRight="0dp"
                 android:layout_marginTop="4dp"
@@ -115,7 +120,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:src="@drawable/livevideo_roleplay_result_ic"
-                android:visibility="gone"
+                android:visibility="invisible"
                  />
 
             <ImageView
@@ -124,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:src="@drawable/livevideo_roleplay_result_ic"
-                android:visibility="gone" />
+                android:visibility="invisible" />
 
             <ImageView
                 android:id="@id/iv_live_roleplayer_message_speech_start3"
@@ -132,7 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:src="@drawable/livevideo_roleplay_result_ic"
-                android:visibility="gone" />
+                android:visibility="invisible" />
 
             <ImageView
                 android:id="@id/iv_live_roleplayer_message_speech_start2"
@@ -140,7 +145,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:src="@drawable/livevideo_roleplay_result_ic"
-                android:visibility="gone" />
+                android:visibility="invisible" />
 
             <ImageView
                 android:id="@id/iv_live_roleplayer_message_speech_start1"
@@ -148,7 +153,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:src="@drawable/livevideo_roleplay_result_ic"
-                android:visibility="gone" />
+                android:visibility="invisible" />
 
 
         </LinearLayout>

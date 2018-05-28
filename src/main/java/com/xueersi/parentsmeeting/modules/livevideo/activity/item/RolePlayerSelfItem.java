@@ -129,6 +129,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
     private void voiceClick() {
         //点击语音的时候记录日志
         Loger.i("RolePlayerDemoTestlog", " 点击播放音频，记录日志 ");
+        speechPhoneScoreWhenClick();//点击对评测之后的文本变色
         RolePlayLog.sno8(mLiveBll, mEntity, mContext);
         ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_self_voice_white_anim);
         vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_me_reading);
@@ -146,6 +147,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 mIsPlaying = false;
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                speechPhoneScore();
             }
 
             @Override
@@ -159,6 +161,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                         //如果是子线程的回调，会报出异常Only the original thread that created a view hierarchy can touch its views.
                         ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
                         vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                        speechPhoneScore();
                     }
                 });
             }
@@ -176,6 +179,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 mIsPlaying = false;
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                speechPhoneScore();
             }
 
         });
@@ -442,6 +446,56 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                         // 显示黑色
                         spannable.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color
                                 .COLOR_333333)), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+                }
+            }
+            tvMessageContent.setText(spannable);
+        }
+    }
+
+    /**
+     * 对音素分变色
+     */
+
+    private void speechPhoneScoreWhenClick() {
+        String[] textArray;
+        if (mEntity.getLstPhoneScore().isEmpty()) {
+            if (mEntity.getSpeechScore() >= 75) {
+                tvMessageContent.setTextColor(mContext.getResources().getColor(R.color.COLOR_53C058));
+            } else if (mEntity.getSpeechScore() < 30) {
+                tvMessageContent.setTextColor(mContext.getResources().getColor(R.color.COLOR_F13232));
+            } else {
+                tvMessageContent.setTextColor(mContext.getResources().getColor(R.color.COLOR_333333));
+            }
+        } else {
+            int lastSub = 0;
+            String subtemText = mEntity.getReadMsg();
+            String upText = mEntity.getReadMsg().toUpperCase();
+            //句子不带人名 hello boy
+            SpannableStringBuilder spannable = new SpannableStringBuilder(subtemText);
+            for (int i = 0; i < mEntity.getLstPhoneScore().size(); i++) {
+                String word = mEntity.getLstPhoneScore().get(i).getWord();
+                int index = upText.indexOf(word);
+                int left = index + lastSub;
+                int right = left + word.length();
+                Log.i("RolePlayerTestDemo", word + " : " + mEntity.getLstPhoneScore().get(i).getScore());
+                if (index != -1) {
+                    subtemText = subtemText.substring(index);
+                    upText = upText.substring(index);
+                    lastSub += index;
+                    if (mEntity.getLstPhoneScore().get(i).getScore() >= 75) {
+                        //显示绿色
+                        spannable.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color
+                                .COLOR_19F164)), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    } else if (mEntity.getLstPhoneScore().get(i).getScore() < 30) {
+                        // 显示红色
+                        spannable.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color
+                                .COLOR_FF4444)), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                    } else {
+                        // 显示白色
+                        spannable.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color
+                                .COLOR_FFFFFF)), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                 }
             }

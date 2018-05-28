@@ -520,7 +520,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         lvReadList.setAdapter(mRolePlayerAdapter);
         lvReadList.setVisibility(View.VISIBLE);
         lvReadList.setDividerHeight(SizeUtils.Dp2Px
-                (mContext, 0));
+                (mContext, 5));
         vHead = new View(mContext);
         //修改类型转换异常
         ListView.LayoutParams lp = new ListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SizeUtils.Dp2Px
@@ -779,8 +779,12 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 civResultRoleHeadImg1.setBorderWidth(SizeUtils.Dp2Px(mContext, 2));
                 if (head1.isSelfRole()) {
                     civResultRoleHeadImg1.setBorderColor(Color.parseColor("#FAD2D1"));
+                    tvResultRoleScore1.setTextColor(Color.parseColor("#333333"));
+                    tvResultRoleName1.setTextColor(Color.parseColor("#333333"));
                 } else {
                     civResultRoleHeadImg1.setBorderColor(Color.parseColor("#E0E0E0"));
+                    tvResultRoleScore1.setTextColor(Color.parseColor("#666666"));
+                    tvResultRoleName1.setTextColor(Color.parseColor("#666666"));
                 }
             } else {
                 rlResultRole1.setVisibility(View.INVISIBLE);
@@ -794,8 +798,12 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 civResultRoleHeadImg2.setBorderWidth(SizeUtils.Dp2Px(mContext, 2));
                 if (head2.isSelfRole()) {
                     civResultRoleHeadImg2.setBorderColor(Color.parseColor("#FAD2D1"));
+                    tvResultRoleScore1.setTextColor(Color.parseColor("#333333"));
+                    tvResultRoleName1.setTextColor(Color.parseColor("#333333"));
                 } else {
                     civResultRoleHeadImg2.setBorderColor(Color.parseColor("#E0E0E0"));
+                    tvResultRoleScore1.setTextColor(Color.parseColor("#666666"));
+                    tvResultRoleName1.setTextColor(Color.parseColor("#666666"));
                 }
             } else {
                 rlResultRole2.setVisibility(View.INVISIBLE);
@@ -809,8 +817,12 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 civResultRoleHeadImg3.setBorderWidth(SizeUtils.Dp2Px(mContext, 2));
                 if (head3.isSelfRole()) {
                     civResultRoleHeadImg3.setBorderColor(Color.parseColor("#FAD2D1"));
+                    tvResultRoleScore1.setTextColor(Color.parseColor("#333333"));
+                    tvResultRoleName1.setTextColor(Color.parseColor("#333333"));
                 } else {
                     civResultRoleHeadImg3.setBorderColor(Color.parseColor("#E0E0E0"));
+                    tvResultRoleScore1.setTextColor(Color.parseColor("#666666"));
+                    tvResultRoleName1.setTextColor(Color.parseColor("#666666"));
                 }
             } else {
                 rlResultRole3.setVisibility(View.INVISIBLE);
