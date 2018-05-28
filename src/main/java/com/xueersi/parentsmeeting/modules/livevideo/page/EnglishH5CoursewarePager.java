@@ -158,7 +158,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager implements BaseEn
 
     @Override
     public void close() {
-        onClose.onH5ResultClose();
+        onClose.onH5ResultClose(this);
         onBack();
     }
 
@@ -169,7 +169,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager implements BaseEn
         Loger.e("EnglishH5CoursewarePager", "======> shouldOverrideUrlLoading:" + url);
         reloadurl = url;
         if (url.contains("baidu.com")) {
-            onClose.onH5ResultClose();
+            onClose.onH5ResultClose(this);
             StableLogHashMap logHashMap = new StableLogHashMap("coursewareClose");
             logHashMap.put("coursewareid", id);
             logHashMap.put("coursewaretype", courseware_type);

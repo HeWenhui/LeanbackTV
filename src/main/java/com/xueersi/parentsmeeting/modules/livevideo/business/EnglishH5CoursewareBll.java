@@ -37,6 +37,7 @@ import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
+import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 
@@ -55,7 +56,7 @@ import java.util.Map;
  * 英语h5课件业务类
  */
 public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAndBackDebug, BaseVoiceAnswerCreat.AnswerRightResultVoice {
-    String TAG = "EH5CoursewareBll";
+    String TAG = "EnglishH5CoursewareBll";
     String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
     String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
     Context context;
@@ -285,7 +286,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     }
                     if (h5CoursewarePager != null) {
                         if (h5CoursewarePager.getUrl().equals(videoQuestionLiveEntity.url)) {
-                            logToFile.i("onH5Courseware:url.equals");
+                            logToFile.i("onH5Courseware:url.equals:" + h5CoursewarePager.getUrl());
                             return;
                         } else {
                             logToFile.i("onH5Courseware:url=" + h5CoursewarePager.getUrl());
@@ -381,11 +382,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         mLiveBll.umsAgentDebugInter(eventId, logHashMap.getData());
         OnH5ResultClose onH5ResultClose = new OnH5ResultClose() {
             @Override
-            public void onH5ResultClose() {
+            public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager) {
                 if (h5CoursewarePager == null) {
                     return;
                 }
-                mH5AndBool.add(h5CoursewarePager.getUrl());
+                mH5AndBool.add(baseEnglishH5CoursewarePager.getUrl());
                 try {
                     JSONObject object = new JSONObject();
                     object.put("liveType", liveType);
@@ -395,9 +396,12 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                h5CoursewarePager.destroy();
-                bottomContent.removeView(h5CoursewarePager.getRootView());
-                h5CoursewarePager = null;
+                baseEnglishH5CoursewarePager.destroy();
+                bottomContent.removeView(baseEnglishH5CoursewarePager.getRootView());
+                Loger.d(TAG, "onH5ResultClose:same=" + (baseEnglishH5CoursewarePager == h5CoursewarePager));
+                if (baseEnglishH5CoursewarePager == h5CoursewarePager) {
+                    h5CoursewarePager = null;
+                }
                 if (!isAnaswer) {
                     onQuestionShow(false);
                 }
@@ -595,7 +599,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     }
 
     public interface OnH5ResultClose {
-        void onH5ResultClose();
+        void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager);
     }
 
     private void getFullMarkList(final int delayTime) {

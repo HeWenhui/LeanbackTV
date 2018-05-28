@@ -82,7 +82,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseEnglishH5Courseware
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.ExamQuestionPlaybackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.H5CoursewarePager;
@@ -1192,7 +1191,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     mQuestionEntity.getvQuestionID(), mQuestionEntity.getvQuestionType(), "", new
                     EnglishH5CoursewareBll.OnH5ResultClose() {
                         @Override
-                        public void onH5ResultClose() {
+                        public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager) {
                             stopEnglishH5Exam();
                         }
 
