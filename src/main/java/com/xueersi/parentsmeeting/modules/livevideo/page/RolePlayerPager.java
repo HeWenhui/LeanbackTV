@@ -520,7 +520,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         lvReadList.setAdapter(mRolePlayerAdapter);
         lvReadList.setVisibility(View.VISIBLE);
         lvReadList.setDividerHeight(SizeUtils.Dp2Px
-                (mContext, 15));
+                (mContext, 0));
         vHead = new View(mContext);
         //修改类型转换异常
         ListView.LayoutParams lp = new ListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SizeUtils.Dp2Px
