@@ -410,7 +410,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         //当角色小于3个的时候，为保证角色头像都居中显示，动态改变列数
         if (roleHeadsSize < 3) {
             gvRoleHeadShow.setNumColumns(roleHeadsSize);
-            gvRoleHeadShow.setHorizontalSpacing(0);
+            gvRoleHeadShow.setHorizontalSpacing(-20);
         } else {
             gvRoleHeadShow.setNumColumns(3);
             gvRoleHeadShow.setHorizontalSpacing(SizeUtils.Dp2Px(mContext, 42));

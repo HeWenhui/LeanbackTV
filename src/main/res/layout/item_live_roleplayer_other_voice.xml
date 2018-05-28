@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingLeft="37dp">
+    android:paddingLeft="25dp">
 
 
     <RelativeLayout
@@ -16,12 +16,13 @@
             android:id="@id/ll_live_roleplayer_message_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
             <com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView
                 android:id="@id/civ_live_roleplayer_message_user_head"
-                android:layout_width="47dp"
-                android:layout_height="47dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_gravity="center_horizontal"
                 android:clickable="true"
                 android:src="@drawable/ic_default_head_square" />
@@ -30,7 +31,7 @@
                 android:id="@id/tv_live_roleplayer_message_username"
                 style="@style/text_style_chat__name_style"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="4dp"
                 android:textColor="#078EC2"
                 android:textSize="11sp" />
 
@@ -41,11 +42,11 @@
             android:id="@id/rl_live_roleplayer_message_voice_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="19dp"
+            android:layout_marginLeft="12dp"
             android:layout_toRightOf="@id/ll_live_roleplayer_message_user_name"
             android:background="@drawable/selector_live_roleplayer_other_item_bubble"
-            android:minHeight="40dp"
-            android:minWidth="100dp"
+            android:minHeight="32dp"
+            android:minWidth="120dp"
             android:orientation="horizontal">
 
             <ImageView
@@ -53,8 +54,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="9dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/yuyin_you_huifang_3" />
 
@@ -64,30 +65,30 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="0dp"
                 android:layout_toRightOf="@id/iv_live_roleplayer_message_voice_main"
                 android:maxWidth="200dp"
                 android:textColor="#333333"
-                android:textSize="13sp" />
+                android:textSize="14sp" />
 
         </LinearLayout>
 
         <RelativeLayout
             android:id="@id/rl_live_roleplayer_message_dz"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="65dp"
+            android:layout_height="70dp"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="-8dp"
+            android:layout_marginTop="-10dp"
             android:layout_toEndOf="@+id/rl_live_roleplayer_message_voice_main"
             android:layout_toRightOf="@+id/rl_live_roleplayer_message_voice_main"
             >
 
             <ImageView
                 android:id="@id/iv_live_roleplayer_message_dz"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:src="@drawable/livevideo_roleplay_result_ic_normal"
                 android:layout_centerInParent="true"
 
@@ -106,9 +107,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_live_roleplayer_message_voice_main"
             android:layout_gravity="right"
-            android:layout_marginLeft="19dp"
             android:layout_marginTop="4dp"
             android:layout_toRightOf="@id/ll_live_roleplayer_message_user_name"
+            android:layout_alignLeft="@+id/rl_live_roleplayer_message_voice_main"
             android:orientation="horizontal">
 
             <ImageView

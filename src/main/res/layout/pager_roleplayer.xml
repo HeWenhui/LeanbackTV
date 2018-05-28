@@ -441,7 +441,9 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="25dp"
+                android:layout_marginBottom="25dp"
+                >
 
                 <com.airbnb.lottie.LottieAnimationView
                     android:id="@id/lav_live_roleplayer_match"
@@ -456,8 +458,8 @@
 
                 <com.xueersi.xesalib.view.image.CircleImageView
                     android:id="@id/civ_live_roleplayer_match_head"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="61dp"
+                    android:layout_height="61dp"
                     android:layout_centerInParent="true"
                     android:src="@drawable/ic_default_head_square" />
             </RelativeLayout>
@@ -470,8 +472,8 @@
                 android:layout_above="@id/tv_live_roleplayer_match_tip2"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="21dp"
-                android:text="正在匹配中" />
+                android:text="正在匹配中"
+                />
 
             <TextView
                 android:id="@id/tv_live_roleplayer_match_tip2"
@@ -480,8 +482,8 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="20dp"
                 android:layout_marginTop="13dp"
+                android:layout_marginBottom="18dp"
                 android:background="@drawable/shape_livevideo_roleplayer_match_tip_bg"
                 android:paddingBottom="8dp"
                 android:paddingLeft="18dp"
