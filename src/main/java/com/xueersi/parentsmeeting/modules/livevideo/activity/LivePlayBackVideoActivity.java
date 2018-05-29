@@ -213,6 +213,9 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     /** 填空题布局 */
     QuestionFillInBlankLivePager mVideoCourseQuestionPager;
 
+    /** 播放时长定时任务(心跳) */
+    private final long mPlayTime = 60000;
+
     /** 红包id */
     private String mRedPacketId;
     /** 播放路径名 */
@@ -655,6 +658,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     "mIsShowQuestion=" + mIsShowQuestion);
 //            showQuestion(mQuestionEntity);
         }
+        // 心跳时间的上传
+        mHandler.postDelayed(mPlayDuration, mPlayTime);
     }
 
     @Override
@@ -728,6 +733,18 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         }
         return super.getVideoKey();
     }
+
+    /** 播放时长，1分钟统计 */
+    private Runnable mPlayDuration = new Runnable() {
+        @Override
+        public void run() {
+            if (!isFinishing()) {
+                // 上传心跳时间
+                lectureLivePlayBackBll.uploadPlaybackVideoPlayTime(Integer.parseInt(mVideoEntity.getLiveId()),60L);
+                mHandler.postDelayed(this, mPlayTime);
+            }
+        }
+    };
 
     /** 视频播放进度实时获取 */
     @Override

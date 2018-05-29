@@ -923,7 +923,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
         sendPost(LiveVideoConfig.URL_EXPERIENCE_LIVE_ONLINETIME, params, callBack);
     }
-
     /**战队pk 相关*/
 
     /**

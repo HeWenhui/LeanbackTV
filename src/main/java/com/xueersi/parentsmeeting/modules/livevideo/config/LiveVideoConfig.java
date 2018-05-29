@@ -143,6 +143,8 @@ public class LiveVideoConfig {
     public static String URL_LIVE_DELETE_MARK_POINTS = AppConfig.HTTP_HOST + "/science/LiveCourse/deleteMarkpoint";
     /** 体验课播放器上传心跳时间 */
     public static String URL_EXPERIENCE_LIVE_ONLINETIME = AppConfig.HTTP_HOST + "/science/AutoLive/visitTime";
+    /**  回放式体验课上传心跳时间  */
+    public static String URL_PLAYBACKPLAYTIME = AppConfig.HTTP_HOST + "/ExpPlayback/visitTime";
     /** RolePlay请求对话信息 */
     public static String URL_ROLEPLAY_TESTINFOS = AppConfig.HTTP_HOST + "/libarts/LiveCourse/getRolePlay";
     /** 提交接口 */
