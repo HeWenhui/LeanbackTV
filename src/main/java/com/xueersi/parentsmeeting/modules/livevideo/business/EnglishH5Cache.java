@@ -12,8 +12,10 @@ import android.os.Looper;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
+
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
+
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.config.AppConfig;
@@ -121,9 +123,10 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         Loger.d(TAG, "getCourseWareUrl:exists=" + exists + ",mkdirs=" + mkdirs);
         CacheWebView.getCacheConfig().init(context, todayLiveCacheDir.getPath(), 1024 * 1024 * 100, 1024 * 1024 * 10)
                 .enableDebug(true);//100M 磁盘缓存空间,10M 内存缓存空间
-        CacheExtensionConfig.addGlobalExtension("mp3");
-        CacheExtensionConfig.addGlobalExtension("WAV");
-        CacheExtensionConfig.removeNoCacheExtension("mp3");
+        //替换x5浏览器，缓存mp3经常出问题
+//        CacheExtensionConfig.addGlobalExtension("mp3");
+//        CacheExtensionConfig.addGlobalExtension("WAV");
+//        CacheExtensionConfig.removeNoCacheExtension("mp3");
         liveBll.getCourseWareUrl(new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
