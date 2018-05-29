@@ -238,6 +238,8 @@
     <item name="tv_livevideo_message_gold" type="id" />
     <item name="tv_livevideo_message_gold_word" type="id" />
     <item name="bt_livevideo_message_flowersend" type="id" />
+    <item name="rl_livevideo_message_root" type="id"/>
+
     <!--直播-公开表扬-->
     <item name="iv_livevideo_public_praise_bg" type="id" />
     <item name="rl_livevideo_public_praise" type="id" />
@@ -616,6 +618,7 @@
     <item name="rl_teampk_pkstate_container_2" type="id" />
     <item name="tpb_teampk_pkstate_energy_bar" type="id" />
     <item name="v_teampk_pkstate_devide_line" type="id" />
+    <item name="tv_teampk_pkstate_energy_mycontribution" type="id"/>
     <!--实时答题-->
     <item name="rl_answer_question_award_root" type="id" />
     <item name="iv_answer_question_energy" type="id" />

@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -63,7 +64,13 @@ public class TeamPkStateLayout extends FrameLayout {
      */
     private static final long PK_STATE_DISPLAY_DURATION = 30 * 1000;
 
+    /**
+     * 我贡献了多少能量显示时间
+     */
+    private static final long ENERGY_MY_CONTRIBUTION_DURATION = 3 * 1000;
+
     private boolean dataInited = false;
+    private TextView tvEnergyMyContribution;
 
     public TeamPkStateLayout(@NonNull Context context) {
         super(context);
@@ -113,17 +120,24 @@ public class TeamPkStateLayout extends FrameLayout {
      */
     private void addPkStatBar() {
         statBarRootView = View.inflate(getContext(), R.layout.team_pk_state_bar_layout, null);
-        ViewGroup rootView = (ViewGroup) this.getParent().getParent().getParent();
-
-        int stateBarHeight = SizeUtils.Dp2Px(getContext(), STATE_BAR_HEIGHT);
-        int gapAbovePkStateLayout = SizeUtils.Dp2Px(getContext(), STATE_BAR_BOTTOM_MARGIN);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(this.getLayoutParams().width, stateBarHeight);
-        int[] location = new int[2];
-        this.getLocationInWindow(location);
-        lp.topMargin = location[1] - (gapAbovePkStateLayout + stateBarHeight);
-        rootView.addView(statBarRootView, lp);
-        tvState = statBarRootView.findViewById(R.id.tv_answer_question_state);
-        tvState.setVisibility(GONE);
+        ViewGroup viewGroup = (ViewGroup) ((Activity) getContext()).getWindow().getDecorView();
+        ViewGroup rootView = viewGroup.findViewById(R.id.rl_livevideo_message_root);
+        if (rootView != null) {
+            int stateBarHeight = SizeUtils.Dp2Px(getContext(), STATE_BAR_HEIGHT);
+            int gapAbovePkStateLayout = SizeUtils.Dp2Px(getContext(), STATE_BAR_BOTTOM_MARGIN);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(this.getMeasuredWidth(), stateBarHeight);
+         /*   Loger.e("TeamPkStateLayout", "=======>addPkStatBar:" + this.getLayoutParams().width + ":" + this
+                    .getMeasuredWidth());*/
+            int[] location = new int[2];
+            this.getLocationInWindow(location);
+            lp.topMargin = location[1] - (gapAbovePkStateLayout + stateBarHeight);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            rootView.addView(statBarRootView, lp);
+            tvState = statBarRootView.findViewById(R.id.tv_answer_question_state);
+            tvState.setVisibility(GONE);
+            tvEnergyMyContribution = statBarRootView.findViewById(R.id.tv_teampk_pkstate_energy_mycontribution);
+            tvEnergyMyContribution.setVisibility(GONE);
+        }
     }
 
 
@@ -274,11 +288,40 @@ public class TeamPkStateLayout extends FrameLayout {
      * 淡入 淡出展示  当前pk 状态
      */
     private void showPkSateBar() {
-        tvState.setVisibility(VISIBLE);
+        showViewWithFadeInOutEffect(tvState,PK_STATE_DISPLAY_DURATION);
+    }
+
+
+    /**
+     * 淡入淡出 显示我贡献的能量值
+     *
+     * @param energy
+     */
+    public void showEnergyMyContribute(int energy) {
+        if(tvEnergyMyContribution != null){
+            tvEnergyMyContribution.setVisibility(VISIBLE);
+            energy = energy < 0?0:energy;
+            tvEnergyMyContribution.setText("我贡献了"+energy+"个能量");
+            showViewWithFadeInOutEffect(tvEnergyMyContribution,ENERGY_MY_CONTRIBUTION_DURATION);
+        }
+    }
+
+
+    /**
+     * 淡入淡出显示  控件
+     *
+     * @param targetView
+     * @param duratrion
+     */
+    private void showViewWithFadeInOutEffect(final View targetView, long duratrion) {
+        if (targetView == null) {
+            return;
+        }
+        targetView.setVisibility(VISIBLE);
         AlphaAnimation alphaIn = (AlphaAnimation) AnimationUtils.
                 loadAnimation(getContext(), R.anim.anim_livevido_teampk_pkstate_in);
-        tvState.startAnimation(alphaIn);
-        tvState.postDelayed(new Runnable() {
+        targetView.startAnimation(alphaIn);
+        targetView.postDelayed(new Runnable() {
             @Override
             public void run() {
                 AlphaAnimation alphaOut = (AlphaAnimation) AnimationUtils.
@@ -290,7 +333,7 @@ public class TeamPkStateLayout extends FrameLayout {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        tvState.setVisibility(GONE);
+                        targetView.setVisibility(GONE);
                     }
 
                     @Override
@@ -298,8 +341,9 @@ public class TeamPkStateLayout extends FrameLayout {
 
                     }
                 });
-                tvState.startAnimation(alphaOut);
+                targetView.startAnimation(alphaOut);
             }
-        }, PK_STATE_DISPLAY_DURATION);
+        }, duratrion);
     }
+
 }

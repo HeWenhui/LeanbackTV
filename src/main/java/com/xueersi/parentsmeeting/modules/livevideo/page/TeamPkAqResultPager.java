@@ -362,6 +362,7 @@ public class TeamPkAqResultPager extends BasePager {
             // 1 聊天区域状态更新
             if (teamPKStateLayout != null && mTeamPkBll != null) {
                 teamPKStateLayout.updateData(mEnergy, 0, mGoldNum);
+                teamPKStateLayout.showEnergyMyContribute(mEnergy);
                 //mTeamPkBll.updatePkStateLayout();
             }
             closePager();
