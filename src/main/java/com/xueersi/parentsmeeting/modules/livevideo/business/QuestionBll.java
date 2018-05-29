@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.ExamQuestionPager;
@@ -40,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectPortLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSubjectivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
@@ -71,7 +73,7 @@ import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE5;
 /**
  * Created by linyuqiang on 2016/9/23.
  */
-public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEvalAction, QuestionWebPager
+public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEvalAction, BaseQuestionWebPager
         .StopWebQuestion, BaseVoiceAnswerCreat.AnswerRightResultVoice {
     String TAG = "QuestionBll";
     SpeechEvaluatorUtils mIse;
@@ -189,7 +191,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 网页互动题正在作答
      */
     private boolean isHaveWebQuestion = false;
-    private QuestionWebPager questionWebPager;
+    private BaseQuestionWebPager questionWebPager;
     /**
      * 试卷页面
      */
@@ -532,7 +534,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 .getvQuestionID())) {
                             return;
                         }
-                        questionWebPager = new QuestionWebPager(activity, QuestionBll.this, liveGetInfo
+                        questionWebPager = new QuestionWebX5Pager(activity, QuestionBll.this, liveGetInfo
                                 .getTestPaperUrl(), liveGetInfo.getStuId(), liveGetInfo.getUname(),
                                 liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
                                 videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks(), IS_SCIENCE, stuCouId);
@@ -862,7 +864,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         int delayTime = 0;
         if (questionWebPager != null) {
             havePager = true;
-            curQuestionView = questionWebPager;
+            curQuestionView = (BasePager) questionWebPager;
             mLogtf.d("onStopQuestion:questionWebPager");
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override
@@ -873,7 +875,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
             });
             delayTime = 3000;
-            closePageByTeamPk(questionWebPager);
+            closePageByTeamPk((BasePager) questionWebPager);
         } else if (hasQuestion && !hasSubmit) {
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
             hasQuestion = false;

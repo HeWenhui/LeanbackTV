@@ -70,6 +70,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewareX5Pager;
@@ -130,7 +131,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 @SuppressLint("HandlerLeak")
 @SuppressWarnings("unchecked")
 public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements LivePlaybackMediaController.OnPointClick,
-        SpeechEvalAction, QuestionWebPager.StopWebQuestion, LiveAndBackDebug, ActivityChangeLand, BaseVoiceAnswerCreat.AnswerRightResultVoice {
+        SpeechEvalAction, BaseQuestionWebPager.StopWebQuestion, LiveAndBackDebug, ActivityChangeLand, BaseVoiceAnswerCreat.AnswerRightResultVoice {
 
     String TAG = "LivePlayBackVideoActivityLog";
 
@@ -974,6 +975,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                 Loger.i(TAG, "showQestion:time=" + (System.currentTimeMillis() - before));
                 String type;
                 if (rlQuestionContent != null && mQuestionEntity != null) {
+                    //暂时没有。这个是文科回放，还没有这种题
                     if (mQuestionEntity.isH5()) {
                         type = "h5";
                         if (vPlayer != null) {

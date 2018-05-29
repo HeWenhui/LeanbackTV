@@ -80,6 +80,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewareX5Pager;
@@ -145,7 +146,7 @@ import static com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile.li
 @SuppressLint("HandlerLeak")
 @SuppressWarnings("unchecked")
 public class LivePlayBackVideoActivity extends VideoActivity implements LivePlaybackMediaController.OnPointClick,
-        SpeechEvalAction, QuestionWebPager.StopWebQuestion, LiveAndBackDebug, ActivityChangeLand {
+        SpeechEvalAction, BaseQuestionWebPager.StopWebQuestion, LiveAndBackDebug, ActivityChangeLand {
 
     String TAG = "LivePlayBackVideoActivityLog";
     /** 互动题的布局 */
@@ -1001,6 +1002,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 Loger.i(TAG, "showQestion:time=" + (System.currentTimeMillis() - before));
                 String type;
                 if (rlQuestionContent != null && mQuestionEntity != null) {
+                    //暂时没有
                     if (mQuestionEntity.isH5()) {
                         type = "h5";
                         if (vPlayer != null) {
