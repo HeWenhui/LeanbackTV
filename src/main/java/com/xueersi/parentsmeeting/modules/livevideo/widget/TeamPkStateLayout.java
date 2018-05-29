@@ -18,6 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
@@ -71,6 +73,7 @@ public class TeamPkStateLayout extends FrameLayout {
 
     private boolean dataInited = false;
     private TextView tvEnergyMyContribution;
+    private TeamPkBll mTeamPkBll;
 
     public TeamPkStateLayout(@NonNull Context context) {
         super(context);
@@ -160,7 +163,9 @@ public class TeamPkStateLayout extends FrameLayout {
         mOtherTeamEnergy = mOtherTeamEnergy + otherEnergyAdd;
         mCoinNum = mCoinNum + coinAdd;
         Loger.e("coinNum", "====>updateData22222:" + mMyTeamEnergy + ":" + mOtherTeamEnergy + ":" + mCoinNum);
-
+        if(mTeamPkBll != null && coinAdd > 0){
+            TeamPkLog.showMyGold(mTeamPkBll.getLiveBll(),mCoinNum+"");
+        }
         //正 增长 显示动画 ，负增涨 不显示动画
         if (ownEnergyAdd > 0) {
             tvMyTeamEnergy.smoothAddNum(ownEnergyAdd);
@@ -241,6 +246,11 @@ public class TeamPkStateLayout extends FrameLayout {
         tvCoin.setText(mCoinNum + "");
         tvMyTeamEnergy.setText(mMyTeamEnergy + "");
         tvOtherTeamEnergy.setText(otherTeamAnergy + "");
+
+        if(mTeamPkBll != null && mCoinNum > 0){
+            TeamPkLog.showMyGold(mTeamPkBll.getLiveBll(),mCoinNum+"");
+        }
+
         float ratio;
         if ((mMyTeamEnergy + mOtherTeamEnergy) > 0) {
             ratio = mMyTeamEnergy / (float) (mMyTeamEnergy + mOtherTeamEnergy);
@@ -344,5 +354,11 @@ public class TeamPkStateLayout extends FrameLayout {
             }
         }, duratrion);
     }
+
+
+    public void setTeamPkBll(TeamPkBll teamPkBll){
+        mTeamPkBll = teamPkBll;
+    }
+
 
 }

@@ -32,8 +32,8 @@ public class TeamPkLog {
         if (UPLOAD_OPEN && liveAndBackDebug != null) {
             StableLogHashMap logHashMap = new StableLogHashMap("receiveCreateTeam");
             logHashMap.addExY()
-            .addSno("2")
-            .addNonce(TextUtils.isEmpty(nonce)?"":nonce);
+                    .addSno("2")
+                    .addNonce(TextUtils.isEmpty(nonce) ? "" : nonce);
             logHashMap.addStable("1");
             logHashMap.put("isopen", isOpen ? "1" : "0");
             liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
@@ -80,7 +80,7 @@ public class TeamPkLog {
     public static void receiveMatchOpponent(LiveAndBackDebug liveAndBackDebug, String nonce, boolean isOpen) {
         if (UPLOAD_OPEN && liveAndBackDebug != null) {
             StableLogHashMap logHashMap = new StableLogHashMap("receiveMatchOpponent");
-            logHashMap.addSno("5").addNonce(TextUtils.isEmpty(nonce)?"":nonce).addExY();
+            logHashMap.addSno("5").addNonce(TextUtils.isEmpty(nonce) ? "" : nonce).addExY();
             logHashMap.addStable("1");
             logHashMap.put("isopen", isOpen ? "1" : "0");
             liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
@@ -92,20 +92,23 @@ public class TeamPkLog {
      *
      * @param liveAndBackDebug
      * @param iscomputer       对手是否是机器人
-     * @param  teamName     本队名称
-     * @param  optName 对手战队名称
-     * @param  optId 对手战队id
+     * @param teamName         本队名称
+     * @param optName          对手战队名称
+     * @param optId            对手战队id
+     * @param optClassId       对手班级id
      */
-    public static void showOpponent(LiveAndBackDebug liveAndBackDebug, boolean iscomputer,String teamName,String optName,String optId) {
+    public static void showOpponent(LiveAndBackDebug liveAndBackDebug, boolean iscomputer, String teamName, String
+            optName, String optId,String optClassId) {
         if (UPLOAD_OPEN && liveAndBackDebug != null) {
             StableLogHashMap logHashMap = new StableLogHashMap("showOpponent");
             logHashMap.put("iscomputer", iscomputer ? "1" : "0");
             logHashMap.addStable("2");
             logHashMap.addSno("6");
             logHashMap.addExY();
-            logHashMap.put("teamname",teamName);
-            logHashMap.put("opponentname",optName);
-            logHashMap.put("opponentid",optId);
+            logHashMap.put("teamname", teamName);
+            logHashMap.put("opponentname", optName);
+            logHashMap.put("opponentid", optId);
+            logHashMap.put("opponentclassid", optClassId);
             liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
         }
 
@@ -118,17 +121,18 @@ public class TeamPkLog {
      * @param liveAndBackDebug
      * @param isStar           学生自己 是否是贡献之星
      * @param eventId          live_h5waretest H5课件互动题     live_h5test  H5题库互动题     live_exam h5测试卷
-     * @param  teamName        本队战队昵称
+     * @param teamName         本队战队昵称
      */
-    public static void showPerTestPk(LiveAndBackDebug liveAndBackDebug, boolean isStar, String nonce, String eventId,String teamName) {
+    public static void showPerTestPk(LiveAndBackDebug liveAndBackDebug, boolean isStar, String nonce, String eventId,
+                                     String teamName) {
         if (UPLOAD_OPEN && liveAndBackDebug != null) {
             StableLogHashMap logHashMap = new StableLogHashMap("showPerTestPk");
             logHashMap.put("isstar", isStar ? "1" : "0");
             logHashMap.addStable("1");
             logHashMap.addSno("7");
-            logHashMap.addNonce(TextUtils.isEmpty(nonce)?"":nonce);
+            logHashMap.addNonce(TextUtils.isEmpty(nonce) ? "" : nonce);
             logHashMap.addExY();
-            logHashMap.put("teamname",teamName);
+            logHashMap.put("teamname", teamName);
             liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
         }
 
@@ -145,7 +149,7 @@ public class TeamPkLog {
             StableLogHashMap logHashMap = new StableLogHashMap("receiveVoicePraise");
             logHashMap.addSno("8");
             logHashMap.addExY();
-            logHashMap.addNonce(TextUtils.isEmpty(nonce)?"":nonce);
+            logHashMap.addNonce(TextUtils.isEmpty(nonce) ? "" : nonce);
             logHashMap.addStable("1");
             liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
         }
@@ -162,7 +166,7 @@ public class TeamPkLog {
         if (UPLOAD_OPEN && liveAndBackDebug != null) {
             StableLogHashMap logHashMap = new StableLogHashMap("receivePkResult");
             logHashMap.addSno("10");
-            logHashMap.addNonce(TextUtils.isEmpty(nonce)?"":nonce);
+            logHashMap.addNonce(TextUtils.isEmpty(nonce) ? "" : nonce);
             logHashMap.addStable("1");
             logHashMap.addExY();
             logHashMap.put("isopen", isOpen ? "1" : "0");
@@ -201,7 +205,7 @@ public class TeamPkLog {
             logHashMap.addSno("11");
             logHashMap.addStable("1");
             logHashMap.addExY();
-            logHashMap.addNonce(TextUtils.isEmpty(nonce)?"":nonce);
+            logHashMap.addNonce(TextUtils.isEmpty(nonce) ? "" : nonce);
             logHashMap.put("expect", "1");
             liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
         }
@@ -221,7 +225,7 @@ public class TeamPkLog {
             StableLogHashMap logHashMap = new StableLogHashMap("openTreasureBox");
             logHashMap.put("gold", goldNum);
             logHashMap.addSno("12");
-            logHashMap.addNonce(TextUtils.isEmpty(nonce)?"":nonce);
+            logHashMap.addNonce(TextUtils.isEmpty(nonce) ? "" : nonce);
             logHashMap.addStable("1");
             if (ex) {
                 logHashMap.addExY();
@@ -245,7 +249,7 @@ public class TeamPkLog {
             logHashMap.addSno("14");
             logHashMap.addExY();
             logHashMap.addStable("1");
-            logHashMap.addNonce(TextUtils.isEmpty(nonce)?"":nonce);
+            logHashMap.addNonce(TextUtils.isEmpty(nonce) ? "" : nonce);
             logHashMap.put("isopen", isOpen ? "1" : "0");
             liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
         }
@@ -283,4 +287,41 @@ public class TeamPkLog {
         }
     }
 
+
+    /**
+     * 我贡献了 多少能量
+     *
+     * @param liveAndBackDebug
+     * @param id               题id  或者 投票 id
+     * @param power            能量值
+     */
+    public static void showAddPower(LiveAndBackDebug liveAndBackDebug, String id, String power) {
+        if (UPLOAD_OPEN && liveAndBackDebug != null) {
+            StableLogHashMap logHashMap = new StableLogHashMap("showAddPower");
+            logHashMap.addSno("16");
+            logHashMap.addExY();
+            logHashMap.addStable("0");
+            logHashMap.put("id", id);
+            logHashMap.put("power", power);
+            liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
+        }
+    }
+
+
+    /**
+     * 展示我本场获得的金币
+     *
+     * @param liveAndBackDebug
+     * @param gold             金币数
+     */
+    public static void showMyGold(LiveAndBackDebug liveAndBackDebug, String gold) {
+        if (UPLOAD_OPEN && liveAndBackDebug != null) {
+            StableLogHashMap logHashMap = new StableLogHashMap("showMyGold");
+            logHashMap.addSno("17");
+            logHashMap.addExY();
+            logHashMap.addStable("0");
+            logHashMap.put("gold", gold);
+            liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
+        }
+    }
 }

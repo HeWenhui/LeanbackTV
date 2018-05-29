@@ -9,8 +9,12 @@ public class NativeVoteRusltulCloseEvent {
     /**用户是否参与了投票*/
     boolean stuVoted;
 
-    public NativeVoteRusltulCloseEvent(boolean stuVoted){
+    /**投票id*/
+    String  voteId;
+
+    public NativeVoteRusltulCloseEvent(boolean stuVoted,String voteId){
         this.stuVoted = stuVoted;
+        this.voteId = voteId;
     }
 
     public void setStuVoted(boolean stuVoted) {
@@ -20,4 +24,14 @@ public class NativeVoteRusltulCloseEvent {
     public boolean isStuVoted() {
         return stuVoted;
     }
+
+    public void setVoteId(String voteId) {
+        this.voteId = voteId;
+    }
+
+    public String getVoteId() {
+        return voteId;
+    }
+
+
 }

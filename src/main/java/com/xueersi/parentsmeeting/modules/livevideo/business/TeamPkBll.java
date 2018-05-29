@@ -547,6 +547,7 @@ public class TeamPkBll {
         pkStateRootView = viewGroup.findViewById(R.id.tpkL_teampk_pkstate_root);
         if (pkStateRootView != null) {
             pkStateRootView.setVisibility(View.VISIBLE);
+            pkStateRootView.setTeamPkBll(this);
         }
         // step 2  初始化 又测 pk 状态栏
         updatePkStateLayout(false);
@@ -587,29 +588,34 @@ public class TeamPkBll {
     /**
      * 显示实时答题 奖励
      */
-    public void showAnswerQuestionAward(int goldNum, int energyNum) {
+    public void showAnswerQuestionAward(int goldNum, int energyNum,String id) {
         TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity,
                 TeamPkAqResultPager.AWARD_TYPE_QUESTION, this);
         addPager(aqAwardPager);
         aqAwardPager.setData(goldNum, energyNum);
+        TeamPkLog.showAddPower(mLiveBll,id,energyNum+"");
     }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVoteResultUIColse(NativeVoteRusltulCloseEvent event) {
         int addEnergy = event.isStuVoted() ? VOTE_ADD_ENERGY : 0;
-        showVoteEnergyAnim(addEnergy);
+        showVoteEnergyAnim(addEnergy,event.getVoteId());
     }
 
     /**
      * 展示 投票加能量 动画
      */
-    private void showVoteEnergyAnim(int addEnergy) {
-        Loger.e("LiveBll", "========> showVoteEnergyAnim");
+    private void showVoteEnergyAnim(int addEnergy,String voteId) {
+        Loger.e("LiveBll", "========> showVoteEnergyAnim:"+voteId+":"+addEnergy);
         TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_VOTE,
                 this);
         addPager(aqAwardPager);
         aqAwardPager.setData(0, addEnergy);
+
+        TeamPkLog.showAddPower(mLiveBll,voteId,addEnergy+"");
+
+
         //上报服务器 增加加能量
         mHttpManager.addPersonAndTeamEnergy(mLiveBll.getLiveId(), addEnergy,
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
@@ -719,7 +725,7 @@ public class TeamPkBll {
             if (h5CloseEvents.get(0).isCloseByTeacher()) {
                 cacheEvent = h5CloseEvents.remove(0);
                 //step  1 显示飞星动画
-                showAnswerQuestionAward(cacheEvent.getmGoldNum(), cacheEvent.getmEnergyNum());
+                showAnswerQuestionAward(cacheEvent.getmGoldNum(), cacheEvent.getmEnergyNum(),event.getId());
                 //step  2 显示pk 结果
                 final LiveRoomH5CloseEvent finalCacheEvent = cacheEvent;
                 rlTeamPkContent.postDelayed(new Runnable() {
@@ -730,7 +736,7 @@ public class TeamPkBll {
                 }, 3000);
             } else {
                 cacheEvent = h5CloseEvents.get(0);
-                showAnswerQuestionAward(cacheEvent.getmGoldNum(), cacheEvent.getmEnergyNum());
+                showAnswerQuestionAward(cacheEvent.getmGoldNum(), cacheEvent.getmEnergyNum(),event.getId());
             }
         } else {
             //未展示答题结果
@@ -780,7 +786,7 @@ public class TeamPkBll {
                                 boolean isComputer = (teamId < 0 && classId < 0);
                                 TeamPkLog.showOpponent(mLiveBll, isComputer,pkAdversaryEntity.getSelf().getTeamName(),
                                         pkAdversaryEntity.getOpponent().getTeamName(),pkAdversaryEntity.getOpponent()
-                                                .getTeamId());
+                                                .getTeamId(),pkAdversaryEntity.getOpponent().getClassId());
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
