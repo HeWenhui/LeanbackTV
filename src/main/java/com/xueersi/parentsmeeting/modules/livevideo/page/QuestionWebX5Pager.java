@@ -8,13 +8,14 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.ConsoleMessage;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
+import com.tencent.smtt.sdk.WebChromeClient;
+import com.tencent.smtt.sdk.WebSettings;
+import com.tencent.smtt.sdk.WebView;
+import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.logerhelper.LogerTag;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -94,7 +95,7 @@ public class QuestionWebX5Pager extends BasePager implements BaseQuestionWebPage
 
     @Override
     public View initView() {
-        final View view = View.inflate(mContext, R.layout.page_livevideo_subject_question, null);
+        final View view = View.inflate(mContext, R.layout.page_livevideo_subject_question_x5, null);
         btSubjectClose = (Button) view.findViewById(R.id.bt_livevideo_subject_close);
         btSubjectCalljs = (Button) view.findViewById(R.id.bt_livevideo_subject_calljs);
         wvSubjectWeb = (WebView) view.findViewById(R.id.wv_livevideo_subject_web);
@@ -183,7 +184,7 @@ public class QuestionWebX5Pager extends BasePager implements BaseQuestionWebPage
         webSetting.setLoadWithOverviewMode(true);
         webSetting.setBuiltInZoomControls(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            webSetting.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+            webSetting.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
 //        int scale = DeviceUtils.getScreenWidth(mContext) * 100 / 878;
 //        wvSubjectWeb.setInitialScale(scale);
@@ -204,7 +205,7 @@ public class QuestionWebX5Pager extends BasePager implements BaseQuestionWebPage
         wvSubjectWeb.loadUrl(jsExamSubmitAll);
     }
 
-    public class MyWebChromeClient extends android.webkit.WebChromeClient {
+    public class MyWebChromeClient extends WebChromeClient {
 //        @Override
 //        public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
 //            VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false, MESSAGE_VERIFY_TYPE);
