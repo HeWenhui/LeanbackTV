@@ -281,11 +281,9 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             public void onReceive(Context context, Intent intent) {
                 // 04.12 弹出广告的时候，需要刷新广告列表
                 lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(), getDataCallBack);
-                Loger.e("Duncan", "PaySuccessfully");
             }
         };
         registerReceiver(receiver, intentFilter);
-        Loger.e("Duncan", "oncreating");
     }
 
     @Override
@@ -373,22 +371,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             mMediaController.setVideoQuestions("playback" + mVideoEntity.getvLivePlayBackType() + "-", lstVideoQuestion,
                     vPlayer.getDuration());
         }
-        // 04.12 重新创建面板抽屉
-//        if(mIsLand){
-//            if(mPopupWindows != null){
-//                mPopupWindows.dismiss();
-//                mPopupWindows = null;
-//            }
-//            showPopupwindowboard();
-//        }else{
-//            if(mPopupWindows != null) {
-//                mPopupWindows.dismiss();
-//                mPopupWindows = null;
-//                Log.e("Duncan","竖屏方法2");
-//            }
-//            Log.e("Duncan","竖屏方法3");
-//        }
-
 
     }
 
