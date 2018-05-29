@@ -135,6 +135,7 @@ public class TeamPkStateLayout extends FrameLayout {
             tvState.setVisibility(GONE);
             tvEnergyMyContribution = statBarRootView.findViewById(R.id.tv_teampk_pkstate_energy_mycontribution);
             tvEnergyMyContribution.setVisibility(GONE);
+
         }
     }
 
