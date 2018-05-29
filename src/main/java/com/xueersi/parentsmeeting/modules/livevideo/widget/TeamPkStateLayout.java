@@ -67,7 +67,7 @@ public class TeamPkStateLayout extends FrameLayout {
     /**
      * 我贡献了多少能量显示时间
      */
-    private static final long ENERGY_MY_CONTRIBUTION_DURATION = 3 * 1000;
+    private static final long ENERGY_MY_CONTRIBUTION_DURATION = 4 * 1000;
 
     private boolean dataInited = false;
     private TextView tvEnergyMyContribution;
@@ -126,8 +126,6 @@ public class TeamPkStateLayout extends FrameLayout {
             int stateBarHeight = SizeUtils.Dp2Px(getContext(), STATE_BAR_HEIGHT);
             int gapAbovePkStateLayout = SizeUtils.Dp2Px(getContext(), STATE_BAR_BOTTOM_MARGIN);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(this.getMeasuredWidth(), stateBarHeight);
-         /*   Loger.e("TeamPkStateLayout", "=======>addPkStatBar:" + this.getLayoutParams().width + ":" + this
-                    .getMeasuredWidth());*/
             int[] location = new int[2];
             this.getLocationInWindow(location);
             lp.topMargin = location[1] - (gapAbovePkStateLayout + stateBarHeight);
