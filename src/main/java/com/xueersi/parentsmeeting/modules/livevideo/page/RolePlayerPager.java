@@ -775,10 +775,10 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                         "Fantastic");
 
             } else if (head.getSpeechScore() >= 60) {
-                tvResultMsgTip.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "很棒" :
+                tvResultMsgTip.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "不错哦" :
                         "Welldone");
             } else {
-                tvResultMsgTip.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "加油" :
+                tvResultMsgTip.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "加油哦" :
                         "Fighting");
             }
 
@@ -1024,7 +1024,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                     @Override
                     public void onResult(ResultEntity resultEntity) {
                         if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-                            Loger.i("RolePlayerDemoTest", "测评成功，开始上传自己的mp3,开口时长：" + resultEntity.getSpeechDuration());
+                            Loger.i("RolePlayerDemoTest", "测评成功，开始上传自己的mp3,开口时长：" + resultEntity.getSpeechDuration()+"得分："+resultEntity.getScore());
                             entity.setSelfValidSpeechTime(resultEntity.getSpeechDuration());
                             //mIsEvaluatoring = false;
                             message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
@@ -1037,7 +1037,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                             //上传自己读完的语句，只通知除了自己以外的其他组内成员
                             mRolePlayBll.uploadFileToAliCloud(saveVideoFile.getAbsolutePath(), message, entity,
                                     message.getRolePlayer().getRoleId());
-                            XESToastUtils.showToast(mContext, resultEntity.getScore() + "");
+                            //XESToastUtils.showToast(mContext, resultEntity.getScore() + "");
                             //提前开始下一条
                             nextReadMessage();
                         } else if (resultEntity.getStatus() == ResultEntity.ERROR) {

@@ -70,7 +70,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_marginRight="75dp"
+            android:layout_marginRight="70dp"
             android:layout_alignParentRight="true"
             android:background="@drawable/selector_live_roleplayer_self_item_bubble"
             android:clickable="true"

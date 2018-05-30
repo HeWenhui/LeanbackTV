@@ -414,6 +414,8 @@ public class RolePlayerSelfItem extends RolePlayerItem {
      */
 
     private void speechPhoneScore() {
+        tvMessageContent.setTextColor(mContext.getResources().getColor(R.color
+                .COLOR_333333));
         String[] textArray;
         if (mEntity.getLstPhoneScore().isEmpty()) {
             if (mEntity.getSpeechScore() >= 75) {
@@ -454,6 +456,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                     }
                 }
             }
+
             tvMessageContent.setText(spannable);
         }
     }
@@ -463,6 +466,8 @@ public class RolePlayerSelfItem extends RolePlayerItem {
      */
 
     private void speechPhoneScoreWhenClick() {
+        tvMessageContent.setTextColor(mContext.getResources().getColor(R.color
+                .COLOR_FFFFFF));
         String[] textArray;
         if (mEntity.getLstPhoneScore().isEmpty()) {
             if (mEntity.getSpeechScore() >= 75) {
@@ -504,6 +509,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                     }
                 }
             }
+
             tvMessageContent.setText(spannable);
         }
     }
