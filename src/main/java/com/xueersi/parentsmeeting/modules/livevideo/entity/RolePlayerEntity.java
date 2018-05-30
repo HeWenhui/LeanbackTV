@@ -421,6 +421,7 @@ public class RolePlayerEntity {
          */
         private int level;
         private String testId;
+        private boolean mUnClick = true;
 
         public RolePlayerMessage(RolePlayerHead head, String msg, int maxTime) {
             this.rolePlayer = head;
@@ -581,6 +582,14 @@ public class RolePlayerEntity {
 
         public String getTestId() {
             return testId;
+        }
+
+        public void setUnClick(boolean unClick) {
+            mUnClick = unClick;
+        }
+
+        public boolean getUnClick() {
+            return mUnClick;
         }
     }
 

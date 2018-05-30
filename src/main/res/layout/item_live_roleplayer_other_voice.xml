@@ -31,8 +31,11 @@
                 android:id="@id/tv_live_roleplayer_message_username"
                 style="@style/text_style_chat__name_style"
                 android:layout_gravity="center_horizontal"
-                android:layout_width="54dp"
+                android:layout_width="wrap_content"
                 android:layout_marginTop="4dp"
+                android:singleLine="true"
+                android:maxLength="5"
+                android:ellipsize="end"
                 android:gravity="center"
                 android:textColor="#078EC2"
                 android:textSize="11sp" />
@@ -44,8 +47,7 @@
             android:id="@id/rl_live_roleplayer_message_voice_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_toRightOf="@id/ll_live_roleplayer_message_user_name"
+            android:layout_marginLeft="75dp"
             android:background="@drawable/selector_live_roleplayer_other_item_bubble"
             android:minHeight="32dp"
             android:minWidth="120dp"
@@ -93,6 +95,7 @@
                 android:layout_height="35dp"
                 android:src="@drawable/livevideo_roleplay_result_ic_normal"
                 android:layout_centerInParent="true"
+                android:clickable="true"
 
                 />
 
