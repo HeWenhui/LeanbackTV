@@ -665,7 +665,6 @@ public class TeamPkBll {
         Rect r = new Rect();
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
         int screenWidth = (r.right - r.left);
-        Loger.e("cksdd", "setVideoWidthAndHeigh:screenWidth=" + screenWidth + ",width=" + width + "," + height );
         if (width > 0 && mFocusPager != null) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mFocusPager.getRootView().getLayoutParams();
             int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
