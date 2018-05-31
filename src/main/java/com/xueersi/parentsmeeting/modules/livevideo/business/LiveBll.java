@@ -4352,7 +4352,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     @Override
     public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
         mData.put("userid", mGetInfo.getStuId());
-        mData.put("uname", mGetInfo.getStuName());
+        mData.put("uname", mGetInfo.getUname());
         StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
         if (studentLiveInfo != null) {
             mData.put("classid", studentLiveInfo.getClassId());
@@ -4378,7 +4378,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     @Override
     public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
         mData.put("userid", mGetInfo.getStuId());
-        mData.put("uname", mGetInfo.getStuName());
+        mData.put("uname", mGetInfo.getUname());
         StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
         if (studentLiveInfo != null) {
             mData.put("classid", studentLiveInfo.getClassId());
