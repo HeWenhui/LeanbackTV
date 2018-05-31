@@ -279,6 +279,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 
         switch (entity.getMsgStatus()) {
             case RolePlayerEntity.RolePlayerMessageStatus.WAIT_NORMAL:
+                mIsPlaying = true;
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
 
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
@@ -286,6 +287,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 civUserHead.invalidate();
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY:
+                mIsPlaying = true;
                 vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_me_reading);
                 tvMessageContent.setTextColor(Color.WHITE);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_self_voice_white_anim);
@@ -318,6 +320,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY:
                 Loger.i("RolePlayerSelfItemTest", "结束roleplay");
+                mIsPlaying = false;
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
                 //重置头像
@@ -329,6 +332,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH:
                 Loger.i("RolePlayerSelfItemTest", "测评有得分刚结束");
+                mIsPlaying = false;
                 //测评有得分刚结束
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);

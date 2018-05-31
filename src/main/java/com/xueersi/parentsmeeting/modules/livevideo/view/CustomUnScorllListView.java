@@ -47,4 +47,19 @@ public class CustomUnScorllListView extends ListView {
         return super.onTouchEvent(ev);
 
     }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_MOVE:
+                if (mIsUnScroll) {
+                    //禁止滑动
+                    Loger.i("RolePlayerDemoTest", "listView不拦截滑动");
+                    return false;
+                } else {
+                    return super.onInterceptTouchEvent(ev);
+                }
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
 }

@@ -17,6 +17,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
@@ -628,8 +629,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                                 .getLayoutParams();
                         int animDistance = tvBeginTipMsg.getHeight() + layoutParams.topMargin;
                         ObjectAnimator oaAnimTransY = ObjectAnimator.ofFloat(tvBeginTipMsg, ImageView.TRANSLATION_Y,
-                                0, -animDistance);
-                        oaAnimTransY.setInterpolator(new AccelerateDecelerateInterpolator());
+                                0, -animDistance*3/2);
+                        oaAnimTransY.setInterpolator(new AccelerateInterpolator());
                         oaAnimTransY.addListener(new Animator.AnimatorListener() {
                             @Override
                             public void onAnimationStart(Animator animation) {
@@ -738,11 +739,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             return;
         }
 
-        //恢复listview可滑动
-        mIsListViewUnSroll = false;
 
-
-        mRolePlayBll.cancelDZ();//取消点赞
         isShowResult = true;
         Loger.i("RolePlayerDemoTestlog", "显示结果,记录日志");
         //显示结果的时候记录日志
@@ -892,8 +889,13 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         rlResult.postDelayed(new Runnable() {
             @Override
             public void run() {
+                //恢复listview可滑动
+                mIsListViewUnSroll = false;
                 rlResult.setVisibility(View.GONE);
-                lvReadList.setUnScroll(mIsListViewUnSroll);
+                lvReadList.setUnScroll(mIsListViewUnSroll);//恢复列表滑动
+                mReadHandler.sendEmptyMessage(RolePlayerEntity.RolePlayerMessageStatus.RESULT_DIALOG_GONE);//结果弹窗之后发送消息，恢复列表点击
+
+                mRolePlayBll.cancelDZ();//取消点赞
                 //isShowResult = false;
             }
         }, 5000);

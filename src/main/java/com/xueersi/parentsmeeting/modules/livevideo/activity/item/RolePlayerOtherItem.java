@@ -298,12 +298,14 @@ public class RolePlayerOtherItem extends RolePlayerItem {
         switch (entity.getMsgStatus()) {
             case RolePlayerEntity.RolePlayerMessageStatus.WAIT_NORMAL:
                 //  Loger.i("RolePlayerDemoTest", "等待朗读");
+                mIsPlaying = true;
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_other_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
 
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY:
                 // Loger.i("RolePlayerDemoTest", "开始朗读");
+                mIsPlaying = true;
                 rlMessageDZ.setVisibility(View.VISIBLE);
                 ivMessageDZ.setVisibility(View.VISIBLE);
                 vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_other_reading);
@@ -317,6 +319,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY:
                 // Loger.i("RolePlayerDemoTest", "结束朗读");
+                mIsPlaying = false;
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_other_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
                 rlMessageDZ.setVisibility(View.VISIBLE);
@@ -333,6 +336,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 break;
 
             case RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ:
+                mIsPlaying = false;
                 // Loger.i("RolePlayerDemoTest", "取消点赞按钮");
                 ivMessageDZ.setImageResource(R.drawable.livevideo_roleplay_result_ic_normal);
                 rlMessageDZ.setVisibility(View.GONE);
