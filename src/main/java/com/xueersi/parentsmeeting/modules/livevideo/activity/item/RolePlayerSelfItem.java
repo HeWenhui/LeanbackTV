@@ -112,7 +112,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                     Loger.i("RolePlayerDemoTest", "数据为空");
                     return;
                 }
-                if(mIsPlaying){
+                if (mIsPlaying) {
                     Loger.i("RolePlayerDemoTest", "语音正在播放中，请不要重复点击");
                     return;
                 }
@@ -320,7 +320,6 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY:
                 Loger.i("RolePlayerSelfItemTest", "结束roleplay");
-                mIsPlaying = false;
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
                 //重置头像
@@ -332,7 +331,6 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH:
                 Loger.i("RolePlayerSelfItemTest", "测评有得分刚结束");
-                mIsPlaying = false;
                 //测评有得分刚结束
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
@@ -367,6 +365,20 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 rlMain.setVisibility(View.INVISIBLE);
                 //重置头像
                 civUserHead.restore();
+                break;
+
+            case RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ:
+                Loger.i("RolePlayerSelfItemTest", "取消点赞");
+                mIsPlaying = false;
+                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+                //重置头像
+                civUserHead.restore();
+                tvCountTime.setText("");
+                tvCountTime.setVisibility(View.INVISIBLE);
+                showSpeechStar();
+                speechPhoneScore();
+
                 break;
             default:
                 break;
@@ -532,16 +544,17 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 
     /**
      * 设置语音可否点击
+     *
      * @param isVideoUnClick true为不可点击；false为可点击，默认true不可点击
      */
-    public void setVideoUnClick(boolean isVideoUnClick){
+    public void setVideoUnClick(boolean isVideoUnClick) {
         mIsVideoUnClick = isVideoUnClick;
         mEntity.setUnClick(mIsVideoUnClick);
         //changeYuyinClickable();
     }
 
     private void changeYuyinClickable() {
-        vVoiceMain.setClickable(mIsVideoUnClick ? false: true);
+        vVoiceMain.setClickable(mIsVideoUnClick ? false : true);
     }
 }
 

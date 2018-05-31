@@ -319,7 +319,6 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY:
                 // Loger.i("RolePlayerDemoTest", "结束朗读");
-                mIsPlaying = false;
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_other_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
                 rlMessageDZ.setVisibility(View.VISIBLE);

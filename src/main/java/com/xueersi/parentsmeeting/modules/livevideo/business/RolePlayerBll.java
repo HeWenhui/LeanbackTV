@@ -752,11 +752,11 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         List<RolePlayerEntity.RolePlayerMessage> rolePlayerMessages = tempRolePlayerEntity.getLstRolePlayerMessage();
         for (int i = 0; i < rolePlayerMessages.size(); i++) {
             RolePlayerEntity.RolePlayerHead head = mRolePlayerEntity.getLstRolePlayerMessage().get(i).getRolePlayer();
-            if (!head.isSelfRole()) {
+            //if (!head.isSelfRole()) {
                 mRolePlayerEntity.getLstRolePlayerMessage().get(i).setMsgStatus(RolePlayerEntity
                         .RolePlayerMessageStatus.CANCEL_DZ);
                 mRolePlayerPager.updateRolePlayList(rolePlayerMessages.get(i));
-            }
+           // }
 
         }
     }
