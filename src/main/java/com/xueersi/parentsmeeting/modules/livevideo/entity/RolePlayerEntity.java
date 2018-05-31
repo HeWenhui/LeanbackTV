@@ -6,6 +6,8 @@ import com.tal.speech.speechrecognizer.PhoneScore;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -177,7 +179,9 @@ public class RolePlayerEntity {
     public List<RolePlayerHead> getResultRoleList() {
 
         List<RolePlayerHead> lstPM = new ArrayList<>();
-        RolePlayerHead selfHead = null;
+        lstPM.clear();
+        lstPM.addAll(lstRoleInfo);
+       /* RolePlayerHead selfHead = null;
         for (RolePlayerHead head : lstRoleInfo) {
             int i = 0;
             boolean isResult = false;
@@ -195,21 +199,19 @@ public class RolePlayerEntity {
             } else {
                 lstPM.add(head);
             }
-        }
+        }*/
+        Collections.sort(lstPM, new StuComparator());//按分数排序
 
-        boolean isThreadUp = false;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < lstPM.size(); i++) {
             RolePlayerHead head = lstPM.get(i);
-            if (head.isSelfRole()) {
-                isThreadUp = true;
+            if (head.isSelfRole() && i>2) {
+                //前3名中没有自己
+                lstPM.add(2, head);
                 break;
             }
         }
 
-        if (!isThreadUp) {
-            //前3名中没有自己
-            lstPM.add(2, selfHead);
-        }
+
         return lstPM;
 
     }
@@ -357,8 +359,20 @@ public class RolePlayerEntity {
         public int getResultStar() {
             return resultStar;
         }
-    }
 
+
+    }
+    public class StuComparator implements Comparator<RolePlayerHead>{
+
+        @Override
+        public int compare(RolePlayerHead o1, RolePlayerHead o2) {
+            if(o1.speechScore<o2.speechScore)
+                return 1;
+            else if(o1.speechScore>o2.speechScore)
+                return -1;
+            return 0;
+        }
+    }
     /**
      * 对话信息
      */
