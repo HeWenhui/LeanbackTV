@@ -114,11 +114,11 @@ public class IRCTalkConf {
         params.addBodyParam("liveid", liveId);
         if (mLiveType == LiveBll.LIVE_TYPE_LIVE) {
             params.addBodyParam("appid", "1");
+            params.addBodyParam("classid", classid);
         } else {
             params.addBodyParam("appid", "2");
         }
         params.addBodyParam("ip", getHostIP());
-        params.addBodyParam("classid", classid);
         params.setWriteAndreadTimeOut(GET_SERVER_TIMEOUT);
         TalkConfHost talkConfHost = hosts.get(mSelectTalk++ % hosts.size());
         final String host = talkConfHost.getHost();
