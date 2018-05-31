@@ -893,8 +893,6 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 mIsListViewUnSroll = false;
                 rlResult.setVisibility(View.GONE);
                 lvReadList.setUnScroll(mIsListViewUnSroll);//恢复列表滑动
-                mReadHandler.sendEmptyMessage(RolePlayerEntity.RolePlayerMessageStatus.RESULT_DIALOG_GONE);//结果弹窗之后发送消息，恢复列表点击
-
                 mRolePlayBll.cancelDZ();//取消点赞
                 //isShowResult = false;
             }
