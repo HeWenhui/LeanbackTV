@@ -31,14 +31,14 @@
                 android:id="@id/tv_live_roleplayer_message_username"
                 style="@style/text_style_chat__name_style"
                 android:layout_gravity="center_horizontal"
-                android:layout_width="wrap_content"
+                android:layout_width="60dp"
                 android:layout_marginTop="4dp"
-                android:singleLine="true"
-                android:maxLength="5"
-                android:ellipsize="end"
                 android:gravity="center"
                 android:textColor="#078EC2"
-                android:textSize="11sp" />
+                android:textSize="11sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                />
 
 
         </LinearLayout>

@@ -51,14 +51,13 @@
             <TextView
                 android:id="@id/tv_live_roleplayer_message_username"
                 style="@style/text_style_chat__name_style"
-                android:layout_width="wrap_content"
+                android:layout_width="60dp"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
                 android:layout_marginTop="2dp"
                 android:textColor="#108479"
                 android:textSize="11sp"
                 android:singleLine="true"
-                android:maxLength="5"
                 android:ellipsize="end"
                 />
 
