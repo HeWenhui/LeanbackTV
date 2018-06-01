@@ -538,7 +538,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         vHead.setLayoutParams(lp);
         lvReadList.addFooterView(vHead);
 
-//        int rop = ScreenUtils.getScreenHeight() / 2;
+//        int rop = ScreenUtils.getScreenHeight() / 2;;
 //        lvReadList.smoothScrollToPositionFromTop(0, -rop);
 //        lvReadList.setSelection(0);
 
@@ -911,18 +911,25 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     /**
      * 恢复页面滑动，取消点赞
      */
-    private void recoverListScrollAndCancelDZ() {
+    public void recoverListScrollAndCancelDZ() {
         //恢复listview可滑动
         mIsListViewUnSroll = false;
-        rlResult.setVisibility(View.GONE);
-        lvReadList.setUnScroll(mIsListViewUnSroll);//恢复列表滑动
-        mRolePlayBll.cancelDZ();//取消点赞
+        if(rlResult != null){
+            rlResult.setVisibility(View.GONE);
+        }
+        if(lvReadList != null){
+            lvReadList.setUnScroll(mIsListViewUnSroll);//恢复列表滑动
+        }
+        if(mRolePlayBll != null){
+            mRolePlayBll.cancelDZ();//取消点赞
+        }
+
     }
 
     /**
      * 对话结束后，离开频道
      */
-    private void leaveChannel() {
+    public void leaveChannel() {
         if (mWorkerThread != null) {
             mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLevelChannel() {
                 @Override
@@ -1324,6 +1331,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         if (mRolePlayerOtherItem != null) {
             mRolePlayerOtherItem.stopVoicePlay();
         }
+
+
     }
 
     /**

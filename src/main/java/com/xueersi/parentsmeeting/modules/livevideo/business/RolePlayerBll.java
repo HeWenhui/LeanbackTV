@@ -672,7 +672,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     /**
      * 提交结果
      */
-    public void requestResult() {
+    public synchronized void  requestResult() {
         Loger.i("RolePlayerDemoTest", "提交结果");
         Loger.i("RolePlayerDemoTestlog", "用户提交结果,记录日志");
         //提交结果的时候，记录日志信息
@@ -734,8 +734,13 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
                     Loger.i("RolePlayerDemoTest", "onPmError: responseEntity.toString()  =" + responseEntity.toString
-                            () + "取消点赞");
+                            () + "提交结果失败，但是要释放资源");
                     super.onPmError(responseEntity);
+                    if(mRolePlayerPager != null){
+                        mRolePlayerPager.recoverListScrollAndCancelDZ();
+                        mRolePlayerPager.leaveChannel();
+                    }
+
                 }
             });
         } catch (JSONException e) {
