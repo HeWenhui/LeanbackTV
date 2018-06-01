@@ -1859,7 +1859,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         }
                         if (rolePlayAction != null) {
                             Loger.i("RolePlayerDemoTest", "学生去请分组信息");
-                            rolePlayAction.teacherRead(mLiveId, vStuCourseID);
+                            String nonce = object.optString("nonce");
+                            rolePlayAction.teacherRead(mLiveId, vStuCourseID, nonce);
                         }
                         break;
                     }

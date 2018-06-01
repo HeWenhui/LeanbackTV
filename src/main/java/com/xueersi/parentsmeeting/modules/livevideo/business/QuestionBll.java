@@ -819,7 +819,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         isAnaswer = false;
         if (rolePlayAction != null && mVideoQuestionLiveEntity != null) {
             if (mVideoQuestionLiveEntity.id.equals(rolePlayAction.getQuestionId())) {
-                rolePlayAction.onStopQuestion(mVideoQuestionLiveEntity);
+                rolePlayAction.onStopQuestion(mVideoQuestionLiveEntity, nonce);
             }
         }
         if (voiceAnswerPager != null) {

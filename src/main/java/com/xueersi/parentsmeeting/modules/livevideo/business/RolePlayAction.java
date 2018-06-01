@@ -11,7 +11,7 @@ public interface RolePlayAction {
     /**
      * 老师领读
      */
-    void teacherRead(String liveId, String stuCouId);
+    void teacherRead(String liveId, String stuCouId, String nonce);
 
     /**
      * 老师发题
@@ -26,7 +26,7 @@ public interface RolePlayAction {
     /**
      * 老师停止发题
      */
-    void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity);
+    void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, String nonce);
 
     /**
      * 走人机RolePlay之后关socket

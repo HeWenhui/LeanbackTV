@@ -40,7 +40,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import okhttp3.Call;
 
@@ -117,7 +116,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      * 领读指令触发
      */
     @Override
-    public void teacherRead(String liveId, String stuCouId) {
+    public void teacherRead(String liveId, String stuCouId, String nonce) {
         isGoToRobot = false;
         mRolePlayerEntity = null;
         this.mLiveId = liveId;
@@ -266,7 +265,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     }
 
     @Override
-    public void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
+    public void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, String nonce) {
         Loger.i("RolePlayerDemoTest", "老师收题了,断开socket ");
         if (mWebSocket != null && mWebSocket.isOpen()) {
             mWebSocket.close();
