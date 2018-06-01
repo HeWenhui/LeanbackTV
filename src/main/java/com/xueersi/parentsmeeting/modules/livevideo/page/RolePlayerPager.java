@@ -951,7 +951,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      * 结束RolePlayer
      */
     private void endRolePlayer() {
-        if (mEntity != null && mEntity.isResult()) {
+        if (mEntity != null && !mEntity.isResult()) {
             Loger.i("RolePlayerDemoTest", "结束RolePlayer,结果还未提交，再次提交结果");
             mRolePlayBll.requestResult();
         } else {
