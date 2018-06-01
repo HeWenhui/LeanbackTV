@@ -116,7 +116,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      * 领读指令触发
      */
     @Override
-    public void teacherRead(String liveId, String stuCouId, String nonce) {
+    public void teacherRead(String liveId, String stuCouId, final String nonce) {
         isGoToRobot = false;
         mRolePlayerEntity = null;
         this.mLiveId = liveId;
@@ -145,7 +145,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                         unList.remove(0);
                         if (unList.isEmpty() && SpeechEvaluatorUtils.isOfflineSuccess()) {
                             Loger.i("RolePlayerDemoTest", "开启了录音拍照权限，且离线加载成功开始去请求分组");
-                            beginConWebSocket();
+                            beginConWebSocket(nonce);
                         } else {
                             if (isGoToRobot) {
                                 return;
@@ -164,7 +164,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         unList.addAll(unPermissionItems);
         if (unList.isEmpty() && SpeechEvaluatorUtils.isOfflineSuccess()) {
             Loger.i("RolePlayerDemoTest", "开启了录音拍照权限，且离线加载成功开始去请求分组");
-            beginConWebSocket();
+            beginConWebSocket(nonce);
         } else {
             if (isGoToRobot) {
                 return;
@@ -245,14 +245,14 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
         //拉取试题a
         requestTestInfos();
-        mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this, mLiveGetInfo,mLiveBll);
+        mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this, mLiveGetInfo, mLiveBll);
         mRolePlayerPager.initData();
         if (bottomContent != null) {
             bottomContent.addView(mRolePlayerPager.getRootView());
         }
         //用户弹出答题框
         Loger.i("RolePlayerDemoTestlog", "用户弹出答题框,记录日志");
-        RolePlayLog.sno4(mLiveBll,videoQuestionLiveEntity,mContext);
+        RolePlayLog.sno4(mLiveBll, videoQuestionLiveEntity, mContext);
 
     }
 
@@ -337,8 +337,10 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
     /**
      * 开始连接WebSocket
+     *
+     * @param nonce
      */
-    private void beginConWebSocket() {
+    private void beginConWebSocket(final String nonce) {
         if (isBeginConnWebSocket) {
             return;
         }
@@ -358,7 +360,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                 isBeginConnWebSocket = true;
                 Loger.i("RolePlayerDemoTest", "open");
                 Loger.i("RolePlayerDemoTestlog", "学生连接socket成功,记录日志");
-                RolePlayLog.sno2(mLiveBll,mContext);
+                RolePlayLog.sno2(mLiveBll, mContext, nonce);
 
             }
 
@@ -674,7 +676,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         Loger.i("RolePlayerDemoTest", "提交结果");
         Loger.i("RolePlayerDemoTestlog", "用户提交结果,记录日志");
         //提交结果的时候，记录日志信息
-        RolePlayLog.sno6(mLiveBll,mRolePlayerEntity,mContext);
+        RolePlayLog.sno6(mLiveBll, mRolePlayerEntity, mContext);
         mRolePlayerEntity.setResult(true);
         JSONObject obj = new JSONObject();
         try {
@@ -751,10 +753,10 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         for (int i = 0; i < rolePlayerMessages.size(); i++) {
             RolePlayerEntity.RolePlayerHead head = mRolePlayerEntity.getLstRolePlayerMessage().get(i).getRolePlayer();
             //if (!head.isSelfRole()) {
-                mRolePlayerEntity.getLstRolePlayerMessage().get(i).setMsgStatus(RolePlayerEntity
-                        .RolePlayerMessageStatus.CANCEL_DZ);
-                mRolePlayerPager.updateRolePlayList(rolePlayerMessages.get(i));
-           // }
+            mRolePlayerEntity.getLstRolePlayerMessage().get(i).setMsgStatus(RolePlayerEntity
+                    .RolePlayerMessageStatus.CANCEL_DZ);
+            mRolePlayerPager.updateRolePlayList(rolePlayerMessages.get(i));
+            // }
 
         }
     }
