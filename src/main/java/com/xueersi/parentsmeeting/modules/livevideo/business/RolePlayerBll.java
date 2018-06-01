@@ -753,7 +753,12 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      * 返回结果之后，去掉点赞按钮
      */
     public synchronized void cancelDZ() {
+
         RolePlayerEntity tempRolePlayerEntity = mRolePlayerEntity;
+        if(tempRolePlayerEntity == null || mRolePlayerPager == null){
+            Loger.i("RolePlayerDemoTest", " roleplay界面已经销毁，数据为空，不再向下执行 ");
+            return;
+        }
         List<RolePlayerEntity.RolePlayerMessage> rolePlayerMessages = tempRolePlayerEntity.getLstRolePlayerMessage();
         for (int i = 0; i < rolePlayerMessages.size(); i++) {
             RolePlayerEntity.RolePlayerHead head = mRolePlayerEntity.getLstRolePlayerMessage().get(i).getRolePlayer();
