@@ -76,7 +76,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     /**
      * 匹配页默认停留时间
      */
-    private final int MATCH_WAIT_SECOND = 5000;
+    private final int MATCH_WAIT_SECOND = 4000;
     /**
      * 角色确认页停留时间
      */
