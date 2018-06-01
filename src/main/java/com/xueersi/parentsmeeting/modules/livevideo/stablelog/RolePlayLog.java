@@ -50,6 +50,7 @@ public class RolePlayLog {
         }
         StableLogHashMap logHashMap = new StableLogHashMap("showmutirole");
         logHashMap.put("testid", "" + videoQuestionLiveEntity.getvQuestionID());
+        logHashMap.put("nonce",videoQuestionLiveEntity.nonce);
         logHashMap.addExY().addSno("4");
         liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
     }
@@ -58,8 +59,8 @@ public class RolePlayLog {
      * roleplay 6. 用户提交结果 交互日志
      */
 
-    public static void sno6(LiveAndBackDebug liveAndBackDebug, RolePlayerEntity rolePlayerEntity, Context context) {
-        if (liveAndBackDebug == null || rolePlayerEntity == null) {
+    public static void sno6(LiveAndBackDebug liveAndBackDebug,RolePlayerEntity rolePlayerEntity, Context context) {
+        if(liveAndBackDebug == null || rolePlayerEntity == null){
             Loger.i("RolePlayerDemoTestlog", " liveAndBackDebug 或 rolePlayerEntity为空，不记录日志 ");
             return;
         }
@@ -70,38 +71,38 @@ public class RolePlayLog {
         logHashMap.put("speaktime", "" + rolePlayerEntity.getSelfValidSpeechTime());
         logHashMap.put("testid", "" + rolePlayerEntity.getTestId());
         logHashMap.addExY().addSno("6");
-        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
-        Loger.i("RolePlayerDemoTestlog", " speaktime =  " + rolePlayerEntity.getSelfValidSpeechTime());
+        liveAndBackDebug.umsAgentDebugInter(eventId,logHashMap.getData());
+        Loger.i("RolePlayerDemoTestlog", " speaktime =  "+rolePlayerEntity.getSelfValidSpeechTime());
     }
 
     /**
      * roleplay 7. 用户结果展示 展示日志
      */
 
-    public static void sno7(LiveAndBackDebug liveAndBackDebug, RolePlayerEntity rolePlayerEntity, Context context) {
-        if (liveAndBackDebug == null || rolePlayerEntity == null) {
+    public static void sno7(LiveAndBackDebug liveAndBackDebug,RolePlayerEntity rolePlayerEntity, Context context) {
+        if(liveAndBackDebug == null || rolePlayerEntity == null){
             Loger.i("RolePlayerDemoTestlog", " liveAndBackDebug 或 rolePlayerEntity为空，不记录日志 ");
             return;
         }
         StableLogHashMap logHashMap = new StableLogHashMap("showmutirolersultdlg");
         logHashMap.put("testid", "" + rolePlayerEntity.getTestId());
         logHashMap.addExY().addSno("7");
-        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugPv(eventId,logHashMap.getData());
     }
 
     /**
      * roleplay 8. 点击播放音频  交互日志
      */
 
-    public static void sno8(LiveAndBackDebug liveAndBackDebug, RolePlayerEntity.RolePlayerMessage rolePlayermsg, Context context) {
-        if (liveAndBackDebug == null || rolePlayermsg == null) {
+    public static void sno8(LiveAndBackDebug liveAndBackDebug,RolePlayerEntity.RolePlayerMessage rolePlayermsg, Context context) {
+        if(liveAndBackDebug == null || rolePlayermsg == null){
             Loger.i("RolePlayerDemoTestlog", " liveAndBackDebug 或 rolePlayermsg，不记录日志 ");
             return;
         }
         StableLogHashMap logHashMap = new StableLogHashMap("playoneaudio");
         logHashMap.put("testid", "" + rolePlayermsg.getTestId());
         logHashMap.addExY().addSno("8");
-        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugInter(eventId,logHashMap.getData());
     }
 }
 

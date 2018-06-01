@@ -694,6 +694,10 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      * 开始进入RolePlayer对话
      */
     private void beginRolePlayer() {
+        if(mEntity == null){
+            Loger.i("RolePlayerDemoTest", "开始roleplay，但是数据实体为空，所以不再往下执行");
+            return;
+        }
         mReadHandler.sendEmptyMessage(READ_MESSAGE);
 
         //开启声网连接
@@ -944,7 +948,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      * 结束RolePlayer
      */
     private void endRolePlayer() {
-        if (!mEntity.isResult()) {
+        if (mEntity != null && mEntity.isResult()) {
             Loger.i("RolePlayerDemoTest", "结束RolePlayer,结果还未提交，再次提交结果");
             mRolePlayBll.requestResult();
         } else {
@@ -1261,14 +1265,17 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      * 返回当前的倒计时
      */
     private SpannableString getCountDownTime() {
-        long countTime;
+        long countTime = 3000;//默认三秒
         boolean isFu = false;
-        if (mEntity.getCountDownSecond() < 0) {
-            isFu = true;
-            countTime = Math.abs(mEntity.getCountDownSecond());
-        } else {
-            countTime = mEntity.getCountDownSecond();
+        if(mEntity != null){
+            if (mEntity.getCountDownSecond() < 0) {
+                isFu = true;
+                countTime = Math.abs(mEntity.getCountDownSecond());
+            } else {
+                countTime = mEntity.getCountDownSecond();
+            }
         }
+        
         long min = countTime / 60;
         long sec = countTime % 60;
         long hour = min / 60;
