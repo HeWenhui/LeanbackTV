@@ -358,6 +358,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             public void onOpen() {
                 isBeginConnWebSocket = true;
                 Loger.i("RolePlayerDemoTest", "open");
+                Loger.i("RolePlayerDemoTestlog", "学生连接socket成功,记录日志");
+                RolePlayLog.sno2(mLiveBll,mContext);
 
             }
 
@@ -601,9 +603,6 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
                         mRolePlayerEntity.getLstRoleInfo().clear();
                         String testId = msgObj.optString("testId");
-
-                        Loger.i("RolePlayerDemoTestlog", "学生连接socket成功,记录日志");
-                        RolePlayLog.sno2(mLiveBll,testId,mContext);
 
                         mRolePlayerEntity.setTestId(testId);
                         mRolePlayerEntity.setTeamId(msgObj.optInt("team"));
