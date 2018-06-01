@@ -629,7 +629,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                                 .getLayoutParams();
                         int animDistance = tvBeginTipMsg.getHeight() + layoutParams.topMargin;
                         ObjectAnimator oaAnimTransY = ObjectAnimator.ofFloat(tvBeginTipMsg, ImageView.TRANSLATION_Y,
-                                0, -animDistance*3/2);
+                                0, -animDistance * 3 / 2);
                         oaAnimTransY.setInterpolator(new AccelerateInterpolator());
                         oaAnimTransY.addListener(new Animator.AnimatorListener() {
                             @Override
@@ -757,6 +757,13 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 .KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager
                 .SHAREDATA_NOT_CLEAR);
 
+        if (mEntity == null) {
+            Loger.i("RolePlayerDemoTest", "需要显示结果弹窗，可是数据为空,不再往下执行，恢复滑动，取消点赞，离开频道");
+            recoverListScrollAndCancelDZ();
+            leaveChannel();
+            return;
+
+        }
         List<RolePlayerEntity.RolePlayerHead> lstHead = mEntity.getResultRoleList();
         RolePlayerEntity.RolePlayerHead head = mEntity.getSelfRoleHead();
 
@@ -889,14 +896,29 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         rlResult.postDelayed(new Runnable() {
             @Override
             public void run() {
-                //恢复listview可滑动
-                mIsListViewUnSroll = false;
-                rlResult.setVisibility(View.GONE);
-                lvReadList.setUnScroll(mIsListViewUnSroll);//恢复列表滑动
-                mRolePlayBll.cancelDZ();//取消点赞
+                recoverListScrollAndCancelDZ();
+
                 //isShowResult = false;
             }
         }, 5000);
+        leaveChannel();
+    }
+
+    /**
+     * 恢复页面滑动，取消点赞
+     */
+    private void recoverListScrollAndCancelDZ() {
+        //恢复listview可滑动
+        mIsListViewUnSroll = false;
+        rlResult.setVisibility(View.GONE);
+        lvReadList.setUnScroll(mIsListViewUnSroll);//恢复列表滑动
+        mRolePlayBll.cancelDZ();//取消点赞
+    }
+
+    /**
+     * 对话结束后，离开频道
+     */
+    private void leaveChannel() {
         if (mWorkerThread != null) {
             mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLevelChannel() {
                 @Override
@@ -1024,7 +1046,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                     @Override
                     public void onResult(ResultEntity resultEntity) {
                         if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-                            Loger.i("RolePlayerDemoTest", "测评成功，开始上传自己的mp3,开口时长：" + resultEntity.getSpeechDuration()+"得分："+resultEntity.getScore());
+                            Loger.i("RolePlayerDemoTest", "测评成功，开始上传自己的mp3,开口时长：" + resultEntity.getSpeechDuration()
+                                    + "得分：" + resultEntity.getScore());
                             entity.setSelfValidSpeechTime(resultEntity.getSpeechDuration());
                             //mIsEvaluatoring = false;
                             message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);

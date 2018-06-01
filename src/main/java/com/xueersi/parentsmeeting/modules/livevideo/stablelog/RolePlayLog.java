@@ -28,13 +28,13 @@ public class RolePlayLog {
      * roleplay 2. 学生链接websocket 展示日志
      */
 
-    public static void sno2(LiveAndBackDebug liveAndBackDebug,String testId, Context context) {
+    public static void sno2(LiveAndBackDebug liveAndBackDebug, Context context) {
         if(liveAndBackDebug == null){
             Loger.i("RolePlayerDemoTestlog", " liveAndBackDebug 为空，不记录日志 ");
             return;
         }
         StableLogHashMap logHashMap = new StableLogHashMap("websocketconnected");
-        logHashMap.put("testid", "" + testId);
+        //logHashMap.put("testid", "" + testId);
         logHashMap.addExY().addSno("2");
         liveAndBackDebug.umsAgentDebugPv(eventId,logHashMap.getData());
     }
