@@ -694,10 +694,6 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      * 开始进入RolePlayer对话
      */
     private void beginRolePlayer() {
-        if(mEntity == null){
-            Loger.i("RolePlayerDemoTest", "开始roleplay，但是数据实体为空，所以不再往下执行");
-            return;
-        }
         mReadHandler.sendEmptyMessage(READ_MESSAGE);
 
         //开启声网连接
