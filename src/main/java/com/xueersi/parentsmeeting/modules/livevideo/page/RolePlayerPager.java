@@ -694,11 +694,6 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      * 开始进入RolePlayer对话
      */
     private void beginRolePlayer() {
-        if(mEntity == null){
-            Loger.i("RolePlayerDemoTest", "没有对话数据，退出roleplay界面");
-            onDestroy();
-            return;
-        }
         mReadHandler.sendEmptyMessage(READ_MESSAGE);
 
         //开启声网连接
@@ -1313,9 +1308,6 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     public void onDestroy() {
         super.onDestroy();
         Loger.i("RolePlayerDemoTest", "Roleplayer destory，清除数据");
-        //解决别人在结束答题的时候，安卓端还在录音导致出现噪音的情况
-        stopMultiAudio();
-        leaveChannel();
         if (mIse != null) {
             mIse.cancel();
         }
@@ -1340,20 +1332,6 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             mRolePlayerOtherItem.stopVoicePlay();
         }
 
-    }
-
-    /**
-     * 停止音频流
-     */
-    private void stopMultiAudio() {
-        if(mWorkerThread != null){
-            RtcEngine rtcEngine = mWorkerThread.getRtcEngine();
-
-            if (rtcEngine != null) {
-                rtcEngine.muteLocalAudioStream(true);
-                Loger.i("RolePlayerDemoTest", "停止音频流");
-            }
-        }
 
     }
 
