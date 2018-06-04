@@ -135,25 +135,32 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
                     @Override
                     public void onDeny(String permission, int position) {
+
+                        if (isGoToRobot) {
+                            return;
+                        }
                         XESToastUtils.showToast(mContext, "没开启录音权限无法参与RolePlayer");
                         Loger.i("RolePlayerDemoTest", "没开启录音权限无法参与RolePlayer");
+                        goToRobot();
+
                     }
 
                     @Override
                     public void onGuarantee(String permission, int position) {
                         Loger.i("RolePlayerDemoTest", "开启了" + permission + "权限");
                         unList.remove(0);
-                        if (unList.isEmpty() && SpeechEvaluatorUtils.isOfflineSuccess()) {
-                            Loger.i("RolePlayerDemoTest", "开启了录音拍照权限，且离线加载成功开始去请求分组");
-                            beginConWebSocket(nonce);
-                        } else {
-                            if (isGoToRobot) {
-                                return;
+                        if (unList.isEmpty()) {
+                            if (SpeechEvaluatorUtils.isOfflineSuccess()) {
+                                Loger.i("RolePlayerDemoTest", "开启了录音拍照权限，且离线加载成功开始去请求分组");
+                                beginConWebSocket(nonce);
+                            } else {
+                                if (isGoToRobot) {
+                                    return;
+                                }
+                                Loger.i("RolePlayerDemoTest", "没有权限或者离线包失败，走人机");
+                                goToRobot();
                             }
-                            Loger.i("RolePlayerDemoTest", "没有权限或者离线包失败，走人机");
-                            goToRobot();
                         }
-
 
                     }
                 }, PermissionConfig.PERMISSION_CODE_AUDIO, PermissionConfig.PERMISSION_CODE_CAMERA);
@@ -162,15 +169,17 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                 ".isOfflineSuccess() = " + SpeechEvaluatorUtils.isOfflineSuccess());
 
         unList.addAll(unPermissionItems);
-        if (unList.isEmpty() && SpeechEvaluatorUtils.isOfflineSuccess()) {
-            Loger.i("RolePlayerDemoTest", "开启了录音拍照权限，且离线加载成功开始去请求分组");
-            beginConWebSocket(nonce);
-        } else {
-            if (isGoToRobot) {
-                return;
+        if (unList.isEmpty()) {
+            if (SpeechEvaluatorUtils.isOfflineSuccess()) {
+                Loger.i("RolePlayerDemoTest", "开启了录音拍照权限，且离线加载成功开始去请求分组");
+                beginConWebSocket(nonce);
+            } else {
+                if (isGoToRobot) {
+                    return;
+                }
+                Loger.i("RolePlayerDemoTest", "没有权限或者离线包失败，走人机");
+                goToRobot();
             }
-            Loger.i("RolePlayerDemoTest", "没有权限或者离线包失败，走人机");
-            goToRobot();
         }
 
 
@@ -672,7 +681,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     /**
      * 提交结果
      */
-    public synchronized void  requestResult() {
+    public synchronized void requestResult() {
         Loger.i("RolePlayerDemoTest", "提交结果");
         Loger.i("RolePlayerDemoTestlog", "用户提交结果,记录日志");
         //提交结果的时候，记录日志信息
@@ -736,7 +745,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     Loger.i("RolePlayerDemoTest", "onPmError: responseEntity.toString()  =" + responseEntity.toString
                             () + "提交结果失败，但是要释放资源");
                     super.onPmError(responseEntity);
-                    if(mRolePlayerPager != null){
+                    if (mRolePlayerPager != null) {
                         mRolePlayerPager.recoverListScrollAndCancelDZ();
                         mRolePlayerPager.leaveChannel();
                     }
@@ -755,7 +764,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     public synchronized void cancelDZ() {
 
         RolePlayerEntity tempRolePlayerEntity = mRolePlayerEntity;
-        if(tempRolePlayerEntity == null || mRolePlayerPager == null){
+        if (tempRolePlayerEntity == null || mRolePlayerPager == null) {
             Loger.i("RolePlayerDemoTest", " roleplay界面已经销毁，数据为空，不再向下执行 ");
             return;
         }
