@@ -1313,6 +1313,8 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     public void onDestroy() {
         super.onDestroy();
         Loger.i("RolePlayerDemoTest", "Roleplayer destory，清除数据");
+        //解决别人在结束答题的时候，安卓端还在录音导致出现噪音的情况
+        stopMultiAudio();
         if (mIse != null) {
             mIse.cancel();
         }
@@ -1337,6 +1339,20 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             mRolePlayerOtherItem.stopVoicePlay();
         }
 
+    }
+
+    /**
+     * 停止音频流
+     */
+    private void stopMultiAudio() {
+        if(mWorkerThread != null){
+            RtcEngine rtcEngine = mWorkerThread.getRtcEngine();
+
+            if (rtcEngine != null) {
+                rtcEngine.muteLocalAudioStream(true);
+                Loger.i("RolePlayerDemoTest", "停止音频流");
+            }
+        }
 
     }
 
