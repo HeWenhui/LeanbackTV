@@ -1315,6 +1315,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         Loger.i("RolePlayerDemoTest", "Roleplayer destory，清除数据");
         //解决别人在结束答题的时候，安卓端还在录音导致出现噪音的情况
         stopMultiAudio();
+        leaveChannel();
         if (mIse != null) {
             mIse.cancel();
         }
