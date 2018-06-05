@@ -23,10 +23,6 @@ public class OtherModulesEnter {
                 "intentToAuditClassActivity", new Class[]{Activity.class, String.class, String.class, Bundle.class}, new Object[]{auditClassLiveActivity, mVSectionID, stuCouId, bundle});
     }
 
-    public static void intentToGradeActivityLive(Activity activity, String selectGrade) {
-        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.xesmall.XesMallEnter",
-                "intentToGradeActivityLive", new Class[]{Context.class, String.class}, new Object[]{activity, selectGrade});
-    }
 
     public static void requestGoldTotal(Context mContext) {
         ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.personals.PersonalsEnter",

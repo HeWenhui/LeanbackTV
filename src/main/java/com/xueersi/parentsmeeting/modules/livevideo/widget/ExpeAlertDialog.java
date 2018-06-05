@@ -43,11 +43,7 @@ public class ExpeAlertDialog extends BaseAlertDialog {
             @Override
             public void onClick(View v) {
                 cancelDialog();
-                if (StringUtils.isEmpty(buyCourseUrl)) {
-                    OtherModulesEnter.intentToGradeActivityLive(activity, "");
-                } else {
-                    BrowserActivity.openBrowser(activity, buyCourseUrl);
-                }
+                BrowserActivity.openBrowser(activity, buyCourseUrl);
             }
         });
         return view;
