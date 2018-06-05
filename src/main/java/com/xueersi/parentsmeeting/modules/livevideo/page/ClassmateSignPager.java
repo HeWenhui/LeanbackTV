@@ -58,6 +58,21 @@ public class ClassmateSignPager extends BasePager {
         mView = View.inflate(mContext, R.layout.page_livevodeo_classmatesign, null);
         llClassmateSign = (ScrollLinearLayout) mView.findViewById(R.id.ll_livevideo_classmate_sign);
         mView.setVisibility(View.INVISIBLE);
+
+        mView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+              stop();
+              if(mHandler != null){
+                  mHandler.removeCallbacksAndMessages(null);
+              }
+            }
+        });
         return mView;
     }
 
@@ -181,6 +196,9 @@ public class ClassmateSignPager extends BasePager {
         /** 是不是辅导状态 */
         private boolean isTraning = true;
 
+        /**是否是自动签到*/
+        private boolean atuoSign = false;
+
         public boolean getStopSign() {
             return stopSign.get();
         }
@@ -195,6 +213,14 @@ public class ClassmateSignPager extends BasePager {
 
         public void setTraning(boolean traning) {
             isTraning = traning;
+        }
+
+        public void setAtuoSign(boolean atuoSign) {
+            this.atuoSign = atuoSign;
+        }
+
+        public boolean isAtuoSign() {
+            return atuoSign;
         }
     }
 }

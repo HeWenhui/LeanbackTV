@@ -32,4 +32,7 @@ public interface RollCallAction {
     /** 停止签到 */
     void stopRollCall();
 
+    /**强制结束签到*/
+    void forceCloseRollCall();
+
 }

@@ -115,6 +115,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            getInfo.setIsSeniorOfHighSchool(data.optInt("isSeniorOfHighSchool"));
+
             //getInfo.setIsShowCounselorWhisper("1");
             if (data.has("followType")) {
                 JSONObject followType = data.getJSONObject("followType");

@@ -232,7 +232,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      */
     private TeamPkBll mTeamPKBll;
     private TeacherPraiseBll mTeacherPraiseBll1;
-
     public static boolean isAllowTeamPk = false;
 
     public LiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form, LiveGetInfo
@@ -1383,6 +1382,13 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 .MODE_CLASS.equals(getMode())) {
                             mLiveRemarkBll.setClassReady(true);
                         }
+                        //自动签到  当老师 开始上课时  关闭
+                        if (mRollCallAction != null) {
+                            if (mRollCallAction instanceof RollCallBll && ((RollCallBll) mRollCallAction).isAutoSign
+                                    ()) {
+                                mRollCallAction.forceCloseRollCall();
+                            }
+                        }
                     }
                     break;
                     case XESCODE.UNDERSTANDT:
@@ -1483,6 +1489,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     case XESCODE.ROLLCALL: {
                         msg += "ROLLCALL";
                         if (mRollCallAction != null) {
+                            //自动签到
+                            if (mRollCallAction instanceof RollCallBll && ((RollCallBll) mRollCallAction).isAutoSign
+                                    ()) {
+                                return;
+                            }
                             mRollCallAction.onRollCall(false);
                             msg += ",signStatus=" + mGetInfo.getStudentLiveInfo().getSignStatus();
                             if (mGetInfo.getStudentLiveInfo().getSignStatus() != 2) {
@@ -1499,6 +1510,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     case XESCODE.STOPROLLCALL: {
                         msg += "STOPROLLCALL";
                         if (mRollCallAction != null) {
+                            //自动签到
+                            if (mRollCallAction instanceof RollCallBll && ((RollCallBll) mRollCallAction).isAutoSign
+                                    ()) {
+                                return;
+                            }
                             mRollCallAction.onRollCall(true);
                             if (mGetInfo.getStudentLiveInfo().getSignStatus() != 2) {
                                 mGetInfo.getStudentLiveInfo().setSignStatus(3);
@@ -2116,6 +2132,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
         @Override
         public void onMessage(String target, String sender, String login, String hostname, String text) {
+            Loger.e("LiveBll","=====> onMessage:"+sender+":"+login+":"+hostname +":"+target+":"+text);
+
             if (mRoomAction != null) {
                 mRoomAction.onMessage(target, sender, login, hostname, text, "");
             }
@@ -2123,6 +2141,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
         public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target,
                                      String message) {
+            Loger.e("LiveBll","=====> onPrivateMessage:"+sender+":"+login+":"+hostname +":"+target+":"+message);
             if (!"T".equals(message) && haveTeam) {
                 StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
                 String teamId = studentLiveInfo.getTeamId();
@@ -2131,7 +2150,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     int type = jsonObject.getInt("type");
                     if (type == XESCODE.TEACHER_MESSAGE) {
                         String to = jsonObject.optString("to", teamId);
-                        if (!teamId.equals(to)) {
+                        if (!isSeniorOfHighSchool() && !teamId.equals(to)) {
                             return;
                         }
                     }
@@ -2191,7 +2210,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         }
                     } else {
                         boolean isMyTeam = isMyTeam(user.getNick());
-                        if (isMyTeam) {
+                        if (isMyTeam || isSeniorOfHighSchool()) {
                             arrayList.add(user);
                         }
                     }
@@ -2263,7 +2282,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 //                        return;
 //                    }
                     boolean isMyTeam = isMyTeam(sender);
-                    if (isMyTeam) {
+                    if (isMyTeam || isSeniorOfHighSchool()) {
                         mRoomAction.onJoin(target, sender, login, hostname);
                     }
                 }
@@ -2295,7 +2314,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 //                        return;
 //                    }
                     boolean isMyTeam = isMyTeam(sourceNick);
-                    if (isMyTeam) {
+                    if (isMyTeam || isSeniorOfHighSchool()) {
                         mRoomAction.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
                     }
                 }
@@ -2328,6 +2347,16 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             }
         }
     };
+
+
+    /**
+     * 是否是 高三 理科直播 （展示不同聊天 内容：高三理科 以 班级为单位展示,）
+     * @return
+     */
+    public boolean isSeniorOfHighSchool() {
+        return mGetInfo != null && mGetInfo.getIsSeniorOfHighSchool() == 1;
+    }
+
     private long blockTime;
 
     /**
@@ -2384,9 +2413,18 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         if (mGetInfo.getIsArts() == 1) {
             appID = UmsConstants.ARTS_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
+            //设置是否 自动签到
+            if (mRollCallAction != null && mRollCallAction instanceof RollCallBll) {
+                ((RollCallBll) mRollCallAction).setAutoSign(false);
+            }
         } else {
             appID = UmsConstants.LIVE_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
+            //设置是否 自动签到
+            if (mRollCallAction != null && mRollCallAction instanceof RollCallBll) {
+                ((RollCallBll) mRollCallAction).setAutoSign(true);
+            }
+
         }
         if (mLiveType == LIVE_TYPE_LIVE) {
             if (mGetInfo.getIsArts() == 1) {
@@ -2490,17 +2528,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 getLearnReport(1, 1000);
             }
             mLogtf.d("onGetInfoSuccess:getSignStatus=" + mGetInfo.getStudentLiveInfo().getSignStatus());
-            if (mGetInfo.getStudentLiveInfo().getSignStatus() != 0 && mGetInfo.getStudentLiveInfo().getSignStatus()
-                    != 2) {
-                if (mRollCallAction != null) {
-                    ClassSignEntity classSignEntity = new ClassSignEntity();
-                    classSignEntity.setStuName(mGetInfo.getStuName());
-                    classSignEntity.setTeacherName(mGetInfo.getTeacherName());
-                    classSignEntity.setTeacherIMG(mGetInfo.getTeacherIMG());
-                    classSignEntity.setStatus(mGetInfo.getStudentLiveInfo().getSignStatus());
-                    mRollCallAction.onRollCall(classSignEntity);
-                }
-            }
+            //  根据 借口返回状态  判断是否显示签到
+            handleUserSign();
         }
         mLogtf.d("onGetInfoSuccess:mode=" + mLiveTopic.getMode());
         if (isTeamPkRoom(getInfo)) {
@@ -2522,6 +2551,51 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             isAllowTeamPk = false;
         }
         liveGetPlayServerFirst();
+    }
+
+
+
+
+    /**
+     * 处理用户签到
+     */
+    private void handleUserSign() {
+            if (mRollCallAction != null && mRollCallAction instanceof RollCallBll) {
+                RollCallBll rollCallBll = (RollCallBll) mRollCallAction;
+                //自动签到
+                if (rollCallBll.isAutoSign()) {
+                    boolean signed = rollCallBll.isSigned(mGetInfo.getStudentLiveInfo().getSignStatus());
+                    //本场已签到
+                    if (signed) {
+                        return;
+                    }
+                    //课程开始时间
+                    long classBeginTime = mGetInfo.getsTime() * 1000;
+                    long nowTime = (long) (mGetInfo.getNowTime() * 1000);
+                    boolean timeAvaliable = rollCallBll.isTimeAvaliable(classBeginTime, nowTime);
+                    if (timeAvaliable) {
+                        ClassSignEntity classSignEntity = new ClassSignEntity();
+                        classSignEntity.setStuName(mGetInfo.getStuName());
+                        classSignEntity.setTeacherName(mGetInfo.getTeacherName());
+                        classSignEntity.setTeacherIMG(mGetInfo.getTeacherIMG());
+                        classSignEntity.setStatus(1);
+                        mRollCallAction.onRollCall(classSignEntity);
+                    }
+
+                } else {
+                    //非自动签到
+                    if (mGetInfo.getStudentLiveInfo().getSignStatus() != 0 && mGetInfo.getStudentLiveInfo()
+                            .getSignStatus()
+                            != 2) {
+                        ClassSignEntity classSignEntity = new ClassSignEntity();
+                        classSignEntity.setStuName(mGetInfo.getStuName());
+                        classSignEntity.setTeacherName(mGetInfo.getTeacherName());
+                        classSignEntity.setTeacherIMG(mGetInfo.getTeacherIMG());
+                        classSignEntity.setStatus(mGetInfo.getStudentLiveInfo().getSignStatus());
+                        mRollCallAction.onRollCall(classSignEntity);
+                    }
+                }
+        }
     }
 
     /**
@@ -2934,6 +3008,12 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      */
     public void onDestroy() {
         mQuestionAction = null;
+
+
+        if(mRollCallAction != null){
+            mRollCallAction.forceCloseRollCall();
+        }
+
         mRollCallAction = null;
         mPraiseOrEncourageAction = null;
         readPackageBll = null;

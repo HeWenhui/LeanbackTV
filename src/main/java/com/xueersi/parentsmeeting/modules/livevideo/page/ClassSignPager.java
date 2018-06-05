@@ -2,12 +2,14 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.content.Context;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.sobot.chat.utils.ToastUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
@@ -16,7 +18,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoFloatTitle;
+import com.xueersi.xesalib.utils.log.Loger;
 
 import java.io.File;
 
@@ -94,8 +98,9 @@ public class ClassSignPager extends BasePager {
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
-                        rollCallAction.stopRollCall();
-                        logToFile.d("onPmError:responseEntity=" + responseEntity);
+                       // rollCallAction.stopRollCall();
+                        String errorMsg = TextUtils.isEmpty(responseEntity.getErrorMsg())?"网络异常":responseEntity.getErrorMsg();
+                        ToastUtil.showToast(mContext,errorMsg);
                     }
                 });
             }
