@@ -187,6 +187,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 直播课的直播
      */
     public final static int LIVE_TYPE_LIVE = 3;
+
+    /**
+     * 签到成功 状态码
+     */
+    private static final int SIGN_STATE_CODE_SUCCESS = 2;
     /**
      * 用户心跳解析错误
      */
@@ -1382,12 +1387,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 .MODE_CLASS.equals(getMode())) {
                             mLiveRemarkBll.setClassReady(true);
                         }
-                        //自动签到  当老师 开始上课时  关闭
+                        //正式上课 结束关闭签到相关UI
                         if (mRollCallAction != null) {
-                            if (mRollCallAction instanceof RollCallBll && ((RollCallBll) mRollCallAction).isAutoSign
-                                    ()) {
-                                mRollCallAction.forceCloseRollCall();
-                            }
+                            mRollCallAction.forceCloseRollCall();
                         }
                     }
                     break;
@@ -1490,10 +1492,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         msg += "ROLLCALL";
                         if (mRollCallAction != null) {
                             //自动签到
-                            if (mRollCallAction instanceof RollCallBll && ((RollCallBll) mRollCallAction).isAutoSign
-                                    ()) {
-                                return;
-                            }
                             mRollCallAction.onRollCall(false);
                             msg += ",signStatus=" + mGetInfo.getStudentLiveInfo().getSignStatus();
                             if (mGetInfo.getStudentLiveInfo().getSignStatus() != 2) {
@@ -1510,11 +1508,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     case XESCODE.STOPROLLCALL: {
                         msg += "STOPROLLCALL";
                         if (mRollCallAction != null) {
-                            //自动签到
-                            if (mRollCallAction instanceof RollCallBll && ((RollCallBll) mRollCallAction).isAutoSign
-                                    ()) {
-                                return;
-                            }
+
                             mRollCallAction.onRollCall(true);
                             if (mGetInfo.getStudentLiveInfo().getSignStatus() != 2) {
                                 mGetInfo.getStudentLiveInfo().setSignStatus(3);
@@ -2413,18 +2407,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         if (mGetInfo.getIsArts() == 1) {
             appID = UmsConstants.ARTS_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
-            //设置是否 自动签到
-            if (mRollCallAction != null && mRollCallAction instanceof RollCallBll) {
-                ((RollCallBll) mRollCallAction).setAutoSign(false);
-            }
         } else {
             appID = UmsConstants.LIVE_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
-            //设置是否 自动签到
-            if (mRollCallAction != null && mRollCallAction instanceof RollCallBll) {
-                ((RollCallBll) mRollCallAction).setAutoSign(true);
-            }
-
         }
         if (mLiveType == LIVE_TYPE_LIVE) {
             if (mGetInfo.getIsArts() == 1) {
@@ -2560,43 +2545,32 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * 处理用户签到
      */
     private void handleUserSign() {
-            if (mRollCallAction != null && mRollCallAction instanceof RollCallBll) {
-                RollCallBll rollCallBll = (RollCallBll) mRollCallAction;
-                //自动签到
-                if (rollCallBll.isAutoSign()) {
-                    boolean signed = rollCallBll.isSigned(mGetInfo.getStudentLiveInfo().getSignStatus());
-                    //本场已签到
-                    if (signed) {
-                        return;
-                    }
-                    //课程开始时间
-                    long classBeginTime = mGetInfo.getsTime() * 1000;
-                    long nowTime = (long) (mGetInfo.getNowTime() * 1000);
-                    boolean timeAvaliable = rollCallBll.isTimeAvaliable(classBeginTime, nowTime);
-                    if (timeAvaliable) {
-                        ClassSignEntity classSignEntity = new ClassSignEntity();
-                        classSignEntity.setStuName(mGetInfo.getStuName());
-                        classSignEntity.setTeacherName(mGetInfo.getTeacherName());
-                        classSignEntity.setTeacherIMG(mGetInfo.getTeacherIMG());
-                        classSignEntity.setStatus(1);
-                        mRollCallAction.onRollCall(classSignEntity);
-                    }
-
-                } else {
-                    //非自动签到
-                    if (mGetInfo.getStudentLiveInfo().getSignStatus() != 0 && mGetInfo.getStudentLiveInfo()
-                            .getSignStatus()
-                            != 2) {
-                        ClassSignEntity classSignEntity = new ClassSignEntity();
-                        classSignEntity.setStuName(mGetInfo.getStuName());
-                        classSignEntity.setTeacherName(mGetInfo.getTeacherName());
-                        classSignEntity.setTeacherIMG(mGetInfo.getTeacherIMG());
-                        classSignEntity.setStatus(mGetInfo.getStudentLiveInfo().getSignStatus());
-                        mRollCallAction.onRollCall(classSignEntity);
-                    }
-                }
+              if(mRollCallAction != null) {
+                  //理科自动签到
+                  if(RollCallBll.OPEN_AUTO_SIGN && mGetInfo.getIsArts() != 1
+                          && mGetInfo.getStudentLiveInfo().getSignStatus() != SIGN_STATE_CODE_SUCCESS){
+                      ClassSignEntity classSignEntity = new ClassSignEntity();
+                      classSignEntity.setStuName(mGetInfo.getStuName());
+                      classSignEntity.setTeacherName(mGetInfo.getTeacherName());
+                      classSignEntity.setTeacherIMG(mGetInfo.getTeacherIMG());
+                      classSignEntity.setStatus(1);
+                      long classBeginTime = mGetInfo.getsTime() * 1000;
+                      long nowTime = (long) (mGetInfo.getNowTime() * 1000);
+                      mRollCallAction.autoSign(classSignEntity,classBeginTime,nowTime);
+                  }else{
+                      if (mGetInfo.getStudentLiveInfo().getSignStatus() != 0 && mGetInfo.getStudentLiveInfo()
+                              .getSignStatus()
+                              != 2) {
+                          ClassSignEntity classSignEntity = new ClassSignEntity();
+                          classSignEntity.setStuName(mGetInfo.getStuName());
+                          classSignEntity.setTeacherName(mGetInfo.getTeacherName());
+                          classSignEntity.setTeacherIMG(mGetInfo.getTeacherIMG());
+                          classSignEntity.setStatus(mGetInfo.getStudentLiveInfo().getSignStatus());
+                          mRollCallAction.onRollCall(classSignEntity);
+                      }
+                  }
+              }
         }
-    }
 
     /**
      * 是否是Pk 直播间

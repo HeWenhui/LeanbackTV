@@ -30,10 +30,6 @@ import java.util.Calendar;
  */
 public class RollCallBll implements RollCallAction, Handler.Callback {
 
-    /**
-     * 签到成功 状态码
-     */
-    private static final int SIGN_STATE_CODE_SUCCESS = 2;
 
 
     /**
@@ -51,6 +47,9 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
      * 自动显示签到面板（不再由教师端 发起）
      */
     private boolean autoSign = false;
+
+    /**是否开启自动签到功能*/
+    public static final boolean OPEN_AUTO_SIGN = true;
 
     private Activity activity;
     private LiveBll mLiveBll;
@@ -84,12 +83,18 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
      * 点名的布局
      */
     private RelativeLayout rlRollCallContent;
-    /**时间点检测轮询 时间间隔 */
+    /**
+     * 时间点检测轮询 时间间隔
+     */
     private long TIME_WATHER_DELAY = 3000;
 
-    /**自动签到模式时  签到页面自动显示 延时*/
-    private long autoShowSignDelay ;
-    /**自动签到模式时  签到页面自动关闭 延时*/
+    /**
+     * 自动签到模式时  签到页面自动显示 延时
+     */
+    private long autoShowSignDelay;
+    /**
+     * 自动签到模式时  签到页面自动关闭 延时
+     */
     private long autoCloseSignDelay;
 
 
@@ -121,6 +126,14 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
 
     public void onLiveInit(LiveGetInfo getInfo) {
         classSignStop.setTraning(LiveTopic.MODE_TRANING.equals(getInfo.getLiveTopic().getMode()));
+        //autoSign = getInfo != null && getInfo.getIsArts() == 1;
+
+        if (OPEN_AUTO_SIGN){
+            // 理科自动签到
+            boolean isAutoSign = getInfo != null && getInfo.getIsArts() != 1;
+            setAutoSign(isAutoSign);
+        }
+
         //        if (IS_SHOW_CLASSMATE_SIGN) {
 //            mHandler.postDelayed(new Runnable() {
 //                @Override
@@ -206,40 +219,38 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
 
     @Override
     public void onRollCall(boolean stop) {
-        classSignStop.setStopSign(stop);
-        if (stop && classmateSignPager != null) {
-            //Loger.e("RollCallBll","=====> onRollCall stop classMateSignPager");
-            classmateSignPager.stop();
+        if (!autoSign) {
+            classSignStop.setStopSign(stop);
+            if (stop && classmateSignPager != null) {
+                //Loger.e("RollCallBll","=====> onRollCall stop classMateSignPager");
+                classmateSignPager.stop();
+            }
         }
+
     }
 
     @Override
     public void onRollCall(final ClassSignEntity classSignEntity) {
         mLogtf.d("onRollCall:classSignEntity=" + classSignEntity.getStatus());
-        mVPlayVideoControlHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mClassSignPager != null) {
-                    mClassSignPager.updateStatus(classSignEntity.getStatus());
-                    return;
+        if (!autoSign) {
+            mVPlayVideoControlHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (mClassSignPager != null) {
+                        mClassSignPager.updateStatus(classSignEntity.getStatus());
+                        return;
+                    }
+                    mIsShowUserSign = true;
+                    mClassSignPager = new ClassSignPager(activity, RollCallBll.this, classSignEntity, mLiveBll);
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                            .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    params.addRule(RelativeLayout.CENTER_IN_PARENT);
+                    rlRollCallContent.addView(mClassSignPager.getRootView(), params);
+                    activity.getWindow().getDecorView().requestLayout();
+                    activity.getWindow().getDecorView().invalidate();
                 }
-                mIsShowUserSign = true;
-                mClassSignPager = new ClassSignPager(activity, RollCallBll.this, classSignEntity, mLiveBll);
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
-                        .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                params.addRule(RelativeLayout.CENTER_IN_PARENT);
-                rlRollCallContent.addView(mClassSignPager.getRootView(), params);
-                activity.getWindow().getDecorView().requestLayout();
-                activity.getWindow().getDecorView().invalidate();
-            }
-        },autoShowSignDelay);
-        mVPlayVideoControlHandler.sendEmptyMessage(SHOW_USERSIGN);
-        //自动签到 到上课时间自动关闭签到面板
-        if(autoSign){
-           if(autoCloseSignTask != null){
-               mVPlayVideoControlHandler.removeCallbacks(autoCloseSignTask);
-               mVPlayVideoControlHandler.postDelayed(autoCloseSignTask,autoCloseSignDelay);
-           }
+            });
+            mVPlayVideoControlHandler.sendEmptyMessage(SHOW_USERSIGN);
         }
     }
 
@@ -255,7 +266,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
             public void run() {
                 if (classmateSignPager != null) {
                     classmateSignPager.addClassmage(classmateEntity);
-                   // Loger.e("RollCallBll","===>onClassmateRollCall: classmateSignPager addClassMage");
+                    // Loger.e("RollCallBll","===>onClassmateRollCall: classmateSignPager addClassMage");
                 }
             }
         });
@@ -282,24 +293,15 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
         closeUserSign();
     }
 
-    /**
-     * 是否已签到
-     *
-     * @param signStateCode
-     * @return
-     */
-    public boolean isSigned(int signStateCode) {
-        return signStateCode == SIGN_STATE_CODE_SUCCESS;
-    }
 
     /**
      * 是否是 可签到 时间段
      *
-     * @param classBeginTime  课程开始时间
-     * @param nowTime         服务器当前时间  单位秒
+     * @param classBeginTime 课程开始时间
+     * @param nowTime        服务器当前时间  单位秒
      * @return
      */
-    public boolean isTimeAvaliable(long classBeginTime,long nowTime) {
+    public boolean isTimeAvaliable(long classBeginTime, long nowTime) {
         Loger.e("RollCallBll", "====>isTimeAvaliable:" + classBeginTime);
         boolean result = false;
         try {
@@ -307,11 +309,12 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                 result = classBeginTime > nowTime;
                 // 大于15 分钟进入直播间
                 long autoShowSignTime = classBeginTime - SIGN_AVALIABLE_TIME_RANG;
-                autoShowSignDelay = autoShowSignTime - nowTime < 0?0:autoShowSignTime - nowTime;
+                autoShowSignDelay = autoShowSignTime - nowTime < 0 ? 0 : autoShowSignTime - nowTime;
                 //自动关闭时间
-                autoCloseSignDelay = classBeginTime - nowTime < 0?0: classBeginTime - nowTime;
+                autoCloseSignDelay = classBeginTime - nowTime < 0 ? 0 : classBeginTime - nowTime;
                 //autoCloseSignDelay = 2*60*1000;
-                Loger.e("RollCallBll", "====> isTimeAvaliable :+ " + result +":"+autoShowSignDelay +":" + autoCloseSignDelay);
+                Loger.e("RollCallBll", "====> isTimeAvaliable :+ " + result + ":" + autoShowSignDelay + ":" +
+                        autoCloseSignDelay);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -320,31 +323,57 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
     }
 
     /**
-     *
      * @param autoSign
      */
-    public void setAutoSign(boolean autoSign) {
+    private void setAutoSign(boolean autoSign) {
         this.autoSign = autoSign;
         classSignStop.setAtuoSign(autoSign);
     }
 
-    /**
-     * 是否是 自动签到
-     * @return
-     */
-    public boolean isAutoSign() {
-        return autoSign;
+
+    @Override
+    public void autoSign( final ClassSignEntity classSignEntity, long classStartTime, long nowTime) {
+        boolean timeAvaliable = isTimeAvaliable(classStartTime, nowTime);
+        if (timeAvaliable && autoSign) {
+            mVPlayVideoControlHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (mClassSignPager != null) {
+                        mClassSignPager.updateStatus(classSignEntity.getStatus());
+                        return;
+                    }
+                    mIsShowUserSign = true;
+                    mClassSignPager = new ClassSignPager(activity, RollCallBll.this, classSignEntity, mLiveBll);
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                            .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    params.addRule(RelativeLayout.CENTER_IN_PARENT);
+                    rlRollCallContent.addView(mClassSignPager.getRootView(), params);
+                    activity.getWindow().getDecorView().requestLayout();
+                    activity.getWindow().getDecorView().invalidate();
+                }
+            },autoShowSignDelay);
+
+
+            //自动签到 到上课时间自动关闭签到面板
+            if (autoCloseSignTask != null) {
+                mVPlayVideoControlHandler.removeCallbacks(autoCloseSignTask);
+                mVPlayVideoControlHandler.postDelayed(autoCloseSignTask, autoCloseSignDelay);
+            }
+        }
     }
 
-    /**移除签到相关页面*/
-    private void closeUserSign(){
-        Loger.e("RollCallBll","=====>closeUserSign called");
+
+    /**
+     * 移除签到相关页面
+     */
+    private void closeUserSign() {
+        Loger.e("RollCallBll", "=====>closeUserSign called");
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
                 //自动签到关闭 班级签到状态
-                if(autoSign && classmateSignPager != null){
-                    Loger.e("RollCallBll","=====> stopRollCall() stop classMateSignPager");
+                if (autoSign && classmateSignPager != null) {
+                    Loger.e("RollCallBll", "=====> stopRollCall() stop classMateSignPager");
                     classmateSignPager.stop();
                     rlRollCallContent.removeView(classmateSignPager.getRootView());
                     classmateSignPager = null;
