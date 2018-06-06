@@ -10,6 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPag
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechTop3Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
 import com.xueersi.xesalib.utils.log.Loger;
 
 import java.io.File;
@@ -69,7 +70,7 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
                         }
                     });
                     /** 语音评测 roleplay */
-                } else if (speechAssessmentPager instanceof SpeechAssessmentWebPager) {
+                } else if (speechAssessmentPager instanceof SpeechAssessmentWebX5Pager) {
                     liveBll.getRolePlayAnswerTeamRank(num, new AbstractBusinessDataCallBack() {
                         @Override
                         public void onDataSucess(Object... objData) {

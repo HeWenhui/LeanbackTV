@@ -8,6 +8,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechAssAutoPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 
 import java.util.Map;
@@ -38,7 +39,7 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
     public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, String testId,
                                                     String nonce,
                                                     SpeechEvalAction speechEvalAction, String stuCouId) {
-        SpeechAssessmentWebPager speechAssessmentPager = new SpeechAssessmentWebPager(context,
+        SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
                 liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
                 true, nonce, speechEvalAction, stuCouId, false);
         speechAssessmentPager.setStandingLive(true);

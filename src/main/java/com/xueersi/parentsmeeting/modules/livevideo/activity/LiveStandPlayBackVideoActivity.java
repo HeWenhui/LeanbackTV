@@ -88,6 +88,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPage
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerStandPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
@@ -1129,7 +1130,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //                        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
 //                        lp.rightMargin = wradio;
                     } else {
-                        SpeechAssessmentWebPager speechAssessmentWebPager = new SpeechAssessmentWebPager(LiveStandPlayBackVideoActivity.this,
+                        SpeechAssessmentWebX5Pager speechAssessmentWebPager = new SpeechAssessmentWebX5Pager(LiveStandPlayBackVideoActivity.this,
                                 mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), userInfoEntity.getStuId(),
                                 false, "", LiveStandPlayBackVideoActivity.this, stuCourId, IS_SCIENCE);
                         speechAssessmentWebPager.setStandingLive(true);
