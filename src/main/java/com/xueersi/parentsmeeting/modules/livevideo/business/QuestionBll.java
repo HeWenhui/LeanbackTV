@@ -32,7 +32,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.ExamQuestionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankPortLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectLivePager;
@@ -44,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
@@ -195,7 +197,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     /**
      * 试卷页面
      */
-    private ExamQuestionPager examQuestionPager;
+    private BaseExamQuestionPager examQuestionPager;
     /**
      * 语音评测页面
      */
@@ -1037,7 +1039,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mData.put("logtype", "receiveExam");
                 mData.put("examid", num);
                 umsAgentDebugSys(examQuestionEventId, mData);
-                examQuestionPager = new ExamQuestionPager(activity, mLiveBll, QuestionBll.this, liveGetInfo.getStuId
+                examQuestionPager = new ExamQuestionX5Pager(activity, mLiveBll, QuestionBll.this, liveGetInfo.getStuId
                         (), liveGetInfo.getUname(), liveid, num, nonce, mAnswerRankBll == null ? "0" : mAnswerRankBll
                         .getIsShow(), IS_SCIENCE, stuCouId, 0);
                 rlQuestionContent.addView(examQuestionPager.getRootView());
@@ -1065,10 +1067,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             public void run() {
                 int delayTime = 0;
                 if (examQuestionPager != null) {
-                    curQuestionView = examQuestionPager;
+                    curQuestionView = examQuestionPager.getBasePager();
                     examQuestionPager.examSubmitAll();
                     delayTime = 3000;
-                    closePageByTeamPk(examQuestionPager);
+                    closePageByTeamPk(examQuestionPager.getBasePager());
                 } else if (hasExam && !hasSubmit) {
                     getFullMarkList(XESCODE.EXAM_STOP, delayTime);
                     hasExam = false;
@@ -1746,14 +1748,17 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
+    @Override
     public void umsAgentDebugSys(String eventId, final Map<String, String> mData) {
         mLiveBll.umsAgentDebugSys(eventId, mData);
     }
 
+    @Override
     public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
         mLiveBll.umsAgentDebugInter(eventId, mData);
     }
 
+    @Override
     public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
         mLiveBll.umsAgentDebugPv(eventId, mData);
     }

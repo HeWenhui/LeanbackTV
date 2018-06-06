@@ -85,8 +85,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewareX5Pager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.ExamQuestionPlaybackPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.NbH5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionPlaybackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.NbH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankLivePager;
@@ -201,7 +201,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     /** 普通互动题，h5显示页面 */
     private QuestionWebPager questionWebPager;
     /** 课前测的页面 */
-    private ExamQuestionPlaybackPager examQuestionPlaybackPager;
+    private BaseExamQuestionPager examQuestionPlaybackPager;
     /** 语音评测，role play的页面 */
     private BaseSpeechAssessmentPager speechQuestionPlaybackPager;
     /** nb实验的页面 */
@@ -1111,7 +1111,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showExam");
                     mPlayVideoControlHandler.sendMessage(msg);
                     examQuestionPlaybackPager = new ExamQuestionPlaybackPager(LivePlayBackVideoActivity.this,
-                            mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), IS_SCIENCE, stuCourId, new ExamQuestionPlaybackPager.ExamStop() {
+                            mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), IS_SCIENCE, stuCourId, new BaseExamQuestionPager.ExamStop() {
                         @Override
                         public void stopExam() {
                             LivePlayBackVideoActivity.this.stopExam();

@@ -1,10 +1,10 @@
-package com.xueersi.parentsmeeting.modules.livevideo.page;
-
+package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
@@ -15,18 +15,16 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.xueersi.parentsmeeting.base.BasePager;
-import com.xueersi.parentsmeeting.business.AppBll;
-import com.xueersi.parentsmeeting.entity.AppInfoEntity;
-import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
-import com.xueersi.parentsmeeting.logerhelper.LogerTag;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity;
+import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
+import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
+import com.xueersi.parentsmeeting.business.AppBll;
+import com.xueersi.parentsmeeting.entity.AppInfoEntity;
+import com.xueersi.parentsmeeting.logerhelper.LogerTag;
+import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
@@ -36,18 +34,19 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
 
 import static com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog.MESSAGE_VERIFY_TYPE;
 
-/**
- * Created by Administrator on 2018/3/15.
- */
 
-public class ExamQuestionPlaybackPagers extends BasePager {
+/**
+ * Created by linyuqiang on 2016/12/7.
+ * 直播回放试卷答题页面
+ */
+public class ExamQuestionPlaybackPager extends BasePager implements BaseExamQuestionPager {
     String TAG = "ExamQuestionPlaybackPager";
     private Button btSubjectClose;
     Button bt_livevideo_subject_calljs;
     private WebView wvSubjectWeb;
     private String liveid;
     private String num;
-    ExperienceLiveVideoActivity videoActivity;
+    ExamStop examStop;
     private View errorView;
     /** 试卷地址 */
     private String examUrl = "";
@@ -57,9 +56,9 @@ public class ExamQuestionPlaybackPagers extends BasePager {
     boolean IS_SCIENCE;
     String stuCouId;
 
-    public ExamQuestionPlaybackPagers(Context context, String liveid, String num, boolean IS_SCIENCE, String stuCouId) {
+    public ExamQuestionPlaybackPager(Context context, String liveid, String num, boolean IS_SCIENCE, String stuCouId, ExamStop examStop) {
         super(context);
-        videoActivity = (ExperienceLiveVideoActivity) context;
+        this.examStop = examStop;
         this.liveid = liveid;
         this.IS_SCIENCE = IS_SCIENCE;
         this.num = num;
@@ -67,6 +66,7 @@ public class ExamQuestionPlaybackPagers extends BasePager {
         initData();
     }
 
+    @Override
     public String getNum() {
         return num;
     }
@@ -80,7 +80,7 @@ public class ExamQuestionPlaybackPagers extends BasePager {
         KeyboardUtil.attach((Activity) mContext, new KPSwitchFSPanelLinearLayout(mContext), new KeyboardUtil.OnKeyboardShowingListener() {
             @Override
             public void onKeyboardShowing(boolean isShowing) {
-                ExamQuestionPlaybackPagers.this.onKeyboardShowing(isShowing);
+                ExamQuestionPlaybackPager.this.onKeyboardShowing(isShowing);
             }
         });
         errorView = view.findViewById(R.id.rl_livevideo_subject_error);
@@ -100,7 +100,7 @@ public class ExamQuestionPlaybackPagers extends BasePager {
             public void onClick(View v) {
                 ViewGroup group = (ViewGroup) mView.getParent();
                 group.removeView(mView);
-//                examStop.stopExam();
+                examStop.stopExam();
             }
         });
         bt_livevideo_subject_calljs.setOnClickListener(new View.OnClickListener() {
@@ -120,8 +120,10 @@ public class ExamQuestionPlaybackPagers extends BasePager {
         String EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL, ShareBusinessConfig.EXAM_URL, ShareDataManager.SHAREDATA_USER);
         if (IS_SCIENCE) {
             EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL_SCIENCE, EXAM_URL, ShareDataManager.SHAREDATA_USER);
+            EXAM_URL = EXAM_URL.replace(ShareBusinessConfig.LIVE_LIBARTS, ShareBusinessConfig.LIVE_SCIENCE);
         } else {
             EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL_LIBARTS, EXAM_URL, ShareDataManager.SHAREDATA_USER);
+            EXAM_URL = EXAM_URL.replace(ShareBusinessConfig.LIVE_SCIENCE, ShareBusinessConfig.LIVE_LIBARTS);
         }
         if (EXAM_URL.contains("xueersi.com/LiveExam")) {
             String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
@@ -133,6 +135,7 @@ public class ExamQuestionPlaybackPagers extends BasePager {
         wvSubjectWeb.loadUrl(examUrl);
     }
 
+    @Override
     public void onKeyboardShowing(boolean isShowing) {
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) wvSubjectWeb.getLayoutParams();
         int bottomMargin;
@@ -156,13 +159,22 @@ public class ExamQuestionPlaybackPagers extends BasePager {
         webSetting.setDomStorageEnabled(true);
         webSetting.setLoadWithOverviewMode(true);
         webSetting.setBuiltInZoomControls(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webSetting.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
 //        wvSubjectWeb.setInitialScale(DeviceUtils.getScreenWidth(mContext) * 100 / 878);
     }
 
+    @Override
     public void examSubmitAll() {
         isEnd = true;
 //        wvSubjectWeb.loadUrl(String.format("javascript:examSubmitAll(" + code + ")"));
         wvSubjectWeb.loadUrl(jsExamSubmitAll);
+    }
+
+    @Override
+    public BasePager getBasePager() {
+        return this;
     }
 
     public class MyWebChromeClient extends android.webkit.WebChromeClient {
@@ -243,7 +255,7 @@ public class ExamQuestionPlaybackPagers extends BasePager {
                 ViewGroup group = (ViewGroup) mView.getParent();
                 if (group != null) {
                     group.removeView(mView);
-//                    examStop.stopExam();
+                    examStop.stopExam();
                 }
                 Loger.i(TAG, "shouldOverrideUrlLoading:stopExam");
             } else {
@@ -261,4 +273,5 @@ public class ExamQuestionPlaybackPagers extends BasePager {
         wvSubjectWeb.stopLoading();
         wvSubjectWeb.destroy();
     }
+
 }
