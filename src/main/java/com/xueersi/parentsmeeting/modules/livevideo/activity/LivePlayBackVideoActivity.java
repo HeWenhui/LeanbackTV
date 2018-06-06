@@ -80,13 +80,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BaseNbH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.ExamQuestionPlaybackPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.H5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.NbH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.NbH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager;
@@ -203,7 +205,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     /** 语音评测，role play的页面 */
     private BaseSpeechAssessmentPager speechQuestionPlaybackPager;
     /** nb实验的页面 */
-    private H5CoursewarePager h5CoursewarePager;
+    private BaseNbH5CoursewarePager h5CoursewarePager;
     /** 英语课件的页面 */
     private BaseEnglishH5CoursewarePager englishH5CoursewarePager;
     /** 文科主观题结果的页面 */
@@ -1171,7 +1173,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 if (rlQuestionContent != null && mQuestionEntity != null) {
                     Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showH5CoursewarePager");
                     mPlayVideoControlHandler.sendMessage(msg);
-                    h5CoursewarePager = new H5CoursewarePager(LivePlayBackVideoActivity.this, mQuestionEntity
+                    h5CoursewarePager = new NbH5CoursewareX5Pager(LivePlayBackVideoActivity.this, mQuestionEntity
                             .getH5Play_url());
                     rlQuestionContent.removeAllViews();
                     rlQuestionContent.addView(h5CoursewarePager.getRootView(), new LayoutParams(LayoutParams

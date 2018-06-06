@@ -11,7 +11,9 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
-import com.xueersi.parentsmeeting.modules.livevideo.page.H5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BaseNbH5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.NbH5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.NbH5CoursewareX5Pager;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 
 import java.io.File;
@@ -24,7 +26,7 @@ public class H5CoursewareBll implements H5CoursewareAction {
     String TAG = "H5CoursewareBll";
     Context context;
     Handler handler = new Handler(Looper.getMainLooper());
-    H5CoursewarePager h5CoursewarePager;
+    BaseNbH5CoursewarePager h5CoursewarePager;
     private LogToFile logToFile;
     RelativeLayout bottomContent;
     LiveVideoActivityBase liveVideoActivityBase;
@@ -80,7 +82,7 @@ public class H5CoursewareBll implements H5CoursewareAction {
                             bottomContent.removeView(h5CoursewarePager.getRootView());
                         }
                     }
-                    h5CoursewarePager = new H5CoursewarePager(context, url);
+                    h5CoursewarePager = new NbH5CoursewareX5Pager(context, url);
                     ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     bottomContent.addView(h5CoursewarePager.getRootView(), lp);
                     liveVideoActivityBase.setAutoOrientation(false);

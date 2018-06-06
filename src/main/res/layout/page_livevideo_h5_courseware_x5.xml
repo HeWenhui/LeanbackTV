@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ren.yale.android.cachewebviewlib.CacheWebView
+        <com.tencent.smtt.sdk.WebView
             android:id="@id/wv_livevideo_subject_web"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
