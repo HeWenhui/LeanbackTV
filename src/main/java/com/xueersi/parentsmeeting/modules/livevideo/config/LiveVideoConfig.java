@@ -143,7 +143,7 @@ public class LiveVideoConfig {
     public static String URL_LIVE_DELETE_MARK_POINTS = AppConfig.HTTP_HOST + "/science/LiveCourse/deleteMarkpoint";
     /** 体验课播放器上传心跳时间 */
     public static String URL_EXPERIENCE_LIVE_ONLINETIME = AppConfig.HTTP_HOST + "/science/AutoLive/visitTime";
-    /**  回放式体验课上传心跳时间  */
+    /** 回放式体验课上传心跳时间 */
     public static String URL_PLAYBACKPLAYTIME = AppConfig.HTTP_HOST + "/ExpPlayback/visitTime";
     /** RolePlay请求对话信息 */
     public static String URL_ROLEPLAY_TESTINFOS = AppConfig.HTTP_HOST + "/libarts/LiveCourse/getRolePlay";
@@ -153,6 +153,8 @@ public class LiveVideoConfig {
     public static String URL_LECTURELIVE_MORE_COURSE = AppConfig.HTTP_HOST + "/LiveLecture/getAdCase";
     /** 获取时时间戳 */
     public static String URL_LIVE_GET_CURTIME = AppConfig.HTTP_HOST + "/science/LiveCourse/getCurTimestamp";
+    /** 直播云平台日志统计 */
+    public static String URL_CDN_LOG = "http://log.xescdn.com/log";
     /** 更多课程数量的记录 */
     public static int MORE_COURSE;
     public static Boolean isloading = false;
