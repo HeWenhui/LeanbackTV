@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
@@ -84,6 +85,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
     private AudioPlayerManager mAudioPlayerManager;//音频播放管理类
     private final LiveBll mLiveBll;//只为记录日志用
     private boolean mIsPlaying = false;//标记当前语音正在播放,true 表示正在播放； flase 表示已经停止播放
+    private boolean mIsVideoUnClick = true;//标记当前语音是否可点击；true 不可点击 false 可点击；默认true
 
 
     public RolePlayerOtherItem(Context context, RolePlayerBll bll, LiveBll liveBll) {
@@ -111,13 +113,17 @@ public class RolePlayerOtherItem extends RolePlayerItem {
 
     @Override
     public void bindListener() {
-
         // 单击语音播放
         vVoiceMain.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                if(mIsPlaying){
+                if (mEntity == null) {
+                    Loger.i("RolePlayerDemoTest", "数据为空");
+                    return;
+                }
+
+                if (mIsPlaying) {
                     Loger.i("RolePlayerDemoTest", "语音正在播放中，请不要重复点击");
                     return;
                 }
@@ -142,7 +148,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
     private void voiceClick() {
         //点击语音的时候记录日志
         Loger.i("RolePlayerDemoTestlog", " 点击播放音频，记录日志 ");
-        RolePlayLog.sno8(mLiveBll,mEntity,mContext);
+        RolePlayLog.sno8(mLiveBll, mEntity, mContext);
         vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_other_reading);
         ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_other_voice_white_anim);
         AnimationDrawable animationDrawable = null;
@@ -292,12 +298,14 @@ public class RolePlayerOtherItem extends RolePlayerItem {
         switch (entity.getMsgStatus()) {
             case RolePlayerEntity.RolePlayerMessageStatus.WAIT_NORMAL:
                 //  Loger.i("RolePlayerDemoTest", "等待朗读");
+                mIsPlaying = true;
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_other_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
 
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY:
                 // Loger.i("RolePlayerDemoTest", "开始朗读");
+                mIsPlaying = true;
                 rlMessageDZ.setVisibility(View.VISIBLE);
                 ivMessageDZ.setVisibility(View.VISIBLE);
                 vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_other_reading);
@@ -327,6 +335,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 break;
 
             case RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ:
+                mIsPlaying = false;
                 // Loger.i("RolePlayerDemoTest", "取消点赞按钮");
                 ivMessageDZ.setImageResource(R.drawable.livevideo_roleplay_result_ic_normal);
                 rlMessageDZ.setVisibility(View.GONE);
@@ -384,21 +393,26 @@ public class RolePlayerOtherItem extends RolePlayerItem {
 
             @Override
             public void onClick(View view) {
-                Loger.i("RolePlayerDemoTest", "给他人点赞" );
+
+                if (entity.isDZ()) {
+                    Loger.i("RolePlayerDemoTest", "已经点过赞了。。。");
+                    return;
+                }
+                Loger.i("RolePlayerDemoTest", "给他人点赞");
 
                 bllRolePlayerBll.toOtherDZ(mEntity.getRolePlayer().getRoleId(), mEntity.getPosition());
                 entity.setDZ(true);
 
                 //x轴缩放动画
-                ObjectAnimator startYScale = ObjectAnimator.ofFloat(ivMessageDZ,ImageView.SCALE_Y,1.0f,1.5f,1.0f);
+                ObjectAnimator startYScale = ObjectAnimator.ofFloat(ivMessageDZ, ImageView.SCALE_Y, 1.0f, 1.5f, 1.0f);
                 startYScale.setDuration(500);
                 startYScale.start();
                 //y轴缩放动画
-                ObjectAnimator startXScale = ObjectAnimator.ofFloat(ivMessageDZ,ImageView.SCALE_X,1.0f,1.5f,1.0f);
+                ObjectAnimator startXScale = ObjectAnimator.ofFloat(ivMessageDZ, ImageView.SCALE_X, 1.0f, 1.5f, 1.0f);
                 startXScale.setDuration(500);
                 startXScale.start();
                 //旋转动画
-                ObjectAnimator rotate = ObjectAnimator.ofFloat(ivMessageDZ,"rotation",0,10,0,-10,0,5,10,0);
+                ObjectAnimator rotate = ObjectAnimator.ofFloat(ivMessageDZ, "rotation", 0, 10, 0, -10, 0, 5, 10, 0);
                 rotate.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
@@ -481,4 +495,19 @@ public class RolePlayerOtherItem extends RolePlayerItem {
         }
     }
 
+    /**
+     * 设置语音可否点击
+     *
+     * @param isVideoUnClick true为不可点击；false为可点击，默认true不可点击
+     */
+    public void setVideoUnClick(boolean isVideoUnClick) {
+        mIsVideoUnClick = isVideoUnClick;
+        mEntity.setUnClick(mIsVideoUnClick);
+        //changeYuyinClickable();
+
+    }
+
+    private void changeYuyinClickable() {
+        vVoiceMain.setClickable(mIsVideoUnClick ? false : true);
+    }
 }

@@ -28,30 +28,31 @@ public class RolePlayLog {
      * roleplay 2. 学生链接websocket 展示日志
      */
 
-    public static void sno2(LiveAndBackDebug liveAndBackDebug,String testId, Context context) {
-        if(liveAndBackDebug == null){
+    public static void sno2(LiveAndBackDebug liveAndBackDebug, Context context, String nonce) {
+        if (liveAndBackDebug == null) {
             Loger.i("RolePlayerDemoTestlog", " liveAndBackDebug 为空，不记录日志 ");
             return;
         }
         StableLogHashMap logHashMap = new StableLogHashMap("websocketconnected");
-        logHashMap.put("testid", "" + testId);
-        logHashMap.addExY().addSno("2");
-        liveAndBackDebug.umsAgentDebugPv(eventId,logHashMap.getData());
+        //logHashMap.put("testid", "" + testId);
+        logHashMap.addExY().addSno("2").addNonce(nonce);
+        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
     }
 
     /**
      * roleplay 4. 用户弹出答题框 展示日志
      */
 
-    public static void sno4(LiveAndBackDebug liveAndBackDebug,VideoQuestionLiveEntity videoQuestionLiveEntity, Context context) {
-        if(liveAndBackDebug == null || videoQuestionLiveEntity == null){
+    public static void sno4(LiveAndBackDebug liveAndBackDebug, VideoQuestionLiveEntity videoQuestionLiveEntity, Context context) {
+        if (liveAndBackDebug == null || videoQuestionLiveEntity == null) {
             Loger.i("RolePlayerDemoTestlog", " liveAndBackDebug 或 videoQuestionLiveEntity，不记录日志 ");
             return;
         }
         StableLogHashMap logHashMap = new StableLogHashMap("showmutirole");
-        logHashMap.put("testid",  "" + videoQuestionLiveEntity.getvQuestionID());
+        logHashMap.put("testid", "" + videoQuestionLiveEntity.getvQuestionID());
+        logHashMap.put("nonce",videoQuestionLiveEntity.nonce);
         logHashMap.addExY().addSno("4");
-        liveAndBackDebug.umsAgentDebugPv(eventId,logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
     }
 
     /**

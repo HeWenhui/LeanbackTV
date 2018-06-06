@@ -9,6 +9,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -72,6 +73,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
     private AudioPlayerManager mAudioPlayerManager;//音频播放管理类
     private final LiveBll mLiveBll;//只为记录日志调用
     private boolean mIsPlaying = false;//标记当前语音正在播放,true 表示正在播放； flase 表示已经停止播放
+    private boolean mIsVideoUnClick = true;//标记当前语音是否可点击；true 不可点击 false 可点击；默认true
 
     /**
      * 测评
@@ -102,12 +104,15 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 
     @Override
     public void bindListener() {
-
         // 单击语音播放
         vVoiceMain.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mIsPlaying){
+                if (mEntity == null) {
+                    Loger.i("RolePlayerDemoTest", "数据为空");
+                    return;
+                }
+                if (mIsPlaying) {
                     Loger.i("RolePlayerDemoTest", "语音正在播放中，请不要重复点击");
                     return;
                 }
@@ -274,6 +279,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 
         switch (entity.getMsgStatus()) {
             case RolePlayerEntity.RolePlayerMessageStatus.WAIT_NORMAL:
+                mIsPlaying = true;
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
 
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
@@ -281,6 +287,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 civUserHead.invalidate();
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY:
+                mIsPlaying = true;
                 vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_me_reading);
                 tvMessageContent.setTextColor(Color.WHITE);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_self_voice_white_anim);
@@ -359,6 +366,20 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 //重置头像
                 civUserHead.restore();
                 break;
+
+            case RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ:
+                Loger.i("RolePlayerSelfItemTest", "取消点赞");
+                mIsPlaying = false;
+                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+                //重置头像
+                civUserHead.restore();
+                tvCountTime.setText("");
+                tvCountTime.setVisibility(View.INVISIBLE);
+                showSpeechStar();
+                speechPhoneScore();
+
+                break;
             default:
                 break;
         }
@@ -409,6 +430,8 @@ public class RolePlayerSelfItem extends RolePlayerItem {
      */
 
     private void speechPhoneScore() {
+        tvMessageContent.setTextColor(mContext.getResources().getColor(R.color
+                .COLOR_333333));
         String[] textArray;
         if (mEntity.getLstPhoneScore().isEmpty()) {
             if (mEntity.getSpeechScore() >= 75) {
@@ -449,6 +472,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                     }
                 }
             }
+
             tvMessageContent.setText(spannable);
         }
     }
@@ -458,6 +482,8 @@ public class RolePlayerSelfItem extends RolePlayerItem {
      */
 
     private void speechPhoneScoreWhenClick() {
+        tvMessageContent.setTextColor(mContext.getResources().getColor(R.color
+                .COLOR_FFFFFF));
         String[] textArray;
         if (mEntity.getLstPhoneScore().isEmpty()) {
             if (mEntity.getSpeechScore() >= 75) {
@@ -499,6 +525,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                     }
                 }
             }
+
             tvMessageContent.setText(spannable);
         }
     }
@@ -512,6 +539,22 @@ public class RolePlayerSelfItem extends RolePlayerItem {
             mAudioPlayerManager.stop();
             Loger.i("RolePlayerDemoTest", "roleplay已结束，停止播放自己音频");
         }
+    }
+
+
+    /**
+     * 设置语音可否点击
+     *
+     * @param isVideoUnClick true为不可点击；false为可点击，默认true不可点击
+     */
+    public void setVideoUnClick(boolean isVideoUnClick) {
+        mIsVideoUnClick = isVideoUnClick;
+        mEntity.setUnClick(mIsVideoUnClick);
+        //changeYuyinClickable();
+    }
+
+    private void changeYuyinClickable() {
+        vVoiceMain.setClickable(mIsVideoUnClick ? false : true);
     }
 }
 
