@@ -29,7 +29,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;

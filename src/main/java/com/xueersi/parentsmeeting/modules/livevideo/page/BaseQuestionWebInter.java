@@ -18,6 +18,8 @@ public interface BaseQuestionWebInter {
 
     void examSubmitAll();
 
+    BasePager getBasePager();
+
     interface StopWebQuestion {
         void stopWebQuestion(BasePager pager, String testId);
 

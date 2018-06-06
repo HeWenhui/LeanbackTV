@@ -196,6 +196,7 @@ public class QuestionWebX5Pager extends BasePager implements BaseQuestionWebInte
 //        webSetting.setDisplayZoomControls(false);
     }
 
+    @Override
     public void examSubmitAll() {
         Map<String, String> mData = new HashMap<>();
         mData.put("testid", "" + testId);
@@ -204,6 +205,11 @@ public class QuestionWebX5Pager extends BasePager implements BaseQuestionWebInte
 //        wvSubjectWeb.loadUrl(String.format("javascript:examSubmitAll(" + code + ")"));
         isEnd = true;
         wvSubjectWeb.loadUrl(jsExamSubmitAll);
+    }
+
+    @Override
+    public BasePager getBasePager() {
+        return this;
     }
 
     public class MyWebChromeClient extends WebChromeClient {

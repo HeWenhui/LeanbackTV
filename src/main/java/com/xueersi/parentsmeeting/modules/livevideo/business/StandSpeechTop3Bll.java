@@ -7,7 +7,6 @@ import android.widget.RelativeLayout;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechTop3Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;

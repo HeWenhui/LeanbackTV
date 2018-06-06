@@ -69,15 +69,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionPlaybackPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.NbH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5PlaybackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
@@ -266,15 +264,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     /** 各种互动题的页面 */
     /** 语音答题的页面 */
     private VoiceAnswerPager voiceAnswerPager;
-    /** 普通互动题，h5显示页面 */
-    private QuestionWebPager questionWebPager;
     /** 课前测的页面,暂时没有 */
     @Deprecated
     private BaseExamQuestionInter examQuestionPlaybackPager;
     /** 语音评测，role play的页面 */
     private BaseSpeechAssessmentPager speechQuestionPlaybackPager;
-    /** nb实验的页面 */
-    private NbH5CoursewarePager h5CoursewarePager;
     /** 讲座购课广告的页面 */
     private LecAdvertPager lecAdvertPager;
     /** 填空题布局 */
@@ -700,8 +694,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
         if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
-            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
+            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl)) {
                 ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
+            }
         }
     }
 
@@ -973,6 +968,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
     }
 
+    @Override
     protected void onRefresh() {
         if (AppBll.getInstance(this).isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
@@ -992,7 +988,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             public void run() {
                 if (rlQuestionContent != null && mQuestionEntity != null) {
                     mPlayVideoControlHandler.sendEmptyMessage(SHOW_QUESTION);
-                    examQuestionPlaybackPager = new ExamQuestionPlaybackPager(ExperienceLiveVideoActivity.this, mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(),
+                    examQuestionPlaybackPager = new ExamQuestionX5PlaybackPager(ExperienceLiveVideoActivity.this, mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(),
                             false, "", new BaseExamQuestionInter.ExamStop() {
                         @Override
                         public void stopExam() {

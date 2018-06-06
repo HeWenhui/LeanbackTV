@@ -34,7 +34,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPag
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankPortLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectLivePager;
@@ -42,7 +41,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectPort
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectPortLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSubjectivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5Pager;
@@ -1105,10 +1103,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     public void run() {
                         Loger.e("QuestionBll", "=======>closePageByTeamPk 2222:" + curQuestionView);
                         if (pager != null) {
-                            if (pager instanceof QuestionWebPager) {
+                            if (pager instanceof BaseQuestionWebInter) {
                                 isHaveWebQuestion = false;
                             }
-                            if (pager instanceof ExamQuestionPager) {
+                            if (pager instanceof ExamQuestionX5Pager) {
                                 isHaveExam = false;
                             }
                             rlQuestionContent.removeView(pager.getRootView());
@@ -1227,7 +1225,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void stopWebQuestion(BasePager pager, String testId) {
-        if (pager instanceof QuestionWebPager) {
+        if (pager instanceof BaseQuestionWebInter) {
             mQueAndBool.add("" + testId);
             setHaveWebQuestion(false);
             JSONObject object = new JSONObject();

@@ -36,21 +36,20 @@ import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
 
 /**
- * Created by Administrator on 2017/5/8.
+ * Created by linyuqiang on 2017/5/8.
  */
-
 public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
-    String TAG = "AgoraVideoChatPager";
-    LiveBll liveBll;
-    LiveGetInfo getInfo;
-    int netWorkType;
-    boolean isFail = false;
-    LiveActivityBase activity;
-    WorkerThread mWorkerThread;
+    private String TAG = "AgoraVideoChatPager";
+    private LiveBll liveBll;
+    private LiveGetInfo getInfo;
+    private int netWorkType;
+    private boolean isFail = false;
+    private LiveActivityBase activity;
+    private WorkerThread mWorkerThread;
     private LogToFile mLogtf;
     private AtomicBoolean startRemote;
-    String eventId = LiveVideoConfig.LIVE_LINK_MIRCO;
-    String room;
+    private String eventId = LiveVideoConfig.LIVE_LINK_MIRCO;
+    private String room;
 
     public AgoraVideoChatPager(Activity activity, LiveBll liveBll, LiveGetInfo getInfo) {
         this.activity = (LiveActivityBase) activity;

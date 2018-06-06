@@ -75,18 +75,18 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewareX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionPlaybackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.NbH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSubjectivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerStandPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5PlaybackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SubjectResultX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
@@ -191,7 +191,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
     private VoiceAnswerStandPager voiceAnswerPager;
     LiveStandVoiceAnswerCreat liveStandVoiceAnswerCreat;
     /** 普通互动题，h5显示页面 */
-    private QuestionWebPager questionWebPager;
+    private BaseQuestionWebInter questionWebPager;
     /** 课前测的页面 */
     private BaseExamQuestionInter examQuestionPlaybackPager;
     /** 语音评测，role play的页面 */
@@ -995,7 +995,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //                            }
                                 MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
                                 AppInfoEntity mAppInfoEntity = AppBll.getInstance().getAppInfoEntity();
-                                questionWebPager = new QuestionWebPager(LiveStandPlayBackVideoActivity.this,
+                                questionWebPager = new QuestionWebX5Pager(LiveStandPlayBackVideoActivity.this,
                                         LiveStandPlayBackVideoActivity.this, "http://live.xueersi" +
                                         ".com/Live/getMultiTestPaper",
                                         userInfoEntity.getStuId(), mAppInfoEntity.getLoginUserName(), mQuestionEntity
@@ -1085,7 +1085,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                 if (rlQuestionContent != null && mQuestionEntity != null) {
                     Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showExam");
                     mPlayVideoControlHandler.sendMessage(msg);
-                    examQuestionPlaybackPager = new ExamQuestionPlaybackPager(LiveStandPlayBackVideoActivity.this,
+                    examQuestionPlaybackPager = new ExamQuestionX5PlaybackPager(LiveStandPlayBackVideoActivity.this,
                             mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), IS_SCIENCE, stuCourId, new BaseExamQuestionInter.ExamStop() {
                         @Override
                         public void stopExam() {
@@ -2373,7 +2373,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
             onClickListener = new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    stopWebQuestion(questionWebPager, questionWebPager.getTestId());
+                    stopWebQuestion(questionWebPager.getBasePager(), questionWebPager.getTestId());
                 }
             };
         } else if (subjectResultPager != null) {
@@ -2682,7 +2682,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 
     @Override
     public void stopWebQuestion(BasePager pager, String testId) {
-        if (pager instanceof QuestionWebPager) {
+        if (pager instanceof BaseQuestionWebInter) {
             Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 13, 13, mQuestionEntity);
             mPlayVideoControlHandler.sendMessage(msg);
             questionWebPager = null;
@@ -2723,6 +2723,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         UmsAgentManager.umsAgentDebug(this, appID, eventId, mData);
     }
 
+    @Override
     public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
         MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         mData.put("uid", userInfoEntity.getStuId());
@@ -2739,6 +2740,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         UmsAgentManager.umsAgentOtherBusiness(this, appID, UmsConstants.uploadBehavior, mData);
     }
 
+    @Override
     public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
         MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         mData.put("uid", userInfoEntity.getStuId());
