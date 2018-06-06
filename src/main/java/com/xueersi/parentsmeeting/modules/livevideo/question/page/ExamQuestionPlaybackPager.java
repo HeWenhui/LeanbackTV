@@ -39,7 +39,7 @@ import static com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog.MESSA
  * Created by linyuqiang on 2016/12/7.
  * 直播回放试卷答题页面
  */
-public class ExamQuestionPlaybackPager extends BasePager implements BaseExamQuestionPager {
+public class ExamQuestionPlaybackPager extends BasePager implements BaseExamQuestionInter {
     String TAG = "ExamQuestionPlaybackPager";
     private Button btSubjectClose;
     Button bt_livevideo_subject_calljs;

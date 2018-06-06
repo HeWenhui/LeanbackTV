@@ -9,7 +9,7 @@ import com.xueersi.parentsmeeting.base.BasePager;
  *         互动试卷基础
  * @date 2018/6/6
  */
-public interface BaseExamQuestionPager {
+public interface BaseExamQuestionInter {
     View getRootView();
 
     void onKeyboardShowing(boolean isShowing);

@@ -71,11 +71,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseNbH5CoursewarePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewareX5Pager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionPlaybackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.NbH5CoursewareX5Pager;
@@ -84,11 +85,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectLive
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSubjectivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechAssAutoPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SubjectResultX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
@@ -134,7 +134,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 @SuppressLint("HandlerLeak")
 @SuppressWarnings("unchecked")
 public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements LivePlaybackMediaController.OnPointClick,
-        SpeechEvalAction, BaseQuestionWebPager.StopWebQuestion, LiveAndBackDebug, ActivityChangeLand, BaseVoiceAnswerCreat.AnswerRightResultVoice {
+        SpeechEvalAction, BaseQuestionWebInter.StopWebQuestion, LiveAndBackDebug, ActivityChangeLand, BaseVoiceAnswerCreat.AnswerRightResultVoice {
 
     String TAG = "LivePlayBackVideoActivityLog";
 
@@ -193,7 +193,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
     /** 普通互动题，h5显示页面 */
     private QuestionWebPager questionWebPager;
     /** 课前测的页面 */
-    private BaseExamQuestionPager examQuestionPlaybackPager;
+    private BaseExamQuestionInter examQuestionPlaybackPager;
     /** 语音评测，role play的页面 */
     private BaseSpeechAssessmentPager speechQuestionPlaybackPager;
     /** nb实验的页面 */
@@ -201,7 +201,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
     /** 英语课件的页面 */
     private BaseEnglishH5CoursewarePager englishH5CoursewarePager;
     /** 文科主观题结果的页面 */
-    private SubjectResultPager subjectResultPager;
+    private BaseSubjectResultInter subjectResultPager;
     /** 讲座购课广告的页面 */
     private LecAdvertPager lecAdvertPager;
     /** 填空题布局 */
@@ -1086,7 +1086,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                     Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showExam");
                     mPlayVideoControlHandler.sendMessage(msg);
                     examQuestionPlaybackPager = new ExamQuestionPlaybackPager(LiveStandPlayBackVideoActivity.this,
-                            mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), IS_SCIENCE, stuCourId, new BaseExamQuestionPager.ExamStop() {
+                            mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), IS_SCIENCE, stuCourId, new BaseExamQuestionInter.ExamStop() {
                         @Override
                         public void stopExam() {
                             LiveStandPlayBackVideoActivity.this.stopExam();
@@ -1549,7 +1549,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                 rlQuestionContent.removeAllViews();
                 if (LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(questionEntity.getvQuestionType())) {
                     MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-                    subjectResultPager = new SubjectResultPager(LiveStandPlayBackVideoActivity.this, LiveStandPlayBackVideoActivity.this,
+                    subjectResultPager = new SubjectResultX5Pager(LiveStandPlayBackVideoActivity.this, LiveStandPlayBackVideoActivity.this,
                             liveVideoSAConfig.inner.subjectiveTestAnswerResult + mVideoEntity.getLiveId(),
                             userInfoEntity.getStuId(), mVideoEntity.getLiveId(), questionEntity.getvQuestionID(), stuCourId);
                     rlQuestionContent.addView(subjectResultPager.getRootView());

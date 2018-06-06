@@ -68,8 +68,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewarePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionPlaybackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.NbH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
@@ -78,7 +77,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankLive
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -272,15 +270,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private QuestionWebPager questionWebPager;
     /** 课前测的页面,暂时没有 */
     @Deprecated
-    private BaseExamQuestionPager examQuestionPlaybackPager;
+    private BaseExamQuestionInter examQuestionPlaybackPager;
     /** 语音评测，role play的页面 */
     private BaseSpeechAssessmentPager speechQuestionPlaybackPager;
     /** nb实验的页面 */
     private NbH5CoursewarePager h5CoursewarePager;
-    /** 英语课件的页面 */
-    private EnglishH5CoursewarePager englishH5CoursewarePager;
-    /** 文科主观题结果的页面 */
-    private SubjectResultPager subjectResultPager;
     /** 讲座购课广告的页面 */
     private LecAdvertPager lecAdvertPager;
     /** 填空题布局 */
@@ -999,7 +993,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 if (rlQuestionContent != null && mQuestionEntity != null) {
                     mPlayVideoControlHandler.sendEmptyMessage(SHOW_QUESTION);
                     examQuestionPlaybackPager = new ExamQuestionPlaybackPager(ExperienceLiveVideoActivity.this, mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(),
-                            false, "", new BaseExamQuestionPager.ExamStop() {
+                            false, "", new BaseExamQuestionInter.ExamStop() {
                         @Override
                         public void stopExam() {
 

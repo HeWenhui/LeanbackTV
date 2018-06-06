@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.logerhelper.LogerTag;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
@@ -29,10 +30,10 @@ import java.util.Map;
  * Created by linyuqiang on 2017/10/31.
  * 直播主观题结果页面
  */
-public class SubjectResultPager extends BasePager {
-    String questionEventId = LiveVideoConfig.LIVE_PUBLISH_TEST;
+public class SubjectResultPager extends BasePager implements BaseSubjectResultInter {
+    private String questionEventId = LiveVideoConfig.LIVE_PUBLISH_TEST;
     private Button btSubjectClose;
-    Button bt_livevideo_subject_calljs;
+    private Button bt_livevideo_subject_calljs;
     private WebView wvSubjectWeb;
     private View errorView;
     private QuestionWebPager.StopWebQuestion questionBll;
@@ -45,8 +46,8 @@ public class SubjectResultPager extends BasePager {
     private LogToFile logToFile;
     /** 试卷地址 */
     private String examUrl = "";
-    String testPaperUrl;
-    String stuCouId;
+    private String testPaperUrl;
+    private String stuCouId;
 
     public SubjectResultPager(Context context, QuestionWebPager.StopWebQuestion questionBll, String testPaperUrl, String stuId, String liveid, String testId, String stuCouId) {
         super(context);

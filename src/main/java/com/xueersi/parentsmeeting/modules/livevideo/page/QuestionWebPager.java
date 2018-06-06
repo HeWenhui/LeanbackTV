@@ -40,7 +40,7 @@ import java.util.Map;
  * @date 2017/8/23
  * 普通互动题，h5显示页面
  */
-public class QuestionWebPager extends BasePager implements BaseQuestionWebPager {
+public class QuestionWebPager extends BasePager implements BaseQuestionWebInter {
     private String questionEventId = LiveVideoConfig.LIVE_PUBLISH_TEST;
     private Button btSubjectClose;
     private Button btSubjectCalljs;

@@ -29,10 +29,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankPortLivePager;
@@ -44,8 +45,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSubjectivePager
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssAutoPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SubjectResultX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
@@ -75,7 +76,7 @@ import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE5;
 /**
  * Created by linyuqiang on 2016/9/23.
  */
-public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEvalAction, BaseQuestionWebPager
+public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEvalAction, BaseQuestionWebInter
         .StopWebQuestion, BaseVoiceAnswerCreat.AnswerRightResultVoice {
     String TAG = "QuestionBll";
     SpeechEvaluatorUtils mIse;
@@ -193,11 +194,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 网页互动题正在作答
      */
     private boolean isHaveWebQuestion = false;
-    private BaseQuestionWebPager questionWebPager;
+    private BaseQuestionWebInter questionWebPager;
     /**
      * 试卷页面
      */
-    private BaseExamQuestionPager examQuestionPager;
+    private BaseExamQuestionInter examQuestionPager;
     /**
      * 语音评测页面
      */
@@ -211,7 +212,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 语音评测结束后的事件
      */
     private SpeechEndAction speechEndAction;
-    private SubjectResultPager subjectResultPager;
+    /** 语文主观题 */
+    private BaseSubjectResultInter subjectResultPager;
     boolean isLand;
     private LiveMessageBll liveMessageBll;
     /**
@@ -719,7 +721,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 String url = liveGetInfo.getSubjectiveTestAnswerResult() + "?stuId=" + liveGetInfo.getStuId() +
                         "&testId=" + videoQuestionLiveEntity.getvQuestionID();
                 Loger.d(TAG, "showQuestion:url=" + url);
-                subjectResultPager = new SubjectResultPager(activity, this,
+                subjectResultPager = new SubjectResultX5Pager(activity, this,
                         liveGetInfo.getSubjectiveTestAnswerResult(),
                         liveGetInfo.getStuId(), liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
                         stuCouId);

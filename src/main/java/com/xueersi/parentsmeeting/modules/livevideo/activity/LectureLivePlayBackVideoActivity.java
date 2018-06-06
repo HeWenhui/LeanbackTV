@@ -38,7 +38,7 @@ import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
 import com.xueersi.parentsmeeting.business.AppBll;
@@ -139,7 +139,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
     private VideoQuestionEntity mQuestionEntity;
     /** 讲座暂时没有 */
     @Deprecated
-    private BaseExamQuestionPager examQuestionPlaybackPager;
+    private BaseExamQuestionInter examQuestionPlaybackPager;
     /** 红包id */
     private String mRedPacketId;
 
@@ -923,7 +923,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                 if (rlQuestionContent != null && mQuestionEntity != null) {
                     mPlayVideoControlHandler.sendEmptyMessage(SHOW_QUESTION);
                     examQuestionPlaybackPager = new ExamQuestionPlaybackPager(LectureLivePlayBackVideoActivity.this, mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(),
-                            false, "", new BaseExamQuestionPager.ExamStop() {
+                            false, "", new BaseExamQuestionInter.ExamStop() {
                         @Override
                         public void stopExam() {
                             LectureLivePlayBackVideoActivity.this.stopExam();

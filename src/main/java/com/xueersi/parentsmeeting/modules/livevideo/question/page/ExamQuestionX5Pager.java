@@ -45,7 +45,7 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
  * Created by linyuqiang on 2016/11/28.
  * 直播试卷答题页面
  */
-public class ExamQuestionX5Pager extends BasePager implements BaseExamQuestionPager {
+public class ExamQuestionX5Pager extends BasePager implements BaseExamQuestionInter {
     private String EXAM_URL = "http://live.xueersi.com/LiveExam/examPaper";
     String examQuestionEventId = LiveVideoConfig.LIVE_H5_EXAM;
     private Button btSubjectClose;

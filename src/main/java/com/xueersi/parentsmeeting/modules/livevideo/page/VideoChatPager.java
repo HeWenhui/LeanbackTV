@@ -14,9 +14,10 @@ import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import java.util.ArrayList;
 
 /**
- * Created by Administrator on 2017/5/8.
+ * Created by linyuqiang on 2017/5/8.
+ * 网页接麦
+ * 暂时没用
  */
-
 public class VideoChatPager extends BaseWebviewPager implements VideoChatInter {
     LiveBll liveBll;
     LiveGetInfo getInfo;
