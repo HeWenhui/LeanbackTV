@@ -1104,10 +1104,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         Loger.e("QuestionBll", "=======>closePageByTeamPk 2222:" + curQuestionView);
                         if (pager != null) {
                             if (pager instanceof BaseQuestionWebInter) {
-                                isHaveWebQuestion = false;
+                                setHaveWebQuestion(false);
                             }
                             if (pager instanceof ExamQuestionX5Pager) {
-                                isHaveExam = false;
+                                setHaveExam(false);
                             }
                             rlQuestionContent.removeView(pager.getRootView());
                         }
