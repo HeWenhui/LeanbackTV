@@ -193,7 +193,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
     }
 
     public void onPlayOpenSuccess(ViewGroup.LayoutParams lp) {
-        if (IS_SHOW_CLASSMATE_SIGN) {
+        if (IS_SHOW_CLASSMATE_SIGN && classmateSignPager != null) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) classmateSignPager.getRootView()
                     .getLayoutParams();
             int screenWidth = ScreenUtils.getScreenWidth();
