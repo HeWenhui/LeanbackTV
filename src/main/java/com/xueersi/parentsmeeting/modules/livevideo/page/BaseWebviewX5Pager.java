@@ -18,6 +18,7 @@ import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.logerhelper.LogerTag;
+import com.xueersi.parentsmeeting.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
@@ -153,8 +154,7 @@ public abstract class BaseWebviewX5Pager extends BasePager {
             if (mLevel == ConsoleMessage.MessageLevel.ERROR || mLevel == ConsoleMessage.MessageLevel.WARNING) {
                 isRequst = true;
             }
-            Loger.d(mContext, LogerTag.DEBUG_WEBVIEW_CONSOLE, TAG + ",Level=" + mLevel + "&&," + consoleMessage.sourceId() +
-                    "&&," + consoleMessage.lineNumber() + "&&," + consoleMessage.message(), isRequst);
+            UmsAgentUtil.webConsoleMessage(mContext, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
             return super.onConsoleMessage(consoleMessage);
         }
 

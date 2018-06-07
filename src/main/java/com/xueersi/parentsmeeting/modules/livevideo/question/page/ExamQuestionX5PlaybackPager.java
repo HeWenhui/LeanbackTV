@@ -21,6 +21,7 @@ import com.xueersi.parentsmeeting.business.AppBll;
 import com.xueersi.parentsmeeting.entity.AppInfoEntity;
 import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
 import com.xueersi.parentsmeeting.logerhelper.LogerTag;
+import com.xueersi.parentsmeeting.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
@@ -195,8 +196,7 @@ public class ExamQuestionX5PlaybackPager extends BasePager implements BaseExamQu
             if (mLevel == ConsoleMessage.MessageLevel.ERROR || mLevel == ConsoleMessage.MessageLevel.WARNING) {
                 isRequst = true;
             }
-            Loger.d(mContext, LogerTag.DEBUG_WEBVIEW_CONSOLE, "ExamQuestionPlaybackPager,Level=" + mLevel + "&&," + consoleMessage.sourceId() +
-                    "&&," + consoleMessage.lineNumber() + "&&," + consoleMessage.message(), isRequst);
+            UmsAgentUtil.webConsoleMessage(mContext, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
             return super.onConsoleMessage(consoleMessage);
         }
 
