@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.parentsmeeting.base.BasePager;
@@ -322,7 +323,12 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
-        wvSubjectWeb.setWebViewClient(new MyWebViewClient());
+        wvSubjectWeb.setWebViewClient(new MyWebViewClient(){
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
+                return super.shouldInterceptRequest(view, s);
+            }
+        });
     }
 
     public String getId() {

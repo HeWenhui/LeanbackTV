@@ -23,6 +23,7 @@ import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreCache;
 import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
@@ -38,6 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -210,6 +212,40 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                 }
             }
 
+            @Override
+            public void onFailure(Call call, IOException e) {
+                super.onFailure(call, e);
+                Loger.e(TAG, "getCourseWareUrl:onFailure:e=" + e);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                Loger.e(TAG, "getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
+            }
+        });
+
+        // 一次多发的接口调用
+        liveBll.getMoreCourseWareUrl(liveId,new HttpCallBack(false){
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                Loger.e(TAG, "responseEntity.getJsonObject=" + responseEntity.getJsonObject());
+                final Object jsonObject = responseEntity.getJsonObject();
+                JSONArray array = new JSONArray(jsonObject.toString());
+                List<MoreCache> list = new ArrayList<>();
+                for(int i = 0 ; i < array.length() ; i++){
+                    MoreCache cache = new MoreCache();
+                    JSONObject object = (JSONObject)array.get(i);
+                    cache.setPackageId(object.optString("packageId"));
+                    cache.setPackageSource(object.optString("packageSource"));
+                    cache.setIsTemplate(object.optInt("isTemplate"));
+                    cache.setPageId(object.optString("pageId"));
+                    cache.setResourceUrl(object.optString("resourceUrl"));
+                    cache.setTemplateUrl(object.optString("templateUrl"));
+                    list.add(cache);
+                }
+                Loger.e(TAG, "list" + list.size());
+            }
             @Override
             public void onFailure(Call call, IOException e) {
                 super.onFailure(call, e);

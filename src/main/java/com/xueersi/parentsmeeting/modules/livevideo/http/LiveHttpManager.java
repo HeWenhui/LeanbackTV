@@ -696,6 +696,16 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
+     * 获取一次多发的预加载课件地址
+     */
+     public void getMoreCoureWareUrl(String liveId , HttpCallBack requestCallBack){
+         HttpRequestParams params = new HttpRequestParams();
+//         setDefaultParameter(params);
+         params.addBodyParam("liveId", liveId);
+         requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_GET_MORE_WARE_URL;
+         sendPost(requestCallBack.url, params, requestCallBack);
+     }
+    /**
      * 获得广告信息
      */
     public void getAdOnLL(String courseId, final HttpCallBack requestCallBack) {

@@ -3811,6 +3811,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mHttpManager.getCourseWareUrl(requestCallBack);
     }
 
+    public void getMoreCourseWareUrl(String liveId ,HttpCallBack requestCallBack) {
+        mHttpManager.getMoreCoureWareUrl(liveId , requestCallBack);
+    }
+
     public void getAdOnLL(final LecAdvertEntity lecAdvertEntity, final AbstractBusinessDataCallBack callBack) {
         mHttpManager.getAdOnLL(lecAdvertEntity.course_id, new HttpCallBack(false) {
             @Override
