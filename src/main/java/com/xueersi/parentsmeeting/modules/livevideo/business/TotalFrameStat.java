@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.http.HttpRequestParams;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.util.HardWareUtil;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService;
 import com.xueersi.xesalib.umsagent.DeviceInfo;
@@ -35,9 +36,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -82,42 +86,26 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         userId = myUserInfoEntity.getStuId();
         versionName = getAppVersionName();
-        cpuName = getCpuName();
+        cpuName = HardWareUtil.getCpuName();
         memsize = DeviceUtils.getAvailRams(activity);
-    }
-
-    public static String getCpuName() {
-        try {
-            FileReader fr = new FileReader("/proc/cpuinfo");
-            BufferedReader br = new BufferedReader(fr);
-            String text;
-            while ((text = br.readLine()) != null) {
-                if (text.contains("Hardware")) {
-                    int index = text.indexOf(":");
-                    String cpu;
-                    if (index == -1) {
-                        cpu = text.substring(8);
-                    } else {
-                        cpu = text.substring(index + 1);
-                    }
-                    cpu = cpu.trim();
-                    Loger.d(TAG, "getCpuName:text=" + text + ",cpu=" + cpu);
-                    return cpu;
-                }
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //华为手机获取不到,取系统变量
-        //三星
-        //Build.HARDWARE qcom
-        //Build.BOARD msm8998
-        //华为
-        //Build.HARDWARE kirin970
-        //Build.BOARD BLA
-        return Build.HARDWARE;
+//        if (AppConfig.DEBUG) {
+//            new Thread() {
+//                @Override
+//                public void run() {
+//                    while (!activity.isFinishing()) {
+//                        final HashMap<String, String> defaultKey = new HashMap<>();
+//                        float cpuRate = HardWareUtil.getProcessCpuRate();
+//                        defaultKey.put("cpu", "" + cpuRate);
+//                        Runtime runtime = Runtime.getRuntime();
+//                        long totalMemory = runtime.totalMemory();
+//                        defaultKey.put("mem", "" + totalMemory);
+//                        double CPURateDesc = HardWareUtil.getCPURateDesc();
+//                        DecimalFormat df = new DecimalFormat("######0.00");
+//                        Loger.d(TAG, "testCpu:cpuRate=" + cpuRate + ",totalMemory=" + totalMemory + ",CPURateDesc=" + df.format(CPURateDesc));
+//                    }
+//                }
+//            }.start();
+//        }
     }
 
     public void setvPlayer(PlayerService vPlayer) {
@@ -316,8 +304,9 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
             @Override
             public void run() {
                 final HashMap<String, String> defaultKey = new HashMap<>();
-                float cpuRate = getProcessCpuRate();
-                defaultKey.put("cpu", "" + cpuRate);
+                double cpuRate = HardWareUtil.getCPURateDesc();
+                DecimalFormat df = new DecimalFormat("######0.00");
+                defaultKey.put("cpu", "" + df.format(cpuRate));
                 Runtime runtime = Runtime.getRuntime();
                 long totalMemory = runtime.totalMemory();
                 defaultKey.put("mem", "" + totalMemory);
@@ -330,70 +319,6 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                 });
             }
         }.start();
-    }
-
-    public float getProcessCpuRate() {
-        float totalCpuTime1 = allCpuTime();
-        float processCpuTime1 = processCpuTime();
-        try {
-            Thread.sleep(360);
-        } catch (Exception e) {
-        }
-        float totalCpuTime2 = allCpuTime();
-        float processCpuTime2 = processCpuTime();
-        float cpuRate = 100 * (processCpuTime2 - processCpuTime1)
-                / (totalCpuTime2 - totalCpuTime1);
-        return cpuRate;
-    }
-
-    private long allCpuTime() {
-        String[] cpuInfos = null;
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    new FileInputStream("/proc/stat")), 1000);
-            String load = reader.readLine();
-            reader.close();
-            cpuInfos = load.split(" ");
-        } catch (IOException ex) {
-            Loger.e(TAG, "IOException" + ex.toString());
-            return 0;
-        }
-        long totalCpu = 0;
-        try {
-            totalCpu = Long.parseLong(cpuInfos[2])
-                    + Long.parseLong(cpuInfos[3]) + Long.parseLong(cpuInfos[4])
-                    + Long.parseLong(cpuInfos[6]) + Long.parseLong(cpuInfos[5])
-                    + Long.parseLong(cpuInfos[7]) + Long.parseLong(cpuInfos[8]);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            Loger.i(TAG, "ArrayIndexOutOfBoundsException" + e.toString());
-            return 0;
-        }
-        return totalCpu;
-    }
-
-    private long processCpuTime() {
-        String[] cpuInfos = null;
-        try {
-            int pid = android.os.Process.myPid();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    new FileInputStream("/proc/" + pid + "/stat")), 1000);
-            String load = reader.readLine();
-            reader.close();
-            cpuInfos = load.split(" ");
-        } catch (IOException e) {
-            Loger.e(TAG, "IOException" + e.toString());
-            return 0;
-        }
-        long appCpuTime = 0;
-        try {
-            appCpuTime = Long.parseLong(cpuInfos[13])
-                    + Long.parseLong(cpuInfos[14]) + Long.parseLong(cpuInfos[15])
-                    + Long.parseLong(cpuInfos[16]);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            Loger.i(TAG, "ArrayIndexOutOfBoundsException" + e.toString());
-            return 0;
-        }
-        return appCpuTime;
     }
 
     private void xescdnLogHeart(HashMap<String, String> defaultKey) {
@@ -450,6 +375,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
             String value = defaultKey.get(key);
             params.addBodyParam(key, value);
         }
+        params.setWriteAndreadTimeOut(2000);
         baseHttpBusiness.sendPostNoBusiness(logurl, params, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -464,7 +390,6 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                     Loger.d(TAG, "xescdnLog:onResponse:response=null");
                 }
             }
-
         });
     }
 
