@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -26,6 +27,9 @@ import com.xueersi.xesalib.utils.string.StringUtils;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by linyuqiang on 2017/3/25.
@@ -51,6 +55,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private boolean IS_SCIENCE;
     private int mGoldNum;
     private int mEnergyNum;
+    private final File mMorecacheout;
 
     @Override
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
@@ -77,6 +82,12 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         if (!cacheFile.exists()) {
             cacheFile.mkdirs();
         }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+        Date date = new Date();
+        final String today = dateFormat.format(date);
+        final File todayCacheDir = new File(cacheFile, today);
+        final File todayLiveCacheDir = new File(todayCacheDir, liveId);
+        mMorecacheout = new File(todayLiveCacheDir, liveId + "child");
         initData();
     }
 
@@ -240,6 +251,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         loadUrl += "&isTowall=" + isShowRanks;
         Loger.i(TAG, "initData:loadUrl=" + loadUrl);
         loadUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
+        // 一题多发的课件预加载
+        loadUrl += "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml#/?stuId=15649&liveId=122595&stuCouId=8146043&classId=11169&teamId=1&packageId=36854&packageSource=2&packageAttr=3&releasedPageInfos=[{38798: [25, 20129], 38797: [25, 20127]}]&isPlayBack=1&stuClientPath="+ Base64.encodeToString(("127.0.0.1:8080/" + mMorecacheout.getPath() +"/").getBytes(), Base64.DEFAULT);
         loadUrl(loadUrl);
         Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + loadUrl);
         reloadurl = loadUrl;

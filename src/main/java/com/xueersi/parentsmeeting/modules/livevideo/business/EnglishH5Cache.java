@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -19,11 +20,13 @@ import com.tencent.smtt.sdk.WebViewClient;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.config.AppConfig;
+import com.xueersi.parentsmeeting.http.DownloadCallBack;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreCache;
+import com.xueersi.parentsmeeting.util.ZipExtractorTask;
 import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
@@ -67,6 +70,9 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     private int netWorkType;
     boolean useService = true;
     boolean isStart = true;
+    private List<MoreCache> mList;
+    private File mMorecachein;
+    private File mMorecacheout;
 
     public EnglishH5Cache(Context context, LiveBll liveBll, String liveId) {
         this.context = context;
@@ -232,7 +238,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                 Loger.e(TAG, "responseEntity.getJsonObject=" + responseEntity.getJsonObject());
                 final Object jsonObject = responseEntity.getJsonObject();
                 JSONArray array = new JSONArray(jsonObject.toString());
-                List<MoreCache> list = new ArrayList<>();
+                mList = new ArrayList<>();
                 for(int i = 0 ; i < array.length() ; i++){
                     MoreCache cache = new MoreCache();
                     JSONObject object = (JSONObject)array.get(i);
@@ -242,9 +248,12 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                     cache.setPageId(object.optString("pageId"));
                     cache.setResourceUrl(object.optString("resourceUrl"));
                     cache.setTemplateUrl(object.optString("templateUrl"));
-                    list.add(cache);
+                    mList.add(cache);
                 }
-                Loger.e(TAG, "list" + list.size());
+                Loger.e(TAG, "list" + mList.size());
+                if(mList.size() > 0){
+                    download(todayLiveCacheDir);
+                }
             }
             @Override
             public void onFailure(Call call, IOException e) {
@@ -259,6 +268,38 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             }
         });
     }
+
+    private void download(File path) {
+        final ArrayList<String> urls = new ArrayList<>();
+        mMorecachein = new File(path, liveId);
+        mMorecacheout = new File(path, liveId + "child");
+        // 下载以及解压预加载的文件
+        for (int i = 0 ; i < mList.size() ; i++)  {
+            if(!urls.contains(mList.get(i).getResourceUrl()) && !TextUtils.isEmpty(mList.get(i).getResourceUrl())){
+                urls.add(mList.get(i).getResourceUrl());
+            }
+            if(!TextUtils.isEmpty(mList.get(i).getTemplateUrl())){
+                urls.add(mList.get(i).getTemplateUrl());
+            }
+        }
+        for(int i = 0 ; i < urls.size() ; i++){
+            liveBll.download(urls.get(i), mMorecachein.getPath(),mCallBack);
+        }
+
+    }
+
+    private DownloadCallBack mCallBack = new DownloadCallBack() {
+        @Override
+        protected void onDownloadSuccess() {
+            // 解压的操作
+            new ZipExtractorTask(mMorecachein, mMorecacheout, true, null).execute();
+        }
+
+        @Override
+        protected void onDownloadFailed() {
+
+        }
+    };
 
     public void start() {
         isStart = true;
