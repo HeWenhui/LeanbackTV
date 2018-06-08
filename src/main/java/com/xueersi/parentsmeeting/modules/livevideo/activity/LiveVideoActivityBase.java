@@ -547,9 +547,11 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         mCreated = true; // 界面onCreate完毕
         if (onVideoCreate(savedInstanceState)) {
             createPlayer();
+            onVideoCreateEnd();
         }
     }
 
+    @Override
     public void setRequestedOrientation(int requestedOrientation) {
         super.setRequestedOrientation(requestedOrientation);
         if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
@@ -561,6 +563,10 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         } else if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
             mDirection = DIRECTION_DOWN;
         }
+    }
+
+    protected void onVideoCreateEnd() {
+
     }
 
     protected void createPlayer() {

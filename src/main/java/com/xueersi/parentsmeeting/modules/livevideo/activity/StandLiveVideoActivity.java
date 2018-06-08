@@ -267,6 +267,11 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
     }
 
     @Override
+    protected void onVideoCreateEnd() {
+        mLiveBll.setTotalFrameStat(totalFrameStat);
+    }
+
+    @Override
     protected void showRefresyLayout(int arg1, int arg2) {
         super.showRefresyLayout(arg1, arg2);
     }
@@ -1319,7 +1324,6 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         }.start();
         String url;
         String msg = "rePlay:";
-        totalFrameStat.setChannelname(mGetInfo.getChannelname());
         if (mServer == null) {
             String rtmpUrl = null;
             String[] rtmpUrls = mGetInfo.getRtmpUrls();

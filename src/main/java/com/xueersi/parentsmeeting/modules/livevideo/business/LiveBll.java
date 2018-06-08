@@ -75,6 +75,8 @@ import org.xutils.xutils.ex.HttpException;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -161,6 +163,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private final String ROOM_MIDDLE = "L";
     private Callback.Cancelable mCataDataCancle;
     private Callback.Cancelable mGetPlayServerCancle;
+    /** 直播帧数统计 */
+    TotalFrameStat totalFrameStat;
     /**
      * 学习记录提交时间间隔
      */
@@ -357,6 +361,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         } else {
             onGetInfoSuccess(getInfo);
         }
+    }
+
+    public void setTotalFrameStat(TotalFrameStat totalFrameStat) {
+        this.totalFrameStat = totalFrameStat;
     }
 
     /**
@@ -2127,16 +2135,17 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
         @Override
         public void onMessage(String target, String sender, String login, String hostname, String text) {
-            Loger.e("LiveBll","=====> onMessage:"+sender+":"+login+":"+hostname +":"+target+":"+text);
+            Loger.e("LiveBll", "=====> onMessage:" + sender + ":" + login + ":" + hostname + ":" + target + ":" + text);
 
             if (mRoomAction != null) {
                 mRoomAction.onMessage(target, sender, login, hostname, text, "");
             }
         }
 
+        @Override
         public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target,
                                      String message) {
-            Loger.e("LiveBll","=====> onPrivateMessage:"+sender+":"+login+":"+hostname +":"+target+":"+message);
+            Loger.e("LiveBll", "=====> onPrivateMessage:" + sender + ":" + login + ":" + hostname + ":" + target + ":" + message);
             if (!"T".equals(message) && haveTeam) {
                 StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
                 String teamId = studentLiveInfo.getTeamId();
@@ -2346,6 +2355,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
     /**
      * 是否是 高三 理科直播 （展示不同聊天 内容：高三理科 以 班级为单位展示,）
+     *
      * @return
      */
     public boolean isSeniorOfHighSchool() {
@@ -2540,38 +2550,36 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     }
 
 
-
-
     /**
      * 处理用户签到
      */
     private void handleUserSign() {
-              if(mRollCallAction != null) {
-                  //理科自动签到
-                  if(RollCallBll.OPEN_AUTO_SIGN && mGetInfo.getIsArts() != 1
-                          && mGetInfo.getStudentLiveInfo().getSignStatus() != SIGN_STATE_CODE_SUCCESS){
-                      ClassSignEntity classSignEntity = new ClassSignEntity();
-                      classSignEntity.setStuName(mGetInfo.getStuName());
-                      classSignEntity.setTeacherName(mGetInfo.getTeacherName());
-                      classSignEntity.setTeacherIMG(mGetInfo.getTeacherIMG());
-                      classSignEntity.setStatus(1);
-                      long classBeginTime = mGetInfo.getsTime() * 1000;
-                      long nowTime = (long) (mGetInfo.getNowTime() * 1000);
-                      mRollCallAction.autoSign(classSignEntity,classBeginTime,nowTime);
-                  }else{
-                      if (mGetInfo.getStudentLiveInfo().getSignStatus() != 0 && mGetInfo.getStudentLiveInfo()
-                              .getSignStatus()
-                              != 2) {
-                          ClassSignEntity classSignEntity = new ClassSignEntity();
-                          classSignEntity.setStuName(mGetInfo.getStuName());
-                          classSignEntity.setTeacherName(mGetInfo.getTeacherName());
-                          classSignEntity.setTeacherIMG(mGetInfo.getTeacherIMG());
-                          classSignEntity.setStatus(mGetInfo.getStudentLiveInfo().getSignStatus());
-                          mRollCallAction.onRollCall(classSignEntity);
-                      }
-                  }
-              }
+        if (mRollCallAction != null) {
+            //理科自动签到
+            if (RollCallBll.OPEN_AUTO_SIGN && mGetInfo.getIsArts() != 1
+                    && mGetInfo.getStudentLiveInfo().getSignStatus() != SIGN_STATE_CODE_SUCCESS) {
+                ClassSignEntity classSignEntity = new ClassSignEntity();
+                classSignEntity.setStuName(mGetInfo.getStuName());
+                classSignEntity.setTeacherName(mGetInfo.getTeacherName());
+                classSignEntity.setTeacherIMG(mGetInfo.getTeacherIMG());
+                classSignEntity.setStatus(1);
+                long classBeginTime = mGetInfo.getsTime() * 1000;
+                long nowTime = (long) (mGetInfo.getNowTime() * 1000);
+                mRollCallAction.autoSign(classSignEntity, classBeginTime, nowTime);
+            } else {
+                if (mGetInfo.getStudentLiveInfo().getSignStatus() != 0 && mGetInfo.getStudentLiveInfo()
+                        .getSignStatus()
+                        != 2) {
+                    ClassSignEntity classSignEntity = new ClassSignEntity();
+                    classSignEntity.setStuName(mGetInfo.getStuName());
+                    classSignEntity.setTeacherName(mGetInfo.getTeacherName());
+                    classSignEntity.setTeacherIMG(mGetInfo.getTeacherIMG());
+                    classSignEntity.setStatus(mGetInfo.getStudentLiveInfo().getSignStatus());
+                    mRollCallAction.onRollCall(classSignEntity);
+                }
+            }
         }
+    }
 
     /**
      * 是否是Pk 直播间
@@ -2844,6 +2852,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId() + "_"
                     + mGetInfo.getTeacherId());
         }
+        if (totalFrameStat != null) {
+            totalFrameStat.setChannelname(mGetInfo.getChannelname());
+        }
         serverurl = mGetInfo.getGslbServerUrl() + "?cmd=live_get_playserver&userid=" + mGetInfo.getStuId()
                 + "&username=" + mGetInfo.getUname() + "&channelname=" + mGetInfo.getChannelname();
         mLogtf.d("liveGetPlayServer:serverurl=" + serverurl);
@@ -2852,15 +2863,16 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             mGetPlayServerCancle = null;
         }
         mLogtf.d("liveGetPlayServer:modeTeacher=" + getModeTeacher());
-        mGetPlayServerCancle = mHttpManager.liveGetPlayServer(serverurl, new CommonRequestCallBack<String>() {
+        final StringBuilder ipsb = new StringBuilder();
+        mGetPlayServerCancle = mHttpManager.liveGetPlayServer(ipsb, serverurl, new CommonRequestCallBack<String>() {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                mLogtf.d("liveGetPlayServer:onError:ex=" + ex + ",isOnCallback=" + isOnCallback);
+                mLogtf.d("liveGetPlayServer:onError:ex=" + ex + ",isOnCallback=" + isOnCallback + "," + ipsb);
+                long time = System.currentTimeMillis() - before;
                 if (ex instanceof HttpException) {
                     HttpException error = (HttpException) ex;
                     if (error.getCode() >= 300) {
-                        long time = System.currentTimeMillis() - before;
                         mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
                         if (time < 15000) {
                             if (mVideoAction != null && mLiveTopic != null) {
@@ -2869,9 +2881,18 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             mHandler.removeCallbacks(mStatisticsRun);
                             postDelayedIfNotFinish(mStatisticsRun, 300000);
                             return;
+                        } else {
+                            totalFrameStat.liveGetPlayServer(time, 3, "", ipsb);
                         }
                     }
                 } else {
+                    if (ex instanceof UnknownHostException) {
+                        totalFrameStat.liveGetPlayServer(time, 1, "", ipsb);
+                    } else {
+                        if (ex instanceof SocketTimeoutException) {
+                            totalFrameStat.liveGetPlayServer(time, 2, "", ipsb);
+                        }
+                    }
                     mLogtf.e("liveGetPlayServer:onError:isOnCallback=" + isOnCallback, ex);
                 }
                 long now = System.currentTimeMillis();
@@ -2903,6 +2924,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     JSONObject object = new JSONObject(result);
                     PlayServerEntity server = mHttpResponseParser.parsePlayerServer(object);
                     if (server != null) {
+                        if (totalFrameStat != null) {
+                            long time = System.currentTimeMillis() - before;
+                            totalFrameStat.liveGetPlayServer(time, 0, server.getCipdispatch(), ipsb);
+                        }
                         s += ",mode=" + mode + ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();
                         if (LiveTopic.MODE_CLASS.equals(mode)) {
                             mGetInfo.setSkeyPlayT(server.getRtmpkey());
@@ -2985,7 +3010,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mQuestionAction = null;
 
 
-        if(mRollCallAction != null){
+        if (mRollCallAction != null) {
             mRollCallAction.forceCloseRollCall();
         }
 
@@ -3811,8 +3836,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mHttpManager.getCourseWareUrl(requestCallBack);
     }
 
-    public void getMoreCourseWareUrl(String liveId ,HttpCallBack requestCallBack) {
-        mHttpManager.getMoreCoureWareUrl(liveId , requestCallBack);
+    public void getMoreCourseWareUrl(String liveId, HttpCallBack requestCallBack) {
+        mHttpManager.getMoreCoureWareUrl(liveId, requestCallBack);
     }
 
     public void getAdOnLL(final LecAdvertEntity lecAdvertEntity, final AbstractBusinessDataCallBack callBack) {

@@ -25,6 +25,9 @@ import com.xueersi.xesalib.utils.app.DeviceUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -32,6 +35,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -254,15 +258,40 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         long openTime = (System.currentTimeMillis() - openStart);
         HashMap<String, String> defaultKey = new HashMap<>();
         defaultKey.put("dataType", "600");
-        defaultKey.put("playlatency", "" + openTime);
-        defaultKey.put("cputype", "" + cpuName);
-        defaultKey.put("memsize", "" + memsize);
-        defaultKey.put("channelname", "" + channelname);
-        defaultKey.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
-        defaultKey.put("provide", "" + lastPlayserverEntity.getProvide());
-        defaultKey.put("errorcode", "0");
-        defaultKey.put("errmsg", "");
-        xescdnLog(defaultKey);
+        defaultKey.put("url", "" + mUri);
+        String remoteIp = getRemoteIp();
+        defaultKey.put("sip", "" + remoteIp);
+        JSONObject dataJson = new JSONObject();
+        try {
+            dataJson.put("errorcode", "0");
+            dataJson.put("errmsg", "");
+            dataJson.put("channelname", "" + channelname);
+            dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
+            dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            dataJson.put("playlatency", "" + openTime);
+            dataJson.put("cputype", "" + cpuName);
+            dataJson.put("memsize", "" + memsize);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        xescdnLog(defaultKey, dataJson);
+    }
+
+    public void liveGetPlayServer(long delay, int code, String cipdispatch, StringBuilder ipsb) {
+        Loger.d(TAG, "liveGetPlayServer:delay=" + delay + ",ipsb=" + ipsb.toString());
+        HashMap<String, String> defaultKey = new HashMap<>();
+        defaultKey.put("dataType", "0");
+        defaultKey.put("delay", "" + delay);
+        defaultKey.put("code", "" + code);
+        defaultKey.put("traceId", "" + UUID.randomUUID());
+        defaultKey.put("sip", "" + ipsb);
+        JSONObject dataJson = new JSONObject();
+        try {
+            dataJson.put("cipdispatch", "" + cipdispatch);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        xescdnLog(defaultKey, dataJson);
     }
 
     private String getRemoteIp() {
@@ -284,17 +313,16 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         return remoteIp;
     }
 
-    private void xescdnLog(HashMap<String, String> defaultKey) {
+    private void xescdnLog(HashMap<String, String> defaultKey, JSONObject dataJson) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("timestamp", "" + System.currentTimeMillis());
         params.addBodyParam("appid", AppConfig.getPsAppId());
+        params.addBodyParam("serviceType", "6");
         params.addBodyParam("uid", "" + userId);
         params.addBodyParam("os", "" + Build.VERSION.SDK_INT);
         params.addBodyParam("device", "" + DeviceInfo.getDeviceName());
-        params.addBodyParam("url", "" + mUri);
-        String remoteIp = getRemoteIp();
-        params.addBodyParam("sip", "" + remoteIp);
         params.addBodyParam("agent", "m-android " + versionName);
+        params.addBodyParam("data", dataJson.toString());
         for (String key : defaultKey.keySet()) {
             String value = defaultKey.get(key);
             params.addBodyParam(key, value);
@@ -325,16 +353,24 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         long openTime = (System.currentTimeMillis() - openStart);
         HashMap<String, String> defaultKey = new HashMap<>();
         defaultKey.put("dataType", "601");
-        defaultKey.put("playlatency", "" + openTime);
-        defaultKey.put("cputype", "" + cpuName);
-        defaultKey.put("memsize", "" + memsize);
-        defaultKey.put("channelname", "" + channelname);
-        defaultKey.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
-        defaultKey.put("provide", "" + lastPlayserverEntity.getProvide());
-        defaultKey.put("errorcode", "" + arg2);
-        AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
-        defaultKey.put("errmsg", error == null ? "" : error.getTag());
-        xescdnLog(defaultKey);
+        defaultKey.put("url", "" + mUri);
+        String remoteIp = getRemoteIp();
+        defaultKey.put("sip", "" + remoteIp);
+        JSONObject dataJson = new JSONObject();
+        try {
+            dataJson.put("errorcode", "" + arg2);
+            AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
+            dataJson.put("errmsg", error == null ? "" : error.getTag());
+            dataJson.put("channelname", "" + channelname);
+            dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
+            dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            dataJson.put("playlatency", "" + openTime);
+            dataJson.put("cputype", "" + cpuName);
+            dataJson.put("memsize", "" + memsize);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        xescdnLog(defaultKey, dataJson);
         sip = "";
     }
 

@@ -207,6 +207,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
     LiveTextureView liveTextureView;
     private TeacherPraiseBll teacherPraiseBll;
 
+    @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         long before = System.currentTimeMillis();
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -235,6 +236,11 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
 //        SpeechAssessmentWebPager pager=new SpeechAssessmentWebPager(mContext,"","","",true,"",null);
 //        ((RelativeLayout)findViewById(R.id.rl_speech_test)).addView(pager.getRootView());
         return true;
+    }
+
+    @Override
+    protected void onVideoCreateEnd() {
+        mLiveBll.setTotalFrameStat(totalFrameStat);
     }
 
     @Override
@@ -1208,7 +1214,6 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         }.start();
         String url;
         String msg = "rePlay:";
-        totalFrameStat.setChannelname(mGetInfo.getChannelname());
         if (mServer == null) {
             totalFrameStat.setLastPlayserverEntity(null);
             String rtmpUrl = null;

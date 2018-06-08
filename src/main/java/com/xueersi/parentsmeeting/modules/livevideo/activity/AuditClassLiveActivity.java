@@ -460,6 +460,11 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         return true;
     }
 
+    @Override
+    protected void onVideoCreateEnd() {
+        mLiveBll.setTotalFrameStat(totalFrameStat);
+    }
+
     /** 设置蓝屏界面 */
     private void setFirstParam(ViewGroup.LayoutParams lp) {
         final View contentView = findViewById(android.R.id.content);
@@ -1047,7 +1052,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         }.start();
         String url;
         String msg = "rePlay:";
-        totalFrameStat.setChannelname(mGetInfo.getChannelname());
         if (mServer == null) {
             String rtmpUrl = null;
             String[] rtmpUrls = mGetInfo.getRtmpUrls();

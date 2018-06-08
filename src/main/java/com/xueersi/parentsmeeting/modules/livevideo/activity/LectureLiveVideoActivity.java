@@ -346,6 +346,11 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         return true;
     }
 
+    @Override
+    protected void onVideoCreateEnd() {
+        mLiveBll.setTotalFrameStat(totalFrameStat);
+    }
+
     /**
      * 控制栏下面距离视频底部的尺寸
      */
@@ -1036,7 +1041,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         }.start();
         String url;
         String msg = "rePlay:";
-        totalFrameStat.setChannelname(mGetInfo.getChannelname());
         if (mServer == null) {
             String rtmpUrl = null;
             String[] rtmpUrls = mGetInfo.getRtmpUrls();

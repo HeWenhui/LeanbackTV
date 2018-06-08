@@ -25,7 +25,10 @@ import org.xutils.xutils.http.RequestParams;
 import org.xutils.xutils.x;
 
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 
 /**
@@ -105,13 +108,24 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(LiveVideoConfig.URL_LIVE_LECTURE_GET_INFO, params, requestCallBack);
     }
 
-    public Callback.Cancelable liveGetPlayServer(final String url2, final CommonRequestCallBack<String>
+    public Callback.Cancelable liveGetPlayServer(final StringBuilder ipsb, final String url2, final CommonRequestCallBack<String>
             requestCallBack) {
         final HttpURLConnectionCancelable cancelable = new HttpURLConnectionCancelable();
         new Thread() {
             Handler handler = new Handler(Looper.getMainLooper());
 
+            @Override
             public void run() {
+                try {
+                    URL url = new URL(url2);
+                    InetAddress inetAddress = InetAddress.getByName(url.getHost());
+                    ipsb.append(inetAddress.getHostAddress());
+                    Loger.d(TAG, "liveGetPlayServer:host=" + url.getHost() + ",ip=" + inetAddress.getHostAddress());
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
                 try {
                     URL url = new URL(url2);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -698,13 +712,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
     /**
      * 获取一次多发的预加载课件地址
      */
-     public void getMoreCoureWareUrl(String liveId , HttpCallBack requestCallBack){
-         HttpRequestParams params = new HttpRequestParams();
+    public void getMoreCoureWareUrl(String liveId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
 //         setDefaultParameter(params);
-         params.addBodyParam("liveId", liveId);
-         requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_GET_MORE_WARE_URL;
-         sendPost(requestCallBack.url, params, requestCallBack);
-     }
+        params.addBodyParam("liveId", liveId);
+        requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_GET_MORE_WARE_URL;
+        sendPost(requestCallBack.url, params, requestCallBack);
+    }
+
     /**
      * 获得广告信息
      */
