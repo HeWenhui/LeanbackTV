@@ -89,6 +89,9 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         cpuName = HardWareUtil.getCpuName();
         memsize = DeviceUtils.getAvailRams(activity);
 //        if (AppConfig.DEBUG) {
+//            logurl = "http://10.99.1.251/log";
+//        }
+//        if (AppConfig.DEBUG) {
 //            new Thread() {
 //                @Override
 //                public void run() {
