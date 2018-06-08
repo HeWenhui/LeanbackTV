@@ -29,9 +29,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,8 +55,10 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     private PlayerService vPlayer;
     /** 五秒帧数 */
     private ArrayList<String> frames = new ArrayList<>();
-    /** 每秒帧数 */
+    /** 每秒帧数-5秒统计 */
     private ArrayList<Float> framesPs = new ArrayList<Float>();
+    /** 每秒帧数-10秒统计 */
+    private ArrayList<Float> framesPsTen = new ArrayList<Float>();
     long frameStart;
     private Activity activity;
     private PlayServerEntity.PlayserverEntity lastPlayserverEntity;
@@ -72,24 +76,13 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     private String memsize;
     private String channelname;
 
-    public TotalFrameStat(Activity activity) {
+    public TotalFrameStat(final Activity activity) {
         this.activity = activity;
         baseHttpBusiness = new BaseHttpBusiness(activity);
         MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         userId = myUserInfoEntity.getStuId();
         versionName = getAppVersionName();
         cpuName = getCpuName();
-        Field[] fields = Build.class.getDeclaredFields();
-
-        for (int i = 0; i < fields.length; i++) {
-            Field field = fields[i];
-            field.setAccessible(true);
-            try {
-                Loger.d(TAG, "TotalFrameStat:field=" + field.get(null));
-            } catch (IllegalAccessException e) {
-                Loger.e(TAG, "TotalFrameStat", e);
-            }
-        }
         memsize = DeviceUtils.getAvailRams(activity);
     }
 
@@ -169,8 +162,9 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                             frameStart = System.currentTimeMillis();
                         }
                         framesPs.add(fps);
-                        float totalfps = 0;
+                        framesPsTen.add(fps);
                         if (framesPs.size() == 5) {
+                            float totalfps = 0;
                             for (int i = 0; i < framesPs.size(); i++) {
                                 Float f = framesPs.get(i);
                                 totalfps += f;
@@ -180,6 +174,9 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                             if (frames.size() == 12) {
                                 send("frames12");
                             }
+                        }
+                        if (framesPsTen.size() == 10) {
+                            xescdnLogHeart();
                         }
 //                        if (lastFps != 0) {
 //                            frames.add("" + ((int) ((lastFps + fps) * 5 / 2)));
@@ -233,6 +230,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     public void onOpenStart() {
         super.onOpenStart();
         sip = "";
+        framesPsTen.clear();
         handler.removeMessages(1);
         openStart = System.currentTimeMillis();
         mUri = vPlayer.getUri();
@@ -254,7 +252,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     @Override
     public void onOpenSuccess() {
         super.onOpenSuccess();
-        handler.sendEmptyMessage(1);
+        handler.sendEmptyMessageDelayed(1, 1000);
         long openTime = (System.currentTimeMillis() - openStart);
         HashMap<String, String> defaultKey = new HashMap<>();
         defaultKey.put("dataType", "600");
@@ -274,7 +272,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        xescdnLog(defaultKey, dataJson);
+        xescdnLogPlay(defaultKey, dataJson);
     }
 
     public void liveGetPlayServer(long delay, int code, String cipdispatch, StringBuilder ipsb) {
@@ -291,7 +289,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        xescdnLog(defaultKey, dataJson);
+        xescdnLogPlay(defaultKey, dataJson);
     }
 
     private String getRemoteIp() {
@@ -313,14 +311,139 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         return remoteIp;
     }
 
+    private void xescdnLogHeart() {
+        new Thread() {
+            @Override
+            public void run() {
+                final HashMap<String, String> defaultKey = new HashMap<>();
+                float cpuRate = getProcessCpuRate();
+                defaultKey.put("cpu", "" + cpuRate);
+                Runtime runtime = Runtime.getRuntime();
+                long totalMemory = runtime.totalMemory();
+                defaultKey.put("mem", "" + totalMemory);
+                Loger.d(TAG, "xescdnLogHeart:cpuRate=" + cpuRate + ",totalMemory=" + totalMemory);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        xescdnLogHeart(defaultKey);
+                    }
+                });
+            }
+        }.start();
+    }
+
+    public float getProcessCpuRate() {
+        float totalCpuTime1 = allCpuTime();
+        float processCpuTime1 = processCpuTime();
+        try {
+            Thread.sleep(360);
+        } catch (Exception e) {
+        }
+        float totalCpuTime2 = allCpuTime();
+        float processCpuTime2 = processCpuTime();
+        float cpuRate = 100 * (processCpuTime2 - processCpuTime1)
+                / (totalCpuTime2 - totalCpuTime1);
+        return cpuRate;
+    }
+
+    private long allCpuTime() {
+        String[] cpuInfos = null;
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    new FileInputStream("/proc/stat")), 1000);
+            String load = reader.readLine();
+            reader.close();
+            cpuInfos = load.split(" ");
+        } catch (IOException ex) {
+            Loger.e(TAG, "IOException" + ex.toString());
+            return 0;
+        }
+        long totalCpu = 0;
+        try {
+            totalCpu = Long.parseLong(cpuInfos[2])
+                    + Long.parseLong(cpuInfos[3]) + Long.parseLong(cpuInfos[4])
+                    + Long.parseLong(cpuInfos[6]) + Long.parseLong(cpuInfos[5])
+                    + Long.parseLong(cpuInfos[7]) + Long.parseLong(cpuInfos[8]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            Loger.i(TAG, "ArrayIndexOutOfBoundsException" + e.toString());
+            return 0;
+        }
+        return totalCpu;
+    }
+
+    private long processCpuTime() {
+        String[] cpuInfos = null;
+        try {
+            int pid = android.os.Process.myPid();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    new FileInputStream("/proc/" + pid + "/stat")), 1000);
+            String load = reader.readLine();
+            reader.close();
+            cpuInfos = load.split(" ");
+        } catch (IOException e) {
+            Loger.e(TAG, "IOException" + e.toString());
+            return 0;
+        }
+        long appCpuTime = 0;
+        try {
+            appCpuTime = Long.parseLong(cpuInfos[13])
+                    + Long.parseLong(cpuInfos[14]) + Long.parseLong(cpuInfos[15])
+                    + Long.parseLong(cpuInfos[16]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            Loger.i(TAG, "ArrayIndexOutOfBoundsException" + e.toString());
+            return 0;
+        }
+        return appCpuTime;
+    }
+
+    private void xescdnLogHeart(HashMap<String, String> defaultKey) {
+        defaultKey.put("traceId", "" + UUID.randomUUID());
+        JSONObject dataJson = new JSONObject();
+        try {
+            dataJson.put("channelname", "" + channelname);
+            dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
+            dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            long bufferduration = 0;
+            float averagefps;
+            float fps = 0f;
+            float bitrate = 0f;
+            if (vPlayer.isInitialized()) {
+                bufferduration = vPlayer.getPlayer().getVideoCachedDuration();
+                if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
+                    IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
+                    bitrate = ijkMediaPlayer.getTcpSpeed();
+                    fps = ijkMediaPlayer.getVideoDecodeFramesPerSecond();
+                }
+            }
+            float totalfps = 0;
+            for (int i = 0; i < framesPsTen.size(); i++) {
+                Float f = framesPsTen.get(i);
+                totalfps += f;
+            }
+            averagefps = totalfps / 10;
+            framesPsTen.clear();
+            dataJson.put("bufferduration", "" + bufferduration);
+            dataJson.put("averagefps", "" + averagefps);
+            dataJson.put("fps", "" + fps);
+            dataJson.put("bitrate", "" + bitrate);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        xescdnLog(defaultKey, dataJson);
+    }
+
+    private void xescdnLogPlay(HashMap<String, String> defaultKey, JSONObject dataJson) {
+        defaultKey.put("os", "" + Build.VERSION.SDK_INT);
+        defaultKey.put("device", "" + DeviceInfo.getDeviceName());
+        xescdnLog(defaultKey, dataJson);
+    }
+
     private void xescdnLog(HashMap<String, String> defaultKey, JSONObject dataJson) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("timestamp", "" + System.currentTimeMillis());
         params.addBodyParam("appid", AppConfig.getPsAppId());
         params.addBodyParam("serviceType", "6");
         params.addBodyParam("uid", "" + userId);
-        params.addBodyParam("os", "" + Build.VERSION.SDK_INT);
-        params.addBodyParam("device", "" + DeviceInfo.getDeviceName());
         params.addBodyParam("agent", "m-android " + versionName);
         params.addBodyParam("data", dataJson.toString());
         for (String key : defaultKey.keySet()) {
@@ -370,7 +493,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        xescdnLog(defaultKey, dataJson);
+        xescdnLogPlay(defaultKey, dataJson);
         sip = "";
     }
 

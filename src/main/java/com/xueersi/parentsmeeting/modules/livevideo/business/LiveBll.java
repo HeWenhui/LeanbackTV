@@ -2874,6 +2874,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     HttpException error = (HttpException) ex;
                     if (error.getCode() >= 300) {
                         mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
+                        totalFrameStat.liveGetPlayServer(time, 3, "", ipsb);
                         if (time < 15000) {
                             if (mVideoAction != null && mLiveTopic != null) {
                                 mVideoAction.onLiveStart(null, mLiveTopic, modechange);
@@ -2881,8 +2882,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             mHandler.removeCallbacks(mStatisticsRun);
                             postDelayedIfNotFinish(mStatisticsRun, 300000);
                             return;
-                        } else {
-                            totalFrameStat.liveGetPlayServer(time, 3, "", ipsb);
                         }
                     }
                 } else {
