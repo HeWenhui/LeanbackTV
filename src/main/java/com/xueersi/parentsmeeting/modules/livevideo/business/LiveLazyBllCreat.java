@@ -75,7 +75,7 @@ public class LiveLazyBllCreat {
     }
 
     RolePlayAction createRolePlayBll() {
-        RolePlayerBll rolePlayerBll = new RolePlayerBll(liveVideoActivity, bottomContent, liveBll);
+        RolePlayerBll rolePlayerBll = new RolePlayerBll(liveVideoActivity, bottomContent, liveBll,liveGetInfo);
         questionBll.setRolePlayAction(rolePlayerBll);
         return rolePlayerBll;
     }

@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -17,6 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
@@ -63,7 +66,14 @@ public class TeamPkStateLayout extends FrameLayout {
      */
     private static final long PK_STATE_DISPLAY_DURATION = 30 * 1000;
 
+    /**
+     * 我贡献了多少能量显示时间
+     */
+    private static final long ENERGY_MY_CONTRIBUTION_DURATION = 4 * 1000;
+
     private boolean dataInited = false;
+    private TextView tvEnergyMyContribution;
+    private TeamPkBll mTeamPkBll;
 
     public TeamPkStateLayout(@NonNull Context context) {
         super(context);
@@ -113,17 +123,23 @@ public class TeamPkStateLayout extends FrameLayout {
      */
     private void addPkStatBar() {
         statBarRootView = View.inflate(getContext(), R.layout.team_pk_state_bar_layout, null);
-        ViewGroup rootView = (ViewGroup) this.getParent().getParent().getParent();
+        ViewGroup viewGroup = (ViewGroup) ((Activity) getContext()).getWindow().getDecorView();
+        ViewGroup rootView = viewGroup.findViewById(R.id.rl_livevideo_message_root);
+        if (rootView != null) {
+            int stateBarHeight = SizeUtils.Dp2Px(getContext(), STATE_BAR_HEIGHT);
+            int gapAbovePkStateLayout = SizeUtils.Dp2Px(getContext(), STATE_BAR_BOTTOM_MARGIN);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(this.getMeasuredWidth(), stateBarHeight);
+            int[] location = new int[2];
+            this.getLocationInWindow(location);
+            lp.topMargin = location[1] - (gapAbovePkStateLayout + stateBarHeight);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            rootView.addView(statBarRootView, lp);
+            tvState = statBarRootView.findViewById(R.id.tv_answer_question_state);
+            tvState.setVisibility(GONE);
+            tvEnergyMyContribution = statBarRootView.findViewById(R.id.tv_teampk_pkstate_energy_mycontribution);
+            tvEnergyMyContribution.setVisibility(GONE);
 
-        int stateBarHeight = SizeUtils.Dp2Px(getContext(), STATE_BAR_HEIGHT);
-        int gapAbovePkStateLayout = SizeUtils.Dp2Px(getContext(), STATE_BAR_BOTTOM_MARGIN);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(this.getLayoutParams().width, stateBarHeight);
-        int[] location = new int[2];
-        this.getLocationInWindow(location);
-        lp.topMargin = location[1] - (gapAbovePkStateLayout + stateBarHeight);
-        rootView.addView(statBarRootView, lp);
-        tvState = statBarRootView.findViewById(R.id.tv_answer_question_state);
-        tvState.setVisibility(GONE);
+        }
     }
 
 
@@ -147,7 +163,9 @@ public class TeamPkStateLayout extends FrameLayout {
         mOtherTeamEnergy = mOtherTeamEnergy + otherEnergyAdd;
         mCoinNum = mCoinNum + coinAdd;
         Loger.e("coinNum", "====>updateData22222:" + mMyTeamEnergy + ":" + mOtherTeamEnergy + ":" + mCoinNum);
-
+        if(mTeamPkBll != null && coinAdd > 0){
+            TeamPkLog.showMyGold(mTeamPkBll.getLiveBll(),mCoinNum+"");
+        }
         //正 增长 显示动画 ，负增涨 不显示动画
         if (ownEnergyAdd > 0) {
             tvMyTeamEnergy.smoothAddNum(ownEnergyAdd);
@@ -228,6 +246,11 @@ public class TeamPkStateLayout extends FrameLayout {
         tvCoin.setText(mCoinNum + "");
         tvMyTeamEnergy.setText(mMyTeamEnergy + "");
         tvOtherTeamEnergy.setText(otherTeamAnergy + "");
+
+        if(mTeamPkBll != null && mCoinNum > 0){
+            TeamPkLog.showMyGold(mTeamPkBll.getLiveBll(),mCoinNum+"");
+        }
+
         float ratio;
         if ((mMyTeamEnergy + mOtherTeamEnergy) > 0) {
             ratio = mMyTeamEnergy / (float) (mMyTeamEnergy + mOtherTeamEnergy);
@@ -274,11 +297,40 @@ public class TeamPkStateLayout extends FrameLayout {
      * 淡入 淡出展示  当前pk 状态
      */
     private void showPkSateBar() {
-        tvState.setVisibility(VISIBLE);
+        showViewWithFadeInOutEffect(tvState,PK_STATE_DISPLAY_DURATION);
+    }
+
+
+    /**
+     * 淡入淡出 显示我贡献的能量值
+     *
+     * @param energy
+     */
+    public void showEnergyMyContribute(int energy) {
+        if(tvEnergyMyContribution != null){
+            tvEnergyMyContribution.setVisibility(VISIBLE);
+            energy = energy < 0?0:energy;
+            tvEnergyMyContribution.setText("我贡献了"+energy+"个能量");
+            showViewWithFadeInOutEffect(tvEnergyMyContribution,ENERGY_MY_CONTRIBUTION_DURATION);
+        }
+    }
+
+
+    /**
+     * 淡入淡出显示  控件
+     *
+     * @param targetView
+     * @param duratrion
+     */
+    private void showViewWithFadeInOutEffect(final View targetView, long duratrion) {
+        if (targetView == null) {
+            return;
+        }
+        targetView.setVisibility(VISIBLE);
         AlphaAnimation alphaIn = (AlphaAnimation) AnimationUtils.
                 loadAnimation(getContext(), R.anim.anim_livevido_teampk_pkstate_in);
-        tvState.startAnimation(alphaIn);
-        tvState.postDelayed(new Runnable() {
+        targetView.startAnimation(alphaIn);
+        targetView.postDelayed(new Runnable() {
             @Override
             public void run() {
                 AlphaAnimation alphaOut = (AlphaAnimation) AnimationUtils.
@@ -290,7 +342,7 @@ public class TeamPkStateLayout extends FrameLayout {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        tvState.setVisibility(GONE);
+                        targetView.setVisibility(GONE);
                     }
 
                     @Override
@@ -298,8 +350,15 @@ public class TeamPkStateLayout extends FrameLayout {
 
                     }
                 });
-                tvState.startAnimation(alphaOut);
+                targetView.startAnimation(alphaOut);
             }
-        }, PK_STATE_DISPLAY_DURATION);
+        }, duratrion);
     }
+
+
+    public void setTeamPkBll(TeamPkBll teamPkBll){
+        mTeamPkBll = teamPkBll;
+    }
+
+
 }

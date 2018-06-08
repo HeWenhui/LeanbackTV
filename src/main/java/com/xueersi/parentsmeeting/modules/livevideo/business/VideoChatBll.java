@@ -36,18 +36,19 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.permission.PermissionCallback;
+import com.xueersi.parentsmeeting.permission.PermissionItem;
+import com.xueersi.parentsmeeting.permission.XesPermission;
+import com.xueersi.parentsmeeting.permission.config.PermissionConfig;
 import com.xueersi.xesalib.utils.app.XESToastUtils;
-import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-
-import okhttp3.Call;
+import java.util.List;
 
 import static com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE;
 
@@ -74,32 +75,34 @@ public class VideoChatBll implements VideoChatAction {
     private RelativeLayout bottomContent;
     private BaseLiveMediaControllerBottom baseLiveMediaControllerBottom;
     /** 麦克风权限 */
-    boolean isHasPermission = true;
+    private boolean isHasPermission = true;
     /** 举麦权限提示 */
-    boolean permissionPrompt = false;
+    private boolean permissionPrompt = false;
     /** 举麦失败 */
-    boolean isFail = false;
-    boolean isSuccess = false;
+    private boolean isFail = false;
+    private boolean isSuccess = false;
     /** 举麦包含我 */
-    boolean containMe = false;
+    private boolean containMe = false;
     /** 连麦状态 */
-    String onMic = "off";
-    static int nativeLibLoaded = 2;
+    private String onMic = "off";
+    /** 房间号 */
+    private String room = "";
+    private static int nativeLibLoaded = 2;
     /*举麦耳机提示*/
-    boolean headsetPrompt = false;
+    private boolean headsetPrompt = false;
     /** 连麦人数 */
-    ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
+    private ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
     /** 连麦人数变化 */
-    boolean classmateChange = true;
+    private boolean classmateChange = true;
     /** 举手人数 */
-    int raiseHandCount = 0;
+    private int raiseHandCount = 0;
     /** 举手来源 */
     private String from;
     /** 接麦耳机判断 */
     private boolean hasWiredHeadset = false;
-    WiredHeadsetReceiver wiredHeadsetReceiver;
-    String openhandsStatus = "off";
-    String onmicStatus = "off";
+    private WiredHeadsetReceiver wiredHeadsetReceiver;
+    private String openhandsStatus = "off";
+    private String onmicStatus = "off";
     private LiveRemarkBll mLiveRemarkBll;
 
     public VideoChatBll(LiveVideoActivityBase activity) {
@@ -123,17 +126,17 @@ public class VideoChatBll implements VideoChatAction {
         this.getInfo = getInfo;
         boolean allowLinkMic = getInfo.isAllowLinkMic();
         if (allowLinkMic) {
-            new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        isHasPermission = isHasPermission() != -1;
-                    } catch (Exception e) {
-                        Loger.e(activity, TAG, "onLiveInit", e, true);
-                        isHasPermission = true;
-                    }
-                }
-            }.start();
+//            new Thread() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        isHasPermission = isHasPermission() != -1;
+//                    } catch (Exception e) {
+//                        Loger.e(activity, TAG, "onLiveInit", e, true);
+//                        isHasPermission = true;
+//                    }
+//                }
+//            }.start();
             wiredHeadsetReceiver = new WiredHeadsetReceiver();
             activity.registerReceiver(wiredHeadsetReceiver, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
             btRaiseHands.setVisibility(View.VISIBLE);
@@ -255,44 +258,55 @@ public class VideoChatBll implements VideoChatAction {
         if (nativeLibLoaded != 2) {
             activity.setVolume(0, 0);
         }
-        if (nativeLibLoaded == 1) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (nativeLibLoaded == 1) {
 //            videoChatInter = new LicodeVideoChatPager(activity, this, classmateEntities, getInfo, liveBll, baseLiveMediaControllerBottom);
-        } else if (nativeLibLoaded == 0) {
-            videoChatInter = new VideoChatPager(activity, liveBll, getInfo);
-        } else {
-            videoChatInter = new AgoraVideoChatPager(activity, liveBll, getInfo);
-        }
-        startTime = System.currentTimeMillis();
-        int height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        int screenWidth = ScreenUtils.getScreenWidth();
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
-        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        final View rootView = videoChatInter.getRootView();
-        if (nativeLibLoaded == 2) {
-
-        } else {
-            int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
-            lp.rightMargin = wradio;
-            bottomContent.addView(rootView, lp);
-        }
-        getInfo.setStuLinkMicNum(getInfo.getStuLinkMicNum() + 1);
-        videoChatInter.startRecord("onLiveInit", room, nonce);
-        if (nativeLibLoaded != 2) {
-            rootView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    View vMediacontrolBottom = baseLiveMediaControllerBottom.findViewById(R.id.v_livevideo_mediacontrol_bottom);
-                    rootView.getViewTreeObserver().removeOnPreDrawListener(this);
-                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) vMediacontrolBottom.getLayoutParams();
-                    int height = rootView.getHeight();
-                    if (lp.height != height) {
-                        lp.height = height;
-//                        vMediacontrolBottom.setLayoutParams(lp);
-                        LayoutParamsUtil.setViewLayoutParams(vMediacontrolBottom, lp);
-                    }
-                    return false;
+                } else if (nativeLibLoaded == 0) {
+                    videoChatInter = new VideoChatPager(activity, liveBll, getInfo);
+                } else {
+                    videoChatInter = new AgoraVideoChatPager(activity, liveBll, getInfo);
                 }
-            });
+                startTime = System.currentTimeMillis();
+                int height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                int screenWidth = ScreenUtils.getScreenWidth();
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
+                lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                final View rootView = videoChatInter.getRootView();
+                if (nativeLibLoaded == 2) {
+
+                } else {
+                    int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
+                    lp.rightMargin = wradio;
+                    bottomContent.addView(rootView, lp);
+                }
+                getInfo.setStuLinkMicNum(getInfo.getStuLinkMicNum() + 1);
+                if (isHasPermission) {
+                    videoChatInter.startRecord("onLiveInit", room, nonce);
+                }
+                if (nativeLibLoaded != 2) {
+                    rootView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                        @Override
+                        public boolean onPreDraw() {
+                            View vMediacontrolBottom = baseLiveMediaControllerBottom.findViewById(R.id.v_livevideo_mediacontrol_bottom);
+                            rootView.getViewTreeObserver().removeOnPreDrawListener(this);
+                            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) vMediacontrolBottom.getLayoutParams();
+                            int height = rootView.getHeight();
+                            if (lp.height != height) {
+                                lp.height = height;
+//                        vMediacontrolBottom.setLayoutParams(lp);
+                                LayoutParamsUtil.setViewLayoutParams(vMediacontrolBottom, lp);
+                            }
+                            return false;
+                        }
+                    });
+                }
+            }
+        };
+        checkPermissionUnPerList(new OnJoinPermissionFinish(onMic, openhandsStatus, room, from, containMe, runnable));
+        if (isHasPermission) {
+            runnable.run();
         }
     }
 
@@ -382,7 +396,7 @@ public class VideoChatBll implements VideoChatAction {
         }
     }
 
-    RaiseHandDialog.RaiseHandGiveup raiseHandGiveup = new RaiseHandDialog.RaiseHandGiveup() {
+    private RaiseHandDialog.RaiseHandGiveup raiseHandGiveup = new RaiseHandDialog.RaiseHandGiveup() {
 
         @Override
         public void onGiveup() {
@@ -398,6 +412,7 @@ public class VideoChatBll implements VideoChatAction {
     public void onJoin(final String onmic, final String openhands, final String room, boolean classmateChange, final ArrayList<ClassmateEntity> classmateEntities, final String from) {
         boolean contain = false;
         onMic = onmic;
+        this.room = room;
         this.from = from;
         this.classmateChange = classmateChange;
         this.classmateEntities = classmateEntities;
@@ -420,7 +435,7 @@ public class VideoChatBll implements VideoChatAction {
                 //开麦
                 String oldonmicStatus = onmicStatus;
                 onmicStatus = onmic;
-                String oldOpenhandsStatus = openhandsStatus;
+                final String oldOpenhandsStatus = openhandsStatus;
                 openhandsStatus = openhands;
                 if ("on".equals(onmic)) {
                     btRaiseHands.setAlpha(1.0f);
@@ -501,7 +516,49 @@ public class VideoChatBll implements VideoChatAction {
                         }
                     }
                     if ("on".equals(openhands)) {
+                        final Runnable runnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!openhands.equals(oldOpenhandsStatus)) {
+                                    MicTipDialog micTipDialog = new MicTipDialog(activity);
+                                    micTipDialog.setSuccessTip("老师已开启举手，\n举手有机会与老师语音对话！");
+                                    micTipDialog.showDialog();
+//                            XESToastUtils.showToast(activity, "老师已开启举手，\n举手有机会与老师语音对话！");
+                                }
+                                btRaiseHands.setAlpha(1.0f);
+                                if (finalContain) {
+                                    if (!isSuccess) {
+                                        if (raiseHandDialog == null) {
+                                            BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
+                                            raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
+                                            raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
+                                            raiseHandDialog.setRaiseHandsCount(raiseHandCount);
+                                            raiseHandDialog.showDialog();
+                                        }
+                                        btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands_check);
+                                        boolean set = raiseHandDialog.setSuccess();
+                                        if (set) {
+                                            isSuccess = true;
+                                            final RaiseHandDialog finalRaiseHandDialog = raiseHandDialog;
+                                            btRaiseHands.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    if (finalRaiseHandDialog == raiseHandDialog) {
+                                                        finalRaiseHandDialog.cancelDialog();
+                                                        raiseHandDialog = null;
+                                                    }
+                                                }
+                                            }, 3000);
+                                        }
+                                    }
+                                } else {
+                                    isSuccess = false;
+                                    btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
+                                }
+                            }
+                        };
                         if (!openhands.equals(oldOpenhandsStatus)) {
+                            checkPermissionUnPerList(new OnJoinPermissionFinish(onmic, openhands, room, from, finalContain, runnable));
                             VideoChatLog.sno3(liveBll, from, "", isHasPermission);
                         }
                         if (!isHasPermission) {
@@ -511,42 +568,7 @@ public class VideoChatBll implements VideoChatAction {
                             }
                             return;
                         }
-                        if (!openhands.equals(oldOpenhandsStatus)) {
-                            MicTipDialog micTipDialog = new MicTipDialog(activity);
-                            micTipDialog.setSuccessTip("老师已开启举手，\n举手有机会与老师语音对话！");
-                            micTipDialog.showDialog();
-//                            XESToastUtils.showToast(activity, "老师已开启举手，\n举手有机会与老师语音对话！");
-                        }
-                        btRaiseHands.setAlpha(1.0f);
-                        if (finalContain) {
-                            if (!isSuccess) {
-                                if (raiseHandDialog == null) {
-                                    BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
-                                    raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
-                                    raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
-                                    raiseHandDialog.setRaiseHandsCount(raiseHandCount);
-                                    raiseHandDialog.showDialog();
-                                }
-                                btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands_check);
-                                boolean set = raiseHandDialog.setSuccess();
-                                if (set) {
-                                    isSuccess = true;
-                                    final RaiseHandDialog finalRaiseHandDialog = raiseHandDialog;
-                                    btRaiseHands.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (finalRaiseHandDialog == raiseHandDialog) {
-                                                finalRaiseHandDialog.cancelDialog();
-                                                raiseHandDialog = null;
-                                            }
-                                        }
-                                    }, 3000);
-                                }
-                            }
-                        } else {
-                            isSuccess = false;
-                            btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
-                        }
+                        runnable.run();
                     } else {//关麦-未举手状态
                         raisehand = false;
                         isSuccess = false;
@@ -576,11 +598,32 @@ public class VideoChatBll implements VideoChatAction {
 //            }
     }
 
+    /**
+     * 检查权限后举手
+     */
+    private void raisehand() {
+        MicTipDialog micTipDialog = new MicTipDialog(activity);
+        micTipDialog.setSuccessTip("老师已开启举手，\n举手有机会与老师语音对话！");
+        micTipDialog.showDialog();
+        btRaiseHands.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                activity.showLongMediaController();
+            }
+        }, 2900);
+//                    XESToastUtils.showToast(activity, "老师已开启举手，\n举手有机会与老师语音对话！");
+        btRaiseHands.setAlpha(1.0f);
+        if (raiseHandDialog != null && raiseHandDialog.status == RaiseHandDialog.WAIT) {
+            liveBll.requestMicro("", from);
+        }
+    }
+
     @Override
     public void raisehand(final String status, final String from, final String nonce) {
         mLogtf.d("raisehand:status=" + status);
         containMe = false;
         isFail = false;
+        this.from = from;
         btRaiseHands.post(new Runnable() {
             @Override
             public void run() {
@@ -588,6 +631,12 @@ public class VideoChatBll implements VideoChatAction {
                 if ("on".equals(status)) {
                     VideoChatLog.sno2(liveBll, from, nonce);
                     activity.showLongMediaController();
+                    checkPermissionUnPerList(new RaiseHandPermissionFinish(status, from, new Runnable() {
+                        @Override
+                        public void run() {
+                            raisehand();
+                        }
+                    }));
                     VideoChatLog.sno3(liveBll, from, nonce, isHasPermission);
                     if (!isHasPermission) {
                         if (!permissionPrompt) {
@@ -596,20 +645,7 @@ public class VideoChatBll implements VideoChatAction {
                         }
                         return;
                     }
-                    MicTipDialog micTipDialog = new MicTipDialog(activity);
-                    micTipDialog.setSuccessTip("老师已开启举手，\n举手有机会与老师语音对话！");
-                    micTipDialog.showDialog();
-                    btRaiseHands.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            activity.showLongMediaController();
-                        }
-                    }, 2900);
-//                    XESToastUtils.showToast(activity, "老师已开启举手，\n举手有机会与老师语音对话！");
-                    btRaiseHands.setAlpha(1.0f);
-                    if (raiseHandDialog != null && raiseHandDialog.status == RaiseHandDialog.WAIT) {
-                        liveBll.requestMicro("", from);
-                    }
+                    raisehand();
                 } else {
                     StableLogHashMap logHashMap = new StableLogHashMap("getStopRaiseHand");
                     logHashMap.put("teacher_type", from);
@@ -828,5 +864,96 @@ public class VideoChatBll implements VideoChatAction {
                 XESToastUtils.showToast(activity, text);
             }
         }
+    }
+
+    RaiseHandPermissionFinish currentPermission;
+
+    /**
+     * 举手权限回调
+     */
+    private class RaiseHandPermissionFinish implements OnPermissionFinish {
+        String status;
+        String from;
+        Runnable runnable;
+
+        public RaiseHandPermissionFinish(String status, String from, Runnable runnable) {
+            this.status = status;
+            this.from = from;
+            this.runnable = runnable;
+            currentPermission = this;
+        }
+
+        @Override
+        public void onFinish() {
+            if (status.equals(VideoChatBll.this.openhandsStatus) && from.equals(VideoChatBll.this.from)) {
+                if (currentPermission == this) {
+                    runnable.run();
+                }
+            }
+        }
+    }
+
+    OnJoinPermissionFinish currentPermission2;
+
+    /**
+     * 加入房间权限回调
+     */
+    private class OnJoinPermissionFinish implements OnPermissionFinish {
+        String onmic;
+        String openhands;
+        String room;
+        String from;
+        boolean contain;
+        Runnable runnable;
+
+        public OnJoinPermissionFinish(String onmic, String openhands, String room, String from, boolean contain, Runnable runnable) {
+            this.onmic = onmic;
+            this.openhands = openhands;
+            this.room = room;
+            this.from = from;
+            this.contain = contain;
+            this.runnable = runnable;
+            currentPermission2 = this;
+        }
+
+        @Override
+        public void onFinish() {
+            if (onmic.equals(VideoChatBll.this.onMic) && openhands.equals(VideoChatBll.this.openhandsStatus)
+                    && room.equals(VideoChatBll.this.room) && from.equals(VideoChatBll.this.from) && contain == containMe) {
+                if (currentPermission2 == this) {
+                    runnable.run();
+                }
+            }
+        }
+    }
+
+    interface OnPermissionFinish {
+        void onFinish();
+    }
+
+    private void checkPermissionUnPerList(final OnPermissionFinish onPermissionFinish) {
+        final List<PermissionItem> unList = new ArrayList<>();
+        List<PermissionItem> unList2 = XesPermission.checkPermissionUnPerList(activity, new PermissionCallback() {
+            @Override
+            public void onFinish() {
+
+            }
+
+            @Override
+            public void onDeny(String permission, int position) {
+
+            }
+
+            @Override
+            public void onGuarantee(String permission, int position) {
+                unList.remove(0);
+                if (unList.isEmpty()) {
+                    isHasPermission = true;
+                    onPermissionFinish.onFinish();
+                }
+            }
+        }, PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO);
+        unList.addAll(unList2);
+        isHasPermission = unList.isEmpty();
     }
 }

@@ -5,7 +5,7 @@ import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-
+import   android.graphics.Typeface ;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 /**
@@ -54,7 +54,7 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+         setTypeface();
     }
 
     /**
@@ -153,4 +153,12 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
             removeCallbacks(task);
         }
     }
+
+      public void setTypeface() {
+        Typeface fontFace = com.xueersi.parentsmeeting.util.FontCache.getTypeface(getContext(), "QanelasSoftDEMO-ExtraBold.otf");
+        if(fontFace!= null){
+            setTypeface(fontFace);
+        }
+    }
+
 }

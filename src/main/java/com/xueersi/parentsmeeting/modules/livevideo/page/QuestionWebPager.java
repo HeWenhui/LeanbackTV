@@ -36,15 +36,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
  * @author linyuqiang
  * @date 2017/8/23
  * 普通互动题，h5显示页面
  */
-public class QuestionWebPager extends BasePager {
-    String questionEventId = LiveVideoConfig.LIVE_PUBLISH_TEST;
+public class QuestionWebPager extends BasePager implements BaseQuestionWebPager {
+    private String questionEventId = LiveVideoConfig.LIVE_PUBLISH_TEST;
     private Button btSubjectClose;
-    Button bt_livevideo_subject_calljs;
+    private Button btSubjectCalljs;
     private WebView wvSubjectWeb;
     private View errorView;
     private StopWebQuestion questionBll;
@@ -60,15 +59,14 @@ public class QuestionWebPager extends BasePager {
     private String examUrl = "";
     /** 是不是考试结束 */
     private boolean isEnd = false;
-    String testPaperUrl;
-    String jsExamSubmitAll = "javascript:examSubmitAll()";
+    private String testPaperUrl;
+    private String jsExamSubmitAll = "javascript:examSubmitAll()";
     private String isShowRanks;
-    boolean IS_SCIENCE;
-    String stuCouId;
+    private boolean IS_SCIENCE;
+    private String stuCouId;
     private int isTeamPkRoom; //是否是 teampk 房间
     private int mGoldNum;
     private int mEngerNum;
-
 
     public QuestionWebPager(Context context, StopWebQuestion questionBll, String testPaperUrl,
                             String stuId, String stuName, String liveid, String testId,
@@ -98,7 +96,7 @@ public class QuestionWebPager extends BasePager {
     public View initView() {
         final View view = View.inflate(mContext, R.layout.page_livevideo_subject_question, null);
         btSubjectClose = (Button) view.findViewById(R.id.bt_livevideo_subject_close);
-        bt_livevideo_subject_calljs = (Button) view.findViewById(R.id.bt_livevideo_subject_calljs);
+        btSubjectCalljs = (Button) view.findViewById(R.id.bt_livevideo_subject_calljs);
         wvSubjectWeb = (WebView) view.findViewById(R.id.wv_livevideo_subject_web);
         errorView = view.findViewById(R.id.rl_livevideo_subject_error);
         view.findViewById(R.id.btn_error_refresh).setOnClickListener(new View.OnClickListener() {
@@ -126,7 +124,7 @@ public class QuestionWebPager extends BasePager {
                 questionBll.stopWebQuestion(QuestionWebPager.this, testId);
             }
         });
-        bt_livevideo_subject_calljs.setOnClickListener(new View.OnClickListener() {
+        btSubjectCalljs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 examSubmitAll();
@@ -147,9 +145,9 @@ public class QuestionWebPager extends BasePager {
         }
         examUrl += "&stuCouId=" + stuCouId;
         examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
-        examUrl += "&isShowTeamPk="+ (LiveBll.isAllowTeamPk?"1":"0");
+        examUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
         wvSubjectWeb.loadUrl(examUrl);
-        Loger.e("QuestionWebPager","======> loadUrl:"+examUrl);
+        Loger.e("QuestionWebPager", "======> loadUrl:" + examUrl);
 
         mGoldNum = -1;
         mEngerNum = -1;
@@ -162,11 +160,11 @@ public class QuestionWebPager extends BasePager {
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-                LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum,mEngerNum,LiveRoomH5CloseEvent.H5_TYPE_INTERACTION,testId);
-                if(questionBll != null && questionBll instanceof  QuestionBll){
-                    Loger.e("webViewCloseByTeacher","=======> postEvent closeByTeacher:"+((QuestionBll)questionBll).isWebViewCloseByTeacher());
-                    event.setCloseByTeahcer(((QuestionBll)questionBll).isWebViewCloseByTeacher());
-                    ((QuestionBll)questionBll).setWebViewCloseByTeacher(false);
+                LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEngerNum, LiveRoomH5CloseEvent.H5_TYPE_INTERACTION, testId);
+                if (questionBll != null && questionBll instanceof QuestionBll) {
+                    Loger.e("webViewCloseByTeacher", "=======> postEvent closeByTeacher:" + ((QuestionBll) questionBll).isWebViewCloseByTeacher());
+                    event.setCloseByTeahcer(((QuestionBll) questionBll).isWebViewCloseByTeacher());
+                    ((QuestionBll) questionBll).setWebViewCloseByTeacher(false);
                 }
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
@@ -306,7 +304,7 @@ public class QuestionWebPager extends BasePager {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             logToFile.i("shouldOverrideUrlLoading:url=" + url);
 
-            Loger.e("QuestionWebPager","======> shouldOverrideUrlLoading:"+url);
+            Loger.e("QuestionWebPager", "======> shouldOverrideUrlLoading:" + url);
 
             if (url.contains("science/Live/getMultiTestResult")) {
                 if (questionBll instanceof QuestionBll) {
@@ -317,7 +315,7 @@ public class QuestionWebPager extends BasePager {
 
             if (url.contains(TeamPkBll.TEAMPK_URL_FIFTE)) {
                 try {
-                    int startIndex = url.indexOf("goldNum=")+"goldNum=".length();
+                    int startIndex = url.indexOf("goldNum=") + "goldNum=".length();
                     if (startIndex != -1) {
                         String teamStr = url.substring(startIndex, url.length());
                         int endIndex = teamStr.indexOf("&");
@@ -326,7 +324,7 @@ public class QuestionWebPager extends BasePager {
                             mGoldNum = Integer.parseInt(goldNUmStr.trim());
                         }
                     }
-                    int satrIndex2 = url.indexOf("energyNum=")+"energyNum=".length();
+                    int satrIndex2 = url.indexOf("energyNum=") + "energyNum=".length();
                     if (satrIndex2 != -1) {
                         String tempStr2 = url.substring(satrIndex2);
                         String energyNumStr = null;
@@ -336,14 +334,14 @@ public class QuestionWebPager extends BasePager {
                             energyNumStr = tempStr2.substring(0, tempStr2.length());
                         }
                         if (!TextUtils.isEmpty(energyNumStr)) {
-                            mEngerNum= Integer.parseInt(energyNumStr.trim());
+                            mEngerNum = Integer.parseInt(energyNumStr.trim());
                         }
-                       // Log.e("QuestionWebPager","=======>mEngerNum:"+mEngerNum+":"+energyNumStr);
+                        // Log.e("QuestionWebPager","=======>mEngerNum:"+mEngerNum+":"+energyNumStr);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                return  true;
+                return true;
             }
 
             if ("xueersi://livevideo/examPaper/close".equals(url) || url.contains("baidu.com")) {
@@ -366,9 +364,4 @@ public class QuestionWebPager extends BasePager {
         }
     }
 
-    public interface StopWebQuestion {
-        void stopWebQuestion(BasePager pager, String testId);
-
-        void umsAgentDebugSys(String eventId, final Map<String, String> mData);
-    }
 }

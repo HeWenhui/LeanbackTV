@@ -241,7 +241,8 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float fraction = animation.getAnimatedFraction();
-                if (!haveGold.get() && fraction > 0.32f) {
+//                Loger.d(TAG, "onProcessData:fraction=" + fraction + ",progress=" + starLottieAnimationView.getProgress());
+                if (!haveGold.get() && starLottieAnimationView.getProgress() > 0.32f) {
                     goldLottieAnimationView.playAnimation();
                     haveGold.set(true);
                 }

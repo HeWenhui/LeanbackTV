@@ -6,6 +6,8 @@ import com.tal.speech.speechrecognizer.PhoneScore;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +69,8 @@ public class RolePlayerEntity {
      * 所有的对话信息
      */
     private List<RolePlayerMessage> lstRolePlayerMessage = new ArrayList<>();
+    private int resultStar;
+    private double selfSpeechTime;
 
     public long getCountDownSecond() {
         return countDownSecond;
@@ -175,7 +179,9 @@ public class RolePlayerEntity {
     public List<RolePlayerHead> getResultRoleList() {
 
         List<RolePlayerHead> lstPM = new ArrayList<>();
-        RolePlayerHead selfHead = null;
+        lstPM.clear();
+        lstPM.addAll(lstRoleInfo);
+       /* RolePlayerHead selfHead = null;
         for (RolePlayerHead head : lstRoleInfo) {
             int i = 0;
             boolean isResult = false;
@@ -193,23 +199,33 @@ public class RolePlayerEntity {
             } else {
                 lstPM.add(head);
             }
-        }
+        }*/
+        Collections.sort(lstPM, new StuComparator());//按分数排序
 
-        boolean isThreadUp = false;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < lstPM.size(); i++) {
             RolePlayerHead head = lstPM.get(i);
-            if (head.isSelfRole()) {
-                isThreadUp = true;
+            if (head.isSelfRole() && i>2) {
+                //前3名中没有自己
+                lstPM.add(2, head);
                 break;
             }
         }
 
-        if (!isThreadUp) {
-            //前3名中没有自己
-            lstPM.add(2, selfHead);
-        }
+
         return lstPM;
 
+    }
+
+    /**
+     * 设置自己每一句的朗读有效时间
+     * @param selfSpeechTime
+     */
+    public void setSelfValidSpeechTime(double selfSpeechTime) {
+        this.selfSpeechTime += selfSpeechTime;
+    }
+
+    public double getSelfValidSpeechTime() {
+        return selfSpeechTime;
     }
 
 
@@ -250,6 +266,10 @@ public class RolePlayerEntity {
          * 准确性
          */
         private int accuracy;
+        /**
+         * 结果页显示的星星个数
+         */
+        private int resultStar;
 
 
         public String getNickName() {
@@ -331,8 +351,28 @@ public class RolePlayerEntity {
             this.accuracy = ((accuracy + this.accuracy) / (this.accuracy == 0 ? 1 : 2));
 
         }
-    }
 
+        public void setResultStar(int resultStar) {
+            this.resultStar  = resultStar;
+        }
+
+        public int getResultStar() {
+            return resultStar;
+        }
+
+
+    }
+    public class StuComparator implements Comparator<RolePlayerHead>{
+
+        @Override
+        public int compare(RolePlayerHead o1, RolePlayerHead o2) {
+            if(o1.speechScore<o2.speechScore)
+                return 1;
+            else if(o1.speechScore>o2.speechScore)
+                return -1;
+            return 0;
+        }
+    }
     /**
      * 对话信息
      */
@@ -394,6 +434,8 @@ public class RolePlayerEntity {
          * 级别
          */
         private int level;
+        private String testId;
+        private boolean mUnClick = true;
 
         public RolePlayerMessage(RolePlayerHead head, String msg, int maxTime) {
             this.rolePlayer = head;
@@ -542,6 +584,26 @@ public class RolePlayerEntity {
                 return 5;
             }
             return 0;
+        }
+
+        /**
+         * 对话信息也存入试题id
+         * @param testId
+         */
+        public void setTestId(String testId) {
+            this.testId = testId;
+        }
+
+        public String getTestId() {
+            return testId;
+        }
+
+        public void setUnClick(boolean unClick) {
+            mUnClick = unClick;
+        }
+
+        public boolean getUnClick() {
+            return mUnClick;
         }
     }
 

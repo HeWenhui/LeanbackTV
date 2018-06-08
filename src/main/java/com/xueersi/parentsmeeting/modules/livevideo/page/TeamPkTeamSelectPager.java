@@ -125,6 +125,8 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
     private TeamPkTeamInfoEntity mTeamInfo;
     private String mTeamName;
     private List<AnimInfo> teamInfoAnimList;
+    /**半透明遮罩背景 进入时间点*/
+    private static final float FRACTION_BG_MASK_FADE_IN = 0.4f;
 
     private List<TeamItemAnimInfo> teamItemAnimInfoList;
     /**
@@ -139,6 +141,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
     boolean paused = false;
     boolean teamInfoUiReaMoved = false;
 
+    private boolean bgHasFadeIn = false;
     /**
      * 跑马灯 战队logo 垂直方向 间隔
      */
@@ -344,11 +347,28 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         layoutParams.topMargin = (int) (realY * 0.32);
         Loger.e("TeamPkTeamSelectPager", "=======>showTeamMembers:" + point.x + ":" + point.y);
         rclTeamMember.setLayoutParams(layoutParams);
+        final int spanCount = 5;
         rclTeamMember.setLayoutManager(new TeamMemberGridlayoutManager(mContext, 5,
                 LinearLayoutManager.VERTICAL, false));
         ((ViewGroup) mView).setClipChildren(true);
         teamMemberAdapter = new TeamAdapter(ADAPTER_TYPE_TEAM_MEMBER);
         rclTeamMember.setAdapter(teamMemberAdapter);
+
+        rclTeamMember.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                int itemPosition = parent.getChildAdapterPosition(view);
+                int left = 0;
+                int right = 0;
+                int top = 0;
+                int bottom = 0;
+                if (itemPosition >= spanCount) {
+                    top = SizeUtils.Dp2Px(mContext,10);
+                }
+                outRect.set(left, top, right, bottom);
+            }
+        });
+
 
         GridLayoutAnimationController animationController = (GridLayoutAnimationController)
                 AnimationUtils.loadLayoutAnimation(mContext, R.anim.anim_livevido_teampk_teammember_list);
@@ -423,11 +443,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
 
     private void showTeamIntroduce(LottieAnimationView bgAnimView) {
         // step 1  显示 背景黑色遮罩动画
-        AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.
-                loadAnimation(mContext, R.anim.anim_livevido_teampk_bg_mask);
-        alphaAnimation.setFillAfter(true);
-        ivBgMask.setVisibility(View.VISIBLE);
-        ivBgMask.startAnimation(alphaAnimation);
+        bgMaskFadeIn();
         // step 2 显示队伍介绍
         rlTeamIntroduceRoot.setVisibility(View.VISIBLE);
         //动态设置 战队信息介绍的 topMargin  多机型适配
@@ -440,6 +456,17 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         rlTeamIntroduceRoot.setLayoutParams(layoutParams);
         Loger.e("TeamPkTeamSelectPager", "=====>showTeamIntroduce:" + topMargin);
         displayTeamInfo();
+    }
+
+    private void bgMaskFadeIn() {
+        Loger.e("TeamPkTeamSelectPager", "=====>bgMaskFadeIn called:");
+        if(ivBgMask.getVisibility() != View.VISIBLE){
+            ivBgMask.setVisibility(View.VISIBLE);
+            AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.
+                    loadAnimation(mContext, R.anim.anim_livevido_teampk_bg_mask);
+            alphaAnimation.setFillAfter(true);
+            ivBgMask.startAnimation(alphaAnimation);
+        }
     }
 
 
@@ -641,7 +668,6 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         return resultList;
     }
 
-    ;
 
     /**
      * 开启分队仪式
@@ -660,6 +686,17 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
                         lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), mContext);
             }
         });
+
+        lavTeamSelectAnimView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                if(animation.getAnimatedFraction() > FRACTION_BG_MASK_FADE_IN && !bgHasFadeIn){
+                    bgHasFadeIn = true;
+                    ivBgMask.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
         lavTeamSelectAnimView.addAnimatorListener(new TeamSelectAnimatorListener(ANIMTYPE_START));
         lavTeamSelectAnimView.playAnimation();
     }
@@ -953,6 +990,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
 
     private void showTimeCutdown() {
         Loger.e(TAG, "===>show time cut down");
+        ivBgMask.setVisibility(View.GONE);
         String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "time_cutdown/images";
         String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "time_cutdown/data.json";
         lavTeamSelectAnimView.cancelAnimation();

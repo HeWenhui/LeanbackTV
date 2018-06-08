@@ -78,10 +78,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.ExamQuestionPlaybackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.H5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
@@ -144,7 +146,7 @@ import static com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile.li
 @SuppressLint("HandlerLeak")
 @SuppressWarnings("unchecked")
 public class LivePlayBackVideoActivity extends VideoActivity implements LivePlaybackMediaController.OnPointClick,
-        SpeechEvalAction, QuestionWebPager.StopWebQuestion, LiveAndBackDebug, ActivityChangeLand {
+        SpeechEvalAction, BaseQuestionWebPager.StopWebQuestion, LiveAndBackDebug, ActivityChangeLand {
 
     String TAG = "LivePlayBackVideoActivityLog";
     /** 互动题的布局 */
@@ -169,6 +171,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
     /** 是否显示移动网络提示 */
     private boolean mIsShowMobileAlert = true;
+    /** 是否显示无网络提示 */
+    private boolean mIsShowNoWifiAlert = true;
 
     /** 我的课程业务层 */
     LectureLivePlayBackBll lectureLivePlayBackBll;
@@ -201,13 +205,16 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     /** nb实验的页面 */
     private H5CoursewarePager h5CoursewarePager;
     /** 英语课件的页面 */
-    private EnglishH5CoursewarePager englishH5CoursewarePager;
+    private BaseEnglishH5CoursewarePager englishH5CoursewarePager;
     /** 文科主观题结果的页面 */
     private SubjectResultPager subjectResultPager;
     /** 讲座购课广告的页面 */
     private LecAdvertPager lecAdvertPager;
     /** 填空题布局 */
     QuestionFillInBlankLivePager mVideoCourseQuestionPager;
+
+    /** 播放时长定时任务(心跳) */
+    private final long mPlayTime = 60000;
 
     /** 红包id */
     private String mRedPacketId;
@@ -277,11 +284,9 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             public void onReceive(Context context, Intent intent) {
                 // 04.12 弹出广告的时候，需要刷新广告列表
                 lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(), getDataCallBack);
-                Loger.e("Duncan", "PaySuccessfully");
             }
         };
         registerReceiver(receiver, intentFilter);
-        Loger.e("Duncan", "oncreating");
     }
 
     @Override
@@ -369,22 +374,6 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             mMediaController.setVideoQuestions("playback" + mVideoEntity.getvLivePlayBackType() + "-", lstVideoQuestion,
                     vPlayer.getDuration());
         }
-        // 04.12 重新创建面板抽屉
-//        if(mIsLand){
-//            if(mPopupWindows != null){
-//                mPopupWindows.dismiss();
-//                mPopupWindows = null;
-//            }
-//            showPopupwindowboard();
-//        }else{
-//            if(mPopupWindows != null) {
-//                mPopupWindows.dismiss();
-//                mPopupWindows = null;
-//                Log.e("Duncan","竖屏方法2");
-//            }
-//            Log.e("Duncan","竖屏方法3");
-//        }
-
 
     }
 
@@ -559,6 +548,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                         AppBll.getInstance(mBaseApplication);
                         playNewVideo(Uri.parse(mWebPath), mSectionName);
                     } else {
+                        mIsShowNoWifiAlert = false;
                         AppBll.getInstance(mBaseApplication);
                     }
                     return false;
@@ -668,6 +658,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     "mIsShowQuestion=" + mIsShowQuestion);
 //            showQuestion(mQuestionEntity);
         }
+        // 心跳时间的上传
+        mHandler.postDelayed(mPlayDuration, mPlayTime);
     }
 
     @Override
@@ -741,6 +733,18 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         }
         return super.getVideoKey();
     }
+
+    /** 播放时长，1分钟统计 */
+    private Runnable mPlayDuration = new Runnable() {
+        @Override
+        public void run() {
+            if (!isFinishing()) {
+                // 上传心跳时间
+                lectureLivePlayBackBll.uploadPlaybackVideoPlayTime(Integer.parseInt(mVideoEntity.getLiveId()),60L);
+                mHandler.postDelayed(this, mPlayTime);
+            }
+        }
+    };
 
     /** 视频播放进度实时获取 */
     @Override
@@ -997,6 +1001,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 Loger.i(TAG, "showQestion:time=" + (System.currentTimeMillis() - before));
                 String type;
                 if (rlQuestionContent != null && mQuestionEntity != null) {
+                    //暂时没有
                     if (mQuestionEntity.isH5()) {
                         type = "h5";
                         if (vPlayer != null) {
@@ -1183,11 +1188,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (rlQuestionContent != null && mQuestionEntity != null) {
             Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showEnglishH5CoursewarePager");
             mPlayVideoControlHandler.sendMessage(msg);
-            englishH5CoursewarePager = new EnglishH5CoursewarePager(LivePlayBackVideoActivity.this, true, mVideoEntity.getLiveId(), mQuestionEntity.getEnglishH5Play_url(),
+            englishH5CoursewarePager = new EnglishH5CoursewareX5Pager(LivePlayBackVideoActivity.this, true, mVideoEntity.getLiveId(), mQuestionEntity.getEnglishH5Play_url(),
                     mQuestionEntity.getvQuestionID(), mQuestionEntity.getvQuestionType(), "", new
                     EnglishH5CoursewareBll.OnH5ResultClose() {
                         @Override
-                        public void onH5ResultClose() {
+                        public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager) {
                             stopEnglishH5Exam();
                         }
 
@@ -1197,7 +1202,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     .MATCH_PARENT,
                     LayoutParams.WRAP_CONTENT));
             rlQuestionContent.setVisibility(View.VISIBLE);
-            return englishH5CoursewarePager;
+            return englishH5CoursewarePager.getBasePager();
         }
         return null;
     }
@@ -1691,6 +1696,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 EventBus.getDefault().post(new AppEvent.OnlyWIFIEvent());
             } else if (AppBll.getInstance().getAppInfoEntity().isNotificationMobileAlert()) {
                 EventBus.getDefault().post(new AppEvent.NowMobileEvent());
+            }
+        } else if (event.netWorkType == NetWorkHelper.WIFI_STATE) {
+            if (!mIsShowNoWifiAlert) {
+                mIsShowNoWifiAlert = true;
+                playNewVideo(Uri.parse(mWebPath), mSectionName);
             }
         }
     }

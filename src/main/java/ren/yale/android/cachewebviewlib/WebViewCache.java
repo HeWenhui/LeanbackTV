@@ -4,9 +4,9 @@ import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.LruCache;
-import android.webkit.MimeTypeMap;
-import android.webkit.WebResourceResponse;
 
+import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
+import com.tencent.smtt.sdk.MimeTypeMap;
 import com.xueersi.xesalib.utils.log.Loger;
 
 import java.io.File;

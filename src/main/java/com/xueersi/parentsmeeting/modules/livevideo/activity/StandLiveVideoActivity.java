@@ -217,6 +217,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
     String mode = LiveTopic.MODE_TRANING;
     LiveStandFrameAnim liveStandFrameAnim;
 
+    @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         long before = System.currentTimeMillis();
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -241,17 +242,20 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         Loger.d(TAG, "onVideoCreate:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         initView();
-        liveStandFrameAnim.check(mLiveBll, new AbstractBusinessDataCallBack() {
+        liveStandFrameAnim.check(new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                View rl_live_stand_update = findViewById(R.id.vs_live_stand_update);
-                if (rl_live_stand_update != null) {
-                    ViewGroup group = (ViewGroup) rl_live_stand_update.getParent();
-                    group.removeView(rl_live_stand_update);
+                View vsLiveStandUpdate = findViewById(R.id.vs_live_stand_update);
+                if (vsLiveStandUpdate != null) {
+                    ViewGroup group = (ViewGroup) vsLiveStandUpdate.getParent();
+                    group.removeView(vsLiveStandUpdate);
                 } else {
-                    rl_live_stand_update = findViewById(R.id.rl_live_stand_update);
-                    ViewGroup group = (ViewGroup) rl_live_stand_update.getParent();
-                    group.removeView(rl_live_stand_update);
+                    vsLiveStandUpdate = findViewById(R.id.rl_live_stand_update);
+                    ViewGroup group = (ViewGroup) vsLiveStandUpdate.getParent();
+                    group.removeView(vsLiveStandUpdate);
+                }
+                if (isFinishing()) {
+                    return;
                 }
                 mLiveBll.getInfo(mGetInfo);
             }

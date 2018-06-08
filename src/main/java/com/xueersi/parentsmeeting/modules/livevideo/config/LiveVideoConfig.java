@@ -122,6 +122,8 @@ public class LiveVideoConfig {
     public static String STAND_LIVE_GRANT = "standlive_grant";
     /** 直播-包括ip地址的播放地址 https://wiki.xesv5.com/pages/viewpage.action?pageId=11403335 */
     public static String LIVE_GSLB = "live_gslb";
+    /** 调度请求错误失败上报日志 */
+    public static String LIVE_CHAT_GSLB = "live_chatgslb";
     /** 站立直播-帧动画 */
     public static String LIVE_FRAME_ANIM = "live_frame_anim";
     /** 直播时间-当天据算，live_expe_time按单个场次计算 */
@@ -141,6 +143,8 @@ public class LiveVideoConfig {
     public static String URL_LIVE_DELETE_MARK_POINTS = AppConfig.HTTP_HOST + "/science/LiveCourse/deleteMarkpoint";
     /** 体验课播放器上传心跳时间 */
     public static String URL_EXPERIENCE_LIVE_ONLINETIME = AppConfig.HTTP_HOST + "/science/AutoLive/visitTime";
+    /**  回放式体验课上传心跳时间  */
+    public static String URL_PLAYBACKPLAYTIME = AppConfig.HTTP_HOST + "/ExpPlayback/visitTime";
     /** RolePlay请求对话信息 */
     public static String URL_ROLEPLAY_TESTINFOS = AppConfig.HTTP_HOST + "/libarts/LiveCourse/getRolePlay";
     /** 提交接口 */
@@ -170,4 +174,9 @@ public class LiveVideoConfig {
     public final static String EDUCATION_STAGE_3 = "3";
     /** 教育阶段4 */
     public final static String EDUCATION_STAGE_4 = "4";
+
+    public final static String LIVE_PK = "live_pk";
+
+    /** 直播-roleplay */
+    public static String LIVE_ROLE_PLAY = "live_mutiroleplay";
 }

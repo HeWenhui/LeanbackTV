@@ -4,6 +4,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
@@ -34,6 +35,7 @@ public class IRCMessage {
     private String mNickname;
     /** 备用用户聊天服务配置列表 */
     private List<NewTalkConfEntity> mNewTalkConf;
+    private IRCTalkConf ircTalkConf;
     /** 从上面的列表选择一个服务器 */
     private int mSelectTalk = 0;
     private LogToFile mLogtf;
@@ -74,6 +76,11 @@ public class IRCMessage {
         return mConnection != null && mConnection.isConnected();
     }
 
+    /**
+     * 网络变化
+     *
+     * @param netWorkType
+     */
     public void onNetWorkChange(int netWorkType) {
         this.netWorkType = netWorkType;
         if (netWorkType != NetWorkHelper.NO_NETWORK) {
@@ -88,8 +95,12 @@ public class IRCMessage {
                 }.start();
             }
         }
+        if (ircTalkConf != null) {
+            ircTalkConf.onNetWorkChange(netWorkType);
+        }
     }
 
+    /** 自己发的消息，如果没发送出去，暂时保存下来 */
     Vector<String> privMsg = new Vector<>();
 
     public void create() {
@@ -305,11 +316,16 @@ public class IRCMessage {
                 }
             }
         });
-        new Thread() {
-            public void run() {
-                connect("create");
-            }
-        }.start();
+        boolean getserver = ircTalkConf.getserver(businessDataCallBack);
+        if (!getserver) {
+            ircTalkConf = null;
+            new Thread() {
+                @Override
+                public void run() {
+                    connect("create");
+                }
+            }.start();
+        }
     }
 
     private synchronized void connect(String method) {
@@ -332,6 +348,13 @@ public class IRCMessage {
         // connection.setLogin2(login);
         mConnection.setLogin2(mNickname);
         mConnection.setNickname(mNickname);
+        if (mNewTalkConf.isEmpty()) {
+            mLogtf.d("connect:mNewTalkConf.isEmpty:ircTalkConf=" + (ircTalkConf == null) + ",method=" + method);
+            if (ircTalkConf != null) {
+                ircTalkConf.getserver(businessDataCallBack);
+            }
+            return;
+        }
         int index = mSelectTalk++ % mNewTalkConf.size();
         NewTalkConfEntity talkConfEntity = mNewTalkConf.get(index);
         //是不是连接错误
@@ -360,8 +383,12 @@ public class IRCMessage {
             mLogtf.e("connecte:method=" + method + ",name=" + mConnection.getName() + ",server=" + talkConfEntity.getHost() + "," + e.getMessage(), e);
         }
         if (connectError || !mConnection.isConnected()) {
-            mLogtf.d("connect:method=" + method + ",connectError=" + connectError);
+            if (netWorkType != NetWorkHelper.NO_NETWORK && ircTalkConf != null) {
+                mNewTalkConf.remove(index);
+            }
+            mLogtf.d("connect:method=" + method + ",connectError=" + connectError + ",netWorkType=" + netWorkType + ",conf=" + (ircTalkConf == null));
             new Thread() {
+                @Override
                 public void run() {
                     try {
                         Thread.sleep(2000);
@@ -384,6 +411,26 @@ public class IRCMessage {
     /** 设置备用用户聊天服务配置列表 */
     public void setNewTalkConf(List<NewTalkConfEntity> newTalkConf) {
         this.mNewTalkConf = newTalkConf;
+    }
+
+    /**
+     * 直播服务器调度返回
+     */
+    AbstractBusinessDataCallBack businessDataCallBack = new AbstractBusinessDataCallBack() {
+        @Override
+        public void onDataSucess(Object... objData) {
+            mNewTalkConf = (List<NewTalkConfEntity>) objData[0];
+            new Thread() {
+                @Override
+                public void run() {
+                    connect("create");
+                }
+            }.start();
+        }
+    };
+
+    public void setIrcTalkConf(IRCTalkConf ircTalkConf) {
+        this.ircTalkConf = ircTalkConf;
     }
 
     /**
@@ -432,6 +479,9 @@ public class IRCMessage {
         mHandler.removeCallbacks(mTimeoutRunnable);
         if (mConnection != null) {
             mConnection.disconnect();
+        }
+        if (ircTalkConf != null) {
+            ircTalkConf.destory();
         }
     }
 

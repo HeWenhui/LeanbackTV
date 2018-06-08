@@ -16,7 +16,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
+            android:layout_marginBottom="25dp"
+            android:layout_marginTop="25dp"
             android:src="@drawable/livevideo_roleplay_title" />
 
 
@@ -57,18 +58,21 @@
             android:id="@id/tv_live_roleplayer_countdown_tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/iv_live_roleplayer_title"
+            android:layout_below="@+id/iv_live_roleplayer_title"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginBottom="35dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
             android:hint="ready go"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
             android:textColor="#FF9600"
             android:textSize="18sp" />
 
 
         <!--多人朗读区-->
         <!--对话区-->
-        <ListView
+        <com.xueersi.parentsmeeting.modules.livevideo.view.CustomUnScorllListView
             android:id="@id/lv_live_roleplayer_read_list"
             style="@style/listview_common_style"
             android:layout_width="match_parent"
@@ -246,8 +250,10 @@
                         android:layout_marginTop="24dp"
                         android:background="#FFF4F4F4"
                         android:orientation="horizontal"
+                        android:paddingBottom="5dp"
                         android:paddingLeft="19dp"
-                        android:paddingRight="19dp">
+                        android:paddingRight="19dp"
+                        android:paddingTop="5dp">
 
 
                         <RelativeLayout
@@ -283,7 +289,7 @@
                                     style="@style/text_font11_333333_style"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
+                                    android:layout_marginTop="3dp"
                                     android:ellipsize="end"
                                     android:maxLength="5"
                                     android:singleLine="true"
@@ -326,7 +332,7 @@
                                     style="@style/text_font11_333333_style"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="6dp"
+                                    android:layout_marginTop="3dp"
                                     android:ellipsize="end"
                                     android:maxLength="5"
                                     android:singleLine="true"
@@ -368,7 +374,7 @@
                                     style="@style/text_font11_333333_style"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="6dp"
+                                    android:layout_marginTop="3dp"
                                     android:ellipsize="end"
                                     android:maxLength="5"
                                     android:singleLine="true"
@@ -393,16 +399,15 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="-15dp">
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/livevideo_roleplay_alertview_pic_bg" />
 
                     <TextView
                         android:id="@id/tv_livevideo_roleplayer_result_msgtip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
+                        android:background="@drawable/livevideo_roleplay_alertview_pic_bg"
+                        android:gravity="center_horizontal"
+                        android:paddingTop="4dp"
                         android:text="Fantastic"
                         android:textColor="@color/white"
                         android:textSize="29sp" />
@@ -434,14 +439,17 @@
             android:id="@id/rl_live_roleplayer_match_lottie"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingBottom="22dp"
+            android:paddingTop="22dp"
             android:visibility="gone">
 
             <RelativeLayout
+                android:id="@+id/rl_pipei_anim"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp">
+                android:layout_marginBottom="22dp">
 
                 <com.airbnb.lottie.LottieAnimationView
                     android:id="@id/lav_live_roleplayer_match"
@@ -456,40 +464,48 @@
 
                 <com.xueersi.xesalib.view.image.CircleImageView
                     android:id="@id/civ_live_roleplayer_match_head"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="61dp"
+                    android:layout_height="61dp"
                     android:layout_centerInParent="true"
                     android:src="@drawable/ic_default_head_square" />
             </RelativeLayout>
 
 
-            <TextView
-                style="@style/text_font16_ffffff_style"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/tv_live_roleplayer_match_tip2"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="21dp"
-                android:text="正在匹配中" />
-
-            <TextView
-                android:id="@id/tv_live_roleplayer_match_tip2"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="13dp"
-                android:background="@drawable/shape_livevideo_roleplayer_match_tip_bg"
-                android:paddingBottom="8dp"
-                android:paddingLeft="18dp"
-                android:paddingRight="18dp"
-                android:paddingTop="8dp"
-                android:text="大家的对话会被录音，请认真朗读哦~"
-                android:textColor="#36BC9B"
-                android:textSize="11sp" />
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/text_font16_ffffff_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/tv_live_roleplayer_match_tip2"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal"
+                    android:text="正在匹配中" />
+
+                <TextView
+                    android:id="@id/tv_live_roleplayer_match_tip2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="13dp"
+                    android:background="@drawable/shape_livevideo_roleplayer_match_tip_bg"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="18dp"
+                    android:paddingRight="18dp"
+                    android:paddingTop="8dp"
+                    android:text="大家的对话会被录音，请认真朗读哦~"
+                    android:textColor="#36BC9B"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+
 
         </RelativeLayout>
 
@@ -498,24 +514,22 @@
             android:id="@id/rl_live_roleplayer_rolelist"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="30dp"
             android:paddingLeft="130dp"
             android:paddingRight="130dp"
-            android:paddingTop="20dp"
             android:visibility="gone">
 
 
             <!--角色分配列表-->
             <com.xueersi.xesalib.view.gridview.AutohGridview
                 android:id="@id/gv_live_roleplayer_headshow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_centerHorizontal="true"
                 android:layout_centerInParent="true"
                 android:horizontalSpacing="42dp"
                 android:listSelector="#00000000"
                 android:numColumns="3"
-                android:verticalSpacing="25dp" />
+                android:verticalSpacing="30dp" />
 
 
         </RelativeLayout>

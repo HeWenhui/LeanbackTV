@@ -10,6 +10,7 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
@@ -29,28 +30,28 @@ import java.io.File;
  * Created by linyuqiang on 2017/3/25.
  * h5 课件
  */
-public class EnglishH5CoursewarePager extends BaseWebviewPager {
-    String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
-    String url;
-    String reloadurl;
-    String nonce;
-    public boolean isFinish = false;
-    String jsSubmitData = "javascript:submitData()";
-    EnglishH5CoursewareBll.OnH5ResultClose onClose;
-    String id;
-    String courseware_type;
-    boolean isPlayBack;
-    File cacheFile;
-    String liveId;
-    LiveAndBackDebug liveAndBackDebug;
+public class EnglishH5CoursewarePager extends BaseWebviewPager implements BaseEnglishH5CoursewarePager {
+    private String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
+    private String url;
+    private String reloadurl;
+    private String nonce;
+    private boolean isFinish = false;
+    private String jsSubmitData = "javascript:submitData()";
+    private EnglishH5CoursewareBll.OnH5ResultClose onClose;
+    private String id;
+    private String courseware_type;
+    private boolean isPlayBack;
+    private File cacheFile;
+    private String liveId;
+    private LiveAndBackDebug liveAndBackDebug;
     private EnglishH5CoursewareBll mEnglishH5CoursewareBll;
     private String isShowRanks;
-    RelativeLayout rl_livevideo_subject_web;
-    boolean IS_SCIENCE;
-    int mGoldNum;
-    int mEnergyNum;
+    private RelativeLayout rlLivevideoSubjectWeb;
+    private boolean IS_SCIENCE;
+    private int mGoldNum;
+    private int mEnergyNum;
 
-
+    @Override
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
         mEnglishH5CoursewareBll = englishH5CoursewareBll;
     }
@@ -83,6 +84,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         wvSubjectWeb.onPause();
     }
 
+    @Override
     public void destroy() {
         wvSubjectWeb.destroy();
     }
@@ -92,6 +94,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         wvSubjectWeb.onResume();
     }
 
+    @Override
     public String getUrl() {
         return url;
     }
@@ -99,10 +102,11 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_h5_courseware, null);
-        rl_livevideo_subject_web = (RelativeLayout) view.findViewById(R.id.rl_livevideo_subject_web);
+        rlLivevideoSubjectWeb = (RelativeLayout) view.findViewById(R.id.rl_livevideo_subject_web);
         return view;
     }
 
+    @Override
     public void submitData() {
         isFinish = true;
         wvSubjectWeb.loadUrl(jsSubmitData);
@@ -137,6 +141,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
     }
 
+    @Override
     public void onBack() {
         StableLogHashMap logHashMap = new StableLogHashMap("coursewareClose");
         logHashMap.put("coursewareid", id);
@@ -146,8 +151,14 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
     }
 
+    @Override
+    public boolean isFinish() {
+        return isFinish;
+    }
+
+    @Override
     public void close() {
-        onClose.onH5ResultClose();
+        onClose.onH5ResultClose(this);
         onBack();
     }
 
@@ -155,10 +166,10 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
     protected boolean shouldOverrideUrlLoading(WebView view, String url) {
         //      if ("http://baidu.com/".equals(url)) {
         Loger.d(TAG, "shouldOverrideUrlLoading:url=" + url);
-        Loger.e("EnglishH5CoursewarePager","======> shouldOverrideUrlLoading:"+url);
+        Loger.e("EnglishH5CoursewarePager", "======> shouldOverrideUrlLoading:" + url);
         reloadurl = url;
         if (url.contains("baidu.com")) {
-            onClose.onH5ResultClose();
+            onClose.onH5ResultClose(this);
             StableLogHashMap logHashMap = new StableLogHashMap("coursewareClose");
             logHashMap.put("coursewareid", id);
             logHashMap.put("coursewaretype", courseware_type);
@@ -176,7 +187,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
 
         if (url.contains(TeamPkBll.TEAMPK_URL_FIFTE)) {
             try {
-                int startIndex = url.indexOf("goldNum=")+"goldNum=".length();
+                int startIndex = url.indexOf("goldNum=") + "goldNum=".length();
                 if (startIndex != -1) {
                     String teamStr = url.substring(startIndex, url.length());
                     int endIndex = teamStr.indexOf("&");
@@ -184,9 +195,9 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
                     if (!TextUtils.isEmpty(goldNUmStr)) {
                         mGoldNum = Integer.parseInt(goldNUmStr.trim());
                     }
-                    Loger.e("EnglishH5Courseware","======> shouldOverrideUrlLoading: mGoldNum="+mGoldNum);
+                    Loger.e("EnglishH5Courseware", "======> shouldOverrideUrlLoading: mGoldNum=" + mGoldNum);
                 }
-                int satrIndex2 = url.indexOf("energyNum=")+"energyNum=".length();
+                int satrIndex2 = url.indexOf("energyNum=") + "energyNum=".length();
                 if (satrIndex2 != -1) {
                     String tempStr2 = url.substring(satrIndex2);
                     String energyNumStr = null;
@@ -198,7 +209,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
                     if (!TextUtils.isEmpty(energyNumStr)) {
                         mEnergyNum = Integer.parseInt(energyNumStr.trim());
                     }
-                    Loger.e("EnglishH5Courseware","======> shouldOverrideUrlLoading: mEnergyNum="+mEnergyNum);
+                    Loger.e("EnglishH5Courseware", "======> shouldOverrideUrlLoading: mEnergyNum=" + mEnergyNum);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -229,7 +240,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
         Loger.i(TAG, "initData:loadUrl=" + loadUrl);
         loadUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
         loadUrl(loadUrl);
-        Loger.e("EnglishH5CoursewarePager","======> loadUrl:"+loadUrl);
+        Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + loadUrl);
         reloadurl = loadUrl;
 
         mGoldNum = -1;
@@ -274,7 +285,7 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
             @Override
             public void onViewDetachedFromWindow(View v) {
                 LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent.H5_TYPE_COURSE, id);
-                if(mEnglishH5CoursewareBll != null){
+                if (mEnglishH5CoursewareBll != null) {
                     event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
                     mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
                 }
@@ -286,21 +297,26 @@ public class EnglishH5CoursewarePager extends BaseWebviewPager {
 
     }
 
+    @Override
+    public BasePager getBasePager() {
+        return this;
+    }
 
     /**
      * 设置webview透明
      *
      * @param color
      */
+    @Override
     public void setWebBackgroundColor(int color) {
         wvSubjectWeb.setBackgroundColor(color);
     }
 
     private void newWebView() {
-        rl_livevideo_subject_web.removeView(wvSubjectWeb);
+        rlLivevideoSubjectWeb.removeView(wvSubjectWeb);
         wvSubjectWeb = (WebView) View.inflate(mContext, R.layout.page_livevideo_h5_courseware_cacheweb, null);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        rl_livevideo_subject_web.addView(wvSubjectWeb, 0, lp);
+        rlLivevideoSubjectWeb.addView(wvSubjectWeb, 0, lp);
 
         addJavascriptInterface();
         WebSettings webSetting = wvSubjectWeb.getSettings();

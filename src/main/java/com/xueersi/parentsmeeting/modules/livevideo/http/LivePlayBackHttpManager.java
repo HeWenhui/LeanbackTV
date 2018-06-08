@@ -302,4 +302,13 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testAnswer", testResult);
         sendPost(liveUrl, params, requestCallBack);
     }
+
+    /* 上传回放式体验课播放器播放时长的接口 */
+    public void uploadPlaybackPlayTime(int liveId, Long hbTime, HttpCallBack callBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId + "");
+        params.addBodyParam("enstuId", UserBll.getInstance().getMyUserInfoEntity().getEnstuId());
+        params.addBodyParam("hbTime", hbTime.toString());
+        sendPost(LiveVideoConfig.URL_PLAYBACKPLAYTIME, params, callBack);
+    }
 }

@@ -1,7 +1,5 @@
 package ren.yale.android.cachewebviewlib;
 
-import android.util.Log;
-
 import com.xueersi.xesalib.utils.log.Loger;
 
 import ren.yale.android.cachewebviewlib.config.CacheConfig;

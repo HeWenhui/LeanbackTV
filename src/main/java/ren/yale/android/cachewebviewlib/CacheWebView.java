@@ -7,11 +7,12 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.webkit.CookieManager;
-import android.webkit.ValueCallback;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+
+import com.tencent.smtt.sdk.CookieManager;
+import com.tencent.smtt.sdk.ValueCallback;
+import com.tencent.smtt.sdk.WebSettings;
+import com.tencent.smtt.sdk.WebView;
+import com.tencent.smtt.sdk.WebViewClient;
 
 import com.xueersi.parentsmeeting.config.AppConfig;
 
@@ -180,7 +181,7 @@ public class CacheWebView extends WebView {
         setWebViewDefaultCacheMode();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webSettings.setMixedContentMode(
-                    WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
+                    android.webkit.WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
         }
         setCachePath();
 

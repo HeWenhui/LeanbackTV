@@ -56,7 +56,7 @@ public class LiveVoteBll implements LiveVoteAction {
         this.liveBll = liveBll;
     }
 
-    private void showResult(LiveTopic.VoteEntity voteEntity) {
+    private void showResult(final LiveTopic.VoteEntity voteEntity) {
         if (contentView != null) {
             bottomContent.removeView(contentView);
         }
@@ -143,7 +143,7 @@ public class LiveVoteBll implements LiveVoteAction {
             public void onClick(View v) {
                 bottomContent.removeView(contentView);
                 contentView = null;
-                EventBus.getDefault().post(new NativeVoteRusltulCloseEvent(answer>0));
+                EventBus.getDefault().post(new NativeVoteRusltulCloseEvent(answer>0,voteEntity.getChoiceId()));
             }
         });
         StableLogHashMap logHashMap = new StableLogHashMap("showVoteResult");

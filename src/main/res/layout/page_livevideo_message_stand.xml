@@ -5,7 +5,8 @@
     <RelativeLayout
         android:id="@id/rl_live_stand_message_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="invisible">
 
         <RelativeLayout
             android:id="@id/rl_livevideo_info"
@@ -59,14 +60,6 @@
             android:layout_height="50dp"
             android:layout_alignParentRight="true"
             android:layout_marginTop="30dp"
-            android:visibility="visible" />
-
-        <RelativeLayout
-            android:id="@id/rl_livevideo_english_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/rl_livevideo_star_content"
-            android:layout_toRightOf="@id/rl_livevideo_info"
             android:visibility="visible" />
 
         <Button
@@ -190,4 +183,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <RelativeLayout
+        android:id="@id/rl_livevideo_english_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible" />
 </RelativeLayout>

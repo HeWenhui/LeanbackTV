@@ -169,6 +169,7 @@ public class LiveGetInfo {
      * host : 124.243.202.5 port : 16692 pwd : xueersi.com 备用用户聊天服务配置
      */
     private List<NewTalkConfEntity> newTalkConf;
+    private ArrayList<TalkConfHost> newTalkConfHosts;
     /**
      * 用户头像服务器地址
      */
@@ -247,8 +248,9 @@ public class LiveGetInfo {
     private String[] subjectIds;//所有学科id
     /** 小学理科改版，教育阶段，区分献花 */
     private String educationStage;
-    /**直播课年级*/
+    /** 直播课年级 */
     private int grade;
+
     public int getGrade() {
         return grade;
     }
@@ -431,6 +433,10 @@ public class LiveGetInfo {
 
     public void setNewTalkConf(List<NewTalkConfEntity> newTalkConf) {
         this.newTalkConf = newTalkConf;
+    }
+
+    public void setNewTalkConfHosts(ArrayList<TalkConfHost> newTalkConfHosts) {
+        this.newTalkConfHosts = newTalkConfHosts;
     }
 
     public void setHeadImgUrl(List<String> headImgUrl) {
@@ -617,6 +623,10 @@ public class LiveGetInfo {
 
     public List<NewTalkConfEntity> getNewTalkConf() {
         return newTalkConf;
+    }
+
+    public ArrayList<TalkConfHost> getNewTalkConfHosts() {
+        return newTalkConfHosts;
     }
 
     public LiveTopic getLiveTopic() {

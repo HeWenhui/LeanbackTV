@@ -37,7 +37,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
     private LiveBll mLiveBll;
     private boolean openchat;
     /** 是不是正在答题 */
-    private boolean isAnaswer = false;
+    private int isAnaswer = -1;
     private String mode = null;
     /** 横屏聊天信息 */
     private ArrayList<LiveMessageEntity> liveMessageLandEntities = new ArrayList<>();
@@ -132,7 +132,9 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
             mLiveMessagePager.onUserList("", new User[peopleCount.get()]);
         }
         mLiveMessagePager.closeChat(isCloseChat);
-        mLiveMessagePager.onQuestionShow(isAnaswer);
+        if (isAnaswer != -1) {//这表示收到过答题变化
+            mLiveMessagePager.onQuestionShow(isAnaswer == 1);
+        }
         if (mode != null) {
             mLiveMessagePager.onopenchat(openchat, mode, false);
         }
@@ -497,7 +499,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
 
     @Override
     public void onQuestionShow(boolean isShow) {
-        isAnaswer = isShow;
+        isAnaswer = isShow ? 1 : 0;
         if (mLiveMessagePager != null) {
             mLiveMessagePager.onQuestionShow(isShow);
         }

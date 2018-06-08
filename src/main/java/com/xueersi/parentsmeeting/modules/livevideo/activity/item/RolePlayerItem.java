@@ -64,11 +64,11 @@ public abstract class RolePlayerItem implements AdapterItemInterface<RolePlayerE
     public void updateViews(RolePlayerEntity.RolePlayerMessage entity, int position, Object objTag) {
         mEntity = entity;
         mPosition = position;
-        ivSpeechStart1.setVisibility(View.GONE);
-        ivSpeechStart2.setVisibility(View.GONE);
-        ivSpeechStart3.setVisibility(View.GONE);
-        ivSpeechStart4.setVisibility(View.GONE);
-        ivSpeechStart5.setVisibility(View.GONE);
+        ivSpeechStart1.setVisibility(View.INVISIBLE);
+        ivSpeechStart2.setVisibility(View.INVISIBLE);
+        ivSpeechStart3.setVisibility(View.INVISIBLE);
+        ivSpeechStart4.setVisibility(View.INVISIBLE);
+        ivSpeechStart5.setVisibility(View.INVISIBLE);
     }
 
     /**
