@@ -1208,6 +1208,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         }.start();
         String url;
         String msg = "rePlay:";
+        totalFrameStat.setChannelname(mGetInfo.getChannelname());
         if (mServer == null) {
             totalFrameStat.setLastPlayserverEntity(null);
             String rtmpUrl = null;

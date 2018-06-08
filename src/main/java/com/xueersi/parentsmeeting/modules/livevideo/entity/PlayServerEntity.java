@@ -85,6 +85,7 @@ public class PlayServerEntity {
     }
 
     public static class PlayserverEntity {
+        PlayServerEntity server;
         private boolean useFlv;
         private String acode;
         private String address;
@@ -110,6 +111,14 @@ public class PlayServerEntity {
             PlayserverEntity playserverEntity = (PlayserverEntity) obj;
 //            return playserverEntity.address.equals(address);
             return playserverEntity.address.equals(address) && playserverEntity.provide.equals(provide);
+        }
+
+        public PlayServerEntity getServer() {
+            return server;
+        }
+
+        public void setServer(PlayServerEntity server) {
+            this.server = server;
         }
 
         public boolean isUseFlv() {

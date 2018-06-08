@@ -1,6 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -8,22 +13,30 @@ import android.os.Message;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseHttpBusiness;
 import com.xueersi.parentsmeeting.config.AppConfig;
-import com.xueersi.parentsmeeting.http.HttpCallBack;
+import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
 import com.xueersi.parentsmeeting.http.HttpRequestParams;
-import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService;
+import com.xueersi.xesalib.umsagent.DeviceInfo;
+import com.xueersi.xesalib.utils.app.DeviceUtils;
 import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.xesalib.utils.string.StringUtils;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 /**
@@ -45,11 +58,69 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     private boolean isStat = true;
     private BaseHttpBusiness baseHttpBusiness;
     private long openStart;
-    String logurl = LiveVideoConfig.URL_CDN_LOG;
+    private String logurl = LiveVideoConfig.URL_CDN_LOG;
+    private String userId;
+    /** 当前播放的视频地址 */
+    private Uri mUri;
+    private String sip;
+    private String versionName;
+    private String cpuName;
+    private String memsize;
+    private String channelname;
 
     public TotalFrameStat(Activity activity) {
         this.activity = activity;
         baseHttpBusiness = new BaseHttpBusiness(activity);
+        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        userId = myUserInfoEntity.getStuId();
+        versionName = getAppVersionName();
+        cpuName = getCpuName();
+        Field[] fields = Build.class.getDeclaredFields();
+
+        for (int i = 0; i < fields.length; i++) {
+            Field field = fields[i];
+            field.setAccessible(true);
+            try {
+                Loger.d(TAG, "TotalFrameStat:field=" + field.get(null));
+            } catch (IllegalAccessException e) {
+                Loger.e(TAG, "TotalFrameStat", e);
+            }
+        }
+        memsize = DeviceUtils.getAvailRams(activity);
+    }
+
+    public static String getCpuName() {
+        try {
+            FileReader fr = new FileReader("/proc/cpuinfo");
+            BufferedReader br = new BufferedReader(fr);
+            String text;
+            while ((text = br.readLine()) != null) {
+                if (text.contains("Hardware")) {
+                    int index = text.indexOf(":");
+                    String cpu;
+                    if (index == -1) {
+                        cpu = text.substring(8);
+                    } else {
+                        cpu = text.substring(index + 1);
+                    }
+                    cpu = cpu.trim();
+                    Loger.d(TAG, "getCpuName:text=" + text + ",cpu=" + cpu);
+                    return cpu;
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //华为手机获取不到,取系统变量
+        //三星
+        //Build.HARDWARE qcom
+        //Build.BOARD msm8998
+        //华为
+        //Build.HARDWARE kirin970
+        //Build.BOARD BLA
+        return Build.HARDWARE;
     }
 
     public void setvPlayer(PlayerService vPlayer) {
@@ -63,6 +134,10 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
      */
     public void setLastPlayserverEntity(PlayServerEntity.PlayserverEntity lastPlayserverEntity) {
         this.lastPlayserverEntity = lastPlayserverEntity;
+    }
+
+    public void setChannelname(String channelname) {
+        this.channelname = channelname;
     }
 
     public boolean isStat() {
@@ -153,8 +228,23 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     @Override
     public void onOpenStart() {
         super.onOpenStart();
+        sip = "";
         handler.removeMessages(1);
         openStart = System.currentTimeMillis();
+        mUri = vPlayer.getUri();
+        if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
+            IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
+            ijkMediaPlayer.setOnNativeInvokeListener(new IjkMediaPlayer.OnNativeInvokeListener() {
+                @Override
+                public boolean onNativeInvoke(int what, Bundle args) {
+                    Loger.d(TAG, "onOpenStart:what=" + what + "," + mUri + ",args=" + args);
+                    if (what == CTRL_DID_TCP_OPEN) {
+                        sip = args.getString("ip", "");
+                    }
+                    return false;
+                }
+            });
+        }
     }
 
     @Override
@@ -165,13 +255,46 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         HashMap<String, String> defaultKey = new HashMap<>();
         defaultKey.put("dataType", "600");
         defaultKey.put("playlatency", "" + openTime);
-        sendPostNoBusiness(defaultKey);
+        defaultKey.put("cputype", "" + cpuName);
+        defaultKey.put("memsize", "" + memsize);
+        defaultKey.put("channelname", "" + channelname);
+        defaultKey.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
+        defaultKey.put("provide", "" + lastPlayserverEntity.getProvide());
+        defaultKey.put("errorcode", "0");
+        defaultKey.put("errmsg", "");
+        xescdnLog(defaultKey);
     }
 
-    private void sendPostNoBusiness(HashMap<String, String> defaultKey) {
+    private String getRemoteIp() {
+        String remoteIp;
+        if (lastPlayserverEntity != null) {
+            String ipAddress = lastPlayserverEntity.getIpAddress();
+            if (StringUtils.isEmpty(ipAddress)) {
+                if (StringUtils.isEmpty(sip)) {
+                    remoteIp = lastPlayserverEntity.getAddress();
+                } else {
+                    remoteIp = sip;
+                }
+            } else {
+                remoteIp = ipAddress;
+            }
+        } else {
+            remoteIp = sip;
+        }
+        return remoteIp;
+    }
+
+    private void xescdnLog(HashMap<String, String> defaultKey) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("timestamp", "" + System.currentTimeMillis());
         params.addBodyParam("appid", AppConfig.getPsAppId());
+        params.addBodyParam("uid", "" + userId);
+        params.addBodyParam("os", "" + Build.VERSION.SDK_INT);
+        params.addBodyParam("device", "" + DeviceInfo.getDeviceName());
+        params.addBodyParam("url", "" + mUri);
+        String remoteIp = getRemoteIp();
+        params.addBodyParam("sip", "" + remoteIp);
+        params.addBodyParam("agent", "m-android " + versionName);
         for (String key : defaultKey.keySet()) {
             String value = defaultKey.get(key);
             params.addBodyParam(key, value);
@@ -179,15 +302,15 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         baseHttpBusiness.sendPostNoBusiness(logurl, params, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Loger.e(TAG, "sendPostNoBusiness:onFailure", e);
+                Loger.e(TAG, "xescdnLog:onFailure", e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.body() != null) {
-                    Loger.d(TAG, "sendPostNoBusiness:onResponse:response=" + response.body().string());
+                    Loger.d(TAG, "xescdnLog:onResponse:response=" + response.body().string());
                 } else {
-                    Loger.d(TAG, "sendPostNoBusiness:onResponse:response=null");
+                    Loger.d(TAG, "xescdnLog:onResponse:response=null");
                 }
             }
 
@@ -199,6 +322,20 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         super.onOpenFailed(arg1, arg2);
         handler.removeMessages(1);
         send("onOpenFailed");
+        long openTime = (System.currentTimeMillis() - openStart);
+        HashMap<String, String> defaultKey = new HashMap<>();
+        defaultKey.put("dataType", "601");
+        defaultKey.put("playlatency", "" + openTime);
+        defaultKey.put("cputype", "" + cpuName);
+        defaultKey.put("memsize", "" + memsize);
+        defaultKey.put("channelname", "" + channelname);
+        defaultKey.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
+        defaultKey.put("provide", "" + lastPlayserverEntity.getProvide());
+        defaultKey.put("errorcode", "" + arg2);
+        AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
+        defaultKey.put("errmsg", error == null ? "" : error.getTag());
+        xescdnLog(defaultKey);
+        sip = "";
     }
 
     @Override
@@ -206,6 +343,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         super.onPlaybackComplete();
         handler.removeMessages(1);
         send("onPlaybackComplete");
+        sip = "";
     }
 
     @Override
@@ -218,5 +356,17 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     public void destory() {
         handler.removeMessages(1);
         send("destory");
+    }
+
+    public String getAppVersionName() {
+        String versionName = "";
+        try {
+            PackageManager pm = activity.getPackageManager();
+            PackageInfo pi = pm.getPackageInfo(activity.getPackageName(), 0);
+            versionName = pi.versionName;
+        } catch (Exception var4) {
+
+        }
+        return versionName;
     }
 }

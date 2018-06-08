@@ -1036,6 +1036,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         }.start();
         String url;
         String msg = "rePlay:";
+        totalFrameStat.setChannelname(mGetInfo.getChannelname());
         if (mServer == null) {
             String rtmpUrl = null;
             String[] rtmpUrls = mGetInfo.getRtmpUrls();
