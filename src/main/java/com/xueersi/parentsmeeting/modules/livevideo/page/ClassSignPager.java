@@ -94,6 +94,7 @@ public class ClassSignPager extends BasePager {
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         logToFile.e("onPmFailure:msg=" + msg, error);
+                        ToastUtil.showToast(mContext,TextUtils.isEmpty(msg)?"网络异常":msg);
                     }
 
                     @Override
