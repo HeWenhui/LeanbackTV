@@ -27,6 +27,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreCache;
 import com.xueersi.parentsmeeting.util.ZipExtractorTask;
+import com.xueersi.parentsmeeting.util.ZipProg;
+import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
@@ -73,6 +75,8 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     private List<MoreCache> mList;
     private File mMorecachein;
     private File mMorecacheout;
+    private ArrayList<String> mUrls;
+    private int count = 0;
 
     public EnglishH5Cache(Context context, LiveBll liveBll, String liveId) {
         this.context = context;
@@ -252,7 +256,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                 }
                 Loger.e(TAG, "list" + mList.size());
                 if(mList.size() > 0){
-                    download(todayLiveCacheDir);
+//                    download(todayLiveCacheDir);
                 }
             }
             @Override
@@ -270,34 +274,56 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     }
 
     private void download(File path) {
-        final ArrayList<String> urls = new ArrayList<>();
+        mUrls = new ArrayList<>();
         mMorecachein = new File(path, liveId);
         mMorecacheout = new File(path, liveId + "child");
         // 下载以及解压预加载的文件
         for (int i = 0 ; i < mList.size() ; i++)  {
-            if(!urls.contains(mList.get(i).getResourceUrl()) && !TextUtils.isEmpty(mList.get(i).getResourceUrl())){
-                urls.add(mList.get(i).getResourceUrl());
+            if(!mUrls.contains(mList.get(i).getResourceUrl()) && !TextUtils.isEmpty(mList.get(i).getResourceUrl())){
+                mUrls.add(mList.get(i).getResourceUrl());
             }
             if(!TextUtils.isEmpty(mList.get(i).getTemplateUrl())){
-                urls.add(mList.get(i).getTemplateUrl());
+                mUrls.add(mList.get(i).getTemplateUrl());
             }
         }
-        for(int i = 0 ; i < urls.size() ; i++){
-            liveBll.download(urls.get(i), mMorecachein.getPath(),mCallBack);
+        for(int i = 0; i < mUrls.size() ; i++){
+            liveBll.download(mUrls.get(i), mMorecachein.getPath(),mCallBack);
         }
 
+    }
+
+    private class Progresses implements ZipProg{
+        @Override
+        public void onProgressUpdate(Integer... values) {
+
+        }
+
+        @Override
+        public void onPostExecute(Exception exception) {
+
+        }
+
+        @Override
+        public void setMax(int max) {
+
+        }
     }
 
     private DownloadCallBack mCallBack = new DownloadCallBack() {
         @Override
         protected void onDownloadSuccess() {
-            // 解压的操作
-            new ZipExtractorTask(mMorecachein, mMorecacheout, true, null).execute();
+            count++;
+            if(count == mUrls.size()){
+                // 解压的操作
+            new ZipExtractorTask(mMorecachein, mMorecacheout, true, new Progresses()).execute();
+            }
+
         }
 
         @Override
         protected void onDownloadFailed() {
-
+            FileUtils.deleteDir(mMorecachein);
+            XESToastUtils.showToast(context, "下载资源包失败");
         }
     };
 

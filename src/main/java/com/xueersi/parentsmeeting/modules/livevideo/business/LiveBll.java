@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.View;
 
 import com.alibaba.fastjson.JSON;
@@ -25,6 +26,7 @@ import com.xueersi.parentsmeeting.logerhelper.LogerTag;
 import com.xueersi.parentsmeeting.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
@@ -56,6 +58,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.xesalib.umsagent.UmsAgent;
 import com.xueersi.xesalib.umsagent.UmsAgentManager;
 import com.xueersi.xesalib.umsagent.UmsConstants;
@@ -1626,6 +1629,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     }
                     break;
                     case XESCODE.ENGLISH_H5_COURSEWARE: {
+                        LiveVideoConfig.isNewEnglishH5 = false;
                         if (englishH5CoursewareAction != null) {
                             VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                             String play_url = "";
@@ -1693,6 +1697,34 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     case XESCODE.H5_STOP: {
                         if (h5CoursewareAction != null) {
                             h5CoursewareAction.onH5Courseware("", "off");
+                        }
+                    }
+                    break;
+                    case XESCODE.MULTIPLE_H5_COURSEWARE:{
+                        LiveVideoConfig.isNewEnglishH5 = true;
+                        if (englishH5CoursewareAction != null) {
+                            VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                            LiveVideoConfig.isSend = object.optBoolean("open");
+                            String status = "";
+                            String nonce = object.optString("nonce");
+                            StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+                            String teamId = studentLiveInfo.getTeamId();
+                            String classId = studentLiveInfo.getClassId();
+                            try {
+                                JSONObject objects = new JSONObject();
+                                objects.put("packageId", object.getString("pId"));
+                                objects.put("packageSource", object.getString("pSrc"));
+                                objects.put("packageAttr", object.getString("pAttr"));
+                                objects.put("releasedPageInfos", object.getString("tests"));
+                                objects.put("teamId", teamId);
+                                objects.put("stuCouId", vStuCourseID);
+                                objects.put("stuId", mGetInfo.getStuId());
+                                objects.put("classId", classId);
+                                mShareDataManager.put(LiveVideoConfig.newEnglishH5, objects.toString(), ShareDataManager.SHAREDATA_USER);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
                         }
                     }
                     break;

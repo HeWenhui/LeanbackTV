@@ -257,6 +257,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         handler.post(new Runnable() {
             @Override
             public void run() {
+                if(LiveVideoConfig.isSend){
+                    showH5Paper(videoQuestionLiveEntity);
+                    return;
+                }
                 if ("on".equals(status)) {
                     if (!isAnaswer) {
                         for (QuestionShowAction questionShowAction : questionShowActions) {

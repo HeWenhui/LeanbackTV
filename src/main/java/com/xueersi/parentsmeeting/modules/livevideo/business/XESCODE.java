@@ -143,4 +143,7 @@ public interface XESCODE {
     /**退出每题pk 结果*/
     int TEAM_PK_EXIT_PK_RESULT = 235;
 
+    /**一题多发*/
+    int MULTIPLE_H5_COURSEWARE = 251;
+
 }

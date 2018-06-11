@@ -21,10 +21,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
+import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -239,24 +242,53 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
 
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
-
-        String loadUrl = url + "?t=" + System.currentTimeMillis();
-        if (isPlayBack) {
-            loadUrl += "&isPlayBack=1";
+        if(LiveVideoConfig.isNewEnglishH5){
+            // 一题多发的课件预加载
+            String packageId = "";
+            String packageSource = "";
+            String packageAttr = "";
+            String releasedPageInfos = "";
+            String teamId = "";
+            String stuCouId = "";
+            String stuId = "";
+            String classId = "";
+            try {
+                JSONObject jsonObject = new JSONObject(mShareDataManager.getString(LiveVideoConfig.newEnglishH5, "{}", ShareDataManager.SHAREDATA_USER));
+                packageId = jsonObject.optString("packageId");
+                packageSource = jsonObject.optString("packageSource");
+                packageAttr = jsonObject.optString("packageAttr");
+                releasedPageInfos = jsonObject.optString("releasedPageInfos");
+                stuId = jsonObject.optString("stuId");
+                stuCouId = jsonObject.optString("stuCouId");
+                classId = jsonObject.optString("classId");
+                teamId = jsonObject.optString("teamId");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+//            String loadUrl = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&isPlayBack=1&stuClientPath="+ Base64.encodeToString((mMorecacheout.getPath() +"/").getBytes(), Base64.DEFAULT);
+            String loadUrl = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&isPlayBack=0";
+            loadUrl(loadUrl);
+            Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + loadUrl);
+            reloadurl = loadUrl;
+        }else{
+            String loadUrl = url + "?t=" + System.currentTimeMillis();
+            if (isPlayBack) {
+                loadUrl += "&isPlayBack=1";
+            }
+            loadUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
+            if (!StringUtils.isEmpty(nonce)) {
+                loadUrl += "&nonce=" + nonce;
+            }
+            loadUrl += "&isTowall=" + isShowRanks;
+            Loger.i(TAG, "initData:loadUrl=" + loadUrl);
+            loadUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
+            loadUrl(loadUrl);
+            Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + loadUrl);
+            reloadurl = loadUrl;
+            loadUrl(loadUrl);
+            Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + loadUrl);
+            reloadurl = loadUrl;
         }
-        loadUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
-        if (!StringUtils.isEmpty(nonce)) {
-            loadUrl += "&nonce=" + nonce;
-        }
-        loadUrl += "&isTowall=" + isShowRanks;
-        Loger.i(TAG, "initData:loadUrl=" + loadUrl);
-        loadUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
-        // 一题多发的课件预加载
-        loadUrl += "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml#/?stuId=15649&liveId=122595&stuCouId=8146043&classId=11169&teamId=1&packageId=36854&packageSource=2&packageAttr=3&releasedPageInfos=[{38798: [25, 20129], 38797: [25, 20127]}]&isPlayBack=1&stuClientPath=" + Base64.encodeToString(("127.0.0.1:8080/" + mMorecacheout.getPath() + "/").getBytes(), Base64.DEFAULT);
-        loadUrl(loadUrl);
-        Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + loadUrl);
-        reloadurl = loadUrl;
-
         mGoldNum = -1;
         mEnergyNum = -1;
 
@@ -336,7 +368,12 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
-        wvSubjectWeb.setWebViewClient(new MyWebViewClient());
+        wvSubjectWeb.setWebViewClient(new MyWebViewClient(){
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
+                return super.shouldInterceptRequest(view, s);
+            }
+        });
     }
 
     public String getId() {
