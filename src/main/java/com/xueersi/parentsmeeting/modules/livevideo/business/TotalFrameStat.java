@@ -366,7 +366,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     private void xescdnLog(HashMap<String, String> defaultKey, JSONObject dataJson) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("timestamp", "" + System.currentTimeMillis());
-        params.addBodyParam("appid", AppConfig.getPsAppId());
+        params.addBodyParam("appid", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
         params.addBodyParam("serviceType", "6");
         params.addBodyParam("uid", "" + userId);
         params.addBodyParam("agent", "m-android " + versionName);
