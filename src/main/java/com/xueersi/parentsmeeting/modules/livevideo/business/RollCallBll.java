@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -18,12 +16,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.ClassSignPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.ClassmateSignPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.time.TimeUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 /**
  * Created by linyuqiang on 2016/9/23.
@@ -124,13 +119,13 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
 
     int count = 0;
 
-    public void onLiveInit(LiveGetInfo getInfo) {
+    public void onLiveInit(int livetype, LiveGetInfo getInfo) {
         classSignStop.setTraning(LiveTopic.MODE_TRANING.equals(getInfo.getLiveTopic().getMode()));
         //autoSign = getInfo != null && getInfo.getIsArts() == 1;
 
         if (OPEN_AUTO_SIGN){
-            // 理科自动签到
-            boolean isAutoSign = getInfo != null && getInfo.getIsArts() != 1;
+            // 理科直播 自动签到
+            boolean isAutoSign = getInfo != null && getInfo.getIsArts() != 1 && livetype == 3;
             setAutoSign(isAutoSign);
         }
 

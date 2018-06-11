@@ -1063,7 +1063,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
             liveMessageBll.closeChat(true);
         }
         liveMessageBll.setLiveGetInfo(getInfo);
-        rollCallBll.onLiveInit(getInfo);
+        rollCallBll.onLiveInit(liveType, getInfo);
         questionBll.setUserName(getInfo);
         videoChatBll.onLiveInit(getInfo);
         redPackageBll.setUserName(getInfo.getStandLiveName());

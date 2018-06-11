@@ -1044,7 +1044,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             liveMessageBll.closeChat(true);
         }
         liveMessageBll.setLiveGetInfo(getInfo);
-        rollCallBll.onLiveInit(getInfo);
+        rollCallBll.onLiveInit(liveType, getInfo);
         questionBll.setUserName(getInfo);
         videoChatBll.onLiveInit(getInfo);
         Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));

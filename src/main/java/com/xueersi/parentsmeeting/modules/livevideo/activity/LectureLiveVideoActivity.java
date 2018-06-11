@@ -899,7 +899,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             liveMessageBll.closeChat(true);
         }
         liveMessageBll.setLiveGetInfo(getInfo);
-        rollCallBll.onLiveInit(getInfo);
+        rollCallBll.onLiveInit(liveType, getInfo);
         questionBll.setUserName(getInfo);
 //        if (AppConfig.DEBUG) {
 //            LecAdvertEntity lecAdvertEntity = new LecAdvertEntity();
