@@ -252,7 +252,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         Loger.i(TAG, "initData:loadUrl=" + loadUrl);
         loadUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
         // 一题多发的课件预加载
-        loadUrl += "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml#/?stuId=15649&liveId=122595&stuCouId=8146043&classId=11169&teamId=1&packageId=36854&packageSource=2&packageAttr=3&releasedPageInfos=[{38798: [25, 20129], 38797: [25, 20127]}]&isPlayBack=1&stuClientPath="+ Base64.encodeToString(("127.0.0.1:8080/" + mMorecacheout.getPath() +"/").getBytes(), Base64.DEFAULT);
+        loadUrl += "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml#/?stuId=15649&liveId=122595&stuCouId=8146043&classId=11169&teamId=1&packageId=36854&packageSource=2&packageAttr=3&releasedPageInfos=[{38798: [25, 20129], 38797: [25, 20127]}]&isPlayBack=1&stuClientPath=" + Base64.encodeToString(("127.0.0.1:8080/" + mMorecacheout.getPath() + "/").getBytes(), Base64.DEFAULT);
         loadUrl(loadUrl);
         Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + loadUrl);
         reloadurl = loadUrl;
@@ -336,12 +336,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
-        wvSubjectWeb.setWebViewClient(new MyWebViewClient(){
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
-                return super.shouldInterceptRequest(view, s);
-            }
-        });
+        wvSubjectWeb.setWebViewClient(new MyWebViewClient());
     }
 
     public String getId() {

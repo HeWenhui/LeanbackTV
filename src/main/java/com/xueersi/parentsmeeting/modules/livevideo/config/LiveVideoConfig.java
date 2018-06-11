@@ -132,6 +132,8 @@ public class LiveVideoConfig {
     public static String LIVE_ENGLISH_TIP = "live_english_speeak_tip";
     /** 英语能量条提示 */
     public static String LEC_LEARN_REPORT = "lec_learn_report";
+    /** 直播网页加载失败 */
+    public static String LIVE_WEBVIEW_ERROR = "live_webview_error";
 
     //  体验课互动题提交答案
     public static String LIVE_EXPE_SUBMIT = AppConfig.HTTP_HOST + "/science/AutoLive/submitTestAnswer";

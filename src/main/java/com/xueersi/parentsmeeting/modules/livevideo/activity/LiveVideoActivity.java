@@ -72,6 +72,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusE
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionWebCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
@@ -990,6 +991,8 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                 speechFeedBackBll.setBottomContent(bottomContent);
                 speechFeedBackAction = speechFeedBackBll;
                 mLiveBll.setSpeechFeedBackAction(speechFeedBackBll);
+                QuestionWebCache questionWebCache = new QuestionWebCache(this);
+                questionWebCache.startCache();
             }
         }
         Loger.d(TAG, "onLiveInit:time=" + (System.currentTimeMillis() - before));

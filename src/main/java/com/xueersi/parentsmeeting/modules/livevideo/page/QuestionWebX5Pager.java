@@ -12,6 +12,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
+import com.tencent.smtt.export.external.interfaces.WebResourceError;
+import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
+import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
@@ -27,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
@@ -256,8 +260,12 @@ public class QuestionWebX5Pager extends BasePager implements BaseQuestionWebInte
         }
     }
 
-    public class MyWebViewClient extends WebViewClient {
+    public class MyWebViewClient extends ErrorWebViewClient {
         String failingUrl;
+
+        public MyWebViewClient() {
+            super(TAG);
+        }
 
         @Override
         public void onPageFinished(WebView view, String url) {
@@ -288,6 +296,11 @@ public class QuestionWebX5Pager extends BasePager implements BaseQuestionWebInte
                 wvSubjectWeb.setInitialScale(scale);
             }
             super.onPageStarted(view, url, favicon);
+        }
+
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView webView, String s) {
+            return super.shouldInterceptRequest(webView, s);
         }
 
         @Override
