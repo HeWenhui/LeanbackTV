@@ -39,6 +39,7 @@ import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.AnswerEntity;
 import com.xueersi.parentsmeeting.entity.AppInfoEntity;
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
+import com.xueersi.parentsmeeting.entity.EnglishH5Entity;
 import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
 import com.xueersi.parentsmeeting.entity.VideoLivePlayBackEntity;
@@ -1174,8 +1175,9 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         if (rlQuestionContent != null && mQuestionEntity != null) {
             Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showEnglishH5CoursewarePager");
             mPlayVideoControlHandler.sendMessage(msg);
-            englishH5CoursewarePager = new EnglishH5CoursewareX5Pager(LiveStandPlayBackVideoActivity.this, true, mVideoEntity.getLiveId(), mQuestionEntity.getEnglishH5Play_url(),
-                    mQuestionEntity.getvQuestionID(), mQuestionEntity.getvQuestionType(), "", new
+            EnglishH5Entity englishH5Entity = mQuestionEntity.getEnglishH5Entity();
+            englishH5CoursewarePager = new EnglishH5CoursewareX5Pager(LiveStandPlayBackVideoActivity.this, true, mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), englishH5Entity,
+                    mQuestionEntity.getvQuestionType(), "", new
                     EnglishH5CoursewareBll.OnH5ResultClose() {
                         @Override
                         public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager) {
@@ -2817,8 +2819,9 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
         if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
-            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
+            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl)) {
                 ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
+            }
         }
     }
 }

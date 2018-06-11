@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.xueersi.parentsmeeting.entity.AnswerEntity;
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
+import com.xueersi.parentsmeeting.entity.EnglishH5Entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     public String isAllow42;
     /** 语音评测二期-评测内容 */
     public String speechContent;
+    public EnglishH5Entity englishH5Entity = new EnglishH5Entity();
     /** h5课件用-课件地址 */
     public String url;
     /** h5课件用-课件类型 */

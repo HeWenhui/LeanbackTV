@@ -16,6 +16,7 @@ import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseBll;
 import com.xueersi.parentsmeeting.config.AppConfig;
+import com.xueersi.parentsmeeting.entity.EnglishH5Entity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.http.CommonRequestCallBack;
 import com.xueersi.parentsmeeting.http.DownloadCallBack;
@@ -1700,7 +1701,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         }
                     }
                     break;
-                    case XESCODE.MULTIPLE_H5_COURSEWARE:{
+                    case XESCODE.MULTIPLE_H5_COURSEWARE: {
                         LiveVideoConfig.isNewEnglishH5 = true;
                         if (englishH5CoursewareAction != null) {
                             VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
@@ -1710,6 +1711,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
                             String teamId = studentLiveInfo.getTeamId();
                             String classId = studentLiveInfo.getClassId();
+                            EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
+                            englishH5Entity.setNewEnglishH5(true);
                             try {
                                 JSONObject objects = new JSONObject();
                                 objects.put("packageId", object.getString("pId"));

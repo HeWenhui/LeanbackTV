@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -13,6 +12,7 @@ import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.parentsmeeting.base.BasePager;
+import com.xueersi.parentsmeeting.entity.EnglishH5Entity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
@@ -65,10 +65,10 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         mEnglishH5CoursewareBll = englishH5CoursewareBll;
     }
 
-    public EnglishH5CoursewareX5Pager(Context context, boolean isPlayBack, String liveId, String url, String id, final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose, LiveAndBackDebug liveAndBackDebug, String isShowRanks, boolean IS_SCIENCE) {
+    public EnglishH5CoursewareX5Pager(Context context, boolean isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity, final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose, LiveAndBackDebug liveAndBackDebug, String isShowRanks, boolean IS_SCIENCE) {
         super(context);
         this.liveId = liveId;
-        this.url = url;
+        this.url = englishH5Entity.getUrl();
         this.isPlayBack = isPlayBack;
         this.onClose = onClose;
         this.liveAndBackDebug = liveAndBackDebug;
@@ -242,7 +242,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
 
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
-        if(LiveVideoConfig.isNewEnglishH5){
+        if (LiveVideoConfig.isNewEnglishH5) {
             // 一题多发的课件预加载
             String packageId = "";
             String packageSource = "";
@@ -270,7 +270,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             loadUrl(loadUrl);
             Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + loadUrl);
             reloadurl = loadUrl;
-        }else{
+        } else {
             String loadUrl = url + "?t=" + System.currentTimeMillis();
             if (isPlayBack) {
                 loadUrl += "&isPlayBack=1";
@@ -368,7 +368,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
-        wvSubjectWeb.setWebViewClient(new MyWebViewClient(){
+        wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
                 return super.shouldInterceptRequest(view, s);
