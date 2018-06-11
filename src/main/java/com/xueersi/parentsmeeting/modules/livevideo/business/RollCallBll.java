@@ -125,7 +125,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
 
         if (OPEN_AUTO_SIGN){
             // 理科直播 自动签到
-            boolean isAutoSign = getInfo != null && getInfo.getIsArts() != 1 && livetype == 3;
+            boolean isAutoSign = getInfo != null && getInfo.getIsArts() != 1 && livetype == LiveBll.LIVE_TYPE_LIVE;
             setAutoSign(isAutoSign);
         }
 
