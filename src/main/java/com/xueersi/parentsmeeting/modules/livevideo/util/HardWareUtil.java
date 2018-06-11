@@ -1,6 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.util;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.os.Build;
+import android.text.format.Formatter;
 
 import com.xueersi.xesalib.utils.log.Loger;
 
@@ -140,6 +143,7 @@ public class HardWareUtil {
 
     /**
      * 获得cpu使用率-总的
+     *
      * @return
      */
     public static double getCPURateDesc() {
@@ -205,5 +209,46 @@ public class HardWareUtil {
         }
 //        return String.format("cpu:%.2f", rate);
         return rate;
+    }
+
+    /**
+     * 手机可用内存,单位bytes
+     *
+     * @param context
+     * @return
+     */
+    public static long getAvailMemory(Context context) {// 获取android当前可用内存大小
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        if (am == null) {
+            return 0;
+        }
+        ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
+        am.getMemoryInfo(mi);
+        //mi.availMem; 当前系统的可用内存
+
+        return mi.availMem;// 将获取的内存大小规格化
+    }
+
+    /**
+     * 手机总内存,单位kb
+     *
+     * @return
+     */
+    public static int getTotalRam() {//GB
+        String path = "/proc/meminfo";
+        String firstLine = null;
+        int totalRam = 0;
+        try {
+            FileReader fileReader = new FileReader(path);
+            BufferedReader br = new BufferedReader(fileReader, 8192);
+            firstLine = br.readLine().split("\\s+")[1];
+            br.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (firstLine != null) {
+            totalRam = (int) Math.ceil((new Float(Float.valueOf(firstLine)).doubleValue()));
+        }
+        return totalRam;
     }
 }

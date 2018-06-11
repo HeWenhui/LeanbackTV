@@ -2836,7 +2836,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
         liveGetPlayServerError = false;
         final long before = System.currentTimeMillis();
-        String serverurl;
         // http://gslb.xueersi.com/xueersi_gslb/live?cmd=live_get_playserver&userid=000041&username=xxxxxx
         // &channelname=88&remote_ip=116.76.97.244
         if (LiveTopic.MODE_CLASS.equals(mode)) {
@@ -2855,7 +2854,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         if (totalFrameStat != null) {
             totalFrameStat.setChannelname(mGetInfo.getChannelname());
         }
-        serverurl = mGetInfo.getGslbServerUrl() + "?cmd=live_get_playserver&userid=" + mGetInfo.getStuId()
+        final String serverurl = mGetInfo.getGslbServerUrl() + "?cmd=live_get_playserver&userid=" + mGetInfo.getStuId()
                 + "&username=" + mGetInfo.getUname() + "&channelname=" + mGetInfo.getChannelname();
         mLogtf.d("liveGetPlayServer:serverurl=" + serverurl);
         if (mGetPlayServerCancle != null) {
@@ -2874,7 +2873,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     HttpException error = (HttpException) ex;
                     if (error.getCode() >= 300) {
                         mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
-                        totalFrameStat.liveGetPlayServer(time, 3, "", ipsb);
+                        totalFrameStat.liveGetPlayServer(time, 3, "", ipsb, serverurl);
                         if (time < 15000) {
                             if (mVideoAction != null && mLiveTopic != null) {
                                 mVideoAction.onLiveStart(null, mLiveTopic, modechange);
@@ -2886,10 +2885,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     }
                 } else {
                     if (ex instanceof UnknownHostException) {
-                        totalFrameStat.liveGetPlayServer(time, 1, "", ipsb);
+                        totalFrameStat.liveGetPlayServer(time, 1, "", ipsb, serverurl);
                     } else {
                         if (ex instanceof SocketTimeoutException) {
-                            totalFrameStat.liveGetPlayServer(time, 2, "", ipsb);
+                            totalFrameStat.liveGetPlayServer(time, 2, "", ipsb, serverurl);
                         }
                     }
                     mLogtf.e("liveGetPlayServer:onError:isOnCallback=" + isOnCallback, ex);
@@ -2925,7 +2924,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     if (server != null) {
                         if (totalFrameStat != null) {
                             long time = System.currentTimeMillis() - before;
-                            totalFrameStat.liveGetPlayServer(time, 0, server.getCipdispatch(), ipsb);
+                            totalFrameStat.liveGetPlayServer(time, 0, server.getCipdispatch(), ipsb, serverurl);
                         }
                         s += ",mode=" + mode + ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();
                         if (LiveTopic.MODE_CLASS.equals(mode)) {

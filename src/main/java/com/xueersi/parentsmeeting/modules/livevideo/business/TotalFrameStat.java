@@ -29,19 +29,11 @@ import com.xueersi.xesalib.utils.string.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -266,7 +258,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         xescdnLogPlay(defaultKey, dataJson);
     }
 
-    public void liveGetPlayServer(long delay, int code, String cipdispatch, StringBuilder ipsb) {
+    public void liveGetPlayServer(long delay, int code, String cipdispatch, StringBuilder ipsb, String url) {
         Loger.d(TAG, "liveGetPlayServer:delay=" + delay + ",ipsb=" + ipsb.toString());
         HashMap<String, String> defaultKey = new HashMap<>();
         defaultKey.put("dataType", "0");
@@ -274,6 +266,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("code", "" + code);
         defaultKey.put("traceId", "" + UUID.randomUUID());
         defaultKey.put("sip", "" + ipsb);
+        defaultKey.put("url", "" + url);
         JSONObject dataJson = new JSONObject();
         try {
             dataJson.put("cipdispatch", "" + cipdispatch);
@@ -310,10 +303,11 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                 double cpuRate = HardWareUtil.getCPURateDesc();
                 DecimalFormat df = new DecimalFormat("######0.00");
                 defaultKey.put("cpu", "" + df.format(cpuRate));
-                Runtime runtime = Runtime.getRuntime();
-                long totalMemory = runtime.totalMemory();
-                defaultKey.put("mem", "" + totalMemory);
-                Loger.d(TAG, "xescdnLogHeart:cpuRate=" + cpuRate + ",totalMemory=" + totalMemory);
+                long availMemory = HardWareUtil.getAvailMemory(activity) / 1024;
+                int totalRam = HardWareUtil.getTotalRam();
+                double memRate = (double) ((totalRam - availMemory) * 100) / (double) totalRam;
+                defaultKey.put("mem", "" + df.format(memRate));
+                Loger.d(TAG, "xescdnLogHeart:cpuRate=" + cpuRate + ",availMemory=" + availMemory);
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -325,7 +319,10 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     }
 
     private void xescdnLogHeart(HashMap<String, String> defaultKey) {
+        defaultKey.put("dataType", "603");
         defaultKey.put("traceId", "" + UUID.randomUUID());
+        String remoteIp = getRemoteIp();
+        defaultKey.put("sip", "" + remoteIp);
         JSONObject dataJson = new JSONObject();
         try {
             dataJson.put("channelname", "" + channelname);
