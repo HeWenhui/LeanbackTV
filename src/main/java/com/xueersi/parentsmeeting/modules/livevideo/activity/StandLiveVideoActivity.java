@@ -242,6 +242,15 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         Loger.d(TAG, "onVideoCreate:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         initView();
+        Loger.d(TAG, "onVideoCreate:time3=" + (System.currentTimeMillis() - before));
+//        SpeechAssessmentWebPager pager=new SpeechAssessmentWebPager(mContext,"","","",true,"",null);
+//        ((RelativeLayout)findViewById(R.id.rl_speech_test)).addView(pager.getRootView());
+        return true;
+    }
+
+    @Override
+    protected void onVideoCreateEnd() {
+        mLiveBll.setTotalFrameStat(totalFrameStat);
         liveStandFrameAnim.check(new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
@@ -260,15 +269,6 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                 mLiveBll.getInfo(mGetInfo);
             }
         });
-        Loger.d(TAG, "onVideoCreate:time3=" + (System.currentTimeMillis() - before));
-//        SpeechAssessmentWebPager pager=new SpeechAssessmentWebPager(mContext,"","","",true,"",null);
-//        ((RelativeLayout)findViewById(R.id.rl_speech_test)).addView(pager.getRootView());
-        return true;
-    }
-
-    @Override
-    protected void onVideoCreateEnd() {
-        mLiveBll.setTotalFrameStat(totalFrameStat);
     }
 
     @Override

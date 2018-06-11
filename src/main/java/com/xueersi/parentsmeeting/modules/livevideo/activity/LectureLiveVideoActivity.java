@@ -340,7 +340,6 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         mLiveBll.setRoomAction(liveMessageBll);
         mLiveBll.setH5CoursewareAction(h5CoursewareBll);
         mLiveBll.setLecAdvertAction(lecAdvertAction);
-        mLiveBll.getInfo(null);
         mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), true);
         setMediaControllerBottomParam(videoView.getLayoutParams());
         return true;
@@ -349,6 +348,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     @Override
     protected void onVideoCreateEnd() {
         mLiveBll.setTotalFrameStat(totalFrameStat);
+        mLiveBll.getInfo(null);
     }
 
     /**

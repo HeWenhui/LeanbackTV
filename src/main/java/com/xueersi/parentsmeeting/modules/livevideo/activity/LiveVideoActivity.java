@@ -231,7 +231,6 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         Loger.d(TAG, "onVideoCreate:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         initView();
-        mLiveBll.getInfo(mGetInfo);
         Loger.d(TAG, "onVideoCreate:time3=" + (System.currentTimeMillis() - before));
 //        SpeechAssessmentWebPager pager=new SpeechAssessmentWebPager(mContext,"","","",true,"",null);
 //        ((RelativeLayout)findViewById(R.id.rl_speech_test)).addView(pager.getRootView());
@@ -241,6 +240,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
     @Override
     protected void onVideoCreateEnd() {
         mLiveBll.setTotalFrameStat(totalFrameStat);
+        mLiveBll.getInfo(mGetInfo);
     }
 
     @Override
