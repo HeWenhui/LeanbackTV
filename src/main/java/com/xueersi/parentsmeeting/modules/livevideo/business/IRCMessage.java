@@ -401,10 +401,24 @@ public class IRCMessage {
         }
     }
 
-    public String getNickname() {
+    /**
+     * 得到连接名字
+     *
+     * @return
+     */
+    public String getConnectNickname() {
         if (mConnection.isConnected()) {
             return mConnection.getName();
         }
+        return mNickname;
+    }
+
+    /**
+     * 得到短名字
+     *
+     * @return
+     */
+    public String getNickname() {
         return mNickname;
     }
 

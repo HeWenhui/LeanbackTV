@@ -659,7 +659,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                                             }
                                         }
                                     }
-                                    addFlowers(liveBll.getNickname(), "我", LiveMessageEntity
+                                    addFlowers("-1", "我", LiveMessageEntity
                                             .MESSAGE_FLOWERS, entity.getFtype());
 //                                    addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
                                     mView.postDelayed(new Runnable() {
@@ -1087,13 +1087,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                 if (liveMessageEntities.size() > 29) {
                     liveMessageEntities.remove(0);
                 }
-                String mNickname = liveBll.getNickname();
-                boolean self;
-                if (id.startsWith("w")) {
-                    self = id.equals(mNickname) || id.equals("w" + mNickname);
-                } else {
-                    self = id.equals(mNickname) || ("w" + id).equals(mNickname);
-                }
+                boolean self = "-1".equals(id);
                 liveMessageEntities.add(new LiveMessageEntity(self, sender, type, ftype));
                 messageAdapter.notifyDataSetChanged();
                 if (!isTouch) {

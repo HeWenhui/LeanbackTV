@@ -1096,7 +1096,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 List<String> disableSpeaking = liveTopic.getDisableSpeaking();
                 boolean have = false;
                 for (String id : disableSpeaking) {
-                    if (mIRCMessage.getNickname().equals(id)) {
+                    if (("" + id).contains(mIRCMessage.getNickname())) {
                         have = true;
                     }
                 }
@@ -1300,7 +1300,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         boolean disable = object.getBoolean("disable");
                         //s_3_13827_11022_1
                         String id = object.getString("id");
-                        if (mIRCMessage.getNickname().equals(id)) {
+                        if (("" + id).contains(mIRCMessage.getNickname())) {
                             mLiveTopic.setDisable(disable);
                             if (mRoomAction != null) {
                                 mRoomAction.onDisable(disable, true);
@@ -3560,6 +3560,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             mode = LiveTopic.MODE_CLASS;
         }
         return mode;
+    }
+
+    public String getConnectNickname() {
+        return mIRCMessage.getConnectNickname();
     }
 
     public String getNickname() {
