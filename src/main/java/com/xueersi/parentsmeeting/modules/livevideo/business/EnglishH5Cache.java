@@ -236,16 +236,16 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         });
 
         // 一次多发的接口调用
-        liveBll.getMoreCourseWareUrl(liveId,new HttpCallBack(false){
+        liveBll.getMoreCourseWareUrl(liveId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 Loger.e(TAG, "responseEntity.getJsonObject=" + responseEntity.getJsonObject());
                 final Object jsonObject = responseEntity.getJsonObject();
                 JSONArray array = new JSONArray(jsonObject.toString());
                 mList = new ArrayList<>();
-                for(int i = 0 ; i < array.length() ; i++){
+                for (int i = 0; i < array.length(); i++) {
                     MoreCache cache = new MoreCache();
-                    JSONObject object = (JSONObject)array.get(i);
+                    JSONObject object = array.getJSONObject(i);
                     cache.setPackageId(object.optString("packageId"));
                     cache.setPackageSource(object.optString("packageSource"));
                     cache.setIsTemplate(object.optInt("isTemplate"));
@@ -255,10 +255,11 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                     mList.add(cache);
                 }
                 Loger.e(TAG, "list" + mList.size());
-                if(mList.size() > 0){
-//                    download(todayLiveCacheDir);
+                if (mList.size() > 0) {
+                    download(todayLiveCacheDir);
                 }
             }
+
             @Override
             public void onFailure(Call call, IOException e) {
                 super.onFailure(call, e);
@@ -278,21 +279,21 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         mMorecachein = new File(path, liveId);
         mMorecacheout = new File(path, liveId + "child");
         // 下载以及解压预加载的文件
-        for (int i = 0 ; i < mList.size() ; i++)  {
-            if(!mUrls.contains(mList.get(i).getResourceUrl()) && !TextUtils.isEmpty(mList.get(i).getResourceUrl())){
+        for (int i = 0; i < mList.size(); i++) {
+            if (!mUrls.contains(mList.get(i).getResourceUrl()) && !TextUtils.isEmpty(mList.get(i).getResourceUrl())) {
                 mUrls.add(mList.get(i).getResourceUrl());
             }
-            if(!TextUtils.isEmpty(mList.get(i).getTemplateUrl())){
+            if (!TextUtils.isEmpty(mList.get(i).getTemplateUrl())) {
                 mUrls.add(mList.get(i).getTemplateUrl());
             }
         }
-        for(int i = 0; i < mUrls.size() ; i++){
-            liveBll.download(mUrls.get(i), mMorecachein.getPath(),mCallBack);
+        for (int i = 0; i < mUrls.size(); i++) {
+            liveBll.download(mUrls.get(i), mMorecachein.getPath(), mCallBack);
         }
 
     }
 
-    private class Progresses implements ZipProg{
+    private class Progresses implements ZipProg {
         @Override
         public void onProgressUpdate(Integer... values) {
 
@@ -313,9 +314,9 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         @Override
         protected void onDownloadSuccess() {
             count++;
-            if(count == mUrls.size()){
+            if (count == mUrls.size()) {
                 // 解压的操作
-            new ZipExtractorTask(mMorecachein, mMorecacheout, true, new Progresses()).execute();
+                new ZipExtractorTask(mMorecachein, mMorecacheout, true, new Progresses()).execute();
             }
 
         }
