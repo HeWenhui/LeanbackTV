@@ -239,23 +239,20 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         super.initData();
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
-            String loadUrl = url + "?t=" + System.currentTimeMillis();
-            if (isPlayBack) {
-                loadUrl += "&isPlayBack=1";
-            }
-            loadUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
-            if (!StringUtils.isEmpty(nonce)) {
-                loadUrl += "&nonce=" + nonce;
-            }
-            loadUrl += "&isTowall=" + isShowRanks;
-            Loger.i(TAG, "initData:loadUrl=" + loadUrl);
-            loadUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
-            loadUrl(loadUrl);
-            Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + loadUrl);
-            reloadurl = loadUrl;
-            loadUrl(loadUrl);
-            Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + loadUrl);
-            reloadurl = loadUrl;
+        String loadUrl = url + "?t=" + System.currentTimeMillis();
+        if (isPlayBack) {
+            loadUrl += "&isPlayBack=1";
+        }
+        loadUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
+        if (!StringUtils.isEmpty(nonce)) {
+            loadUrl += "&nonce=" + nonce;
+        }
+        loadUrl += "&isTowall=" + isShowRanks;
+        Loger.i(TAG, "initData:loadUrl=" + loadUrl);
+        loadUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
+        loadUrl(loadUrl);
+        Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + loadUrl);
+        reloadurl = loadUrl;
         mGoldNum = -1;
         mEnergyNum = -1;
         mView.findViewById(R.id.iv_livevideo_subject_refresh).setOnClickListener(new View.OnClickListener() {

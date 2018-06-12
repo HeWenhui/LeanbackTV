@@ -217,7 +217,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     if (voiceAnswerPager != null) {
                         voiceAnswerPager.onUserBack();
                         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) voiceAnswerPager.getBaseVideoQuestionEntity();
-                        mH5AndBool.add(videoQuestionLiveEntity.url);
+                        mH5AndBool.add(videoQuestionLiveEntity.getUrl());
                         stopVoiceAnswerPager();
                     }
                 }
@@ -269,14 +269,14 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         }
                     }
                     isAnaswer = true;
-                    if (!"1".equals(videoQuestionLiveEntity.getIsVoice()) || mErrorVoiceQue.contains(videoQuestionLiveEntity.url)) {
+                    if (!"1".equals(videoQuestionLiveEntity.getIsVoice()) || mErrorVoiceQue.contains(videoQuestionLiveEntity.getUrl())) {
                         hasQuestion = true;
                         if (mAnswerRankBll != null) {
                             mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>(), XESCODE.ENGLISH_H5_COURSEWARE);
                             mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                         }
                     }
-                    if (mH5AndBool.contains(videoQuestionLiveEntity.url)) {
+                    if (mH5AndBool.contains(videoQuestionLiveEntity.getUrl())) {
                         logToFile.i("onH5Courseware:url.contains");
                         return;
                     }
@@ -289,7 +289,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         }
                     }
                     if (h5CoursewarePager != null) {
-                        if (h5CoursewarePager.getUrl().equals(videoQuestionLiveEntity.url)) {
+                        if (h5CoursewarePager.getUrl().equals(videoQuestionLiveEntity.getUrl())) {
                             logToFile.i("onH5Courseware:url.equals:" + h5CoursewarePager.getUrl());
                             return;
                         } else {
@@ -297,12 +297,12 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                             bottomContent.removeView(h5CoursewarePager.getRootView());
                         }
                     }
-                    if ("1".equals(videoQuestionLiveEntity.getIsVoice()) && !mErrorVoiceQue.contains(videoQuestionLiveEntity.url)) {
+                    if ("1".equals(videoQuestionLiveEntity.getIsVoice()) && !mErrorVoiceQue.contains(videoQuestionLiveEntity.getUrl())) {
                         try {
                             showVoiceAnswer(videoQuestionLiveEntity);
                         } catch (Exception e) {
                             logToFile.d("onH5Courseware:showVoiceAnswer.error1=" + e.getMessage());
-                            mErrorVoiceQue.add(videoQuestionLiveEntity.url);
+                            mErrorVoiceQue.add(videoQuestionLiveEntity.getUrl());
                             showH5Paper(videoQuestionLiveEntity);
                         }
                     } else {
@@ -378,11 +378,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
     private void showH5Paper(final VideoQuestionLiveEntity videoQuestionH5Entity) {
 
-        logToFile.i("onH5Courseware:url=" + videoQuestionH5Entity.url);
+        logToFile.i("onH5Courseware:url=" + videoQuestionH5Entity.getUrl());
         StableLogHashMap logHashMap = new StableLogHashMap("receiveCourseware");
         logHashMap.put("coursewareid", videoQuestionH5Entity.id);
         logHashMap.put("coursewaretype", videoQuestionH5Entity.courseware_type);
-        logHashMap.put("loadurl", videoQuestionH5Entity.url);
+        logHashMap.put("loadurl", videoQuestionH5Entity.getUrl());
         mLiveBll.umsAgentDebugInter(eventId, logHashMap.getData());
         OnH5ResultClose onH5ResultClose = new OnH5ResultClose() {
             @Override
@@ -395,7 +395,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     JSONObject object = new JSONObject();
                     object.put("liveType", liveType);
                     object.put("vSectionID", mVSectionID);
-                    object.put("url", videoQuestionH5Entity.url);
+                    object.put("url", videoQuestionH5Entity.getUrl());
                     mShareDataManager.put(ENGLISH_H5, object.toString(), ShareDataManager.SHAREDATA_USER);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -449,7 +449,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         try {
             assess_ref = new JSONObject(videoQuestionLiveEntity.assess_ref);
         } catch (JSONException e) {
-            mErrorVoiceQue.add(videoQuestionLiveEntity.url);
+            mErrorVoiceQue.add(videoQuestionLiveEntity.getUrl());
             showH5Paper(videoQuestionLiveEntity);
             return;
         }
@@ -864,12 +864,12 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         stopVoiceAnswerPager();
                     }
                     mLiveBll.getStuGoldCount();
-                    mH5AndBool.add(videoQuestionLiveEntity1.url);
+                    mH5AndBool.add(videoQuestionLiveEntity1.getUrl());
                     try {
                         JSONObject object = new JSONObject();
                         object.put("liveType", liveType);
                         object.put("vSectionID", mVSectionID);
-                        object.put("url", videoQuestionLiveEntity1.url);
+                        object.put("url", videoQuestionLiveEntity1.getUrl());
                         mShareDataManager.put(ENGLISH_H5, object.toString(), ShareDataManager.SHAREDATA_USER);
                     } catch (JSONException e) {
                         e.printStackTrace();
