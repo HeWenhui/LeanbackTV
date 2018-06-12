@@ -64,6 +64,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private int mEnergyNum;
     private final File mMorecacheout;
     private EnglishH5Entity englishH5Entity;
+    private String mLoadUrls;
 
     @Override
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
@@ -298,12 +299,15 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            String loadUrl = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos
-                    + "&isPlayBack=1&stuClientPath=" + Base64.encodeToString(("file://" + mMorecacheout.getPath()).getBytes(), Base64.DEFAULT);
-//            String loadUrl = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&isPlayBack=0";
-            loadUrl(loadUrl);
-            Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + loadUrl);
-            reloadurl = loadUrl;
+            if(mMorecacheout.exists()){
+                mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos
+                        + "&isPlayBack=1&stuClientPath=" + Base64.encodeToString(("file://" + mMorecacheout.getPath()).getBytes(), Base64.DEFAULT);
+            } else {
+                mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&isPlayBack=0";
+            }
+            loadUrl(mLoadUrls);
+            Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + mLoadUrls);
+            reloadurl = mLoadUrls;
         } else {
             String loadUrl = url + "?t=" + System.currentTimeMillis();
             if (isPlayBack) {
