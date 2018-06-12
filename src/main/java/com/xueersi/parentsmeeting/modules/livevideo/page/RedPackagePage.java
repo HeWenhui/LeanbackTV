@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -242,8 +243,13 @@ public class RedPackagePage extends BasePager {
                                             btframeAnimationFile7.pauseAnimation();
                                         }
                                         clickPackage = CLICK_PACKAGE_2;
-                                        redPackageAction.onPackageClick(operateId, clickPackage);
-                                        RedPackageStandLog.sno2_2(liveAndBackDebug, "" + operateId);
+                                        redPackageAction.onPackageClick(operateId, clickPackage, new AbstractBusinessDataCallBack() {
+                                            @Override
+                                            public void onDataSucess(Object... objData) {
+                                                VideoResultEntity entity = (VideoResultEntity) objData[0];
+                                                RedPackageStandLog.sno3_2(liveAndBackDebug, "" + operateId, entity.getHttpUrl(), "" + entity.getHttpRes());
+                                            }
+                                        });
                                     }
                                 });
                             }
@@ -271,7 +277,6 @@ public class RedPackagePage extends BasePager {
                     @Override
                     public void onClick(View view) {
                         click.set(true);
-                        RedPackageStandLog.sno2(liveAndBackDebug, "" + operateId);
                         ivLivevideoRedpackageBg.setOnClickListener(null);
                         Loger.d(TAG, "onPackageClick:operateId=" + operateId);
                         if (finalBtframeAnimation != null) {
@@ -296,7 +301,13 @@ public class RedPackagePage extends BasePager {
                             public void onAnimationEnd() {
                                 clickPackage = CLICK_PACKAGE_1;
                                 soundPool.stop(playTask);
-                                redPackageAction.onPackageClick(operateId, clickPackage);
+                                redPackageAction.onPackageClick(operateId, clickPackage, new AbstractBusinessDataCallBack() {
+                                    @Override
+                                    public void onDataSucess(Object... objData) {
+                                        VideoResultEntity entity = (VideoResultEntity) objData[0];
+                                        RedPackageStandLog.sno3(liveAndBackDebug, "" + operateId, entity.getHttpUrl(), "" + entity.getHttpRes());
+                                    }
+                                });
                                 rlLivevideoRedpackageBg.setImageDrawable(new ColorDrawable(Color.TRANSPARENT));
                             }
 
@@ -561,7 +572,7 @@ public class RedPackagePage extends BasePager {
             goldTeamStatus = entity;
             return;
         }
-        RedPackageStandLog.sno3(liveAndBackDebug, "" + operateId);
+        RedPackageStandLog.sno4(liveAndBackDebug, "" + operateId, entity.getHttpUrl(), entity.getHttpRes());
         goldTeamStatus = entity;
         ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
         //当添加的数据和返回的数据一致，没有新数据了
@@ -620,7 +631,7 @@ public class RedPackagePage extends BasePager {
 
                     }
                 }, students);
-                RedPackageStandLog.sno4(liveAndBackDebug, "" + operateId);
+                RedPackageStandLog.sno5(liveAndBackDebug, "" + operateId, entity.getHttpUrl(), entity.getHttpRes());
             }
 
             @Override
@@ -655,8 +666,9 @@ public class RedPackagePage extends BasePager {
          *
          * @param operateId
          * @param clickPackage 在中间点击还是在右侧
+         * @param callBack
          */
-        void onPackageClick(int operateId, int clickPackage);
+        void onPackageClick(int operateId, int clickPackage, AbstractBusinessDataCallBack callBack);
 
         /**
          * 当红包关闭

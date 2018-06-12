@@ -16,6 +16,8 @@ public class GoldTeamStatus {
     private String myNickName;//"学生本人昵称
     private String myEnName;//"学生本人英文名
     private String myAvatarPath;//":"http://xesfile.xesimg.com/user/h/def10002.png"
+    private String httpUrl = "";
+    private String httpRes = "";
 
     private ArrayList<Student> students = new ArrayList<>();
 
@@ -73,6 +75,22 @@ public class GoldTeamStatus {
 
     public void setStudents(ArrayList<Student> students) {
         this.students = students;
+    }
+
+    public String getHttpUrl() {
+        return httpUrl;
+    }
+
+    public void setHttpUrl(String httpUrl) {
+        this.httpUrl = httpUrl;
+    }
+
+    public String getHttpRes() {
+        return httpRes;
+    }
+
+    public void setHttpRes(String httpRes) {
+        this.httpRes = httpRes;
     }
 
     public static class Student {

@@ -517,6 +517,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 mLogtf.d("sendReceiveGold:onPmSuccess=" + responseEntity.getJsonObject().toString() + ",operateId=" +
                         operateId);
                 VideoResultEntity entity = mHttpResponseParser.redPacketParseParser(responseEntity);
+                entity.setHttpUrl(url);
+                entity.setHttpRes("" + responseEntity.getJsonObject());
                 callBack.onDataSucess(entity);
             }
 
@@ -551,6 +553,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         operateId);
                 GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId(),
                         mGetInfo.getHeadImgPath());
+                entity.setHttpUrl(url);
+                entity.setHttpRes("" + responseEntity.getJsonObject());
                 callBack.onDataSucess(entity);
             }
 
@@ -580,6 +584,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         operateId);
                 GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId(),
                         mGetInfo.getHeadImgPath());
+                entity.setHttpUrl(url);
+                entity.setHttpRes("" + responseEntity.getJsonObject());
                 callBack.onDataSucess(entity);
             }
 
