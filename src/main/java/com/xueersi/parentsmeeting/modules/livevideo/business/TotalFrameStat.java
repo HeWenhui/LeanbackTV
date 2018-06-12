@@ -409,7 +409,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("sip", "" + remoteIp);
         JSONObject dataJson = new JSONObject();
         try {
-            dataJson.put("errorcode", "" + arg2);
+            dataJson.put("errorcode", "" + getErrorCode(arg2));
             AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
             dataJson.put("errmsg", error == null ? "" : error.getTag());
             dataJson.put("channelname", "" + channelname);
@@ -457,4 +457,41 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         return versionName;
     }
 
+    private int getErrorCode(int arg2) {
+        AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
+        if (error != null) {
+            switch (error) {
+                case DECODER_NOT_FOUND:
+                    return 10000;
+                case DEMUXER_NOT_FOUND:
+                    return 10001;
+                case EIO:
+                    return 10002;
+                case STREAM_NOT_FOUND:
+                    return 10003;
+                case INPUT_CHANGED:
+                    return 10004;
+                case INVALIDDATA:
+                    return 10005;
+                case BUFFER_TOO_SMALL:
+                    return 10006;
+                case ETIMEDOUT:
+                    return 10007;
+                case HTTP_BAD_REQUEST:
+                    return 20002;
+                case HTTP_UNAUTHORIZED:
+                    return 20003;
+                case HTTP_FORBIDDEN:
+                    return 20004;
+                case HTTP_NOT_FOUND:
+                    return 20005;
+                case HTTP_OTHER_4XX:
+                    return 20006;
+                case HTTP_SERVER_ERROR:
+                    return 20007;
+                default:
+            }
+        }
+        return 0;
+    }
 }
