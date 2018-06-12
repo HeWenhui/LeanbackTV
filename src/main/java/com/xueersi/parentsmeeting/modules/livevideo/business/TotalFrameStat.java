@@ -364,33 +364,36 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     }
 
     private void xescdnLog(HashMap<String, String> defaultKey, JSONObject dataJson) {
-        HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("timestamp", "" + System.currentTimeMillis());
-        params.addBodyParam("appid", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
-        params.addBodyParam("serviceType", "6");
-        params.addBodyParam("uid", "" + userId);
-        params.addBodyParam("agent", "m-android " + versionName);
-        params.addBodyParam("data", dataJson.toString());
-        for (String key : defaultKey.keySet()) {
-            String value = defaultKey.get(key);
-            params.addBodyParam(key, value);
-        }
-        params.setWriteAndreadTimeOut(2000);
-        baseHttpBusiness.sendPostNoBusiness(logurl, params, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Loger.e(TAG, "xescdnLog:onFailure", e);
+        JSONObject requestJson = new JSONObject();
+        try {
+            requestJson.put("timestamp", "" + System.currentTimeMillis());
+            requestJson.put("appid", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
+            requestJson.put("serviceType", "6");
+            requestJson.put("uid", "" + userId);
+            requestJson.put("agent", "m-android " + versionName);
+            requestJson.put("data", dataJson);
+            for (String key : defaultKey.keySet()) {
+                String value = defaultKey.get(key);
+                requestJson.put(key, value);
             }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.body() != null) {
-                    Loger.d(TAG, "xescdnLog:onResponse:response=" + response.body().string());
-                } else {
-                    Loger.d(TAG, "xescdnLog:onResponse:response=null");
+            baseHttpBusiness.baseSendPostNoBusiness(logurl, requestJson.toString(), new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Loger.e(TAG, "xescdnLog:onFailure", e);
                 }
-            }
-        });
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response.body() != null) {
+                        Loger.d(TAG, "xescdnLog:onResponse:response=" + response.body().string());
+                    } else {
+                        Loger.d(TAG, "xescdnLog:onResponse:response=null");
+                    }
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -453,4 +456,5 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         }
         return versionName;
     }
+
 }

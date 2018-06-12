@@ -335,7 +335,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             server.setIcode(object.optString("icode"));
             server.setPcode(object.optString("pcode"));
             server.setRtmpkey(object.optString("rtmpkey"));
-            server.setCipdispatch(object.optString("cipdispatch"));
+            server.setCipdispatch(object.optString("clientip"));
             JSONArray playserverArray = object.getJSONArray("playserver");
             List<PlayserverEntity> playserver = new ArrayList<PlayserverEntity>();
             for (int i = 0; i < playserverArray.length(); i++) {
