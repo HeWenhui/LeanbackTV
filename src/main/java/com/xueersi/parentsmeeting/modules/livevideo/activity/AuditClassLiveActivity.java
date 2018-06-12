@@ -455,7 +455,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         mPlayStatistics = mLiveBll.getVideoListener();
         auditClassBll = new AuditClassBll(this);
         mLiveBll.setVideoAction(this);
-        mLiveBll.getInfo();
         mLiveBll.setAuditClassAction(auditClassBll);
         return true;
     }
@@ -463,6 +462,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     @Override
     protected void onVideoCreateEnd() {
         mLiveBll.setTotalFrameStat(totalFrameStat);
+        mLiveBll.getInfo();
     }
 
     /** 设置蓝屏界面 */

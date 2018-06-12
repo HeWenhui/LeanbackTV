@@ -168,7 +168,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private Callback.Cancelable mCataDataCancle;
     private Callback.Cancelable mGetPlayServerCancle;
     /** 直播帧数统计 */
-    TotalFrameStat totalFrameStat;
+    private TotalFrameStat totalFrameStat;
     /**
      * 学习记录提交时间间隔
      */
@@ -4358,6 +4358,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         if (mServer == null || playserverEntity == null) {
             return;
         }
+        HttpRequestParams entity = new HttpRequestParams();
         if (MegId.MEGID_12107 == msgid) {
             boolean isPresent = true;
             if (mIRCMessage != null) {
@@ -4370,9 +4371,15 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             if (!isPresent) {
                 return;
             }
+        } else if (MegId.MEGID_12102 == msgid) {
+            if (totalFrameStat != null) {
+                String cpuName = totalFrameStat.getCpuName();
+                String memsize = totalFrameStat.getMemsize();
+                String ua = Build.VERSION.SDK_INT + ";" + cpuName + ";" + memsize;
+                entity.addBodyParam("UA", ua);
+            }
         }
         String url = mGetInfo.getLogServerUrl();
-        HttpRequestParams entity = new HttpRequestParams();
         entity.addBodyParam("msgid", msgid.msgid);
         entity.addBodyParam("userid", mGetInfo.getStuId());
         entity.addBodyParam("username", mGetInfo.getUname());

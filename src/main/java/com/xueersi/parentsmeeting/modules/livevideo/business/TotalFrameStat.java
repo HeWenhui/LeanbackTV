@@ -128,6 +128,14 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         isStat = stat;
     }
 
+    public String getCpuName() {
+        return cpuName;
+    }
+
+    public String getMemsize() {
+        return memsize;
+    }
+
     Handler handler = new Handler(Looper.getMainLooper()) {
 //        float lastFps = 0;
 
