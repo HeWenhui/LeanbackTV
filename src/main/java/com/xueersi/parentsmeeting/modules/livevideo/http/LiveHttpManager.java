@@ -714,7 +714,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
      */
     public void getMoreCoureWareUrl(String liveId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-//         setDefaultParameter(params);
         params.addBodyParam("liveId", liveId);
         requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_GET_MORE_WARE_URL;
         sendPost(requestCallBack.url, params, requestCallBack);

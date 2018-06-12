@@ -162,11 +162,6 @@ public class LiveVideoConfig {
     public static Boolean isloading = false;
     /** 讲座直播广告Id */
     public static String LECTUREADID;
-    /** 一题多发的标志*/
-    public static Boolean isNewEnglishH5 = false;
-    /** 一题多发发题和收题的标志*/
-    public static Boolean isSend = false;
-    public static String newEnglishH5 = "NewEnglishH5";
     public static interface SubjectIds {
         /**
          * 学科id，语文
