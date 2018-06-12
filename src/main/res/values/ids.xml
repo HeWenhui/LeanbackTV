@@ -523,6 +523,7 @@
     <item name="rl_live_roleplayer_speech_volumewave_main" type="id" />
     <item name="vwv_livevideo_roleplayer_speech_volumewave" type="id" />
     <item name="ll_roleplayer_message_self_head_main" type="id" />
+    <item name="btn_live_roleplayer_dz" type="id" />
 
     <!--战队pk-->
     <item name="cad_livevideo_teampk_coinaward" type="id" />

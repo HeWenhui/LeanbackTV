@@ -6,7 +6,6 @@ import android.media.AudioRecord;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.annotation.WorkerThread;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -17,8 +16,18 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
-import com.xueersi.common.base.XesActivity;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
+import com.xueersi.parentsmeeting.base.XesActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayerPager;
+import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
+import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
+import com.xueersi.xesalib.utils.app.ContextManager;
+import com.xueersi.xesalib.utils.app.XESToastUtils;
+import com.xueersi.xesalib.utils.log.Loger;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,6 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import io.agora.rtc.Constants;
 
 
 /**
