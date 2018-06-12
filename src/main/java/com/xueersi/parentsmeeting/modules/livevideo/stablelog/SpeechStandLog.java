@@ -21,18 +21,7 @@ public class SpeechStandLog {
         logHashMap.put("answertype", "voice");
         logHashMap.addExY().addSno("2");
         logHashMap.addStable("1");
-        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
-    }
-
-    /** 语音测评第二步，收到互动题 */
-    public static void sno2(LiveAndBackDebug liveAndBackDebug, VideoQuestionLiveEntity videoQuestionLiveEntity) {
-        StableLogHashMap logHashMap = new StableLogHashMap("voiceAnswerReceive");
-        logHashMap.put("testid", "" + videoQuestionLiveEntity.getvQuestionID());
-        logHashMap.put("testtype", "H5");
-        logHashMap.put("answertype", "voice");
-        logHashMap.addExY().addSno("2");
-        logHashMap.addStable("1");
-        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
     /** 语音测评第3步，麦克风弹出 */

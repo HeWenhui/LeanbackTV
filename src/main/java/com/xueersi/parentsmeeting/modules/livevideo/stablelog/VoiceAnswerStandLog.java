@@ -22,7 +22,7 @@ public class VoiceAnswerStandLog {
         logHashMap.put("answertype", "voice");
         logHashMap.addExY().addSno("2");
         logHashMap.addStable("1");
-        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
     /** 语音答题第二步，收到互动题 */
@@ -33,7 +33,7 @@ public class VoiceAnswerStandLog {
         logHashMap.put("answertype", "voice");
         logHashMap.addExY().addSno("2");
         logHashMap.addStable("1");
-        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
     /** 语音答题第3步，麦克风弹出 */
@@ -81,6 +81,6 @@ public class VoiceAnswerStandLog {
         logHashMap.put("clicktime", clicktime);
         logHashMap.addExY().addSno("7");
         logHashMap.addStable("1");
-        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 }

@@ -10,6 +10,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPag
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechTop3Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayStandLog;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 import com.xueersi.xesalib.utils.log.Loger;
 
 import java.io.File;
@@ -36,6 +38,7 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
                 + ".txt"));
     }
 
+    @Override
     public void initView(RelativeLayout bottomContent) {
         this.bottomContent = bottomContent;
     }
@@ -122,6 +125,11 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
             }
             logToFile.d("onStopSpeech:entity=" + entity.getId() + ",num=" + num);
             initTop(num, entity, top3End);
+            if (speechAssessmentPager instanceof StandSpeechAssAutoPager) {
+                SpeechStandLog.sno7(liveBll, num);
+            } else if (speechAssessmentPager instanceof SpeechAssessmentWebX5Pager) {
+                RolePlayStandLog.sno6(liveBll, num);
+            }
         }
     }
 
