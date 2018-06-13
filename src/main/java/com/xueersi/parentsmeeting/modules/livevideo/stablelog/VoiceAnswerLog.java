@@ -53,4 +53,12 @@ public class VoiceAnswerLog {
         logHashMap.addStable("1");
         liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
     }
+
+    public static void sno5(LiveAndBackDebug liveAndBackDebug, String sourcetype, String testid, String nonce) {
+        StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
+        logHashMap.put("testid", "" + testid);
+        logHashMap.put("sourcetype", sourcetype).addNonce(nonce);
+        logHashMap.addExY().addExpect("0").addSno("5").addStable("1");
+        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
+    }
 }
