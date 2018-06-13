@@ -34,7 +34,7 @@ public class RolePlayStandLog {
         StableLogHashMap logHashMap = new StableLogHashMap("showRoleplay");
         logHashMap.put("testid", "" + testid);
         logHashMap.addSno("3");
-        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
     }
 
     /**

@@ -298,7 +298,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                         public void onDataSucess(Object... objData) {
                             GoldTeamStatus entity = (GoldTeamStatus) objData[0];
                             ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
-                            if (!students.isEmpty() && !teamStatus) {
+                            if (!teamStatus && !students.isEmpty()) {
                                 teamStatus = true;
                                 VoiceAnswerStandLog.sno4(liveAndBackDebug, baseVideoQuestionEntity.getvQuestionID());
                             }

@@ -67,7 +67,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
@@ -1120,7 +1119,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                     if ("1".equals(mQuestionEntity.getIsAllow42())) {
                         MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
                         String learning_stage = mVideoEntity.getLearning_stage();
-                        SpeechStandLog.sno2(LiveStandPlayBackVideoActivity.this, mQuestionEntity.getvQuestionID());
+                        SpeechStandLog.sno2(LiveStandPlayBackVideoActivity.this, mQuestionEntity.getvQuestionID(), "");
                         speechQuestionPlaybackPager = new StandSpeechAssAutoPager(LiveStandPlayBackVideoActivity.this,
                                 mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(),
                                 "", mQuestionEntity.getSpeechContent(), mQuestionEntity.getEstimatedTime(),

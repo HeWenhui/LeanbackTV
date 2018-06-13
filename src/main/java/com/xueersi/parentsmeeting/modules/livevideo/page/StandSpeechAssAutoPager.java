@@ -86,7 +86,10 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     public static boolean DEBUG = false;
     String eventId = LiveVideoConfig.LIVE_STAND_SPEECH_TEST;
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
+    /** 组内战况已经被加入的学生 */
     private ArrayList<GoldTeamStatus.Student> addStudents = new ArrayList<>();
+    /** 组内战况已经弹过 */
+    private boolean teamStatus = false;
     /** 语音保存位置 */
     private String id;
     /** ReadyGo 动画 */
@@ -356,7 +359,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                         public void onDataSucess(Object... objData) {
                             GoldTeamStatus entity = (GoldTeamStatus) objData[0];
                             ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
-                            if (addStudents.isEmpty()) {
+                            if (!teamStatus && !students.isEmpty()) {
+                                teamStatus = true;
                                 SpeechStandLog.sno4(speechEvalAction, id);
                             }
                             long delayMillis = liveStandSpeechEvalAction.getRequestTime();
