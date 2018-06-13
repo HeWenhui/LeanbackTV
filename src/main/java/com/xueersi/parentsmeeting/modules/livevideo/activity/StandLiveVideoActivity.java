@@ -488,7 +488,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         redPackageBll.setVSectionID(mVSectionID);
         questionBll.setLiveType(liveType);
         questionBll.initData();
-        questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(questionBll.new LiveQuestionSwitchImpl()));
+        questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mLiveBll, questionBll.new LiveQuestionSwitchImpl()));
         questionBll.setBaseSpeechCreat(new LiveStandSpeechCreat(mLiveBll));
         questionBll.setSpeechEndAction(new StandSpeechTop3Bll(mLiveBll));
 //        questionBll.setBaseSpeechCreat(new LiveSpeechCreat());

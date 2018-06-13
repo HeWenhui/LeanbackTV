@@ -473,7 +473,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 }
             });
         }
-        VoiceAnswerLog.sno2H5Ware(mLiveBll, videoQuestionLiveEntity.type, videoQuestionLiveEntity.id, videoQuestionLiveEntity.nonce);
     }
 
     private void stopVoiceAnswerPager() {

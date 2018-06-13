@@ -88,6 +88,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
     /** 组内战况已经被加入的学生 */
     private ArrayList<GoldTeamStatus.Student> addStudents = new ArrayList<>();
+    /** 组内战况已经弹过 */
+    private boolean teamStatus = false;
     /** 手动答题切换动画 */
     FrameAnimation switchFrameAnimation;
     /** readygo动画 */
@@ -296,7 +298,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                         public void onDataSucess(Object... objData) {
                             GoldTeamStatus entity = (GoldTeamStatus) objData[0];
                             ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
-                            if (addStudents.isEmpty()) {
+                            if (!students.isEmpty() && !teamStatus) {
+                                teamStatus = true;
                                 VoiceAnswerStandLog.sno4(liveAndBackDebug, baseVideoQuestionEntity.getvQuestionID());
                             }
                             long delayMillis = liveStandQuestionSwitch.getRequestTime();
