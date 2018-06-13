@@ -31,7 +31,7 @@ public class VoiceAnswerStandLog {
         logHashMap.put("testid", "" + videoQuestionLiveEntity.getvQuestionID());
         logHashMap.put("testtype", "H5");
         logHashMap.put("answertype", "voice");
-        logHashMap.addExY().addSno("2");
+        logHashMap.addExY().addSno("2").addNonce(videoQuestionLiveEntity.nonce);
         logHashMap.addStable("1");
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }

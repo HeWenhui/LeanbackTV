@@ -1338,6 +1338,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         videoQuestionLiveEntity.isAllow42 = object.optString("isAllow42", "");
                         videoQuestionLiveEntity.speechContent = object.optString("answer", "");
                         videoQuestionLiveEntity.multiRolePlay = object.optString("multiRolePlay", "0");
+                        videoQuestionLiveEntity.roles = object.optString("roles", "");
 //                        if (BuildConfig.DEBUG) {onget
 //                            videoQuestionLiveEntity.isTestUseH5 = true;
 //                        }

@@ -527,7 +527,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             umsAgentDebugSys(questionEventId, mData);
         }
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
-        if (IS_SCIENCE && !"4".equals(videoQuestionLiveEntity.type)) {//不是语音评测
+        //不是语音评测
+        if (IS_SCIENCE && !LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(videoQuestionLiveEntity.type)) {
             if (videoQuestionLiveEntity.isTestUseH5) {
                 mVPlayVideoControlHandler.post(new Runnable() {
                     @Override
@@ -545,6 +546,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     }
                 });
                 return;
+            }
+        }
+        if (!IS_SCIENCE && LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(videoQuestionLiveEntity.type)) {
+            if (!StringUtils.isEmpty(videoQuestionLiveEntity.roles)) {
+                baseSpeechCreat.receiveRolePlay(videoQuestionLiveEntity);
             }
         }
         mVPlayVideoControlHandler.post(new Runnable() {
@@ -666,8 +672,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 //                        speechAssessmentPager = new SpeechAssessmentWebPager(activity,
 //                                liveGetInfo.getId(), id, liveGetInfo.getStuId(),
 //                                true, videoQuestionLiveEntity.nonce, QuestionBll.this, stuCouId, false);
-                        speechAssessmentPager = baseSpeechCreat.createRolePlay(activity, liveGetInfo, id,
-                                videoQuestionLiveEntity.nonce, QuestionBll.this, stuCouId);
+                        speechAssessmentPager = baseSpeechCreat.createRolePlay(activity, liveGetInfo, videoQuestionLiveEntity,
+                                id, QuestionBll.this, stuCouId);
                         speechAssessmentPager.setIse(mIse);
                         speechAssessmentPager.initData();
                         Loger.i("RolePlayerDemoTest", "走人机");

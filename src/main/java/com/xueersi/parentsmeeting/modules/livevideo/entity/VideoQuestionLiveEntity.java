@@ -47,6 +47,8 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     public String assess_ref;
     /** 多人连麦 Notice */
     public String multiRolePlay;
+    /** 不为空是role play */
+    public String roles = "";
 
     public VideoQuestionLiveEntity() {
     }
