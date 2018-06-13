@@ -8,10 +8,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 
 /**
- * Created by lingyuqiang on 2018/4/7.
+ * @author lingyuqiang
+ * @date 2018/4/7
  * 语音评测创建
  */
 public interface BaseSpeechCreat {
+    /**
+     * 收到roleplay互动题
+     *
+     * @param videoQuestionLiveEntity
+     */
     void receiveRolePlay(final VideoQuestionLiveEntity videoQuestionLiveEntity);
 
     /** 创建原生语音评测 */
