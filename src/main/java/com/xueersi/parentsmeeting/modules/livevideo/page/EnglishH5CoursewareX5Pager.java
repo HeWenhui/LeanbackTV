@@ -88,7 +88,10 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         setErrorTip("H5课件加载失败，请重试");
         setLoadTip("H5课件正在加载，请稍候");
 //        cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webview/");
-        cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
+        cacheFile = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/parentsmeeting/webviewCache");
+        if (cacheFile == null) {
+            cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
+        }
         if (!cacheFile.exists()) {
             cacheFile.mkdirs();
         }
@@ -252,7 +255,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 int index = s.indexOf("courseware_pages");
                 if (index != -1) {
                     String url2 = s.substring(index + "courseware_pages".length());
-                    int index2 = s.indexOf("?");
+                    int index2 = url2.indexOf("?");
                     if (index2 != -1) {
                         url2 = url2.substring(0, index2);
                     }
@@ -299,12 +302,13 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            if(mMorecacheout.exists()){
-                mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos
-                        + "&isPlayBack=1&stuClientPath=" + Base64.encodeToString(("file://" + mMorecacheout.getPath()).getBytes(), Base64.DEFAULT);
-            } else {
-                mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&isPlayBack=0";
-            }
+//            if(mMorecacheout.exists()){
+//                mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos
+//                        + "&isPlayBack=1&stuClientPath=" + Base64.encodeToString(("file://" + mMorecacheout.getPath()).getBytes(), Base64.DEFAULT);
+//            } else {
+//                mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&isPlayBack=0";
+//            }
+            mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&isPlayBack=0";
             loadUrl(mLoadUrls);
             Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + mLoadUrls);
             reloadurl = mLoadUrls;
