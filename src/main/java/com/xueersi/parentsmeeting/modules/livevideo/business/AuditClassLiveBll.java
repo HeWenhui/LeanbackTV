@@ -765,9 +765,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         }
 
         @Override
-        public void onStudentError(String msg) {
+        public void onStudentError(String status, String msg) {
             if (mVideoAction != null) {
-                mVideoAction.onStudentError(msg);
+                mVideoAction.onStudentError(status, msg);
             }
         }
 

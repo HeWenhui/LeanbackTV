@@ -151,22 +151,26 @@ public class AuditIRCMessage {
                                         stuPushSuccess = false;
                                         if (mIRCCallback != null) {
                                             String msg;
-                                            if ("publishFail".equals(status)) {
-                                                msg = "推流失败";
-                                            } else if ("forbidden".equals(status)) {
-                                                msg = "摄像头已禁用";
-                                            } else if ("disconnect".equals(status)) {
-                                                msg = "未连接摄像头";
-                                            } else if ("disconnect".equals(status)) {
-                                                msg = "未连接摄像头";
-                                            } else if ("unsupported".equals(status)) {
-                                                msg = "设备暂不支持";
+                                            if ("fluentMode".equals(status)) {
+                                                msg = "流畅模式";
                                             } else {
-                                                msg = "未知异常";
+                                                if ("publishFail".equals(status)) {
+                                                    msg = "推流失败";
+                                                } else if ("forbidden".equals(status)) {
+                                                    msg = "摄像头已禁用";
+                                                } else if ("disconnect".equals(status)) {
+                                                    msg = "未连接摄像头";
+                                                } else if ("disconnect".equals(status)) {
+                                                    msg = "未连接摄像头";
+                                                } else if ("unsupported".equals(status)) {
+                                                    msg = "设备暂不支持";
+                                                } else {
+                                                    msg = "未知异常";
+                                                }
+                                                startVideo();
+                                                mHandler.postDelayed(mStudyTimeoutRunnable, 15000);
                                             }
-                                            startVideo();
-                                            mIRCCallback.onStudentError(msg);
-                                            mHandler.postDelayed(mStudyTimeoutRunnable, 15000);
+                                            mIRCCallback.onStudentError(status, msg);
                                         }
                                         //旁听日志
                                         String nonce = jsonObject.optString("nonce");
@@ -206,6 +210,10 @@ public class AuditIRCMessage {
                                             }
                                         }
                                     }, 1500);
+                                }
+                                return;
+                                default: {
+
                                 }
                                 return;
                             }

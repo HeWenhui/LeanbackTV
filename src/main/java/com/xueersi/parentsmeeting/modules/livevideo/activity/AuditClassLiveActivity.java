@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,9 +67,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
@@ -886,7 +883,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     }
 
     @Override
-    public void onStudentError(final String msg) {
+    public void onStudentError(final String status, final String msg) {
         studentError.set(true);
         mHandler.post(new Runnable() {
             @Override
@@ -896,7 +893,14 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 tv_livevideo_student_load_tip.setVisibility(View.GONE);
                 iv_livevideo_student_camera.setVisibility(View.VISIBLE);
                 tv_livevideo_student_camera.setVisibility(View.VISIBLE);
-                tv_livevideo_student_camera.setText(mGetInfo.getStuName() + "同学\n" + msg);
+                if ("fluentMode".equals(status)) {
+                    ResponseEntity responseEntity = new ResponseEntity();
+                    responseEntity.setErrorMsg("流畅模式不支持该功能，如您需要，可在电脑客户端右上角修改为标准模式");
+                    onLiveError(responseEntity);
+                    tv_livevideo_student_camera.setText("");
+                } else {
+                    tv_livevideo_student_camera.setText(mGetInfo.getStuName() + "同学\n" + msg);
+                }
             }
         });
     }
