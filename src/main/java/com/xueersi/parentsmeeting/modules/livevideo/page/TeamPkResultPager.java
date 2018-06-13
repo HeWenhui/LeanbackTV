@@ -87,7 +87,7 @@ public class TeamPkResultPager extends BasePager {
     private TextView tvOtherTeamSlogan;
     private SmoothAddNumTextView tvMyTeamEnergy;
     private SmoothAddNumTextView tvOtherTeamEnergy;
-    private SmoothAddNumTextView tvAddEnergy;
+    private TextView tvAddEnergy;
     private TeamPkProgressBar tpbEnergyBar;
     private RecyclerView rclContributionRank;
 
