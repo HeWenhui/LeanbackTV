@@ -232,7 +232,6 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
     boolean islocal;
     static int times = -1;
     long createTime;
-    String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
     //    private LiveRemarkBll mLiveRemarkBll;
     private RelativeLayout bottom;
     String showName = "";
@@ -2523,11 +2522,6 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //                } else {
 //                    initFillinAnswerRightResultVoice(entity);
 //                }
-                StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
-                logHashMap.put("testid", "" + questionEntity.getvQuestionID());
-                logHashMap.put("sourcetype", sourcetype).addNonce(questionEntity.nonce);
-                logHashMap.addExY().addExpect("0").addSno("5").addStable("1");
-                umsAgentDebugPv(voicequestionEventId, logHashMap.getData());
             } else {
                 initAnswerRightResult(entity.getGoldNum());
             }
