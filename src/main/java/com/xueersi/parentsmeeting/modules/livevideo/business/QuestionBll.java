@@ -1413,8 +1413,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
             });
         }
-        VoiceAnswerLog.sno2(mLiveBll, videoQuestionLiveEntity.type, videoQuestionLiveEntity.id,
-                videoQuestionLiveEntity.nonce,"h5test");
     }
 
     /**
