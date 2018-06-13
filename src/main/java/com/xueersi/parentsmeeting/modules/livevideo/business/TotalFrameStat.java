@@ -203,7 +203,11 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         stableLogHashMap.put("activity", activity.getClass().getSimpleName());
         stableLogHashMap.put("method", method);
         stableLogHashMap.put("time", "" + time);
-        stableLogHashMap.put("message", "server: " + lastPlayserverEntity.getAddress() + " vdownload:" + vdownload);
+        if (lastPlayserverEntity != null) {
+            stableLogHashMap.put("message", "server: " + lastPlayserverEntity.getAddress() + " vdownload:" + vdownload);
+        } else {
+            stableLogHashMap.put("message", "server: null" + " vdownload:" + vdownload);
+        }
         Loger.e(activity, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData(), true);
     }
 
@@ -255,8 +259,10 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
             dataJson.put("errorcode", "0");
             dataJson.put("errmsg", "");
             dataJson.put("channelname", "" + channelname);
-            dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
-            dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            if (lastPlayserverEntity != null) {
+                dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
+                dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            }
             dataJson.put("playlatency", "" + openTime);
             dataJson.put("cputype", "" + cpuName);
             dataJson.put("memsize", "" + memsize);
@@ -334,8 +340,10 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         JSONObject dataJson = new JSONObject();
         try {
             dataJson.put("channelname", "" + channelname);
-            dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
-            dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            if (lastPlayserverEntity != null) {
+                dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
+                dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            }
             long bufferduration = 0;
             float averagefps;
             float fps = 0f;
@@ -421,8 +429,10 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
             AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
             dataJson.put("errmsg", error == null ? "" : error.getTag());
             dataJson.put("channelname", "" + channelname);
-            dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
-            dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            if (lastPlayserverEntity != null) {
+                dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
+                dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            }
             dataJson.put("playlatency", "" + openTime);
             dataJson.put("cputype", "" + cpuName);
             dataJson.put("memsize", "" + memsize);
