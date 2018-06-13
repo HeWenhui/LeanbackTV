@@ -44,7 +44,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
     private boolean autoSign = false;
 
     /**是否开启自动签到功能*/
-    public static final boolean OPEN_AUTO_SIGN = true;
+    public static final boolean OPEN_AUTO_SIGN = false;
 
     private Activity activity;
     private LiveBll mLiveBll;
