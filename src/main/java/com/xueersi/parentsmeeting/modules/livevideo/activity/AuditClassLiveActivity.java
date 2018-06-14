@@ -173,6 +173,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     boolean leave = true;
     /** 学生是不是错误 */
     AtomicBoolean studentError = new AtomicBoolean(false);
+    /** 学生是不是流程模式 */
+    AtomicBoolean fluentMode = new AtomicBoolean(false);
     static int times = -1;
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -674,8 +676,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         @Override
         public void onOpenSuccess() {
             isPlay = true;
-            mLogtf.d("onOpenSuccess:startRemote=" + startRemote.get());
-            if (startRemote.get()) {
+            mLogtf.d("onOpenSuccess:startRemote=" + startRemote.get() + ",fluentMode=" + fluentMode.get());
+            if (startRemote.get() || fluentMode.get()) {
                 stopPlay();
                 return;
             }
@@ -832,9 +834,13 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         mServer = server;
-        final AtomicBoolean change = new AtomicBoolean(modechange);// 直播状态是不是变化
-        mLogtf.d("onLiveStart:change=" + change.get());
+        // 直播状态是不是变化
+        final AtomicBoolean change = new AtomicBoolean(modechange);
+        mLogtf.d("onLiveStart:change=" + change.get() + ",fluentMode=" + fluentMode.get());
         mLiveTopic = cacheData;
+        if (fluentMode.get()) {
+            return;
+        }
         mHandler.post(new Runnable() {
 
             @Override
@@ -894,6 +900,10 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 iv_livevideo_student_camera.setVisibility(View.VISIBLE);
                 tv_livevideo_student_camera.setVisibility(View.VISIBLE);
                 if ("fluentMode".equals(status)) {
+                    fluentMode.set(true);
+                    if (vPlayer.isInitialized()) {
+                        vPlayer.onDestroy();
+                    }
                     ResponseEntity responseEntity = new ResponseEntity();
                     responseEntity.setErrorMsg("流畅模式不支持该功能，如您需要，可在电脑客户端右上角修改为标准模式");
                     onLiveError(responseEntity);
