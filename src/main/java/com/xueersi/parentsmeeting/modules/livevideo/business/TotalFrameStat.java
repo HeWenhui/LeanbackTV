@@ -96,7 +96,8 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
 //                        defaultKey.put("mem", "" + totalMemory);
 //                        double CPURateDesc = HardWareUtil.getCPURateDesc();
 //                        DecimalFormat df = new DecimalFormat("######0.00");
-//                        Loger.d(TAG, "testCpu:cpuRate=" + cpuRate + ",totalMemory=" + totalMemory + ",CPURateDesc=" + df.format(CPURateDesc));
+//                        Loger.d(TAG, "testCpu:cpuRate=" + cpuRate + ",totalMemory=" + totalMemory + ",CPURateDesc=" +
+//        df.format(CPURateDesc));
 //                    }
 //                }
 //            }.start();
@@ -126,6 +127,14 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
 
     public void setStat(boolean stat) {
         isStat = stat;
+    }
+
+    public String getCpuName() {
+        return cpuName;
+    }
+
+    public String getMemsize() {
+        return memsize;
     }
 
     Handler handler = new Handler(Looper.getMainLooper()) {
@@ -195,7 +204,12 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         stableLogHashMap.put("activity", activity.getClass().getSimpleName());
         stableLogHashMap.put("method", method);
         stableLogHashMap.put("time", "" + time);
-        stableLogHashMap.put("message", "server: " + lastPlayserverEntity.getAddress() + " vdownload:" + vdownload);
+        if (lastPlayserverEntity != null) {
+            stableLogHashMap.put("message", "server: " + lastPlayserverEntity.getAddress() + " vdownload:" +
+                    vdownload);
+        } else {
+            stableLogHashMap.put("message", "server: null" + " vdownload:" + vdownload);
+        }
         Loger.e(activity, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData(), true);
     }
 
@@ -247,8 +261,10 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
             dataJson.put("errorcode", "0");
             dataJson.put("errmsg", "");
             dataJson.put("channelname", "" + channelname);
-            dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
-            dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            if (lastPlayserverEntity != null) {
+                dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
+                dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            }
             dataJson.put("playlatency", "" + openTime);
             dataJson.put("cputype", "" + cpuName);
             dataJson.put("memsize", "" + memsize);
@@ -326,8 +342,10 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         JSONObject dataJson = new JSONObject();
         try {
             dataJson.put("channelname", "" + channelname);
-            dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
-            dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            if (lastPlayserverEntity != null) {
+                dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
+                dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            }
             long bufferduration = 0;
             float averagefps;
             float fps = 0f;
@@ -364,33 +382,36 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     }
 
     private void xescdnLog(HashMap<String, String> defaultKey, JSONObject dataJson) {
-        HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("timestamp", "" + System.currentTimeMillis());
-        params.addBodyParam("appid", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
-        params.addBodyParam("serviceType", "6");
-        params.addBodyParam("uid", "" + userId);
-        params.addBodyParam("agent", "m-android " + versionName);
-        params.addBodyParam("data", dataJson.toString());
-        for (String key : defaultKey.keySet()) {
-            String value = defaultKey.get(key);
-            params.addBodyParam(key, value);
-        }
-        params.setWriteAndreadTimeOut(2000);
-        baseHttpBusiness.sendPostNoBusiness(logurl, params, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Loger.e(TAG, "xescdnLog:onFailure", e);
+        JSONObject requestJson = new JSONObject();
+        try {
+            requestJson.put("timestamp", "" + System.currentTimeMillis());
+            requestJson.put("appid", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
+            requestJson.put("serviceType", "6");
+            requestJson.put("uid", "" + userId);
+            requestJson.put("agent", "m-android " + versionName);
+            requestJson.put("data", dataJson);
+            for (String key : defaultKey.keySet()) {
+                String value = defaultKey.get(key);
+                requestJson.put(key, value);
             }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.body() != null) {
-                    Loger.d(TAG, "xescdnLog:onResponse:response=" + response.body().string());
-                } else {
-                    Loger.d(TAG, "xescdnLog:onResponse:response=null");
+            baseHttpBusiness.baseSendPostNoBusiness(logurl, requestJson.toString(), new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Loger.e(TAG, "xescdnLog:onFailure", e);
                 }
-            }
-        });
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response.body() != null) {
+                        Loger.d(TAG, "xescdnLog:onResponse:response=" + response.body().string());
+                    } else {
+                        Loger.d(TAG, "xescdnLog:onResponse:response=null");
+                    }
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -406,12 +427,14 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("sip", "" + remoteIp);
         JSONObject dataJson = new JSONObject();
         try {
-            dataJson.put("errorcode", "" + arg2);
+            dataJson.put("errorcode", "" + getErrorCode(arg2));
             AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
             dataJson.put("errmsg", error == null ? "" : error.getTag());
             dataJson.put("channelname", "" + channelname);
-            dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
-            dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            if (lastPlayserverEntity != null) {
+                dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
+                dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            }
             dataJson.put("playlatency", "" + openTime);
             dataJson.put("cputype", "" + cpuName);
             dataJson.put("memsize", "" + memsize);
@@ -452,5 +475,43 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
 
         }
         return versionName;
+    }
+
+    private int getErrorCode(int arg2) {
+        AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
+        if (error != null) {
+            switch (error) {
+                case DECODER_NOT_FOUND:
+                    return 10000;
+                case DEMUXER_NOT_FOUND:
+                    return 10001;
+                case EIO:
+                    return 10002;
+                case STREAM_NOT_FOUND:
+                    return 10003;
+                case INPUT_CHANGED:
+                    return 10004;
+                case INVALIDDATA:
+                    return 10005;
+                case BUFFER_TOO_SMALL:
+                    return 10006;
+                case ETIMEDOUT:
+                    return 10007;
+                case HTTP_BAD_REQUEST:
+                    return 20002;
+                case HTTP_UNAUTHORIZED:
+                    return 20003;
+                case HTTP_FORBIDDEN:
+                    return 20004;
+                case HTTP_NOT_FOUND:
+                    return 20005;
+                case HTTP_OTHER_4XX:
+                    return 20006;
+                case HTTP_SERVER_ERROR:
+                    return 20007;
+                default:
+            }
+        }
+        return 0;
     }
 }
