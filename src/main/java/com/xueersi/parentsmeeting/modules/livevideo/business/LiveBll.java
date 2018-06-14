@@ -1174,7 +1174,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             JSONObject object = jsonObject.optJSONObject("platformTest");
                             if (object != null) {
                                 LiveVideoConfig.isSend = object.optBoolean("open");
-                                status = "on";
+                                status = LiveVideoConfig.isSend  ?  "on" : "off";
                                 String nonce = object.optString("nonce");
                                 StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
                                 String teamId = studentLiveInfo.getTeamId();
