@@ -173,7 +173,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     boolean leave = true;
     /** 学生是不是错误 */
     AtomicBoolean studentError = new AtomicBoolean(false);
-    /** 学生是不是流程模式 */
+    /** 学生是不是流畅模式 */
     AtomicBoolean fluentMode = new AtomicBoolean(false);
     static int times = -1;
 
