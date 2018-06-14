@@ -23,6 +23,7 @@ import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
+import com.xueersi.parentsmeeting.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
@@ -248,6 +249,13 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
 
         @Override
         public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+            ConsoleMessage.MessageLevel mLevel = consoleMessage.messageLevel();
+            boolean isRequst = false;
+            if (mLevel == ConsoleMessage.MessageLevel.ERROR || mLevel == ConsoleMessage.MessageLevel.WARNING) {
+                isRequst = true;
+            }
+            UmsAgentUtil.webConsoleMessage(mContext, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
+            Loger.d(TAG, "onConsoleMessage:console=" + consoleMessage.sourceId() + "," + consoleMessage.lineNumber() + "," + consoleMessage.message());
             return super.onConsoleMessage(consoleMessage);
         }
 
@@ -551,9 +559,10 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
 
                             }, false, liveId);
                 }
+            } else {
+                logToFile.d("startRecordEvaluator:assessRef=" + assessRef + ",liveId=" + liveId + ",language=" + language + ",mStopPrefix=" + mStopPrefix);
             }
         }
-
     }
 
     /**
