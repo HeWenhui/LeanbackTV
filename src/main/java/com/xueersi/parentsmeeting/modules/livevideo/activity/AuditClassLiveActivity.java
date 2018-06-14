@@ -900,7 +900,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 iv_livevideo_student_camera.setVisibility(View.VISIBLE);
                 tv_livevideo_student_camera.setVisibility(View.VISIBLE);
                 if ("fluentMode".equals(status)) {
-                    fluentMode.set(true);
                     if (vPlayer.isInitialized()) {
                         vPlayer.onDestroy();
                     }
@@ -908,6 +907,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                     responseEntity.setErrorMsg("流畅模式不支持该功能，如您需要，可在电脑客户端右上角修改为标准模式");
                     onLiveError(responseEntity);
                     tv_livevideo_student_camera.setText("");
+                    fluentMode.set(true);
+                    setFirstBackgroundVisible(View.VISIBLE);
                 } else {
                     tv_livevideo_student_camera.setText(mGetInfo.getStuName() + "同学\n" + msg);
                 }
@@ -1391,9 +1392,16 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     }
 
     public void setFirstBackgroundVisible(int visible) {
-        rlFirstBackgroundView.setVisibility(visible);
-        if (visible == View.GONE) {
-            ivTeacherNotpresent.setVisibility(View.GONE);
+        if (fluentMode.get()) {
+            rlFirstBackgroundView.setVisibility(View.VISIBLE);
+            if (visible == View.GONE) {
+                ivTeacherNotpresent.setVisibility(View.GONE);
+            }
+        } else {
+            rlFirstBackgroundView.setVisibility(visible);
+            if (visible == View.GONE) {
+                ivTeacherNotpresent.setVisibility(View.GONE);
+            }
         }
     }
 
