@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <Button
         android:id="@id/bt_livevideo_message_open"
@@ -10,7 +10,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginRight="20dp"
         android:layout_toLeftOf="@id/bt_livevideo_message_flowers"
-        android:background="@drawable/bg_livevideo_message_open"/>
+        android:background="@drawable/bg_livevideo_message_open" />
 
     <Button
         android:id="@id/bt_livevideo_message_flowers"
@@ -19,7 +19,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="20dp"
-        android:background="@drawable/bg_livevideo_message_flowers"/>
+        android:background="@drawable/bg_livevideo_message_flowers" />
 
     <CheckBox
         android:id="@id/cb_livevideo_message_clock"
@@ -30,6 +30,6 @@
         android:layout_marginRight="20dp"
         android:layout_toLeftOf="@id/bt_livevideo_message_open"
         android:background="@drawable/selector_livevideo_message_lockclean"
-        android:button="@null"/>
+        android:button="@null" />
 
 </RelativeLayout>

@@ -15,8 +15,7 @@
             android:layout_height="71dp"
             android:src="@drawable/livevideo_team_icon"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            />
+            android:layout_marginTop="15dp" />
 
         <ImageView
             android:layout_width="80dp"
@@ -24,8 +23,7 @@
             android:src="@drawable/anim_livevido_teampk_back_teamselect"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
-            android:id="@id/iv_teampk_enter_teamselect_anim"
-            />
+            android:id="@id/iv_teampk_enter_teamselect_anim" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -37,8 +35,7 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@id/iv_teampk_enter_teamselect_anim"
             android:layout_marginTop="7dp"
-            android:textSize="13sp"
-            />
+            android:textSize="13sp" />
 
         <ImageView
             android:id="@id/iv_teampk_enter_teamselect"

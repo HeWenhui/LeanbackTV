@@ -83,8 +83,7 @@
                     android:layout_width="160dp"
                     android:layout_height="214dp"
                     android:background="@drawable/livevideo_list_yellow_img_disable"
-                    android:layout_marginTop="-10dp"
-                    >
+                    android:layout_marginTop="-10dp">
 
                     <ImageView
                         android:id="@id/iv_teampk_pkresult_myteam_logo"
@@ -246,8 +245,7 @@
                 android:layout_marginLeft="20dp"
                 android:text="3896"
                 android:textColor="@color/white"
-                android:textSize="20sp"
-                />
+                android:textSize="20sp" />
 
             <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
                 android:id="@id/tv_teampk_otherteam_energy"

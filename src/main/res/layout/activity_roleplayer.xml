@@ -24,8 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="领读"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
 
         <Button
@@ -33,8 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="分组消息"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/btn_roleplayer_fati"
@@ -58,8 +56,7 @@
             android:id="@id/btn_live_roleplayer_enter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="进入RolePlayer"
-             />
+            android:text="进入RolePlayer" />
 
         <Button
             android:id="@id/btn_live_roleplayer_dz"

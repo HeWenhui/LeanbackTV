@@ -2,12 +2,10 @@
 
 <set xmlns:android="http://schemas.android.com/apk/res/android"
     android:duration="800"
-    android:fillAfter="true"
-    >
+    android:fillAfter="true">
     <alpha
         android:fromAlpha="0"
-        android:toAlpha="1"
-        />
+        android:toAlpha="1" />
 </set>
 
 

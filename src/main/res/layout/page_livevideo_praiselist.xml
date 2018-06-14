@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
 
     <ImageView
@@ -29,7 +29,7 @@
         android:layout_marginBottom="81dp"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
-        android:background="@drawable/shape_livevideo_praiselist_content" >
+        android:background="@drawable/shape_livevideo_praiselist_content">
 
         <TextView
             android:id="@+id/tv_livevideo_praiselist_tips"
@@ -49,8 +49,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:scrollbarFadeDuration="0"
-            android:fadeScrollbars="false"
-            />
+            android:fadeScrollbars="false" />
 
     </RelativeLayout>
 
@@ -71,7 +70,7 @@
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/ic_livevideo_praiselist_heart"/>
+            android:background="@drawable/ic_livevideo_praiselist_heart" />
 
         <com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTextView
             android:id="@+id/tv_livevideo_praiselist_danmaku"
@@ -89,7 +88,7 @@
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="5dp"
-            android:background="@drawable/ic_livevideo_praiselist_thumbs_up"/>
+            android:background="@drawable/ic_livevideo_praiselist_thumbs_up" />
 
     </RelativeLayout>
 
@@ -100,7 +99,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:background="@drawable/bg_livevideo_praiselist_light"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/iv_livevideo_praiselist_title"
@@ -108,7 +107,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/rl_livevideo_praiselist_scroll_bg"
@@ -123,19 +122,21 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="gone">
+
         <ImageView
             android:id="@+id/iv_livevideo_praiselist_scroll_light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:background="@drawable/bg_livevideo_praiselist_light" />
+
         <ImageView
             android:id="@+id/iv_livevideo_praiselist_scroll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:background="@drawable/bg_livevideo_praiselist_scroll"
-            />
+            android:background="@drawable/bg_livevideo_praiselist_scroll" />
+
         <TextView
             android:id="@+id/tv_livevideo_praiselist_scroll"
             android:layout_width="wrap_content"
@@ -143,7 +144,7 @@
             android:layout_centerInParent="true"
             android:paddingBottom="4dp"
             android:gravity="center"
-            style="@style/text_font14_ffffff_style"/>
+            style="@style/text_font14_ffffff_style" />
 
     </RelativeLayout>
 
@@ -158,48 +159,47 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="表扬榜"
-        />
+            android:text="表扬榜" />
+
         <TextView
             android:id="@+id/text_2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="进步榜"
-            />
+            android:text="进步榜" />
+
         <TextView
             android:id="@+id/text_3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="获赞榜"
-            />
+            android:text="获赞榜" />
+
         <TextView
             android:id="@+id/text_4"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="表扬条幅"
-            />
+            android:text="表扬条幅" />
+
         <TextView
             android:id="@+id/text_5"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="弹幕"
-            />
+            android:text="弹幕" />
+
         <TextView
             android:id="@+id/text_6"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="关闭榜单"
-            />
+            android:text="关闭榜单" />
     </LinearLayout>
 
 </RelativeLayout>

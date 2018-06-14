@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="50dp"
             android:layout_marginTop="108dp"
-            android:background="@drawable/bg_livevideo_praise_study"/>
+            android:background="@drawable/bg_livevideo_praise_study" />
 
         <TextView
             android:id="@id/tv_livevideo_encourage"
@@ -26,6 +26,6 @@
             android:layout_toRightOf="@id/iv_livevideo_encourage"
             android:text="小新新同学"
             android:textColor="@color/COLOR_333333"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
     </RelativeLayout>
 </RelativeLayout>

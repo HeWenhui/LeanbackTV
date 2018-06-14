@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -34,7 +33,7 @@
                     android:gravity="center"
                     android:text="A"
                     android:textColor="#666666"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp" />
 
                 <Button
                     android:id="@id/btn_livevideo_question_select_questionb"
@@ -46,7 +45,7 @@
                     android:gravity="center"
                     android:text="B"
                     android:textColor="#666666"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp" />
 
                 <Button
                     android:id="@id/btn_livevideo_question_select_questionc"
@@ -58,7 +57,7 @@
                     android:gravity="center"
                     android:text="C"
                     android:textColor="#666666"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp" />
 
                 <Button
                     android:id="@id/btn_livevideo_question_select_questiond"
@@ -70,7 +69,7 @@
                     android:gravity="center"
                     android:text="D"
                     android:textColor="#666666"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <RelativeLayout
@@ -91,7 +90,7 @@
                     app:cpb_selectorIdle="@color/selector_idle_state_cpb"
                     app:cpb_iconComplete="@drawable/bg_action_accept"
                     app:cpb_iconError="@drawable/ic_action_cancel"
-                    app:cpb_textIdle="提交"/>
+                    app:cpb_textIdle="提交" />
             </RelativeLayout>
         </RelativeLayout>
 
@@ -106,7 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:background="@drawable/ic_course_question_down"/>
+                android:background="@drawable/ic_course_question_down" />
         </RelativeLayout>
     </RelativeLayout>
 
@@ -123,6 +122,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerInParent="true"
-            android:background="@drawable/ic_course_question_up"/>
+            android:background="@drawable/ic_course_question_up" />
     </RelativeLayout>
 </FrameLayout>

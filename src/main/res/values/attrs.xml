@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-   <declare-styleable name="TeamPkProgressBar">
-       <!--进度条高度-->
-       <attr name="innerProgressBarHeight" format="dimension"></attr>
-       <!--滑动头图片资源引用-->
-       <attr name="sliderHeader" format="reference"></attr>
-       <attr name="sliderHeaderBg" format="reference"></attr>
-   </declare-styleable>
+    <declare-styleable name="TeamPkProgressBar">
+        <!--进度条高度-->
+        <attr name="innerProgressBarHeight" format="dimension"></attr>
+        <!--滑动头图片资源引用-->
+        <attr name="sliderHeader" format="reference"></attr>
+        <attr name="sliderHeaderBg" format="reference"></attr>
+    </declare-styleable>
 
     <declare-styleable name="SmoothAddNumTextView">
         <!--动画持续时间-->

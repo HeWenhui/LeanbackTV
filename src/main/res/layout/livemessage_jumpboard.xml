@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:background="@drawable/bg_popupwin"
-                android:id="@+id/switch_orientation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+    android:background="@drawable/bg_popupwin"
+    android:id="@+id/switch_orientation"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
     <TextView
         android:layout_alignParentLeft="true"
         android:text="正在报名中"
@@ -14,7 +15,8 @@
         android:textSize="12sp"
         android:textColor="#333333"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
+
     <TextView
         android:id="@+id/tv_apply_totalnum"
         android:layout_alignParentRight="true"
@@ -26,6 +28,6 @@
         android:textColor="#F13232"
         android:textSize="12sp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

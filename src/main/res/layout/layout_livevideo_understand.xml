@@ -1,5 +1,4 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/mediacontroller_bg">
@@ -9,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@drawable/bg_livevideo_under"/>
+        android:background="@drawable/bg_livevideo_under" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -28,7 +27,7 @@
             android:includeFontPadding="false"
             android:text="听懂了吗"
             android:textColor="@color/white"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <TextView
             android:id="@id/tv_livevideo_under_user"
@@ -41,7 +40,7 @@
             android:includeFontPadding="false"
             android:text="新的拉瑞 你好"
             android:textColor="@color/white"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -52,7 +51,7 @@
             android:gravity="center_vertical"
             android:text="你听懂了吗？"
             android:textColor="@color/COLOR_333333"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -66,13 +65,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="15dp"/>
+                android:layout_marginTop="15dp" />
 
             <View
                 android:id="@id/v_livevideo_under_center"
                 android:layout_width="1px"
                 android:layout_height="1px"
-                android:layout_centerHorizontal="true"/>
+                android:layout_centerHorizontal="true" />
 
             <RelativeLayout
                 android:layout_width="100dp"
@@ -93,7 +92,7 @@
                     android:gravity="center"
                     android:text="没听懂"
                     android:textColor="@color/white"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp" />
 
             </RelativeLayout>
 
@@ -116,7 +115,7 @@
                     android:gravity="center"
                     android:text="听懂了"
                     android:textColor="@color/white"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp" />
 
             </RelativeLayout>
 

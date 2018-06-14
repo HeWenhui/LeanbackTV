@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@id/rl_pop_question_visible"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#00000000"
-                android:orientation="vertical">
+    android:id="@id/rl_pop_question_visible"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00000000"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@id/rl_pop_question_visible_dismiss"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/rl_pop_question_visible_content">
-    </RelativeLayout>
+        android:layout_above="@id/rl_pop_question_visible_content"></RelativeLayout>
 
     <RelativeLayout
         android:id="@id/rl_pop_question_visible_content"
@@ -25,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:background="@drawable/ic_course_question_up"/>
+            android:background="@drawable/ic_course_question_up" />
     </RelativeLayout>
 
 </RelativeLayout>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+    android:layout_width="match_parent"
+    android:layout_height="40dp">
 
     <TextView
         android:id="@id/tv_livevideo_float_title"
@@ -10,7 +10,7 @@
         android:layout_centerInParent="true"
         android:text="听懂了吗"
         android:textColor="@color/white"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -18,7 +18,7 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
         android:layout_toLeftOf="@id/tv_livevideo_float_title"
-        android:src="@drawable/bg_livevideo_floattitle_left"/>
+        android:src="@drawable/bg_livevideo_floattitle_left" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -26,7 +26,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@id/tv_livevideo_float_title"
-        android:src="@drawable/bg_livevideo_floattitle_right"/>
+        android:src="@drawable/bg_livevideo_floattitle_right" />
 
     <ImageView
         android:id="@id/im_livevideo_float_cancle"
@@ -35,5 +35,5 @@
         android:layout_alignParentRight="true"
         android:layout_centerInParent="true"
         android:layout_marginRight="10dp"
-        android:src="@drawable/bg_livevideo_float_cancle"/>
+        android:src="@drawable/bg_livevideo_float_cancle" />
 </RelativeLayout>

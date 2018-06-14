@@ -32,8 +32,7 @@
         android:layout_marginRight="60dp"
         android:overScrollMode="never"
         android:scrollbars="none"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
 
     <RelativeLayout
@@ -41,8 +40,7 @@
         android:layout_width="240dp"
         android:layout_height="160dp"
         android:layout_centerHorizontal="true"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
 
         <!--队伍介绍-->
         <RelativeLayout
@@ -243,7 +241,6 @@
         android:textSize="14sp"
         android:textStyle="bold"
         android:visibility="gone"
-        android:id="@id/tv_teampk_team_select_timecoutdown"
-        />
+        android:id="@id/tv_teampk_team_select_timecoutdown" />
 
 </RelativeLayout>

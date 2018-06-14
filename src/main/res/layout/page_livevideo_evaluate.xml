@@ -1,5 +1,4 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:hedgehog="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -12,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:floattitle="课程感受"
-        app:showcancle="false"/>
+        app:showcancle="false" />
 
     <LinearLayout
         android:id="@id/ll_livevideo_evaluate_tip"
@@ -32,7 +31,7 @@
             android:gravity="center_vertical"
             android:text="新的拉瑞，你好，"
             android:textColor="@color/white"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -42,7 +41,7 @@
             android:gravity="center_vertical"
             android:text="匿名评价，请跟随自己的内心感受点评！"
             android:textColor="@color/white"
-            android:textSize="10sp"/>
+            android:textSize="10sp" />
 
     </LinearLayout>
 
@@ -68,7 +67,7 @@
                 android:gravity="center_vertical"
                 android:text="知识掌握程度"
                 android:textColor="@color/COLOR_666666"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
 
             <com.xueersi.xesalib.view.ratingbar.RatingBar
                 android:id="@id/rb_livevideo_evaluate_star"
@@ -81,7 +80,7 @@
                 hedgehog:starEmpty="@drawable/ic_livevideo_evaluate_unselect"
                 hedgehog:starFill="@drawable/ic_livevideo_evaluate_select"
                 hedgehog:starImageMargin="10dp"
-                hedgehog:starImageSize="30dp"/>
+                hedgehog:starImageSize="30dp" />
 
         </RelativeLayout>
 
@@ -102,7 +101,7 @@
                 android:gravity="center_vertical"
                 android:text="课堂互动氛围"
                 android:textColor="@color/COLOR_666666"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
 
             <com.xueersi.xesalib.view.ratingbar.RatingBar
                 android:id="@id/rb_livevideo_evaluate_star2"
@@ -115,7 +114,7 @@
                 hedgehog:starEmpty="@drawable/ic_livevideo_evaluate_unselect"
                 hedgehog:starFill="@drawable/ic_livevideo_evaluate_select"
                 hedgehog:starImageMargin="10dp"
-                hedgehog:starImageSize="30dp"/>
+                hedgehog:starImageSize="30dp" />
 
         </RelativeLayout>
 
@@ -136,7 +135,7 @@
                 android:gravity="center_vertical"
                 android:text="老师精神状态"
                 android:textColor="@color/COLOR_666666"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
 
             <com.xueersi.xesalib.view.ratingbar.RatingBar
                 android:id="@id/rb_livevideo_evaluate_star3"
@@ -149,7 +148,7 @@
                 hedgehog:starEmpty="@drawable/ic_livevideo_evaluate_unselect"
                 hedgehog:starFill="@drawable/ic_livevideo_evaluate_select"
                 hedgehog:starImageMargin="10dp"
-                hedgehog:starImageSize="30dp"/>
+                hedgehog:starImageSize="30dp" />
         </RelativeLayout>
 
         <Button
@@ -162,7 +161,7 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/selector_dialog_select_button"
             android:text="提交"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white" />
 
     </RelativeLayout>
 

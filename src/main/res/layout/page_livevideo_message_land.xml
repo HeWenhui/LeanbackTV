@@ -1,5 +1,4 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -23,7 +22,7 @@
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
             android:paddingTop="10dp"
-            android:scrollbars="none"/>
+            android:scrollbars="none" />
 
     </RelativeLayout>
 
@@ -43,7 +42,7 @@
                 android:id="@id/layout_chat_expression"
                 layout="@layout/include_livechat_expression"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
         </cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout>
     </RelativeLayout>
 
@@ -65,7 +64,7 @@
             android:layout_marginRight="6dp"
             android:background="@drawable/shape_livevideo_message_send"
             android:text="发送"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white" />
 
         <Button
             android:id="@id/bt_livevideo_message_express"
@@ -75,7 +74,7 @@
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@id/bt_livevideo_message_send"
             android:background="@drawable/selector_chat_expression"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white" />
 
         <EditText
             android:id="@id/et_livevideo_message_content"
@@ -92,13 +91,13 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:singleLine="true"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
     </RelativeLayout>
 
     <master.flame.danmaku.danmaku.ui.widget.DanmakuView
         android:id="@id/dv_livevideo_message_danmaku"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

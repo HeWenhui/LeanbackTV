@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="15dp">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="15dp">
 
     <Button
         android:id="@id/bt_livevideo_message_open"
@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="20dp"
-        android:background="@drawable/bg_livevideo_message_open"/>
+        android:background="@drawable/bg_livevideo_message_open" />
 
     <Button
         android:id="@id/bt_livevideo_message_common"
@@ -19,19 +19,19 @@
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="20dp"
         android:layout_toRightOf="@id/bt_livevideo_message_open"
-        android:background="@drawable/bg_livevideo_message_common"/>
+        android:background="@drawable/bg_livevideo_message_common" />
 
     <View
         android:id="@id/v_livevideo_message_common_left"
         android:layout_width="30dp"
         android:layout_height="1px"
-        android:layout_toLeftOf="@id/bt_livevideo_message_common"/>
+        android:layout_toLeftOf="@id/bt_livevideo_message_common" />
 
     <View
         android:id="@id/v_livevideo_message_common_right"
         android:layout_width="30dp"
         android:layout_height="1px"
-        android:layout_toRightOf="@id/bt_livevideo_message_common"/>
+        android:layout_toRightOf="@id/bt_livevideo_message_common" />
 
     <RelativeLayout
         android:id="@id/rl_livevideo_common_word"
@@ -52,7 +52,7 @@
             android:layout_centerHorizontal="true"
             android:divider="#373837"
             android:dividerHeight="1dp"
-            android:scrollbars="none"/>
+            android:scrollbars="none" />
 
         <ImageView
             android:id="@id/iv_livevideo_common_word_arrow"
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/bg_livevideo_common_word_arrow"/>
+            android:src="@drawable/bg_livevideo_common_word_arrow" />
     </RelativeLayout>
 
     <Button
@@ -70,7 +70,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="20dp"
         android:layout_toRightOf="@id/bt_livevideo_message_common"
-        android:background="@drawable/bg_livevideo_message_flowers"/>
+        android:background="@drawable/bg_livevideo_message_flowers" />
 
     <Button
         android:id="@id/bt_livevideo_voicechat_raise_hands"
@@ -80,7 +80,7 @@
         android:layout_marginLeft="20dp"
         android:layout_toRightOf="@id/bt_livevideo_message_flowers"
         android:background="@drawable/bg_livevideo_voicechat_raise_hands"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <Button
         android:id="@id/rl_livevideo_common_rank"
@@ -89,7 +89,8 @@
         android:layout_marginLeft="20dp"
         android:layout_toRightOf="@id/bt_livevideo_voicechat_raise_hands"
         android:background="@drawable/bg_livevideo_voicechat_rank"
-        android:visibility="gone"/>
+        android:visibility="gone" />
+
     <Button
         android:id="@id/bt_livevideo_mark"
         android:layout_width="40dp"
@@ -108,6 +109,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:background="@drawable/selector_livevideo_messagelock"
-        android:button="@null"/>
+        android:button="@null" />
 
 </RelativeLayout>

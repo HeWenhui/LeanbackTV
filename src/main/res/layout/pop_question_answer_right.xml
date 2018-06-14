@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                style="@style/question_fill_inblank"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+    style="@style/question_fill_inblank"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -15,7 +15,7 @@
             android:id="@id/iv_pop_question_answer_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_pop_question_answer_type1"/>
+            android:background="@drawable/bg_pop_question_answer_type1" />
 
         <TextView
             android:id="@id/tv_pop_question_answer_right_answer_hint"
@@ -28,7 +28,7 @@
             android:paddingBottom="42dp"
             android:text="10"
             android:textColor="@color/COLOR_FF4343"
-            android:textSize="29sp"/>
+            android:textSize="29sp" />
     </RelativeLayout>
 
 </RelativeLayout>

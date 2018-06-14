@@ -45,8 +45,7 @@
         android:layout_marginTop="-8dp"
         android:singleLine="true"
         android:ellipsize="end"
-        android:maxEms="5"
-        />
+        android:maxEms="5" />
 
     <!--角色名-->
     <TextView
@@ -60,8 +59,7 @@
         android:textColor="@color/white"
         android:singleLine="true"
         android:ellipsize="end"
-        android:maxEms="5"
-        />
+        android:maxEms="5" />
 
 
 </RelativeLayout>

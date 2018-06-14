@@ -30,8 +30,7 @@
             android:layout_centerVertical="true"
             android:text="0"
             android:textColor="@color/white"
-            android:textSize="9sp"
-            />
+            android:textSize="9sp" />
 
         <ImageView
             android:id="@id/iv_teampk_pkstate_coin"
@@ -58,8 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/v_teampk_pkstate_devide_line"
-        android:layout_marginTop="5dp"
-        >
+        android:layout_marginTop="5dp">
 
         <TextView
             android:id="@id/tv_teampk_pkstate_myteam_coin_prefix"
@@ -80,8 +78,7 @@
             android:textColor="@color/white"
             android:textSize="9sp"
             android:layout_alignBottom="@id/tv_teampk_pkstate_myteam_coin_prefix"
-            android:layout_marginBottom="1dp"
-            />
+            android:layout_marginBottom="1dp" />
 
         <TextView
             android:id="@id/tv_teampk_pkstate_adversary"
@@ -103,8 +100,7 @@
             android:textColor="@color/white"
             android:textSize="9sp"
             android:layout_alignBottom="@id/tv_teampk_pkstate_adversary"
-            android:layout_marginBottom="1dp"
-            />
+            android:layout_marginBottom="1dp" />
 
     </RelativeLayout>
 
