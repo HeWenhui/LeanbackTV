@@ -1104,7 +1104,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
     }
 
     /**
-     * 站立直播的只有
+     * 站立直播的只有RolePlay
      */
     private void showSpeech() {
         if (mQuestionEntity != null) {
@@ -1142,6 +1142,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                                 false, "", LiveStandPlayBackVideoActivity.this, stuCourId, IS_SCIENCE);
                         speechAssessmentWebPager.setStandingLive(true);
                         speechQuestionPlaybackPager = speechAssessmentWebPager;
+                        RolePlayStandLog.sno3(LiveStandPlayBackVideoActivity.this, mQuestionEntity.getvQuestionID());
                     }
                     speechQuestionPlaybackPager.initData();
                     rlQuestionContent.removeAllViews();
