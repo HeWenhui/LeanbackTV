@@ -12,7 +12,6 @@ import android.os.Message;
 
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseHttpBusiness;
-import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
 import com.xueersi.parentsmeeting.http.HttpRequestParams;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -392,7 +391,10 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                 String value = defaultKey.get(key);
                 requestJson.put(key, value);
             }
-            baseHttpBusiness.baseSendPostNoBusiness(logurl, requestJson.toString(), new Callback() {
+            HttpRequestParams httpRequestParams = new HttpRequestParams();
+            httpRequestParams.setJson(requestJson.toString());
+            httpRequestParams.setWriteAndreadTimeOut(2);
+            baseHttpBusiness.baseSendPostNoBusinessJson(logurl, httpRequestParams, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     Loger.e(TAG, "xescdnLog:onFailure", e);
