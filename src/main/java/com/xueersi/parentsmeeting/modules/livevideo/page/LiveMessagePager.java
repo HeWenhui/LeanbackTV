@@ -656,6 +656,10 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 .OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(goldNum == null || Integer.parseInt(goldNum) <=0 ){
+                    XESToastUtils.showToast(mContext, "您的金币不足啦");
+                    return;
+                }
                 final FlowerEntity entity = (FlowerEntity) flowerContentView.getTag();
                 if (entity != null) {
                     if(commonAction instanceof GiftDisable){
@@ -754,6 +758,10 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                             try {
                                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                                 int gold = Integer.parseInt(goldNum);
+                                if(gold <= 0){
+                                    XESToastUtils.showToast(mContext, "您的金币不足啦");
+                                    return;
+                                }
                                 goldNum = ("" + (gold - jsonObject.getInt("gold")));
                                 onGetMyGoldDataEvent(goldNum);
                             } catch (Exception e) {
@@ -812,6 +820,10 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                                 int gold = Integer.parseInt(goldNum);
                                 goldNum = ("" + (gold - jsonObject.getInt("gold")));
+                                if(Integer.parseInt(goldNum) <= 0){
+                                    XESToastUtils.showToast(mContext, "您的金币不足啦");
+                                    return;
+                                }
                                 onGetMyGoldDataEvent(goldNum);
                             } catch (Exception e) {
                                 e.printStackTrace();
