@@ -68,6 +68,16 @@ public interface RoomAction {
     /** 关闭开启弹幕 */
     void onOpenbarrage(final boolean openbarrage, boolean fromNotice);
 
+    /**
+     * 理科辅导老师开启关闭鲜花
+     * @param open
+     * @param b
+     */
+    void onFDOpenbarrage(boolean open, boolean b);
+
+
     /** 语音聊天状态 */
     void videoStatus(String status);
+
+
 }

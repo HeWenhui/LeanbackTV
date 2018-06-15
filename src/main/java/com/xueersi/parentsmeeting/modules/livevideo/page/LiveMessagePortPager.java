@@ -639,7 +639,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                 if (entity != null) {
                     if (LiveTopic.MODE_CLASS.equals(liveBll.getMode())) {
                         if (liveBll.isOpenbarrage()) {
-                            liveBll.praiseTeacher(entity.getFtype() + "", "", new HttpCallBack(false) {
+                            liveBll.praiseTeacher(null, entity.getFtype() + "", "", new HttpCallBack(false) {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) {
                                     tvFlowersDisable.setVisibility(View.VISIBLE);
@@ -1044,6 +1044,11 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                 }
             }
         });
+    }
+
+    @Override
+    public void onFDOpenbarrage(boolean open, boolean b) {
+
     }
 
     /*添加聊天信息，超过120，移除60个*/

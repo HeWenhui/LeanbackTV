@@ -411,7 +411,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
                 if (entity != null) {
                     if (LiveTopic.MODE_CLASS.equals(liveBll.getMode())) {
                         if (liveBll.isOpenbarrage()) {
-                            liveBll.praiseTeacher(entity.getFtype() + "", "", new HttpCallBack(false) {
+                            liveBll.praiseTeacher(null, entity.getFtype() + "", "", new HttpCallBack(false) {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) {
                                     if (goldNum == null) {
@@ -684,6 +684,16 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
 
     /** 关闭开启弹幕 */
     public void onOpenbarrage(final boolean openbarrage, final boolean fromNotice) {
+
+    }
+
+    /**
+     * 理科辅导老师开启/关闭献花
+     * @param openbarrage
+     * @param fromNotice
+     */
+    @Override
+    public void onFDOpenbarrage(final boolean openbarrage, final boolean fromNotice) {
         mView.post(new Runnable() {
             @Override
             public void run() {

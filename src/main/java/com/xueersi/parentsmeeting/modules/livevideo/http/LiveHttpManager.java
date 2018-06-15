@@ -508,9 +508,10 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_LIVE_USER_SIGN, params, requestCallBack);
     }
 
-    public void praiseTeacher(int type, String enstuId, String liveId, String teacherId, String ftype, String educationStage, HttpCallBack
+    public void praiseTeacher( int type, String enstuId, String liveId, String teacherId, String ftype, String educationStage, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
+
         String url;
         if (type == LiveBll.LIVE_TYPE_LIVE) {// 直播
             url = liveVideoSAConfigInner.URL_LIVE_PRAISE_TEACHER;

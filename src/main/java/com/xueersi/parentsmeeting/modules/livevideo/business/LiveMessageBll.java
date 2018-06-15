@@ -460,6 +460,19 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
         }
     }
 
+    /**
+     * 理科辅导老师开启关闭鲜花
+     * @param openFDbarrage
+     * @param fromNotice
+     */
+    @Override
+    public void onFDOpenbarrage(boolean openFDbarrage, boolean fromNotice) {
+        if (mLiveMessagePager != null) {
+            mLiveMessagePager.onFDOpenbarrage(openFDbarrage, fromNotice);
+        }
+
+    }
+
     @Override
     public void videoStatus(String status) {
         if (mLiveMessagePager != null) {
