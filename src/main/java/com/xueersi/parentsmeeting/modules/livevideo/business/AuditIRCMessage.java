@@ -153,6 +153,7 @@ public class AuditIRCMessage {
                                             String msg;
                                             if ("fluentMode".equals(status)) {
                                                 msg = "流畅模式";
+                                                mHandler.removeCallbacks(startVideoRun);
                                             } else {
                                                 if ("publishFail".equals(status)) {
                                                     msg = "推流失败";

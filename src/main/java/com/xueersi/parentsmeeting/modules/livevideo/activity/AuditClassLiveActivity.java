@@ -523,6 +523,9 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             if (startRemote.get()) {
                 return;
             }
+            if (fluentMode.get()) {
+                return;
+            }
             setFirstBackgroundVisible(View.VISIBLE);
             new Thread() {
                 @Override
@@ -890,6 +893,9 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     @Override
     public void onStudentError(final String status, final String msg) {
+        if (fluentMode.get()) {
+            return;
+        }
         studentError.set(true);
         mHandler.post(new Runnable() {
             @Override
@@ -1394,9 +1400,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     public void setFirstBackgroundVisible(int visible) {
         if (fluentMode.get()) {
             rlFirstBackgroundView.setVisibility(View.VISIBLE);
-            if (visible == View.GONE) {
-                ivTeacherNotpresent.setVisibility(View.GONE);
-            }
+            ivTeacherNotpresent.setVisibility(View.GONE);
         } else {
             rlFirstBackgroundView.setVisibility(visible);
             if (visible == View.GONE) {
