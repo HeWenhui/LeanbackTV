@@ -959,9 +959,14 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
 //                        return;
 //                    }
 //                }
-                ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                setTeacherNotpresent(ivTeacherNotpresent);
-                findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
+                mLogtf.d("onTeacherNotPresent:First=" + rlFirstBackgroundView.getVisibility());
+                if (rlFirstBackgroundView.getVisibility() == View.GONE) {
+                    ivTeacherNotpresent.setVisibility(View.GONE);
+                } else {
+                    ivTeacherNotpresent.setVisibility(View.VISIBLE);
+                    setTeacherNotpresent(ivTeacherNotpresent);
+                    findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
+                }
             }
         });
     }
