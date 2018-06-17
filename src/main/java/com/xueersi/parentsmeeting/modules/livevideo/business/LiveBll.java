@@ -2390,7 +2390,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      */
     private boolean isPresent(String mode) {
         boolean isPresent = true;
-        if (mIRCMessage != null && mIRCMessage.isConnected()) {
+        if (mIRCMessage != null && mIRCMessage.onUserList()) {
             if (LiveTopic.MODE_CLASS.endsWith(mode)) {
                 isPresent = mMainTeacher != null;
             } else {

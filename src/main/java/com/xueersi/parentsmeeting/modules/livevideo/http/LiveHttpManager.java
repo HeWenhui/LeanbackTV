@@ -184,11 +184,11 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
         @Override
         public void cancel() {
+            isCancel = true;
             if (connection != null) {
                 new Thread() {
                     public void run() {
                         connection.disconnect();
-                        isCancel = true;
                         if (callback != null) {
                             callback.onCancelled(new CancelledException("disconnect"));
                         }
