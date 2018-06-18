@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import   android.graphics.Typeface ;
+
+import com.xueersi.common.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 /**
@@ -155,7 +157,7 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
     }
 
       public void setTypeface() {
-        Typeface fontFace = com.xueersi.parentsmeeting.util.FontCache.getTypeface(getContext(), "QanelasSoftDEMO-ExtraBold.otf");
+        Typeface fontFace = FontCache.getTypeface(getContext(), "QanelasSoftDEMO-ExtraBold.otf");
         if(fontFace!= null){
             setTypeface(fontFace);
         }
