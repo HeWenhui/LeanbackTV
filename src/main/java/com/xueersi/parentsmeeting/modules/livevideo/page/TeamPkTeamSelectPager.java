@@ -45,7 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamMemberGridlayoutM
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.xesalib.utils.uikit.SizeUtils;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 
 import java.util.ArrayList;

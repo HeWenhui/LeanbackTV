@@ -25,7 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayerPager;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
-import com.xueersi.xesalib.utils.app.ContextManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 

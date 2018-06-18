@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.parentsmeeting.http.HttpResponseParser;
-import com.xueersi.parentsmeeting.logerhelper.MobAgent;
+import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.BuildConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;

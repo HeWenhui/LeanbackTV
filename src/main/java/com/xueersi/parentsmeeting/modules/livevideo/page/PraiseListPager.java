@@ -34,11 +34,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTextView;
-import com.xueersi.xesalib.adapter.RCommonAdapter;
-import com.xueersi.xesalib.adapter.RItemViewInterface;
-import com.xueersi.xesalib.adapter.ViewHolder;
+import com.xueersi.ui.adapter.RCommonAdapter;
+import com.xueersi.ui.adapter.RItemViewInterface;
+import com.xueersi.ui.adapter.ViewHolder;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.xesalib.utils.uikit.SizeUtils;
+import com.xueersi.lib.framework.utils.SizeUtils;
 
 import java.io.File;
 import java.util.ArrayList;

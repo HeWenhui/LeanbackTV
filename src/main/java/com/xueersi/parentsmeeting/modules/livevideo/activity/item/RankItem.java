@@ -5,7 +5,7 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
-import com.xueersi.xesalib.adapter.AdapterItemInterface;
+import com.xueersi.ui.adapter.AdapterItemInterface;
 
 /**
  * Created by lyqai on 2017/9/21.

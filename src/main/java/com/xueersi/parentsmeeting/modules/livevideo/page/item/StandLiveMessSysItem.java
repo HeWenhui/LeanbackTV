@@ -14,7 +14,7 @@ import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveHeadView;
-import com.xueersi.xesalib.adapter.AdapterItemInterface;
+import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 /**

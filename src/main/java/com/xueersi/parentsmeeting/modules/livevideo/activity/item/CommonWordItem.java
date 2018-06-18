@@ -7,8 +7,8 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageEmojiParser;
-import com.xueersi.xesalib.adapter.AdapterItemInterface;
-import com.xueersi.xesalib.adapter.CommonAdapter;
+import com.xueersi.ui.adapter.AdapterItemInterface;
+import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.xesalib.utils.string.RegexUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 

@@ -27,7 +27,7 @@
 //import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 //import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 //import com.xueersi.lib.framework.utils.AppUtils;
-//import com.xueersi.xesalib.utils.app.ContextManager;
+//import com.xueersi.lib.framework.are.ContextManager;
 //import com.xueersi.common.util.audio.AudioPlayer;
 //import com.xueersi.xesalib.utils.audio.AudioPlayerListening;
 //import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;

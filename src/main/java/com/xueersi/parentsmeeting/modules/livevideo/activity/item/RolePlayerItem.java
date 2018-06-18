@@ -10,10 +10,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
-import com.xueersi.xesalib.adapter.AdapterItemInterface;
-import com.xueersi.xesalib.utils.app.ContextManager;
+import com.xueersi.ui.adapter.AdapterItemInterface;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.xesalib.utils.uikit.SizeUtils;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 
 

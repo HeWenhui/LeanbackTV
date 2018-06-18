@@ -38,7 +38,7 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.parentsmeeting.widget.expressionView.ExpressionView;
 import com.xueersi.parentsmeeting.widget.expressionView.adapter.ExpressionListAdapter;
 import com.xueersi.parentsmeeting.widget.expressionView.entity.ExpressionAllInfoEntity;
-import com.xueersi.xesalib.adapter.CommonAdapter;
+import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.xesalib.utils.string.ConstUtils;
 import com.xueersi.xesalib.utils.string.RegexUtils;

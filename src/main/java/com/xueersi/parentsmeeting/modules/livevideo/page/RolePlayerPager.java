@@ -49,12 +49,12 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
-import com.xueersi.xesalib.adapter.AdapterItemInterface;
-import com.xueersi.xesalib.adapter.CommonAdapter;
-import com.xueersi.xesalib.utils.app.ContextManager;
+import com.xueersi.ui.adapter.AdapterItemInterface;
+import com.xueersi.ui.adapter.CommonAdapter;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.xesalib.utils.uikit.SizeUtils;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.xesalib.view.image.CircleImageView;
 

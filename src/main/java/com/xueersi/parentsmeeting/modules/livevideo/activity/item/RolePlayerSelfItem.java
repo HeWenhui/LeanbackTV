@@ -23,14 +23,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
 import com.xueersi.common.business.UserBll;
-import com.xueersi.xesalib.utils.app.ContextManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.xesalib.utils.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.xesalib.utils.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.xesalib.utils.listener.OnAlphaTouchListener;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
-import com.xueersi.xesalib.utils.uikit.SizeUtils;
+import com.xueersi.lib.framework.utils.SizeUtils;
 
 
 /**

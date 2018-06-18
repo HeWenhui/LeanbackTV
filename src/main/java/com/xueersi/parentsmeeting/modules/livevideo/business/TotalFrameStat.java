@@ -21,7 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.HardWareUtil;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.lib.analytics.umsagent.DeviceInfo;
-import com.xueersi.xesalib.utils.app.DeviceUtils;
+import com.xueersi.lib.framework.utils.DeviceUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 

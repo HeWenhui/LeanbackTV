@@ -14,7 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.event.MiniEvent;
-import com.xueersi.xesalib.adapter.AdapterItemInterface;
+import com.xueersi.ui.adapter.AdapterItemInterface;
 
 import org.greenrobot.eventbus.EventBus;
 

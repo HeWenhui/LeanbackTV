@@ -26,7 +26,7 @@ import com.xueersi.component.cloud.config.XesCloudConfig;
 import com.xueersi.component.cloud.entity.CloudUploadEntity;
 import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
-import com.xueersi.parentsmeeting.entity.VideoPointEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoPointEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -38,17 +38,17 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
-import com.xueersi.xesalib.adapter.AdapterItemInterface;
-import com.xueersi.xesalib.adapter.CommonAdapter;
-import com.xueersi.xesalib.utils.app.ContextManager;
+import com.xueersi.ui.adapter.AdapterItemInterface;
+import com.xueersi.ui.adapter.CommonAdapter;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.xesalib.utils.listener.OnUnDoubleClickListener;
+import com.xueersi.lib.framework.utils.listener.OnUnDoubleClickListener;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.xesalib.utils.uikit.ImageUtils;
-import com.xueersi.xesalib.utils.uikit.SizeUtils;
+import com.xueersi.lib.framework.utils.image.ImageUtils;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.ui.dialog.BaseAlertDialog;
-import com.xueersi.xesalib.view.alertdialog.ChooseListAlertDialog;
+import com.xueersi.ui.dialog.ChooseListAlertDialog;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONArray;
@@ -66,11 +66,11 @@ import java.util.TimerTask;
 import tv.danmaku.ijk.media.player.FrameInfo;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
-import static com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE;
-import static com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig.CATEGORY_EXAM;
-import static com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig.CATEGORY_H5COURSE_WARE;
-import static com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig.CATEGORY_QUESTION;
-import static com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig.CATEGORY_REDPACKET;
+import static com.xueersi.common.business.sharebusiness.config.LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE;
+import static com.xueersi.common.business.sharebusiness.config.LocalCourseConfig.CATEGORY_EXAM;
+import static com.xueersi.common.business.sharebusiness.config.LocalCourseConfig.CATEGORY_H5COURSE_WARE;
+import static com.xueersi.common.business.sharebusiness.config.LocalCourseConfig.CATEGORY_QUESTION;
+import static com.xueersi.common.business.sharebusiness.config.LocalCourseConfig.CATEGORY_REDPACKET;
 
 /**
  * Created by Tang on 2018/3/5.

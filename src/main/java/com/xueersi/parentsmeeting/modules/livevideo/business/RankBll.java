@@ -23,8 +23,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
-import com.xueersi.xesalib.adapter.AdapterItemInterface;
-import com.xueersi.xesalib.adapter.CommonAdapter;
+import com.xueersi.ui.adapter.AdapterItemInterface;
+import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import java.util.ArrayList;
