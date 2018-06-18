@@ -47,6 +47,7 @@ import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.AnswerEntity;
 import com.xueersi.parentsmeeting.entity.AppInfoEntity;
 import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
+import com.xueersi.parentsmeeting.entity.EnglishH5Entity;
 import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
 import com.xueersi.parentsmeeting.entity.VideoLivePlayBackEntity;
@@ -80,22 +81,25 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BaseNbH5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewareX5Pager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.ExamQuestionPlaybackPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.H5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.NbH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSubjectivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssAutoPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5PlaybackPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SubjectResultX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.util.FloatPermissionManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
@@ -146,7 +150,7 @@ import static com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile.li
 @SuppressLint("HandlerLeak")
 @SuppressWarnings("unchecked")
 public class LivePlayBackVideoActivity extends VideoActivity implements LivePlaybackMediaController.OnPointClick,
-        SpeechEvalAction, BaseQuestionWebPager.StopWebQuestion, LiveAndBackDebug, ActivityChangeLand {
+        SpeechEvalAction, BaseQuestionWebInter.StopWebQuestion, LiveAndBackDebug, ActivityChangeLand {
 
     String TAG = "LivePlayBackVideoActivityLog";
     /** 互动题的布局 */
@@ -197,17 +201,17 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     /** 语音答题的页面 */
     private VoiceAnswerPager voiceAnswerPager;
     /** 普通互动题，h5显示页面 */
-    private QuestionWebPager questionWebPager;
+    private BaseQuestionWebInter questionWebPager;
     /** 课前测的页面 */
-    private ExamQuestionPlaybackPager examQuestionPlaybackPager;
+    private BaseExamQuestionInter examQuestionPlaybackPager;
     /** 语音评测，role play的页面 */
     private BaseSpeechAssessmentPager speechQuestionPlaybackPager;
     /** nb实验的页面 */
-    private H5CoursewarePager h5CoursewarePager;
+    private BaseNbH5CoursewarePager h5CoursewarePager;
     /** 英语课件的页面 */
     private BaseEnglishH5CoursewarePager englishH5CoursewarePager;
     /** 文科主观题结果的页面 */
-    private SubjectResultPager subjectResultPager;
+    private BaseSubjectResultInter subjectResultPager;
     /** 讲座购课广告的页面 */
     private LecAdvertPager lecAdvertPager;
     /** 填空题布局 */
@@ -740,7 +744,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         public void run() {
             if (!isFinishing()) {
                 // 上传心跳时间
-                lectureLivePlayBackBll.uploadPlaybackVideoPlayTime(Integer.parseInt(mVideoEntity.getLiveId()),60L);
+                lectureLivePlayBackBll.uploadPlaybackVideoPlayTime(Integer.parseInt(mVideoEntity.getLiveId()), 60L);
                 mHandler.postDelayed(this, mPlayTime);
             }
         }
@@ -1018,7 +1022,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 //                            }
                                 MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
                                 AppInfoEntity mAppInfoEntity = AppBll.getInstance().getAppInfoEntity();
-                                questionWebPager = new QuestionWebPager(LivePlayBackVideoActivity.this,
+                                questionWebPager = new QuestionWebX5Pager(LivePlayBackVideoActivity.this,
                                         LivePlayBackVideoActivity.this, "http://live.xueersi" +
                                         ".com/Live/getMultiTestPaper",
                                         userInfoEntity.getStuId(), mAppInfoEntity.getLoginUserName(), mQuestionEntity
@@ -1108,8 +1112,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 if (rlQuestionContent != null && mQuestionEntity != null) {
                     Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showExam");
                     mPlayVideoControlHandler.sendMessage(msg);
-                    examQuestionPlaybackPager = new ExamQuestionPlaybackPager(LivePlayBackVideoActivity.this,
-                            mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), IS_SCIENCE, stuCourId, new ExamQuestionPlaybackPager.ExamStop() {
+                    examQuestionPlaybackPager = new ExamQuestionX5PlaybackPager(LivePlayBackVideoActivity.this,
+                            mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), IS_SCIENCE, stuCourId, new BaseExamQuestionInter.ExamStop() {
                         @Override
                         public void stopExam() {
                             LivePlayBackVideoActivity.this.stopExam();
@@ -1150,7 +1154,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 //                        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
 //                        lp.rightMargin = wradio;
                     } else {
-                        speechQuestionPlaybackPager = new SpeechAssessmentWebPager(LivePlayBackVideoActivity.this,
+                        speechQuestionPlaybackPager = new SpeechAssessmentWebX5Pager(LivePlayBackVideoActivity.this,
                                 mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), userInfoEntity.getStuId(),
                                 false, "", LivePlayBackVideoActivity.this, stuCourId, IS_SCIENCE);
                     }
@@ -1171,7 +1175,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 if (rlQuestionContent != null && mQuestionEntity != null) {
                     Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showH5CoursewarePager");
                     mPlayVideoControlHandler.sendMessage(msg);
-                    h5CoursewarePager = new H5CoursewarePager(LivePlayBackVideoActivity.this, mQuestionEntity
+                    h5CoursewarePager = new NbH5CoursewareX5Pager(LivePlayBackVideoActivity.this, mQuestionEntity
                             .getH5Play_url());
                     rlQuestionContent.removeAllViews();
                     rlQuestionContent.addView(h5CoursewarePager.getRootView(), new LayoutParams(LayoutParams
@@ -1188,8 +1192,9 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (rlQuestionContent != null && mQuestionEntity != null) {
             Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showEnglishH5CoursewarePager");
             mPlayVideoControlHandler.sendMessage(msg);
-            englishH5CoursewarePager = new EnglishH5CoursewareX5Pager(LivePlayBackVideoActivity.this, true, mVideoEntity.getLiveId(), mQuestionEntity.getEnglishH5Play_url(),
-                    mQuestionEntity.getvQuestionID(), mQuestionEntity.getvQuestionType(), "", new
+            EnglishH5Entity englishH5Entity = mQuestionEntity.getEnglishH5Entity();
+            englishH5CoursewarePager = new EnglishH5CoursewareX5Pager(LivePlayBackVideoActivity.this, true, mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), englishH5Entity,
+                    mQuestionEntity.getvQuestionType(), "", new
                     EnglishH5CoursewareBll.OnH5ResultClose() {
                         @Override
                         public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager) {
@@ -1564,7 +1569,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 rlQuestionContent.removeAllViews();
                 if (LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(questionEntity.getvQuestionType())) {
                     MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-                    subjectResultPager = new SubjectResultPager(LivePlayBackVideoActivity.this, LivePlayBackVideoActivity.this,
+                    subjectResultPager = new SubjectResultX5Pager(LivePlayBackVideoActivity.this, LivePlayBackVideoActivity.this,
                             liveVideoSAConfig.inner.subjectiveTestAnswerResult + mVideoEntity.getLiveId(),
                             userInfoEntity.getStuId(), mVideoEntity.getLiveId(), questionEntity.getvQuestionID(), stuCourId);
                     rlQuestionContent.addView(subjectResultPager.getRootView());
@@ -2355,7 +2360,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             onClickListener = new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    stopWebQuestion(questionWebPager, questionWebPager.getTestId());
+                    stopWebQuestion(questionWebPager.getBasePager(), questionWebPager.getTestId());
                 }
             };
         } else if (subjectResultPager != null) {
@@ -2458,6 +2463,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         }
     };
 
+    @Override
     protected void onRefresh() {
         resultFailed = false;
         if (AppBll.getInstance(this).isNetWorkAlert()) {
@@ -2659,7 +2665,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
 
     @Override
     public void stopWebQuestion(BasePager pager, String testId) {
-        if (pager instanceof QuestionWebPager) {
+        if (pager instanceof BaseQuestionWebInter) {
             Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 13, 13, mQuestionEntity);
             mPlayVideoControlHandler.sendMessage(msg);
             questionWebPager = null;
@@ -2700,6 +2706,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         UmsAgentManager.umsAgentDebug(this, appID, eventId, mData);
     }
 
+    @Override
     public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
         MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         mData.put("uid", userInfoEntity.getStuId());
@@ -2716,6 +2723,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         UmsAgentManager.umsAgentOtherBusiness(this, appID, UmsConstants.uploadBehavior, mData);
     }
 
+    @Override
     public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
         MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         mData.put("uid", userInfoEntity.getStuId());

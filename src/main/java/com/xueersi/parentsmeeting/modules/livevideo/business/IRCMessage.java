@@ -48,6 +48,8 @@ public class IRCMessage {
     private boolean connectError = false;
     /** 和服务器的ping，线程池 */
     private ThreadPoolExecutor pingPool;
+    /** 是不是获得过用户列表 */
+    private boolean onUserList = false;
 
     public IRCMessage(int netWorkType, String channel, String login, String nickname) {
         this.netWorkType = netWorkType;
@@ -74,6 +76,15 @@ public class IRCMessage {
      */
     public boolean isConnected() {
         return mConnection != null && mConnection.isConnected();
+    }
+
+    /**
+     * 是不是获得过用户列表
+     *
+     * @return
+     */
+    public boolean onUserList() {
+        return onUserList && mConnection != null && mConnection.isConnected();
     }
 
     /**
@@ -253,13 +264,8 @@ public class IRCMessage {
 
             @Override
             public void onUserList(String channel, User[] users) {
+                onUserList = true;
                 String s = "onUserList:channel=" + channel + ",users=" + users.length;
-                for (int i = 0; i < users.length; i++) {
-                    User user = users[i];
-                    if (!user.getNick().startsWith("s_")) {
-                        s += ",user=" + user.getNick();
-                    }
-                }
                 mLogtf.d(s);
                 if (mIRCCallback != null) {
                     mIRCCallback.onUserList(channel, users);
@@ -330,6 +336,7 @@ public class IRCMessage {
 
     private synchronized void connect(String method) {
         mHandler.removeCallbacks(mPingRunnable);
+        onUserList = false;
         if (mIsDestory) {
             return;
         }
@@ -401,10 +408,24 @@ public class IRCMessage {
         }
     }
 
-    public String getNickname() {
+    /**
+     * 得到连接名字
+     *
+     * @return
+     */
+    public String getConnectNickname() {
         if (mConnection.isConnected()) {
             return mConnection.getName();
         }
+        return mNickname;
+    }
+
+    /**
+     * 得到短名字
+     *
+     * @return
+     */
+    public String getNickname() {
         return mNickname;
     }
 
@@ -423,7 +444,7 @@ public class IRCMessage {
             new Thread() {
                 @Override
                 public void run() {
-                    connect("create");
+                    connect("onDataSucess");
                 }
             }.start();
         }

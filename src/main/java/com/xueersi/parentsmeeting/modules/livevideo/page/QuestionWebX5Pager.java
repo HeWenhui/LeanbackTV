@@ -12,12 +12,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
+import com.tencent.smtt.export.external.interfaces.WebResourceError;
+import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
+import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.logerhelper.LogerTag;
+import com.xueersi.parentsmeeting.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -26,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
@@ -41,7 +46,7 @@ import java.util.Map;
  * @date 2017/8/23
  * 普通互动题，h5显示页面
  */
-public class QuestionWebX5Pager extends BasePager implements BaseQuestionWebPager {
+public class QuestionWebX5Pager extends BasePager implements BaseQuestionWebInter {
     private String questionEventId = LiveVideoConfig.LIVE_PUBLISH_TEST;
     private Button btSubjectClose;
     private Button btSubjectCalljs;
@@ -89,6 +94,7 @@ public class QuestionWebX5Pager extends BasePager implements BaseQuestionWebPage
         initData();
     }
 
+    @Override
     public String getTestId() {
         return testId;
     }
@@ -195,6 +201,7 @@ public class QuestionWebX5Pager extends BasePager implements BaseQuestionWebPage
 //        webSetting.setDisplayZoomControls(false);
     }
 
+    @Override
     public void examSubmitAll() {
         Map<String, String> mData = new HashMap<>();
         mData.put("testid", "" + testId);
@@ -203,6 +210,11 @@ public class QuestionWebX5Pager extends BasePager implements BaseQuestionWebPage
 //        wvSubjectWeb.loadUrl(String.format("javascript:examSubmitAll(" + code + ")"));
         isEnd = true;
         wvSubjectWeb.loadUrl(jsExamSubmitAll);
+    }
+
+    @Override
+    public BasePager getBasePager() {
+        return this;
     }
 
     public class MyWebChromeClient extends WebChromeClient {
@@ -228,8 +240,7 @@ public class QuestionWebX5Pager extends BasePager implements BaseQuestionWebPage
             if (mLevel == ConsoleMessage.MessageLevel.ERROR || mLevel == ConsoleMessage.MessageLevel.WARNING) {
                 isRequst = true;
             }
-            Loger.d(mContext, LogerTag.DEBUG_WEBVIEW_CONSOLE, TAG + ",Level=" + mLevel + "&&," + consoleMessage.sourceId() +
-                    "&&," + consoleMessage.lineNumber() + "&&," + consoleMessage.message(), isRequst);
+            UmsAgentUtil.webConsoleMessage(mContext, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
             return super.onConsoleMessage(consoleMessage);
         }
 
@@ -249,8 +260,12 @@ public class QuestionWebX5Pager extends BasePager implements BaseQuestionWebPage
         }
     }
 
-    public class MyWebViewClient extends WebViewClient {
+    public class MyWebViewClient extends ErrorWebViewClient {
         String failingUrl;
+
+        public MyWebViewClient() {
+            super(TAG);
+        }
 
         @Override
         public void onPageFinished(WebView view, String url) {
@@ -281,6 +296,11 @@ public class QuestionWebX5Pager extends BasePager implements BaseQuestionWebPage
                 wvSubjectWeb.setInitialScale(scale);
             }
             super.onPageStarted(view, url, favicon);
+        }
+
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView webView, String s) {
+            return super.shouldInterceptRequest(webView, s);
         }
 
         @Override

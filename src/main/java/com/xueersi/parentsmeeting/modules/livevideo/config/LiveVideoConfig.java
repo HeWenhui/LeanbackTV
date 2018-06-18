@@ -92,6 +92,8 @@ public class LiveVideoConfig {
     public static String LIVE_SPEECH_TEST2 = "live_speechtest_2";
     /** 站立直播-语音评测 */
     public static String LIVE_STAND_SPEECH_TEST = "standlive_voiceTest";
+    /** 站立直播-roleplay */
+    public static String LIVE_STAND_ROLEPLAY= "standlive_roleplay";
     /** 直播-NB实验 */
     public static String LIVE_H5_EXPERIMENT = "live_h5experiment";
     /** 直播-星星互动 */
@@ -132,6 +134,8 @@ public class LiveVideoConfig {
     public static String LIVE_ENGLISH_TIP = "live_english_speeak_tip";
     /** 英语能量条提示 */
     public static String LEC_LEARN_REPORT = "lec_learn_report";
+    /** 直播网页加载失败 */
+    public static String LIVE_WEBVIEW_ERROR = "live_webview_error";
 
     //  体验课互动题提交答案
     public static String LIVE_EXPE_SUBMIT = AppConfig.HTTP_HOST + "/science/AutoLive/submitTestAnswer";
@@ -143,7 +147,7 @@ public class LiveVideoConfig {
     public static String URL_LIVE_DELETE_MARK_POINTS = AppConfig.HTTP_HOST + "/science/LiveCourse/deleteMarkpoint";
     /** 体验课播放器上传心跳时间 */
     public static String URL_EXPERIENCE_LIVE_ONLINETIME = AppConfig.HTTP_HOST + "/science/AutoLive/visitTime";
-    /**  回放式体验课上传心跳时间  */
+    /** 回放式体验课上传心跳时间 */
     public static String URL_PLAYBACKPLAYTIME = AppConfig.HTTP_HOST + "/ExpPlayback/visitTime";
     /** RolePlay请求对话信息 */
     public static String URL_ROLEPLAY_TESTINFOS = AppConfig.HTTP_HOST + "/libarts/LiveCourse/getRolePlay";
@@ -153,12 +157,13 @@ public class LiveVideoConfig {
     public static String URL_LECTURELIVE_MORE_COURSE = AppConfig.HTTP_HOST + "/LiveLecture/getAdCase";
     /** 获取时时间戳 */
     public static String URL_LIVE_GET_CURTIME = AppConfig.HTTP_HOST + "/science/LiveCourse/getCurTimestamp";
+    /** 直播云平台日志统计 */
+    public static String URL_CDN_LOG = "http://log.xescdn.com/log";
     /** 更多课程数量的记录 */
     public static int MORE_COURSE;
     public static Boolean isloading = false;
     /** 讲座直播广告Id */
     public static String LECTUREADID;
-
     public static interface SubjectIds {
         /**
          * 学科id，语文

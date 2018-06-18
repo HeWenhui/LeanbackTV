@@ -5,9 +5,11 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssessmentWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechAssAutoPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 
 import java.util.Map;
@@ -24,9 +26,14 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
     }
 
     @Override
+    public void receiveRolePlay(VideoQuestionLiveEntity videoQuestionLiveEntity) {
+        RolePlayStandLog.sno2(liveBll, videoQuestionLiveEntity.id);
+    }
+
+    @Override
     public BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String testId, String nonce, String content,
                                                   int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String learning_stage) {
-        SpeechStandLog.sno2(liveBll, testId);
+        SpeechStandLog.sno2(liveBll, testId, nonce);
         speechEvalAction = new LiveStandSpeechEvalActionImpl(speechEvalAction);
         StandSpeechAssAutoPager speechAssAutoPager =
                 new StandSpeechAssAutoPager(context, liveid, testId, nonce,
@@ -35,13 +42,13 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
     }
 
     @Override
-    public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, String testId,
-                                                    String nonce,
+    public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId,
                                                     SpeechEvalAction speechEvalAction, String stuCouId) {
-        SpeechAssessmentWebPager speechAssessmentPager = new SpeechAssessmentWebPager(context,
+        SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
                 liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                true, nonce, speechEvalAction, stuCouId, false);
+                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false);
         speechAssessmentPager.setStandingLive(true);
+        RolePlayStandLog.sno3(liveBll, testId);
         return speechAssessmentPager;
     }
 

@@ -849,10 +849,14 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (liveBll.isHaveTeam()) {
-                    tvMessageCount.setText("组内" + peopleCount + "人");
-                } else {
-                    tvMessageCount.setText(peopleCount + "人正在上课");
+                if(liveBll.isSeniorOfHighSchool()){
+                    tvMessageCount.setText("班内" + peopleCount + "人");
+                }else{
+                    if (liveBll.isHaveTeam()) {
+                        tvMessageCount.setText("组内" + peopleCount + "人");
+                    } else {
+                        tvMessageCount.setText(peopleCount + "人正在上课");
+                    }
                 }
             }
         });
@@ -860,6 +864,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
+        Loger.e("LiveMessagerPager","=====>onMessage called");
         if (sender.startsWith(LiveBll.TEACHER_PREFIX)) {
             sender = "主讲老师";
         } else if (sender.startsWith(LiveBll.COUNTTEACHER_PREFIX)) {
@@ -899,10 +904,14 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (liveBll.isHaveTeam()) {
-                    tvMessageCount.setText("组内" + peopleCount + "人");
-                } else {
-                    tvMessageCount.setText(peopleCount + "人正在上课");
+                if(liveBll.isSeniorOfHighSchool()){
+                    tvMessageCount.setText("班内" + peopleCount + "人");
+                }else{
+                    if (liveBll.isHaveTeam()) {
+                        tvMessageCount.setText("组内" + peopleCount + "人");
+                    } else {
+                        tvMessageCount.setText(peopleCount + "人正在上课");
+                    }
                 }
             }
         });
@@ -913,10 +922,14 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (liveBll.isHaveTeam()) {
-                    tvMessageCount.setText("组内" + peopleCount + "人");
-                } else {
-                    tvMessageCount.setText(peopleCount + "人正在上课");
+                if(liveBll.isSeniorOfHighSchool()){
+                    tvMessageCount.setText("班内" + peopleCount + "人");
+                }else {
+                    if (liveBll.isHaveTeam()) {
+                        tvMessageCount.setText("组内" + peopleCount + "人");
+                    } else {
+                        tvMessageCount.setText(peopleCount + "人正在上课");
+                    }
                 }
             }
         });

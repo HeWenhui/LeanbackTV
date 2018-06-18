@@ -72,6 +72,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusE
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionWebCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
@@ -207,6 +208,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
     LiveTextureView liveTextureView;
     private TeacherPraiseBll teacherPraiseBll;
 
+    @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         long before = System.currentTimeMillis();
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -230,11 +232,16 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         Loger.d(TAG, "onVideoCreate:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         initView();
-        mLiveBll.getInfo(mGetInfo);
         Loger.d(TAG, "onVideoCreate:time3=" + (System.currentTimeMillis() - before));
 //        SpeechAssessmentWebPager pager=new SpeechAssessmentWebPager(mContext,"","","",true,"",null);
 //        ((RelativeLayout)findViewById(R.id.rl_speech_test)).addView(pager.getRootView());
         return true;
+    }
+
+    @Override
+    protected void onVideoCreateEnd() {
+        mLiveBll.setTotalFrameStat(totalFrameStat);
+        mLiveBll.getInfo(mGetInfo);
     }
 
     @Override
@@ -440,14 +447,14 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         redPackageBll.setVSectionID(mVSectionID);
         questionBll.setLiveType(liveType);
         questionBll.initData();
-        questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(questionBll.new LiveQuestionSwitchImpl()));
+        questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mLiveBll, questionBll.new LiveQuestionSwitchImpl()));
         questionBll.setBaseSpeechCreat(new LiveSpeechCreat());
         englishH5CoursewareBll.setShareDataManager(mShareDataManager);
         englishH5CoursewareBll.setLiveType(liveType);
         englishH5CoursewareBll.setVSectionID(mVSectionID);
         englishH5CoursewareBll.setLiveBll(mLiveBll);
         englishH5CoursewareBll.initData();
-        englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(englishH5CoursewareBll.new LiveQuestionSwitchImpl()));
+        englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mLiveBll, englishH5CoursewareBll.new LiveQuestionSwitchImpl()));
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
             rankBll = new RankBll(this);
             rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
@@ -915,9 +922,14 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                         return;
                     }
                 }
-                ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
-                findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
+                mLogtf.d("onTeacherNotPresent:First=" + rlFirstBackgroundView.getVisibility());
+                if (rlFirstBackgroundView.getVisibility() == View.GONE) {
+                    ivTeacherNotpresent.setVisibility(View.GONE);
+                } else {
+                    ivTeacherNotpresent.setVisibility(View.VISIBLE);
+                    ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
+                    findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
+                }
             }
         });
     }
@@ -984,6 +996,8 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                 speechFeedBackBll.setBottomContent(bottomContent);
                 speechFeedBackAction = speechFeedBackBll;
                 mLiveBll.setSpeechFeedBackAction(speechFeedBackBll);
+                QuestionWebCache questionWebCache = new QuestionWebCache(this);
+                questionWebCache.startCache();
             }
         }
         Loger.d(TAG, "onLiveInit:time=" + (System.currentTimeMillis() - before));
@@ -1038,7 +1052,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             liveMessageBll.closeChat(true);
         }
         liveMessageBll.setLiveGetInfo(getInfo);
-        rollCallBll.onLiveInit(getInfo);
+        rollCallBll.onLiveInit(liveType, getInfo);
         questionBll.setUserName(getInfo);
         videoChatBll.onLiveInit(getInfo);
         Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));

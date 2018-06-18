@@ -11,12 +11,14 @@ import java.util.Map;
  * 普通互动题网页显示
  * 实现这个必须继承BasePager
  */
-public interface BaseQuestionWebPager {
+public interface BaseQuestionWebInter {
     String getTestId();
 
     View getRootView();
 
     void examSubmitAll();
+
+    BasePager getBasePager();
 
     interface StopWebQuestion {
         void stopWebQuestion(BasePager pager, String testId);

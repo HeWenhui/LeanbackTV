@@ -53,6 +53,8 @@ import org.xutils.xutils.ex.HttpException;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,6 +112,8 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     private final String ROOM_MIDDLE = "L";
     private Callback.Cancelable mCataDataCancle;
     private Callback.Cancelable mGetPlayServerCancle, mGetStudentPlayServerCancle;
+    /** 直播帧数统计 */
+    private TotalFrameStat totalFrameStat;
     /** 学习记录提交时间间隔 */
     private int mHbTime = 300, mHbCount = 0;
     private AtomicInteger mOpenCount = new AtomicInteger(0);
@@ -138,6 +142,8 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     private boolean liveGetPlayServerError = false;
     /** 调度是不是在无网络下失败 */
     private boolean liveGetStudyPlayServerError = false;
+    /** 学生是不是流畅模式 */
+    AtomicBoolean fluentMode = new AtomicBoolean(false);
     /** 是不是有分组 */
     private boolean haveTeam = false;
     /** 区分文理appid */
@@ -151,19 +157,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         mHttpManager.addBodyParam("courseId", courseId);
         mHttpManager.addBodyParam("stuCouId", vStuCourseID);
         mHttpManager.addBodyParam("liveId", vSectionID);
-        mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
-        mLogtf.clear();
-        netWorkType = NetWorkHelper.getNetWorkState(context);
-        mLiveTopic.setMode(LiveTopic.MODE_CLASS);
-    }
-
-    public AuditClassLiveBll(Context context, String vSectionID, int type) {
-        super(context);
-        this.mLiveId = vSectionID;
-        this.mLiveType = type;
-        mHttpManager = new LiveHttpManager(mContext);
         mHttpResponseParser = new LiveHttpResponseParser(context);
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
@@ -216,6 +209,10 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         if (mLiveType == LIVE_TYPE_LIVE) {// 直播
             mHttpManager.liveGetInfo(enstuId, "", mLiveId, 1, callBack);
         }
+    }
+
+    public void setTotalFrameStat(TotalFrameStat totalFrameStat) {
+        this.totalFrameStat = totalFrameStat;
     }
 
     /**
@@ -770,9 +767,12 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         }
 
         @Override
-        public void onStudentError(String msg) {
+        public void onStudentError(String status, String msg) {
+            if ("fluentMode".equals(status)) {
+                fluentMode.set(true);
+            }
             if (mVideoAction != null) {
-                mVideoAction.onStudentError(msg);
+                mVideoAction.onStudentError(status, msg);
             }
         }
 
@@ -1239,6 +1239,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     private long lastGetPlayServer;
 
     private void liveGetPlayServer(final String mode, final boolean modechange) {
+        if (fluentMode.get()) {
+            return;
+        }
         if (mLiveType == LIVE_TYPE_LIVE) {
             if (mGetInfo.getStudentLiveInfo().isExpe() && LiveTopic.MODE_TRANING.equals(mode)) {
                 mLogtf.d("liveGetPlayServer:isExpe");
@@ -1251,7 +1254,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         }
         liveGetPlayServerError = false;
         final long before = System.currentTimeMillis();
-        String serverurl;
         // http://gslb.xueersi.com/xueersi_gslb/live?cmd=live_get_playserver&userid=000041&username=xxxxxx
         // &channelname=88&remote_ip=116.76.97.244
         if (LiveTopic.MODE_CLASS.equals(mode)) {
@@ -1267,7 +1269,10 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId() + "_"
                     + mGetInfo.getTeacherId());
         }
-        serverurl = mGetInfo.getGslbServerUrl() + "?cmd=live_get_playserver&userid=" + mGetInfo.getStuId()
+        if (totalFrameStat != null) {
+            totalFrameStat.setChannelname(mGetInfo.getChannelname());
+        }
+        final String serverurl = mGetInfo.getGslbServerUrl() + "?cmd=live_get_playserver&userid=" + mGetInfo.getStuId()
                 + "&username=" + mGetInfo.getUname() + "&channelname=" + mGetInfo.getChannelname();
         mLogtf.d("liveGetPlayServer:serverurl=" + serverurl);
         if (mGetPlayServerCancle != null) {
@@ -1275,15 +1280,17 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             mGetPlayServerCancle = null;
         }
         mLogtf.d("liveGetPlayServer:modeTeacher=" + getModeTeacher());
-        mGetPlayServerCancle = mHttpManager.liveGetPlayServer(serverurl, new CommonRequestCallBack<String>() {
+        final StringBuilder ipsb = new StringBuilder();
+        mGetPlayServerCancle = mHttpManager.liveGetPlayServer(ipsb, serverurl, new CommonRequestCallBack<String>() {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
                 mLogtf.d("liveGetPlayServer:onError:ex=" + ex + ",isOnCallback=" + isOnCallback);
+                long time = System.currentTimeMillis() - before;
                 if (ex instanceof HttpException) {
                     HttpException error = (HttpException) ex;
                     if (error.getCode() >= 300) {
-                        long time = System.currentTimeMillis() - before;
+                        totalFrameStat.liveGetPlayServer(time, 3, "", ipsb, serverurl);
                         mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
                         if (time < 15000) {
                             if (mVideoAction != null && mLiveTopic != null) {
@@ -1295,6 +1302,13 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                         }
                     }
                 } else {
+                    if (ex instanceof UnknownHostException) {
+                        totalFrameStat.liveGetPlayServer(time, 1, "", ipsb, serverurl);
+                    } else {
+                        if (ex instanceof SocketTimeoutException) {
+                            totalFrameStat.liveGetPlayServer(time, 2, "", ipsb, serverurl);
+                        }
+                    }
                     mLogtf.e("liveGetPlayServer:onError:isOnCallback=" + isOnCallback, ex);
                 }
                 long now = System.currentTimeMillis();
@@ -1326,6 +1340,10 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                     JSONObject object = new JSONObject(result);
                     PlayServerEntity server = mHttpResponseParser.parsePlayerServer(object);
                     if (server != null) {
+                        if (totalFrameStat != null) {
+                            long time = System.currentTimeMillis() - before;
+                            totalFrameStat.liveGetPlayServer(time, 0, server.getCipdispatch(), ipsb, serverurl);
+                        }
                         s += ",mode=" + mode + ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();
                         if (LiveTopic.MODE_CLASS.equals(mode)) {
                             mGetInfo.setSkeyPlayT(server.getRtmpkey());
@@ -1399,7 +1417,8 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             mGetStudentPlayServerCancle.cancel();
             mGetStudentPlayServerCancle = null;
         }
-        mGetStudentPlayServerCancle = mHttpManager.liveGetPlayServer(serverurl, new CommonRequestCallBack<String>() {
+        StringBuilder ipsb = new StringBuilder();
+        mGetStudentPlayServerCancle = mHttpManager.liveGetPlayServer(ipsb, serverurl, new CommonRequestCallBack<String>() {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
@@ -1873,10 +1892,10 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                     .get());
             mCompleteCounTeacherCount.set(mCompleteCounTeacherCount.get() > 1000 ? 1000 : mCompleteCounTeacherCount
                     .get());
-            XesMobAgent.liveStatistics(mBufferCount.get(), mRepairBufferCount.get(), mRepairOpenCount.get(), mFailCount
-                            .get(),
-                    mFailMainTeacherCount.get(), mFailCounTeacherCount.get(), mCompleteCount.get(),
-                    mCompleteMainTeacherCount.get(), mCompleteCounTeacherCount.get());
+//            XesMobAgent.liveStatistics(mBufferCount.get(), mRepairBufferCount.get(), mRepairOpenCount.get(), mFailCount
+//                            .get(),
+//                    mFailMainTeacherCount.get(), mFailCounTeacherCount.get(), mCompleteCount.get(),
+//                    mCompleteMainTeacherCount.get(), mCompleteCounTeacherCount.get());
             postDelayedIfNotFinish(mStatisticsRun, mStatisticsdelay);
         }
     };
@@ -1934,6 +1953,14 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         }
         String url = mGetInfo.getLogServerUrl();
         HttpRequestParams entity = new HttpRequestParams();
+        if (MegId.MEGID_12102 == msgid) {
+            if (totalFrameStat != null) {
+                String cpuName = totalFrameStat.getCpuName();
+                String memsize = totalFrameStat.getMemsize();
+                String ua = Build.VERSION.SDK_INT + ";" + cpuName + ";" + memsize;
+                entity.addBodyParam("UA", ua);
+            }
+        }
         entity.addBodyParam("msgid", msgid.msgid);
         entity.addBodyParam("userid", mGetInfo.getStuId());
         entity.addBodyParam("username", mGetInfo.getUname());

@@ -31,7 +31,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveScienceHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.AgoraVideoChatPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.VideoChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -264,7 +263,9 @@ public class VideoChatBll implements VideoChatAction {
                 if (nativeLibLoaded == 1) {
 //            videoChatInter = new LicodeVideoChatPager(activity, this, classmateEntities, getInfo, liveBll, baseLiveMediaControllerBottom);
                 } else if (nativeLibLoaded == 0) {
-                    videoChatInter = new VideoChatPager(activity, liveBll, getInfo);
+                    //不会发生
+//                    videoChatInter = new VideoChatPager(activity, liveBll, getInfo);
+                    return;
                 } else {
                     videoChatInter = new AgoraVideoChatPager(activity, liveBll, getInfo);
                 }

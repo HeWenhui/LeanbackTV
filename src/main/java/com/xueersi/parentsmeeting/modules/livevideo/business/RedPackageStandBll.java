@@ -135,11 +135,12 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
         redPackagePage = new RedPackagePage(activity, operateId, new RedPackagePage.RedPackagePageAction() {
 
             @Override
-            public void onPackageClick(final int operateId, final int clickPackage) {
+            public void onPackageClick(final int operateId, final int clickPackage, final AbstractBusinessDataCallBack callBack) {
                 receiveGold.sendReceiveGold(operateId, mVSectionID, new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
                         VideoResultEntity entity = (VideoResultEntity) objData[0];
+                        callBack.onDataSucess(entity);
                         if (onReceivePackage != null) {
                             onReceivePackage.onReceivePackage(operateId);
                         }

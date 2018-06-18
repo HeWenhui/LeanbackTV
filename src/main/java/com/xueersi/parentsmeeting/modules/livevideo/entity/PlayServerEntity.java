@@ -21,6 +21,7 @@ public class PlayServerEntity {
     private String icode;
     private String pcode;
     private String rtmpkey;
+    private String cipdispatch;
     /**
      * acode : address : 120.132.42.131 ccode : 中国 group : 小运营商1组 icode : 小运营商
      * pcode : 北京 priority : 2 provide : xueersi
@@ -80,11 +81,20 @@ public class PlayServerEntity {
         return rtmpkey;
     }
 
+    public String getCipdispatch() {
+        return cipdispatch;
+    }
+
+    public void setCipdispatch(String cipdispatch) {
+        this.cipdispatch = cipdispatch;
+    }
+
     public List<PlayserverEntity> getPlayserver() {
         return playserver;
     }
 
     public static class PlayserverEntity {
+        PlayServerEntity server;
         private boolean useFlv;
         private String acode;
         private String address;
@@ -110,6 +120,14 @@ public class PlayServerEntity {
             PlayserverEntity playserverEntity = (PlayserverEntity) obj;
 //            return playserverEntity.address.equals(address);
             return playserverEntity.address.equals(address) && playserverEntity.provide.equals(provide);
+        }
+
+        public PlayServerEntity getServer() {
+            return server;
+        }
+
+        public void setServer(PlayServerEntity server) {
+            this.server = server;
         }
 
         public boolean isUseFlv() {

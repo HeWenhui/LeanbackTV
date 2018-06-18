@@ -340,10 +340,15 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         mLiveBll.setRoomAction(liveMessageBll);
         mLiveBll.setH5CoursewareAction(h5CoursewareBll);
         mLiveBll.setLecAdvertAction(lecAdvertAction);
-        mLiveBll.getInfo(null);
         mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), true);
         setMediaControllerBottomParam(videoView.getLayoutParams());
         return true;
+    }
+
+    @Override
+    protected void onVideoCreateEnd() {
+        mLiveBll.setTotalFrameStat(totalFrameStat);
+        mLiveBll.getInfo(null);
     }
 
     /**
@@ -870,13 +875,18 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
 //                if (tvLoadingHint != null) {
 //                    tvLoadingHint.setText(msg);
 //                }
-                ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                if (isLandSpace()) {
-                    ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
+                mLogtf.d("onTeacherNotPresent:First=" + rlFirstBackgroundView.getVisibility());
+                if (rlFirstBackgroundView.getVisibility() == View.GONE) {
+                    ivTeacherNotpresent.setVisibility(View.GONE);
                 } else {
-                    ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
+                    ivTeacherNotpresent.setVisibility(View.VISIBLE);
+                    if (isLandSpace()) {
+                        ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
+                    } else {
+                        ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
+                    }
+                    findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
                 }
-                findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -894,7 +904,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             liveMessageBll.closeChat(true);
         }
         liveMessageBll.setLiveGetInfo(getInfo);
-        rollCallBll.onLiveInit(getInfo);
+        rollCallBll.onLiveInit(liveType, getInfo);
         questionBll.setUserName(getInfo);
 //        if (AppConfig.DEBUG) {
 //            LecAdvertEntity lecAdvertEntity = new LecAdvertEntity();

@@ -43,14 +43,22 @@ public class VoiceAnswerLog {
     }
 
     /** 语音答题第二步，收到课件互动题 */
-    public static void sno2H5Ware(LiveAndBackDebug liveAndBackDebug, String testtype, String testid, String nonce) {
+    public static void sno2(LiveAndBackDebug liveAndBackDebug, String testtype, String testid, String nonce, String sourcetype) {
         StableLogHashMap logHashMap = new StableLogHashMap("showAnswerDialog");
         logHashMap.put("testtype", "" + testtype);
         logHashMap.put("testid", "" + testid);
-        logHashMap.put("sourcetype", "h5ware");
+        logHashMap.put("sourcetype", sourcetype + "");
         logHashMap.put("answertype", "voice");
         logHashMap.addExY().addSno("2").addNonce("" + nonce);
         logHashMap.addStable("1");
+        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
+    }
+
+    public static void sno5(LiveAndBackDebug liveAndBackDebug, String sourcetype, String testid, String nonce) {
+        StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
+        logHashMap.put("testid", "" + testid);
+        logHashMap.put("sourcetype", sourcetype).addNonce(nonce);
+        logHashMap.addExY().addExpect("0").addSno("5").addStable("1");
         liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
     }
 }

@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -19,10 +20,15 @@ import com.tencent.smtt.sdk.WebViewClient;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.config.AppConfig;
+import com.xueersi.parentsmeeting.http.DownloadCallBack;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreCache;
+import com.xueersi.parentsmeeting.util.ZipExtractorTask;
+import com.xueersi.parentsmeeting.util.ZipProg;
+import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
@@ -38,6 +44,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -65,6 +72,11 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     private int netWorkType;
     boolean useService = true;
     boolean isStart = true;
+    private List<MoreCache> mList;
+    private File mMorecachein;
+    private File mMorecacheout;
+    private ArrayList<String> mUrls;
+    private int count = 0;
 
     public EnglishH5Cache(Context context, LiveBll liveBll, String liveId) {
         this.context = context;

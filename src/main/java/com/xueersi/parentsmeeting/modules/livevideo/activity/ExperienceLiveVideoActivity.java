@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
-import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -69,17 +68,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewarePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.ExamQuestionPlaybackPagers;
-import com.xueersi.parentsmeeting.modules.livevideo.page.H5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5PlaybackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
@@ -152,8 +148,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private Long lastPlayTime;
     /** 播放异常统计开始时间 */
     private Long errorPlayTime;
+
     // 定时获取聊天记录的任务
-    class ScanRunnable implements Runnable{
+    class ScanRunnable implements Runnable {
         HandlerThread handlerThread = new HandlerThread("ScanRunnable");
 
         ScanRunnable() {
@@ -267,18 +264,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     /** 各种互动题的页面 */
     /** 语音答题的页面 */
     private VoiceAnswerPager voiceAnswerPager;
-    /** 普通互动题，h5显示页面 */
-    private QuestionWebPager questionWebPager;
-    /** 课前测的页面 */
-    private ExamQuestionPlaybackPagers examQuestionPlaybackPager;
+    /** 课前测的页面,暂时没有 */
+    @Deprecated
+    private BaseExamQuestionInter examQuestionPlaybackPager;
     /** 语音评测，role play的页面 */
     private BaseSpeechAssessmentPager speechQuestionPlaybackPager;
-    /** nb实验的页面 */
-    private H5CoursewarePager h5CoursewarePager;
-    /** 英语课件的页面 */
-    private EnglishH5CoursewarePager englishH5CoursewarePager;
-    /** 文科主观题结果的页面 */
-    private SubjectResultPager subjectResultPager;
     /** 讲座购课广告的页面 */
     private LecAdvertPager lecAdvertPager;
     /** 填空题布局 */
@@ -576,7 +566,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 vPlayer.releaseSurface();
                 vPlayer.stop();
                 // 测试体验课播放器的结果页面
-                lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(),mVideoEntity.getLiveId(),getDataCallBack);
+                lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(), getDataCallBack);
                 return;
             }
             seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
@@ -590,14 +580,14 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         mHandler.postDelayed(mPlayDuration, mPlayDurTime);
     }
 
-    AbstractBusinessDataCallBack getDataCallBack = new AbstractBusinessDataCallBack(){
+    AbstractBusinessDataCallBack getDataCallBack = new AbstractBusinessDataCallBack() {
         @Override
         public void onDataSucess(Object... objData) {
             // 获取到数据之后的逻辑处理
-            if(objData.length > 0){
-                mData = (ExperienceResult)objData[0];
+            if (objData.length > 0) {
+                mData = (ExperienceResult) objData[0];
                 // 测试体验课播放器的结果页面
-                if(mData != null){
+                if (mData != null) {
                     showPopupwinResult();
                 }
 
@@ -609,38 +599,38 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private void showPopupwinResult() {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View result = inflater.inflate(R.layout.pop_experience_livevideo_result, null);
-        mWindow = new PopupWindow(result, dp2px(this,295), dp2px(this,343), false);
+        mWindow = new PopupWindow(result, dp2px(this, 295), dp2px(this, 343), false);
         mWindow.setOutsideTouchable(false);
         mWindow.showAtLocation(result, Gravity.CENTER, 0, 0);
-        mProgressbar = (RoundProgressBar)result.findViewById(R.id.roundProgressBar);
+        mProgressbar = (RoundProgressBar) result.findViewById(R.id.roundProgressBar);
         TextView recommand = (TextView) result.findViewById(R.id.tv_detail_result);
         TextView beat = (TextView) result.findViewById(R.id.tv_result);
         TextView totalscore = (TextView) result.findViewById(R.id.tv_total_score);
-        beat.setText("恭喜，你打败了"+ mData.getBeat() + "%的学生");
-        if(TextUtils.isEmpty(mData.getRecommend())){
+        beat.setText("恭喜，你打败了" + mData.getBeat() + "%的学生");
+        if (TextUtils.isEmpty(mData.getRecommend())) {
             recommand.setVisibility(View.GONE);
-        }else{
+        } else {
             recommand.setVisibility(View.VISIBLE);
             recommand.setText("推荐您报名" + mData.getRecommend());
         }
-        totalscore.setText(mData.getCorrect() + "%" );
+        totalscore.setText(mData.getCorrect() + "%");
         mProgressbar.setMax(100);
-        if(mData.getCorrect() > 0){
+        if (mData.getCorrect() > 0) {
             mProgressbar.setProgress(mData.getCorrect());
-        }else{
+        } else {
             mProgressbar.setProgress(0);
         }
-        ImageButton shut = (ImageButton)result.findViewById(R.id.ib_shut);
+        ImageButton shut = (ImageButton) result.findViewById(R.id.ib_shut);
         shut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mWindow.dismiss();
             }
         });
-        Button chat = (Button)result.findViewById(R.id.bt_chat);
-        if(TextUtils.isEmpty(mData.getWechatNum())){
+        Button chat = (Button) result.findViewById(R.id.bt_chat);
+        if (TextUtils.isEmpty(mData.getWechatNum())) {
             chat.setVisibility(View.GONE);
-        }else{
+        } else {
             chat.setVisibility(View.VISIBLE);
         }
         chat.setOnClickListener(new View.OnClickListener() {
@@ -648,24 +638,23 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             public void onClick(View v) {
                 ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 cm.setText(mData.getWechatNum());
-                Toast.makeText(ExperienceLiveVideoActivity.this,"您已复制老师微信号，快去添加吧!",Toast.LENGTH_LONG).show();
+                Toast.makeText(ExperienceLiveVideoActivity.this, "您已复制老师微信号，快去添加吧!", Toast.LENGTH_LONG).show();
             }
         });
-        Button apply = (Button)result.findViewById(R.id.bt_apply);
+        Button apply = (Button) result.findViewById(R.id.bt_apply);
         apply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mData.getUrl() != null){
-                    BrowserActivity.openBrowser(ExperienceLiveVideoActivity.this,mData.getUrl());
-                }else{
-                    Toast.makeText(ExperienceLiveVideoActivity.this,"数据异常",Toast.LENGTH_LONG).show();
+                if (mData.getUrl() != null) {
+                    BrowserActivity.openBrowser(ExperienceLiveVideoActivity.this, mData.getUrl());
+                } else {
+                    Toast.makeText(ExperienceLiveVideoActivity.this, "数据异常", Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
 
-    public static int dp2px(Context context, int dp)
-    {
+    public static int dp2px(Context context, int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
@@ -705,8 +694,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
         if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
-            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
+            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl)) {
                 ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
+            }
         }
     }
 
@@ -970,7 +960,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //        ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
         ivTeacherNotpresent.setBackgroundResource(R.drawable.live_free_play_end);
         // 获取学生的学习反馈
-        lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(),mVideoEntity.getLiveId(),getDataCallBack);
+        lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(), getDataCallBack);
         EventBus.getDefault().post(new BrowserEvent.ExperienceLiveEndEvent(1));
         if (scanRunnable != null) {
             scanRunnable.exit();
@@ -978,6 +968,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
     }
 
+    @Override
     protected void onRefresh() {
         if (AppBll.getInstance(this).isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
@@ -990,13 +981,20 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         AppBll.getInstance(mBaseApplication);
     }
 
+    @Deprecated
     private void showExam() {
         mPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (rlQuestionContent != null && mQuestionEntity != null) {
                     mPlayVideoControlHandler.sendEmptyMessage(SHOW_QUESTION);
-                    examQuestionPlaybackPager = new ExamQuestionPlaybackPagers(ExperienceLiveVideoActivity.this, mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), false, "");
+                    examQuestionPlaybackPager = new ExamQuestionX5PlaybackPager(ExperienceLiveVideoActivity.this, mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(),
+                            false, "", new BaseExamQuestionInter.ExamStop() {
+                        @Override
+                        public void stopExam() {
+
+                        }
+                    });
                     rlQuestionContent.removeAllViews();
                     rlQuestionContent.addView(examQuestionPlaybackPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT));

@@ -115,6 +115,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            getInfo.setIsSeniorOfHighSchool(data.optInt("isSeniorOfHighSchool"));
+
             //getInfo.setIsShowCounselorWhisper("1");
             if (data.has("followType")) {
                 JSONObject followType = data.getJSONObject("followType");
@@ -333,10 +335,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             server.setIcode(object.optString("icode"));
             server.setPcode(object.optString("pcode"));
             server.setRtmpkey(object.optString("rtmpkey"));
+            server.setCipdispatch(object.optString("clientip"));
             JSONArray playserverArray = object.getJSONArray("playserver");
             List<PlayserverEntity> playserver = new ArrayList<PlayserverEntity>();
             for (int i = 0; i < playserverArray.length(); i++) {
                 PlayserverEntity entity = new PlayserverEntity();
+                entity.setServer(server);
                 object = playserverArray.getJSONObject(i);
                 entity.setAcode(object.getString("acode"));
                 entity.setAddress(object.getString("address"));

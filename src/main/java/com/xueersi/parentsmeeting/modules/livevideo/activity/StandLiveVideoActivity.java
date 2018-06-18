@@ -242,6 +242,15 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         Loger.d(TAG, "onVideoCreate:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         initView();
+        Loger.d(TAG, "onVideoCreate:time3=" + (System.currentTimeMillis() - before));
+//        SpeechAssessmentWebPager pager=new SpeechAssessmentWebPager(mContext,"","","",true,"",null);
+//        ((RelativeLayout)findViewById(R.id.rl_speech_test)).addView(pager.getRootView());
+        return true;
+    }
+
+    @Override
+    protected void onVideoCreateEnd() {
+        mLiveBll.setTotalFrameStat(totalFrameStat);
         liveStandFrameAnim.check(new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
@@ -260,10 +269,6 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                 mLiveBll.getInfo(mGetInfo);
             }
         });
-        Loger.d(TAG, "onVideoCreate:time3=" + (System.currentTimeMillis() - before));
-//        SpeechAssessmentWebPager pager=new SpeechAssessmentWebPager(mContext,"","","",true,"",null);
-//        ((RelativeLayout)findViewById(R.id.rl_speech_test)).addView(pager.getRootView());
-        return true;
     }
 
     @Override
@@ -483,7 +488,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         redPackageBll.setVSectionID(mVSectionID);
         questionBll.setLiveType(liveType);
         questionBll.initData();
-        questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(questionBll.new LiveQuestionSwitchImpl()));
+        questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mLiveBll, questionBll.new LiveQuestionSwitchImpl()));
         questionBll.setBaseSpeechCreat(new LiveStandSpeechCreat(mLiveBll));
         questionBll.setSpeechEndAction(new StandSpeechTop3Bll(mLiveBll));
 //        questionBll.setBaseSpeechCreat(new LiveSpeechCreat());
@@ -954,9 +959,14 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
 //                        return;
 //                    }
 //                }
-                ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                setTeacherNotpresent(ivTeacherNotpresent);
-                findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
+                mLogtf.d("onTeacherNotPresent:First=" + rlFirstBackgroundView.getVisibility());
+                if (rlFirstBackgroundView.getVisibility() == View.GONE) {
+                    ivTeacherNotpresent.setVisibility(View.GONE);
+                } else {
+                    ivTeacherNotpresent.setVisibility(View.VISIBLE);
+                    setTeacherNotpresent(ivTeacherNotpresent);
+                    findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
+                }
             }
         });
     }
@@ -1058,7 +1068,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
             liveMessageBll.closeChat(true);
         }
         liveMessageBll.setLiveGetInfo(getInfo);
-        rollCallBll.onLiveInit(getInfo);
+        rollCallBll.onLiveInit(liveType, getInfo);
         questionBll.setUserName(getInfo);
         videoChatBll.onLiveInit(getInfo);
         redPackageBll.setUserName(getInfo.getStandLiveName());

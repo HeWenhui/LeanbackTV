@@ -32,4 +32,14 @@ public interface RollCallAction {
     /** 停止签到 */
     void stopRollCall();
 
+    /**强制结束签到*/
+    void forceCloseRollCall();
+
+    /**
+     * 自动签到
+     * @param classSignEntity
+     * @param classStartTime 课程开始时间
+     * @param nowTime        当前时间
+     */
+    void autoSign(ClassSignEntity classSignEntity,long classStartTime,long nowTime);
 }

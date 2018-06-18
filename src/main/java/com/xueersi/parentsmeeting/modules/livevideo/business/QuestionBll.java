@@ -29,10 +29,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.ExamQuestionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankPortLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectLivePager;
@@ -40,10 +41,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectPort
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectPortLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSubjectivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssAutoPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.SubjectResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SubjectResultX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
@@ -73,7 +74,7 @@ import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE5;
 /**
  * Created by linyuqiang on 2016/9/23.
  */
-public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEvalAction, BaseQuestionWebPager
+public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEvalAction, BaseQuestionWebInter
         .StopWebQuestion, BaseVoiceAnswerCreat.AnswerRightResultVoice {
     String TAG = "QuestionBll";
     SpeechEvaluatorUtils mIse;
@@ -191,11 +192,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 网页互动题正在作答
      */
     private boolean isHaveWebQuestion = false;
-    private BaseQuestionWebPager questionWebPager;
+    private BaseQuestionWebInter questionWebPager;
     /**
      * 试卷页面
      */
-    private ExamQuestionPager examQuestionPager;
+    private BaseExamQuestionInter examQuestionPager;
     /**
      * 语音评测页面
      */
@@ -209,7 +210,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 语音评测结束后的事件
      */
     private SpeechEndAction speechEndAction;
-    private SubjectResultPager subjectResultPager;
+    /** 语文主观题 */
+    private BaseSubjectResultInter subjectResultPager;
     boolean isLand;
     private LiveMessageBll liveMessageBll;
     /**
@@ -525,7 +527,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             umsAgentDebugSys(questionEventId, mData);
         }
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
-        if (IS_SCIENCE && !"4".equals(videoQuestionLiveEntity.type)) {//不是语音评测
+        //不是语音评测
+        if (IS_SCIENCE && !LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(videoQuestionLiveEntity.type)) {
             if (videoQuestionLiveEntity.isTestUseH5) {
                 mVPlayVideoControlHandler.post(new Runnable() {
                     @Override
@@ -543,6 +546,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     }
                 });
                 return;
+            }
+        }
+        if (!IS_SCIENCE && LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(videoQuestionLiveEntity.type)) {
+            if (!StringUtils.isEmpty(videoQuestionLiveEntity.roles)) {
+                baseSpeechCreat.receiveRolePlay(videoQuestionLiveEntity);
             }
         }
         mVPlayVideoControlHandler.post(new Runnable() {
@@ -664,8 +672,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 //                        speechAssessmentPager = new SpeechAssessmentWebPager(activity,
 //                                liveGetInfo.getId(), id, liveGetInfo.getStuId(),
 //                                true, videoQuestionLiveEntity.nonce, QuestionBll.this, stuCouId, false);
-                        speechAssessmentPager = baseSpeechCreat.createRolePlay(activity, liveGetInfo, id,
-                                videoQuestionLiveEntity.nonce, QuestionBll.this, stuCouId);
+                        speechAssessmentPager = baseSpeechCreat.createRolePlay(activity, liveGetInfo, videoQuestionLiveEntity,
+                                id, QuestionBll.this, stuCouId);
                         speechAssessmentPager.setIse(mIse);
                         speechAssessmentPager.initData();
                         Loger.i("RolePlayerDemoTest", "走人机");
@@ -717,7 +725,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 String url = liveGetInfo.getSubjectiveTestAnswerResult() + "?stuId=" + liveGetInfo.getStuId() +
                         "&testId=" + videoQuestionLiveEntity.getvQuestionID();
                 Loger.d(TAG, "showQuestion:url=" + url);
-                subjectResultPager = new SubjectResultPager(activity, this,
+                subjectResultPager = new SubjectResultX5Pager(activity, this,
                         liveGetInfo.getSubjectiveTestAnswerResult(),
                         liveGetInfo.getStuId(), liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
                         stuCouId);
@@ -1037,7 +1045,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mData.put("logtype", "receiveExam");
                 mData.put("examid", num);
                 umsAgentDebugSys(examQuestionEventId, mData);
-                examQuestionPager = new ExamQuestionPager(activity, mLiveBll, QuestionBll.this, liveGetInfo.getStuId
+                examQuestionPager = new ExamQuestionX5Pager(activity, mLiveBll, QuestionBll.this, liveGetInfo.getStuId
                         (), liveGetInfo.getUname(), liveid, num, nonce, mAnswerRankBll == null ? "0" : mAnswerRankBll
                         .getIsShow(), IS_SCIENCE, stuCouId, 0);
                 rlQuestionContent.addView(examQuestionPager.getRootView());
@@ -1065,10 +1073,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             public void run() {
                 int delayTime = 0;
                 if (examQuestionPager != null) {
-                    curQuestionView = examQuestionPager;
+                    curQuestionView = examQuestionPager.getBasePager();
                     examQuestionPager.examSubmitAll();
                     delayTime = 3000;
-                    closePageByTeamPk(examQuestionPager);
+                    closePageByTeamPk(examQuestionPager.getBasePager());
                 } else if (hasExam && !hasSubmit) {
                     getFullMarkList(XESCODE.EXAM_STOP, delayTime);
                     hasExam = false;
@@ -1101,11 +1109,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     public void run() {
                         Loger.e("QuestionBll", "=======>closePageByTeamPk 2222:" + curQuestionView);
                         if (pager != null) {
-                            if (pager instanceof QuestionWebPager) {
-                                isHaveWebQuestion = false;
+                            if (pager instanceof BaseQuestionWebInter) {
+                                setHaveWebQuestion(false);
                             }
-                            if (pager instanceof ExamQuestionPager) {
-                                isHaveExam = false;
+                            if (pager instanceof ExamQuestionX5Pager) {
+                                setHaveExam(false);
                             }
                             rlQuestionContent.removeView(pager.getRootView());
                         }
@@ -1223,7 +1231,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void stopWebQuestion(BasePager pager, String testId) {
-        if (pager instanceof QuestionWebPager) {
+        if (pager instanceof BaseQuestionWebInter) {
             mQueAndBool.add("" + testId);
             setHaveWebQuestion(false);
             JSONObject object = new JSONObject();
@@ -1405,8 +1413,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
             });
         }
-        VoiceAnswerLog.sno2H5test(mLiveBll, videoQuestionLiveEntity.type, videoQuestionLiveEntity.id,
-                videoQuestionLiveEntity.nonce);
     }
 
     /**
@@ -1746,14 +1752,17 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
+    @Override
     public void umsAgentDebugSys(String eventId, final Map<String, String> mData) {
         mLiveBll.umsAgentDebugSys(eventId, mData);
     }
 
+    @Override
     public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
         mLiveBll.umsAgentDebugInter(eventId, mData);
     }
 
+    @Override
     public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
         mLiveBll.umsAgentDebugPv(eventId, mData);
     }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.JsResult;
+import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
@@ -18,7 +19,9 @@ import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.logerhelper.LogerTag;
+import com.xueersi.parentsmeeting.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
 
@@ -153,8 +156,7 @@ public abstract class BaseWebviewX5Pager extends BasePager {
             if (mLevel == ConsoleMessage.MessageLevel.ERROR || mLevel == ConsoleMessage.MessageLevel.WARNING) {
                 isRequst = true;
             }
-            Loger.d(mContext, LogerTag.DEBUG_WEBVIEW_CONSOLE, TAG + ",Level=" + mLevel + "&&," + consoleMessage.sourceId() +
-                    "&&," + consoleMessage.lineNumber() + "&&," + consoleMessage.message(), isRequst);
+            UmsAgentUtil.webConsoleMessage(mContext, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
             return super.onConsoleMessage(consoleMessage);
         }
 
@@ -165,8 +167,12 @@ public abstract class BaseWebviewX5Pager extends BasePager {
         }
     }
 
-    public class MyWebViewClient extends WebViewClient {
+    public class MyWebViewClient extends ErrorWebViewClient {
         String failingUrl;
+
+        public MyWebViewClient() {
+            super(TAG);
+        }
 
         @Override
         public void onPageFinished(WebView view, String url) {
@@ -199,6 +205,11 @@ public abstract class BaseWebviewX5Pager extends BasePager {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             return BaseWebviewX5Pager.this.shouldOverrideUrlLoading(view, url);
+        }
+
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
+            return super.shouldInterceptRequest(view, s);
         }
     }
 

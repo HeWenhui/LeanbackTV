@@ -8,9 +8,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
+import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.parentsmeeting.base.BasePager;
+import com.xueersi.parentsmeeting.entity.EnglishH5Entity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
@@ -19,12 +22,20 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
+import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by linyuqiang on 2017/3/25.
@@ -50,16 +61,18 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private boolean IS_SCIENCE;
     private int mGoldNum;
     private int mEnergyNum;
+    private EnglishH5Entity englishH5Entity;
 
     @Override
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
         mEnglishH5CoursewareBll = englishH5CoursewareBll;
     }
 
-    public EnglishH5CoursewareX5Pager(Context context, boolean isPlayBack, String liveId, String url, String id, final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose, LiveAndBackDebug liveAndBackDebug, String isShowRanks, boolean IS_SCIENCE) {
+    public EnglishH5CoursewareX5Pager(Context context, boolean isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity, final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose, LiveAndBackDebug liveAndBackDebug, String isShowRanks, boolean IS_SCIENCE) {
         super(context);
         this.liveId = liveId;
-        this.url = url;
+        this.englishH5Entity = englishH5Entity;
+        this.url = englishH5Entity.getUrl();
         this.isPlayBack = isPlayBack;
         this.onClose = onClose;
         this.liveAndBackDebug = liveAndBackDebug;
@@ -224,10 +237,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     @Override
     public void initData() {
         super.initData();
-
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
-
         String loadUrl = url + "?t=" + System.currentTimeMillis();
         if (isPlayBack) {
             loadUrl += "&isPlayBack=1";
@@ -242,10 +253,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         loadUrl(loadUrl);
         Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + loadUrl);
         reloadurl = loadUrl;
-
         mGoldNum = -1;
         mEnergyNum = -1;
-
         mView.findViewById(R.id.iv_livevideo_subject_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -322,7 +331,12 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
-        wvSubjectWeb.setWebViewClient(new MyWebViewClient());
+        wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
+                return super.shouldInterceptRequest(view, s);
+            }
+        });
     }
 
     public String getId() {

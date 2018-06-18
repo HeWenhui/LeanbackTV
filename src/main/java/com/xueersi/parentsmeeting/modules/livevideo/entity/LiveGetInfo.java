@@ -243,13 +243,20 @@ public class LiveGetInfo {
 
     /**
      * 是否是 teampk 直播间
+     * 1 :是pk 直播间  0 :非pk直播间
      */
-    private String isAllowTeamPk;  // 1 :是pk 直播间  0 :非pk直播间
+    private String isAllowTeamPk;
     private String[] subjectIds;//所有学科id
     /** 小学理科改版，教育阶段，区分献花 */
     private String educationStage;
     /** 直播课年级 */
     private int grade;
+
+    /**
+     * 是否是高三理科
+     */
+    private int isSeniorOfHighSchool;
+
 
     public int getGrade() {
         return grade;
@@ -289,6 +296,14 @@ public class LiveGetInfo {
 
     public void setIs_show_ranks(String is_show_ranks) {
         this.is_show_ranks = is_show_ranks;
+    }
+
+    public void setIsSeniorOfHighSchool(int isSeniorOfHighSchool){
+        this.isSeniorOfHighSchool = isSeniorOfHighSchool;
+    }
+
+    public int getIsSeniorOfHighSchool() {
+        return isSeniorOfHighSchool;
     }
 
     public LiveGetInfo(LiveTopic liveTopic) {

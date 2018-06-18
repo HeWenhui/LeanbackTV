@@ -38,6 +38,8 @@ import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5PlaybackPager;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
 import com.xueersi.parentsmeeting.business.AppBll;
@@ -56,7 +58,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LecturePeopleEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageGroupEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.page.ExamQuestionPlaybackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager;
@@ -136,7 +137,9 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
 
     /** 互动题 */
     private VideoQuestionEntity mQuestionEntity;
-    ExamQuestionPlaybackPager examQuestionPlaybackPager;
+    /** 讲座暂时没有 */
+    @Deprecated
+    private BaseExamQuestionInter examQuestionPlaybackPager;
     /** 红包id */
     private String mRedPacketId;
 
@@ -919,7 +922,8 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
             public void run() {
                 if (rlQuestionContent != null && mQuestionEntity != null) {
                     mPlayVideoControlHandler.sendEmptyMessage(SHOW_QUESTION);
-                    examQuestionPlaybackPager = new ExamQuestionPlaybackPager(LectureLivePlayBackVideoActivity.this, mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), false, "", new ExamQuestionPlaybackPager.ExamStop() {
+                    examQuestionPlaybackPager = new ExamQuestionX5PlaybackPager(LectureLivePlayBackVideoActivity.this, mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(),
+                            false, "", new BaseExamQuestionInter.ExamStop() {
                         @Override
                         public void stopExam() {
                             LectureLivePlayBackVideoActivity.this.stopExam();

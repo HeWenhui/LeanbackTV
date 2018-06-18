@@ -82,13 +82,14 @@ import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE4;
  * @date 2017/12/5
  */
 public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
-    String eventId = LiveVideoConfig.LIVE_STAND_TEST_VOICE;
     private SpeechEvaluatorUtils mIse;
     BaseVideoQuestionEntity baseVideoQuestionEntity;
     /** 所有帧动画 */
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
     /** 组内战况已经被加入的学生 */
     private ArrayList<GoldTeamStatus.Student> addStudents = new ArrayList<>();
+    /** 组内战况已经弹过 */
+    private boolean teamStatus = false;
     /** 手动答题切换动画 */
     FrameAnimation switchFrameAnimation;
     /** readygo动画 */
@@ -297,7 +298,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                         public void onDataSucess(Object... objData) {
                             GoldTeamStatus entity = (GoldTeamStatus) objData[0];
                             ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
-                            if (addStudents.isEmpty()) {
+                            if (!teamStatus && !students.isEmpty()) {
+                                teamStatus = true;
                                 VoiceAnswerStandLog.sno4(liveAndBackDebug, baseVideoQuestionEntity.getvQuestionID());
                             }
                             long delayMillis = liveStandQuestionSwitch.getRequestTime();
@@ -776,17 +778,6 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                         questionSwitch.uploadVoiceFile(saveVideoFile);
                         isSpeechSuccess = true;
                         boolean isRight = option.equalsIgnoreCase(answer);
-
-                        String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
-                        String nonce = StableLogHashMap.creatNonce();
-                        StableLogHashMap logHashMap = new StableLogHashMap("submitAnswerResult");
-                        logHashMap.put("testtype", "" + type);
-                        logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
-                        logHashMap.put("submittype", isEnd ? "force" : "active");
-                        logHashMap.put("sourcetype", sourcetype).put("stuanswer", isRight ? "Y" : "N");
-                        logHashMap.addExY().addExpect("1").addSno("4").addNonce("" + nonce).addStable("1");
-                        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
-                        baseVideoQuestionEntity.nonce = nonce;
                         questionSwitch.onPutQuestionResult(baseVideoQuestionEntity, answer, option, 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
                             @Override
                             public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
@@ -877,15 +868,6 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                     return;
                 }
                 String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
-                String nonce = StableLogHashMap.creatNonce();
-                StableLogHashMap logHashMap = new StableLogHashMap("submitAnswerResult");
-                logHashMap.put("testtype", "" + type);
-                logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
-                logHashMap.put("submittype", isEnd ? "force" : "active").put("sourcetype", sourcetype);
-                logHashMap.put("stuanswer", isRight ? "Y" : "N");
-                logHashMap.addExY().addExpect("1").addSno("4").addNonce("" + nonce).addStable("1");
-                baseVideoQuestionEntity.nonce = nonce;
-                liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
                 try {
                     JSONArray options = assess_ref.getJSONArray("options");
                     JSONObject jsonObject = options.getJSONObject(0);

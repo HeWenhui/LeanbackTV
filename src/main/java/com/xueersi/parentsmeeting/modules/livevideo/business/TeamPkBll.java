@@ -152,7 +152,6 @@ public class TeamPkBll {
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         mRootView.addView(rlTeamPkContent, params);
         showPkStateLayout();
-        Loger.e("cksdd", "registLayotListener called");
         registLayotListener();
 
     }
@@ -645,7 +644,6 @@ public class TeamPkBll {
         mFocusPager = aqAwardPager;
     }
     private  void registLayotListener(){
-        Loger.e("cksdd", "registLayotListener 222233344 called");
         rlTeamPkContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -653,7 +651,6 @@ public class TeamPkBll {
                 View  videoView = viewGroup.findViewById(R.id.vv_course_video_video);
                 ViewGroup.LayoutParams lp = videoView.getLayoutParams();
                 setVideoLayout(lp.width,lp.height);
-                Loger.e("cksdd", "onGlobalLayout called");
             }
         });
     }
@@ -669,8 +666,6 @@ public class TeamPkBll {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mFocusPager.getRootView().getLayoutParams();
             int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
             wradio += (screenWidth - width) / 2;
-            Loger.e("cksdd", "setVideoWidthAndHeigh:screenWidth=" + screenWidth + ",width=" + width + "," + height
-                    + ",wradio=" + wradio + "," + params.width);
             if (wradio != params.rightMargin) {
                 params.rightMargin = wradio;
                 LayoutParamsUtil.setViewLayoutParams(mFocusPager.getRootView(), params);

@@ -25,7 +25,10 @@ import org.xutils.xutils.http.RequestParams;
 import org.xutils.xutils.x;
 
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 
 /**
@@ -105,16 +108,30 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(LiveVideoConfig.URL_LIVE_LECTURE_GET_INFO, params, requestCallBack);
     }
 
-    public Callback.Cancelable liveGetPlayServer(final String url2, final CommonRequestCallBack<String>
+    int getTimes = 1;
+
+    public Callback.Cancelable liveGetPlayServer(final StringBuilder ipsb, final String url2, final CommonRequestCallBack<String>
             requestCallBack) {
         final HttpURLConnectionCancelable cancelable = new HttpURLConnectionCancelable();
-        new Thread() {
+        new Thread("liveGetPlayServer:" + getTimes) {
             Handler handler = new Handler(Looper.getMainLooper());
 
+            @Override
             public void run() {
                 try {
                     URL url = new URL(url2);
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    InetAddress inetAddress = InetAddress.getByName(url.getHost());
+                    ipsb.append(inetAddress.getHostAddress());
+                    Loger.d(TAG, "liveGetPlayServer:host=" + url.getHost() + ",ip=" + inetAddress.getHostAddress());
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                HttpURLConnection connection = null;
+                try {
+                    URL url = new URL(url2);
+                    connection = (HttpURLConnection) url.openConnection();
                     connection.setConnectTimeout(20000);
                     connection.setReadTimeout(20000);
                     cancelable.connection = connection;
@@ -156,6 +173,15 @@ public class LiveHttpManager extends BaseHttpBusiness {
                             }
                         }
                     });
+                } finally {
+                    Loger.d(TAG, "liveGetPlayServer:disconnect=" + (connection != null));
+                    try {
+                        if (connection != null) {
+                            connection.disconnect();
+                        }
+                    } catch (Exception e) {
+
+                    }
                 }
             }
         }.start();
@@ -170,11 +196,11 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
         @Override
         public void cancel() {
+            isCancel = true;
             if (connection != null) {
                 new Thread() {
                     public void run() {
                         connection.disconnect();
-                        isCancel = true;
                         if (callback != null) {
                             callback.onCancelled(new CancelledException("disconnect"));
                         }
@@ -692,6 +718,16 @@ public class LiveHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
         requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_GET_WARE_URL;
+        sendPost(requestCallBack.url, params, requestCallBack);
+    }
+
+    /**
+     * 获取一次多发的预加载课件地址
+     */
+    public void getMoreCoureWareUrl(String liveId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_GET_MORE_WARE_URL;
         sendPost(requestCallBack.url, params, requestCallBack);
     }
 
