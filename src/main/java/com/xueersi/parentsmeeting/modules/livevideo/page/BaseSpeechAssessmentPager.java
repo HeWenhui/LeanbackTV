@@ -4,7 +4,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 import android.content.Context;
 
 import com.xueersi.common.base.BasePager;
-import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
+import com.xueersi.common.speech.SpeechEvaluatorUtils;
 
 /**
  * Created by lyqai on 2017/11/21.

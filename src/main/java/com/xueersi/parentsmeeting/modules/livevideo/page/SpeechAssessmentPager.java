@@ -28,7 +28,7 @@
 //import com.xueersi.parentsmeeting.modules.livevideo.business.OnSpeechEval;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
 //import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
-//import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
+//import com.xueersi.common.speech.SpeechEvaluatorUtils;
 //import com.xueersi.lib.framework.utils.XESToastUtils;
 //import com.xueersi.common.util.audio.AudioPlayer;
 //import com.xueersi.xesalib.utils.audio.AudioPlayerListening;

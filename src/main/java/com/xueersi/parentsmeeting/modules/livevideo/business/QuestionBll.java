@@ -48,7 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.SubjectResultX
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
+import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -65,11 +65,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE1;
-import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE2;
-import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE3;
-import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE4;
-import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE5;
+import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE1;
+import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE2;
+import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE3;
+import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE4;
+import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE5;
 
 /**
  * Created by linyuqiang on 2016/9/23.

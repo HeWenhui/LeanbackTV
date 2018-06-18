@@ -29,9 +29,10 @@ dependencies {
         changing = true
     }
     //framework
-    implementation(rootProject.ext.xeslibraries.framework) {
-        changing = true
-    }
+//    implementation(rootProject.ext.xeslibraries.framework) {
+//        changing = true
+//    }
+    implementation project(':library:framework')
     //统计
     implementation(rootProject.ext.xeslibraries.analytics) {
         changing = true

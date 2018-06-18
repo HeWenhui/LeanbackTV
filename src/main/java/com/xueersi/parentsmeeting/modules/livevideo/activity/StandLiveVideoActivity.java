@@ -87,7 +87,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.VPlayer
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
+import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.string.StringUtils;

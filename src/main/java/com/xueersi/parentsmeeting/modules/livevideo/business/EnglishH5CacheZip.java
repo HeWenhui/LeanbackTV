@@ -16,7 +16,7 @@
 //import android.webkit.WebViewClient;
 //import android.widget.RelativeLayout;
 //
-//import com.xueersi.parentsmeeting.http.DownloadCallBack;
+//import com.xueersi.common.http.DownloadCallBack;
 //import com.xueersi.common.http.HttpCallBack;
 //import com.xueersi.common.http.ResponseEntity;
 //import com.xueersi.parentsmeeting.modules.livevideo.R;

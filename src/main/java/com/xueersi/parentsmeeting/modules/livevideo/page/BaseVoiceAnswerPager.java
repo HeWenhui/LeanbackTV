@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
-import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
+import com.xueersi.common.speech.SpeechEvaluatorUtils;
 
 /**
  * Created by linyuqiang on 2018/4/3.
