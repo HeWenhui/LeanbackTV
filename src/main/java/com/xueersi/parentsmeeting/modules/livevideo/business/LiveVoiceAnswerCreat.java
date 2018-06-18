@@ -18,9 +18,9 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import org.json.JSONObject;
 
-import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE1;
-import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE2;
-import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE4;
+import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE1;
+import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE2;
+import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE4;
 
 /**
  * Created by linyuqiang on 2018/4/3.

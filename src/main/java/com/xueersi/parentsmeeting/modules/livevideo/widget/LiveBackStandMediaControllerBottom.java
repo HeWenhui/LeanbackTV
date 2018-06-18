@@ -7,8 +7,8 @@ import android.view.View;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaControllerBottom2;
+import com.xueersi.parentsmeeting.module.videoplayer.media.MediaControllerBottom;
+import com.xueersi.parentsmeeting.module.videoplayer.media.MediaControllerBottom2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 
 /**

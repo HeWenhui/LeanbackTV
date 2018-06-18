@@ -22,7 +22,7 @@
 //import com.xueersi.common.sharedata.ShareDataManager;
 //import com.xueersi.common.entity.MyUserInfoEntity;
 //import com.xueersi.common.business.AppBll;
-//import com.xueersi.parentsmeeting.entity.AppInfoEntity;
+//import com.xueersi.common.entity.AppInfoEntity;
 //import com.xueersi.common.logerhelper.LogerTag;
 //import com.xueersi.common.business.UserBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;

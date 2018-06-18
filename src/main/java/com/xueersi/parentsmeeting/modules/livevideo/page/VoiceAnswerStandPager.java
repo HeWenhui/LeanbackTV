@@ -43,7 +43,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
-import com.xueersi.parentsmeeting.util.FontCache;
+import com.xueersi.common.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
@@ -72,8 +72,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE1;
-import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE4;
+import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE1;
+import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE4;
 
 /**
  * 站立直播-语音答题

@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
-import com.xueersi.parentsmeeting.route.ReflexCenter;
+import com.xueersi.common.route.ReflexCenter;
 
 /**
  * Created by lyqai on 2017/10/9.

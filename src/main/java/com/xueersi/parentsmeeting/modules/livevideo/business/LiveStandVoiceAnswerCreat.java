@@ -26,7 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
-import com.xueersi.parentsmeeting.util.FontCache;
+import com.xueersi.common.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -37,9 +37,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE1;
-import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE2;
-import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE4;
+import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE1;
+import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE2;
+import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE4;
 
 /**
  * Created by linyuqiang on 2018/4/3.

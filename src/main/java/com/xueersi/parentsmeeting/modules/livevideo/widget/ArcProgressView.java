@@ -12,7 +12,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.xueersi.parentsmeeting.BitmapFillet;
+import com.xueersi.lib.framework.utils.image.BitmapFillet;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 /**

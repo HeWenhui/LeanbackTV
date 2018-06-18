@@ -18,7 +18,7 @@ import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.AppBll;
-import com.xueersi.parentsmeeting.entity.AppInfoEntity;
+import com.xueersi.common.entity.AppInfoEntity;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
@@ -33,9 +33,6 @@ import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
-
-import static com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog.MESSAGE_VERIFY_TYPE;
-
 
 /**
  * Created by linyuqiang on 2018/6/6.
@@ -182,7 +179,7 @@ public class ExamQuestionX5PlaybackPager extends BasePager implements BaseExamQu
     public class MyWebChromeClient extends WebChromeClient {
         @Override
         public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
-            VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false, MESSAGE_VERIFY_TYPE);
+            VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false, VerifyCancelAlertDialog.MESSAGE_VERIFY_TYPE);
             verifyCancelAlertDialog.initInfo(message);
             verifyCancelAlertDialog.showDialog();
             result.confirm();
