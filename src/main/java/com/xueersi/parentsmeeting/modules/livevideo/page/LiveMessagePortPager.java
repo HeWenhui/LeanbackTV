@@ -57,17 +57,17 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
-import com.xueersi.parentsmeeting.event.MiniEvent;
+import com.xueersi.common.event.MiniEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.xesalib.utils.string.RegexUtils;
+import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
-import com.xueersi.xesalib.view.button.CompoundButtonGroup;
-import com.xueersi.xesalib.view.layout.dataload.DataErrorManager;
+import com.xueersi.ui.widget.button.CompoundButtonGroup;
+import com.xueersi.ui.dataload.DataErrorManager;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -793,6 +793,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     }
 
     /** 聊天开始连接 */
+    @Override
     public void onStartConnect() {
 
     }
@@ -823,6 +824,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     }
 
     /** 聊天进入房间 */
+    @Override
     public void onRegister() {
         mainHandler.post(new Runnable() {
             @Override
@@ -833,6 +835,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     }
 
     /** 聊天断开 */
+    @Override
     public void onDisconnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -954,6 +957,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     }
 
     /** 关闭开启聊天 */
+    @Override
     public void onopenchat(final boolean openchat, final String mode, final boolean fromNotice) {
         mView.post(new Runnable() {
             @Override
@@ -1000,6 +1004,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
         return super.onBack();
     }
 
+    @Override
     public void onModeChange(final String mode) {
         mView.post(new Runnable() {
 

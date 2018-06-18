@@ -26,9 +26,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.xesalib.utils.audio.safeaudioplayer.AudioPlayerManager;
-import com.xueersi.xesalib.utils.audio.safeaudioplayer.PlayerCallback;
-import com.xueersi.xesalib.utils.listener.OnAlphaTouchListener;
+import com.xueersi.common.util.audio.safeaudioplayer.AudioPlayerManager;
+import com.xueersi.common.util.audio.safeaudioplayer.PlayerCallback;
+import com.xueersi.lib.framework.utils.listener.OnAlphaTouchListener;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 

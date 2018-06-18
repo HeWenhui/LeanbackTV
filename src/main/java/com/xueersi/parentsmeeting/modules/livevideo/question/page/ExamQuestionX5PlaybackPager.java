@@ -21,7 +21,7 @@ import com.xueersi.common.business.AppBll;
 import com.xueersi.parentsmeeting.entity.AppInfoEntity;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.logerhelper.LogerTag;
-import com.xueersi.parentsmeeting.logerhelper.UmsAgentUtil;
+import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.common.business.UserBll;

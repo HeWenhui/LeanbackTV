@@ -41,6 +41,8 @@ dependencies {
     implementation(rootProject.ext.xeslibraries.imageloader) {
         changing = true
     }
+    //glide库
+    implementation rootProject.ext.thirdlibraries.glide
     //日志
     implementation(rootProject.ext.xeslibraries.logger) {
         changing = true

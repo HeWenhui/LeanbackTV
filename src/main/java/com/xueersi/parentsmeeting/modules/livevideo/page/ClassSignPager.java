@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.sobot.chat.utils.ToastUtil;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.http.ResponseEntity;
@@ -94,14 +94,14 @@ public class ClassSignPager extends BasePager {
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         logToFile.e("onPmFailure:msg=" + msg, error);
-                        ToastUtil.showToast(mContext,TextUtils.isEmpty(msg)?"网络异常":msg);
+                        XESToastUtils.showToast(mContext,TextUtils.isEmpty(msg)?"网络异常":msg);
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                        // rollCallAction.stopRollCall();
                         String errorMsg = TextUtils.isEmpty(responseEntity.getErrorMsg())?"网络异常":responseEntity.getErrorMsg();
-                        ToastUtil.showToast(mContext,errorMsg);
+                        XESToastUtils.showToast(mContext,errorMsg);
                     }
                 });
             }

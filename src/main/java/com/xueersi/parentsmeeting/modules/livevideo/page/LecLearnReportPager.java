@@ -24,7 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoFloatTitle;
-import com.xueersi.xesalib.view.ratingbar.RatingBar;
+import com.xueersi.ui.widget.RatingBar;
 
 import java.io.File;
 import java.util.ArrayList;

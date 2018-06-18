@@ -49,8 +49,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE;
-
 //import com.xueersi.parentsmeeting.modules.livevideo.page.LicodeVideoChatPager;
 
 /**
@@ -369,7 +367,7 @@ public class VideoChatBll implements VideoChatAction {
                 if (!hasWiredHeadset) {
                     if (!headsetPrompt) {
                         headsetPrompt = true;
-                        VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(), false, TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
+                        VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(), false, VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
                         verifyCancelAlertDialog.initInfo("提醒", "插上耳麦再举手吧，否则上麦会有杂音。");
                         verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
                             @Override

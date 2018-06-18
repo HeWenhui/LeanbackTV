@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
-import com.xueersi.parentsmeeting.event.MiniEvent;
+import com.xueersi.common.event.MiniEvent;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
 import org.greenrobot.eventbus.EventBus;

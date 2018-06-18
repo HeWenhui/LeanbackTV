@@ -26,7 +26,8 @@ import android.widget.Toast;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.entity.FooterIconEntity;
-import com.xueersi.parentsmeeting.event.MiniEvent;
+import com.xueersi.common.event.MiniEvent;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.business.AppBll;
@@ -55,7 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusE
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.util.FloatPermissionManager;
+import com.xueersi.common.util.FloatPermissionManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;

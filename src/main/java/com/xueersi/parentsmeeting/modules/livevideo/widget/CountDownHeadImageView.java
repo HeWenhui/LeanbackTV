@@ -12,7 +12,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.xesalib.view.image.CircleImageView;
+import com.xueersi.ui.widget.CircleImageView;
 
 
 /**

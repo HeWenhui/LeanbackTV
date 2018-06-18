@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;

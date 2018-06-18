@@ -23,7 +23,7 @@ import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
-import com.xueersi.parentsmeeting.logerhelper.UmsAgentUtil;
+import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
@@ -34,7 +34,7 @@ import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.common.util.audio.AudioPlayer;
-import com.xueersi.xesalib.utils.audio.AudioPlayerListening;
+import com.xueersi.common.util.audio.AudioPlayerListening;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -46,7 +46,7 @@ import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.xueersi.xesalib.utils.audio.AudioPlayer.mVoiceUrl;
+import static com.xueersi.common.util.audio.AudioPlayer.mVoiceUrl;
 
 /**
  * 语音评测WEB页

@@ -12,9 +12,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
-import com.xueersi.parentsmeeting.browser.business.BrowserBll;
+import com.xueersi.parentsmeeting.module.browser.business.BrowserBll;
 import com.xueersi.common.business.AppBll;
-import com.xueersi.parentsmeeting.event.MiniEvent;
+import com.xueersi.common.event.MiniEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;

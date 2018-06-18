@@ -40,8 +40,8 @@ import com.xueersi.parentsmeeting.widget.expressionView.adapter.ExpressionListAd
 import com.xueersi.parentsmeeting.widget.expressionView.entity.ExpressionAllInfoEntity;
 import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.xesalib.utils.string.ConstUtils;
-import com.xueersi.xesalib.utils.string.RegexUtils;
+import com.xueersi.lib.framework.utils.string.ConstUtils;
+import com.xueersi.lib.framework.utils.string.RegexUtils;
 
 import java.io.InputStream;
 import java.util.ArrayList;

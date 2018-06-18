@@ -15,7 +15,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
-import com.xueersi.parentsmeeting.entity.EnglishH5Entity;
+import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;

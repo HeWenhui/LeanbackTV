@@ -56,7 +56,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
-import com.xueersi.xesalib.view.image.CircleImageView;
+import com.xueersi.ui.widget.CircleImageView;
 
 import java.io.File;
 import java.util.HashMap;

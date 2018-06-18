@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.parentsmeeting.event.MiniEvent;
+import com.xueersi.common.event.MiniEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;

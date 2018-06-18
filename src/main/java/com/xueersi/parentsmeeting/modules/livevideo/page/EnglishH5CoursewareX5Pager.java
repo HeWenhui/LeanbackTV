@@ -13,7 +13,7 @@ import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.BasePager;
-import com.xueersi.parentsmeeting.entity.EnglishH5Entity;
+import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;

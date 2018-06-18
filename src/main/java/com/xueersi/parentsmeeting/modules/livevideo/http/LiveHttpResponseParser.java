@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.content.Context;
 
 import com.xueersi.common.config.AppConfig;
-import com.xueersi.parentsmeeting.http.HttpResponseParser;
+import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.BuildConfig;

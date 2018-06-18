@@ -31,7 +31,7 @@
 //import com.xueersi.common.speech.SpeechEvaluatorUtils;
 //import com.xueersi.lib.framework.utils.XESToastUtils;
 //import com.xueersi.common.util.audio.AudioPlayer;
-//import com.xueersi.xesalib.utils.audio.AudioPlayerListening;
+//import com.xueersi.common.util.audio.AudioPlayerListening;
 //import com.xueersi.lib.framework.utils.file.FileUtils;
 //import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 //import com.xueersi.xesalib.view.RoundProgressBar;

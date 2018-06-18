@@ -54,7 +54,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.common.event.AppEvent;
-import com.xueersi.parentsmeeting.event.MiniEvent;
+import com.xueersi.common.event.MiniEvent;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
@@ -101,7 +101,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SubjectResultX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
-import com.xueersi.parentsmeeting.util.FloatPermissionManager;
+import com.xueersi.common.util.FloatPermissionManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
 import com.xueersi.common.business.UserBll;

@@ -37,6 +37,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.http.HttpCallBack;
@@ -64,10 +65,10 @@ import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.xesalib.utils.string.RegexUtils;
+import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
-import com.xueersi.xesalib.view.button.CompoundButtonGroup;
+import com.xueersi.ui.widget.button.CompoundButtonGroup;
 
 import org.json.JSONException;
 import org.json.JSONObject;
