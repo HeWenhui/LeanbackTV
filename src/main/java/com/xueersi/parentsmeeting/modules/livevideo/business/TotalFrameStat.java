@@ -70,6 +70,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     private String cpuName;
     private String memsize;
     private String channelname;
+    private int heartCount;
 
     public TotalFrameStat(final Activity activity) {
         this.activity = activity;
@@ -166,7 +167,11 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                             }
                         }
                         if (framesPsTen.size() == 10) {
-                            xescdnLogHeart();
+                            try {
+                                xescdnLogHeart();
+                            } catch (OutOfMemoryError error) {
+
+                            }
                         }
 //                        if (lastFps != 0) {
 //                            frames.add("" + ((int) ((lastFps + fps) * 5 / 2)));
@@ -309,7 +314,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     }
 
     private void xescdnLogHeart() {
-        new Thread() {
+        new Thread("xescdnHeart:" + heartCount++) {
             @Override
             public void run() {
                 final HashMap<String, String> defaultKey = new HashMap<>();

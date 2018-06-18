@@ -108,10 +108,12 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(LiveVideoConfig.URL_LIVE_LECTURE_GET_INFO, params, requestCallBack);
     }
 
+    int getTimes = 1;
+
     public Callback.Cancelable liveGetPlayServer(final StringBuilder ipsb, final String url2, final CommonRequestCallBack<String>
             requestCallBack) {
         final HttpURLConnectionCancelable cancelable = new HttpURLConnectionCancelable();
-        new Thread() {
+        new Thread("liveGetPlayServer:" + getTimes) {
             Handler handler = new Handler(Looper.getMainLooper());
 
             @Override
