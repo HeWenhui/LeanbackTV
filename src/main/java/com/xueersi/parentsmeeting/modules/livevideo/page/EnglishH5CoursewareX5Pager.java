@@ -22,9 +22,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
-import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.string.StringUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;

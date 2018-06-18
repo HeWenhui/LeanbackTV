@@ -24,16 +24,16 @@
 //import com.tal.speech.speechrecognizer.TalSpeech;
 //import com.xueersi.parentsmeeting.modules.livevideo.R;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
-//import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
+//import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 //import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
-//import com.xueersi.xesalib.utils.app.AppUtils;
+//import com.xueersi.lib.framework.utils.AppUtils;
 //import com.xueersi.xesalib.utils.app.ContextManager;
-//import com.xueersi.xesalib.utils.audio.AudioPlayer;
+//import com.xueersi.common.util.audio.AudioPlayer;
 //import com.xueersi.xesalib.utils.audio.AudioPlayerListening;
 //import com.xueersi.xesalib.utils.log.Loger;
 //import com.xueersi.xesalib.utils.network.NetWorkHelper;
-//import com.xueersi.xesalib.utils.string.StringUtils;
-//import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
+//import com.xueersi.lib.framework.utils.string.StringUtils;
+//import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 //
 //import java.io.File;
 //import java.io.UnsupportedEncodingException;

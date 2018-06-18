@@ -19,7 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.parentsmeeting.http.HttpCallBack;
+import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -27,11 +27,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SlowHorizontalScrollView;
-import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.xesalib.adapter.RCommonAdapter;
 import com.xueersi.xesalib.adapter.RItemViewInterface;
 import com.xueersi.xesalib.adapter.ViewHolder;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
 import java.util.ArrayList;

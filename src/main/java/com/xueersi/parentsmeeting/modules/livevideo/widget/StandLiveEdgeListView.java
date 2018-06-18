@@ -17,7 +17,7 @@ import android.view.ViewTreeObserver;
 import android.widget.ListView;
 
 import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 
 /**
  * Created by linyuqiang on 2018/5/3.

@@ -8,12 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecLearnReportPager;
-import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
+import com.xueersi.common.sharedata.ShareDataManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;

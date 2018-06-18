@@ -10,20 +10,20 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import com.xueersi.parentsmeeting.base.BaseApplication;
-import com.xueersi.parentsmeeting.base.BaseHttpBusiness;
-import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
+import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.base.BaseHttpBusiness;
+import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.parentsmeeting.http.HttpRequestParams;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.HardWareUtil;
-import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService;
+import com.xueersi.common.business.UserBll;
+import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.xesalib.umsagent.DeviceInfo;
 import com.xueersi.xesalib.utils.app.DeviceUtils;
 import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.string.StringUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;

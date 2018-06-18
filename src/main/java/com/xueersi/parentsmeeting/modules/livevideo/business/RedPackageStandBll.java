@@ -8,14 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
-import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RedPackagePage;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog;
-import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
+import com.xueersi.common.business.UserBll;
 
 import java.io.File;
 import java.util.HashMap;

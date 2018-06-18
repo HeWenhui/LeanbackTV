@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import com.xueersi.parentsmeeting.http.ResponseEntity;
+import com.xueersi.common.http.ResponseEntity;
 
 /**
  * Created by linyuqiang on 2017/2/27.

@@ -5,12 +5,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
-import com.xueersi.parentsmeeting.base.BaseApplication;
-import com.xueersi.parentsmeeting.base.BaseHttpBusiness;
-import com.xueersi.parentsmeeting.http.HttpCallBack;
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.base.BaseHttpBusiness;
+import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.HttpRequestParams;
-import com.xueersi.parentsmeeting.http.ResponseEntity;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;

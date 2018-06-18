@@ -2,10 +2,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
 
-import com.xueersi.parentsmeeting.config.AppConfig;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.parentsmeeting.http.HttpResponseParser;
 import com.xueersi.parentsmeeting.logerhelper.MobAgent;
-import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
+import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.BuildConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -44,10 +44,10 @@ import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.sharebusiness.config.LiveVideoBusinessConfig;
+import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.parentsmeeting.http.ResponseEntity;
-import com.xueersi.xesalib.utils.string.StringUtils;
+import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;

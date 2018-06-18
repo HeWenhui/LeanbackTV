@@ -8,10 +8,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.base.BaseApplication;
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.parentsmeeting.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
-import com.xueersi.xesalib.utils.string.StringUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.xesalib.view.alertdialog.BaseAlertDialog;
 
 /**

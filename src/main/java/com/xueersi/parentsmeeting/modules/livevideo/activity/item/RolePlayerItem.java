@@ -14,7 +14,7 @@ import com.xueersi.xesalib.adapter.AdapterItemInterface;
 import com.xueersi.xesalib.utils.app.ContextManager;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
-import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
+import com.xueersi.lib.imageloader.ImageLoader;
 
 
 /**

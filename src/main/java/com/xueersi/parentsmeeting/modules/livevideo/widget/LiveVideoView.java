@@ -8,9 +8,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.VideoView;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 
 /**
  * Created by lyqai on 2017/8/2.

@@ -10,7 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageEmojiPar
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
 import com.xueersi.xesalib.adapter.CommonAdapter;
 import com.xueersi.xesalib.utils.string.RegexUtils;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 
 /**
  * Created by linyuqiang on 2017/7/19.

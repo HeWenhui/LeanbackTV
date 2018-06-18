@@ -21,21 +21,21 @@
 //import com.tal.speech.speechrecognizer.ResultEntity;
 //import com.xueersi.parentsmeeting.modules.livevideo.R;
 //import com.xueersi.parentsmeeting.base.BasePager;
-//import com.xueersi.parentsmeeting.http.ResponseEntity;
+//import com.xueersi.common.http.ResponseEntity;
 //import com.xueersi.parentsmeeting.logerhelper.LogerTag;
-//import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
+//import com.xueersi.common.logerhelper.XesMobAgent;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.OnSpeechEval;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
 //import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 //import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
-//import com.xueersi.xesalib.utils.app.XESToastUtils;
-//import com.xueersi.xesalib.utils.audio.AudioPlayer;
+//import com.xueersi.lib.framework.utils.XESToastUtils;
+//import com.xueersi.common.util.audio.AudioPlayer;
 //import com.xueersi.xesalib.utils.audio.AudioPlayerListening;
-//import com.xueersi.xesalib.utils.file.FileUtils;
+//import com.xueersi.lib.framework.utils.file.FileUtils;
 //import com.xueersi.xesalib.utils.log.Loger;
 //import com.xueersi.xesalib.view.RoundProgressBar;
-//import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
+//import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 //
 //import java.io.File;
 //import java.util.ArrayList;

@@ -16,22 +16,22 @@ import android.widget.TextView;
 
 import com.umeng.analytics.MobclickAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
-import com.xueersi.parentsmeeting.base.BaseApplication;
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.parentsmeeting.browser.activity.BrowserActivity;
-import com.xueersi.parentsmeeting.business.AppBll;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ExpeAlertDialog;
-import com.xueersi.xesalib.utils.file.FileUtils;
-import com.xueersi.xesalib.utils.string.StringUtils;
+import com.xueersi.lib.framework.utils.file.FileUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.xesalib.utils.time.TimeUtils;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import org.json.JSONObject;
 

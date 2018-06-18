@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import com.xueersi.parentsmeeting.http.HttpResponseParser;
-import com.xueersi.parentsmeeting.http.ResponseEntity;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;

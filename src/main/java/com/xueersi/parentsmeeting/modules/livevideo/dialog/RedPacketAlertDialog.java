@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.base.BaseApplication;
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.xesalib.view.alertdialog.BaseAlertDialog;
 
 /**

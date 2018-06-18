@@ -20,7 +20,7 @@
 //import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 //import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
 //import com.xueersi.xesalib.utils.log.Loger;
-//import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+//import com.xueersi.lib.framework.utils.ScreenUtils;
 //
 //import java.io.File;
 //import java.util.HashMap;

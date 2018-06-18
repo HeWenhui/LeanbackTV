@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
-import com.xueersi.xesalib.utils.string.StringUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;

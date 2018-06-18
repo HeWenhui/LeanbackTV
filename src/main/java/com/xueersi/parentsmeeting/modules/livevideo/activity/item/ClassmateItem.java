@@ -10,7 +10,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
-import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
+import com.xueersi.lib.imageloader.ImageLoader;
 
 /**
  * 免费课列表ITEM

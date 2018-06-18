@@ -12,9 +12,9 @@ import android.widget.ListView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.ControllerBottomInter;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController.MediaPlayerControl;
-import com.xueersi.xesalib.utils.app.XESToastUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 
 /**
  * 直播播放器控制栏底部区域

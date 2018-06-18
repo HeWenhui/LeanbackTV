@@ -8,8 +8,8 @@ import android.util.AttributeSet;
 import android.view.Surface;
 import android.view.TextureView;
 
-import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.VideoView;
+import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 
 /**
  * 使用，可以视频截图

@@ -30,7 +30,7 @@
 //import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 //import com.xueersi.xesalib.utils.log.Loger;
 //import com.xueersi.xesalib.utils.network.NetWorkHelper;
-//import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
+//import com.xueersi.lib.imageloader.ImageLoader;
 //import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 //
 //import org.json.JSONException;

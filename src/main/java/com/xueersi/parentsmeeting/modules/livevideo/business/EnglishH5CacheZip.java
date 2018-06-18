@@ -17,12 +17,12 @@
 //import android.widget.RelativeLayout;
 //
 //import com.xueersi.parentsmeeting.http.DownloadCallBack;
-//import com.xueersi.parentsmeeting.http.HttpCallBack;
-//import com.xueersi.parentsmeeting.http.ResponseEntity;
+//import com.xueersi.common.http.HttpCallBack;
+//import com.xueersi.common.http.ResponseEntity;
 //import com.xueersi.parentsmeeting.modules.livevideo.R;
 //import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 //import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
-//import com.xueersi.xesalib.utils.file.FileUtils;
+//import com.xueersi.lib.framework.utils.file.FileUtils;
 //import com.xueersi.xesalib.utils.log.Loger;
 //import com.xueersi.xesalib.utils.network.NetWorkHelper;
 //

@@ -13,8 +13,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.http.HttpCallBack;
-import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
@@ -22,7 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoFloatTitle;
 import com.xueersi.parentsmeeting.base.BasePager;
-import com.xueersi.parentsmeeting.http.ResponseEntity;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.xesalib.view.ratingbar.RatingBar;
 
 import java.io.File;

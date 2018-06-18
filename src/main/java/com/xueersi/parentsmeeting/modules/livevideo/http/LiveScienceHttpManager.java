@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
-import com.xueersi.parentsmeeting.http.HttpCallBack;
+import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.HttpRequestParams;
 
 /**

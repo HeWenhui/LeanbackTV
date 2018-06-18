@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.browser.business.BrowserBll;
-import com.xueersi.parentsmeeting.business.AppBll;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.parentsmeeting.event.MiniEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -23,7 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.LecAdvertLog;
-import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
+import com.xueersi.common.business.UserBll;
 
 import org.greenrobot.eventbus.EventBus;
 

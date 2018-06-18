@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
-import com.xueersi.parentsmeeting.config.AppConfig;
+import com.xueersi.common.config.AppConfig;
 
 /**
  * 直播模块配置
