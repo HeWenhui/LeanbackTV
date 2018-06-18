@@ -128,9 +128,10 @@ public class LiveHttpManager extends BaseHttpBusiness {
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
+                HttpURLConnection connection = null;
                 try {
                     URL url = new URL(url2);
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection = (HttpURLConnection) url.openConnection();
                     connection.setConnectTimeout(20000);
                     connection.setReadTimeout(20000);
                     cancelable.connection = connection;
@@ -172,6 +173,15 @@ public class LiveHttpManager extends BaseHttpBusiness {
                             }
                         }
                     });
+                } finally {
+                    Loger.d(TAG, "liveGetPlayServer:disconnect=" + (connection != null));
+                    try {
+                        if (connection != null) {
+                            connection.disconnect();
+                        }
+                    } catch (Exception e) {
+
+                    }
                 }
             }
         }.start();
