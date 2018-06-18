@@ -37,8 +37,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControll
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.PermissionItem;
-import com.xueersi.parentsmeeting.permission.XesPermission;
-import com.xueersi.parentsmeeting.permission.config.PermissionConfig;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.lib.framework.utils.ScreenUtils;

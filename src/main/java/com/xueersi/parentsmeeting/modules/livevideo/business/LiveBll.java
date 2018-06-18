@@ -66,7 +66,7 @@ import com.xueersi.xesalib.umsagent.UmsConstants;
 import com.xueersi.xesalib.utils.app.DeviceUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.network.NetWorkHelper;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;

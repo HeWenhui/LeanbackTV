@@ -31,7 +31,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.xesalib.utils.app.XSAsykTask;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.network.NetWorkHelper;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.ui.dataload.DataLoadEntity;
 import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
 

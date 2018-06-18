@@ -28,12 +28,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.PermissionItem;
-import com.xueersi.parentsmeeting.permission.XesPermission;
-import com.xueersi.parentsmeeting.permission.config.PermissionConfig;
-import com.xueersi.xesalib.umsagent.DeviceInfo;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.lib.analytics.umsagent.DeviceInfo;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.network.NetWorkHelper;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import java.io.File;

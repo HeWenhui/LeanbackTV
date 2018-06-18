@@ -50,14 +50,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView;
 import com.xueersi.common.permission.PermissionCallback;
-import com.xueersi.parentsmeeting.permission.XesPermission;
-import com.xueersi.parentsmeeting.permission.config.PermissionConfig;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.network.NetWorkHelper;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 

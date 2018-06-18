@@ -20,7 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.HardWareUtil;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
-import com.xueersi.xesalib.umsagent.DeviceInfo;
+import com.xueersi.lib.analytics.umsagent.DeviceInfo;
 import com.xueersi.xesalib.utils.app.DeviceUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.lib.framework.utils.string.StringUtils;

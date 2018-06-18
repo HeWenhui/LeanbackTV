@@ -30,7 +30,7 @@ import com.xueersi.xesalib.utils.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.xesalib.utils.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.xesalib.utils.listener.OnAlphaTouchListener;
 import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.network.NetWorkHelper;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 
 import ren.yale.android.cachewebviewlib.utils.NetworkUtils;
 

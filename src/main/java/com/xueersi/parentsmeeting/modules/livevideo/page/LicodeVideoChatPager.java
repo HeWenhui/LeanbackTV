@@ -29,7 +29,7 @@
 //import com.xueersi.parentsmeeting.modules.livevideo.widget.ArcProgressView;
 //import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 //import com.xueersi.xesalib.utils.log.Loger;
-//import com.xueersi.xesalib.utils.network.NetWorkHelper;
+//import com.xueersi.lib.framework.utils.NetWorkHelper;
 //import com.xueersi.lib.imageloader.ImageLoader;
 //import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 //

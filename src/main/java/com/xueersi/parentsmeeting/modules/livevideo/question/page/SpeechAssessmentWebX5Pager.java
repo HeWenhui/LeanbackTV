@@ -36,7 +36,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.common.util.audio.AudioPlayer;
 import com.xueersi.xesalib.utils.audio.AudioPlayerListening;
 import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.network.NetWorkHelper;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 

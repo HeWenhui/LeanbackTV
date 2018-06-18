@@ -9,7 +9,7 @@
 //import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 //import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 //import com.xueersi.xesalib.utils.log.Loger;
-//import com.xueersi.xesalib.utils.network.NetWorkHelper;
+//import com.xueersi.lib.framework.utils.NetWorkHelper;
 //
 //import java.util.ArrayList;
 //
