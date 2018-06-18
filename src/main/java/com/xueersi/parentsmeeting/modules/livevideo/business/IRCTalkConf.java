@@ -9,13 +9,13 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.http.HttpCallBack;
-import com.xueersi.parentsmeeting.http.HttpRequestParams;
+import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 
 import org.json.JSONArray;

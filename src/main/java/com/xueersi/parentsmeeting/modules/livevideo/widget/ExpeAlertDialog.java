@@ -9,10 +9,10 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.base.BaseApplication;
-import com.xueersi.parentsmeeting.browser.activity.BrowserActivity;
+import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.xesalib.view.alertdialog.BaseAlertDialog;
+import com.xueersi.ui.dialog.BaseAlertDialog;
 
 /**
  * Created by linyuqiang on 2017/7/18.

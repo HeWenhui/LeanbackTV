@@ -18,7 +18,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
-import com.xueersi.parentsmeeting.browser.activity.BrowserActivity;
+import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -30,7 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ExpeAlertDialog;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.xesalib.utils.time.TimeUtils;
+import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import org.json.JSONObject;

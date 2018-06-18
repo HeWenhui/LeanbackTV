@@ -16,7 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveMessageLandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveMessagePortPager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;

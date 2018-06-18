@@ -9,8 +9,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController.MediaPlayerControl;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 /**
  * 直播播放器控制栏底部区域

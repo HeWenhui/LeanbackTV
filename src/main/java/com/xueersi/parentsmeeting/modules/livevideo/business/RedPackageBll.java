@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import java.io.File;

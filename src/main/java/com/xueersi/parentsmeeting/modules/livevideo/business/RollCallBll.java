@@ -15,7 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.page.ClassSignPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.ClassmateSignPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import java.io.File;

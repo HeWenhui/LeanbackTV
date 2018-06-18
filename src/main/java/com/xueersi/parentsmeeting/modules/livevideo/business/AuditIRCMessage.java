@@ -10,7 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 
 import org.json.JSONException;

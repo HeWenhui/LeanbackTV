@@ -62,13 +62,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
 import com.xueersi.xesalib.adapter.CommonAdapter;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.xesalib.utils.string.RegexUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.xesalib.view.button.CompoundButtonGroup;
 import com.xueersi.xesalib.view.layout.dataload.DataErrorManager;
-import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
+import com.xueersi.ui.dataload.PageDataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;

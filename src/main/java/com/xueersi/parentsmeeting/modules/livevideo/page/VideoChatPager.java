@@ -8,7 +8,7 @@
 //import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatInter;
 //import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 //import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-//import com.xueersi.xesalib.utils.log.Loger;
+//import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 //import com.xueersi.lib.framework.utils.NetWorkHelper;
 //
 //import java.util.ArrayList;

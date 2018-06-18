@@ -15,7 +15,7 @@
 //import android.widget.Button;
 //import android.widget.ImageView;
 //
-//import com.xueersi.parentsmeeting.base.BasePager;
+//import com.xueersi.common.base.BasePager;
 //import com.xueersi.parentsmeeting.logerhelper.LogerTag;
 //import com.xueersi.parentsmeeting.modules.livevideo.R;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
@@ -25,7 +25,7 @@
 //import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 //import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 //import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
-//import com.xueersi.xesalib.utils.log.Loger;
+//import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 //import com.xueersi.lib.framework.utils.string.StringUtils;
 //import com.xueersi.lib.framework.utils.ScreenUtils;
 //

@@ -15,7 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveHeadView;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 /**
  * 站立直播系统消息

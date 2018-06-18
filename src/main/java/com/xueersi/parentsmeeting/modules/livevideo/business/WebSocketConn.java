@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.text.TextUtils;
 
 import com.tal.speech.asr.SpeechLog;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;

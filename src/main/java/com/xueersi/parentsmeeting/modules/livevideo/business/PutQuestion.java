@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 
-import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 
 /**
  * 互动题事件

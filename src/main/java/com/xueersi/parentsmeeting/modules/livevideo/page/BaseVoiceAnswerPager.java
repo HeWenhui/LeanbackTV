@@ -2,8 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.content.Context;
 
-import com.xueersi.parentsmeeting.base.BasePager;
-import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
+import com.xueersi.common.base.BasePager;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 
 /**

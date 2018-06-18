@@ -3,12 +3,12 @@ package com.xueersi.parentsmeeting.modules.livevideo.event;
 import android.text.SpannableStringBuilder;
 
 import com.xueersi.parentsmeeting.base.BaseEvent;
-import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.entity.VideoChapterEntity;
-import com.xueersi.parentsmeeting.entity.VideoCourseEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoCourseEntity;
 import com.xueersi.parentsmeeting.entity.VideoCourseEntity.ShowVideoCourseList;
-import com.xueersi.parentsmeeting.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.entity.VideoSectionEntity;
 
 import java.util.List;

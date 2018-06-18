@@ -18,7 +18,7 @@ import android.os.HandlerThread;
 import android.util.Base64;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.yaaic.pircbot.NaiveTrustManager;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

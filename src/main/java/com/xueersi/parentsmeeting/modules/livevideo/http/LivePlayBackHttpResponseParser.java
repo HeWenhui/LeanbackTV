@@ -7,7 +7,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageGroupEntity;
-import com.xueersi.parentsmeeting.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;

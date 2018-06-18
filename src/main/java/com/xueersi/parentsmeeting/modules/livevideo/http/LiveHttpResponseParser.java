@@ -40,12 +40,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.Play
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
-import com.xueersi.parentsmeeting.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 

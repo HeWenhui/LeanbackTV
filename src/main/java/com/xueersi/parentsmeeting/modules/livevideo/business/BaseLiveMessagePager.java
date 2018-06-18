@@ -26,8 +26,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.base.BasePager;
-import com.xueersi.parentsmeeting.browser.activity.BrowserActivity;
+import com.xueersi.common.base.BasePager;
+import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveExPressionEditData;
@@ -39,7 +39,7 @@ import com.xueersi.parentsmeeting.widget.expressionView.ExpressionView;
 import com.xueersi.parentsmeeting.widget.expressionView.adapter.ExpressionListAdapter;
 import com.xueersi.parentsmeeting.widget.expressionView.entity.ExpressionAllInfoEntity;
 import com.xueersi.xesalib.adapter.CommonAdapter;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.xesalib.utils.string.ConstUtils;
 import com.xueersi.xesalib.utils.string.RegexUtils;
 

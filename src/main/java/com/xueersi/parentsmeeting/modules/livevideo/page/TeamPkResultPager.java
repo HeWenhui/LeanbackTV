@@ -28,7 +28,7 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
-import com.xueersi.parentsmeeting.base.BasePager;
+import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
@@ -41,9 +41,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.imageloader.ImageLoader;
-import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
+import com.xueersi.lib.imageloader.SingleConfig;
 
 
 import java.util.ArrayList;

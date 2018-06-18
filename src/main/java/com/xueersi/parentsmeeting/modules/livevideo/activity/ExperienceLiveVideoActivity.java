@@ -39,15 +39,15 @@ import android.widget.Toast;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BaseBll;
-import com.xueersi.parentsmeeting.browser.activity.BrowserActivity;
-import com.xueersi.parentsmeeting.browser.event.BrowserEvent;
+import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
+import com.xueersi.parentsmeeting.module.browser.event.BrowserEvent;
 import com.xueersi.common.business.AppBll;
-import com.xueersi.parentsmeeting.entity.AnswerEntity;
-import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
+import com.xueersi.common.entity.AnswerEntity;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.FooterIconEntity;
-import com.xueersi.parentsmeeting.entity.VideoLivePlayBackEntity;
-import com.xueersi.parentsmeeting.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -82,15 +82,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControll
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
-import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.xesalib.umsagent.UmsConstants;
+import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
-import com.xueersi.xesalib.utils.time.TimeUtils;
+import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
@@ -105,8 +105,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE;
 
 /**
  * Created by David on 2018/3/6.
@@ -758,7 +756,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                     vPlayer.pause();
                 }
                 mQuestionEntity.setAnswered(true);
-                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false, TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
+                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false, VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
                 verifyCancelAlertDialog.initInfo("测试提醒", "老师发布了一套测试题，是否现在开始答题？");
                 verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
                     @Override

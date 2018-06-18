@@ -60,9 +60,9 @@ import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.imageloader.ImageLoader;
-import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
+import com.xueersi.lib.imageloader.SingleConfig;
 
 import org.json.JSONArray;
 import org.json.JSONException;

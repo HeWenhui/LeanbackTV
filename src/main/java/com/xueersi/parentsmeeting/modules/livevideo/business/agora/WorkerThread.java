@@ -11,7 +11,7 @@ import android.view.SurfaceView;
 
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.File;
 

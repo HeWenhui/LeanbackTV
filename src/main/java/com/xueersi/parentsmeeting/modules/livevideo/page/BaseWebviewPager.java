@@ -17,9 +17,9 @@
 //
 //import com.xueersi.common.base.BaseApplication;
 //import com.xueersi.parentsmeeting.modules.livevideo.R;
-//import com.xueersi.parentsmeeting.base.BasePager;
+//import com.xueersi.common.base.BasePager;
 //import com.xueersi.parentsmeeting.logerhelper.LogerTag;
-//import com.xueersi.xesalib.utils.log.Loger;
+//import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 //import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 //
 ///**

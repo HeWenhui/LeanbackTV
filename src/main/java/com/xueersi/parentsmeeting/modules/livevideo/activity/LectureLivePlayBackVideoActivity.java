@@ -40,15 +40,15 @@ import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5PlaybackPager;
-import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.logerhelper.XesMobAgent;
-import com.xueersi.parentsmeeting.entity.AnswerEntity;
-import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
-import com.xueersi.parentsmeeting.entity.VideoLivePlayBackEntity;
-import com.xueersi.parentsmeeting.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.entity.VideoResultEntity;
+import com.xueersi.common.entity.AnswerEntity;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageEmojiParser;
@@ -62,20 +62,20 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankLive
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LectureLivePlaybackMediaController;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.VideoActivity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoActivity;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.parentsmeeting.widget.LivePlaybackMediaController;
+import com.xueersi.parentsmeeting.module.videoplayer.widget.LivePlaybackMediaController;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.xesalib.utils.time.TimeUtils;
+import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import com.xueersi.ui.dataload.DataLoadEntity;
-import com.xueersi.xesalib.view.refresh.swiperefresh.XsBaseAdapter;
+import com.xueersi.ui.adapter.XsBaseAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -88,8 +88,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE;
 
 /**
  * 直播回放播放页
@@ -828,7 +826,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                     vPlayer.pause();
                 }
                 mQuestionEntity.setAnswered(true);
-                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false, TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
+                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false, VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
                 verifyCancelAlertDialog.initInfo("测试提醒", "老师发布了一套测试题，是否现在开始答题？");
                 verifyCancelAlertDialog.setVerifyBtnListener(new OnClickListener() {
                     @Override

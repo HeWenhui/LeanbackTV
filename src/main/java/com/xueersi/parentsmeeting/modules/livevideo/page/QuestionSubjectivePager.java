@@ -14,8 +14,8 @@ import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xueersi.common.base.BaseApplication;
-import com.xueersi.parentsmeeting.entity.AnswerEntity;
-import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
+import com.xueersi.common.entity.AnswerEntity;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.QuesReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -23,7 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
-import com.xueersi.xesalib.view.button.progressbutton.CircularProgressButton;
+import com.xueersi.ui.widget.button.progressbutton.CircularProgressButton;
 
 import org.greenrobot.eventbus.EventBus;
 

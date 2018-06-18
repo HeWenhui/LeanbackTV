@@ -13,7 +13,7 @@ import android.util.Log;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.lib.imageloader.ImageLoader;
-import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
+import com.xueersi.lib.imageloader.SingleConfig;
 
 import java.util.ArrayList;
 import java.util.List;

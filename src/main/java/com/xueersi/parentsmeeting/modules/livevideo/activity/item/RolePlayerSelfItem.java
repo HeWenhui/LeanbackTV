@@ -28,7 +28,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.xesalib.utils.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.xesalib.utils.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.xesalib.utils.listener.OnAlphaTouchListener;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 

@@ -6,7 +6,7 @@ import android.widget.Button;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.base.BaseApplication;
-import com.xueersi.xesalib.view.alertdialog.BaseAlertDialog;
+import com.xueersi.ui.dialog.BaseAlertDialog;
 
 /**
  * 视频观看红包弹窗

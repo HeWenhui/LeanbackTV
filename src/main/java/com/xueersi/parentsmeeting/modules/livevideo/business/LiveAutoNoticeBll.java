@@ -24,7 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SlowHorizontalScrollView;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 

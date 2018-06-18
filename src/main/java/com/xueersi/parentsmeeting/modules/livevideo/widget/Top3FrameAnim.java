@@ -21,9 +21,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.imageloader.ImageLoader;
-import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
+import com.xueersi.lib.imageloader.SingleConfig;
 
 import java.io.IOException;
 import java.io.InputStream;

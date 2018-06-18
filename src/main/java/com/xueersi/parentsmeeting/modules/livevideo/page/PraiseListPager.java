@@ -23,7 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xueersi.parentsmeeting.base.BasePager;
+import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
@@ -37,7 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTex
 import com.xueersi.xesalib.adapter.RCommonAdapter;
 import com.xueersi.xesalib.adapter.RItemViewInterface;
 import com.xueersi.xesalib.adapter.ViewHolder;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
 import java.io.File;

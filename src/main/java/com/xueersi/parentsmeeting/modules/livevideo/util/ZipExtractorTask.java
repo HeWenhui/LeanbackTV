@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;

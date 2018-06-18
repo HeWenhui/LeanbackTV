@@ -27,7 +27,7 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.xesalib.utils.app.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.File;
 import java.util.ArrayList;

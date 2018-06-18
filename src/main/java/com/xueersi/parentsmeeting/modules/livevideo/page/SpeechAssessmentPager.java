@@ -20,7 +20,7 @@
 //import com.tal.speech.speechrecognizer.ResultCode;
 //import com.tal.speech.speechrecognizer.ResultEntity;
 //import com.xueersi.parentsmeeting.modules.livevideo.R;
-//import com.xueersi.parentsmeeting.base.BasePager;
+//import com.xueersi.common.base.BasePager;
 //import com.xueersi.common.http.ResponseEntity;
 //import com.xueersi.parentsmeeting.logerhelper.LogerTag;
 //import com.xueersi.common.logerhelper.XesMobAgent;
@@ -33,7 +33,7 @@
 //import com.xueersi.common.util.audio.AudioPlayer;
 //import com.xueersi.xesalib.utils.audio.AudioPlayerListening;
 //import com.xueersi.lib.framework.utils.file.FileUtils;
-//import com.xueersi.xesalib.utils.log.Loger;
+//import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 //import com.xueersi.xesalib.view.RoundProgressBar;
 //import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 //

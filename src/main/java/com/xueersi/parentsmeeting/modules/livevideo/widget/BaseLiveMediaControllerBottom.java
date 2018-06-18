@@ -11,9 +11,9 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.ControllerBottomInter;
-import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController.MediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.ControllerBottomInter;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 
 /**

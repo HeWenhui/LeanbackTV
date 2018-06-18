@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.view.View;
 
-import com.xueersi.parentsmeeting.base.BasePager;
+import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
 
 /**

@@ -15,7 +15,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot
 
 import android.util.Log;
 
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

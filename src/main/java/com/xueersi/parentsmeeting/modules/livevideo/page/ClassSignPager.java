@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.sobot.chat.utils.ToastUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.base.BasePager;
+import com.xueersi.common.base.BasePager;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
@@ -20,7 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoFloatTitle;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.File;
 

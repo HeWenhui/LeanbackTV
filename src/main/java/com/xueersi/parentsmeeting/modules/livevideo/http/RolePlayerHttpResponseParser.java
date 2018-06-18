@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
-import com.xueersi.parentsmeeting.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.logerhelper.MobAgent;

@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 
 import java.util.logging.Logger;

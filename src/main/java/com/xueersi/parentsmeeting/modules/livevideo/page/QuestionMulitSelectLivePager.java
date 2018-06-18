@@ -12,16 +12,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.entity.AnswerEntity;
-import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
+import com.xueersi.common.entity.AnswerEntity;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
-import com.xueersi.xesalib.view.button.progressbutton.CircularProgressButton;
-import com.xueersi.xesalib.view.refresh.swiperefresh.XsBaseAdapter;
+import com.xueersi.ui.widget.button.progressbutton.CircularProgressButton;
+import com.xueersi.ui.adapter.XsBaseAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 

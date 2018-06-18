@@ -17,9 +17,9 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.imageloader.ImageLoader;
-import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
+import com.xueersi.lib.imageloader.SingleConfig;
 
 import java.io.IOException;
 
@@ -82,6 +82,7 @@ public class StandLiveHeadView extends LottieAnimationView {
         updateName();
     }
 
+    @Override
     public void setComposition(@NonNull LottieComposition composition) {
         super.setComposition(composition);
         updateName();

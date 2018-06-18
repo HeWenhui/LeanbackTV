@@ -32,7 +32,7 @@ import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.xueersi.parentsmeeting.base.BasePager;
+import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
@@ -44,7 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolat
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamMemberGridlayoutManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 

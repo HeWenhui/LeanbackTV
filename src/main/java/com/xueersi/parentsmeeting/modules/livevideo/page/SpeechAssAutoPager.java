@@ -40,7 +40,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.StartProgress;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONArray;
 import org.json.JSONException;

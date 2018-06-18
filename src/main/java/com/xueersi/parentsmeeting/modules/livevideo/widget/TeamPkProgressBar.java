@@ -18,7 +18,7 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.util.logging.Logger;
 

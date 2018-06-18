@@ -11,7 +11,7 @@ import android.webkit.CookieManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.parentsmeeting.base.BasePager;
+import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.browser.business.BrowserBll;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.parentsmeeting.event.MiniEvent;

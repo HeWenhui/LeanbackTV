@@ -11,7 +11,7 @@ import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import ren.yale.android.cachewebviewlib.CacheWebView;
 

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.text.format.Formatter;
 
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;

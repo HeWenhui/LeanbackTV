@@ -12,7 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechTop3Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.File;
 import java.util.HashMap;

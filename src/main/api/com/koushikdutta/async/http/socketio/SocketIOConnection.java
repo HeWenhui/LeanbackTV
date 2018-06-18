@@ -15,7 +15,7 @@ import com.koushikdutta.async.http.WebSocket;
 import com.koushikdutta.async.http.socketio.transport.SocketIOTransport;
 import com.koushikdutta.async.http.socketio.transport.WebSocketTransport;
 import com.koushikdutta.async.http.socketio.transport.XHRPollingTransport;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

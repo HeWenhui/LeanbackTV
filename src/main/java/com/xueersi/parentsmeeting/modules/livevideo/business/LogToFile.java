@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.util.Log;
 
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.File;
 import java.io.FileOutputStream;

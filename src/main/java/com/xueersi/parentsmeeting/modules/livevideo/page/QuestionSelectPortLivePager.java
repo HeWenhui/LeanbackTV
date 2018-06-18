@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.xesalib.view.button.progressbutton.CircularProgressButton;
+import com.xueersi.ui.widget.button.progressbutton.CircularProgressButton;
 
 /**
  * 录播课程选择题互动题页面

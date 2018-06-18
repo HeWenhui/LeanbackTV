@@ -12,7 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
 import com.xueersi.xesalib.utils.app.ContextManager;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 
