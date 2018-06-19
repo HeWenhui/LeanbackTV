@@ -39,7 +39,7 @@
                 android:layout_weight="1"
                 android:visibility="invisible">
 
-                <com.xueersi.xesalib.view.listview.AutohListview
+                <com.xueersi.ui.widget.AutohListview
                     android:id="@id/lv_livevideo_common_word"
                     style="@style/listview_common_style"
                     android:layout_width="60dp"
