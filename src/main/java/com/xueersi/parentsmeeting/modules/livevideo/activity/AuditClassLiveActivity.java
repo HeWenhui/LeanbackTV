@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,9 +67,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
@@ -176,6 +173,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     boolean leave = true;
     /** 学生是不是错误 */
     AtomicBoolean studentError = new AtomicBoolean(false);
+    /** 学生是不是流畅模式 */
+    AtomicBoolean fluentMode = new AtomicBoolean(false);
     static int times = -1;
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -524,6 +523,9 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             if (startRemote.get()) {
                 return;
             }
+            if (fluentMode.get()) {
+                return;
+            }
             setFirstBackgroundVisible(View.VISIBLE);
             new Thread() {
                 @Override
@@ -677,8 +679,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         @Override
         public void onOpenSuccess() {
             isPlay = true;
-            mLogtf.d("onOpenSuccess:startRemote=" + startRemote.get());
-            if (startRemote.get()) {
+            mLogtf.d("onOpenSuccess:startRemote=" + startRemote.get() + ",fluentMode=" + fluentMode.get());
+            if (startRemote.get() || fluentMode.get()) {
                 stopPlay();
                 return;
             }
@@ -835,9 +837,13 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         mServer = server;
-        final AtomicBoolean change = new AtomicBoolean(modechange);// 直播状态是不是变化
-        mLogtf.d("onLiveStart:change=" + change.get());
+        // 直播状态是不是变化
+        final AtomicBoolean change = new AtomicBoolean(modechange);
+        mLogtf.d("onLiveStart:change=" + change.get() + ",fluentMode=" + fluentMode.get());
         mLiveTopic = cacheData;
+        if (fluentMode.get()) {
+            return;
+        }
         mHandler.post(new Runnable() {
 
             @Override
@@ -886,7 +892,10 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     }
 
     @Override
-    public void onStudentError(final String msg) {
+    public void onStudentError(final String status, final String msg) {
+        if (fluentMode.get()) {
+            return;
+        }
         studentError.set(true);
         mHandler.post(new Runnable() {
             @Override
@@ -896,7 +905,19 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 tv_livevideo_student_load_tip.setVisibility(View.GONE);
                 iv_livevideo_student_camera.setVisibility(View.VISIBLE);
                 tv_livevideo_student_camera.setVisibility(View.VISIBLE);
-                tv_livevideo_student_camera.setText(mGetInfo.getStuName() + "同学\n" + msg);
+                if ("fluentMode".equals(status)) {
+                    if (vPlayer.isInitialized()) {
+                        vPlayer.onDestroy();
+                    }
+                    ResponseEntity responseEntity = new ResponseEntity();
+                    responseEntity.setErrorMsg("流畅模式不支持该功能，如您需要，可在电脑客户端右上角修改为标准模式");
+                    onLiveError(responseEntity);
+                    tv_livevideo_student_camera.setText("");
+                    fluentMode.set(true);
+                    setFirstBackgroundVisible(View.VISIBLE);
+                } else {
+                    tv_livevideo_student_camera.setText(mGetInfo.getStuName() + "同学\n" + msg);
+                }
             }
         });
     }
@@ -1377,9 +1398,14 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     }
 
     public void setFirstBackgroundVisible(int visible) {
-        rlFirstBackgroundView.setVisibility(visible);
-        if (visible == View.GONE) {
+        if (fluentMode.get()) {
+            rlFirstBackgroundView.setVisibility(View.VISIBLE);
             ivTeacherNotpresent.setVisibility(View.GONE);
+        } else {
+            rlFirstBackgroundView.setVisibility(visible);
+            if (visible == View.GONE) {
+                ivTeacherNotpresent.setVisibility(View.GONE);
+            }
         }
     }
 

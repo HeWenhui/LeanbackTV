@@ -12,7 +12,6 @@ import android.os.Message;
 
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseHttpBusiness;
-import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
 import com.xueersi.parentsmeeting.http.HttpRequestParams;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -71,6 +70,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     private String cpuName;
     private String memsize;
     private String channelname;
+    private int heartCount;
 
     public TotalFrameStat(final Activity activity) {
         this.activity = activity;
@@ -167,7 +167,11 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                             }
                         }
                         if (framesPsTen.size() == 10) {
-                            xescdnLogHeart();
+                            try {
+                                xescdnLogHeart();
+                            } catch (OutOfMemoryError error) {
+
+                            }
                         }
 //                        if (lastFps != 0) {
 //                            frames.add("" + ((int) ((lastFps + fps) * 5 / 2)));
@@ -203,7 +207,11 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         stableLogHashMap.put("activity", activity.getClass().getSimpleName());
         stableLogHashMap.put("method", method);
         stableLogHashMap.put("time", "" + time);
-        stableLogHashMap.put("message", "server: " + lastPlayserverEntity.getAddress() + " vdownload:" + vdownload);
+        if (lastPlayserverEntity != null) {
+            stableLogHashMap.put("message", "server: " + lastPlayserverEntity.getAddress() + " vdownload:" + vdownload);
+        } else {
+            stableLogHashMap.put("message", "server: null" + " vdownload:" + vdownload);
+        }
         Loger.e(activity, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData(), true);
     }
 
@@ -255,8 +263,10 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
             dataJson.put("errorcode", "0");
             dataJson.put("errmsg", "");
             dataJson.put("channelname", "" + channelname);
-            dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
-            dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            if (lastPlayserverEntity != null) {
+                dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
+                dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            }
             dataJson.put("playlatency", "" + openTime);
             dataJson.put("cputype", "" + cpuName);
             dataJson.put("memsize", "" + memsize);
@@ -304,7 +314,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     }
 
     private void xescdnLogHeart() {
-        new Thread() {
+        new Thread("xescdnHeart:" + heartCount++) {
             @Override
             public void run() {
                 final HashMap<String, String> defaultKey = new HashMap<>();
@@ -334,8 +344,10 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         JSONObject dataJson = new JSONObject();
         try {
             dataJson.put("channelname", "" + channelname);
-            dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
-            dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            if (lastPlayserverEntity != null) {
+                dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
+                dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            }
             long bufferduration = 0;
             float averagefps;
             float fps = 0f;
@@ -384,7 +396,10 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                 String value = defaultKey.get(key);
                 requestJson.put(key, value);
             }
-            baseHttpBusiness.baseSendPostNoBusiness(logurl, requestJson.toString(), new Callback() {
+            HttpRequestParams httpRequestParams = new HttpRequestParams();
+            httpRequestParams.setJson(requestJson.toString());
+            httpRequestParams.setWriteAndreadTimeOut(2);
+            baseHttpBusiness.baseSendPostNoBusinessJson(logurl, httpRequestParams, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     Loger.e(TAG, "xescdnLog:onFailure", e);
@@ -421,8 +436,10 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
             AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
             dataJson.put("errmsg", error == null ? "" : error.getTag());
             dataJson.put("channelname", "" + channelname);
-            dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
-            dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            if (lastPlayserverEntity != null) {
+                dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
+                dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+            }
             dataJson.put("playlatency", "" + openTime);
             dataJson.put("cputype", "" + cpuName);
             dataJson.put("memsize", "" + memsize);

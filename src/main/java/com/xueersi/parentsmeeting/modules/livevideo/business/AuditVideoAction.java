@@ -9,7 +9,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 public interface AuditVideoAction extends VideoAction {
     void onStudentLeave(boolean leave, String stuPushStatus);
 
-    void onStudentError(String msg);
+    void onStudentError(String status, String msg);
 
     /**
      * 学生直播开始

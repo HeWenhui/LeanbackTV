@@ -1371,6 +1371,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         videoQuestionLiveEntity.isAllow42 = object.optString("isAllow42", "");
                         videoQuestionLiveEntity.speechContent = object.optString("answer", "");
                         videoQuestionLiveEntity.multiRolePlay = object.optString("multiRolePlay", "0");
+                        videoQuestionLiveEntity.roles = object.optString("roles", "");
 //                        if (BuildConfig.DEBUG) {onget
 //                            videoQuestionLiveEntity.isTestUseH5 = true;
 //                        }
@@ -2460,7 +2461,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      */
     private boolean isPresent(String mode) {
         boolean isPresent = true;
-        if (mIRCMessage != null && mIRCMessage.isConnected()) {
+        if (mIRCMessage != null && mIRCMessage.onUserList()) {
             if (LiveTopic.MODE_CLASS.endsWith(mode)) {
                 isPresent = mMainTeacher != null;
             } else {
@@ -4229,10 +4230,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     .get());
             mCompleteCounTeacherCount.set(mCompleteCounTeacherCount.get() > 1000 ? 1000 : mCompleteCounTeacherCount
                     .get());
-            XesMobAgent.liveStatistics(mBufferCount.get(), mRepairBufferCount.get(), mRepairOpenCount.get(), mFailCount
-                            .get(),
-                    mFailMainTeacherCount.get(), mFailCounTeacherCount.get(), mCompleteCount.get(),
-                    mCompleteMainTeacherCount.get(), mCompleteCounTeacherCount.get());
+//            XesMobAgent.liveStatistics(mBufferCount.get(), mRepairBufferCount.get(), mRepairOpenCount.get(), mFailCount
+//                            .get(),
+//                    mFailMainTeacherCount.get(), mFailCounTeacherCount.get(), mCompleteCount.get(),
+//                    mCompleteMainTeacherCount.get(), mCompleteCounTeacherCount.get());
             postDelayedIfNotFinish(mStatisticsRun, mStatisticsdelay);
         }
     };

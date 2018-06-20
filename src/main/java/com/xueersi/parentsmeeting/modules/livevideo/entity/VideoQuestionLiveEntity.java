@@ -17,12 +17,13 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
      *
      */
     private static final long serialVersionUID = -3457837665761010917L;
-    String TAG = "VideoQuestionLiveEntity";
-    public double time;// NUMBER: 3.00
-    public String id;// STRING: 50
-    public double gold;// NUMBER: 3.00
-    public int num;// NUMBER: 3.00
-    public String type;// STRING: 2
+    private static String TAG = "VideoQuestionLiveEntity";
+    public double time;
+    public String id;
+    public double gold;
+    public int num;
+    /** 互动题类型 */
+    public String type;
     /** 当type=1时为选择题，choiceType 1：单选；2：多选，num为选择题数量 */
     public String choiceType;
     /** 题目来源 */
@@ -47,6 +48,8 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     public String assess_ref;
     /** 多人连麦 Notice */
     public String multiRolePlay;
+    /** 不为空是role play */
+    public String roles = "";
 
     public VideoQuestionLiveEntity() {
     }

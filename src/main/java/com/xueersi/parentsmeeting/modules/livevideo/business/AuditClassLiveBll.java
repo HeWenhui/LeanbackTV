@@ -142,6 +142,8 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     private boolean liveGetPlayServerError = false;
     /** 调度是不是在无网络下失败 */
     private boolean liveGetStudyPlayServerError = false;
+    /** 学生是不是流畅模式 */
+    AtomicBoolean fluentMode = new AtomicBoolean(false);
     /** 是不是有分组 */
     private boolean haveTeam = false;
     /** 区分文理appid */
@@ -765,9 +767,12 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         }
 
         @Override
-        public void onStudentError(String msg) {
+        public void onStudentError(String status, String msg) {
+            if ("fluentMode".equals(status)) {
+                fluentMode.set(true);
+            }
             if (mVideoAction != null) {
-                mVideoAction.onStudentError(msg);
+                mVideoAction.onStudentError(status, msg);
             }
         }
 
@@ -1234,6 +1239,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     private long lastGetPlayServer;
 
     private void liveGetPlayServer(final String mode, final boolean modechange) {
+        if (fluentMode.get()) {
+            return;
+        }
         if (mLiveType == LIVE_TYPE_LIVE) {
             if (mGetInfo.getStudentLiveInfo().isExpe() && LiveTopic.MODE_TRANING.equals(mode)) {
                 mLogtf.d("liveGetPlayServer:isExpe");
@@ -1884,10 +1892,10 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                     .get());
             mCompleteCounTeacherCount.set(mCompleteCounTeacherCount.get() > 1000 ? 1000 : mCompleteCounTeacherCount
                     .get());
-            XesMobAgent.liveStatistics(mBufferCount.get(), mRepairBufferCount.get(), mRepairOpenCount.get(), mFailCount
-                            .get(),
-                    mFailMainTeacherCount.get(), mFailCounTeacherCount.get(), mCompleteCount.get(),
-                    mCompleteMainTeacherCount.get(), mCompleteCounTeacherCount.get());
+//            XesMobAgent.liveStatistics(mBufferCount.get(), mRepairBufferCount.get(), mRepairOpenCount.get(), mFailCount
+//                            .get(),
+//                    mFailMainTeacherCount.get(), mFailCounTeacherCount.get(), mCompleteCount.get(),
+//                    mCompleteMainTeacherCount.get(), mCompleteCounTeacherCount.get());
             postDelayedIfNotFinish(mStatisticsRun, mStatisticsdelay);
         }
     };

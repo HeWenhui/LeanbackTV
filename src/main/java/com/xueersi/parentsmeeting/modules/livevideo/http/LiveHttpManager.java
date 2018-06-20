@@ -108,10 +108,12 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(LiveVideoConfig.URL_LIVE_LECTURE_GET_INFO, params, requestCallBack);
     }
 
+    int getTimes = 1;
+
     public Callback.Cancelable liveGetPlayServer(final StringBuilder ipsb, final String url2, final CommonRequestCallBack<String>
             requestCallBack) {
         final HttpURLConnectionCancelable cancelable = new HttpURLConnectionCancelable();
-        new Thread() {
+        new Thread("liveGetPlayServer:" + getTimes) {
             Handler handler = new Handler(Looper.getMainLooper());
 
             @Override
@@ -126,9 +128,10 @@ public class LiveHttpManager extends BaseHttpBusiness {
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
+                HttpURLConnection connection = null;
                 try {
                     URL url = new URL(url2);
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection = (HttpURLConnection) url.openConnection();
                     connection.setConnectTimeout(20000);
                     connection.setReadTimeout(20000);
                     cancelable.connection = connection;
@@ -170,6 +173,15 @@ public class LiveHttpManager extends BaseHttpBusiness {
                             }
                         }
                     });
+                } finally {
+                    Loger.d(TAG, "liveGetPlayServer:disconnect=" + (connection != null));
+                    try {
+                        if (connection != null) {
+                            connection.disconnect();
+                        }
+                    } catch (Exception e) {
+
+                    }
                 }
             }
         }.start();
@@ -184,11 +196,11 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
         @Override
         public void cancel() {
+            isCancel = true;
             if (connection != null) {
                 new Thread() {
                     public void run() {
                         connection.disconnect();
-                        isCancel = true;
                         if (callback != null) {
                             callback.onCancelled(new CancelledException("disconnect"));
                         }

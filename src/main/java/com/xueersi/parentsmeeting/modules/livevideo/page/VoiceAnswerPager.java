@@ -21,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
@@ -467,6 +468,8 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                                 if (entity != null) {
                                     entity.setYourAnswer(option);
                                     entity.setStandardAnswer(answer);
+                                    String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
+                                    VoiceAnswerLog.sno5(liveAndBackDebug, sourcetype, baseVideoQuestionEntity.getvQuestionID(), baseVideoQuestionEntity.nonce);
                                 }
                             }
 
@@ -572,6 +575,8 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                         public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
                             if (entity != null) {
                                 entity.setStandardAnswer(answer);
+                                String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
+                                VoiceAnswerLog.sno5(liveAndBackDebug, sourcetype, baseVideoQuestionEntity.getvQuestionID(), baseVideoQuestionEntity.nonce);
                             }
                         }
 

@@ -377,7 +377,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
 
     private void showH5Paper(final VideoQuestionLiveEntity videoQuestionH5Entity) {
-
         logToFile.i("onH5Courseware:url=" + videoQuestionH5Entity.getUrl());
         StableLogHashMap logHashMap = new StableLogHashMap("receiveCourseware");
         logHashMap.put("coursewareid", videoQuestionH5Entity.id);
@@ -474,7 +473,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 }
             });
         }
-        VoiceAnswerLog.sno2H5Ware(mLiveBll, videoQuestionLiveEntity.type, videoQuestionLiveEntity.id, videoQuestionLiveEntity.nonce);
     }
 
     private void stopVoiceAnswerPager() {
@@ -853,11 +851,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                             XESToastUtils.showToast(context, "您已经答过此题");
                         } else {
                             baseVoiceAnswerCreat.onAnswerReslut(context, EnglishH5CoursewareBll.this, voiceAnswerPager, baseVideoQuestionEntity, entity);
-                            StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
-                            logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
-                            logHashMap.put("sourcetype", "h5ware").addNonce(baseVideoQuestionEntity.nonce);
-                            logHashMap.addExY().addExpect("0").addSno("5").addStable("1");
-                            umsAgentDebugPv(voicequestionEventId, logHashMap.getData());
                         }
                     }
                     if (voiceAnswerPager instanceof VoiceAnswerPager) {
