@@ -376,6 +376,7 @@ public class LiveBll2 extends BaseBll implements LiveAction {
                 LiveTopic liveTopic = mHttpResponseParser.parseLiveTopic(mLiveTopic, jsonObject, mLiveType);
                 boolean teacherModeChanged = !mLiveTopic.getMode().equals(liveTopic.getMode());
 
+
                 if(teacherModeChanged){
                     mLiveTopic.setMode(liveTopic.getMode());
                     mGetInfo.setMode(liveTopic.getMode());
