@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.UserBll;
@@ -30,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONObject;
 
@@ -218,7 +220,7 @@ public class LiveBll2 extends BaseBll implements LiveAction {
                     mLogtf.d("getInfo:onPmError=" + responseEntity.getErrorMsg());
                 }
             };
-              // 直播
+            // 直播
             if (mLiveType == LIVE_TYPE_LIVE) {
                 mHttpManager.liveGetInfo(enstuId, mCourseId, mLiveId, 0, callBack);
             }
@@ -301,8 +303,8 @@ public class LiveBll2 extends BaseBll implements LiveAction {
     }
 
 
-
     private final IRCCallback mIRCcallback = new IRCCallback() {
+        String lastTopicstr = "";
 
         @Override
         public void onStartConnect() {
@@ -346,21 +348,58 @@ public class LiveBll2 extends BaseBll implements LiveAction {
             try {
                 JSONObject object = new JSONObject(notice);
                 int mtype = object.getInt("type");
-                List<NoticeAction>  noticeActions = mNoticeActionMap.get(mtype);
-                if(noticeActions != null && noticeActions.size() > 0){
+                List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
+                if (noticeActions != null && noticeActions.size() > 0) {
                     for (NoticeAction noticeAction : noticeActions) {
-                        noticeAction.onNotice(object,mtype);
+                        noticeAction.onNotice(object, mtype);
                     }
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
         }
 
         @Override
-        public void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
+        public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed) {
+            if (lastTopicstr.equals(topicstr)) {
+                mLogtf.i("onTopic(equals):topicstr=" + topicstr);
+                return;
+            }
+            Loger.e("LiveBll", "======>onTopic:" + topicstr);
+            if (TextUtils.isEmpty(topicstr)) {
+                return;
+            }
+            lastTopicstr = topicstr;
+            try {
+                JSONObject jsonObject = new JSONObject(topicstr);
+                LiveTopic liveTopic = mHttpResponseParser.parseLiveTopic(mLiveTopic, jsonObject, mLiveType);
+                boolean teacherModeChanged = !mLiveTopic.getMode().equals(liveTopic.getMode());
 
+                if(teacherModeChanged){
+                    mLiveTopic.setMode(liveTopic.getMode());
+                    mGetInfo.setMode(liveTopic.getMode());
+                }
+
+                if (mTopicActions != null && mTopicActions.size() > 0) {
+                    for (TopicAction mTopicAction : mTopicActions) {
+                        mTopicAction.onTopic(liveTopic, teacherModeChanged);
+                    }
+                }
+
+                List<String> disableSpeaking = liveTopic.getDisableSpeaking();
+                boolean forbidSendMsg = false;
+                for (String id : disableSpeaking) {
+                    if (("" + id).contains(mIRCMessage.getNickname())) {
+                        forbidSendMsg = true;
+                    }
+                }
+
+                liveTopic.setDisable(forbidSendMsg);
+                mLiveTopic.copy(liveTopic);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -379,7 +418,8 @@ public class LiveBll2 extends BaseBll implements LiveAction {
         }
 
         @Override
-        public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
+        public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String
+                recipientNick, String reason) {
 
         }
 
@@ -480,13 +520,13 @@ public class LiveBll2 extends BaseBll implements LiveAction {
     public boolean sendNotice(String targetName, JSONObject data) {
         boolean result = false;
         try {
-            if(targetName != null){
+            if (targetName != null) {
                 mIRCMessage.sendNotice(targetName, data.toString());
-            }else{
+            } else {
                 mIRCMessage.sendNotice(data.toString());
             }
             result = true;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
@@ -502,11 +542,9 @@ public class LiveBll2 extends BaseBll implements LiveAction {
                 mIRCMessage.sendMessage(data.toString());
                 result = true;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-
         return result;
     }
 
@@ -514,7 +552,7 @@ public class LiveBll2 extends BaseBll implements LiveAction {
 
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        setLogParam(eventId,mData);
+        setLogParam(eventId, mData);
         UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
     }
 
@@ -528,6 +566,7 @@ public class LiveBll2 extends BaseBll implements LiveAction {
 
     /**
      * 上传log 添加 公共参数
+     *
      * @param eventId
      * @param mData
      */
