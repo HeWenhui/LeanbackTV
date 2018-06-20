@@ -136,6 +136,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     private String termId;
     private View mFloatView;
     private PopupWindow mPopupWindow;
+    private long mOldTime = 0;//记录点击赠送按钮那一刻的时间
 
     public LiveMessagePager(Context context, QuestionBll questionBll, LiveAndBackDebug ums, BaseLiveMediaControllerBottom
             liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
@@ -301,7 +302,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                         return;
                     }
                 }
-
                 mFlowerWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
                 isHaveFlowers = true;
             }
@@ -601,13 +601,19 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             flowerEntities.add(new FlowerEntity(FLOWERS_MIDDLE, flowsDrawTips[1], "1束玫瑰", 50));
             flowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "1束蓝色妖姬", 100));
         }
-        PopupWindow flowerWindow = new PopupWindow(mContext);
-        flowerWindow.setBackgroundDrawable(new BitmapDrawable());
-        flowerWindow.setOutsideTouchable(true);
-        flowerWindow.setFocusable(true);
+
+        if(mFlowerWindow != null && mFlowerWindow.isShowing()){
+            Loger.i("yzl_fd", "不要重复创建鲜花popwindow");
+            return;
+        }
+        mFlowerWindow = new PopupWindow(mContext);
+        mFlowerWindow.setBackgroundDrawable(new BitmapDrawable());
+        mFlowerWindow.setOutsideTouchable(true);
+        mFlowerWindow.setFocusable(true);
+
         flowerContentView = View.inflate(mContext, R.layout.pop_livevideo_message_flower, null);
-        flowerWindow.setContentView(flowerContentView);
-        flowerWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+        mFlowerWindow.setContentView(flowerContentView);
+        mFlowerWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
                 isHaveFlowers = false;
@@ -620,7 +626,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         final CompoundButtonGroup group = new CompoundButtonGroup();
         Loger.i(TAG, "initFlower:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        mFlowerWindow = flowerWindow;
         for (int i = 0; i < flowerEntities.size(); i++) {
             final int index = i;
             mainHandler.postDelayed(new Runnable() {
@@ -651,14 +656,29 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         }
         Loger.i(TAG, "initFlower:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        TextView flowerSend = flowerContentView.findViewById(R.id.bt_livevideo_message_flowersend);
+        final TextView flowerSend = flowerContentView.findViewById(R.id.bt_livevideo_message_flowersend);
         flowerSend.setText(commonAction.getFlowerSendText());
         flowerSend.setOnClickListener(new View
                 .OnClickListener() {
             @Override
             public void onClick(View v) {
+                long curTime = System.currentTimeMillis();
+                if(commonAction instanceof GiftDisable){
+                    if(mOldTime > 0 && (curTime - mOldTime)/1000 <= 10){
+                        Loger.i("yzl_fd", "理科，10s之内不让重复点击");
+                        return;
+                    }
+                }else {
+                    if(mOldTime > 0 && (curTime - mOldTime)/1000 <= 1){
+                        Loger.i("yzl_fd", "文科，1s之内不让重复点击");
+                        return;
+                    }
+                }
+
+                mOldTime  = System.currentTimeMillis();
                 if(goldNum == null || Integer.parseInt(goldNum) <=0 ){
                     XESToastUtils.showToast(mContext, "您的金币不足啦");
+                    flowerSend.setClickable(true);
                     return;
                 }
                 final FlowerEntity entity = (FlowerEntity) flowerContentView.getTag();
@@ -680,10 +700,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 }
             }
         });
-        flowerWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        flowerWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        mFlowerWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        mFlowerWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         Loger.i(TAG, "initFlower:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
+
     }
 
     /**
@@ -979,6 +1000,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         if (mFlowerWindow != null) {
             if (haveFlowers) {
                 mFlowerWindow.showAtLocation(btMessageFlowers, Gravity.BOTTOM, 0, 0);
+                Loger.i("yzl_fd", "显示鲜花popwindow");
             } else {
                 mFlowerWindow.dismiss();
             }
@@ -1227,6 +1249,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     /** 关闭开启弹幕 */
+    @Override
     public void onOpenbarrage(final boolean openbarrage, final boolean fromNotice) {
         Loger.i("yzl_fd", liveBll.getMode()+"老师"+openbarrage+"了献花 fromNotice = "+fromNotice+" liveBll.getLKNoticeMode()"+liveBll.getLKNoticeMode());
 
@@ -1246,6 +1269,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     Loger.i("yzl_fd", "理科当前mode和notimode一致，响应提示，改变当前mode改变礼物/鲜花状态");
                     //理科主讲送礼物功能
                     setFlowerIconState(openbarrage, fromNotice,liveBll.getMode());
+
                 }else{
                     Loger.i("yzl_fd", "文科");
                     //非理科主讲的走原来的逻辑
@@ -1256,6 +1280,34 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
             }
         });
+    }
+
+    /**
+     * 使送礼物面板消失
+     * @param mode
+     * @param notShowTips
+     */
+    private void setFlowerWindowDismiss(final String mode, final boolean notShowTips) {
+            //切记，此方法是在子线程中回调的，不会报错，但是mFlowerWindow就是无法消失，其方法返回的值都是错误的，无效的，方法调用也无效
+            mainHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(commonAction instanceof GiftDisable){
+                        Loger.i("yzl_fd", "切流，使送礼物面板消失");
+                        if(mFlowerWindow != null){
+                            mFlowerWindow.dismiss();
+                        }
+                        if(notShowTips){
+                            Loger.i("yzl_fd", "老师关闭了鲜花，切流，使送礼物面板消失,但不提示，切换主讲，辅导");
+                            return;
+                        }
+                        ((GiftDisable) commonAction).changeTeacherMode(mode);
+                    }
+
+                }
+            });
+
+
     }
 
     /**
@@ -1295,6 +1347,18 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     /**
+     * 回调，理科，主讲和辅导切换的时候，给出提示（切流）
+     * @param mode
+     * @param notShowTips
+     */
+    @Override
+    public void onTeacherModeChange(String mode, boolean notShowTips) {
+        //理科辅导送礼物功能
+        Loger.i("yzl_fd", "onTeacherModeChange 切流，使送礼物面板消失");
+        setFlowerWindowDismiss(mode,notShowTips);
+    }
+
+    /**
      * 根据送 礼物/鲜花 开关来设置改icon的显示状态
      * @param openbarrage
      * @param fromNotice
@@ -1324,9 +1388,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         if (openbarrage) {
             if (fromNotice) {
                 if(commonAction instanceof GiftDisable){
-                    if(LiveTopic.MODE_CLASS.equals(liveBll.getMode())){
-
-                    }
                     //理科不区分主讲辅导
                     ((GiftDisable) commonAction).onOpenbarrage(true,classMode);
 
@@ -1343,6 +1404,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 if(commonAction instanceof GiftDisable){
                     //理科不区分主讲辅导
                     ((GiftDisable) commonAction).onOpenbarrage(false,classMode);
+                    //只在理科，关闭鲜花的时候，去关闭鲜花面板，如果他还在显示的话
+                    setFlowerWindowDismiss(classMode, true);
                 }else {
                     commonAction.onOpenbarrage(false);
                 }
@@ -1410,6 +1473,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             }
         }
 
+        public void changeTeacherMode(String classMode){
+            String teacher = LiveTopic.MODE_CLASS.equals(classMode)?"主讲":"辅导";
+            XESToastUtils.showToast(mContext, "已切换到"+teacher+"老师");
+
+        }
 
         //重载，添加参数：讲课模式
         public void clickIsnotOpenbarrage(String classMode) {

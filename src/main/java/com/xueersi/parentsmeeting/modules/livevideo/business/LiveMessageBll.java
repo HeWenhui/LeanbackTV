@@ -480,6 +480,13 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
         }
     }
 
+    @Override
+    public void onTeacherModeChange(String mode, boolean b) {
+        if (mLiveMessagePager != null) {
+            mLiveMessagePager.onTeacherModeChange(mode, false);
+        }
+    }
+
     public void setVideoLayout(int width, int height) {
         if (mLiveMessagePager != null) {
             mLiveMessagePager.setVideoWidthAndHeight(width, height);

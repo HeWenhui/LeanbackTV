@@ -80,4 +80,10 @@ public interface RoomAction {
     void videoStatus(String status);
 
 
+    /**
+     * 理科，主讲和辅导切换的时候，给出提示（切流）
+     * @param mode
+     * @param notShowTips 为false的时候，默认显示"已切换到 主讲/辅导模式"
+     */
+    void onTeacherModeChange(String mode, boolean notShowTips);
 }

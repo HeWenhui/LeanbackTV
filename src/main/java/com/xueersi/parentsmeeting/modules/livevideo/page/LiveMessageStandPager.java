@@ -1032,6 +1032,11 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     }
 
+    @Override
+    public void onTeacherModeChange(String mode, boolean b) {
+
+    }
+
     /*添加聊天信息，超过120，移除60个*/
     @Override
     public void addMessage(final String sender, final int type, final String text, final String headUrl) {

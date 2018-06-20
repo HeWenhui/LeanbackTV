@@ -384,7 +384,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             coachStatusEntity.setListStatus(status.optInt("listStatus"));
 
             if(status.has("openbarrage")){
-                Loger.i("yzl_fd", "room2中有openbarrage字段 理科 status.getBoolean(\"openbarrage\") = "+status.getBoolean("openbarrage")+status.toString());
+                Loger.i("yzl_fd", "room2中有openbarrage字段 理科 status.getBoolean(\"openbarrage\") = "+status.getBoolean("openbarrage")+" "+status.toString());
                 //新增字段，辅导老师开启礼物与否 true开启
                 coachStatusEntity.setFDLKOpenbarrage(status.getBoolean("openbarrage"));
 

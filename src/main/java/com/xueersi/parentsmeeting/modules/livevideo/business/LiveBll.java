@@ -985,15 +985,18 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             Loger.i("yzl_fd", "topicstr = "+topicstr);
             if (lastTopicstr.equals(topicstr)) {
                 mLogtf.i("onTopic(equals):topicstr=" + topicstr);
+                Loger.i("yzl_fd", "onTopic(equals):topicstr=" + topicstr);
                 return;
             }
             Loger.e("LiveBll", "======>onTopic:" + topicstr);
+            Loger.i("yzl_fd", "======>onTopic:" + topicstr);
 
             if (TextUtils.isEmpty(topicstr)) {
                 return;
             }
             lastTopicstr = topicstr;
             mLogtf.i("onTopic:topicstr=" + topicstr);
+            Loger.i("yzl_fd", "onTopic:topicstr=" + topicstr);
             try {
                 JSONObject jsonObject = new JSONObject(topicstr);
                 LiveTopic liveTopic = mHttpResponseParser.parseLiveTopic(mLiveTopic, jsonObject, mLiveType);
@@ -1133,7 +1136,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     if(status.has("openbarrage")){
                         //理科的room2里面才有openbarrage字段
                         Loger.i("yzl_fd", "理科的room2里面才有openbarrage字段 ");
-
 
                         if (mRoomAction != null) {
                             if(LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode())){
@@ -1535,7 +1537,15 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             if (mPraiseListAction != null && mode.equals(LiveTopic.MODE_CLASS))
                                 mPraiseListAction.closePraiseList();
                             liveGetPlayServer(true);
+
+                            //理科，主讲和辅导切换的时候，给出提示（切流）
+                            if(mRoomAction != null){
+                                Loger.i("yzl_fd", "理科，主讲和辅导切换的时候，给出提示（切流）");
+                                mRoomAction.onTeacherModeChange(mode,false);
+
+                            }
                         }
+
                     }
                     break;
                     case XESCODE.TEACHER_MESSAGE:
