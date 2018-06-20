@@ -1151,7 +1151,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 + "/" + mGetInfo.getStuId();
                         videoQuestionLiveEntity.id = id;
                         videoQuestionLiveEntity.courseware_type = courseware_type;
-                        videoQuestionLiveEntity.url = play_url;
+                        videoQuestionLiveEntity.setUrl(play_url);
                         videoQuestionLiveEntity.nonce = "";
                         String isVoice = h5_Experiment.optString("isVoice");
                         videoQuestionLiveEntity.setIsVoice(isVoice);
@@ -1676,7 +1676,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                         + "/" + mGetInfo.getStuId();
                                 videoQuestionLiveEntity.id = id;
                                 videoQuestionLiveEntity.courseware_type = courseware_type;
-                                videoQuestionLiveEntity.url = play_url;
+                                videoQuestionLiveEntity.setUrl(play_url);
                                 videoQuestionLiveEntity.nonce = nonce;
                                 String isVoice = object.optString("isVoice");
                                 videoQuestionLiveEntity.setIsVoice(isVoice);
