@@ -9,6 +9,10 @@ public class Teacher {
         this._nick = _nick;
     }
 
+    public void set_nick(String nick){
+        this._nick = nick;
+    }
+
     public boolean equals(Object o) {
         if (o instanceof Teacher) {
             Teacher other = (Teacher) o;

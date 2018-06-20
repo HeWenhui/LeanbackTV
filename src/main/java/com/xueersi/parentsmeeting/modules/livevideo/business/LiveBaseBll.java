@@ -1,14 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
-import android.media.midi.MidiManager;
-import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveAction;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 
 import org.json.JSONObject;
@@ -24,21 +21,32 @@ import java.util.Map;
  */
 public  class LiveBaseBll extends BaseBll {
 
-    protected View mRootView;
-    private final LiveAction mLiveAction;
+    protected  View mRootView;
+    protected  LiveBll2 mLiveBll;
 
-    public LiveBaseBll(Context context, LiveAction liveAction, View rootView) {
+    public LiveBaseBll(Context context, LiveBll2  liveBll, View rootView) {
         super(context);
-        mLiveAction = liveAction;
+        mLiveBll = liveBll;
         mRootView = rootView;
     }
+
+
+    /**
+     * 获取网络请求对象
+     */
+    public void getHttpManager(){
+        if(mLiveBll != null){
+             mLiveBll.getHttpManager();
+        }
+    }
+
 
     /**
      * 发送直播间聊天消息
      */
     public void sendMsg(JSONObject jsonObject) {
-       if(mLiveAction != null){
-           mLiveAction.sendMessage(jsonObject);
+       if(mLiveBll != null){
+           mLiveBll.sendMessage(jsonObject);
        }
     }
 
@@ -46,8 +54,8 @@ public  class LiveBaseBll extends BaseBll {
      * 发送 notice 消息
      */
     public void sendNotice(JSONObject jsonObject,String target) {
-        if(mLiveAction != null){
-            mLiveAction.sendNotice(target,jsonObject);
+        if(mLiveBll != null){
+            mLiveBll.sendNotice(target,jsonObject);
         }
     }
 
@@ -57,8 +65,8 @@ public  class LiveBaseBll extends BaseBll {
      * @param data
      */
     public void  umsAgentDebugSys(String eventId,Map<String,String> data){
-        if(mLiveAction != null){
-            mLiveAction.umsAgentDebugSys(eventId,data);
+        if(mLiveBll != null){
+            mLiveBll.umsAgentDebugSys(eventId,data);
         }
     }
 
@@ -68,8 +76,8 @@ public  class LiveBaseBll extends BaseBll {
      * @param data
      */
     public void umsAgentDebugInter(String eventId,Map<String,String> data){
-        if(mLiveAction != null){
-            mLiveAction.umsAgentDebugInter(eventId,data);
+        if(mLiveBll != null){
+            mLiveBll.umsAgentDebugInter(eventId,data);
         }
     }
 
@@ -80,8 +88,8 @@ public  class LiveBaseBll extends BaseBll {
      * @param data
      */
     public void umsAgentDebugPv(String eventId,Map<String,String> data){
-        if(mLiveAction != null){
-            mLiveAction.umsAgentDebugPv(eventId,data);
+        if(mLiveBll != null){
+            mLiveBll.umsAgentDebugPv(eventId,data);
         }
     }
 
@@ -130,7 +138,6 @@ public  class LiveBaseBll extends BaseBll {
 
     }
 
-
     ///公共管理View 添加、移除、虚拟键引起布局 变化相关
 
     /**
@@ -143,7 +150,5 @@ public  class LiveBaseBll extends BaseBll {
             XESToastUtils.showToast(mContext, text);
         }
     }
-
-
 
 }

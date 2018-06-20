@@ -48,7 +48,7 @@ import java.util.Map;
  * @author chekun
  * created  at 2018/6/20 10:32
  */
-public class LiveBll2 extends BaseBll implements LiveAction {
+public class LiveBll2 extends BaseBll {
 
     /**
      * 需处理 topic 业务集合
@@ -120,8 +120,11 @@ public class LiveBll2 extends BaseBll implements LiveAction {
      */
     private long sysTimeOffset;
 
+    /**辅导老师*/
     private Teacher mCounteacher;
 
+    /**主讲老师*/
+    private Teacher mMainTeacher;
     /**
      * 渠道前缀
      */
@@ -136,7 +139,6 @@ public class LiveBll2 extends BaseBll implements LiveAction {
     public static String COUNTTEACHER_PREFIX = "f_";
     private final String ROOM_MIDDLE = "L";
     private IRCMessage mIRCMessage;
-
 
     public LiveBll2(Context context, String vStuCourseID, String courseId, String vSectionID, int form, LiveGetInfo
             liveGetInfo) {
@@ -164,8 +166,17 @@ public class LiveBll2 extends BaseBll implements LiveAction {
     }
 
 
-    public void addBusinessBll(LiveBaseBll bll) {
 
+    public LiveHttpManager getHttpManager(){
+        return  mHttpManager;
+    }
+
+
+    /**
+     * 添加直播间 业务Bill
+     * @param bll
+     */
+    public void addBusinessBll(LiveBaseBll bll) {
         if (bll instanceof TopicAction) {
             mTopicActions.add((TopicAction) bll);
         }
@@ -224,7 +235,7 @@ public class LiveBll2 extends BaseBll implements LiveAction {
             if (mLiveType == LIVE_TYPE_LIVE) {
                 mHttpManager.liveGetInfo(enstuId, mCourseId, mLiveId, 0, callBack);
             }
-            // 辅导
+            // 录播
             else if (mLiveType == LIVE_TYPE_TUTORIAL) {
                 mHttpManager.liveTutorialGetInfo(enstuId, mLiveId, callBack);
             } else if (mLiveType == LIVE_TYPE_LECTURE) {
@@ -252,6 +263,7 @@ public class LiveBll2 extends BaseBll implements LiveAction {
 
         sysTimeOffset = (long) mGetInfo.getNowTime() - System.currentTimeMillis() / 1000;
         mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
+
         mGetInfo.setMode(mLiveTopic.getMode());
         long enterTime = 0;
         try {
@@ -308,38 +320,62 @@ public class LiveBll2 extends BaseBll implements LiveAction {
 
         @Override
         public void onStartConnect() {
-
+            if(mMessageActions != null && mMessageActions.size() > 0){
+                for (MessageAction mesAction : mMessageActions) {
+                    mesAction.onStartConnect();
+                }
+            }
         }
 
         @Override
         public void onConnect(IRCConnection connection) {
-
+            if(mMessageActions != null && mMessageActions.size() > 0){
+                for (MessageAction mesAction : mMessageActions) {
+                    mesAction.onConnect(connection);
+                }
+            }
         }
 
         @Override
         public void onRegister() {
-
+            if(mMessageActions != null && mMessageActions.size() > 0){
+                for (MessageAction mesAction : mMessageActions) {
+                    mesAction.onRegister();
+                }
+            }
         }
 
         @Override
         public void onDisconnect(IRCConnection connection, boolean isQuitting) {
-
+            if(mMessageActions != null && mMessageActions.size() > 0){
+                for (MessageAction mesAction : mMessageActions) {
+                    mesAction.onDisconnect(connection,isQuitting);
+                }
+            }
         }
 
         @Override
         public void onMessage(String target, String sender, String login, String hostname, String text) {
-
+            if(mMessageActions != null && mMessageActions.size() > 0){
+                for (MessageAction mesAction : mMessageActions) {
+                    mesAction.onMessage(target,  sender,  login,  hostname,  text);
+                }
+            }
         }
 
         @Override
         public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target,
                                      String message) {
-
+            if(mMessageActions != null && mMessageActions.size() > 0){
+                for (MessageAction mesAction : mMessageActions) {
+                    mesAction.onPrivateMessage(isSelf,  sender,  login,  hostname,  target,message);
+                }
+            }
         }
 
         @Override
         public void onChannelInfo(String channel, int userCount, String topic) {
-
+            onTopic(channel, topic, "", 0, true);
         }
 
         @Override
@@ -405,31 +441,110 @@ public class LiveBll2 extends BaseBll implements LiveAction {
 
         @Override
         public void onUserList(String channel, User[] users) {
-
+            if(mMessageActions != null && mMessageActions.size() > 0){
+                for (MessageAction mesAction : mMessageActions) {
+                    mesAction.onUserList(channel, users);
+                }
+            }
+            String s = "onUserList:channel=" + channel + ",users=" + users.length;
+            //主讲老师
+            boolean haveMainTeacher = false;
+            //辅导老师
+            boolean haveCounteacher = false;
+            for (int i = 0; i < users.length; i++) {
+                User user = users[i];
+                String _nick = user.getNick();
+                if (_nick != null && _nick.length() > 2) {
+                    if (_nick.startsWith(TEACHER_PREFIX)) {
+                        s += ",mainTeacher=" + _nick;
+                        haveMainTeacher = true;
+                        synchronized (mIRCcallback) {
+                            if(mMainTeacher == null){
+                                mMainTeacher = new Teacher(_nick);
+                            }else {
+                                mMainTeacher.set_nick(_nick);
+                            }
+                        }
+                    } else if (_nick.startsWith(COUNTTEACHER_PREFIX)) {
+                        haveCounteacher = true;
+                        mCounteacher.set_nick(_nick);
+                        mCounteacher.isLeave = false;
+                        s += ",counteacher=" + _nick;
+                    }
+                } else {
+                    s += ",else=" + _nick;
+                }
+            }
+            if (!haveCounteacher) {
+                mCounteacher.isLeave = true;
+            }
         }
 
         @Override
         public void onJoin(String target, String sender, String login, String hostname) {
-
+            //更新 本地 主/辅讲 态
+            if (sender.startsWith(TEACHER_PREFIX)) {
+                synchronized (mIRCcallback) {
+                    if(mMainTeacher == null){
+                        mMainTeacher = new Teacher(sender);
+                    }else{
+                        mMainTeacher.set_nick(sender);
+                    }
+                }
+            } else if (sender.startsWith(COUNTTEACHER_PREFIX)) {
+                mCounteacher.isLeave = false;
+                mCounteacher.set_nick(sender);
+            }
+            // 分发消息
+            if(mMessageActions != null && mMessageActions.size() > 0){
+                for (MessageAction mesAction : mMessageActions) {
+                    mesAction.onJoin(target, sender,login,hostname);
+                }
+            }
         }
 
         @Override
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
 
+            Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+                    + sourceHostname + ",reason=" + reason);
+            if (sourceNick.startsWith(TEACHER_PREFIX)) {
+                synchronized (mIRCcallback) {
+                    mMainTeacher = null;
+                }
+            } else if (sourceNick.startsWith(COUNTTEACHER_PREFIX)) {
+                mCounteacher.isLeave = true;
+            }
+
+
+            if(mMessageActions != null && mMessageActions.size() > 0){
+                for (MessageAction mesAction : mMessageActions) {
+                    mesAction.onQuit(sourceNick, sourceLogin,sourceHostname,reason);
+                }
+            }
         }
 
         @Override
         public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String
                 recipientNick, String reason) {
 
+            if(mMessageActions != null && mMessageActions.size() > 0){
+                for (MessageAction mesAction : mMessageActions) {
+                    mesAction.onKick(target, kickerNick,kickerLogin,kickerHostname,recipientNick,reason);
+                }
+            }
+
         }
 
         @Override
         public void onUnknown(String line) {
-
+            if(mMessageActions != null && mMessageActions.size() > 0){
+                for (MessageAction mesAction : mMessageActions) {
+                    mesAction.onUnknown(line);
+                }
+            }
         }
     };
-
 
     /**
      * 进入直播间时间
@@ -513,11 +628,8 @@ public class LiveBll2 extends BaseBll implements LiveAction {
         }
         mHandler.postDelayed(r, delayMillis);
     }
-
-
     // 发送消息相关
 
-    @Override
     public boolean sendNotice(String targetName, JSONObject data) {
         boolean result = false;
         try {
@@ -533,7 +645,6 @@ public class LiveBll2 extends BaseBll implements LiveAction {
         return result;
     }
 
-    @Override
     public boolean sendMessage(JSONObject data) {
         boolean result = false;
         try {
@@ -551,19 +662,16 @@ public class LiveBll2 extends BaseBll implements LiveAction {
 
     ///日志上传相关
 
-    @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
         setLogParam(eventId, mData);
         UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
     }
 
 
-    @Override
     public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
         setLogParam(eventId, mData);
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData);
     }
-
 
     /**
      * 上传log 添加 公共参数
@@ -589,7 +697,6 @@ public class LiveBll2 extends BaseBll implements LiveAction {
         mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
     }
 
-    @Override
     public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
         setLogParam(eventId, mData);
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
@@ -651,5 +758,8 @@ public class LiveBll2 extends BaseBll implements LiveAction {
             businessBll.onDestory();
         }
         businessBlls.clear();
+        mNoticeActionMap.clear();
+        mTopicActions.clear();
+        mMessageActions.clear();
     }
 }
