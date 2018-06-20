@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 import android.content.Context;
 import android.util.Log;
 
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 
 import java.util.HashMap;
@@ -13,7 +14,7 @@ import java.util.Map;
  */
 public final class Loger {
     /** 是否打印日志 */
-    private static boolean DEBUG = false;
+    private static boolean DEBUG = AppConfig.DEBUG;
 
     /** 默认的TAG */
     private static String sTag = "xes";
@@ -25,7 +26,7 @@ public final class Loger {
     static String methodName;//方法名
     static int lineNumber;//行数
 
-    private static String createLog(String log ) {
+    private static String createLog(String log) {
         StringBuffer buffer = new StringBuffer();
         buffer.append(methodName);
         buffer.append("(").append(className).append(":").append(lineNumber).append(")");
@@ -33,7 +34,7 @@ public final class Loger {
         return buffer.toString();
     }
 
-    private static void getMethodNames(StackTraceElement[] sElements){
+    private static void getMethodNames(StackTraceElement[] sElements) {
         className = sElements[1].getFileName();
         methodName = sElements[1].getMethodName();
         lineNumber = sElements[1].getLineNumber();
@@ -48,8 +49,8 @@ public final class Loger {
         return DEBUG;
     }
 
-    public static void setDebug(boolean isShowLog){
-        DEBUG=isShowLog;
+    public static void setDebug(boolean isShowLog) {
+        DEBUG = isShowLog;
     }
 
     /**
