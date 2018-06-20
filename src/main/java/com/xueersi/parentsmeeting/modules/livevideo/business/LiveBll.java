@@ -1540,7 +1540,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
 
                             //理科，主讲和辅导切换的时候，给出提示（切流）
                             if(mRoomAction != null){
-                                Loger.i("yzl_fd", "理科，主讲和辅导切换的时候，给出提示（切流）");
+                                Loger.i("yzl_fd", "主讲和辅导切换的时候，给出提示（切流）");
                                 mRoomAction.onTeacherModeChange(mode,false);
 
                             }

@@ -676,13 +676,15 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 }
 
                 mOldTime  = System.currentTimeMillis();
-                if(goldNum == null || Integer.parseInt(goldNum) <=0 ){
-                    XESToastUtils.showToast(mContext, "您的金币不足啦");
-                    flowerSend.setClickable(true);
-                    return;
-                }
+
                 final FlowerEntity entity = (FlowerEntity) flowerContentView.getTag();
                 if (entity != null) {
+
+                    if(goldNum == null || Integer.parseInt(goldNum) <=0 || Integer.parseInt(goldNum) < entity.getGold()){
+                        XESToastUtils.showToast(mContext, "您的金币不足啦");
+                        flowerSend.setClickable(true);
+                        return;
+                    }
                     if(commonAction instanceof GiftDisable){
 
                         startCountDownFlowerIcon();
@@ -1293,14 +1295,14 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 @Override
                 public void run() {
                     if(commonAction instanceof GiftDisable){
-                        Loger.i("yzl_fd", "切流，使送礼物面板消失");
-                        if(mFlowerWindow != null){
-                            mFlowerWindow.dismiss();
-                        }
-                        if(notShowTips){
-                            Loger.i("yzl_fd", "老师关闭了鲜花，切流，使送礼物面板消失,但不提示，切换主讲，辅导");
-                            return;
-                        }
+                    Loger.i("yzl_fd", "切流，使送礼物面板消失");
+                    if(mFlowerWindow != null){
+                        mFlowerWindow.dismiss();
+                    }
+                    if(notShowTips){
+                        Loger.i("yzl_fd", "老师关闭了鲜花，切流，使送礼物面板消失,但不提示，切换主讲，辅导");
+                        return;
+                    }
                         ((GiftDisable) commonAction).changeTeacherMode(mode);
                     }
 
