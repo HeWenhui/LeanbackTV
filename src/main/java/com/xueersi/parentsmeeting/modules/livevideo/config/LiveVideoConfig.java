@@ -92,6 +92,8 @@ public class LiveVideoConfig {
     public static String LIVE_SPEECH_TEST2 = "live_speechtest_2";
     /** 站立直播-语音评测 */
     public static String LIVE_STAND_SPEECH_TEST = "standlive_voiceTest";
+    /** 站立直播-roleplay */
+    public static String LIVE_STAND_ROLEPLAY= "standlive_roleplay";
     /** 直播-NB实验 */
     public static String LIVE_H5_EXPERIMENT = "live_h5experiment";
     /** 直播-星星互动 */
@@ -162,11 +164,6 @@ public class LiveVideoConfig {
     public static Boolean isloading = false;
     /** 讲座直播广告Id */
     public static String LECTUREADID;
-    /** 一题多发的标志*/
-    public static Boolean isNewEnglishH5 = false;
-    /** 一题多发发题和收题的标志*/
-    public static Boolean isSend = false;
-    public static String newEnglishH5 = "NewEnglishH5";
     public static interface SubjectIds {
         /**
          * 学科id，语文

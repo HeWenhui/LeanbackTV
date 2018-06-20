@@ -10,6 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
@@ -27,8 +28,10 @@ import static com.xueersi.parentsmeeting.entity.VideoResultEntity.QUE_RES_TYPE4;
  */
 public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     QuestionSwitch questionSwitch;
+    LiveBll liveBll;
 
-    public LiveVoiceAnswerCreat(QuestionSwitch questionSwitch) {
+    public LiveVoiceAnswerCreat(LiveBll liveBll, QuestionSwitch questionSwitch) {
+        this.liveBll = liveBll;
         this.questionSwitch = questionSwitch;
     }
 
@@ -44,6 +47,8 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
         params.rightMargin = wradio;
         rlQuestionContent.addView(voiceAnswerPager2.getRootView(), params);
+        String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
+        VoiceAnswerLog.sno2(liveBll, videoQuestionLiveEntity.type, videoQuestionLiveEntity.id, videoQuestionLiveEntity.nonce, sourcetype);
         return voiceAnswerPager2;
     }
 

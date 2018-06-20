@@ -67,7 +67,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
@@ -77,6 +76,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPag
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
@@ -90,6 +90,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5PlaybackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SubjectResultX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
@@ -232,7 +233,6 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
     boolean islocal;
     static int times = -1;
     long createTime;
-    String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
     //    private LiveRemarkBll mLiveRemarkBll;
     private RelativeLayout bottom;
     String showName = "";
@@ -1103,7 +1103,13 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         });
     }
 
+    /**
+     * 站立直播的只有RolePlay
+     */
     private void showSpeech() {
+        if (mQuestionEntity != null) {
+            RolePlayStandLog.sno2(LiveStandPlayBackVideoActivity.this, mQuestionEntity.getvQuestionID());
+        }
         mPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -1121,7 +1127,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                     if ("1".equals(mQuestionEntity.getIsAllow42())) {
                         MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
                         String learning_stage = mVideoEntity.getLearning_stage();
-                        SpeechStandLog.sno2(LiveStandPlayBackVideoActivity.this, mQuestionEntity.getvQuestionID());
+                        SpeechStandLog.sno2(LiveStandPlayBackVideoActivity.this, mQuestionEntity.getvQuestionID(), "");
                         speechQuestionPlaybackPager = new StandSpeechAssAutoPager(LiveStandPlayBackVideoActivity.this,
                                 mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(),
                                 "", mQuestionEntity.getSpeechContent(), mQuestionEntity.getEstimatedTime(),
@@ -1136,6 +1142,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                                 false, "", LiveStandPlayBackVideoActivity.this, stuCourId, IS_SCIENCE);
                         speechAssessmentWebPager.setStandingLive(true);
                         speechQuestionPlaybackPager = speechAssessmentWebPager;
+                        RolePlayStandLog.sno3(LiveStandPlayBackVideoActivity.this, mQuestionEntity.getvQuestionID());
                     }
                     speechQuestionPlaybackPager.initData();
                     rlQuestionContent.removeAllViews();
@@ -2523,11 +2530,6 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //                } else {
 //                    initFillinAnswerRightResultVoice(entity);
 //                }
-                StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
-                logHashMap.put("testid", "" + questionEntity.getvQuestionID());
-                logHashMap.put("sourcetype", sourcetype).addNonce(questionEntity.nonce);
-                logHashMap.addExY().addExpect("0").addSno("5").addStable("1");
-                umsAgentDebugPv(voicequestionEventId, logHashMap.getData());
             } else {
                 initAnswerRightResult(entity.getGoldNum());
             }

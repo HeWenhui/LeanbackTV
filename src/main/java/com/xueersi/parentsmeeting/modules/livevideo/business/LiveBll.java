@@ -168,7 +168,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private Callback.Cancelable mCataDataCancle;
     private Callback.Cancelable mGetPlayServerCancle;
     /** 直播帧数统计 */
-    TotalFrameStat totalFrameStat;
+    private TotalFrameStat totalFrameStat;
     /**
      * 学习记录提交时间间隔
      */

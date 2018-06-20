@@ -327,9 +327,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             loadUrl(loadUrl);
             Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + loadUrl);
             reloadurl = loadUrl;
-            loadUrl(loadUrl);
-            Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + loadUrl);
-            reloadurl = loadUrl;
         }
         mGoldNum = -1;
         mEnergyNum = -1;

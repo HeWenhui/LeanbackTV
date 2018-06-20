@@ -1,10 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.stablelog;
 
-import com.xueersi.parentsmeeting.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 
 /**
  * Created by linyuqiang on 2018/4/24.
@@ -14,25 +12,14 @@ public class SpeechStandLog {
     private static String eventId = LiveVideoConfig.LIVE_STAND_SPEECH_TEST;
 
     /** 语音测评第二步，收到互动题 */
-    public static void sno2(LiveAndBackDebug liveAndBackDebug, String testId) {
+    public static void sno2(LiveAndBackDebug liveAndBackDebug, String testId, String nonce) {
         StableLogHashMap logHashMap = new StableLogHashMap("voiceTestReceive");
         logHashMap.put("testid", "" + testId);
         logHashMap.put("testtype", "TeacherResearch");
         logHashMap.put("answertype", "voice");
-        logHashMap.addExY().addSno("2");
+        logHashMap.addExY().addNonce(nonce).addSno("2");
         logHashMap.addStable("1");
-        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
-    }
-
-    /** 语音测评第二步，收到互动题 */
-    public static void sno2(LiveAndBackDebug liveAndBackDebug, VideoQuestionLiveEntity videoQuestionLiveEntity) {
-        StableLogHashMap logHashMap = new StableLogHashMap("voiceAnswerReceive");
-        logHashMap.put("testid", "" + videoQuestionLiveEntity.getvQuestionID());
-        logHashMap.put("testtype", "H5");
-        logHashMap.put("answertype", "voice");
-        logHashMap.addExY().addSno("2");
-        logHashMap.addStable("1");
-        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
     /** 语音测评第3步，麦克风弹出 */

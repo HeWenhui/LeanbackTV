@@ -260,7 +260,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
+            <TextView
                 android:id="@id/tv_teampk_myteam_add_energy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

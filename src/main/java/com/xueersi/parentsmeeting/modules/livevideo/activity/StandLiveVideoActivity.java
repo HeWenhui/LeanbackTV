@@ -488,7 +488,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         redPackageBll.setVSectionID(mVSectionID);
         questionBll.setLiveType(liveType);
         questionBll.initData();
-        questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(questionBll.new LiveQuestionSwitchImpl()));
+        questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mLiveBll, questionBll.new LiveQuestionSwitchImpl()));
         questionBll.setBaseSpeechCreat(new LiveStandSpeechCreat(mLiveBll));
         questionBll.setSpeechEndAction(new StandSpeechTop3Bll(mLiveBll));
 //        questionBll.setBaseSpeechCreat(new LiveSpeechCreat());
@@ -959,9 +959,14 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
 //                        return;
 //                    }
 //                }
-                ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                setTeacherNotpresent(ivTeacherNotpresent);
-                findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
+                mLogtf.d("onTeacherNotPresent:First=" + rlFirstBackgroundView.getVisibility());
+                if (rlFirstBackgroundView.getVisibility() == View.GONE) {
+                    ivTeacherNotpresent.setVisibility(View.GONE);
+                } else {
+                    ivTeacherNotpresent.setVisibility(View.VISIBLE);
+                    setTeacherNotpresent(ivTeacherNotpresent);
+                    findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
+                }
             }
         });
     }

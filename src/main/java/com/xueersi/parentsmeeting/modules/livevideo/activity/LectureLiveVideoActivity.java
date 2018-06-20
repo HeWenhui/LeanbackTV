@@ -875,13 +875,18 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
 //                if (tvLoadingHint != null) {
 //                    tvLoadingHint.setText(msg);
 //                }
-                ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                if (isLandSpace()) {
-                    ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
+                mLogtf.d("onTeacherNotPresent:First=" + rlFirstBackgroundView.getVisibility());
+                if (rlFirstBackgroundView.getVisibility() == View.GONE) {
+                    ivTeacherNotpresent.setVisibility(View.GONE);
                 } else {
-                    ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
+                    ivTeacherNotpresent.setVisibility(View.VISIBLE);
+                    if (isLandSpace()) {
+                        ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
+                    } else {
+                        ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
+                    }
+                    findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
                 }
-                findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
             }
         });
     }

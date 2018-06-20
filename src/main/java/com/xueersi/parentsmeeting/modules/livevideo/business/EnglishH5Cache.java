@@ -582,11 +582,4 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
 //            return true;
 //        }
 //    }
-
-    public class MyThread extends Thread{
-        @Override
-        public void run() {
-            super.run();
-        }
-    }
 }
