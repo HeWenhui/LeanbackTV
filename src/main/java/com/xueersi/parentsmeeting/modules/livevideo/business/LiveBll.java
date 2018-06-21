@@ -1172,8 +1172,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         LiveVideoConfig.isNewEnglishH5 = true;
                         if (englishH5CoursewareAction != null) {
                             JSONObject object = jsonObject.optJSONObject("platformTest");
-                            if (object != null) {
-                                LiveVideoConfig.isSend = object.optBoolean("open");
+                            if (object != null && !object.toString().equals("{}")) {
+                                LiveVideoConfig.isSend = true;
                                 status = LiveVideoConfig.isSend  ?  "on" : "off";
                                 String nonce = object.optString("nonce");
                                 StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
@@ -1195,6 +1195,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
+                            } else {
+                                LiveVideoConfig.isSend = false;
                             }
                         }
                     }
