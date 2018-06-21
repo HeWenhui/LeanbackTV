@@ -662,8 +662,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     "mIsShowQuestion=" + mIsShowQuestion);
 //            showQuestion(mQuestionEntity);
         }
-        // 心跳时间的上传
-        mHandler.postDelayed(mPlayDuration, mPlayTime);
+        // 回放式心跳时间的上传(暂时废弃)
+//        mHandler.postDelayed(mPlayDuration, mPlayTime);
     }
 
     @Override
