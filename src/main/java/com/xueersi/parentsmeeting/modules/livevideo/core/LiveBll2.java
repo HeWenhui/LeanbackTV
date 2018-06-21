@@ -185,9 +185,9 @@ public class LiveBll2 extends BaseBll {
             List<NoticeAction> noticeActions = null;
             if (noticeFilter != null && noticeFilter.length > 0) {
                 for (int i = 0; i < noticeFilter.length; i++) {
-                    if ((noticeActions = mNoticeActionMap.get(i)) == null) {
+                    if ((noticeActions = mNoticeActionMap.get(noticeFilter[i])) == null) {
                         noticeActions = new ArrayList<>();
-                        mNoticeActionMap.put(i, noticeActions);
+                        mNoticeActionMap.put(noticeFilter[i], noticeActions);
                     }
                     noticeActions.add((NoticeAction) bll);
                 }
