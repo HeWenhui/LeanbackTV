@@ -8,10 +8,11 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.xueersi.common.base.BaseBll;
-import com.xueersi.common.business.AppBll;
-import com.xueersi.common.config.AppConfig;
+import com.xueersi.common.business.UserBll;
+import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLivePlayBackVideoActivity;
@@ -19,15 +20,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLiveVideoAct
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveStandPlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity2;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.StandLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
-import com.xueersi.common.business.UserBll;
-import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
-import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
 import org.json.JSONObject;
@@ -169,7 +168,12 @@ public class LiveVideoEnter {
                 if (mGetInfo.getPattern() == 2) {
                     StandLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
                 } else {
-                    LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+
+                    if(mGetInfo.getIsArts() == 1){
+                        LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+                    }else{
+                        LiveVideoActivity2.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+                    }
                 }
             }
 

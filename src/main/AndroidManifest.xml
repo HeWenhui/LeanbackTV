@@ -24,11 +24,27 @@
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+
+
+
+
         <activity
             android:name=".activity.LiveVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
+
+
+
+        <activity
+            android:name=".activity.LiveVideoActivity2"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
+
+
+
+
         <activity
             android:name=".activity.StandLiveVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"

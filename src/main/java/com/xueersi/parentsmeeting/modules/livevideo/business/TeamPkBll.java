@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextUtils;
@@ -12,9 +13,14 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.Log;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
+import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentCoinAndTotalEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
@@ -45,6 +51,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONObject;
 
 import okhttp3.Call;
 
@@ -53,49 +60,49 @@ import okhttp3.Call;
  * created  at 2018/4/12
  * 战队PK 相关业务处理
  */
-public class TeamPkBll {
-    public static final String TEAMPK_URL_FIFTE = "http://addenergyandgold.com/";
+public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction {
+
+
+    public static final  String TEAMPK_URL_FIFTE   = "http://addenergyandgold.com/";
     /**
      * 开宝箱类型 班级宝箱列表
      */
-    private static final int CHEST_TYPE_CLASS = 1;
+    private static final int    CHEST_TYPE_CLASS   = 1;
     /**
      * 开宝箱类型 学生自己宝箱
      */
-    private static final int CHEST_TYPE_STUDENT = 2;
+    private static final int    CHEST_TYPE_STUDENT = 2;
     /**
      * 投票题 奖励能量
      */
-    private static final int VOTE_ADD_ENERGY = 3;
-    private Activity mActivity;
+    private static final int    VOTE_ADD_ENERGY    = 3;
+    private Activity               mActivity;
     /**
      * 战队PK rootView
      */
-    private RelativeLayout rlTeamPkContent;
-    private RelativeLayout mRootView;
-    private LiveBll mLiveBll;
-    private LiveHttpManager mHttpManager;
-    private LiveGetInfo roomInitInfo;
+    private RelativeLayout         rlTeamPkContent;
+    private LiveHttpManager        mHttpManager;
+    private LiveGetInfo            roomInitInfo;
     private LiveHttpResponseParser mHttpResponseParser;
-    private TeamPkTeamInfoEntity teamInfoEntity;
-    private BasePager mFocusPager;
+    private TeamPkTeamInfoEntity   teamInfoEntity;
+    private BasePager              mFocusPager;
 
     /**
      * pk对手
      */
-    private static final int PK_RESULT_TYPE_ADVERSARY = 1;
+    private static final int     PK_RESULT_TYPE_ADVERSARY      = 1;
     /**
      * 学生 当场次答题pk 结果
      */
-    private static final int PK_RESULT_TYPE_FINAL_PKRESULT = 2;
+    private static final int     PK_RESULT_TYPE_FINAL_PKRESULT = 2;
     /**
      * 学生 每题的PK 结果
      */
-    private static final int PK_RESULT_TYPE_PKRESULT = 3;
-    private boolean isTopicHandled = false;
+    private static final int     PK_RESULT_TYPE_PKRESULT       = 3;
+    private              boolean isTopicHandled                = false;
 
-    private boolean isWin;
-    private TeamPkStateLayout pkStateRootView;
+    private boolean                    isWin;
+    private TeamPkStateLayout          pkStateRootView;
     /**
      * 直播间内答题 H5 答题结果页面关闭事件队列
      */
@@ -104,34 +111,28 @@ public class TeamPkBll {
 
     /**
      * log埋点 nonce
-     *   主要记录 老师结束答题时下发的 nonce  作为 埋点上传log 参数
+     * 主要记录 老师结束答题时下发的 nonce  作为 埋点上传log 参数
      */
     private String nonce;
 
-
-    public TeamPkBll(Activity activity) {
-        this.mActivity = activity;
+    public TeamPkBll(Activity context, LiveBll2 liveBll, ViewGroup rootView) {
+        super(context, liveBll, rootView);
+        mActivity = context;
     }
 
-    public TeamPkBll(Activity activity, RelativeLayout rootView) {
-        this.mActivity = activity;
-        this.mRootView = rootView;
-    }
+
 
     public void setHttpManager(LiveHttpManager liveHttpManager) {
         mHttpManager = liveHttpManager;
     }
+
 
     public LiveHttpManager getmHttpManager() {
         return mHttpManager;
     }
 
 
-    public void setLiveBll(LiveBll bll) {
-        mLiveBll = bll;
-    }
-
-    public LiveBll getLiveBll() {
+    public LiveBll2 getLiveBll() {
         return mLiveBll;
     }
 
@@ -146,11 +147,14 @@ public class TeamPkBll {
 
 
     public void attachToRootView() {
+
+        android.util.Log.e("TeamPkBll","========> attachToRootView: "+Thread.currentThread().getId()+":"+mRootView);
+
         initData();
         rlTeamPkContent = new RelativeLayout(mActivity);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        mRootView.addView(rlTeamPkContent, params);
+        ((RelativeLayout)mRootView).addView(rlTeamPkContent, params);
         showPkStateLayout();
         registLayotListener();
 
@@ -237,7 +241,7 @@ public class TeamPkBll {
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         ClassChestEntity classChestEntity = mHttpResponseParser.parseClassChest(responseEntity);
                         showAwardGetScene(CHEST_TYPE_CLASS, classChestEntity, isWin);
-                        TeamPkLog.showClassGoldInfo(mLiveBll,classChestEntity.isMe());
+                        //TeamPkLog.showClassGoldInfo(mLiveBll, classChestEntity.isMe());
                     }
 
                     @Override
@@ -278,8 +282,8 @@ public class TeamPkBll {
                                         .parseTeanEnergyAndContribution(responseEntity);
                                 showPkResultScene(entity, PK_RESULT_TYPE_PKRESULT);
                                 if (mLiveBll != null && entity != null) {
-                                    TeamPkLog.showPerTestPk(mLiveBll, entity.isMe(),getNonce(),eventId,
-                                            entity.getMyTeamEngerInfo().getTeamName());
+                                    /*TeamPkLog.showPerTestPk(mLiveBll, entity.isMe(), getNonce(), eventId,
+                                            entity.getMyTeamEngerInfo().getTeamName());*/
                                 }
 
                             }
@@ -288,19 +292,20 @@ public class TeamPkBll {
 
     /**
      * 获取答题结果 埋点统计eventId
+     *
      * @param h5Type
      * @return
      */
     private String getLogEventId(int h5Type) {
-      String eventId;
+        String eventId;
         switch (h5Type) {
-            case  LiveRoomH5CloseEvent.H5_TYPE_EXAM:
+            case LiveRoomH5CloseEvent.H5_TYPE_EXAM:
                 eventId = "live_exam";
                 break;
-            case  LiveRoomH5CloseEvent.H5_TYPE_COURSE:
+            case LiveRoomH5CloseEvent.H5_TYPE_COURSE:
                 eventId = "live_h5waretest";
                 break;
-            case  LiveRoomH5CloseEvent.H5_TYPE_INTERACTION:
+            case LiveRoomH5CloseEvent.H5_TYPE_INTERACTION:
                 eventId = "live_h5test";
                 break;
             default:
@@ -349,6 +354,9 @@ public class TeamPkBll {
      * 获取战队信息
      */
     private void getTeamInfo() {
+
+        android.util.Log.e("TeamPk","========>getTeamInfo:"+mHttpManager+":"+roomInitInfo);
+
         mHttpManager.getTeamInfo(roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(),
                 roomInitInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
                     @Override
@@ -383,7 +391,7 @@ public class TeamPkBll {
             addPager(teamSelectPager);
             teamSelectPager.setData(teamInfoEntity);
             teamSelectPager.startTeamSelect();
-            TeamPkLog.showCreateTeam(mLiveBll);
+           // TeamPkLog.showCreateTeam(mLiveBll);
         }
     }
 
@@ -391,7 +399,7 @@ public class TeamPkBll {
      * 中途进入战斗选择
      */
     public void enterTeamSelectScene() {
-        TeamPkLog.clickFastEnter(mLiveBll);
+        //TeamPkLog.clickFastEnter(mLiveBll);
         mHttpManager.getTeamInfo(roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(),
                 roomInitInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
                     @Override
@@ -417,7 +425,7 @@ public class TeamPkBll {
             addPager(teamSelectPager);
             teamSelectPager.setData(teamInfoEntity);
             teamSelectPager.showTeamSelectedScene(true);
-            TeamPkLog.showCreateTeam(mLiveBll);
+            //TeamPkLog.showCreateTeam(mLiveBll);
         }
     }
 
@@ -487,9 +495,9 @@ public class TeamPkBll {
                     TeamPkTeamSelectingPager selectingPager = new TeamPkTeamSelectingPager(mActivity, TeamPkBll
                             .this);
                     addPager(selectingPager);
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         rlTeamPkContent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    }else{
+                    } else {
                         rlTeamPkContent.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     }
                 }
@@ -562,7 +570,7 @@ public class TeamPkBll {
     }
 
     private void getPkState(final boolean showPopWindow) {
-        Loger.e("TeamPkBll", "=====> getPkState:" + roomInitInfo.getStuId());
+        Loger.e("TeamPkBll", "=====> getPkState:" + roomInitInfo.getStuId()+":"+mHttpManager);
         mHttpManager.liveStuGoldAndTotalEnergy(mLiveBll.getLiveId(),
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(),
@@ -587,32 +595,32 @@ public class TeamPkBll {
     /**
      * 显示实时答题 奖励
      */
-    public void showAnswerQuestionAward(int goldNum, int energyNum,String id) {
+    public void showAnswerQuestionAward(int goldNum, int energyNum, String id) {
         TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity,
                 TeamPkAqResultPager.AWARD_TYPE_QUESTION, this);
         addPager(aqAwardPager);
         aqAwardPager.setData(goldNum, energyNum);
-        TeamPkLog.showAddPower(mLiveBll,id,energyNum+"");
+       // TeamPkLog.showAddPower(mLiveBll, id, energyNum + "");
     }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVoteResultUIColse(NativeVoteRusltulCloseEvent event) {
         int addEnergy = event.isStuVoted() ? VOTE_ADD_ENERGY : 0;
-        showVoteEnergyAnim(addEnergy,event.getVoteId());
+        showVoteEnergyAnim(addEnergy, event.getVoteId());
     }
 
     /**
      * 展示 投票加能量 动画
      */
-    private void showVoteEnergyAnim(int addEnergy,String voteId) {
-        Loger.e("LiveBll", "========> showVoteEnergyAnim:"+voteId+":"+addEnergy);
+    private void showVoteEnergyAnim(int addEnergy, String voteId) {
+        Loger.e("LiveBll", "========> showVoteEnergyAnim:" + voteId + ":" + addEnergy);
         TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_VOTE,
                 this);
         addPager(aqAwardPager);
         aqAwardPager.setData(0, addEnergy);
 
-        TeamPkLog.showAddPower(mLiveBll,voteId,addEnergy+"");
+        //TeamPkLog.showAddPower(mLiveBll, voteId, addEnergy + "");
 
 
         //上报服务器 增加加能量
@@ -643,14 +651,15 @@ public class TeamPkBll {
         rlTeamPkContent.addView(aqAwardPager.getRootView(), params);
         mFocusPager = aqAwardPager;
     }
-    private  void registLayotListener(){
+
+    private void registLayotListener() {
         rlTeamPkContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 ViewGroup viewGroup = (ViewGroup) mActivity.getWindow().getDecorView();
-                View  videoView = viewGroup.findViewById(R.id.vv_course_video_video);
+                View videoView = viewGroup.findViewById(R.id.vv_course_video_video);
                 ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-                setVideoLayout(lp.width,lp.height);
+                setVideoLayout(lp.width, lp.height);
             }
         });
     }
@@ -675,9 +684,6 @@ public class TeamPkBll {
     }
 
 
-
-
-
     public void onDestroy() {
         if (mFocusPager != null) {
             mFocusPager.onDestroy();
@@ -690,19 +696,50 @@ public class TeamPkBll {
     /**
      * activity stop
      */
+    @Override
     public void onStop() {
         if (mFocusPager != null) {
             mFocusPager.onStop();
         }
+        Loger.e("TeamPk","======>onStop");
     }
 
-    /**
-     * activity resume
-     */
-    public void onReusme() {
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Loger.e("TeamPk","======>onStop");
+    }
+
+    @Override
+    public void onResume() {
+
         if (mFocusPager != null) {
             mFocusPager.onResume();
         }
+
+        Loger.e("TeamPk","======>onResume");
+    }
+
+
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        Loger.e("TeamPk","======>onDestory");
+    }
+
+
+    @Override
+    public void onLiveInited(LiveGetInfo data) {
+         Loger.e("TeamPk","======>onLiveInited:"+getHttpManager());
+         mHttpManager = getHttpManager();
+         setRoomInitInfo(data);
+         attachToRootView();
+         setHttpManager(getHttpManager());
+
+        Loger.e("TeamPk","======>onLiveInited222222:"+mHttpManager);
+
+        roomInitInfo = data;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -719,7 +756,7 @@ public class TeamPkBll {
             if (h5CloseEvents.get(0).isCloseByTeacher()) {
                 cacheEvent = h5CloseEvents.remove(0);
                 //step  1 显示飞星动画
-                showAnswerQuestionAward(cacheEvent.getmGoldNum(), cacheEvent.getmEnergyNum(),event.getId());
+                showAnswerQuestionAward(cacheEvent.getmGoldNum(), cacheEvent.getmEnergyNum(), event.getId());
                 //step  2 显示pk 结果
                 final LiveRoomH5CloseEvent finalCacheEvent = cacheEvent;
                 rlTeamPkContent.postDelayed(new Runnable() {
@@ -730,7 +767,7 @@ public class TeamPkBll {
                 }, 3000);
             } else {
                 cacheEvent = h5CloseEvents.get(0);
-                showAnswerQuestionAward(cacheEvent.getmGoldNum(), cacheEvent.getmEnergyNum(),event.getId());
+                showAnswerQuestionAward(cacheEvent.getmGoldNum(), cacheEvent.getmEnergyNum(), event.getId());
             }
         } else {
             //未展示答题结果
@@ -778,9 +815,9 @@ public class TeamPkBll {
                                 long teamId = Long.parseLong(pkAdversaryEntity.getOpponent().getTeamId());
                                 long classId = Long.parseLong(pkAdversaryEntity.getOpponent().getClassId());
                                 boolean isComputer = (teamId < 0 && classId < 0);
-                                TeamPkLog.showOpponent(mLiveBll, isComputer,pkAdversaryEntity.getSelf().getTeamName(),
-                                        pkAdversaryEntity.getOpponent().getTeamName(),pkAdversaryEntity.getOpponent()
-                                                .getTeamId(),pkAdversaryEntity.getOpponent().getClassId());
+                               /* TeamPkLog.showOpponent(mLiveBll, isComputer, pkAdversaryEntity.getSelf().getTeamName(),
+                                        pkAdversaryEntity.getOpponent().getTeamName(), pkAdversaryEntity.getOpponent()
+                                                .getTeamId(), pkAdversaryEntity.getOpponent().getClassId());*/
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -824,7 +861,7 @@ public class TeamPkBll {
      */
     public void sendStudentReady() {
         if (mLiveBll != null) {
-            mLiveBll.sendStudentReady();
+          //  mLiveBll.sendStudentReady();
         }
     }
 
@@ -832,12 +869,157 @@ public class TeamPkBll {
     /**
      * 设置 埋点统计nonce
      */
-    public void setNonce(String nonce){
-      this.nonce = nonce;
+    public void setNonce(String nonce) {
+        this.nonce = nonce;
     }
 
-    private String getNonce(){
-        return TextUtils.isEmpty(nonce)?"":nonce;
+    private String getNonce() {
+        return TextUtils.isEmpty(nonce) ? "" : nonce;
+    }
+
+
+    ///////////////////////////消息通讯相关///////////////////////////////////////
+
+
+    private int[] noticeCodes = {
+            XESCODE.STOPQUESTION,
+            XESCODE.EXAM_STOP, XESCODE.ENGLISH_H5_COURSEWARE,
+            XESCODE.TEAM_PK_TEAM_SELECT, XESCODE.TEAM_PK_SELECT_PKADVERSARY,
+            XESCODE.TEAM_PK_PUBLIC_PK_RESULT, XESCODE.TEAM_PK_PUBLIC_CONTRIBUTION_STAR,
+            XESCODE.TEAM_PK_EXIT_PK_RESULT
+    };
+
+
+    @Override
+    public void onNotice(JSONObject data, int type) {
+
+        Loger.e("TeamPkBll","=======>onNotice :"+type);
+
+        String nonce = "";
+        String open = "";
+        switch (type) {
+
+            case XESCODE.STOPQUESTION:
+            case XESCODE.EXAM_STOP:
+            case XESCODE.ENGLISH_H5_COURSEWARE:
+
+                setNonce(data.optString("nonce", ""));
+                showCurrentPkResult();
+                break;
+
+            case XESCODE.TEAM_PK_TEAM_SELECT:
+
+                open = data.optString("open");
+                nonce = data.optString("nonce", "");
+                if (open.equals("1")) {
+                    startTeamSelect();
+                    //TeamPkLog.receiveCreateTeam(LiveBll.this, nonce, true);
+                } else if (open.equals("0")) {
+                    stopTeamSelect();
+                    //TeamPkLog.receiveCreateTeam(LiveBll.this, nonce, false);
+                }
+
+                break;
+
+            case XESCODE.TEAM_PK_SELECT_PKADVERSARY:
+                open = data.optString("open");
+                nonce = data.optString("nonce", "");
+                if (open.equals("1")) {
+                    startSelectAdversary();
+                    // TeamPkLog.receiveMatchOpponent(LiveBll.this, nonce, true);
+                    Loger.e("LiveBll", "====>onNotice startSelectAdversary:");
+                } else if (open.equals("0")) {
+                    stopSelectAdversary();
+                    //TeamPkLog.receiveMatchOpponent(LiveBll.this, nonce, false);
+                }
+                break;
+
+            case XESCODE.TEAM_PK_PUBLIC_PK_RESULT:
+                nonce = data.optString("nonce", "");
+                //TeamPkLog.receivePkResult(LiveBll.this, nonce, true);
+                showPkResult();
+
+                break;
+            case XESCODE.TEAM_PK_PUBLIC_CONTRIBUTION_STAR:
+
+                nonce = data.optString("nonce", "");
+                //TeamPkLog.receiveClassBoxInfo(LiveBll.this, nonce, true);
+                showClassChest();
+
+                break;
+
+            case XESCODE.TEAM_PK_EXIT_PK_RESULT:
+
+                closeCurrentPkResult();
+                break;
+
+            default:
+                break;
+
+        }
+
+    }
+
+    @Override
+    public int[] getNoticeFilter() {
+
+        return noticeCodes;
+    }
+
+
+    @Override
+    public void onTopic(LiveTopic data, boolean modeChange) {
+
+        Loger.e("TeamPkBll", "====>onTopic");
+
+        // 战队pk  topic 逻辑
+        LiveTopic.TeamPkEntity teamPkEntity = data.getTeamPkEntity();
+        if (teamPkEntity != null) {
+            //恢复战队pk 相关状态
+            int openBoxStateCode = 0;
+            int alloteamStateCode = 0;
+            int allotpkmanStateCode = 0;
+
+            if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode()) && teamPkEntity.getRoomInfo1() != null) {
+                openBoxStateCode = teamPkEntity.getRoomInfo1().getOpenbox();
+                alloteamStateCode = teamPkEntity.getRoomInfo1().getAlloteam();
+                allotpkmanStateCode = teamPkEntity.getRoomInfo1().getAllotpkman();
+                Loger.e("TeamPkBll", "====>onTopic teampk main_teacher_info:" + openBoxStateCode + ":" +
+                        alloteamStateCode + ":" + allotpkmanStateCode);
+            } else {
+                if (teamPkEntity.getRoomInfo2() != null) {
+                    openBoxStateCode = teamPkEntity.getRoomInfo2().getOpenbox();
+                    alloteamStateCode = teamPkEntity.getRoomInfo2().getAlloteam();
+                    allotpkmanStateCode = teamPkEntity.getRoomInfo2().getAllotpkman();
+                    Loger.e("TeamPkBll", "====>onTopic teampk assist_teacher_info:" + openBoxStateCode + ":" +
+                            alloteamStateCode + ":" + allotpkmanStateCode);
+                }
+            }
+
+            if (!isTopicHandled() && alloteamStateCode == 1) {
+                setTopicHandled(true);
+                showTeamSelecting();
+                Loger.e("TeamPkBll", "====>onTopic showTeamSelecting:");
+                return;
+            }
+            if (allotpkmanStateCode == 1 && !isTopicHandled()) {
+                setTopicHandled(true);
+                startSelectAdversary();
+                Loger.e("TeamPkBll", "====>onTopic startSelectAdversary:");
+                return;
+            }
+
+            if (openBoxStateCode == 1 && !isTopicHandled()) {
+                setTopicHandled(true);
+                showPkResult();
+                Loger.e("TeamPkBll", "====>onTopic showPkResult:");
+                return;
+            }
+
+            setTopicHandled(true);
+        }
+
+
     }
 
 

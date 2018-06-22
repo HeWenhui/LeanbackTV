@@ -98,7 +98,7 @@ public class LiveLazyBllCreat {
     }
 
     public TeamPkBll createTeamPkBll(){
-        return new TeamPkBll(liveVideoActivity, bottomContent);
+        return null ;//new TeamPkBll(liveVideoActivity, bottomContent);
     }
 
 }

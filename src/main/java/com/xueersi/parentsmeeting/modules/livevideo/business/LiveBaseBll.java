@@ -2,11 +2,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 
 import org.json.JSONObject;
 
@@ -21,10 +23,10 @@ import java.util.Map;
  */
 public  class LiveBaseBll extends BaseBll {
 
-    protected  View mRootView;
-    protected  LiveBll2 mLiveBll;
+    protected ViewGroup mRootView;
+    protected LiveBll2  mLiveBll;
 
-    public LiveBaseBll(Context context, LiveBll2  liveBll, View rootView) {
+    public LiveBaseBll(Context context, LiveBll2  liveBll, ViewGroup rootView) {
         super(context);
         mLiveBll = liveBll;
         mRootView = rootView;
@@ -34,10 +36,12 @@ public  class LiveBaseBll extends BaseBll {
     /**
      * 获取网络请求对象
      */
-    public void getHttpManager(){
+    public LiveHttpManager getHttpManager(){
+        LiveHttpManager manager = null;
         if(mLiveBll != null){
-             mLiveBll.getHttpManager();
+            manager = mLiveBll.getHttpManager();
         }
+        return manager;
     }
 
 

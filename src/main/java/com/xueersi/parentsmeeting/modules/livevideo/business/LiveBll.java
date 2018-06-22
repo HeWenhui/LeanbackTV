@@ -2549,11 +2549,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 ((EnglishH5CoursewareBll) englishH5CoursewareAction).setTeamPkAllowed(true);
             }
 
-            mTeamPKBll = liveLazyBllCreat.createTeamPkBll();
-            mTeamPKBll.setHttpManager(mHttpManager);
-            mTeamPKBll.setLiveBll(this);
-            mTeamPKBll.setRoomInitInfo(mGetInfo);
-            mTeamPKBll.attachToRootView();
+           // mTeamPKBll = liveLazyBllCreat.createTeamPkBll();
+           // mTeamPKBll.setHttpManager(mHttpManager);
+           // mTeamPKBll.setLiveBll(this);
+           // mTeamPKBll.setRoomInitInfo(mGetInfo);
+           // mTeamPKBll.attachToRootView();
             isAllowTeamPk = true;
         } else {
             isAllowTeamPk = false;
@@ -3008,7 +3008,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      */
     public void onResume() {
         if (mTeamPKBll != null) {
-            mTeamPKBll.onReusme();
+            mTeamPKBll.onResume();
         }
     }
 
