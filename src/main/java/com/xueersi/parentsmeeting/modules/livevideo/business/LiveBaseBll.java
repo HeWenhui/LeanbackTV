@@ -54,8 +54,11 @@ public  class LiveBaseBll extends BaseBll {
        }
     }
 
+
     /**
      * 发送 notice 消息
+     * @param jsonObject
+     * @param target    notice 接收放   如果 target 为null 将广播给所以用户
      */
     public void sendNotice(JSONObject jsonObject,String target) {
         if(mLiveBll != null){

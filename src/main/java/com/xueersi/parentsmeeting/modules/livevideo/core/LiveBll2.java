@@ -860,6 +860,13 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     }
     // 发送消息相关
 
+
+    /**
+     * 发送 notice 消息
+     * @param targetName   notice消息接收方 当target 为null 时 将广播此消息
+     * @param data
+     * @return
+     */
     public boolean sendNotice(String targetName, JSONObject data) {
         boolean result = false;
         try {
