@@ -665,7 +665,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 long curTime = System.currentTimeMillis();
                 if(commonAction instanceof GiftDisable){
                     if(mOldTime > 0 && (curTime - mOldTime)/1000 <= 10){
-                        Loger.i("yzl_fd", "理科，10s之内不让重复点击");
+                        Loger.i("yzl_fd", "理科，10s之内不让重复点击 ");
                         return;
                     }
                 }else {
