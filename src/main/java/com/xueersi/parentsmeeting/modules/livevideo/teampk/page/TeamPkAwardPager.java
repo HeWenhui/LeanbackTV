@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.page;
+package com.xueersi.parentsmeeting.modules.livevideo.teampk.page;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -39,7 +39,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentChestEntity;
@@ -236,6 +236,7 @@ public class TeamPkAwardPager extends BasePager {
                 lottieAnimationView.playAnimation();
             }
         });
+
         //不再自动关闭
        /* lottieAnimationView.postDelayed(new Runnable() {
             @Override
@@ -338,7 +339,6 @@ public class TeamPkAwardPager extends BasePager {
         rlLuckyStartRoot.setLayoutParams(layoutParams);
 
         // step 2 展示 获得金币信息
-        //cadTeamCoin.setVisibility(View.VISIBLE);
         cadTeamCoin.setAwardInfo(R.drawable.livevideo_alertview_guafen_img_disable, (int)
                 data.getSumGold(), R.drawable.livevideo_alertview_gegoldwenzi_img_disable);
         Animation alphaAnimation = AnimationUtils.loadAnimation(mContext, R.anim
@@ -347,7 +347,6 @@ public class TeamPkAwardPager extends BasePager {
         // step 3 展示队员信息
         recyclerView.setLayoutManager(new TeamMemberGridlayoutManager(mContext, 3,
                 LinearLayoutManager.VERTICAL, false));
-        //recyclerView.setVisibility(View.VISIBLE);
         GridLayoutAnimationController animationController = (GridLayoutAnimationController)
                 AnimationUtils.loadLayoutAnimation(mContext, R.anim.anim_livevido_teampk_teammember_list);
         recyclerView.setLayoutAnimation(animationController);
@@ -559,7 +558,6 @@ public class TeamPkAwardPager extends BasePager {
                             ivOpenState.setImageResource(R.drawable.livevideo_alertview_kaiguo_img_disable);
                             ivOpenState.setLayoutParams(layoutParams);
                         }
-                        //Loger.e("coinNum", "====> Awardpager update pkstateLayout");
                         updatePkStateLayout();
                         if(teamPKBll != null){
                             TeamPkLog.openTreasureBox(teamPKBll.getLiveBll(),studentChestEntity.getGold(),nonce,true);

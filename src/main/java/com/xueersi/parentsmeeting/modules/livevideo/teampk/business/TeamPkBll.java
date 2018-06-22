@@ -1,7 +1,6 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business;
+package com.xueersi.parentsmeeting.modules.livevideo.teampk.business;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextUtils;
@@ -13,8 +12,9 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.lib.framework.utils.Log;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
@@ -30,15 +30,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.NativeVoteRusltulCloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
-import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkAqResultPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkAwardPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkResultPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkTeamSelectPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.TeamPkTeamSelectingPager;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAqResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAwardPager;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkTeamSelectPager;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkTeamSelectingPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
@@ -63,46 +62,50 @@ import okhttp3.Call;
 public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction {
 
 
-    public static final  String TEAMPK_URL_FIFTE   = "http://addenergyandgold.com/";
+    public static final String TEAMPK_URL_FIFTE = "http://addenergyandgold.com/";
     /**
      * 开宝箱类型 班级宝箱列表
      */
-    private static final int    CHEST_TYPE_CLASS   = 1;
+    private static final int CHEST_TYPE_CLASS = 1;
     /**
      * 开宝箱类型 学生自己宝箱
      */
-    private static final int    CHEST_TYPE_STUDENT = 2;
+    private static final int CHEST_TYPE_STUDENT = 2;
     /**
      * 投票题 奖励能量
      */
-    private static final int    VOTE_ADD_ENERGY    = 3;
-    private Activity               mActivity;
+    private static final int VOTE_ADD_ENERGY = 3;
+    private Activity mActivity;
     /**
      * 战队PK rootView
      */
-    private RelativeLayout         rlTeamPkContent;
-    private LiveHttpManager        mHttpManager;
-    private LiveGetInfo            roomInitInfo;
+    private RelativeLayout rlTeamPkContent;
+    private LiveHttpManager mHttpManager;
+    private LiveGetInfo roomInitInfo;
     private LiveHttpResponseParser mHttpResponseParser;
-    private TeamPkTeamInfoEntity   teamInfoEntity;
-    private BasePager              mFocusPager;
+    private TeamPkTeamInfoEntity teamInfoEntity;
+    private BasePager mFocusPager;
+
+    private static final  String OPEN_STATE_OPEN = "1";
+
+    private static final  String OPEN_STATE_CLOSE = "0";
 
     /**
      * pk对手
      */
-    private static final int     PK_RESULT_TYPE_ADVERSARY      = 1;
+    private static final int PK_RESULT_TYPE_ADVERSARY = 1;
     /**
      * 学生 当场次答题pk 结果
      */
-    private static final int     PK_RESULT_TYPE_FINAL_PKRESULT = 2;
+    private static final int PK_RESULT_TYPE_FINAL_PKRESULT = 2;
     /**
      * 学生 每题的PK 结果
      */
-    private static final int     PK_RESULT_TYPE_PKRESULT       = 3;
-    private              boolean isTopicHandled                = false;
+    private static final int PK_RESULT_TYPE_PKRESULT = 3;
+    private boolean isTopicHandled = false;
 
-    private boolean                    isWin;
-    private TeamPkStateLayout          pkStateRootView;
+    private boolean isWin;
+    private TeamPkStateLayout pkStateRootView;
     /**
      * 直播间内答题 H5 答题结果页面关闭事件队列
      */
@@ -142,7 +145,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
     public void attachToRootView() {
 
-        android.util.Log.e("TeamPkBll", "========> attachToRootView: " + Thread.currentThread().getId() + ":" + mRootView);
+        android.util.Log.e("TeamPkBll", "========> attachToRootView: " + Thread.currentThread().getId() + ":" +
+                mRootView);
 
         initData();
         rlTeamPkContent = new RelativeLayout(mActivity);
@@ -666,7 +670,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
         int screenWidth = (r.right - r.left);
         if (width > 0 && mFocusPager != null) {
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mFocusPager.getRootView().getLayoutParams();
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mFocusPager.getRootView()
+                    .getLayoutParams();
             int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
             wradio += (screenWidth - width) / 2;
             if (wradio != params.rightMargin) {
@@ -907,10 +912,10 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
                 open = data.optString("open");
                 nonce = data.optString("nonce", "");
-                if (open.equals("1")) {
+                if (OPEN_STATE_OPEN.equals(open)) {
                     startTeamSelect();
                     TeamPkLog.receiveCreateTeam(mLiveBll, nonce, true);
-                } else if (open.equals("0")) {
+                } else if (OPEN_STATE_CLOSE.equals(open)) {
                     stopTeamSelect();
                     TeamPkLog.receiveCreateTeam(mLiveBll, nonce, false);
                 }
@@ -920,11 +925,11 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             case XESCODE.TEAM_PK_SELECT_PKADVERSARY:
                 open = data.optString("open");
                 nonce = data.optString("nonce", "");
-                if (open.equals("1")) {
+                if (OPEN_STATE_OPEN.equals(open)) {
                     startSelectAdversary();
                     TeamPkLog.receiveMatchOpponent(mLiveBll, nonce, true);
                     Loger.e("LiveBll", "====>onNotice startSelectAdversary:");
-                } else if (open.equals("0")) {
+                } else if (OPEN_STATE_CLOSE.equals(open)) {
                     stopSelectAdversary();
                     TeamPkLog.receiveMatchOpponent(mLiveBll, nonce, false);
                 }

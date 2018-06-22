@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.page;
+package com.xueersi.parentsmeeting.modules.livevideo.teampk.page;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
@@ -363,7 +363,6 @@ public class TeamPkAqResultPager extends BasePager {
             if (teamPKStateLayout != null && mTeamPkBll != null) {
                 teamPKStateLayout.updateData(mEnergy, 0, mGoldNum);
                 teamPKStateLayout.showEnergyMyContribute(mEnergy);
-                //mTeamPkBll.updatePkStateLayout();
             }
             closePager();
         }

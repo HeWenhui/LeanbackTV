@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.page;
+package com.xueersi.parentsmeeting.modules.livevideo.teampk.page;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -34,7 +34,7 @@ import com.airbnb.lottie.LottieImageAsset;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamSelectLottieEffectInfo;
@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * @author chenkun
  * Created by chenkun on 2018/4/12
  * 战队选择页面
  */
@@ -232,7 +233,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
      * 注 此处的暂停  只是将音量设置为0  （因为 动画和音效是 同步的）
      */
     private void pauseMusic() {
-        // Loger.e("TeamPkTeamSelectPager", "======>pauseMusic called");
+
         if (soundPoolHelper != null) {
             for (int i = 0; i < soundResArray.length; i++) {
                 soundPoolHelper.setVolume(soundResArray[i], 0);
@@ -245,7 +246,6 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
      * 注释  将音量恢复为暂停之前的状态
      */
     private void resumeMusic() {
-        // Loger.e("TeamPkTeamSelectPager", "======>resumeMusic called");
         if (soundPoolHelper != null) {
             if (soundPoolHelper != null) {
                 for (int i = 0; i < soundResArray.length; i++) {
@@ -501,6 +501,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
     }
 
 
+    private  final int rule_anim_count = 5;
     /**
      * 战队信息 动画监听
      */
@@ -530,7 +531,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
                 case TEAM_INFO_ANIM_TYPE_RUL:
                     if (teamInfoAnimList != null && teamInfoAnimList.size() > 0) {
                         // 三条规则播放 音效  teamInfoAnimList 中前3条为 规则
-                        if (teamInfoAnimList.size() < 5 && teamInfoAnimList.size() > 1) {
+                        if (teamInfoAnimList.size() < rule_anim_count && teamInfoAnimList.size() > 1) {
                             if (soundPoolHelper != null) {
                                 soundPoolHelper.playMusic(R.raw.marquee, MUSIC_VOLUME_RATIO_FRONT, false);
                             }
@@ -673,7 +674,6 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
      * 开启分队仪式
      */
     public void startTeamSelect() {
-        //Loger.e("TeamPkTeamSelectPager", "====>:startTeamSelect");
         playBgMusic();
         String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "team_select_start/images";
         String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "team_select_start/data.json";

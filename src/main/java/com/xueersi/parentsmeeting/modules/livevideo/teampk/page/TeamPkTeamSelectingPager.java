@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.page;
+package com.xueersi.parentsmeeting.modules.livevideo.teampk.page;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.view.View;
@@ -7,7 +7,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 
 /**
 * 分队进行中
