@@ -247,6 +247,10 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     }
 
 
+    public int getLiveType(){
+
+        return mLiveType;
+    }
 
 
     public LiveHttpManager getHttpManager() {

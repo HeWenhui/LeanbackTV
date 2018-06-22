@@ -439,7 +439,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         setMediaControllerBottomParam(videoView.getLayoutParams());
 
         liveMessageBll.setLiveBll(mLiveBll);
-        rollCallBll.setLiveBll(mLiveBll);
+        //rollCallBll.setLiveBll(mLiveBll);
         redPackageBll.setLiveBll(mLiveBll);
         learnReportBll.setLiveBll(mLiveBll);
         questionBll.setLiveBll(mLiveBll);
@@ -1052,7 +1052,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             liveMessageBll.closeChat(true);
         }
         liveMessageBll.setLiveGetInfo(getInfo);
-        rollCallBll.onLiveInit(liveType, getInfo);
+        //rollCallBll.onLiveInit(liveType, getInfo);
         questionBll.setUserName(getInfo);
         videoChatBll.onLiveInit(getInfo);
         Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));

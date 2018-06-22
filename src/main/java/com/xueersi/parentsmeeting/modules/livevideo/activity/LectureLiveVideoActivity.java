@@ -228,7 +228,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             return false;
         }
         liveMessageBll.setLiveBll(mLiveBll);
-        rollCallBll.setLiveBll(mLiveBll);
+        //rollCallBll.setLiveBll(mLiveBll);
         redPackageBll.setLiveBll(mLiveBll);
         learnReportBll.setLiveId(mVSectionID);
         learnReportBll.setLiveBll(mLiveBll);
@@ -905,7 +905,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             liveMessageBll.closeChat(true);
         }
         liveMessageBll.setLiveGetInfo(getInfo);
-        rollCallBll.onLiveInit(liveType, getInfo);
+        //rollCallBll.onLiveInit(liveType, getInfo);
         questionBll.setUserName(getInfo);
 //        if (AppConfig.DEBUG) {
 //            LecAdvertEntity lecAdvertEntity = new LecAdvertEntity();

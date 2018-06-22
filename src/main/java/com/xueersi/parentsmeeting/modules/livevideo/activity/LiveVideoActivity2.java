@@ -45,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
@@ -260,12 +261,29 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
         initView();
 
 
-        teamPkBll = new TeamPkBll(this, mLiveBll, bottomContent);
-        mLiveBll.addBusinessBll(teamPkBll);
+
+        addBusiness(this,bottomContent);
+
 
 
         Loger.d(TAG, "onVideoCreate:time3=" + (System.currentTimeMillis() - before));
         return true;
+    }
+
+    /**
+     * 添加 直播间内 所需的功能模块
+     *
+     * @param activity
+     * @param bottomContent
+     */
+    private void addBusiness(Activity activity, RelativeLayout bottomContent) {
+
+        teamPkBll = new TeamPkBll(activity,mLiveBll,bottomContent);
+        mLiveBll.addBusinessBll(teamPkBll);
+
+        RollCallBll rollCallBll = new RollCallBll(activity,mLiveBll,bottomContent);
+        mLiveBll.addBusinessBll(rollCallBll);
+
     }
 
     @Override
@@ -1305,6 +1323,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
 
         super.onUserBackPressed();
     }
+
 
 
     @Override

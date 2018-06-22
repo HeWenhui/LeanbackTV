@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,7 @@ public  class LiveBaseBll extends BaseBll {
     protected ViewGroup mRootView;
     protected LiveBll2  mLiveBll;
 
-    public LiveBaseBll(Context context, LiveBll2  liveBll, ViewGroup rootView) {
+    public LiveBaseBll(Activity context, LiveBll2  liveBll, ViewGroup rootView) {
         super(context);
         mLiveBll = liveBll;
         mRootView = rootView;

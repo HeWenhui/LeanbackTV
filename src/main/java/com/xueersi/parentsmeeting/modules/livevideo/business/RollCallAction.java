@@ -1,9 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 
 /**
+ * @author linyuqiang
  * Created by linyuqiang on 2016/9/23.
  * 点名，同学点名事件
  */
@@ -42,4 +44,14 @@ public interface RollCallAction {
      * @param nowTime        当前时间
      */
     void autoSign(ClassSignEntity classSignEntity,long classStartTime,long nowTime);
+
+
+    /**
+     * 用户签到
+     * @param entity
+     * @param callBack 结果回调
+     *
+     */
+    void userSign(ClassSignEntity entity, HttpCallBack callBack);
+
 }

@@ -481,7 +481,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         setMediaControllerBottomParam(videoView.getLayoutParams());
 
         liveMessageBll.setLiveBll(mLiveBll);
-        rollCallBll.setLiveBll(mLiveBll);
+        //rollCallBll.setLiveBll(mLiveBll);
         learnReportBll.setLiveBll(mLiveBll);
         questionBll.setLiveBll(mLiveBll);
         questionBll.setVSectionID(mVSectionID);
@@ -1068,7 +1068,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
             liveMessageBll.closeChat(true);
         }
         liveMessageBll.setLiveGetInfo(getInfo);
-        rollCallBll.onLiveInit(liveType, getInfo);
+        //rollCallBll.onLiveInit(liveType, getInfo);
         questionBll.setUserName(getInfo);
         videoChatBll.onLiveInit(getInfo);
         redPackageBll.setUserName(getInfo.getStandLiveName());
