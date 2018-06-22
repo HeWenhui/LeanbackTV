@@ -84,20 +84,24 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  */
 public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest {
 
-    private              String      TAG            = "LiveVideoActivityLog";
+    {
+        mLayoutVideo = R.layout.activity_video_live_new;
+    }
+
+    private String TAG = "LiveVideoActivityLog";
     /**
      * 播放器同步
      */
-    private static final Object      mIjkLock       = new Object();
-    private              WeakHandler mHandler       = new WeakHandler(null);
+    private static final Object mIjkLock = new Object();
+    private WeakHandler mHandler = new WeakHandler(null);
     /**
      * 缓冲超时
      */
-    private final        long        mBufferTimeout = 5000;
+    private final long mBufferTimeout = 5000;
     /**
      * 打开超时
      */
-    private final        long        mOpenTimeOut   = 15000;
+    private final long mOpenTimeOut = 15000;
     /**
      * 播放时长
      */
@@ -121,34 +125,34 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
     /**
      * 初始进入播放器时的预加载界面
      */
-    private RelativeLayout  rlFirstBackgroundView;
+    private RelativeLayout rlFirstBackgroundView;
     /**
      * 老师不在直播间
      */
-    private ImageView       ivTeacherNotpresent;
+    private ImageView ivTeacherNotpresent;
     RelativeLayout bottomContent;
     RelativeLayout praiselistContent;
     /**
      * 缓冲提示
      */
-    private ImageView        ivLoading;
-    private TextView         tvLoadingHint;
-    private LiveGetInfo      mGetInfo;
+    private ImageView ivLoading;
+    private TextView tvLoadingHint;
+    private LiveGetInfo mGetInfo;
     /**
      * 直播服务器
      */
     private PlayServerEntity mServer;
-    private ArrayList<PlayserverEntity> failPlayserverEntity    = new ArrayList<>();
+    private ArrayList<PlayserverEntity> failPlayserverEntity = new ArrayList<>();
     private ArrayList<PlayserverEntity> failFlvPlayserverEntity = new ArrayList<>();
     /**
      * 直播服务器选择
      */
     private PlayserverEntity lastPlayserverEntity;
-    private int              lastIndex;
-    private LiveTopic        mLiveTopic;
-    private String           vStuCourseID;
-    private String           courseId;
-    private String           mVSectionID;
+    private int lastIndex;
+    private LiveTopic mLiveTopic;
+    private String vStuCourseID;
+    private String courseId;
+    private String mVSectionID;
     /**
      * Activity暂停过，执行onStop
      */
@@ -162,8 +166,8 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
     /**
      * 是不是文理
      */
-    public              boolean IS_SCIENCE      = true;
-    public static final String  ENTER_ROOM_FROM = "from";
+    public boolean IS_SCIENCE = true;
+    public static final String ENTER_ROOM_FROM = "from";
     /**
      * 直播类型
      */
@@ -171,21 +175,21 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
     /**
      * 连接老师加载-主讲
      */
-    private final String  mainTeacherLoad  = "正在连接主讲老师，请耐心等候";
+    private final String mainTeacherLoad = "正在连接主讲老师，请耐心等候";
     /**
      * 连接老师加载-辅导
      */
-    private final String  coachTeacherLoad = "正在连接辅导老师，请耐心等候";
+    private final String coachTeacherLoad = "正在连接辅导老师，请耐心等候";
     /**
      * 正在播放
      */
-    private       boolean isPlay           = false;
+    private boolean isPlay = false;
     /**
      * video缓存时间
      */
     private long videoCachedDuration;
     BaseLiveMediaControllerTop baseLiveMediaControllerTop;
-    LiveMediaControllerBottom  liveMediaControllerBottom;
+    LiveMediaControllerBottom liveMediaControllerBottom;
 
 
     boolean audioRequest = false;
@@ -193,19 +197,19 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
     /**
      * 视频宽度
      */
-    public static final float VIDEO_WIDTH       = 1280f;
+    public static final float VIDEO_WIDTH = 1280f;
     /**
      * 视频高度
      */
-    public static final float VIDEO_HEIGHT      = 720f;
+    public static final float VIDEO_HEIGHT = 720f;
     /**
      * 视频宽高比
      */
-    public static final float VIDEO_RATIO       = VIDEO_WIDTH / VIDEO_HEIGHT;
+    public static final float VIDEO_RATIO = VIDEO_WIDTH / VIDEO_HEIGHT;
     /**
      * 头像宽度
      */
-    public static final float VIDEO_HEAD_WIDTH  = 320f;
+    public static final float VIDEO_HEAD_WIDTH = 320f;
     /**
      * 头像高度
      */
@@ -215,8 +219,8 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
      * 接麦已经连接老师
      */
     private AtomicBoolean startRemote = new AtomicBoolean(false);
-    int     from                = 0;
-    long    startTime           = System.currentTimeMillis();
+    int from = 0;
+    long startTime = System.currentTimeMillis();
     /**
      * onPause状态不暂停视频
      */
@@ -227,14 +231,13 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
     //LiveMessageBll liveMessageBll;
 
 
-
     private static String Tag = "LiveVideoActivity2";
     private TeamPkBll teamPkBll;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
 
-        android.util.Log.e(Tag,"==========>onVideoCreate:");
+        android.util.Log.e(Tag, "==========>onVideoCreate:");
 
         long before = System.currentTimeMillis();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -257,7 +260,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
         initView();
 
 
-        teamPkBll = new TeamPkBll(this,mLiveBll,bottomContent);
+        teamPkBll = new TeamPkBll(this, mLiveBll, bottomContent);
         mLiveBll.addBusinessBll(teamPkBll);
 
 
@@ -287,7 +290,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
         bottomContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
 
-        android.util.Log.e("LiveVideoActivity2","========>:initView:"+bottomContent);
+        android.util.Log.e("LiveVideoActivity2", "========>:initView:" + bottomContent);
 
         praiselistContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_praiselist_content);
         praiselistContent.setVisibility(View.VISIBLE);
@@ -301,7 +304,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
         bottomContent.addView(liveMediaControllerBottom);
         //聊天
         long before = System.currentTimeMillis();
-       //liveMessageBll.initViewLive(bottomContent);
+        //liveMessageBll.initViewLive(bottomContent);
         Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
 
@@ -312,7 +315,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
 
 
         setFirstParam(lp);
-       // liveMessageBll.setVideoLayout(lp.width, lp.height);
+        // liveMessageBll.setVideoLayout(lp.width, lp.height);
         Loger.d(TAG, "initView:time2=" + (System.currentTimeMillis() - before));
         final View contentView = findViewById(android.R.id.content);
         contentView.postDelayed(new Runnable() {
@@ -332,14 +335,13 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
                                 (int) VIDEO_HEIGHT, VIDEO_RATIO);
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
                         setFirstParam(lp);
-                       // liveMessageBll.setVideoLayout(lp.width, lp.height);
+                        // liveMessageBll.setVideoLayout(lp.width, lp.height);
                         setMediaControllerBottomParam(lp);
 
                     }
                 });
             }
         }, 10);
-
 
 
     }
@@ -377,7 +379,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
         mPlayStatistics = mLiveBll.getVideoListener();
         mLiveBll.setVideoAction(this);
 
-        android.util.Log.e("LiveVideoActivity","====>initAllBll:"+bottomContent);
+        android.util.Log.e("LiveVideoActivity", "====>initAllBll:" + bottomContent);
 
 
         mMediaController.setControllerBottom(liveMediaControllerBottom, false);
@@ -573,7 +575,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
 
     @Override
     public void onTitleShow(boolean show) {
-       // liveMessageBll.onTitleShow(show);
+        // liveMessageBll.onTitleShow(show);
 
     }
 
@@ -1305,7 +1307,6 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
     }
 
 
-
     @Override
     public void onDestroy() {
         isPlay = false;
@@ -1382,7 +1383,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
         if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
-            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl)){
+            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl)) {
                 ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
             }
         }
