@@ -109,10 +109,7 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
      */
     private long autoCloseSignDelay;
 
-    /**
-     * 签到成功 状态码
-     */
-    private static final int SIGN_STATE_CODE_SUCCESS = 2;
+
     private LiveGetInfo mGetInfo;
 
 
@@ -124,6 +121,7 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
 
 
     //todo 后期删除
+
     public RollCallBll(Activity activity) {
         this(activity, null, null);
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -216,7 +214,6 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
 
     @Override
     public void onRollCall(final ClassSignEntity classSignEntity) {
-       // mLogtf.d("onRollCall:classSignEntity=" + classSignEntity.getStatus());
         if (!autoSign) {
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override
@@ -257,7 +254,6 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
 
     @Override
     public void stopRollCall() {
-       // mLogtf.d("stopRollCall");
         mIsShowUserSign = false;
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
@@ -452,7 +448,7 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
                 case XESCODE.ROLLCALL:
 
                     onRollCall(false);
-                    if (mGetInfo.getStudentLiveInfo().getSignStatus() != 2) {
+                    if (mGetInfo.getStudentLiveInfo().getSignStatus() != Config.SIGN_STATE_CODE_SIGNED) {
                         ClassSignEntity classSignEntity = new ClassSignEntity();
                         classSignEntity.setStuName(mGetInfo.getStuName());
                         classSignEntity.setTeacherName(mGetInfo.getTeacherName());
@@ -464,7 +460,8 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
                 case XESCODE.STOPROLLCALL:
 
                     onRollCall(true);
-                    if (mGetInfo.getStudentLiveInfo().getSignStatus() != 2) {
+                    //noinspection AlibabaUndefineMagicConstant
+                    if (mGetInfo.getStudentLiveInfo().getSignStatus() != Config.SIGN_STATE_CODE_SIGNED) {
                         mGetInfo.getStudentLiveInfo().setSignStatus(3);
                         ClassSignEntity classSignEntity = new ClassSignEntity();
                         classSignEntity.setStuName(mGetInfo.getStuName());
@@ -534,7 +531,7 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
 
         //理科自动签到
         if (RollCallBll.OPEN_AUTO_SIGN && data.getIsArts() != 1
-                && data.getStudentLiveInfo().getSignStatus() != SIGN_STATE_CODE_SUCCESS) {
+                && data.getStudentLiveInfo().getSignStatus() != Config.SIGN_STATE_CODE_SIGNED) {
             ClassSignEntity classSignEntity = new ClassSignEntity();
             classSignEntity.setStuName(data.getStuName());
             classSignEntity.setTeacherName(data.getTeacherName());
@@ -544,8 +541,8 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
             long nowTime = (long) (data.getNowTime() * 1000);
             autoSign(classSignEntity, classBeginTime, nowTime);
         } else {
-            if (data.getStudentLiveInfo().getSignStatus() != 0 && data.getStudentLiveInfo().getSignStatus()
-                    != SIGN_STATE_CODE_SUCCESS) {
+            if (data.getStudentLiveInfo().getSignStatus() != Config.SIGN_STATE_CODE_SIGN_UNSTART && data.getStudentLiveInfo().getSignStatus()
+                    != Config.SIGN_STATE_CODE_SIGNED) {
                 ClassSignEntity classSignEntity = new ClassSignEntity();
                 classSignEntity.setStuName(data.getStuName());
                 classSignEntity.setTeacherName(data.getTeacherName());

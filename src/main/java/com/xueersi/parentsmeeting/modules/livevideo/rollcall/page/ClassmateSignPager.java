@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * @author linyuqiang 学习报告
+ * @author linyuqiang 签到
  */
 public class ClassmateSignPager extends BasePager {
-    String TAG = "ClassmateSignPager";
+    private static final String TAG = "ClassmateSignPager";
     ScrollLinearLayout llClassmateSign;
     ArrayList<ClassmateEntity> allClassmateEntities = new ArrayList<ClassmateEntity>();
     private Handler mHandler = new Handler();
@@ -37,6 +37,11 @@ public class ClassmateSignPager extends BasePager {
     private Runnable hideRunnable = new HideRunnable();
     private LogToFile logToFile;
     private ClassSignStop classSignStop;
+
+    /**
+     * 最大 展示条目数
+     */
+    private static final int MAX_DISPLAY_COUNT = 3;
 
     public ClassmateSignPager(Context context) {
         super(context);
@@ -66,10 +71,10 @@ public class ClassmateSignPager extends BasePager {
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-              stop();
-              if(mHandler != null){
-                  mHandler.removeCallbacksAndMessages(null);
-              }
+                stop();
+                if (mHandler != null) {
+                    mHandler.removeCallbacksAndMessages(null);
+                }
             }
         });
         return mView;
@@ -130,12 +135,12 @@ public class ClassmateSignPager extends BasePager {
                 final int height = llClassmateSign.getChildAt(0).getMeasuredHeight();
                 ViewGroup group = (ViewGroup) llClassmateSign.getParent();
                 ViewGroup.LayoutParams params2 = group.getLayoutParams();
-                if (llClassmateSign.getChildCount() < 3) {
+                if (llClassmateSign.getChildCount() < MAX_DISPLAY_COUNT) {
                     params2.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 } else {
-                    params2.height = (height + topMargin) * 3;
+                    params2.height = (height + topMargin) * MAX_DISPLAY_COUNT;
                 }
-                if (llClassmateSign.getChildCount() >= 4) {
+                if (llClassmateSign.getChildCount() > MAX_DISPLAY_COUNT) {
                     llClassmateSign.smoothScrollBy(0, (height + topMargin));
                     llClassmateSign.postDelayed(new Runnable() {
                         @Override
@@ -183,19 +188,26 @@ public class ClassmateSignPager extends BasePager {
             hideRunnable = null;
         }
         allClassmateEntities.add(classmateEntity);
-        logToFile.d("addClassmage:name=" + classmateEntity.getName() + ",getChildCount=" + llClassmateSign.getChildCount());
-        if (llClassmateSign.getChildCount() < 3) {
+        logToFile.d("addClassmage:name=" + classmateEntity.getName() + ",getChildCount=" + llClassmateSign
+                .getChildCount());
+        if (llClassmateSign.getChildCount() < MAX_DISPLAY_COUNT) {
             mHandler.post(runnable);
         }
     }
 
     public static class ClassSignStop {
-        /** 停止点名 */
+        /**
+         * 停止点名
+         */
         private AtomicBoolean stopSign = new AtomicBoolean(false);
-        /** 是不是辅导状态 */
+        /**
+         * 是不是辅导状态
+         */
         private boolean isTraning = true;
 
-        /**是否是自动签到*/
+        /**
+         * 是否是自动签到
+         */
         private boolean atuoSign = false;
 
         public boolean getStopSign() {

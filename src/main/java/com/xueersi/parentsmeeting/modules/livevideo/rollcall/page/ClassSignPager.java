@@ -15,6 +15,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.Config;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
@@ -26,17 +27,23 @@ import java.io.File;
  * @author linyuqiang 签到
  */
 public class ClassSignPager extends BasePager {
-    String TAG = "ClassSignPager";
+    private static final String TAG = "ClassSignPager";
+
+
     RollCallBll rollCallBll;
     LiveBll2 liveBll;
     RelativeLayout rlSignStatus1, rlSignStatus2;
     TextView tvSignName;
-    /** 查看评价，查看按钮 */
+    /**
+     * 查看评价，查看按钮
+     */
     Button btLearnreportCheck;
     ImageView ivSignStatus;
     TextView tvSignStatus;
     ClassSignEntity classSignEntity;
-    /** 点名按钮提示，0-准时签到，1-签到成功，2-签到失败(在签到的时候，老师点结束签到) */
+    /**
+     * 点名按钮提示，0-准时签到，1-签到成功，2-签到失败(在签到的时候，老师点结束签到)
+     */
     String[] bttips = {"签到成功", "签到失败"};
     private LogToFile logToFile;
 
@@ -76,7 +83,7 @@ public class ClassSignPager extends BasePager {
             @Override
             public void onClick(View v) {
 
-                rollCallBll.userSign(classSignEntity,new HttpCallBack() {
+                rollCallBll.userSign(classSignEntity, new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         logToFile.d("onPmSuccess:responseEntity=" + responseEntity.getJsonObject().toString());
@@ -86,13 +93,14 @@ public class ClassSignPager extends BasePager {
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         logToFile.e("onPmFailure:msg=" + msg, error);
-                        XESToastUtils.showToast(mContext,TextUtils.isEmpty(msg)?"网络异常":msg);
+                        XESToastUtils.showToast(mContext, TextUtils.isEmpty(msg) ? "网络异常" : msg);
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
-                        String errorMsg = TextUtils.isEmpty(responseEntity.getErrorMsg())?"网络异常":responseEntity.getErrorMsg();
-                        XESToastUtils.showToast(mContext,errorMsg);
+                        String errorMsg = TextUtils.isEmpty(responseEntity.getErrorMsg()) ? "网络异常" : responseEntity
+                                .getErrorMsg();
+                        XESToastUtils.showToast(mContext, errorMsg);
                     }
                 });
             }
@@ -106,11 +114,11 @@ public class ClassSignPager extends BasePager {
      */
     public void updateStatus(int status) {
         classSignEntity.setStatus(status);
-        if (status == 1) {
+        if (status == Config.SIGN_STATE_CODE_UNSIGN) {
             rlSignStatus1.setVisibility(View.VISIBLE);
             rlSignStatus2.setVisibility(View.GONE);
             return;
-        } else if (status == 2) {
+        } else if (status == Config.SIGN_STATE_CODE_SIGNED) {
             tvSignStatus.setText(bttips[0]);
             ivSignStatus.setImageResource(R.drawable.bg_livevideo_sign_suc);
         } else {

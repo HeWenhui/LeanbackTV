@@ -82,6 +82,10 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  */
 public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest {
 
+
+
+    private RollCallBll rollCallBll;
+
     {
         mLayoutVideo = R.layout.activity_video_live_new;
     }
@@ -278,7 +282,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
         teamPkBll = new TeamPkBll(activity,mLiveBll,bottomContent);
         mLiveBll.addBusinessBll(teamPkBll);
 
-        RollCallBll rollCallBll = new RollCallBll(activity,mLiveBll,bottomContent);
+        rollCallBll = new RollCallBll(activity,mLiveBll,bottomContent);
         mLiveBll.addBusinessBll(rollCallBll);
 
     }
@@ -459,6 +463,8 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
             tvFail.setVisibility(View.INVISIBLE);
         }
         setFirstBackgroundVisible(View.GONE);
+        rollCallBll.onPlayOpenSuccess(videoView.getLayoutParams());
+
     }
 
     @Override
