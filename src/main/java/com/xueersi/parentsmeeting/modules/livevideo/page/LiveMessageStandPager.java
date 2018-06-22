@@ -1033,7 +1033,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     }
 
     @Override
-    public void onTeacherModeChange(String mode, boolean b) {
+    public void onTeacherModeChange(String oldMode, String mode, boolean b, boolean zjlkOpenbarrage, boolean zjfdOpenbarrage) {
 
     }
 

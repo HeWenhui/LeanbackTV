@@ -7,10 +7,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.CountDownTimer;
-import android.os.Handler;
-import android.support.annotation.RequiresApi;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -1349,15 +1346,67 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     /**
-     * 回调，理科，主讲和辅导切换的时候，给出提示（切流）
-     * @param mode
-     * @param notShowTips
+     * 理科，主讲和辅导切换的时候，给出提示（切流）
+     * @param oldMode
+     * @param newMode
+     * @param isShowNoticeTips 为false的时候，默认显示"已切换到 主讲/辅导模式"
+     * @param iszjlkOpenbarrage
+     * @param isFDLKOpenbarrage
      */
     @Override
-    public void onTeacherModeChange(String mode, boolean notShowTips) {
+    public void onTeacherModeChange(String oldMode, final String newMode, boolean isShowNoticeTips, final boolean iszjlkOpenbarrage, final boolean isFDLKOpenbarrage) {
         //理科辅导送礼物功能
         Loger.i("yzl_fd", "onTeacherModeChange 切流，使送礼物面板消失");
-        setFlowerWindowDismiss(mode,notShowTips);
+        if(LiveTopic.MODE_CLASS.equals(oldMode) && iszjlkOpenbarrage ){
+            //主讲老师是开启状态，切辅导，提醒“已切换到主讲/辅导”
+            Loger.i("yzl_fd", "主讲老师是开启状态，切辅导，提醒“已切换到"+newMode);
+            setFlowerWindowDismiss(newMode,isShowNoticeTips);
+            return;
+        }
+        if(LiveTopic.MODE_TRANING.equals(oldMode) && isFDLKOpenbarrage){
+            //辅导老师是开启状态，切主讲，提醒“已切换到主讲/辅导”
+            Loger.i("yzl_fd", "主讲老师是开启状态，切辅导，提醒“已切换到"+newMode);
+            setFlowerWindowDismiss(newMode,isShowNoticeTips);
+            return;
+        }
+
+        if(LiveTopic.MODE_CLASS.equals(oldMode) && !iszjlkOpenbarrage){
+            //主讲老师是关闭状态，切辅导
+            if(isFDLKOpenbarrage){
+                //如果辅导是开启，提醒：“辅导老师开启了礼物功能”；如果辅导是关闭，不做提醒
+                Loger.i("yzl_fd", "如果辅导是开启，提醒：“辅导老师开启了礼物功能”；如果辅导是关闭，不做提醒newMode =" +newMode+" isFDLKOpenbarrage = "+isFDLKOpenbarrage);
+                showLKTipsWhenOldModeCloseLW(newMode, isFDLKOpenbarrage);
+
+            }
+            return;
+        }
+        if(LiveTopic.MODE_TRANING.equals(oldMode) && !isFDLKOpenbarrage){
+            //辅导老师是关闭状态，切主讲
+            if(iszjlkOpenbarrage){
+                //如果主讲是开启，提醒：“主讲老师开启了礼物功能”；如果主讲是关闭，不做提醒
+                Loger.i("yzl_fd", "如果主讲是开启，提醒：“主讲老师开启了礼物功能”；如果主讲是关闭，不做提醒newMode =" +newMode+" iszjlkOpenbarrage = "+iszjlkOpenbarrage);
+                showLKTipsWhenOldModeCloseLW(newMode, iszjlkOpenbarrage);
+            }
+            return;
+        }
+    }
+
+    private void showLKTipsWhenOldModeCloseLW(final String newMode, final boolean isOpenbarrage) {
+
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if(commonAction instanceof GiftDisable){
+
+                    if(mFlowerWindow != null){
+                        mFlowerWindow.dismiss();
+                    }
+
+                    ((GiftDisable) commonAction).onOpenbarrage(isOpenbarrage,newMode);
+                }
+
+            }
+        });
     }
 
     /**

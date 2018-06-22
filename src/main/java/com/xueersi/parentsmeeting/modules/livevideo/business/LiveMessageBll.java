@@ -481,9 +481,9 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
     }
 
     @Override
-    public void onTeacherModeChange(String mode, boolean b) {
+    public void onTeacherModeChange(String oldMode, String mode, boolean b, boolean iszjlkOpenbarrage, boolean isFDLKOpenbarrage) {
         if (mLiveMessagePager != null) {
-            mLiveMessagePager.onTeacherModeChange(mode, false);
+            mLiveMessagePager.onTeacherModeChange(oldMode, mode, b, iszjlkOpenbarrage, isFDLKOpenbarrage);
         }
     }
 

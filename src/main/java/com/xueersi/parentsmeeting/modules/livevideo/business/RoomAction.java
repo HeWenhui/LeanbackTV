@@ -82,8 +82,11 @@ public interface RoomAction {
 
     /**
      * 理科，主讲和辅导切换的时候，给出提示（切流）
+     * @param oldMode
      * @param mode
-     * @param notShowTips 为false的时候，默认显示"已切换到 主讲/辅导模式"
+     * @param isShowNoticeTips 为false的时候，默认显示"已切换到 主讲/辅导模式"
+     * @param iszjlkOpenbarrage
+     * @param isFDLKOpenbarrage
      */
-    void onTeacherModeChange(String mode, boolean notShowTips);
+    void onTeacherModeChange(String oldMode, String mode, boolean isShowNoticeTips, boolean iszjlkOpenbarrage, boolean isFDLKOpenbarrage);
 }

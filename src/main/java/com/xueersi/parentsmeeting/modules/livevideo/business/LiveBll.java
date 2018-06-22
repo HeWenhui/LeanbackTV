@@ -1518,8 +1518,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     case XESCODE.MODECHANGE: {
                         String mode = object.getString("mode");
                         msg += ",mode=" + mode;
+                        String oldMode = mLiveTopic.getMode();
                         mLogtf.d("onNotice:oldmode=" + mLiveTopic.getMode() + ",newmode=" + mode);
-                        Loger.i("yzl_fd", "XESCODE.MODECHANGE oldmode = "+mLiveTopic.getMode() + ",newmode=" + mode);
+                        Loger.i("yzl_fd", "XESCODE.MODECHANGE oldmode = "+mLiveTopic.getMode() + ",newmode=" + mode+
+                        "mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage(),mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage()"+mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage()
+                        +"..."+mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage());
                         if (!(mLiveTopic.getMode().equals(mode))) {
                             mLiveTopic.setMode(mode);
                             mGetInfo.setMode(mode);
@@ -1542,8 +1545,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             //理科，主讲和辅导切换的时候，给出提示（切流）
                             if(mRoomAction != null){
                                 Loger.i("yzl_fd", "主讲和辅导切换的时候，给出提示（切流）");
-                                mRoomAction.onTeacherModeChange(mode,false);
-
+                                mRoomAction.onTeacherModeChange(oldMode,mode,false,mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage(),mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage());
+                                //mRoomAction.onTeacherModeChange(mode,false);
                             }
                         }
 
