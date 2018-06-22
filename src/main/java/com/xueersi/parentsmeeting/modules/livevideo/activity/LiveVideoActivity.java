@@ -58,7 +58,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.TeacherPraiseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;

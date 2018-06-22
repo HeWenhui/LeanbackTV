@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business;
+package com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
