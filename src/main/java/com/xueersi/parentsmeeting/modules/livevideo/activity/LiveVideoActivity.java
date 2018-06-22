@@ -472,8 +472,8 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         //teamPKBll = new TeamPkBll(this);
         //setTeamPkBll(teamPKBll);
         //老师点赞
-        teacherPraiseBll = new TeacherPraiseBll(this);
-        mLiveBll.setTeacherPriaseBll(teacherPraiseBll);
+       // teacherPraiseBll = new TeacherPraiseBll(this);
+       // mLiveBll.setTeacherPriaseBll(teacherPraiseBll);
     }
 
     /**
@@ -1639,10 +1639,10 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             speechFeedBackAction.stop();
         }
 
-        if (teacherPraiseBll != null) {
+        /*if (teacherPraiseBll != null) {
             teacherPraiseBll.onDestroy();
         }
-
+*/
         super.onDestroy();
     }
 

@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
+import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
@@ -85,6 +86,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
 
 
     private RollCallBll rollCallBll;
+    private TeacherPraiseBll teacherPraiseBll;
 
     {
         mLayoutVideo = R.layout.activity_video_live_new;
@@ -284,6 +286,9 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
 
         rollCallBll = new RollCallBll(activity,mLiveBll,bottomContent);
         mLiveBll.addBusinessBll(rollCallBll);
+
+        teacherPraiseBll = new TeacherPraiseBll(activity,mLiveBll,bottomContent);
+        mLiveBll.addBusinessBll(teacherPraiseBll);
 
     }
 

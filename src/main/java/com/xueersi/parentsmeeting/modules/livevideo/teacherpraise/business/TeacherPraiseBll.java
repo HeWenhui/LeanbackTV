@@ -12,13 +12,21 @@ import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
+
+import org.json.JSONObject;
 
 /**
  * @author chenkun
  * 老师点赞
  */
-public class TeacherPraiseBll {
+public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
     /**
      * lottie 资源相对 asset 中的路径
      */
@@ -29,8 +37,9 @@ public class TeacherPraiseBll {
     private View praiseRootView;
     private boolean isAnimStart;
 
-    public TeacherPraiseBll(Activity activity) {
-        mActivity = activity;
+    public TeacherPraiseBll(Activity context, LiveBll2 liveBll, ViewGroup rootView) {
+        super(context, liveBll, rootView);
+        mActivity = context;
     }
 
     /**
@@ -38,7 +47,7 @@ public class TeacherPraiseBll {
      */
     public void showTeacherPraise() {
         try {
-            if(mActivity != null){
+            if (mActivity != null) {
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -46,7 +55,8 @@ public class TeacherPraiseBll {
                             isAnimStart = true;
                             decorView = (ViewGroup) mActivity.getWindow().getDecorView();
                             praiseRootView = View.inflate(mActivity, R.layout.teacher_praise_layout, null);
-                            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
+                                    .MATCH_PARENT,
                                     ViewGroup.LayoutParams.MATCH_PARENT);
                             decorView.addView(praiseRootView, lp);
                             animationView = praiseRootView.findViewById(R.id.lav_teacher_priase);
@@ -104,8 +114,35 @@ public class TeacherPraiseBll {
 
     }
 
-    public void onDestroy() {
+
+    private int[] noticeCodes = {
+            XESCODE.TEACHER_PRAISE
+    };
+
+    @Override
+    public void onNotice(JSONObject data, int type) {
+
+        switch (type) {
+            case XESCODE.TEACHER_PRAISE:
+                showTeacherPraise();
+                String nonce = data.optString("nonce", "");
+                TeamPkLog.receiveVoicePraise(mLiveBll, nonce);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+
+    @Override
+    public void onDestory() {
+        super.onDestory();
         closeTeacherPriase();
     }
 
+    @Override
+    public int[] getNoticeFilter() {
+        return noticeCodes;
+    }
 }
