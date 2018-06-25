@@ -272,14 +272,17 @@ public class TeamPkAqResultPager extends BasePager {
         if (mEnergy > 0) {
             decorView = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
             teamPKStateLayout = decorView.findViewById(R.id.tpkL_teampk_pkstate_root);
-            if (teamPKStateLayout == null) {
-                return;
-            }
-            // 能量图标动画
-            pkProgressBar = teamPKStateLayout.findViewById(R.id.tpb_teampk_pkstate_energy_bar);
-            Rect endRect = pkProgressBar.getSliderDrawRect();
-            if (endRect != null) {
-                playFlayAnim(ivVoteEnergy, endRect);
+            if (teamPKStateLayout != null) {
+                // 能量图标动画
+                pkProgressBar = teamPKStateLayout.findViewById(R.id.tpb_teampk_pkstate_energy_bar);
+                Rect endRect = pkProgressBar.getSliderDrawRect();
+                if (endRect != null) {
+                    playFlayAnim(ivVoteEnergy, endRect);
+                }else{
+                    closePager();
+                }
+            }else{
+                closePager();
             }
         } else {
             closePager();
