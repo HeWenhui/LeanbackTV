@@ -57,6 +57,6 @@ dependencies {
     implementation project(':business-base:browser')
 
     implementation rootProject.ext.thirdlibraries.arouterapi
-
+    
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
 }
