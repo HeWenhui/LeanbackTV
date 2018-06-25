@@ -609,7 +609,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         TextView totalscore = (TextView) result.findViewById(R.id.tv_total_score);
         beat.setText("恭喜，你打败了" + mData.getBeat() + "%的学生");
         if (TextUtils.isEmpty(mData.getRecommend())) {
-            recommand.setVisibility(View.GONE);
+            recommand.setVisibility(View.VISIBLE);
+            recommand.setText("赶快去报班继续提高成绩吧");
         } else {
             recommand.setVisibility(View.VISIBLE);
             recommand.setText("推荐您报名" + mData.getRecommend());
