@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="rl_live_video_frag" type="id" />
     <item name="fl_course_video_first_content" type="id" />
     <item name="rl_course_video_first_content" type="id" />
     <item name="vs_course_video_video_texture" type="id" />

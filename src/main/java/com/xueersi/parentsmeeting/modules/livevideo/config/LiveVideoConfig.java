@@ -33,6 +33,26 @@ public class LiveVideoConfig {
 
     /** 播放器异常日志 */
     public final static String URL_LIVE_ON_LOAD_LOGS = "http://netlive.xesv5.com/10011.gif";
+    /** 视频宽度 */
+    public static final float VIDEO_WIDTH = 1280f;
+    /** 视频高度 */
+    public static final float VIDEO_HEIGHT = 720f;
+    /** 视频宽高比 */
+    public static final float VIDEO_RATIO = VIDEO_WIDTH / VIDEO_HEIGHT;
+    /** 头像宽度 */
+    public static final float VIDEO_HEAD_WIDTH = 320f;
+    /** 头像高度 */
+    public static final float VIDEO_HEAD_HEIGHT = 240f;
+    /** 播放器请求 */
+    public static final int VIDEO_REQUEST = 210;
+    /** 播放器用户返回 */
+    public static final int VIDEO_CANCLE = 211;
+    /** 播放器java崩溃 */
+    public static final int VIDEO_CRASH = 1200;
+    /** 播放器最大的高 */
+    public static final int VIDEO_MAXIMUM_HEIGHT = 2048;
+    /** 播放器最大的宽 */
+    public static final int VIDEO_MAXIMUM_WIDTH = 2048;
     /** 语音评测地址 */
     public static String SPEECH_URL = "https://live.xueersi.com/LivePlayBack/speechEvalResult/";
     /** 获取学习报告-讲座 */

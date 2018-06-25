@@ -74,6 +74,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.Play
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionWebCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
@@ -107,7 +108,8 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  *
  * @author linyuqiang
  */
-public class LiveVideoActivity extends LiveActivityBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest {
+public class LiveVideoActivity extends LiveActivityBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick,
+        AudioRequest, WebViewRequest, VideoChatEvent {
 
     private String TAG = "LiveVideoActivityLog";
     /** 播放器同步 */
@@ -413,7 +415,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         liveMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
         questionBll = new QuestionBll(this, vStuCourseID);
         liveMessageBll.setQuestionBll(questionBll);
-        videoChatBll = new VideoChatBll(this);
+        videoChatBll = new VideoChatBll(this, this);
         rollCallBll = new RollCallBll(this);
        // redPackageBll = new RedPackageBll(this);
         learnReportBll = new LearnReportBll(this);
@@ -472,8 +474,8 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         //teamPKBll = new TeamPkBll(this);
         //setTeamPkBll(teamPKBll);
         //老师点赞
-       // teacherPraiseBll = new TeacherPraiseBll(this);
-       // mLiveBll.setTeacherPriaseBll(teacherPraiseBll);
+        // teacherPraiseBll = new TeacherPraiseBll(this);
+        // mLiveBll.setTeacherPriaseBll(teacherPraiseBll);
     }
 
     /**
@@ -1172,6 +1174,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         }
     }
 
+    @Override
     public AtomicBoolean getStartRemote() {
         return startRemote;
     }

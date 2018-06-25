@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
@@ -146,8 +145,8 @@ public class AnswerRankBll {
             llRankList = new LinearLayout(mContext);
             //llRankList.setClickable(true);
             llRankList.setOrientation(LinearLayout.VERTICAL);
-            int topMargin = (int) ((LiveVideoActivity.VIDEO_HEIGHT - LiveVideoActivity.VIDEO_HEAD_HEIGHT) * displayHeight /
-                    LiveVideoActivity.VIDEO_HEIGHT);
+            int topMargin = (int) ((LiveVideoConfig.VIDEO_HEIGHT - LiveVideoConfig.VIDEO_HEAD_HEIGHT) * displayHeight /
+                    LiveVideoConfig.VIDEO_HEIGHT);
             topMargin = displayHeight - topMargin + (ScreenUtils.getScreenHeight() - displayHeight) / 2;
             topMargin = ScreenUtils.getScreenHeight() - topMargin;
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(wradio, topMargin);
@@ -411,7 +410,7 @@ public class AnswerRankBll {
         int screenHeight = ScreenUtils.getScreenHeight();
         int topMargin = 0, bottomMargin = 0;
         if (width > 0) {
-            wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
+            wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
             wradio += (screenWidth - width) / 2;
             if (displayWidth - wradio == videoWidth) {
                 return;
@@ -438,8 +437,8 @@ public class AnswerRankBll {
             }, 50);
         }
         if (height > 0) {
-            topMargin = (int) ((LiveVideoActivity.VIDEO_HEIGHT - LiveVideoActivity.VIDEO_HEAD_HEIGHT) * height /
-                    LiveVideoActivity.VIDEO_HEIGHT);
+            topMargin = (int) ((LiveVideoConfig.VIDEO_HEIGHT - LiveVideoConfig.VIDEO_HEAD_HEIGHT) * height /
+                    LiveVideoConfig.VIDEO_HEIGHT);
             topMargin = height - topMargin + (screenHeight - height) / 2;
             topMargin = screenHeight - topMargin;
             bottomMargin = (screenHeight - displayHeight) / 2;

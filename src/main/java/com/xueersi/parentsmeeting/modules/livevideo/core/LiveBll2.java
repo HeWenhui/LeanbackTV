@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -70,28 +71,17 @@ import okhttp3.Response;
  * 直播间管理类
  *
  * @author chekun
- * created  at 2018/6/20 10:32
+ *         created  at 2018/6/20 10:32
  */
 public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
 
-    /**
-     * 需处理 topic 业务集合
-     */
+    /** 需处理 topic 业务集合 */
     private List<TopicAction> mTopicActions = new ArrayList<>();
-
-    /**
-     * 需处理 notice 的业务集合
-     */
+    /** 需处理 notice 的业务集合 */
     private Map<Integer, List<NoticeAction>> mNoticeActionMap = new HashMap<>();
-
-    /**
-     * 需处理 全量 消息的 业务集合
-     */
+    /** 需处理 全量 消息的 业务集合 */
     private List<MessageAction> mMessageActions = new ArrayList<>();
-
-    /**
-     * 所有业务bll 集合
-     */
+    /** 所有业务bll 集合 */
     private List<LiveBaseBll> businessBlls = new ArrayList<>();
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
@@ -167,7 +157,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     public static String COUNTTEACHER_PREFIX = "f_";
     private final String ROOM_MIDDLE = "L";
     private IRCMessage mIRCMessage;
-
+    LiveVideoBll liveVideoBll;
 
     private String mCurrentDutyId;
 
@@ -277,6 +267,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             mTopicActions.add((TopicAction) bll);
         }
         if (bll instanceof NoticeAction) {
+            //获得需要的notice type值
             int[] noticeFilter = ((NoticeAction) bll).getNoticeFilter();
             List<NoticeAction> noticeActions = null;
             if (noticeFilter != null && noticeFilter.length > 0) {
@@ -401,7 +392,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
 
         try {
             for (LiveBaseBll businessBll : businessBlls) {
-                businessBll.onLiveInited(this.mGetInfo);
+                businessBll.onLiveInited(getInfo);
                 Log.e("LiveBll2", "=======>onGetInfoSuccess 22222222");
 
             }
@@ -458,6 +449,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
 
         Log.e("LiveBll2", "=======>mIRCMessage.create()");
         mLogtf.d(s);
+        liveVideoBll.onLiveInit(getInfo, mLiveTopic);
     }
 
 
@@ -538,14 +530,14 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                         if (!(mLiveTopic.getMode().equals(mode))) {
                             mLiveTopic.setMode(mode);
                             mGetInfo.setMode(mode);
+                            boolean isPresent = isPresent(mode);
                             if (mVideoAction != null) {
-                                boolean isPresent = isPresent(mode);
                                 mVideoAction.onModeChange(mode, isPresent);
                                 if (!isPresent) {
                                     mVideoAction.onTeacherNotPresent(true);
                                 }
                             }
-                            liveGetPlayServer(true);
+                            liveVideoBll.onModeChange(mode, isPresent);
                         }
                         break;
 
@@ -865,8 +857,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
 
     /**
      * 发送 notice 消息
-     *
-     * @param targetName notice消息接收方 当target 为null 时 将广播此消息
+     * @param targetName   notice消息接收方 当target 为null 时 将广播此消息
      * @param data
      * @return
      */
@@ -1011,7 +1002,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             mGetPlayServerCancle = null;
         }
 
-        if (mIRCMessage != null) {
+        if(mIRCMessage != null){
             mIRCMessage.destory();
         }
 
@@ -1026,6 +1017,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         this.mVideoAction = videoAction;
     }
 
+    public void setLiveVideoBll(LiveVideoBll liveVideoBll) {
+        this.liveVideoBll = liveVideoBll;
+    }
 
     public PlayerService.SimpleVPlayerListener getVideoListener() {
         return mVideoListener;
@@ -1151,27 +1145,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         return isPresent;
     }
 
-
-    /**
-     * 调度，使用LiveTopic的mode
-     *
-     * @param modechange
-     */
-    public void liveGetPlayServer(boolean modechange) {
-        new Thread() {
-            @Override
-            public void run() {
-                boolean isPresent = isPresent(mLiveTopic.getMode());
-                mLogtf.d("liveGetPlayServer:isPresent=" + isPresent);
-                if (!isPresent && mVideoAction != null) {
-                    mVideoAction.onTeacherNotPresent(true);
-                }
-            }
-        }.start();
-        liveGetPlayServer(mLiveTopic.getMode(), modechange);
-    }
-
-
     /**
      * 调度是不是在无网络下失败
      */
@@ -1183,153 +1156,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
      */
     private TotalFrameStat totalFrameStat;
     private long lastGetPlayServer;
-
-    private void liveGetPlayServer(final String mode, final boolean modechange) {
-
-        if (mLiveType == LIVE_TYPE_LIVE) {
-            if (mGetInfo.getStudentLiveInfo().isExpe() && LiveTopic.MODE_TRANING.equals(mode)) {
-                mLogtf.d("liveGetPlayServer:isExpe");
-                return;
-            }
-        }
-
-        if (netWorkType == NetWorkHelper.NO_NETWORK) {
-            liveGetPlayServerError = true;
-            return;
-        }
-        liveGetPlayServerError = false;
-        final long before = System.currentTimeMillis();
-        // http://gslb.xueersi.com/xueersi_gslb/live?cmd=live_get_playserver&userid=000041&username=xxxxxx
-        // &channelname=88&remote_ip=116.76.97.244
-        if (LiveTopic.MODE_CLASS.equals(mode)) {
-            String channelname = "";
-            if (mLiveType != 3) {
-                channelname = CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId() + "_"
-                        + mGetInfo.getTeacherId();
-            } else {
-                channelname = CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId();
-            }
-            mGetInfo.setChannelname(channelname);
-        } else {
-            mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId() + "_"
-                    + mGetInfo.getTeacherId());
-        }
-        if (totalFrameStat != null) {
-            totalFrameStat.setChannelname(mGetInfo.getChannelname());
-        }
-        final String serverurl = mGetInfo.getGslbServerUrl() + "?cmd=live_get_playserver&userid=" + mGetInfo.getStuId()
-                + "&username=" + mGetInfo.getUname() + "&channelname=" + mGetInfo.getChannelname();
-        mLogtf.d("liveGetPlayServer:serverurl=" + serverurl);
-        if (mGetPlayServerCancle != null) {
-            mGetPlayServerCancle.cancel();
-            mGetPlayServerCancle = null;
-        }
-        final StringBuilder ipsb = new StringBuilder();
-        mGetPlayServerCancle = mHttpManager.liveGetPlayServer(ipsb, serverurl, new CommonRequestCallBack<String>() {
-
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-                mLogtf.d("liveGetPlayServer:onError:ex=" + ex + ",isOnCallback=" + isOnCallback + "," + ipsb);
-                long time = System.currentTimeMillis() - before;
-                if (ex instanceof HttpException) {
-                    HttpException error = (HttpException) ex;
-                    if (error.getCode() >= 300) {
-                        mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
-                        totalFrameStat.liveGetPlayServer(time, 3, "", ipsb, serverurl);
-                        if (time < 15000) {
-                            if (mVideoAction != null && mLiveTopic != null) {
-                                mVideoAction.onLiveStart(null, mLiveTopic, modechange);
-                            }
-                            mHandler.removeCallbacks(mStatisticsRun);
-                            postDelayedIfNotFinish(mStatisticsRun, 300000);
-                            return;
-                        }
-                    }
-                } else {
-                    if (ex instanceof UnknownHostException) {
-                        totalFrameStat.liveGetPlayServer(time, 1, "", ipsb, serverurl);
-                    } else {
-                        if (ex instanceof SocketTimeoutException) {
-                            totalFrameStat.liveGetPlayServer(time, 2, "", ipsb, serverurl);
-                        }
-                    }
-                    mLogtf.e("liveGetPlayServer:onError:isOnCallback=" + isOnCallback, ex);
-                }
-                long now = System.currentTimeMillis();
-                if (now - lastGetPlayServer < 5000) {
-                    postDelayedIfNotFinish(new Runnable() {
-                        @Override
-                        public void run() {
-                            mLogtf.d("liveGetPlayServer:onError retry1");
-                            liveGetPlayServer(modechange);
-                        }
-                    }, 1000);
-                } else {
-                    lastGetPlayServer = now;
-                    onLiveFailure("直播调度失败", new Runnable() {
-                        @Override
-                        public void run() {
-                            mLogtf.d("liveGetPlayServer:onError retry2");
-                            liveGetPlayServer(modechange);
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onSuccess(String result) {
-                String s = "liveGetPlayServer:onSuccess";
-                try {
-                    JSONObject object = new JSONObject(result);
-                    PlayServerEntity server = mHttpResponseParser.parsePlayerServer(object);
-                    if (server != null) {
-                        if (totalFrameStat != null) {
-                            long time = System.currentTimeMillis() - before;
-                            totalFrameStat.liveGetPlayServer(time, 0, server.getCipdispatch(), ipsb, serverurl);
-                        }
-                        s += ",mode=" + mode + ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();
-                        if (LiveTopic.MODE_CLASS.equals(mode)) {
-                            mGetInfo.setSkeyPlayT(server.getRtmpkey());
-                        } else {
-                            mGetInfo.setSkeyPlayF(server.getRtmpkey());
-                        }
-                        mServer = server;
-                        if (mVideoAction != null && mLiveTopic != null) {
-                            mVideoAction.onLiveStart(server, mLiveTopic, modechange);
-                        }
-                        mHandler.removeCallbacks(mStatisticsRun);
-                        postDelayedIfNotFinish(mStatisticsRun, 5 * 60 * 1000);
-                    } else {
-                        s += ",server=null";
-                        onLiveFailure("直播调度失败", new Runnable() {
-
-                            @Override
-                            public void run() {
-                                liveGetPlayServer(modechange);
-                            }
-                        });
-                    }
-                    mLogtf.d(s);
-                } catch (JSONException e) {
-                    MobAgent.httpResponseParserError(TAG, "liveGetPlayServer", result + "," + e.getMessage());
-                    mLogtf.e("liveGetPlayServer", e);
-                    onLiveFailure("直播调度失败", new Runnable() {
-
-                        @Override
-                        public void run() {
-                            liveGetPlayServer(modechange);
-                        }
-                    });
-                }
-
-            }
-
-            @Override
-            public void onCancelled(CancelledException cex) {
-            }
-
-        });
-    }
 
 
     public LiveVideoSAConfig getLiveVideoSAConfig() {
@@ -1368,128 +1194,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             postDelayedIfNotFinish(mStatisticsRun, mStatisticsdelay);
         }
     };
-
-
-    /**
-     * 使用第三方视频提供商提供的调度接口获得第三方播放域名对应的包括ip地址的播放地址
-     */
-    public void dns_resolve_stream(final PlayServerEntity.PlayserverEntity playserverEntity, final PlayServerEntity
-            mServer, String channelname, final AbstractBusinessDataCallBack callBack) {
-        if (StringUtils.isEmpty(playserverEntity.getIp_gslb_addr())) {
-            callBack.onDataFail(3, "empty");
-            return;
-        }
-        final StringBuilder url;
-        final String provide = playserverEntity.getProvide();
-        if ("wangsu".equals(provide)) {
-            url = new StringBuilder("http://" + playserverEntity.getIp_gslb_addr());
-        } else if ("ali".equals(provide)) {
-            url = new StringBuilder("http://" + playserverEntity.getIp_gslb_addr() + "/dns_resolve_stream");
-        } else {
-            callBack.onDataFail(3, "other");
-            return;
-        }
-        HttpRequestParams entity = new HttpRequestParams();
-
-
-        if ("wangsu".equals(provide)) {
-            String WS_URL = playserverEntity.getAddress() + "/" + mServer.getAppname() + "/" + channelname;
-            entity.addHeaderParam("WS_URL", WS_URL);
-            entity.addHeaderParam("WS_RETIP_NUM", "1");
-            entity.addHeaderParam("WS_URL_TYPE", "3");
-        } else {
-            url.append("?host=" + playserverEntity.getAddress());
-            url.append("&stream=" + channelname);
-            url.append("&app=" + mServer.getAppname());
-        }
-        final AtomicBoolean haveCall = new AtomicBoolean();
-        final AbstractBusinessDataCallBack dataCallBack = new AbstractBusinessDataCallBack() {
-            @Override
-            public void onDataSucess(Object... objData) {
-                Loger.d(TAG, "dns_resolve_stream:onDataSucess:haveCall=" + haveCall.get() + ",objData=" + objData[0]);
-                if (!haveCall.get()) {
-                    haveCall.set(true);
-                    callBack.onDataSucess(objData);
-                }
-            }
-
-            @Override
-            public void onDataFail(int errStatus, String failMsg) {
-                Loger.d(TAG, "dns_resolve_stream:onDataFail:haveCall=" + haveCall.get() + ",errStatus=" + errStatus +
-                        ",failMsg=" + failMsg);
-                if (!haveCall.get()) {
-                    haveCall.set(true);
-                    callBack.onDataFail(errStatus, failMsg);
-                }
-            }
-        };
-        postDelayedIfNotFinish(new Runnable() {
-            @Override
-            public void run() {
-                dataCallBack.onDataFail(0, "timeout");
-            }
-        }, 2000);
-        mHttpManager.sendGetNoBusiness(url.toString(), entity, new okhttp3.Callback() {
-
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Loger.i(TAG, "dns_resolve_stream:onFailure=", e);
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        dataCallBack.onDataFail(0, "onFailure");
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, final Response response) throws IOException {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        int code = response.code();
-                        String r = "";
-                        try {
-                            r = response.body().string();
-                            Loger.i(TAG, "dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
-                            if (response.code() >= 200 && response.code() <= 300) {
-                                if ("wangsu".equals(provide)) {
-//                        rtmp://111.202.83.208/live_server/x_3_55873?wsiphost=ipdb&wsHost=livewangsu.xescdn.com
-                                    String url = r.replace("\n", "");
-                                    int index1 = url.substring(7).indexOf("/");
-                                    if (index1 != -1) {
-                                        String host = url.substring(7, 7 + index1);
-                                        playserverEntity.setIpAddress(host);
-                                    }
-                                    dataCallBack.onDataSucess(provide, url);
-                                    return;
-                                } else {
-                                    try {
-                                        JSONObject jsonObject = new JSONObject(r);
-                                        String host = jsonObject.getString("host");
-                                        JSONArray ipArray = jsonObject.optJSONArray("ips");
-                                        String ip = ipArray.getString(0);
-                                        String url = "rtmp://" + ip + "/" + host + "/" + mServer.getAppname() + "/" +
-                                                mGetInfo.getChannelname();
-                                        playserverEntity.setIpAddress(host);
-                                        dataCallBack.onDataSucess(provide, url);
-                                        mLogtf.d("dns_resolve_stream:ip_gslb_addr=" + playserverEntity
-                                                .getIp_gslb_addr() + ",ip=" + ip);
-                                        return;
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        dataCallBack.onDataFail(1, r);
-                    }
-                });
-            }
-        });
-    }
 
 
     /**

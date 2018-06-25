@@ -172,7 +172,7 @@ public class LiveVideoEnter {
                     if(mGetInfo.getIsArts() == 1){
                         LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
                     }else{
-                        LiveVideoActivity2.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
                     }
                 }
             }

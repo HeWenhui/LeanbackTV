@@ -103,23 +103,49 @@ import okhttp3.Response;
 public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private String TAG = "LiveBllLog";
     LiveLazyBllCreat liveLazyBllCreat;
+    /** 互动题 */
     private QuestionAction mQuestionAction;
+    /** 点名 */
     private RollCallAction mRollCallAction;
+    /** 表扬或批评事件 */
     private PraiseOrEncourageAction mPraiseOrEncourageAction;
+    /** 红包事件 */
     private RedPackageAction readPackageBll;
+    /** 视频事件 */
     private VideoAction mVideoAction;
+    /** 满分榜业务 */
+    private AnswerRankBll mAnswerRankBll;
+    /** 标记点业务 */
+    private LiveRemarkBll mLiveRemarkBll;
+    /** 战队pk业务 */
+    private TeamPkBll mTeamPKBll;
+    /** 老师点赞 */
+    private TeacherPraiseBll mTeacherPraiseBll1;
+    /** 聊天房间事件 */
     private RoomAction mRoomAction;
+    /** 学习报告事件 */
     private LearnReportAction mLearnReportAction;
+    /** 学习报告事件 */
     private LecLearnReportAction mLecLearnReportAction;
+    /** nb物理h5课件 */
     private H5CoursewareAction h5CoursewareAction;
+    /** 英语h5课件 */
     private EnglishH5CoursewareAction englishH5CoursewareAction;
+    /** 接麦 */
     private VideoChatAction videoChatAction;
+    /** 星星互动 */
     private StarInteractAction starAction;
+    /** 英语能量条 */
     private EnglishSpeekAction englishSpeekAction;
+    /** 理科投票 */
     private LiveVoteAction liveVoteAction;
+    /** 表扬榜事件 */
     private PraiseListAction mPraiseListAction;
+    /** 语音反馈 */
     private SpeechFeedBackAction speechFeedBackAction;
+    /** 讲座广告 */
     private LecAdvertAction lecAdvertAction;
+    /** RolePlayer功能接口 */
     private RolePlayAction rolePlayAction;
     private LiveHttpManager mHttpManager;
     private LiveScienceHttpManager liveScienceHttpManager;
@@ -229,22 +255,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      */
     String appID = UmsConstants.LIVE_APP_ID;
     /**
-     * 满分榜业务
-     */
-    private AnswerRankBll mAnswerRankBll;
-    /**
-     * 标记点业务
-     */
-    private LiveRemarkBll mLiveRemarkBll;
-    /**
      * 校准系统时间
      */
     private long sysTimeOffset;
-    /**
-     * 战队pk业务
-     */
-    private TeamPkBll mTeamPKBll;
-    private TeacherPraiseBll mTeacherPraiseBll1;
     public static boolean isAllowTeamPk = false;
 
     public LiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form, LiveGetInfo
@@ -2549,11 +2562,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 ((EnglishH5CoursewareBll) englishH5CoursewareAction).setTeamPkAllowed(true);
             }
 
-           // mTeamPKBll = liveLazyBllCreat.createTeamPkBll();
-           // mTeamPKBll.setHttpManager(mHttpManager);
-           // mTeamPKBll.setLiveBll(this);
-           // mTeamPKBll.setRoomInitInfo(mGetInfo);
-           // mTeamPKBll.attachToRootView();
+            // mTeamPKBll = liveLazyBllCreat.createTeamPkBll();
+            // mTeamPKBll.setHttpManager(mHttpManager);
+            // mTeamPKBll.setLiveBll(this);
+            // mTeamPKBll.setRoomInitInfo(mGetInfo);
+            // mTeamPKBll.attachToRootView();
             isAllowTeamPk = true;
         } else {
             isAllowTeamPk = false;

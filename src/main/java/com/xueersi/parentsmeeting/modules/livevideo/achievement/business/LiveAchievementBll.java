@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
+package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;

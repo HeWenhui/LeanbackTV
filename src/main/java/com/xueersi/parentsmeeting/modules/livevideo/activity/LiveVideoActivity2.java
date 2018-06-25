@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.tal.speech.speechrecognizer.Constants;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -34,9 +35,12 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.VPlayerListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
@@ -44,6 +48,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
@@ -63,10 +69,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.Play
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoFragment;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -83,18 +91,18 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  *
  * @author linyuqiang
  */
-public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest {
-
-
+public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest {
 
     private RollCallBll rollCallBll;
     private TeacherPraiseBll teacherPraiseBll;
+    LiveVideoBll liveVideoBll;
 
     {
         mLayoutVideo = R.layout.activity_video_live_new;
     }
 
     private String TAG = "LiveVideoActivityLog";
+    Logger logger = LoggerFactory.getLogger(TAG);
     /**
      * 播放器同步
      */
@@ -144,10 +152,6 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
     private ImageView ivLoading;
     private TextView tvLoadingHint;
     private LiveGetInfo mGetInfo;
-    /**
-     * 直播服务器
-     */
-    private PlayServerEntity mServer;
     private ArrayList<PlayserverEntity> failPlayserverEntity = new ArrayList<>();
     private ArrayList<PlayserverEntity> failFlvPlayserverEntity = new ArrayList<>();
     /**
@@ -242,12 +246,10 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
-
         android.util.Log.e(Tag, "==========>onVideoCreate:");
-
         long before = System.currentTimeMillis();
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        liveType = getIntent().getIntExtra("type", 0);
+        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        liveType = activity.getIntent().getIntExtra("type", 0);
         // 设置不可自动横竖屏
         setAutoOrientation(false);
         AppBll.getInstance().registerAppEvent(this);
@@ -256,6 +258,15 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
             onUserBackPressed();
             return false;
         }
+        liveVideoBll = new LiveVideoBll(activity, mLiveBll, liveType);
+        //先让播放器按照默认模式设置
+        videoView = mContentView.findViewById(R.id.vv_course_video_video);
+        logger.d("onVideoCreate:videoView=" + (videoView == null));
+        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
+                (int) VIDEO_HEIGHT, VIDEO_RATIO);
+        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+        setFirstParam(lp);
+        // liveMessageBll.setVideoLayout(lp.width, lp.height);
         Loger.d(TAG, "onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
@@ -263,94 +274,9 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
         initAllBll();
         Loger.d(TAG, "onVideoCreate:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        initView();
-
-
-
-        addBusiness(this,bottomContent);
-
-
-
+        addBusiness(activity, bottomContent);
         Loger.d(TAG, "onVideoCreate:time3=" + (System.currentTimeMillis() - before));
-        return true;
-    }
-
-    /**
-     * 添加 直播间内 所需的功能模块
-     *
-     * @param activity
-     * @param bottomContent
-     */
-    private void addBusiness(Activity activity, RelativeLayout bottomContent) {
-
-        teamPkBll = new TeamPkBll(activity,mLiveBll,bottomContent);
-        mLiveBll.addBusinessBll(teamPkBll);
-
-        rollCallBll = new RollCallBll(activity,mLiveBll,bottomContent);
-        mLiveBll.addBusinessBll(rollCallBll);
-
-        teacherPraiseBll = new TeacherPraiseBll(activity,mLiveBll,bottomContent);
-        mLiveBll.addBusinessBll(teacherPraiseBll);
-
-        LiveVoteBll  voteBll = new LiveVoteBll(activity,mLiveBll,bottomContent);
-        mLiveBll.addBusinessBll(voteBll);
-
-        RedPackageBll redPackageBll = new RedPackageBll(activity,mLiveBll,bottomContent);
-        mLiveBll.addBusinessBll(redPackageBll);
-
-
-    }
-
-    @Override
-    protected void onVideoCreateEnd() {
-        mLiveBll.getInfo(mGetInfo);
-    }
-
-    @Override
-    protected void showRefresyLayout(int arg1, int arg2) {
-        super.showRefresyLayout(arg1, arg2);
-    }
-
-    @Override
-    public void showLongMediaController() {
-        super.showLongMediaController();
-    }
-
-    private void initView() {
-        // 预加载布局
-        rlFirstBackgroundView = (RelativeLayout) findViewById(R.id.rl_course_video_first_backgroud);
-        ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
-        bottomContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_content);
-        bottomContent.setVisibility(View.VISIBLE);
-
-        android.util.Log.e("LiveVideoActivity2", "========>:initView:" + bottomContent);
-
-        praiselistContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_praiselist_content);
-        praiselistContent.setVisibility(View.VISIBLE);
-        ivLoading = (ImageView) findViewById(R.id.iv_course_video_loading_bg);
-        updateLoadingImage();
-        tvLoadingHint = (TextView) findViewById(R.id.tv_course_video_loading_content);
-        // 预加载布局中退出事件
-        findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
-        tvLoadingHint.setText("获取课程信息");
-        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        bottomContent.addView(liveMediaControllerBottom);
-        //聊天
-        long before = System.currentTimeMillis();
-        //liveMessageBll.initViewLive(bottomContent);
-        Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
-        before = System.currentTimeMillis();
-
-        //先让播放器按照默认模式设置
-        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
-                (int) VIDEO_HEIGHT, VIDEO_RATIO);
-        final ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-
-
-        setFirstParam(lp);
-        // liveMessageBll.setVideoLayout(lp.width, lp.height);
-        Loger.d(TAG, "initView:time2=" + (System.currentTimeMillis() - before));
-        final View contentView = findViewById(android.R.id.content);
+        final View contentView = activity.findViewById(android.R.id.content);
         contentView.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -375,51 +301,117 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
                 });
             }
         }, 10);
+        return true;
+    }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        mContentView = (RelativeLayout) super.onCreateView(inflater, container, savedInstanceState);
+        initView();
+        return mContentView;
+    }
+
+    /**
+     * 添加 直播间内 所需的功能模块
+     *
+     * @param activity
+     * @param bottomContent
+     */
+    private void addBusiness(Activity activity, RelativeLayout bottomContent) {
+
+        teamPkBll = new TeamPkBll(activity, mLiveBll, bottomContent);
+        mLiveBll.addBusinessBll(teamPkBll);
+
+        rollCallBll = new RollCallBll(activity, mLiveBll, bottomContent);
+        mLiveBll.addBusinessBll(rollCallBll);
+
+        teacherPraiseBll = new TeacherPraiseBll(activity, mLiveBll, bottomContent);
+        mLiveBll.addBusinessBll(teacherPraiseBll);
+
+        LiveVoteBll  voteBll = new LiveVoteBll(activity,mLiveBll,bottomContent);
+        mLiveBll.addBusinessBll(voteBll);
 
     }
 
+    @Override
+    protected void onVideoCreateEnd() {
+        mLiveBll.getInfo(mGetInfo);
+    }
+
+    @Override
+    protected void showRefresyLayout(int arg1, int arg2) {
+        super.showRefresyLayout(arg1, arg2);
+    }
+
+    @Override
+    public void showLongMediaController() {
+        super.showLongMediaController();
+    }
+
+    private void initView() {
+        // 预加载布局
+        rlFirstBackgroundView = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_first_backgroud);
+        ivTeacherNotpresent = (ImageView) mContentView.findViewById(R.id.iv_course_video_teacher_notpresent);
+        bottomContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
+        bottomContent.setVisibility(View.VISIBLE);
+
+        android.util.Log.e("LiveVideoActivity2", "========>:initView:" + bottomContent);
+
+        praiselistContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_praiselist_content);
+        praiselistContent.setVisibility(View.VISIBLE);
+        ivLoading = (ImageView) mContentView.findViewById(R.id.iv_course_video_loading_bg);
+        updateLoadingImage();
+        tvLoadingHint = (TextView) mContentView.findViewById(R.id.tv_course_video_loading_content);
+        // 预加载布局中退出事件
+        mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
+        tvLoadingHint.setText("获取课程信息");
+        baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, mMediaController, videoFragment);
+        liveMediaControllerBottom = new LiveMediaControllerBottom(activity, mMediaController, videoFragment);
+        liveMediaControllerBottom.setVisibility(View.INVISIBLE);
+        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        bottomContent.addView(liveMediaControllerBottom);
+        //聊天
+        long before = System.currentTimeMillis();
+        //liveMessageBll.initViewLive(bottomContent);
+        Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
+        before = System.currentTimeMillis();
+        Loger.d(TAG, "initView:time2=" + (System.currentTimeMillis() - before));
+    }
+
     protected boolean initData() {
-        Intent intent = getIntent();
+        Intent intent = activity.getIntent();
         courseId = intent.getStringExtra("courseId");
         vStuCourseID = intent.getStringExtra("vStuCourseID");
         mVSectionID = intent.getStringExtra("vSectionID");
         mVideoType = MobEnumUtil.VIDEO_LIVE;
         if (TextUtils.isEmpty(mVSectionID)) {
-            Toast.makeText(this, "直播场次不存在", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "直播场次不存在", Toast.LENGTH_SHORT).show();
             return false;
         }
         from = intent.getIntExtra(ENTER_ROOM_FROM, 0);
         XesMobAgent.enterLiveRoomFrom(from);
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {// 直播
-            mLiveBll = new LiveBll2(this, vStuCourseID, courseId, mVSectionID, from, null);
+            mLiveBll = new LiveBll2(activity, vStuCourseID, courseId, mVSectionID, from, null);
         } else if (liveType == LiveBll.LIVE_TYPE_LECTURE) {
-            mLiveBll = new LiveBll2(this, mVSectionID, liveType, from);
+            mLiveBll = new LiveBll2(activity, mVSectionID, liveType, from);
         } else if (liveType == LiveBll.LIVE_TYPE_TUTORIAL) {// 辅导
-            mLiveBll = new LiveBll2(this, mVSectionID, intent.getStringExtra("currentDutyId"), liveType, from);
+            mLiveBll = new LiveBll2(activity, mVSectionID, intent.getStringExtra("currentDutyId"), liveType, from);
         } else {
-            Toast.makeText(this, "直播类型不支持", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "直播类型不支持", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
     }
 
     private void initAllBll() {
-
-        liveMediaControllerBottom = new LiveMediaControllerBottom(this, mMediaController, this);
-        liveMediaControllerBottom.setVisibility(View.INVISIBLE);
-
         mPlayStatistics = mLiveBll.getVideoListener();
         mLiveBll.setVideoAction(this);
-
+        mLiveBll.setLiveVideoBll(liveVideoBll);
         android.util.Log.e("LiveVideoActivity", "====>initAllBll:" + bottomContent);
-
-
         mMediaController.setControllerBottom(liveMediaControllerBottom, false);
-        baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
         mMediaController.setControllerTop(baseLiveMediaControllerTop);
         setMediaControllerBottomParam(videoView.getLayoutParams());
-
     }
 
     /**
@@ -439,7 +431,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
      * 设置蓝屏界面
      */
     private void setFirstParam(ViewGroup.LayoutParams lp) {
-        final View contentView = findViewById(android.R.id.content);
+        final View contentView = activity.findViewById(android.R.id.content);
         final View actionBarOverlayLayout = (View) contentView.getParent();
         Rect r = new Rect();
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
@@ -465,19 +457,93 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
     }
 
     @Override
-    protected void onPlayOpenStart() {
-        setFirstBackgroundVisible(View.VISIBLE);
-        findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
+    protected VideoFragment getFragment() {
+        return new LiveVideoPlayFragment();
     }
 
-    @Override
-    protected void onPlayOpenSuccess() {
-        TextView tvFail = (TextView) findViewById(R.id.tv_course_video_loading_fail);
-        if (tvFail != null) {
-            tvFail.setVisibility(View.INVISIBLE);
+    protected class LiveVideoPlayFragment extends VideoFragment {
+
+        @Override
+        protected void onPlayOpenStart() {
+            setFirstBackgroundVisible(View.VISIBLE);
+            mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
         }
-        setFirstBackgroundVisible(View.GONE);
-        rollCallBll.onPlayOpenSuccess(videoView.getLayoutParams());
+
+        @Override
+        protected void onPlayOpenSuccess() {
+            TextView tvFail = (TextView) mContentView.findViewById(R.id.tv_course_video_loading_fail);
+            if (tvFail != null) {
+                tvFail.setVisibility(View.INVISIBLE);
+            }
+            setFirstBackgroundVisible(View.GONE);
+            rollCallBll.onPlayOpenSuccess(videoView.getLayoutParams());
+//            if (mGetInfo != null && mGetInfo.getIsShowMarkPoint().equals("1")) {
+//                if (liveRemarkBll == null) {
+//                    liveRemarkBll = new LiveRemarkBll(activity, vPlayer);
+//                    if (videoChatBll != null) {
+//                        videoChatBll.setLiveRemarkBll(liveRemarkBll);
+//                    }
+//                    if (mLiveBll != null && liveMediaControllerBottom != null) {
+//                        if (liveTextureView == null) {
+//                            ViewStub viewStub = (ViewStub) mContentView.findViewById(R.id.vs_course_video_video_texture);
+//                            liveTextureView = (LiveTextureView) viewStub.inflate();
+//                            liveTextureView.vPlayer = vPlayer;
+//                            liveTextureView.setLayoutParams(videoView.getLayoutParams());
+//                        }
+//                        liveRemarkBll.showBtMark();
+//                        liveRemarkBll.setTextureView(liveTextureView);
+//                        liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+//                        liveRemarkBll.setVideoView(videoView);
+//                        mLiveBll.setLiveRemarkBll(liveRemarkBll);
+//                        liveRemarkBll.setLiveAndBackDebug(mLiveBll);
+//                    }
+//                } else {
+//                    liveRemarkBll.initData();
+//                }
+//            }
+        }
+
+        @Override
+        protected void playComplete() {
+            postDelayedIfNotFinish(new Runnable() {
+
+                @Override
+                public void run() {
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            synchronized (mIjkLock) {
+                                onFail(0, 0);
+                            }
+                        }
+                    }.start();
+                }
+            }, 200);
+        }
+
+        @Override
+        protected void onPlayError() {
+            mHandler.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    tvLoadingHint.setText("您的手机暂时不支持播放直播");
+                    mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
+                }
+            });
+        }
+
+        @Override
+        public void onTitleShow(boolean show) {
+//            liveMessageBll.onTitleShow(show);
+//            if (rankBll != null) {
+//                rankBll.onTitleShow(show);
+//            }
+        }
+
+        protected VPlayerListener getWrapListener() {
+            return liveVideoBll.getPlayListener();
+        }
 
     }
 
@@ -532,7 +598,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
                     synchronized (mIjkLock) {
                         if (isInitialized()) {
                             if (openSuccess) {
-                                mHandler.removeCallbacks(mPlayDuration);
+                                liveVideoBll.stopPlayDuration();
                                 playTime += (System.currentTimeMillis() - lastPlayTime);
                                 Loger.d(TAG, "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
                             }
@@ -544,7 +610,6 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
                 }
             }.start();
         }
-
     }
 
     @Override
@@ -579,210 +644,6 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
     }
 
     @Override
-    protected void playComplete() {
-        postDelayedIfNotFinish(new Runnable() {
-
-            @Override
-            public void run() {
-                new Thread() {
-                    @Override
-                    public void run() {
-                        synchronized (mIjkLock) {
-                            onFail(0, 0);
-                        }
-                    }
-                }.start();
-            }
-        }, 200);
-    }
-
-    @Override
-    protected void onPlayError() {
-        mHandler.post(new Runnable() {
-
-            @Override
-            public void run() {
-                tvLoadingHint.setText("您的手机暂时不支持播放直播");
-                findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
-            }
-        });
-    }
-
-    @Override
-    public void onTitleShow(boolean show) {
-        // liveMessageBll.onTitleShow(show);
-
-    }
-
-    @Override
-    protected VPlayerListener getWrapListener() {
-        return mPlayListener;
-    }
-
-    private VPlayerListener mPlayListener = new SimpleVPlayerListener() {
-
-        @Override
-        public void onPlaying(long currentPosition, long duration) {
-            if (startRemote.get()) {
-                stopPlay();
-            }
-        }
-
-        @Override
-        public void onPlaybackComplete() {
-            mHandler.removeCallbacks(mOpenTimeOutRun);
-            mHandler.removeCallbacks(mBufferTimeOutRun);
-            mHandler.removeCallbacks(mPlayDuration);
-            mPlayStatistics.onPlaybackComplete();
-            if (openSuccess) {
-                playTime += (System.currentTimeMillis() - lastPlayTime);
-            }
-            openSuccess = false;
-        }
-
-        @Override
-        public void onPlayError() {
-            isPlay = false;
-            mHandler.removeCallbacks(mOpenTimeOutRun);
-            mHandler.removeCallbacks(mBufferTimeOutRun);
-            mHandler.removeCallbacks(mPlayDuration);
-            mPlayStatistics.onPlayError();
-            if (openSuccess) {
-                playTime += (System.currentTimeMillis() - lastPlayTime);
-            }
-            openSuccess = false;
-        }
-
-        @Override
-        public void onOpenSuccess() {
-            isPlay = true;
-            if (startRemote.get()) {
-                stopPlay();
-                return;
-            }
-            openSuccess = true;
-            mHandler.removeCallbacks(mOpenTimeOutRun);
-            mPlayStatistics.onOpenSuccess();
-            mHandler.removeCallbacks(mPlayDuration);
-            mHandler.postDelayed(mPlayDuration, mPlayDurTime);
-            mHandler.postDelayed(getVideoCachedDurationRun, 10000);
-        }
-
-        @Override
-        public void onOpenStart() {
-            openStartTime = System.currentTimeMillis();
-            openSuccess = false;
-            mHandler.removeCallbacks(mOpenTimeOutRun);
-            postDelayedIfNotFinish(mOpenTimeOutRun, mOpenTimeOut);
-            mPlayStatistics.onOpenStart();
-        }
-
-        @Override
-        public void onOpenFailed(int arg1, int arg2) {
-            isPlay = false;
-            if (openSuccess) {
-                playTime += (System.currentTimeMillis() - lastPlayTime);
-            }
-            openSuccess = false;
-            mHandler.removeCallbacks(mOpenTimeOutRun);
-            mHandler.removeCallbacks(mBufferTimeOutRun);
-            mHandler.removeCallbacks(mPlayDuration);
-            mPlayStatistics.onOpenFailed(arg1, arg2);
-            if (lastPlayserverEntity != null) {
-                reportPlayStarTime = System.currentTimeMillis();
-            }
-        }
-
-        @Override
-        public void onBufferStart() {
-            mHandler.removeCallbacks(mBufferTimeOutRun);
-            postDelayedIfNotFinish(mBufferTimeOutRun, mBufferTimeout);
-            mPlayStatistics.onBufferStart();
-        }
-
-        @Override
-        public void onBufferComplete() {
-            mHandler.removeCallbacks(mBufferTimeOutRun);
-            mPlayStatistics.onBufferComplete();
-        }
-    };
-
-    /**
-     * 得到Video缓存时间
-     */
-    private Runnable getVideoCachedDurationRun = new Runnable() {
-        @Override
-        public void run() {
-            mHandler.removeCallbacks(this);
-            if (isPlay && !isFinishing()) {
-                new Thread() {
-                    @Override
-                    public void run() {
-                        videoCachedDuration = vPlayer.getVideoCachedDuration();
-                        mHandler.postDelayed(getVideoCachedDurationRun, 30000);
-                        if (videoCachedDuration > 10000) {
-                            if (lastPlayserverEntity != null) {
-                                reportPlayStarTime = System.currentTimeMillis();
-                            }
-                        }
-                    }
-                }.start();
-            }
-        }
-    };
-
-    /**
-     * 缓冲超时
-     */
-    private Runnable mBufferTimeOutRun = new Runnable() {
-
-        @Override
-        public void run() {
-            long openTime = System.currentTimeMillis() - openStartTime;
-            if (openTime > 40000) {
-            } else {
-            }
-            if (lastPlayserverEntity != null) {
-                reportPlayStarTime = System.currentTimeMillis();
-            }
-            mLiveBll.repair(true);
-
-            mLiveBll.liveGetPlayServer(false);
-        }
-    };
-
-    /**
-     * 播放时长，7分钟统计
-     */
-    private Runnable mPlayDuration = new Runnable() {
-        @Override
-        public void run() {
-            if (lastPlayserverEntity != null) {
-                lastPlayTime = System.currentTimeMillis();
-                playTime += mPlayDurTime;
-                Loger.d(TAG, "mPlayDuration:playTime=" + playTime / 1000);
-                reportPlayStarTime = System.currentTimeMillis();
-            }
-            if (isPlay && !isFinishing()) {
-                mHandler.postDelayed(this, mPlayDurTime);
-            }
-        }
-    };
-
-    /**
-     * 打开超时
-     */
-    private Runnable mOpenTimeOutRun = new Runnable() {
-
-        @Override
-        public void run() {
-            long openTimeOut = System.currentTimeMillis() - openStartTime;
-            mLiveBll.repair(false);
-            mLiveBll.liveGetPlayServer(false);
-        }
-    };
-
-    @Override
     public void onTeacherNotPresent(final boolean isBefore) {
         mHandler.post(new Runnable() {
             @Override
@@ -791,7 +652,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
                     if (mGetInfo.getStudentLiveInfo().isExpe() && LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())) {
                         tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
                         setFirstBackgroundVisible(View.VISIBLE);
-                        findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.GONE);
+                        mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.GONE);
                         ivTeacherNotpresent.setVisibility(View.GONE);
                         return;
                     }
@@ -801,7 +662,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
                 } else {
                     ivTeacherNotpresent.setVisibility(View.VISIBLE);
                     ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
-                    findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
+                    mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -862,7 +723,6 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
 
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
-        mServer = server;
         final AtomicBoolean change = new AtomicBoolean(modechange);// 直播状态是不是变化
         mLiveTopic = cacheData;
         mHandler.post(new Runnable() {
@@ -881,6 +741,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
                 }
             }
         });
+        liveVideoBll.onLiveStart(server, cacheData, modechange);
         rePlay(change.get());
     }
 
@@ -892,7 +753,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
             @Override
             public void run() {
                 if (isInitialized()) {
-                    mHandler.removeCallbacks(mPlayDuration);
+                    liveVideoBll.stopPlayDuration();
                     vPlayer.releaseSurface();
                     vPlayer.stop();
                 }
@@ -920,7 +781,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
 
     @Override
     public void onClassTimoOut() {
-        findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
+        mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
         final String msg = "你来晚了，下课了，等着看回放吧";
         if (tvLoadingHint != null) {
             tvLoadingHint.setText(msg);
@@ -929,25 +790,25 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
 
     @Override
     public void onLiveDontAllow(final String msg) {
-        findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
+        mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
         if (tvLoadingHint != null) {
             tvLoadingHint.setText(msg);
         }
-        XESToastUtils.showToast(this, "将在3秒内退出");
+        XESToastUtils.showToast(activity, "将在3秒内退出");
         postDelayedIfNotFinish(new Runnable() {
             @Override
             public void run() {
                 Intent intent = new Intent();
                 intent.putExtra("msg", msg);
-                setResult(ShareBusinessConfig.LIVE_USER_ERROR, intent);
-                finish();
+                activity.setResult(ShareBusinessConfig.LIVE_USER_ERROR, intent);
+                activity.finish();
             }
         }, 3000);
     }
 
     @Override
     public void onLiveError(final ResponseEntity responseEntity) {
-        findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
+        mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
         final String msg = "" + responseEntity.getErrorMsg();
         if (tvLoadingHint != null) {
             tvLoadingHint.setText(msg);
@@ -977,7 +838,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
             if (LiveTopic.MODE_TRANING.endsWith(mGetInfo.getLiveTopic().getMode()) && mGetInfo.getStudentLiveInfo().isExpe()) {
                 tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
                 setFirstBackgroundVisible(View.VISIBLE);
-                findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.GONE);
+                mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.GONE);
                 ivTeacherNotpresent.setVisibility(View.GONE);
                 return;
             }
@@ -1003,201 +864,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
                 }
             }
         }.start();
-        String url;
-        String msg = "rePlay:";
-        if (mServer == null) {
-            totalFrameStat.setLastPlayserverEntity(null);
-            String rtmpUrl = null;
-            String[] rtmpUrls = mGetInfo.getRtmpUrls();
-            if (rtmpUrls != null) {
-                rtmpUrl = rtmpUrls[(lastIndex++) % rtmpUrls.length];
-            }
-            if (rtmpUrl == null) {
-                rtmpUrl = mGetInfo.getRtmpUrl();
-            }
-            url = rtmpUrl + "/" + mGetInfo.getChannelname();
-            msg += "mServer=null";
-            mLiveBll.setPlayserverEntity(null);
-        } else {
-            List<PlayserverEntity> playservers = mServer.getPlayserver();
-
-            msg += "playservers=" + playservers.size();
-            PlayserverEntity entity = null;
-            boolean useFlv = false;
-            if (lastPlayserverEntity == null) {
-                msg += ",lastPlayserverEntity=null";
-                entity = playservers.get(0);
-            } else {
-                msg += ",failPlayserverEntity=" + failPlayserverEntity.size();
-                if (!failPlayserverEntity.isEmpty()) {
-                    boolean allRtmpFail = true;
-                    boolean allFlvFail = true;
-                    List<PlayserverEntity> flvPlayservers = new ArrayList<>();
-                    for (int i = 0; i < playservers.size(); i++) {
-                        PlayserverEntity playserverEntity = playservers.get(i);
-                        if (!StringUtils.isEmpty(playserverEntity.getFlvpostfix())) {
-                            flvPlayservers.add(playserverEntity);
-                            if (!failFlvPlayserverEntity.contains(playserverEntity)) {
-                                allFlvFail = false;
-                            }
-                        }
-                        if (!failPlayserverEntity.contains(playserverEntity)) {
-                            allRtmpFail = false;
-                        }
-                    }
-                    if (allFlvFail) {
-                        msg += ",allFlvFail";
-                        failPlayserverEntity.clear();
-                        failFlvPlayserverEntity.clear();
-                    } else {
-                        if (allRtmpFail) {
-                            if (flvPlayservers.isEmpty()) {
-                                failPlayserverEntity.clear();
-                            } else {
-                                if (!lastPlayserverEntity.isUseFlv()) {
-                                    entity = flvPlayservers.get(0);
-                                    entity.setUseFlv(true);
-                                    useFlv = true;
-                                    msg += ",setUseFlv1";
-                                } else {
-                                    for (int i = 0; i < flvPlayservers.size(); i++) {
-                                        PlayserverEntity playserverEntity = flvPlayservers.get(i);
-                                        if (lastPlayserverEntity.getAddress().equals(playserverEntity.getAddress())) {
-                                            if (modechange) {
-                                                entity = flvPlayservers.get(i % flvPlayservers.size());
-                                            } else {
-                                                entity = flvPlayservers.get((i + 1) % flvPlayservers.size());
-                                            }
-                                            entity.setUseFlv(true);
-                                            useFlv = true;
-                                            msg += ",setUseFlv2,modechange=" + modechange;
-                                            break;
-                                        }
-                                    }
-                                    if (entity == null) {
-                                        msg += ",entity=null1";
-                                        entity = flvPlayservers.get(0);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                if (entity == null) {
-                    for (int i = 0; i < playservers.size(); i++) {
-                        PlayserverEntity playserverEntity = playservers.get(i);
-                        if (lastPlayserverEntity.equals(playserverEntity)) {
-                            if (modechange) {
-                                entity = playservers.get(i % playservers.size());
-                            } else {
-                                entity = playservers.get((i + 1) % playservers.size());
-                            }
-                            msg += ",entity=null2,modechange=" + modechange;
-                            break;
-                        }
-                    }
-                }
-                if (entity == null) {
-                    msg += ",entity=null3";
-                    entity = playservers.get(0);
-                }
-            }
-            lastPlayserverEntity = entity;
-            mLiveBll.setPlayserverEntity(entity);
-            totalFrameStat.setLastPlayserverEntity(entity);
-            if (useFlv) {
-                url = "http://" + entity.getAddress() + ":" + entity.getHttpport() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname() + entity.getFlvpostfix();
-            } else {
-                if (StringUtils.isEmpty(entity.getIp_gslb_addr())) {
-                    url = "rtmp://" + entity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
-                } else {
-                    final PlayserverEntity finalEntity = entity;
-                    mLiveBll.dns_resolve_stream(entity, mServer, mGetInfo.getChannelname(), new AbstractBusinessDataCallBack() {
-                        @Override
-                        public void onDataSucess(Object... objData) {
-                            if (finalEntity != lastPlayserverEntity) {
-                                return;
-                            }
-                            String provide = (String) objData[0];
-                            String url;
-                            if ("wangsu".equals(provide)) {
-                                url = objData[1] + "&username=" + mGetInfo.getUname() + "&cfrom=android";
-                                playNewVideo(Uri.parse(url), mGetInfo.getName());
-                            } else if ("ali".equals(provide)) {
-                                url = (String) objData[1];
-                                StringBuilder stringBuilder = new StringBuilder(url);
-                                addBody("Sucess", stringBuilder);
-                                url = stringBuilder + "&username=" + mGetInfo.getUname();
-                                playNewVideo(Uri.parse(url), mGetInfo.getName());
-                            } else {
-                                return;
-                            }
-                            StableLogHashMap stableLogHashMap = new StableLogHashMap("glsb3rdDnsReply");
-                            stableLogHashMap.put("message", "" + url);
-                            stableLogHashMap.put("activity", mContext.getClass().getSimpleName());
-                            Loger.e(mContext, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData(), true);
-                        }
-
-                        @Override
-                        public void onDataFail(int errStatus, String failMsg) {
-                            if (finalEntity != lastPlayserverEntity) {
-                                return;
-                            }
-                            String url = "rtmp://" + finalEntity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
-                            StringBuilder stringBuilder = new StringBuilder(url);
-                            addBody("Fail", stringBuilder);
-                            playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
-                        }
-                    });
-                    return;
-                }
-            }
-            msg += ",entity=" + entity.getIcode();
-        }
-        StringBuilder stringBuilder = new StringBuilder(url);
-        msg += addBody("rePlay", stringBuilder);
-        msg += ",url=" + stringBuilder;
-        playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
-    }
-
-    /**
-     * 直播地址的一些通用参数
-     *
-     * @param method
-     * @param url
-     * @return
-     */
-    protected String addBody(String method, StringBuilder url) {
-        String msg = "";
-        if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
-            if (lastPlayserverEntity != null && !StringUtils.isSpace(lastPlayserverEntity.getRtmpkey())) {
-                url.append("?" + lastPlayserverEntity.getRtmpkey() + "&cfrom=android");
-                msg += ",t1";
-            } else {
-                if (!StringUtils.isSpace(mGetInfo.getSkeyPlayT())) {
-                    url.append("?" + mGetInfo.getSkeyPlayT() + "&cfrom=android");
-                    msg += ",t2";
-                } else {
-                    url.append("?cfrom=android");
-                    msg += ",t3";
-                }
-            }
-        } else {
-            if (lastPlayserverEntity != null && !StringUtils.isSpace(lastPlayserverEntity.getRtmpkey())) {
-                url.append("?" + lastPlayserverEntity.getRtmpkey() + "&cfrom=android");
-                msg += ",f1";
-            } else {
-                if (!StringUtils.isSpace(mGetInfo.getSkeyPlayF())) {
-                    url.append("?" + mGetInfo.getSkeyPlayF() + "&cfrom=android");
-                    msg += ",f2";
-                } else {
-                    url.append("?cfrom=android");
-                    msg += ",f3";
-                }
-            }
-        }
-        Loger.d(TAG, "addBody:method=" + method + ",url=" + url);
-        return msg;
+        liveVideoBll.rePlay(modechange);
     }
 
     @Override
@@ -1212,18 +879,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
      * 播放失败，或者完成时调用
      */
     private void onFail(int arg1, final int arg2) {
-        if (lastPlayserverEntity != null) {
-            if (lastPlayserverEntity.isUseFlv()) {
-                if (!failFlvPlayserverEntity.contains(lastPlayserverEntity)) {
-                    failFlvPlayserverEntity.add(lastPlayserverEntity);
-                }
-            } else {
-                if (!failPlayserverEntity.contains(lastPlayserverEntity)) {
-                    failPlayserverEntity.add(lastPlayserverEntity);
-                }
-            }
-        }
-
+        liveVideoBll.onFail(arg1, arg2);
         mHandler.post(new Runnable() {
 
             @Override
@@ -1234,7 +890,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
                     if (error != null) {
                         errorMsg = error.getNum() + " (" + error.getTag() + ")";
                     }
-                    TextView tvFail = (TextView) findViewById(R.id.tv_course_video_loading_fail);
+                    TextView tvFail = (TextView) mContentView.findViewById(R.id.tv_course_video_loading_fail);
                     if (errorMsg != null) {
                         if (tvFail != null) {
                             tvFail.setVisibility(View.VISIBLE);
@@ -1256,7 +912,6 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
                 }
             }
         });
-        mLiveBll.liveGetPlayServer(false);
     }
 
     public void postDelayedIfNotFinish(Runnable r, long delayMillis) {
@@ -1287,7 +942,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
      */
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent.OnlyWIFIEvent onlyWIFIEvent) {
-        Toast.makeText(this, "没有wifi", Toast.LENGTH_SHORT).show();
+        Toast.makeText(activity, "没有wifi", Toast.LENGTH_SHORT).show();
         onUserBackPressed();
     }
 
@@ -1306,7 +961,7 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent.NowMobileEvent event) {
         if (mIsShowMobileAlert) {
-            VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(this, mBaseApplication, false,
+            VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(), false,
                     VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
             cancelDialog.setCancelBtnListener(new View.OnClickListener() {
                 @Override
@@ -1326,21 +981,10 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (null != this.getCurrentFocus()) {
-            /** 点击空白位置 隐藏软键盘 */
-            InputMethodManager mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            return mInputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
-        }
-        return super.onTouchEvent(event);
-    }
-
-    @Override
     protected void onUserBackPressed() {
 
         super.onUserBackPressed();
     }
-
 
 
     @Override
@@ -1409,19 +1053,23 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
     public void onWebViewEnd() {
     }
 
-    @Override
-    protected void updateIcon() {
+    public void updateIcon() {
         updateLoadingImage();
         updateRefreshImage();
     }
 
     protected void updateLoadingImage() {
-        FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
+        FooterIconEntity footerIconEntity = ShareDataManager.getInstance().getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
         if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
             if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl)) {
-                ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
+                ImageLoader.with(activity).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
             }
         }
+    }
+
+    @Override
+    public boolean isFinishing() {
+        return activity.isFinishing();
     }
 }

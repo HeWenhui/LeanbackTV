@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,7 +22,6 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.MicTipDialog;
@@ -33,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveScienceHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.AgoraVideoChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.common.permission.PermissionCallback;
@@ -58,7 +59,8 @@ import java.util.List;
 public class VideoChatBll implements VideoChatAction {
     private static String TAG = "VideoChatBll";
     private String eventId = LiveVideoConfig.LIVE_LINK_MIRCO;
-    private LiveVideoActivityBase activity;
+    private Activity activity;
+    private VideoChatEvent videoChatEvent;
     private Button btRaiseHands;
     private LiveBll liveBll;
     private LiveGetInfo getInfo;
@@ -102,8 +104,9 @@ public class VideoChatBll implements VideoChatAction {
     private String onmicStatus = "off";
     private LiveRemarkBll mLiveRemarkBll;
 
-    public VideoChatBll(LiveVideoActivityBase activity) {
+    public VideoChatBll(Activity activity, VideoChatEvent videoChatEvent) {
         this.activity = activity;
+        this.videoChatEvent = videoChatEvent;
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
@@ -253,7 +256,7 @@ public class VideoChatBll implements VideoChatAction {
             mLiveRemarkBll.setOnChat(true);
         }
         if (nativeLibLoaded != 2) {
-            activity.setVolume(0, 0);
+            videoChatEvent.setVolume(0, 0);
         }
         Runnable runnable = new Runnable() {
             @Override
@@ -265,7 +268,7 @@ public class VideoChatBll implements VideoChatAction {
 //                    videoChatInter = new VideoChatPager(activity, liveBll, getInfo);
                     return;
                 } else {
-                    videoChatInter = new AgoraVideoChatPager(activity, liveBll, getInfo);
+                    videoChatInter = new AgoraVideoChatPager(activity, liveBll, getInfo, videoChatEvent);
                 }
                 startTime = System.currentTimeMillis();
                 int height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -276,7 +279,7 @@ public class VideoChatBll implements VideoChatAction {
                 if (nativeLibLoaded == 2) {
 
                 } else {
-                    int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
+                    int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
                     lp.rightMargin = wradio;
                     bottomContent.addView(rootView, lp);
                 }
@@ -492,7 +495,7 @@ public class VideoChatBll implements VideoChatAction {
                             videoChatInter = null;
                             mLogtf.d("MIC_TIME:onJoin(onmic.on):time=" + (System.currentTimeMillis() - startTime));
                             if (nativeLibLoaded != 2) {
-                                activity.setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
+                                videoChatEvent.setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
                             }
                         }
                     }
@@ -511,7 +514,7 @@ public class VideoChatBll implements VideoChatAction {
                         videoChatInter = null;
                         mLogtf.d("MIC_TIME:onJoin(onmic.off):time=" + (System.currentTimeMillis() - startTime));
                         if (nativeLibLoaded != 2) {
-                            activity.setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
+                            videoChatEvent.setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
                         }
                     }
                     if ("on".equals(openhands)) {
@@ -607,7 +610,7 @@ public class VideoChatBll implements VideoChatAction {
         btRaiseHands.postDelayed(new Runnable() {
             @Override
             public void run() {
-                activity.showLongMediaController();
+                videoChatEvent.showLongMediaController();
             }
         }, 2900);
 //                    XESToastUtils.showToast(activity, "老师已开启举手，\n举手有机会与老师语音对话！");
@@ -629,7 +632,7 @@ public class VideoChatBll implements VideoChatAction {
                 openhandsStatus = status;
                 if ("on".equals(status)) {
                     VideoChatLog.sno2(liveBll, from, nonce);
-                    activity.showLongMediaController();
+                    videoChatEvent.showLongMediaController();
                     checkPermissionUnPerList(new RaiseHandPermissionFinish(status, from, new Runnable() {
                         @Override
                         public void run() {
@@ -812,7 +815,7 @@ public class VideoChatBll implements VideoChatAction {
                     videoChatInter = null;
                     mLogtf.d("MIC_TIME:quit:time=" + (System.currentTimeMillis() - startTime));
                     if (nativeLibLoaded != 2) {
-                        activity.setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
+                        videoChatEvent.setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
                     }
                 }
             }

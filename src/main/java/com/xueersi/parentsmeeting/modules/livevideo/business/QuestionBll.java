@@ -55,6 +55,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONException;
@@ -235,6 +236,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private RolePlayAction rolePlayAction;
 
     public QuestionBll(Activity activity, String stuCouId) {
+        ProxUtil.getProxUtil().put(activity, QuestionBll.class, this);
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
@@ -947,7 +949,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             int screenWidth = (r.right - r.left);
             int screenHeight = ScreenUtils.getScreenHeight();
             if (width > 0) {
-                int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
+                int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
                 wradio += (screenWidth - width) / 2;
                 if (speechAssessmentPager instanceof SpeechAssAutoPager) {
                     if (baseSpeechCreat != null) {
