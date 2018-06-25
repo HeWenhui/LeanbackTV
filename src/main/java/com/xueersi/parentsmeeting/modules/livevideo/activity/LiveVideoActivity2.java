@@ -6,7 +6,9 @@ import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -133,10 +135,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
      */
     private final long mPlayDurTime = 420000;
     /**
-     * 直播缓存打开统计
-     */
-    private VPlayerListener mPlayStatistics;
-    /**
      * 初始进入播放器时的预加载界面
      */
     private RelativeLayout rlFirstBackgroundView;
@@ -152,13 +150,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     private ImageView ivLoading;
     private TextView tvLoadingHint;
     private LiveGetInfo mGetInfo;
-    private ArrayList<PlayserverEntity> failPlayserverEntity = new ArrayList<>();
-    private ArrayList<PlayserverEntity> failFlvPlayserverEntity = new ArrayList<>();
-    /**
-     * 直播服务器选择
-     */
-    private PlayserverEntity lastPlayserverEntity;
-    private int lastIndex;
     private LiveTopic mLiveTopic;
     private String vStuCourseID;
     private String courseId;
@@ -329,7 +320,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         teacherPraiseBll = new TeacherPraiseBll(activity, mLiveBll, bottomContent);
         mLiveBll.addBusinessBll(teacherPraiseBll);
 
-        LiveVoteBll  voteBll = new LiveVoteBll(activity,mLiveBll,bottomContent);
+        LiveVoteBll voteBll = new LiveVoteBll(activity, mLiveBll, bottomContent);
         mLiveBll.addBusinessBll(voteBll);
 
     }
@@ -405,7 +396,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     }
 
     private void initAllBll() {
-        mPlayStatistics = mLiveBll.getVideoListener();
         mLiveBll.setVideoAction(this);
         mLiveBll.setLiveVideoBll(liveVideoBll);
         android.util.Log.e("LiveVideoActivity", "====>initAllBll:" + bottomContent);

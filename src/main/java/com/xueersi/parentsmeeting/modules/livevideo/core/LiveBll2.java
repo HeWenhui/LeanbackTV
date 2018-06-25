@@ -995,12 +995,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         mTopicActions.clear();
         mMessageActions.clear();
 
-
         mVideoAction = null;
-        if (mGetPlayServerCancle != null) {
-            mGetPlayServerCancle.cancel();
-            mGetPlayServerCancle = null;
-        }
 
         if(mIRCMessage != null){
             mIRCMessage.destory();
@@ -1021,98 +1016,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         this.liveVideoBll = liveVideoBll;
     }
 
-    public PlayerService.SimpleVPlayerListener getVideoListener() {
-        return mVideoListener;
-    }
-
     private AtomicInteger mOpenCount = new AtomicInteger(0);
-    private AtomicInteger mFailCount = new AtomicInteger(0);
-    private AtomicInteger mFailMainTeacherCount = new AtomicInteger(0);
-    private AtomicInteger mFailCounTeacherCount = new AtomicInteger(0);
-    private AtomicInteger mBufferCount = new AtomicInteger(0);
-    private AtomicInteger mCompleteCount = new AtomicInteger(0);
-    private AtomicInteger mRepairBufferCount = new AtomicInteger(0);
-    private AtomicInteger mCompleteMainTeacherCount = new AtomicInteger(0);
-    private AtomicInteger mCompleteCounTeacherCount = new AtomicInteger(0);
-    private AtomicInteger mRepairOpenCount = new AtomicInteger(0);
-
 
     long openStartTime;
-
-
-    private PlayerService.SimpleVPlayerListener mVideoListener = new PlayerService.SimpleVPlayerListener() {
-        long bufferStartTime;
-        boolean isOpenSuccess = false;
-
-        @Override
-        public void onOpenStart() {
-            isOpenSuccess = false;
-            mOpenCount.set(mOpenCount.get() + 1);
-            openStartTime = System.currentTimeMillis();
-            mLogtf.d("onOpenStart");
-
-        }
-
-        @Override
-        public void onOpenSuccess() {
-            isOpenSuccess = true;
-            mHandler.removeCallbacks(mUserOnlineCall);
-            postDelayedIfNotFinish(mUserOnlineCall, mHbTime * 1000);
-            long openTime = System.currentTimeMillis() - openStartTime;
-            mLogtf.d("onOpenSuccess:openTime=" + openTime);
-        }
-
-        @Override
-        public void onOpenFailed(int arg1, int arg2) {
-            mFailCount.set(mFailCount.get() + 1);
-            long openTime = System.currentTimeMillis() - openStartTime;
-            String mode = mLiveTopic.getMode();
-            if (LiveTopic.MODE_CLASS.equals(mode)) {
-                synchronized (mIRCcallback) {
-                    if (mMainTeacher == null) {
-                        mFailMainTeacherCount.set(mFailMainTeacherCount.get() + 1);
-                    }
-                }
-            } else {
-                if (mCounteacher.isLeave) {
-                    mFailCounTeacherCount.set(mFailCounTeacherCount.get() + 1);
-                }
-            }
-            mHandler.removeCallbacks(mUserOnlineCall);
-        }
-
-        @Override
-        public void onBufferStart() {
-            bufferStartTime = System.currentTimeMillis();
-            mBufferCount.set(mBufferCount.get() + 1);
-
-        }
-
-        @Override
-        public void onBufferComplete() {
-            long bufferTime = System.currentTimeMillis() - bufferStartTime;
-            mLogtf.d("onBufferComplete:bufferTime=" + bufferTime);
-        }
-
-        @Override
-        public void onPlaybackComplete() {
-            mCompleteCount.set(mCompleteCount.get() + 1);
-
-            String mode = mLiveTopic.getMode();
-            if (LiveTopic.MODE_CLASS.equals(mode)) {
-                synchronized (mIRCcallback) {
-                    if (mMainTeacher == null) {
-                        mCompleteMainTeacherCount.set(mCompleteMainTeacherCount.get() + 1);
-                    }
-                }
-            } else {
-                if (mCounteacher.isLeave) {
-                    mCompleteCounTeacherCount.set(mCompleteCounTeacherCount.get() + 1);
-                }
-            }
-        }
-    };
-
 
     /**
      * 直播修复
@@ -1120,11 +1026,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
      * @param isbuffer true是缓冲超时，false是视频打开超时
      */
     public void repair(boolean isbuffer) {
-        if (isbuffer) {
-            mRepairBufferCount.set(mRepairBufferCount.get() + 1);
-        } else {
-            mRepairOpenCount.set(mRepairOpenCount.get() + 1);
-        }
+
     }
 
 
@@ -1145,19 +1047,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         return isPresent;
     }
 
-    /**
-     * 调度是不是在无网络下失败
-     */
-    private boolean liveGetPlayServerError = false;
-    private PlayServerEntity mServer;
-    private Callback.Cancelable mGetPlayServerCancle;
-    /**
-     * 直播帧数统计
-     */
-    private TotalFrameStat totalFrameStat;
-    private long lastGetPlayServer;
-
-
     public LiveVideoSAConfig getLiveVideoSAConfig() {
         return liveVideoSAConfig;
     }
@@ -1167,34 +1056,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     public void setPlayserverEntity(PlayServerEntity.PlayserverEntity playserverEntity) {
         this.playserverEntity = playserverEntity;
     }
-
-
-    /**
-     * 统计间隔
-     */
-    private long mStatisticsdelay = 300000;
-    /**
-     * 统计的runnable
-     */
-    private Runnable mStatisticsRun = new Runnable() {
-
-        @Override
-        public void run() {
-            mBufferCount.set(mBufferCount.get() > 1000 ? 1000 : mBufferCount.get());
-            mRepairBufferCount.set(mRepairBufferCount.get() > 1000 ? 1000 : mRepairBufferCount.get());
-            mRepairOpenCount.set(mRepairOpenCount.get() > 1000 ? 1000 : mRepairOpenCount.get());
-            mFailCount.set(mFailCount.get() > 1000 ? 1000 : mFailCount.get());
-            mFailMainTeacherCount.set(mFailMainTeacherCount.get() > 1000 ? 1000 : mFailMainTeacherCount.get());
-            mFailCounTeacherCount.set(mFailCounTeacherCount.get() > 1000 ? 1000 : mFailCounTeacherCount.get());
-            mCompleteCount.set(mCompleteCount.get() > 1000 ? 1000 : mCompleteCount.get());
-            mCompleteMainTeacherCount.set(mCompleteMainTeacherCount.get() > 1000 ? 1000 : mCompleteMainTeacherCount
-                    .get());
-            mCompleteCounTeacherCount.set(mCompleteCounTeacherCount.get() > 1000 ? 1000 : mCompleteCounTeacherCount
-                    .get());
-            postDelayedIfNotFinish(mStatisticsRun, mStatisticsdelay);
-        }
-    };
-
 
     /**
      * 当前状态，老师是不是在直播间
