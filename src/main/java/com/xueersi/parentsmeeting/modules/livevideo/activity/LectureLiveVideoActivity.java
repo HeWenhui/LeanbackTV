@@ -738,6 +738,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             mPlayStatistics.onOpenSuccess();
             mHandler.removeCallbacks(mPlayDuration);
             mHandler.postDelayed(mPlayDuration, mPlayDurTime);
+            mHandler.removeCallbacks(getVideoCachedDurationRun);
             mHandler.postDelayed(getVideoCachedDurationRun, 10000);
         }
 

@@ -48,6 +48,7 @@ import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,6 +63,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 
     public LiveHttpResponseParser(Context mContext) {
         this.mContext = mContext;
+        ProxUtil.getProxUtil().put(mContext, LiveHttpResponseParser.class, this);
     }
 
     /**

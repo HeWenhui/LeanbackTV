@@ -295,7 +295,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         //互动题和懂了吗
         questionBll.initView(bottomContent, true);
         //红包
-       // redPackageBll.initView(bottomContent);
+        // redPackageBll.initView(bottomContent);
         //学习报告
         learnReportBll.initView(bottomContent);
         h5CoursewareBll.initView(bottomContent);
@@ -417,7 +417,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         liveMessageBll.setQuestionBll(questionBll);
         videoChatBll = new VideoChatBll(this, this);
         rollCallBll = new RollCallBll(this);
-       // redPackageBll = new RedPackageBll(this);
+        // redPackageBll = new RedPackageBll(this);
         learnReportBll = new LearnReportBll(this);
         h5CoursewareBll = new H5CoursewareBll(this);
         englishH5CoursewareBll = new EnglishH5CoursewareBll(this);
@@ -427,7 +427,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         mPlayStatistics = mLiveBll.getVideoListener();
         mLiveBll.setQuestionAction(questionBll);
         mLiveBll.setRollCallAction(rollCallBll);
-      //  mLiveBll.setReadPackageBll(redPackageBll);
+        //  mLiveBll.setReadPackageBll(redPackageBll);
         mLiveBll.setLearnReportAction(learnReportBll);
         mLiveBll.setVideoAction(this);
         mLiveBll.setRoomAction(liveMessageBll);
@@ -442,11 +442,11 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
 
         liveMessageBll.setLiveBll(mLiveBll);
         //rollCallBll.setLiveBll(mLiveBll);
-      //  redPackageBll.setLiveBll(mLiveBll);
+        //  redPackageBll.setLiveBll(mLiveBll);
         learnReportBll.setLiveBll(mLiveBll);
         questionBll.setLiveBll(mLiveBll);
         questionBll.setVSectionID(mVSectionID);
-      //  redPackageBll.setVSectionID(mVSectionID);
+        //  redPackageBll.setVSectionID(mVSectionID);
         questionBll.setLiveType(liveType);
         questionBll.initData();
         questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mLiveBll, questionBll.new LiveQuestionSwitchImpl()));
@@ -766,6 +766,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             mHandler.removeCallbacks(mPlayDuration);
             mLogtf.d("onOpenSuccess:playTime=" + playTime);
             mHandler.postDelayed(mPlayDuration, mPlayDurTime);
+            mHandler.removeCallbacks(getVideoCachedDurationRun);
             mHandler.postDelayed(getVideoCachedDurationRun, 10000);
         }
 

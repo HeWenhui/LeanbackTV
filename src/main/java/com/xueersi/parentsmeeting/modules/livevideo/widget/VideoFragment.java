@@ -108,8 +108,6 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
     private boolean mSurfaceCreated = false;
     /** 播放服务是否已连接 */
     private boolean mServiceConnected = false;
-    /** 直播帧数统计 */
-    TotalFrameStat totalFrameStat;
     /** 播放器的控制对象 */
     protected LiveMediaController mMediaController;
     /** 当前界面是否横屏 */
@@ -197,7 +195,7 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
         this.mMediaController = mediaController;
     }
 
-    public void createPlayer() {
+    public PlayerService createPlayer() {
         vPlayer = new PlayerService(activity);
         vPlayer.onCreate();
         mServiceConnected = true;
@@ -207,8 +205,7 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
         // 设置当前是否为横屏
         setFileName(); // 设置视频显示名称
         showLongMediaController();
-        totalFrameStat = new TotalFrameStat(activity);
-        totalFrameStat.setvPlayer(vPlayer);
+        return vPlayer;
     }
 
     @Override
@@ -335,9 +332,6 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
         if (isInitialized() && !vPlayer.isPlaying()) {
             // 释放播放器资源
             release();
-        }
-        if (totalFrameStat != null) {
-            totalFrameStat.destory();
         }
         super.onDestroy();
     }
@@ -728,9 +722,6 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
             if (wrapListener != null) {
                 wrapListener.onOpenStart();
             }
-            if (totalFrameStat != null) {
-                totalFrameStat.onOpenStart();
-            }
         }
 
         /** 视频预处理完毕可以随时播放了 */
@@ -749,9 +740,6 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
             if (isInitialized()) {
                 vPlayer.setVolume(leftVolume, rightVolume);
             }
-            if (totalFrameStat != null) {
-                totalFrameStat.onOpenSuccess();
-            }
         }
 
         /** 视频打开失败 */
@@ -761,9 +749,6 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
             PlayerService.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onOpenFailed(arg1, arg2);
-            }
-            if (totalFrameStat != null) {
-                totalFrameStat.onOpenFailed(arg1, arg2);
             }
         }
 
@@ -812,9 +797,6 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
             PlayerService.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onPlaybackComplete();
-            }
-            if (totalFrameStat != null) {
-                totalFrameStat.onPlaybackComplete();
             }
         }
 
@@ -880,9 +862,6 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
             PlayerService.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onPlayError();
-            }
-            if (totalFrameStat != null) {
-                totalFrameStat.onPlayError();
             }
         }
     };

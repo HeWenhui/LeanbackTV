@@ -117,8 +117,6 @@ public class LiveVideoFragmentBase extends Fragment {
 
     /** 播放器核心服务 */
     protected PlayerService vPlayer;
-    /** 直播帧数统计 */
-    protected TotalFrameStat totalFrameStat;
     /** 是否可以自动横竖屏转换 */
     protected boolean mIsAutoOrientation = true;
 
@@ -178,7 +176,7 @@ public class LiveVideoFragmentBase extends Fragment {
     }
 
     protected void createPlayer() {
-        videoFragment.createPlayer();
+        vPlayer = videoFragment.createPlayer();
     }
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -215,9 +213,6 @@ public class LiveVideoFragmentBase extends Fragment {
                 // 暂停播放
                 stopPlayer();
             }
-        }
-        if (totalFrameStat != null) {
-            totalFrameStat.onPause();
         }
     }
 

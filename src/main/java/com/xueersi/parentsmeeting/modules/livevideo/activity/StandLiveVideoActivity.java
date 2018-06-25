@@ -805,6 +805,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
             mHandler.removeCallbacks(mPlayDuration);
             mLogtf.d("onOpenSuccess:playTime=" + playTime);
             mHandler.postDelayed(mPlayDuration, mPlayDurTime);
+            mHandler.removeCallbacks(getVideoCachedDurationRun);
             mHandler.postDelayed(getVideoCachedDurationRun, 10000);
         }
 

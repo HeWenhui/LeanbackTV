@@ -64,6 +64,22 @@ public class LiveVideoReportBll {
         this.playserverEntity = playserverEntity;
     }
 
+    public void setTotalFrameStat(TotalFrameStat totalFrameStat) {
+        this.totalFrameStat = totalFrameStat;
+    }
+
+    public void onLiveInit(LiveGetInfo getInfo, LiveTopic liveTopic) {
+        this.mGetInfo = getInfo;
+    }
+
+    public void setHttpManager(LiveHttpManager mHttpManager) {
+        this.mHttpManager = mHttpManager;
+    }
+
+    public PlayerService.SimpleVPlayerListener getVideoListener() {
+        return mVideoListener;
+    }
+
     private PlayerService.SimpleVPlayerListener mVideoListener = new PlayerService.SimpleVPlayerListener() {
         long bufferStartTime;
         boolean isOpenSuccess = false;
@@ -74,6 +90,9 @@ public class LiveVideoReportBll {
             mOpenCount.set(mOpenCount.get() + 1);
             openStartTime = System.currentTimeMillis();
             mLogtf.d("onOpenStart");
+            if (totalFrameStat != null) {
+                totalFrameStat.onOpenStart();
+            }
         }
 
         @Override
@@ -82,6 +101,9 @@ public class LiveVideoReportBll {
             long openTime = System.currentTimeMillis() - openStartTime;
             mLogtf.d("onOpenSuccess:openTime=" + openTime);
             streamReport(LiveVideoReportBll.MegId.MEGID_12102, mGetInfo.getChannelname(), openTime);
+            if (totalFrameStat != null) {
+                totalFrameStat.onOpenSuccess();
+            }
         }
 
         @Override
@@ -92,6 +114,9 @@ public class LiveVideoReportBll {
             long openTime = System.currentTimeMillis() - openStartTime;
             mLogtf.d("onOpenFailed:openTime=" + openTime + ",arg2=" + arg2 + ",NetWorkState=" +
                     NetWorkHelper.getNetWorkState(mContext));
+            if (totalFrameStat != null) {
+                totalFrameStat.onOpenFailed(arg1, arg2);
+            }
         }
 
         @Override
@@ -113,7 +138,17 @@ public class LiveVideoReportBll {
             mLogtf.d("onPlaybackComplete:completeCount=" + liveBll.getModeTeacher() + "," +
                     "NetWorkState=" +
                     NetWorkHelper.getNetWorkState(mContext));
+            if (totalFrameStat != null) {
+                totalFrameStat.onPlaybackComplete();
+            }
+        }
 
+        @Override
+        public void onPlayError() {
+            super.onPlayError();
+            if (totalFrameStat != null) {
+                totalFrameStat.onPlayError();
+            }
         }
     };
 
@@ -231,6 +266,12 @@ public class LiveVideoReportBll {
                 Loger.i(TAG, "live_report_play_duration:onResponse:response=" + response.message());
             }
         });
+    }
+
+    public void onDestory() {
+        if (totalFrameStat != null) {
+            totalFrameStat.destory();
+        }
     }
 
     public enum MegId {

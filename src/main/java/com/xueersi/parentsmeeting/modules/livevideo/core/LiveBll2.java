@@ -237,21 +237,20 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
 
 
     public int getLiveType() {
-
         return mLiveType;
     }
-
 
     public LiveHttpManager getHttpManager() {
         return mHttpManager;
     }
 
-
-    public Teacher getCounteacher() {
-
-        return mCounteacher;
+    public LiveHttpResponseParser getHttpResponseParser() {
+        return mHttpResponseParser;
     }
 
+    public Teacher getCounteacher() {
+        return mCounteacher;
+    }
 
     public Teacher getMainTeacher() {
         return mMainTeacher;
@@ -857,7 +856,8 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
 
     /**
      * 发送 notice 消息
-     * @param targetName   notice消息接收方 当target 为null 时 将广播此消息
+     *
+     * @param targetName notice消息接收方 当target 为null 时 将广播此消息
      * @param data
      * @return
      */
@@ -997,7 +997,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
 
         mVideoAction = null;
 
-        if(mIRCMessage != null){
+        if (mIRCMessage != null) {
             mIRCMessage.destory();
         }
 
@@ -1170,6 +1170,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
 
     /**
      * 各模块 调用此方法 暴露自己需要和其他模块共享的参数
+     *
      * @param key
      * @param value
      */
@@ -1182,6 +1183,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
 
     /**
      * 各模块调用此方法  查找其他模块暴露的 参数信息
+     *
      * @param key
      * @return
      */

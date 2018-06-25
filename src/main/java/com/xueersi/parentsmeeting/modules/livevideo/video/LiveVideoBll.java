@@ -23,6 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TotalFrameStat;
+import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -31,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
@@ -69,8 +71,8 @@ public class LiveVideoBll {
     VideoFragment videoFragment;
     private Activity activity;
     LiveBll2 mLiveBll;
-    LogToFile logToFile;
     private LiveHttpManager mHttpManager;
+    LiveHttpResponseParser mHttpResponseParser;
     /** 上次播放统计开始时间 */
     long lastPlayTime;
     LogToFile mLogtf;
@@ -98,6 +100,7 @@ public class LiveVideoBll {
     protected long reportPlayStarTime;
     LiveVideoReportBll liveVideoReportBll;
     VideoChatEvent videoChatEvent;
+    VideoAction mVideoAction;
     int mLiveType;
 
     public LiveVideoBll(Activity activity, LiveBll2 liveBll, int liveType) {
@@ -106,11 +109,49 @@ public class LiveVideoBll {
         this.mLiveType = liveType;
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
+        totalFrameStat = new TotalFrameStat(activity);
+        liveVideoReportBll = new LiveVideoReportBll();
+        liveVideoReportBll.setTotalFrameStat(totalFrameStat);
+        mPlayStatistics = liveVideoReportBll.getVideoListener();
+        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+                + ".txt"));
+        mLogtf.clear();
+    }
+
+    public void setvPlayer(PlayerService vPlayer) {
+        this.vPlayer = vPlayer;
+        totalFrameStat.setvPlayer(vPlayer);
+    }
+
+    public void setHttpManager(LiveHttpManager httpManager) {
+        this.mHttpManager = httpManager;
+        liveVideoReportBll.setHttpManager(httpManager);
+    }
+
+    public void setHttpResponseParser(LiveHttpResponseParser httpResponseParser) {
+        this.mHttpResponseParser = httpResponseParser;
+    }
+
+    public void setVideoChatEvent(VideoChatEvent videoChatEvent) {
+        this.videoChatEvent = videoChatEvent;
+    }
+
+    public void setTotalFrameStat(TotalFrameStat totalFrameStat) {
+        this.totalFrameStat = totalFrameStat;
+    }
+
+    public void setVideoAction(VideoAction mVideoAction) {
+        this.mVideoAction = mVideoAction;
     }
 
     public void onLiveInit(LiveGetInfo getInfo, LiveTopic liveTopic) {
         this.mGetInfo = getInfo;
         liveGetPlayServer = new LiveGetPlayServer(activity, mLiveBll, mLiveType, getInfo, liveTopic);
+        liveGetPlayServer.setHttpManager(mHttpManager);
+        liveGetPlayServer.setHttpResponseParser(mHttpResponseParser);
+        liveGetPlayServer.setTotalFrameStat(totalFrameStat);
+        liveGetPlayServer.setVideoAction(mVideoAction);
+        liveVideoReportBll.onLiveInit(getInfo, liveTopic);
         liveGetPlayServer(liveTopic.getMode(), false);
     }
 
@@ -121,11 +162,16 @@ public class LiveVideoBll {
      * @param isPresent 老师在不在直播间
      */
     public void onModeChange(String mode, boolean isPresent) {
+        logger.d("onModeChange:mode=" + mode + ",isPresent=" + isPresent);
         liveGetPlayServer.liveGetPlayServer(mode, true);
     }
 
     public void liveGetPlayServer(final String mode, final boolean modechange) {
         liveGetPlayServer.liveGetPlayServer(mode, modechange);
+    }
+
+    public void setVideoFragment(VideoFragment videoFragment) {
+        this.videoFragment = videoFragment;
     }
 
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
@@ -407,6 +453,7 @@ public class LiveVideoBll {
             mHandler.removeCallbacks(mPlayDuration);
             mLogtf.d("onOpenSuccess:playTime=" + playTime);
             mHandler.postDelayed(mPlayDuration, mPlayDurTime);
+            mHandler.removeCallbacks(getVideoCachedDurationRun);
             mHandler.postDelayed(getVideoCachedDurationRun, 10000);
         }
 
@@ -545,7 +592,7 @@ public class LiveVideoBll {
                             questionBll.setVideoCachedDuration(videoCachedDuration);
                         }
                         mHandler.postDelayed(getVideoCachedDurationRun, 30000);
-                        logToFile.d("videoCachedDuration=" + videoCachedDuration);
+                        mLogtf.d("videoCachedDuration=" + videoCachedDuration);
                         if (videoCachedDuration > 10000) {
                             liveVideoReportBll.streamReport(LiveVideoReportBll.MegId.MEGID_12130, mGetInfo.getChannelname(), -1);
                             if (lastPlayserverEntity != null) {
@@ -713,10 +760,23 @@ public class LiveVideoBll {
         mHandler.postDelayed(r, delayMillis);
     }
 
+    public void onPause() {
+        if (totalFrameStat != null) {
+            totalFrameStat.onPause();
+        }
+    }
+
+    public void onReplay() {
+        if (totalFrameStat != null) {
+            totalFrameStat.onReplay();
+        }
+    }
+
     public void onDestroy() {
         if (liveGetPlayServer != null) {
             liveGetPlayServer.onDestroy();
         }
+        liveVideoReportBll.onDestory();
     }
 
 }

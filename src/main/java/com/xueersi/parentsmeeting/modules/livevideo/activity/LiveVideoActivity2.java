@@ -72,6 +72,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
+import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
@@ -93,7 +94,10 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  *
  * @author linyuqiang
  */
-public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest {
+public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest, VideoChatEvent {
+
+    private String TAG = "LiveVideoActivityLog";
+    Logger logger = LoggerFactory.getLogger(TAG);
 
     private RollCallBll rollCallBll;
     private TeacherPraiseBll teacherPraiseBll;
@@ -103,8 +107,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         mLayoutVideo = R.layout.activity_video_live_new;
     }
 
-    private String TAG = "LiveVideoActivityLog";
-    Logger logger = LoggerFactory.getLogger(TAG);
     /**
      * 播放器同步
      */
@@ -237,7 +239,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
-        android.util.Log.e(Tag, "==========>onVideoCreate:");
+        logger.d("==========>onVideoCreate:");
         long before = System.currentTimeMillis();
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         liveType = activity.getIntent().getIntExtra("type", 0);
@@ -250,6 +252,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             return false;
         }
         liveVideoBll = new LiveVideoBll(activity, mLiveBll, liveType);
+        liveVideoBll.setVideoChatEvent(this);
         //先让播放器按照默认模式设置
         videoView = mContentView.findViewById(R.id.vv_course_video_video);
         logger.d("onVideoCreate:videoView=" + (videoView == null));
@@ -258,15 +261,22 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
         setFirstParam(lp);
         // liveMessageBll.setVideoLayout(lp.width, lp.height);
-        Loger.d(TAG, "onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System.currentTimeMillis() - before));
+        logger.d("onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
         LiveGetInfo mGetInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
         initAllBll();
-        Loger.d(TAG, "onVideoCreate:time2=" + (System.currentTimeMillis() - before));
+        logger.d("onVideoCreate:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         addBusiness(activity, bottomContent);
-        Loger.d(TAG, "onVideoCreate:time3=" + (System.currentTimeMillis() - before));
+        logger.d("onVideoCreate:time3=" + (System.currentTimeMillis() - before));
+        return true;
+    }
+
+    @Override
+    protected void onVideoCreateEnd() {
+        mLiveBll.getInfo(mGetInfo);
+        liveVideoBll.setvPlayer(vPlayer);
         final View contentView = activity.findViewById(android.R.id.content);
         contentView.postDelayed(new Runnable() {
             @Override
@@ -292,7 +302,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                 });
             }
         }, 10);
-        return true;
     }
 
     @Nullable
@@ -310,7 +319,10 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
      * @param bottomContent
      */
     private void addBusiness(Activity activity, RelativeLayout bottomContent) {
-
+        liveVideoBll.setHttpManager(mLiveBll.getHttpManager());
+        liveVideoBll.setHttpResponseParser(mLiveBll.getHttpResponseParser());
+        liveVideoBll.setVideoFragment(videoFragment);
+        liveVideoBll.setVideoAction(this);
         teamPkBll = new TeamPkBll(activity, mLiveBll, bottomContent);
         mLiveBll.addBusinessBll(teamPkBll);
 
@@ -323,11 +335,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         LiveVoteBll voteBll = new LiveVoteBll(activity, mLiveBll, bottomContent);
         mLiveBll.addBusinessBll(voteBll);
 
-    }
-
-    @Override
-    protected void onVideoCreateEnd() {
-        mLiveBll.getInfo(mGetInfo);
     }
 
     @Override
@@ -823,7 +830,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         if (startRemote.get()) {
             return;
         }
-        totalFrameStat.onReplay();
+        liveVideoBll.onReplay();
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
             if (LiveTopic.MODE_TRANING.endsWith(mGetInfo.getLiveTopic().getMode()) && mGetInfo.getStudentLiveInfo().isExpe()) {
                 tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
@@ -972,10 +979,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
     @Override
     protected void onUserBackPressed() {
-
         super.onUserBackPressed();
     }
-
 
     @Override
     public void onDestroy() {

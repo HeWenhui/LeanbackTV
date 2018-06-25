@@ -161,7 +161,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                                 totalfps += f;
                             }
                             framesPs.clear();
-                            frames.add("" + (int) (totalfps / 5));
+                            frames.add("" + (int) (totalfps));
                             if (frames.size() == 12) {
                                 send("frames12");
                             }

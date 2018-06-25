@@ -10,6 +10,8 @@ import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -38,6 +40,7 @@ import java.net.UnknownHostException;
 
 public class LiveGetPlayServer {
     private String TAG = "LiveGetPlayServer";
+    Logger logger = LoggerFactory.getLogger(TAG);
     private LogToFile mLogtf;
     /** 网络类型 */
     private int netWorkType;
@@ -70,6 +73,23 @@ public class LiveGetPlayServer {
                 + ".txt"));
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
+        logger.d("LiveGetPlayServer:netWorkType=" + netWorkType);
+    }
+
+    public void setHttpManager(LiveHttpManager httpManager) {
+        this.mHttpManager = httpManager;
+    }
+
+    public void setHttpResponseParser(LiveHttpResponseParser httpResponseParser) {
+        this.mHttpResponseParser = httpResponseParser;
+    }
+
+    public void setTotalFrameStat(TotalFrameStat totalFrameStat) {
+        this.totalFrameStat = totalFrameStat;
+    }
+
+    public void setVideoAction(VideoAction mVideoAction) {
+        this.mVideoAction = mVideoAction;
     }
 
     /**
