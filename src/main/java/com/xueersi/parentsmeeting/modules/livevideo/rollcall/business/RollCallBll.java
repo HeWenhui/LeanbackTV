@@ -151,7 +151,7 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
 
 
     public void initView(final RelativeLayout bottomContent) {
-        com.xueersi.lib.log.Loger.e("RollCallBll", "======>:bottomContent" + bottomContent + ":" + mRootView);
+        Loger.e("RollCallBll", "======>:bottomContent" + bottomContent + ":" + mRootView);
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -512,7 +512,7 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
     @Override
     public void onLiveInited(LiveGetInfo data) {
         super.onLiveInited(data);
-        com.xueersi.lib.log.Loger.e("RollCallBll", "======>onLiveInited called:" + data + ":" + mRootView);
+        Loger.e("RollCallBll", "======>onLiveInited called:" + data + ":" + mRootView);
         mGetInfo = data;
         initView((RelativeLayout) mRootView);
         classSignStop.setTraning(LiveTopic.MODE_TRANING.equals(data.getLiveTopic().getMode()));

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
@@ -139,7 +140,9 @@ public class RedPackageBll extends LiveBaseBll implements NoticeAction, RedPacka
         mLogtf.d("showRedPacket:operateId=" + operateId);
         rlRedpacketContent.removeAllViews();
         View view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_view, rlRedpacketContent, false);
-        view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
+
+        view.setBackgroundColor(ContextCompat.getColor(activity,R.color.mediacontroller_bg));
+
         view.setTag(operateId);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
                 .LayoutParams.MATCH_PARENT);
@@ -219,7 +222,8 @@ public class RedPackageBll extends LiveBaseBll implements NoticeAction, RedPacka
     private void initRedPacketResult(int goldNum) {
         String msg = "+" + goldNum + "金币";
         View view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_success, rlRedpacketContent, false);
-        view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
+
+        view.setBackgroundColor(ContextCompat.getColor(activity,R.color.mediacontroller_bg));
         SpannableString msp = new SpannableString(msg);
         float screenDensity = ScreenUtils.getScreenDensity();
         // 字体
