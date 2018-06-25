@@ -589,6 +589,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 // 测试体验课播放器的结果页面
                 if (mData != null) {
                     showPopupwinResult();
+                    setBackgroundAlpha(0.4f);
                 }
 
             }
@@ -625,6 +626,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             @Override
             public void onClick(View v) {
                 mWindow.dismiss();
+                setBackgroundAlpha(1f);
             }
         });
         Button chat = (Button) result.findViewById(R.id.bt_chat);
@@ -656,6 +658,18 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
     public static int dp2px(Context context, int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
+    }
+
+    /**
+     * 设置添加屏幕的背景透明度
+     *
+     * @param bgAlpha 屏幕透明度0.0-1.0 1表示完全不透明
+     */
+    public void setBackgroundAlpha(float bgAlpha) {
+        WindowManager.LayoutParams lp = getWindow()
+                .getAttributes();
+        lp.alpha = bgAlpha;
+        getWindow().setAttributes(lp);
     }
 
     @Override
