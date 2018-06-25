@@ -45,6 +45,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TotalFrameStat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -190,6 +191,10 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
         tvVideoLoadingText = viewRoot.findViewById(R.id.tv_course_video_loading_tip); // 加载进度文字框
         videoLoadingLayout = viewRoot.findViewById(R.id.rl_course_video_loading); // 加载进度动画
         return viewRoot;
+    }
+
+    public void setMediaController(LiveMediaController mediaController) {
+        this.mMediaController = mediaController;
     }
 
     public void createPlayer() {

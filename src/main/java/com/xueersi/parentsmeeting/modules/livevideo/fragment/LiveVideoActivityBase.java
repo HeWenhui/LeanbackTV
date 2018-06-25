@@ -99,6 +99,7 @@ public class LiveVideoActivityBase extends XesActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         mIsLand = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE; //
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override

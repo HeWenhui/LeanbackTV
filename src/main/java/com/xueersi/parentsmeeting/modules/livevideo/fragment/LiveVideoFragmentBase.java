@@ -354,6 +354,7 @@ public class LiveVideoFragmentBase extends Fragment {
         mMediaController = new LiveMediaController(activity, videoFragment);
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         ((ViewGroup) mContentView.findViewById(R.id.rl_course_video_live_controller_content)).addView(mMediaController, params);
+        fragment.setMediaController(mMediaController);
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // 使屏幕保持长亮
         loadLandOrPortView();
     }
