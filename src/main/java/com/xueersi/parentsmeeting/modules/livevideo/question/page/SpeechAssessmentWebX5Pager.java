@@ -32,7 +32,6 @@ import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
 import com.xueersi.xesalib.utils.app.AppUtils;
 import com.xueersi.xesalib.utils.app.ContextManager;
-import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.audio.AudioPlayer;
 import com.xueersi.xesalib.utils.audio.AudioPlayerListening;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -254,7 +253,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             if (mLevel == ConsoleMessage.MessageLevel.ERROR || mLevel == ConsoleMessage.MessageLevel.WARNING) {
                 isRequst = true;
             }
-            UmsAgentUtil.webConsoleMessage(mContext, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
+            UmsAgentUtil.webConsoleMessage(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
             Loger.d(TAG, "onConsoleMessage:console=" + consoleMessage.sourceId() + "," + consoleMessage.lineNumber() + "," + consoleMessage.message());
             return super.onConsoleMessage(consoleMessage);
         }
