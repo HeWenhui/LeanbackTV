@@ -554,6 +554,16 @@ public class LiveTopic {
         public String toString() {
             return "choiceId=" + choiceId + ",choiceNum=" + choiceNum + ",choiceType=" + choiceType;
         }
+
+        @Override
+        public int hashCode() {
+            return super.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return super.equals(obj);
+        }
     }
 
     public static class VoteResult {

@@ -92,7 +92,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
         LinearLayout linearLayout = (LinearLayout) view1.findViewById(R.id.ll_livevideo_vote_result_content);
         int choiceNum = voteEntity.getChoiceNum();
         ArrayList<LiveTopic.VoteResult> voteResults = voteEntity.getVoteResults();
-        TextView tv_livevideo_vote_result_mine = (TextView) view1.findViewById(R.id.tv_livevideo_vote_result_mine);
+        TextView tvVoteResultMine = (TextView) view1.findViewById(R.id.tv_livevideo_vote_result_mine);
         for (int i = 0; i < choiceNum; i++) {
             View convertView = LayoutInflater.from(context).inflate(R.layout.item_livevideo_vote_result_select,
                     linearLayout, false);
@@ -108,16 +108,16 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
                 }
             }
             linearLayout.addView(convertView, lp);
-            TextView tv_livevideo_vote_result_item = (TextView) convertView.findViewById(R.id
+            TextView tvVoteResultItem = (TextView) convertView.findViewById(R.id
                     .tv_livevideo_vote_result_item);
             if (voteEntity.getChoiceType() == 1) {
                 char c = (char) ('A' + i);
-                tv_livevideo_vote_result_item.setText("" + c);
+                tvVoteResultItem.setText("" + c);
             } else {
                 if (i == 0) {
-                    tv_livevideo_vote_result_item.setText("是");
+                    tvVoteResultItem.setText("是");
                 } else {
-                    tv_livevideo_vote_result_item.setText("否");
+                    tvVoteResultItem.setText("否");
                 }
             }
             LiveTopic.VoteResult result = voteResults.get(i);
@@ -128,12 +128,12 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
             } else {
                 rado = result.getPople() * 100 / voteEntity.getTotal();
             }
-            TextView tv_livevideo_vote_result_count = (TextView) convertView.findViewById(R.id
+            TextView tvVoteResultCount = (TextView) convertView.findViewById(R.id
                     .tv_livevideo_vote_result_count);
-            tv_livevideo_vote_result_count.setText(Math.round(rado) + "% ");
-            final ProgressBar pb_livevideo_vote_result_item = (ProgressBar) convertView.findViewById(R.id
+            tvVoteResultCount.setText(Math.round(rado) + "% ");
+            final ProgressBar pbResultItem = (ProgressBar) convertView.findViewById(R.id
                     .pb_livevideo_vote_result_item);
-            pb_livevideo_vote_result_item.setMax(voteEntity.getTotal());
+            pbResultItem.setMax(voteEntity.getTotal());
             int newProgress = result.getPople();
             if (newProgress > 1) {
                 final ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, newProgress);
@@ -143,23 +143,23 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
                     public void onAnimationUpdate(ValueAnimator animation) {
                         float fraction = animation.getAnimatedFraction();
                         float oldProgress = (finalNewProgress) * fraction;
-                        pb_livevideo_vote_result_item.setProgress((int) oldProgress);
+                        pbResultItem.setProgress((int) oldProgress);
                     }
                 });
                 valueAnimator.setDuration(1000);
                 valueAnimator.start();
             } else {
-                pb_livevideo_vote_result_item.setProgress(newProgress);
+                pbResultItem.setProgress(newProgress);
             }
         }
         if (answer > 0) {
             View convertView = linearLayout.getChildAt(answer - 1);
-            TextView tv_livevideo_vote_result_item = (TextView) convertView.findViewById(R.id
+            TextView tvVoteResultItem = (TextView) convertView.findViewById(R.id
                     .tv_livevideo_vote_result_item);
-            String myAnwer = tv_livevideo_vote_result_item.getText() + "";
-            tv_livevideo_vote_result_mine.setText("我的选择: " + myAnwer);
+            String myAnwer = tvVoteResultItem.getText() + "";
+            tvVoteResultMine.setText("我的选择: " + myAnwer);
         } else {
-            tv_livevideo_vote_result_mine.setText("你错过了本次选择");
+            tvVoteResultMine.setText("你错过了本次选择");
         }
         view1.findViewById(R.id.iv_livevideo_vote_result_close).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,30 +220,30 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
                 contentView = new RelativeLayout(context);
                 contentView.addView(view);
                 bottomContent.addView(contentView);
-                LinearLayout il_livevideo_vote_choice = (LinearLayout) view.findViewById(R.id.il_livevideo_vote_choice);
+                LinearLayout llVoteChoice = (LinearLayout) view.findViewById(R.id.il_livevideo_vote_choice);
                 int choiceNum = voteEntity.getChoiceNum();
                 for (int i = 0; i < choiceNum; i++) {
                     final int answer = i + 1;
                     View convertView = LayoutInflater.from(context).inflate(R.layout.item_livevideo_vote_select,
-                            il_livevideo_vote_choice, false);
+                            llVoteChoice, false);
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams
                             .WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                     if (i != choiceNum - 1) {
                         lp.rightMargin = (int) (25 * ScreenUtils.getScreenDensity());
                     }
-                    il_livevideo_vote_choice.addView(convertView, lp);
-                    Button btn_livevideo_vote_item = (Button) convertView.findViewById(R.id.btn_livevideo_vote_item);
+                    llVoteChoice.addView(convertView, lp);
+                    Button btnVoteItem = (Button) convertView.findViewById(R.id.btn_livevideo_vote_item);
                     if (voteEntity.getChoiceType() == 1) {
                         char c = (char) ('A' + i);
-                        btn_livevideo_vote_item.setText("" + c);
+                        btnVoteItem.setText("" + c);
                     } else {
                         if (i == 0) {
-                            btn_livevideo_vote_item.setText("是");
+                            btnVoteItem.setText("是");
                         } else {
-                            btn_livevideo_vote_item.setText("否");
+                            btnVoteItem.setText("否");
                         }
                     }
-                    btn_livevideo_vote_item.setOnClickListener(new View.OnClickListener() {
+                    btnVoteItem.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
