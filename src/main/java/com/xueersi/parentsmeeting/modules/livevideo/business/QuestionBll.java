@@ -15,10 +15,12 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.lib.framework.utils.EventBusUtil;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.entity.UpdateAchievementEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -780,6 +782,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 @Override
                 public void run() {
                     mLiveBll.getStuGoldCount();
+
+                    // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
+                    //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
                 }
             }, 5000);
         } else {
@@ -1227,6 +1232,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             e.printStackTrace();
         }
         mLiveBll.getStuGoldCount();
+
+        // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
+        //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
+
     }
 
     @Override
@@ -1250,6 +1259,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             subjectResultPager = null;
         }
         mLiveBll.getStuGoldCount();
+
+        // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
+        //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
     }
 
     @Override
@@ -1291,6 +1303,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
         }
         mLiveBll.getStuGoldCount();
+
+        // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
+        //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
     }
 
     @Override

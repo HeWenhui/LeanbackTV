@@ -104,16 +104,16 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     /**
      * 公开直播
      */
-    public final static int LIVE_TYPE_LECTURE  = 2;
+    public final static int LIVE_TYPE_LECTURE = 2;
     /**
      * 直播课的直播
      */
-    public final static int LIVE_TYPE_LIVE     = 3;
+    public final static int LIVE_TYPE_LIVE = 3;
 
 
     private LogToFile mLogtf;
-    private String    mLiveId;
-    private String    mCourseId;
+    private String mLiveId;
+    private String mCourseId;
 
     private LiveGetInfo mGetInfo;
 
@@ -123,12 +123,12 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
      * 区分文理appid
      */
     String appID = UmsConstants.LIVE_APP_ID;
-    private LiveHttpManager        mHttpManager;
+    private LiveHttpManager mHttpManager;
     /**
      * 学生课程id
      */
-    private String                 mStuCouId;
-    private int                    mForm;
+    private String mStuCouId;
+    private int mForm;
     private LiveHttpResponseParser mHttpResponseParser;
 
     /**
@@ -156,16 +156,16 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     /**
      * 渠道前缀
      */
-    private final       String CNANNEL_PREFIX      = "x_";
+    private final String CNANNEL_PREFIX = "x_";
     /**
      * 主讲老师前缀
      */
-    public static final String TEACHER_PREFIX      = "t_";
+    public static final String TEACHER_PREFIX = "t_";
     /**
      * 辅导老师前缀
      */
-    public static       String COUNTTEACHER_PREFIX = "f_";
-    private final       String ROOM_MIDDLE         = "L";
+    public static String COUNTTEACHER_PREFIX = "f_";
+    private final String ROOM_MIDDLE = "L";
     private IRCMessage mIRCMessage;
 
 
@@ -241,13 +241,12 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     }
 
 
-
-    public String getLiveId(){
+    public String getLiveId() {
         return mLiveId;
     }
 
 
-    public int getLiveType(){
+    public int getLiveType() {
 
         return mLiveType;
     }
@@ -357,7 +356,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
 
     private void onGetInfoSuccess(LiveGetInfo getInfo) {
 
-        Log.e("LiveBll2","=======>onGetInfoSuccess");
+        Log.e("LiveBll2", "=======>onGetInfoSuccess");
 
         this.mGetInfo = getInfo;
         if (this.mGetInfo == null) {
@@ -397,22 +396,21 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         if (mVideoAction != null) {
             mVideoAction.onLiveInit(mGetInfo);
         }
-        Log.e("LiveBll2","=======>onGetInfoSuccess 11111111");
+        Log.e("LiveBll2", "=======>onGetInfoSuccess 11111111");
 
 
         try {
             for (LiveBaseBll businessBll : businessBlls) {
-                businessBll.onLiveInited(getInfo);
-                Log.e("LiveBll2","=======>onGetInfoSuccess 22222222");
+                businessBll.onLiveInited(this.mGetInfo);
+                Log.e("LiveBll2", "=======>onGetInfoSuccess 22222222");
 
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        Log.e("LiveBll2","=======>onGetInfoSuccess 333333333");
-
+        Log.e("LiveBll2", "=======>onGetInfoSuccess 333333333");
 
 
         LiveGetInfo.NewTalkConfEntity talkConfEntity = new LiveGetInfo.NewTalkConfEntity();
@@ -444,7 +442,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             channel = mGetInfo.getId() + "-" + studentLiveInfo.getClassId();
         }
 
-        Log.e("LiveBll2","=======>onGetInfoSuccess 444444444");
+        Log.e("LiveBll2", "=======>onGetInfoSuccess 444444444");
 
 
         s += ",liveType=" + mLiveType + ",channel=" + channel;
@@ -458,7 +456,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         mIRCMessage.create();
         s += ",newTalkConf=" + newTalkConf.size();
 
-        Log.e("LiveBll2","=======>mIRCMessage.create()");
+        Log.e("LiveBll2", "=======>mIRCMessage.create()");
         mLogtf.d(s);
     }
 
@@ -532,7 +530,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             try {
                 JSONObject object = new JSONObject(notice);
                 int mtype = object.getInt("type");
-                com.xueersi.lib.log.Loger.e("LiveBll2","=======>onNotice:"+mtype+":"+this);
+                com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onNotice:" + mtype + ":" + this);
                 ///////播放器相关/////////
                 switch (mtype) {
                     case XESCODE.MODECHANGE:
@@ -867,7 +865,8 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
 
     /**
      * 发送 notice 消息
-     * @param targetName   notice消息接收方 当target 为null 时 将广播此消息
+     *
+     * @param targetName notice消息接收方 当target 为null 时 将广播此消息
      * @param data
      * @return
      */
@@ -1012,7 +1011,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             mGetPlayServerCancle = null;
         }
 
-        if(mIRCMessage != null){
+        if (mIRCMessage != null) {
             mIRCMessage.destory();
         }
 
@@ -1032,16 +1031,16 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         return mVideoListener;
     }
 
-    private AtomicInteger mOpenCount                = new AtomicInteger(0);
-    private AtomicInteger mFailCount                = new AtomicInteger(0);
-    private AtomicInteger mFailMainTeacherCount     = new AtomicInteger(0);
-    private AtomicInteger mFailCounTeacherCount     = new AtomicInteger(0);
-    private AtomicInteger mBufferCount              = new AtomicInteger(0);
-    private AtomicInteger mCompleteCount            = new AtomicInteger(0);
-    private AtomicInteger mRepairBufferCount        = new AtomicInteger(0);
+    private AtomicInteger mOpenCount = new AtomicInteger(0);
+    private AtomicInteger mFailCount = new AtomicInteger(0);
+    private AtomicInteger mFailMainTeacherCount = new AtomicInteger(0);
+    private AtomicInteger mFailCounTeacherCount = new AtomicInteger(0);
+    private AtomicInteger mBufferCount = new AtomicInteger(0);
+    private AtomicInteger mCompleteCount = new AtomicInteger(0);
+    private AtomicInteger mRepairBufferCount = new AtomicInteger(0);
     private AtomicInteger mCompleteMainTeacherCount = new AtomicInteger(0);
     private AtomicInteger mCompleteCounTeacherCount = new AtomicInteger(0);
-    private AtomicInteger mRepairOpenCount          = new AtomicInteger(0);
+    private AtomicInteger mRepairOpenCount = new AtomicInteger(0);
 
 
     long openStartTime;
@@ -1177,13 +1176,13 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
      * 调度是不是在无网络下失败
      */
     private boolean liveGetPlayServerError = false;
-    private PlayServerEntity    mServer;
+    private PlayServerEntity mServer;
     private Callback.Cancelable mGetPlayServerCancle;
     /**
      * 直播帧数统计
      */
-    private TotalFrameStat      totalFrameStat;
-    private long                lastGetPlayServer;
+    private TotalFrameStat totalFrameStat;
+    private long lastGetPlayServer;
 
     private void liveGetPlayServer(final String mode, final boolean modechange) {
 
@@ -1347,11 +1346,11 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     /**
      * 统计间隔
      */
-    private long     mStatisticsdelay = 300000;
+    private long mStatisticsdelay = 300000;
     /**
      * 统计的runnable
      */
-    private Runnable mStatisticsRun   = new Runnable() {
+    private Runnable mStatisticsRun = new Runnable() {
 
         @Override
         public void run() {
@@ -1596,6 +1595,35 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 postDelayedIfNotFinish(mUserOnlineCall, mHbTime * 1000);
             }
         });
+    }
+
+
+    /**
+     * 直播间内模块间 数据共享池
+     */
+    private HashMap<String, Object> businessShareParamMap = new HashMap<String, Object>();
+
+    /**
+     * 各模块 调用此方法 暴露自己需要和其他模块共享的参数
+     * @param key
+     * @param value
+     */
+    public void addBusinessShareParam(String key, Object value) {
+        synchronized (businessShareParamMap) {
+            businessShareParamMap.put(key, value);
+        }
+    }
+
+
+    /**
+     * 各模块调用此方法  查找其他模块暴露的 参数信息
+     * @param key
+     * @return
+     */
+    public Object getBusinessShareParam(String key) {
+        synchronized (businessShareParamMap) {
+            return businessShareParamMap.get(key);
+        }
     }
 
 

@@ -25,16 +25,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.entity.FooterIconEntity;
-import com.xueersi.common.event.MiniEvent;
-import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
-import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
+import com.xueersi.common.event.MiniEvent;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
+import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.SimpleVPlayerListener;
+import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.VPlayerListener;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
@@ -45,8 +55,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
-import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -56,21 +64,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusE
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.common.util.FloatPermissionManager;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
-import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.SimpleVPlayerListener;
-import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.VPlayerListener;
-import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
-import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.lib.framework.utils.ScreenUtils;
-import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -83,6 +83,7 @@ import java.util.List;
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile.liveBll;
+
 
 /**
  * 直播
@@ -172,7 +173,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     LiveMessageBll liveMessageBll;
     QuestionBll questionBll;
     RollCallBll rollCallBll;
-    RedPackageBll redPackageBll;
+    //RedPackageBll redPackageBll;
     LecLearnReportBll learnReportBll;
     H5CoursewareBll h5CoursewareBll;
     LecAdvertBll lecAdvertAction;
@@ -215,7 +216,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         questionBll = new QuestionBll(this, "");
         liveMessageBll.setQuestionBll(questionBll);
         rollCallBll = new RollCallBll(this);
-        redPackageBll = new RedPackageBll(this);
+       // redPackageBll = new RedPackageBll(this);
         learnReportBll = new LecLearnReportBll(this);
         h5CoursewareBll = new H5CoursewareBll(this);
         lecAdvertAction = new LecAdvertBll(this);
@@ -228,7 +229,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         }
         liveMessageBll.setLiveBll(mLiveBll);
         //rollCallBll.setLiveBll(mLiveBll);
-        redPackageBll.setLiveBll(mLiveBll);
+        //redPackageBll.setLiveBll(mLiveBll);
         learnReportBll.setLiveId(mVSectionID);
         learnReportBll.setLiveBll(mLiveBll);
         learnReportBll.setmShareDataManager(mShareDataManager);
@@ -236,7 +237,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         lecAdvertAction.setLiveBll(mLiveBll);
         lecAdvertAction.setLiveid(mVSectionID);
         questionBll.setVSectionID(mVSectionID);
-        redPackageBll.setVSectionID(mVSectionID);
+        //redPackageBll.setVSectionID(mVSectionID);
         questionBll.setLiveType(liveType);
         questionBll.initData();
         initView();
@@ -270,7 +271,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         //互动题和懂了吗
         questionBll.initView(questionContent, mIsLand);
         //红包
-        redPackageBll.initView(questionContent);
+       // redPackageBll.initView(questionContent);
         //学习报告
         learnReportBll.initView(questionContent);
         h5CoursewareBll.initView(questionContent);
@@ -334,7 +335,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         mPlayStatistics = mLiveBll.getVideoListener();
         mLiveBll.setQuestionAction(questionBll);
         mLiveBll.setRollCallAction(rollCallBll);
-        mLiveBll.setReadPackageBll(redPackageBll);
+        //mLiveBll.setReadPackageBll(redPackageBll);
         mLiveBll.setLecLearnReportAction(learnReportBll);
         mLiveBll.setVideoAction(this);
         mLiveBll.setRoomAction(liveMessageBll);
@@ -431,7 +432,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 //互动题和懂了吗
                 questionBll.initView(questionContent, mIsLand);
                 //红包
-                redPackageBll.initView(questionContent);
+                //redPackageBll.initView(questionContent);
                 //学习报告
                 learnReportBll.initView(questionContent);
                 h5CoursewareBll.initView(questionContent);
@@ -482,7 +483,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 //互动题和懂了吗
                 questionBll.initView(questionContent, mIsLand);
                 //红包
-                redPackageBll.initView(questionContent);
+                //redPackageBll.initView(questionContent);
                 //学习报告
                 learnReportBll.initView(questionContent);
                 h5CoursewareBll.initView(questionContent);
@@ -584,7 +585,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     }
 
     private void createRealVideo(String courseId, String classId) {
-        boolean isPermission = FloatPermissionManager.getInstance().applyFloatWindow(this);
+        boolean isPermission = XesPermission.applyFloatWindow(this);
         //有对应权限或者系统版本小于7.0
         if (isPermission || Build.VERSION.SDK_INT < 24) {
             mParent = (ViewGroup) videoView.getParent();

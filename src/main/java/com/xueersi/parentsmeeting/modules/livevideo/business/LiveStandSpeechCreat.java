@@ -4,6 +4,8 @@ import android.content.Context;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.lib.framework.utils.EventBusUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.entity.UpdateAchievementEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
@@ -127,6 +129,8 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         public void onSpeechSuccess(String num) {
             action.onSpeechSuccess(num);
             liveBll.getStuGoldCount();
+            // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
+           // EventBusUtil.post(new UpdateAchievementEvent(liveBll.getLiveId()));
         }
 
         @Override

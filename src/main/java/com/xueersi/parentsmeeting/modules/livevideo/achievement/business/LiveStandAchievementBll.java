@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business;
+package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 
 import android.app.Activity;
 import android.support.annotation.Nullable;
@@ -13,13 +13,27 @@ import android.widget.RelativeLayout;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.business.UserBll;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.EventBusUtil;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.entity.UpdateAchievementEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.StarInteractAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveLottieAnimationView;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.lib.framework.utils.string.StringUtils;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +43,7 @@ import java.util.Map;
  * Created by linyuqiang on 2017/7/20.
  * 本场成就
  */
-public class LiveStandAchievementBll implements StarInteractAction {
+public class LiveStandAchievementBll extends LiveBaseBll implements StarInteractAction {
     private String TAG = "LiveStandAchievementBll";
     private String eventId;
     private int liveType;
@@ -105,8 +119,16 @@ public class LiveStandAchievementBll implements StarInteractAction {
      * 星星晃动从-20,0
      */
     private float starRotateLine2a, starRotateLine2b;
+    private LiveGetInfo mRoomInitData;
+
+    public LiveStandAchievementBll(Activity context, LiveBll2 liveBll, ViewGroup rootView) {
+        super(context, liveBll, rootView);
+        EventBusUtil.register(this);
+    }
 
     public LiveStandAchievementBll(Activity activity, int liveType, int starCount, int goldCount, boolean mIsLand) {
+        this(activity,null,null);
+
         this.activity = activity;
         this.liveType = liveType;
         this.starCount = starCount;
@@ -425,5 +447,50 @@ public class LiveStandAchievementBll implements StarInteractAction {
         float b = y1 - a * x1;
         return new LineMath(a, b);
     }
+
+
+
+    private LiveHttpResponseParser mHttpResponseParser = null;
+
+
+    @Override
+    public void onLiveInited(LiveGetInfo data) {
+        super.onLiveInited(data);
+        mRoomInitData = data;
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateAchievementEvent(UpdateAchievementEvent event) {
+
+        if(mLiveBll.getLiveId().equals(event.getmLiveId())){
+            String liveid = mRoomInitData.getId();
+            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+            getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack() {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+
+                    if(mHttpResponseParser == null){
+                        mHttpResponseParser = new LiveHttpResponseParser(mContext);
+                    }
+
+                    StarAndGoldEntity starAndGoldEntity = mHttpResponseParser.parseStuGoldCount(responseEntity);
+                    mRoomInitData.setGoldCount(starAndGoldEntity.getGoldCount());
+                    mRoomInitData.setStarCount(starAndGoldEntity.getStarCount());
+                    onGetStar(starAndGoldEntity);
+                }
+            });
+        }
+
+
+    }
+
+
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        EventBusUtil.unregister(this);
+    }
+
 
 }

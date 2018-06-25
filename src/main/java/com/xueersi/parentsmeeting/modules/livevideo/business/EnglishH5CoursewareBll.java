@@ -16,10 +16,12 @@ import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.lib.framework.utils.EventBusUtil;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.entity.UpdateAchievementEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -409,6 +411,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     onQuestionShow(false);
                 }
                 mLiveBll.getStuGoldCount();
+
+                // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
+                // EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
+
                 if (context instanceof WebViewRequest) {
                     WebViewRequest webViewRequest = (WebViewRequest) context;
                     webViewRequest.releaseWebView();
@@ -857,6 +863,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         stopVoiceAnswerPager();
                     }
                     mLiveBll.getStuGoldCount();
+                    // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
+                    //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
+
                     mH5AndBool.add(videoQuestionLiveEntity1.getUrl());
                     try {
                         JSONObject object = new JSONObject();

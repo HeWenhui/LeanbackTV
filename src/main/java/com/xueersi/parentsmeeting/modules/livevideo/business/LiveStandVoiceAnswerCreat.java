@@ -19,9 +19,11 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.lib.framework.utils.EventBusUtil;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.entity.UpdateAchievementEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerStandPager;
@@ -181,6 +183,8 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             isSuccess = true;
             if (liveBll != null) {
                 liveBll.getStuGoldCount();
+                // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
+                //EventBusUtil.post(new UpdateAchievementEvent(liveBll.getLiveId()));
             }
             // 回答错误提示
         } else if (entity.getResultType() == QUE_RES_TYPE2) {

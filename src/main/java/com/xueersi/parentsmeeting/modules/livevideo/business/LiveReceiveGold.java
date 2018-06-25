@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.lib.framework.utils.EventBusUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.entity.UpdateAchievementEvent;
 
 /**
  * Created by linyuqiang on 2018/4/2.
@@ -21,6 +23,8 @@ public class LiveReceiveGold implements RedPackageStandBll.ReceiveGold {
     @Override
     public void onReceiveGold() {
         mLiveBll.getStuGoldCount();
+        // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
+        //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
     }
 
     @Override

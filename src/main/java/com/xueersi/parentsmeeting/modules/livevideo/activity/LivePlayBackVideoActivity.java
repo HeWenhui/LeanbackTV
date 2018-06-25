@@ -43,6 +43,9 @@ import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.UserBll;
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.AnswerEntity;
 import com.xueersi.common.entity.AppInfoEntity;
@@ -50,13 +53,26 @@ import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.entity.MyUserInfoEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.event.MiniEvent;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.analytics.umsagent.UmsConstants;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.TimeUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoActivity;
+import com.xueersi.parentsmeeting.module.videoplayer.widget.LivePlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.MoreChoiceItem;
@@ -86,44 +102,28 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewareX5Pager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebX5Pager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.NbH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSubjectivePager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5PlaybackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SubjectResultX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
-import com.xueersi.common.util.FloatPermissionManager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
-import com.xueersi.common.business.UserBll;
-import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
-import com.xueersi.parentsmeeting.module.videoplayer.media.VideoActivity;
-import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.parentsmeeting.module.videoplayer.widget.LivePlaybackMediaController;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
-import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.analytics.umsagent.UmsConstants;
-import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.lib.framework.utils.NetWorkHelper;
-import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.lib.framework.utils.TimeUtils;
-import com.xueersi.lib.framework.utils.ScreenUtils;
-import com.xueersi.lib.imageloader.ImageLoader;
-import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import com.xueersi.ui.dataload.DataLoadEntity;
+import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -141,6 +141,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile.liveBll;
+
+
 
 /**
  * 直播回放播放页
@@ -2879,7 +2881,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     }
 
     private void createRealVideo(String courseId, String classId) {
-        boolean isPermission = FloatPermissionManager.getInstance().applyFloatWindow(this);
+        boolean isPermission = XesPermission.applyFloatWindow(this);
 
         //有对应权限或者系统版本小于7.0
         if (isPermission || Build.VERSION.SDK_INT < 24) {

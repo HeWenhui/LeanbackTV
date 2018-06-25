@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
@@ -293,6 +294,10 @@ public class LiveVideoActivity2 extends LiveActivityBase implements VideoAction,
 
         LiveVoteBll  voteBll = new LiveVoteBll(activity,mLiveBll,bottomContent);
         mLiveBll.addBusinessBll(voteBll);
+
+        RedPackageBll redPackageBll = new RedPackageBll(activity,mLiveBll,bottomContent);
+        mLiveBll.addBusinessBll(redPackageBll);
+
 
     }
 

@@ -30,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.NativeVoteRusltulCloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAqResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAwardPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkResultPager;
@@ -86,9 +87,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     private TeamPkTeamInfoEntity teamInfoEntity;
     private BasePager mFocusPager;
 
-    private static final  String OPEN_STATE_OPEN = "1";
+    private static final String OPEN_STATE_OPEN = "1";
 
-    private static final  String OPEN_STATE_CLOSE = "0";
+    private static final String OPEN_STATE_CLOSE = "0";
 
     /**
      * pk对手
@@ -557,6 +558,17 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         // step 2  初始化 又测 pk 状态栏
         updatePkStateLayout(false);
     }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRedPackageEvent(RedPackageEvent event) {
+        if (event.getStateCode() == RedPackageEvent.STATE_CODE_SUCCESS) {
+            if (mLiveBll.getLiveId().equals(event.getLiveId())) {
+                updatePkStateLayout(false);
+            }
+        }
+    }
+
 
     /**
      * 刷新pk状态栏
