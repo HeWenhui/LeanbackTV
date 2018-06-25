@@ -57,25 +57,25 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 public class LiveVideoBll {
     private final String TAG = "LiveVideoBll";
-    Logger logger = LoggerFactory.getLogger(TAG);
+    private Logger logger = LoggerFactory.getLogger(TAG);
     /** 直播服务器 */
     private PlayServerEntity mServer;
     private LiveGetInfo mGetInfo;
     /** 直播帧数统计 */
-    TotalFrameStat totalFrameStat;
+    private TotalFrameStat totalFrameStat;
     private int lastIndex;
     /** 直播服务器选择 */
     private PlayServerEntity.PlayserverEntity lastPlayserverEntity;
     private ArrayList<PlayServerEntity.PlayserverEntity> failPlayserverEntity = new ArrayList<>();
     private ArrayList<PlayServerEntity.PlayserverEntity> failFlvPlayserverEntity = new ArrayList<>();
-    VideoFragment videoFragment;
+    private VideoFragment videoFragment;
     private Activity activity;
-    LiveBll2 mLiveBll;
+    private LiveBll2 mLiveBll;
     private LiveHttpManager mHttpManager;
-    LiveHttpResponseParser mHttpResponseParser;
+    private LiveHttpResponseParser mHttpResponseParser;
     /** 上次播放统计开始时间 */
     long lastPlayTime;
-    LogToFile mLogtf;
+    private LogToFile mLogtf;
     private WeakHandler mHandler = new WeakHandler(null);
     /** 播放器核心服务 */
     protected PlayerService vPlayer;
@@ -84,7 +84,7 @@ public class LiveVideoBll {
     /** 是否播放成功 */
     boolean openSuccess = false;
     /** 直播调度 */
-    LiveGetPlayServer liveGetPlayServer;
+    private LiveGetPlayServer liveGetPlayServer;
     long openStartTime;
     /** 缓冲超时 */
     private final long mBufferTimeout = 5000;
@@ -95,13 +95,13 @@ public class LiveVideoBll {
     /** 直播缓存打开统计 */
     private PlayerService.VPlayerListener mPlayStatistics;
     /** 播放时长 */
-    long playTime = 0;
+    private long playTime = 0;
     /** live_report_play_duration 开始时间 */
     protected long reportPlayStarTime;
-    LiveVideoReportBll liveVideoReportBll;
+    private LiveVideoReportBll liveVideoReportBll;
     VideoChatEvent videoChatEvent;
-    VideoAction mVideoAction;
-    int mLiveType;
+    private VideoAction mVideoAction;
+    private int mLiveType;
 
     public LiveVideoBll(Activity activity, LiveBll2 liveBll, int liveType) {
         this.activity = activity;

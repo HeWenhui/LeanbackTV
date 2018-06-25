@@ -113,10 +113,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     private static final Object mIjkLock = new Object();
     private WeakHandler mHandler = new WeakHandler(null);
     /**
-     * 缓冲超时
-     */
-    private final long mBufferTimeout = 5000;
-    /**
      * 打开超时
      */
     private final long mOpenTimeOut = 15000;
@@ -193,30 +189,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     private long videoCachedDuration;
     BaseLiveMediaControllerTop baseLiveMediaControllerTop;
     LiveMediaControllerBottom liveMediaControllerBottom;
-
-
     boolean audioRequest = false;
     SpeechEvaluatorUtils mIse;
-    /**
-     * 视频宽度
-     */
-    public static final float VIDEO_WIDTH = 1280f;
-    /**
-     * 视频高度
-     */
-    public static final float VIDEO_HEIGHT = 720f;
-    /**
-     * 视频宽高比
-     */
-    public static final float VIDEO_RATIO = VIDEO_WIDTH / VIDEO_HEIGHT;
-    /**
-     * 头像宽度
-     */
-    public static final float VIDEO_HEAD_WIDTH = 320f;
-    /**
-     * 头像高度
-     */
-    public static final float VIDEO_HEAD_HEIGHT = 240f;
     long openStartTime;
     /**
      * 接麦已经连接老师
@@ -232,8 +206,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
     private LiveBll2 mLiveBll;
     //LiveMessageBll liveMessageBll;
-
-
     private static String Tag = "LiveVideoActivity2";
     private TeamPkBll teamPkBll;
 
@@ -256,8 +228,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         //先让播放器按照默认模式设置
         videoView = mContentView.findViewById(R.id.vv_course_video_video);
         logger.d("onVideoCreate:videoView=" + (videoView == null));
-        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
-                (int) VIDEO_HEIGHT, VIDEO_RATIO);
+        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) LiveVideoConfig.VIDEO_WIDTH,
+                (int) LiveVideoConfig.VIDEO_HEIGHT, LiveVideoConfig.VIDEO_RATIO);
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
         setFirstParam(lp);
         // liveMessageBll.setVideoLayout(lp.width, lp.height);
@@ -291,8 +263,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                         if (!isLand) {
                             return;
                         }
-                        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
-                                (int) VIDEO_HEIGHT, VIDEO_RATIO);
+                        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) LiveVideoConfig.VIDEO_WIDTH,
+                                (int) LiveVideoConfig.VIDEO_HEIGHT, LiveVideoConfig.VIDEO_RATIO);
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
                         setFirstParam(lp);
                         // liveMessageBll.setVideoLayout(lp.width, lp.height);
@@ -434,7 +406,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
         int screenWidth = (r.right - r.left);
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
-        int rightMargin = (int) (LiveVideoActivity2.VIDEO_HEAD_WIDTH * lp.width / VIDEO_WIDTH + (screenWidth - lp.width) / 2);
+        int rightMargin = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * lp.width / LiveVideoConfig.VIDEO_WIDTH + (screenWidth - lp.width) / 2);
         int topMargin = (ScreenUtils.getScreenHeight() - lp.height) / 2;
         if (params.rightMargin != rightMargin || params.bottomMargin != topMargin) {
             params.rightMargin = rightMargin;
