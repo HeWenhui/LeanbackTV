@@ -764,6 +764,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             mHandler.removeCallbacks(mPlayDuration);
             mLogtf.d("onOpenSuccess:playTime=" + playTime);
             mHandler.postDelayed(mPlayDuration, mPlayDurTime);
+            mHandler.removeCallbacks(getVideoCachedDurationRun);
             mHandler.postDelayed(getVideoCachedDurationRun, 10000);
         }
 

@@ -686,6 +686,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             }
             mHandler.removeCallbacks(mOpenTimeOutRun);
             mPlayStatistics.onOpenSuccess();
+            mHandler.removeCallbacks(getVideoCachedDurationRun);
             mHandler.postDelayed(getVideoCachedDurationRun, 10000);
         }
 
