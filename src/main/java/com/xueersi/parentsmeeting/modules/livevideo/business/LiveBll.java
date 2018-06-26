@@ -56,6 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveScienceHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
@@ -246,6 +247,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private TeamPkBll mTeamPKBll;
     private TeacherPraiseBll mTeacherPraiseBll1;
     public static boolean isAllowTeamPk = false;
+    LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
     public LiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form, LiveGetInfo
             liveGetInfo) {
@@ -2812,7 +2814,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * @param modechange
      */
     public void liveGetPlayServer(boolean modechange) {
-        new Thread() {
+        liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 boolean isPresent = isPresent(mLiveTopic.getMode());
@@ -2821,7 +2823,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     mVideoAction.onTeacherNotPresent(true);
                 }
             }
-        }.start();
+        });
         liveGetPlayServer(mLiveTopic.getMode(), modechange);
     }
 

@@ -74,6 +74,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.Play
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionWebCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
@@ -207,6 +208,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
     boolean onPauseNotStopVideo = false;
     LiveTextureView liveTextureView;
     private TeacherPraiseBll teacherPraiseBll;
+    LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -580,7 +582,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             }
             if (!onPauseNotStopVideo) {
                 setFirstBackgroundVisible(View.VISIBLE);
-                new Thread() {
+                liveThreadPoolExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
                         synchronized (mIjkLock) {
@@ -592,7 +594,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                             });
                         }
                     }
-                }.start();
+                });
             }
             onPauseNotStopVideo = false;
         }
@@ -618,7 +620,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             return;
         }
         if (!onPauseNotStopVideo) {
-            new Thread() {
+            liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     synchronized (mIjkLock) {
@@ -634,7 +636,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                         isPlay = false;
                     }
                 }
-            }.start();
+            });
         }
         if (liveRemarkBll != null) {
             liveRemarkBll.onPause();
@@ -660,14 +662,14 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
 
             @Override
             public void run() {
-                new Thread() {
+                liveThreadPoolExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
                         synchronized (mIjkLock) {
                             onFail(arg1, arg2);
                         }
                     }
-                }.start();
+                });
             }
         }, 1200);
     }
@@ -678,14 +680,14 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
 
             @Override
             public void run() {
-                new Thread() {
+                liveThreadPoolExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
                         synchronized (mIjkLock) {
                             onFail(0, 0);
                         }
                     }
-                }.start();
+                });
             }
         }, 200);
     }
@@ -710,6 +712,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         }
     }
 
+    @Override
     protected VPlayerListener getWrapListener() {
         return mPlayListener;
     }
@@ -820,7 +823,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         public void run() {
             mHandler.removeCallbacks(this);
             if (isPlay && !isFinishing()) {
-                new Thread() {
+                liveThreadPoolExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
                         videoCachedDuration = vPlayer.getVideoCachedDuration();
@@ -835,7 +838,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                             }
                         }
                     }
-                }.start();
+                });
                 //Loger.i(TAG, "onOpenSuccess:videoCachedDuration=" + videoCachedDuration);
             }
         }
@@ -1200,7 +1203,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                 return;
             }
         }
-        new Thread() {
+        liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 boolean isPresent = mLiveBll.isPresent();
@@ -1220,7 +1223,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                     });
                 }
             }
-        }.start();
+        });
         String url;
         String msg = "rePlay:";
         if (mServer == null) {
@@ -1434,6 +1437,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         return msg;
     }
 
+    @Override
     public void stopPlay() {
         if (isInitialized()) {
             vPlayer.releaseSurface();
@@ -1616,7 +1620,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         }
         liveMessageBll.onDestroy();
         videoChatBll.onDestroy();
-        new Thread() {
+        liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 if (mLiveBll != null) {
@@ -1624,7 +1628,8 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                     LogToFile.liveBll = null;
                 }
             }
-        }.start();
+        });
+        LiveThreadPoolExecutor.destory();
         AppBll.getInstance().unRegisterAppEvent(this);
         englishH5CoursewareBll.destroy();
         if (englishSpeekBll != null) {
