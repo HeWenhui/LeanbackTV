@@ -323,7 +323,8 @@ public class LiveVideoFragmentBase extends Fragment {
 
     /** 加载界面 */
     protected void loadView(int id) {
-        LayoutInflater inflater = getLayoutInflater();
+        LayoutInflater inflater = LayoutInflater.from(activity);
+        //getLayoutInflater();
         View view = inflater.inflate(id, mContentView, false);
         mContentView.removeAllViews();
         mContentView.addView(view);
@@ -331,7 +332,7 @@ public class LiveVideoFragmentBase extends Fragment {
         viewRoot = (ViewGroup) mContentView.findViewById(R.id.cl_course_video_root);// 播放器所在的io.vov.vitamio.widget.CenterLayout
         videoView = (VideoView) mContentView.findViewById(R.id.vv_course_video_video); // 播放器的videoView
         rlContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_content);
-        videoBackgroundRefresh = getLayoutInflater().inflate(mLayoutBackgroundRefresh, rlContent, false); // 失败时播放器显示的背景
+        videoBackgroundRefresh = inflater.inflate(mLayoutBackgroundRefresh, rlContent, false); // 失败时播放器显示的背景
         videoBackgroundRefresh.setVisibility(View.GONE);
         rlContent.addView(videoBackgroundRefresh);
         tvVideoLoadingText = (TextView) mContentView.findViewById(R.id.tv_course_video_loading_tip); // 加载进度文字框

@@ -103,7 +103,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  *
  * @author linyuqiang
  */
-public class LiveVideoActivity extends LiveVideoActivityBase {
+public class LiveVideoActivity extends LiveVideoActivityBase implements ActivityStatic {
 
     private String TAG = "LiveVideoActivityLog";
 
@@ -170,4 +170,22 @@ public class LiveVideoActivity extends LiveVideoActivityBase {
     }
 
 
+    private boolean isResume = true;
+    @Override
+    public boolean isResume() {
+        return isResume;
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        isResume = false;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        isResume = true;
+    }
 }
