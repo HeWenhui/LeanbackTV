@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -248,7 +247,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         if (isPlayBack) {
             loadUrl += "&isPlayBack=1";
         }
-            loadUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
+        loadUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
         if (!StringUtils.isEmpty(nonce)) {
             loadUrl += "&nonce=" + nonce;
         }

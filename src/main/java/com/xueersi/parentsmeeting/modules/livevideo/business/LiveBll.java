@@ -519,6 +519,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 mLogtf.d("sendReceiveGold:onPmSuccess=" + responseEntity.getJsonObject().toString() + ",operateId=" +
                         operateId);
                 VideoResultEntity entity = mHttpResponseParser.redPacketParseParser(responseEntity);
+                entity.setHttpUrl(url);
+                entity.setHttpRes("" + responseEntity.getJsonObject());
                 callBack.onDataSucess(entity);
             }
 
@@ -553,6 +555,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         operateId);
                 GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId(),
                         mGetInfo.getHeadImgPath());
+                entity.setHttpUrl(url);
+                entity.setHttpRes("" + responseEntity.getJsonObject());
                 callBack.onDataSucess(entity);
             }
 
@@ -582,6 +586,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         operateId);
                 GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId(),
                         mGetInfo.getHeadImgPath());
+                entity.setHttpUrl(url);
+                entity.setHttpRes("" + responseEntity.getJsonObject());
                 callBack.onDataSucess(entity);
             }
 
@@ -1334,6 +1340,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         videoQuestionLiveEntity.isAllow42 = object.optString("isAllow42", "");
                         videoQuestionLiveEntity.speechContent = object.optString("answer", "");
                         videoQuestionLiveEntity.multiRolePlay = object.optString("multiRolePlay", "0");
+                        videoQuestionLiveEntity.roles = object.optString("roles", "");
 //                        if (BuildConfig.DEBUG) {onget
 //                            videoQuestionLiveEntity.isTestUseH5 = true;
 //                        }
@@ -2384,7 +2391,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      */
     private boolean isPresent(String mode) {
         boolean isPresent = true;
-        if (mIRCMessage != null && mIRCMessage.isConnected()) {
+        if (mIRCMessage != null && mIRCMessage.onUserList()) {
             if (LiveTopic.MODE_CLASS.endsWith(mode)) {
                 isPresent = mMainTeacher != null;
             } else {
@@ -4113,10 +4120,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     .get());
             mCompleteCounTeacherCount.set(mCompleteCounTeacherCount.get() > 1000 ? 1000 : mCompleteCounTeacherCount
                     .get());
-            XesMobAgent.liveStatistics(mBufferCount.get(), mRepairBufferCount.get(), mRepairOpenCount.get(), mFailCount
-                            .get(),
-                    mFailMainTeacherCount.get(), mFailCounTeacherCount.get(), mCompleteCount.get(),
-                    mCompleteMainTeacherCount.get(), mCompleteCounTeacherCount.get());
+//            XesMobAgent.liveStatistics(mBufferCount.get(), mRepairBufferCount.get(), mRepairOpenCount.get(), mFailCount
+//                            .get(),
+//                    mFailMainTeacherCount.get(), mFailCounTeacherCount.get(), mCompleteCount.get(),
+//                    mCompleteMainTeacherCount.get(), mCompleteCounTeacherCount.get());
             postDelayedIfNotFinish(mStatisticsRun, mStatisticsdelay);
         }
     };
@@ -4355,6 +4362,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         if (mServer == null || playserverEntity == null) {
             return;
         }
+        HttpRequestParams entity = new HttpRequestParams();
         if (MegId.MEGID_12107 == msgid) {
             boolean isPresent = true;
             if (mIRCMessage != null) {
@@ -4367,9 +4375,15 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             if (!isPresent) {
                 return;
             }
+        } else if (MegId.MEGID_12102 == msgid) {
+            if (totalFrameStat != null) {
+                String cpuName = totalFrameStat.getCpuName();
+                String memsize = totalFrameStat.getMemsize();
+                String ua = Build.VERSION.SDK_INT + ";" + cpuName + ";" + memsize;
+                entity.addBodyParam("UA", ua);
+            }
         }
         String url = mGetInfo.getLogServerUrl();
-        HttpRequestParams entity = new HttpRequestParams();
         entity.addBodyParam("msgid", msgid.msgid);
         entity.addBodyParam("userid", mGetInfo.getStuId());
         entity.addBodyParam("username", mGetInfo.getUname());
