@@ -33,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveExPressionEditData;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.parentsmeeting.widget.expressionView.ExpressionView;
@@ -109,7 +110,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     protected boolean isRegister = false;
     protected boolean isHaveFlowers = false;
     protected boolean keyboardShowing = false;
-    protected LiveBll liveBll;
+    protected IRCState liveBll;
     protected LiveMessageBll messageBll;
     protected static int MESSAGE_SEND_DEF = 0;
     protected static int MESSAGE_SEND_DIS = 1;
@@ -338,7 +339,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
 
     }
 
-    public void setLiveBll(LiveBll mLiveBll) {
+    public void setLiveBll(IRCState mLiveBll) {
         this.liveBll = mLiveBll;
     }
 

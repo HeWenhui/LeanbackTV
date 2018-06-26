@@ -48,10 +48,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.UserOnline;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
+import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
@@ -112,39 +115,19 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
      */
     private static final Object mIjkLock = new Object();
     private WeakHandler mHandler = new WeakHandler(null);
-    /**
-     * 打开超时
-     */
-    private final long mOpenTimeOut = 15000;
-    /**
-     * 播放时长
-     */
-    long playTime = 0;
-    /**
-     * 上次播放统计开始时间
-     */
+    /** 上次播放统计开始时间 */
     long lastPlayTime;
-    /**
-     * 是否播放成功
-     */
+    /** 是否播放成功 */
     boolean openSuccess = false;
-    /**
-     * 播放时长定时任务
-     */
+    /** 播放时长定时任务 */
     private final long mPlayDurTime = 420000;
-    /**
-     * 初始进入播放器时的预加载界面
-     */
+    /** 初始进入播放器时的预加载界面 */
     private RelativeLayout rlFirstBackgroundView;
-    /**
-     * 老师不在直播间
-     */
+    /** 老师不在直播间 */
     private ImageView ivTeacherNotpresent;
     RelativeLayout bottomContent;
     RelativeLayout praiselistContent;
-    /**
-     * 缓冲提示
-     */
+    /** 缓冲提示 */
     private ImageView ivLoading;
     private TextView tvLoadingHint;
     private LiveGetInfo mGetInfo;
@@ -152,40 +135,24 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     private String vStuCourseID;
     private String courseId;
     private String mVSectionID;
-    /**
-     * Activity暂停过，执行onStop
-     */
+    /** Activity暂停过，执行onStop */
     private boolean mHaveStop = false;
-    /**
-     * Activity在onResume
-     */
+    /** Activity在onResume */
     private boolean mIsResume = false;
 
     private LiveVideoSAConfig liveVideoSAConfig;
-    /**
-     * 是不是文理
-     */
+    /** 是不是文理 */
     public boolean IS_SCIENCE = true;
     public static final String ENTER_ROOM_FROM = "from";
-    /**
-     * 直播类型
-     */
+    /** 直播类型 */
     private int liveType;
-    /**
-     * 连接老师加载-主讲
-     */
+    /** 连接老师加载-主讲 */
     private final String mainTeacherLoad = "正在连接主讲老师，请耐心等候";
-    /**
-     * 连接老师加载-辅导
-     */
+    /** 连接老师加载-辅导 */
     private final String coachTeacherLoad = "正在连接辅导老师，请耐心等候";
-    /**
-     * 正在播放
-     */
+    /** 正在播放 */
     private boolean isPlay = false;
-    /**
-     * video缓存时间
-     */
+    /** video缓存时间 */
     private long videoCachedDuration;
     BaseLiveMediaControllerTop baseLiveMediaControllerTop;
     LiveMediaControllerBottom liveMediaControllerBottom;
@@ -205,6 +172,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     LiveTextureView liveTextureView;
 
     private LiveBll2 mLiveBll;
+    private LiveIRCMessageBll liveIRCMessageBll;
+    private UserOnline userOnline;
     //LiveMessageBll liveMessageBll;
     private static String Tag = "LiveVideoActivity2";
     private TeamPkBll teamPkBll;
@@ -247,8 +216,10 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
     @Override
     protected void onVideoCreateEnd() {
+        mLiveBll.onCreate();
         mLiveBll.getInfo(mGetInfo);
         liveVideoBll.setvPlayer(vPlayer);
+        liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
         final View contentView = activity.findViewById(android.R.id.content);
         contentView.postDelayed(new Runnable() {
             @Override
@@ -306,7 +277,9 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
         LiveVoteBll voteBll = new LiveVoteBll(activity, mLiveBll, bottomContent);
         mLiveBll.addBusinessBll(voteBll);
-
+        mLiveBll.addBusinessBll(new LiveAutoNoticeBll(activity, mLiveBll, bottomContent));
+        liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll, bottomContent);
+        mLiveBll.addBusinessBll(liveIRCMessageBll);
     }
 
     @Override
@@ -325,9 +298,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         ivTeacherNotpresent = (ImageView) mContentView.findViewById(R.id.iv_course_video_teacher_notpresent);
         bottomContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
-
-        android.util.Log.e("LiveVideoActivity2", "========>:initView:" + bottomContent);
-
+        logger.e("========>:initView:" + bottomContent);
         praiselistContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_praiselist_content);
         praiselistContent.setVisibility(View.VISIBLE);
         ivLoading = (ImageView) mContentView.findViewById(R.id.iv_course_video_loading_bg);
@@ -377,6 +348,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     private void initAllBll() {
         mLiveBll.setVideoAction(this);
         mLiveBll.setLiveVideoBll(liveVideoBll);
+        userOnline = new UserOnline(activity);
         android.util.Log.e("LiveVideoActivity", "====>initAllBll:" + bottomContent);
         mMediaController.setControllerBottom(liveMediaControllerBottom, false);
         mMediaController.setControllerTop(baseLiveMediaControllerTop);
@@ -522,7 +494,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         mIsResume = true;
         if (mHaveStop) {
             mHaveStop = false;
-
             if (startRemote.get()) {
                 return;
             }
@@ -544,7 +515,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             }
             onPauseNotStopVideo = false;
         }
-
         if (mLiveBll != null) {
             mLiveBll.onResume();
         }
@@ -556,7 +526,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         super.onPause();
         mIsResume = false;
         mHaveStop = true;
-
         if (startRemote.get()) {
             return;
         }
@@ -568,7 +537,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                         if (isInitialized()) {
                             if (openSuccess) {
                                 liveVideoBll.stopPlayDuration();
-                                playTime += (System.currentTimeMillis() - lastPlayTime);
                                 Loger.d(TAG, "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
                             }
                             vPlayer.releaseSurface();
@@ -654,14 +622,11 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             liveMediaControllerBottom.getBtMark().setVisibility(View.VISIBLE);
         }
         long before = System.currentTimeMillis();
-
-
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
         }
         Loger.d(TAG, "onLiveInit:time=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-
         Loger.d(TAG, "onLiveInit:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         if (1 == getInfo.getIsEnglish()) {
@@ -716,7 +681,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
     @Override
     public void onModeChange(final String mode, final boolean isPresent) {
-
         mHandler.post(new Runnable() {
 
             @Override

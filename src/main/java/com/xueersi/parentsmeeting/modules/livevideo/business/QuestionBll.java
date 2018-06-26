@@ -30,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.message.KeyBordAction;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
@@ -216,7 +217,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     /** 语文主观题 */
     private BaseSubjectResultInter subjectResultPager;
     boolean isLand;
-    private LiveMessageBll liveMessageBll;
+    private KeyBordAction liveMessageBll;
     /**
      * 是不是在显示互动题,结果页或者语音评测top3
      */
@@ -257,7 +258,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         this.mLiveBll = mLiveBll;
     }
 
-    public void setLiveMessageBll(LiveMessageBll liveMessageBll) {
+    public void setLiveMessageBll(KeyBordAction liveMessageBll) {
         this.liveMessageBll = liveMessageBll;
     }
 

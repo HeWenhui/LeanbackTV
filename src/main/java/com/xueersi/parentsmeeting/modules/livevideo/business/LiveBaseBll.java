@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -10,6 +12,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONObject;
 
@@ -20,14 +23,15 @@ import java.util.Map;
  * 直播间 bll 基类
  *
  * @author chekun
- * created  at 2018/6/20 9:34
+ *         created  at 2018/6/20 9:34
  */
-public  class LiveBaseBll extends BaseBll {
+public class LiveBaseBll extends BaseBll {
 
     protected ViewGroup mRootView;
-    protected LiveBll2  mLiveBll;
+    protected LiveBll2 mLiveBll;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
-    public LiveBaseBll(Activity context, LiveBll2  liveBll, ViewGroup rootView) {
+    public LiveBaseBll(Activity context, LiveBll2 liveBll, ViewGroup rootView) {
         super(context);
         mLiveBll = liveBll;
         mRootView = rootView;
@@ -37,9 +41,9 @@ public  class LiveBaseBll extends BaseBll {
     /**
      * 获取网络请求对象
      */
-    public LiveHttpManager getHttpManager(){
+    public LiveHttpManager getHttpManager() {
         LiveHttpManager manager = null;
-        if(mLiveBll != null){
+        if (mLiveBll != null) {
             manager = mLiveBll.getHttpManager();
         }
         return manager;
@@ -50,60 +54,65 @@ public  class LiveBaseBll extends BaseBll {
      * 发送直播间聊天消息
      */
     public void sendMsg(JSONObject jsonObject) {
-       if(mLiveBll != null){
-           mLiveBll.sendMessage(jsonObject);
-       }
+        if (mLiveBll != null) {
+            mLiveBll.sendMessage(jsonObject);
+        }
     }
 
 
     /**
      * 发送 notice 消息
+     *
      * @param jsonObject
-     * @param target    notice 接收放   如果 target 为null 将广播给所以用户
+     * @param target     notice 接收放   如果 target 为null 将广播给所以用户
      */
-    public void sendNotice(JSONObject jsonObject,String target) {
-        if(mLiveBll != null){
-            mLiveBll.sendNotice(target,jsonObject);
+    public void sendNotice(JSONObject jsonObject, String target) {
+        if (mLiveBll != null) {
+            mLiveBll.sendNotice(target, jsonObject);
         }
     }
 
     /**
      * 上传 系统日志
+     *
      * @param eventId
      * @param data
      */
-    public void  umsAgentDebugSys(String eventId,Map<String,String> data){
-        if(mLiveBll != null){
-            mLiveBll.umsAgentDebugSys(eventId,data);
+    public void umsAgentDebugSys(String eventId, Map<String, String> data) {
+        if (mLiveBll != null) {
+            mLiveBll.umsAgentDebugSys(eventId, data);
         }
     }
 
     /**
-     *  上传交互日志
+     * 上传交互日志
+     *
      * @param eventId
      * @param data
      */
-    public void umsAgentDebugInter(String eventId,Map<String,String> data){
-        if(mLiveBll != null){
-            mLiveBll.umsAgentDebugInter(eventId,data);
+    public void umsAgentDebugInter(String eventId, Map<String, String> data) {
+        if (mLiveBll != null) {
+            mLiveBll.umsAgentDebugInter(eventId, data);
         }
     }
 
 
     /**
      * 上传 展现日志
+     *
      * @param eventId
      * @param data
      */
-    public void umsAgentDebugPv(String eventId,Map<String,String> data){
-        if(mLiveBll != null){
-            mLiveBll.umsAgentDebugPv(eventId,data);
+    public void umsAgentDebugPv(String eventId, Map<String, String> data) {
+        if (mLiveBll != null) {
+            mLiveBll.umsAgentDebugPv(eventId, data);
         }
     }
 
 
     /**
      * 直播间初始化完成
+     *
      * @param data 直播间初始化参数
      */
     public void onLiveInited(LiveGetInfo data) {
@@ -114,7 +123,7 @@ public  class LiveBaseBll extends BaseBll {
     /**
      * 直播间创建
      */
-    public void onCreate(HashMap<String,Object> data) {
+    public void onCreate(HashMap<String, Object> data) {
 
     }
 
@@ -150,6 +159,7 @@ public  class LiveBaseBll extends BaseBll {
 
     /**
      * 弹出toast，判断activity是不是在活动
+     *
      * @param text
      */
     public void showToast(String text) {
@@ -159,4 +169,19 @@ public  class LiveBaseBll extends BaseBll {
         }
     }
 
+    public void postDelayedIfNotFinish(Runnable r, long delayMillis) {
+        ActivityStatic activityStatic = (ActivityStatic) mContext;
+        if (activityStatic.isFinishing()) {
+            return;
+        }
+        mHandler.postDelayed(r, delayMillis);
+    }
+
+    public <T> T getInstance(Class<T> clazz) {
+        return ProxUtil.getProxUtil().get(mContext, clazz);
+    }
+
+    public <T> void putInstance(Class<T> clazz, Object object) {
+        ProxUtil.getProxUtil().put(mContext, clazz, object);
+    }
 }

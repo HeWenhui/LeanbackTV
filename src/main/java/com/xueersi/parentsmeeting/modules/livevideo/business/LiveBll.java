@@ -51,6 +51,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveArtsHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveScienceHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallAction;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
@@ -100,7 +101,7 @@ import okhttp3.Response;
  *
  * @author linyuqiang
  */
-public class LiveBll extends BaseBll implements LiveAndBackDebug {
+public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState {
     private String TAG = "LiveBllLog";
     LiveLazyBllCreat liveLazyBllCreat;
     /** 互动题 */
@@ -3575,11 +3576,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     public String getMode() {
         String mode;
         if (mLiveType == LIVE_TYPE_LIVE) {
-            if (mLiveTopic == null) {
-                mode = LiveTopic.MODE_CLASS;
-            } else {
-                mode = mLiveTopic.getMode();
-            }
+            mode = mLiveTopic.getMode();
         } else {
             mode = LiveTopic.MODE_CLASS;
         }

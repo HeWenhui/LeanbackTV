@@ -7,6 +7,8 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
+import com.xueersi.parentsmeeting.modules.livevideo.message.KeyBordAction;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveMessageStandPager;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
@@ -25,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by linyuqiang on 2016/9/23.
  * 聊天消息，一些进入房间状态的消息
  */
-public class LiveMessageBll implements RoomAction, QuestionShowAction {
+public class LiveMessageBll implements RoomAction, QuestionShowAction,KeyBordAction {
     private String TAG = "LiveMessageBll";
     /** 消息 */
     private BaseLiveMessagePager mLiveMessagePager;
@@ -34,7 +36,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
     private Handler mHandler = new Handler();
     public QuestionBll questionBll;
     private RelativeLayout rlLiveMessageContent;
-    private LiveBll mLiveBll;
+    private IRCState mLiveBll;
     private boolean openchat;
     /** 是不是正在答题 */
     private int isAnaswer = -1;
@@ -62,7 +64,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
         questionBll.setLiveMessageBll(this);
     }
 
-    public void setLiveBll(LiveBll mLiveBll) {
+    public void setLiveBll(IRCState mLiveBll) {
         this.mLiveBll = mLiveBll;
         if (mLiveMessagePager != null) {
             mLiveMessagePager.setLiveBll(mLiveBll);

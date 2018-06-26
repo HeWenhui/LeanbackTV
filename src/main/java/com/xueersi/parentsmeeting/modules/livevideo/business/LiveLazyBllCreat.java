@@ -72,11 +72,11 @@ public class LiveLazyBllCreat {
     }
 
     public LiveAutoNoticeBll createAutoNoticeBll() {
-        return new LiveAutoNoticeBll(liveVideoActivity, bottomContent);
+        return new LiveAutoNoticeBll(liveVideoActivity, null, bottomContent);
     }
 
     RolePlayAction createRolePlayBll() {
-        RolePlayerBll rolePlayerBll = new RolePlayerBll(liveVideoActivity, bottomContent, liveBll,liveGetInfo);
+        RolePlayerBll rolePlayerBll = new RolePlayerBll(liveVideoActivity, bottomContent, liveBll, liveGetInfo);
         questionBll.setRolePlayAction(rolePlayerBll);
         return rolePlayerBll;
     }
@@ -98,8 +98,8 @@ public class LiveLazyBllCreat {
         return praiseListBll;
     }
 
-    public TeamPkBll createTeamPkBll(){
-        return null ;//new TeamPkBll(liveVideoActivity, bottomContent);
+    public TeamPkBll createTeamPkBll() {
+        return null;//new TeamPkBll(liveVideoActivity, bottomContent);
     }
 
 }
