@@ -756,18 +756,19 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         @Override
         public void onOpenSuccess() {
             isPlay = true;
+            mHandler.removeCallbacks(mOpenTimeOutRun);
+            mHandler.removeCallbacks(mPlayDuration);
+            mHandler.removeCallbacks(getVideoCachedDurationRun);
             if (startRemote.get()) {
                 mLogtf.d("onOpenSuccess:startRemote=true");
                 stopPlay();
                 return;
             }
+            lastPlayTime = System.currentTimeMillis();
             openSuccess = true;
-            mHandler.removeCallbacks(mOpenTimeOutRun);
             mPlayStatistics.onOpenSuccess();
-            mHandler.removeCallbacks(mPlayDuration);
             mLogtf.d("onOpenSuccess:playTime=" + playTime);
             mHandler.postDelayed(mPlayDuration, mPlayDurTime);
-            mHandler.removeCallbacks(getVideoCachedDurationRun);
             mHandler.postDelayed(getVideoCachedDurationRun, 10000);
         }
 
