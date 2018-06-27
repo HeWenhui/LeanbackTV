@@ -249,7 +249,7 @@ public class VideoChatBll implements VideoChatAction {
         }
         if (activity instanceof AudioRequest) {
             AudioRequest audioRequest = (AudioRequest) activity;
-            audioRequest.request(null);
+            audioRequest.requestAudio(null);
         }
         if (mLiveRemarkBll != null) {
             mLiveRemarkBll.setOnChat(true);
@@ -832,7 +832,7 @@ public class VideoChatBll implements VideoChatAction {
             videoChatInter.stopRecord();
             if (activity instanceof AudioRequest) {
                 AudioRequest audioRequest = (AudioRequest) activity;
-                audioRequest.release();
+                audioRequest.releaseAudio();
             }
             if (mLiveRemarkBll != null) {
                 mLiveRemarkBll.setOnChat(false);

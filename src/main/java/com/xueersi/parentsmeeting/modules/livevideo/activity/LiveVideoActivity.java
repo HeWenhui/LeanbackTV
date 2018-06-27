@@ -792,7 +792,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             mHandler.removeCallbacks(mBufferTimeOutRun);
             mHandler.removeCallbacks(mPlayDuration);
             mPlayStatistics.onOpenFailed(arg1, arg2);
-            mLogtf.d("onOpenFailed");
+            mLogtf.d("onOpenFailed:arg2=" + arg2);
             if (lastPlayserverEntity != null) {
                 mLiveBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "fail reconnect");
                 reportPlayStarTime = System.currentTimeMillis();
@@ -851,13 +851,17 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
 
         @Override
         public void run() {
+            if (isInitialized()) {
+                vPlayer.releaseSurface();
+                vPlayer.stop();
+            }
             long openTime = System.currentTimeMillis() - openStartTime;
             if (openTime > 40000) {
                 mLiveBll.streamReport(LiveBll.MegId.MEGID_12107, mGetInfo.getChannelname(), openTime);
             } else {
                 mLiveBll.streamReport(LiveBll.MegId.MEGID_12137, mGetInfo.getChannelname(), openTime);
             }
-            mLogtf.d("bufferTimeOut:progress=" + vPlayer.getBufferProgress());
+            mLogtf.d("bufferTimeOut:progress=" + vPlayer.getBufferProgress() + ",openTime=" + openTime);
             if (lastPlayserverEntity != null) {
                 mLiveBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "buffer empty reconnect");
                 reportPlayStarTime = System.currentTimeMillis();
@@ -894,6 +898,10 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
 
         @Override
         public void run() {
+            if (isInitialized()) {
+                vPlayer.releaseSurface();
+                vPlayer.stop();
+            }
             long openTimeOut = System.currentTimeMillis() - openStartTime;
             mLogtf.d("openTimeOut:progress=" + vPlayer.getBufferProgress() + ",openTimeOut=" + openTimeOut);
             mLiveBll.repair(false);
@@ -1176,6 +1184,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         }
     }
 
+    @Override
     public AtomicBoolean getStartRemote() {
         return startRemote;
     }
@@ -1689,7 +1698,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
     };
 
     @Override
-    public void request(OnAudioRequest onAudioRequest) {
+    public void requestAudio(OnAudioRequest onAudioRequest) {
         audioRequest = true;
         Loger.d(TAG, "request:englishSpeekBll=" + (englishSpeekBll == null));
         if (englishSpeekBll != null) {
@@ -1703,7 +1712,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
     }
 
     @Override
-    public void release() {
+    public void releaseAudio() {
         audioRequest = false;
         Loger.d(TAG, "release:englishSpeekBll=" + (englishSpeekBll == null));
         if (englishSpeekBll != null) {
