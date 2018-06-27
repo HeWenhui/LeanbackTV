@@ -57,7 +57,6 @@ public class LiveGetPlayServer {
     private Callback.Cancelable mGetPlayServerCancle;
     /** 直播帧数统计 */
     TotalFrameStat totalFrameStat;
-    GetPlayServerEvent getPlayServerEvent;
     VideoAction mVideoAction;
     LiveHttpManager mHttpManager;
     LiveHttpResponseParser mHttpResponseParser;
@@ -98,24 +97,17 @@ public class LiveGetPlayServer {
      * @param modechange
      */
     public void liveGetPlayServer(boolean modechange) {
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                boolean isPresent = liveBll.isPresent();
-//                mLogtf.d("liveGetPlayServer:isPresent=" + isPresent);
-//                if (!isPresent && mVideoAction != null) {
-//                    mVideoAction.onTeacherNotPresent(true);
-//                }
-//            }
-//        }.start();
-        if (getPlayServerEvent != null) {
-            getPlayServerEvent.onGetPlayServerStart(modechange);
-        }
+        new Thread() {
+            @Override
+            public void run() {
+                boolean isPresent = liveBll.isPresent();
+                mLogtf.d("liveGetPlayServer:isPresent=" + isPresent);
+                if (!isPresent && mVideoAction != null) {
+                    mVideoAction.onTeacherNotPresent(true);
+                }
+            }
+        }.start();
         liveGetPlayServer(mLiveTopic.getMode(), modechange);
-    }
-
-    interface GetPlayServerEvent {
-        void onGetPlayServerStart(boolean modechange);
     }
 
     private long lastGetPlayServer;
