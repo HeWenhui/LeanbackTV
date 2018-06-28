@@ -363,7 +363,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                 Float f = framesPsTen.get(i);
                 totalfps += f;
             }
-            averagefps = totalfps / 10;
+            averagefps = totalfps / 10f;
             framesPsTen.clear();
             dataJson.put("bufferduration", "" + bufferduration);
             dataJson.put("averagefps", "" + averagefps);
