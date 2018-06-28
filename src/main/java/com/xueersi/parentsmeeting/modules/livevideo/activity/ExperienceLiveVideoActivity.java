@@ -454,6 +454,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //        if (mode != null) {
 //            mLiveMessagePager.onopenchat(openchat, mode, false);
 //        }
+        // 隐藏锁屏按钮
+        mLiveMessagePager.hideclock();
         rlLiveMessageContent.addView(mLiveMessagePager.getRootView(), params);
     }
 
