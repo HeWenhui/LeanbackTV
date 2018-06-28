@@ -498,7 +498,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         // 统计视频播放key
         mVisitTimeKey = mVideoEntity.getVisitTimeKey();
         // 播放器统计时长发送间隔
-        setmSendPlayVideoTime(mVideoEntity.getvCourseSendPlayVideoTime());
+        if (isArts == 1) {
+            setmSendPlayVideoTime(LiveVideoConfig.LIVE_HB_TIME);
+        } else {
+            setmSendPlayVideoTime(mVideoEntity.getvCourseSendPlayVideoTime());
+        }
         // 播放视频
         mWebPath = mVideoEntity.getVideoPath();
 //        if (CourseInfoLiveActivity.isTest) {
@@ -592,13 +596,11 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     MoreChoiceItem morelistItem = new MoreChoiceItem(mContext, mData);
                     return morelistItem;
                 }
-
             };
             mMorecourse.setAdapter(mCourseAdapter);
         }
         // 04.12 第一次进入的时候，就去请求回放的所有广告信息
         lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(), getDataCallBack);
-
     }
 
     AbstractBusinessDataCallBack getDataCallBack = new AbstractBusinessDataCallBack() {
@@ -736,6 +738,22 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             }
         }
         return super.getVideoKey();
+    }
+
+    @Override
+    protected void sendPlayVideo() {
+        if (isArts == 1) {
+            // 如果观看视频时间等于或大于统计数则发送
+            if (mPlayVideoTime >= mSendPlayVideoTime) {
+                String liveId = mVideoEntity.getLiveId();
+                // 发送观看视频时间
+                lectureLivePlayBackBll.sendLiveCourseVisitTime(stuCourId, liveId, mSendPlayVideoTime, sendPlayVideoHandler, 1000);
+                // 时长初始化
+                mPlayVideoTime = 0;
+            }
+        } else {
+            super.sendPlayVideo();
+        }
     }
 
     /** 播放时长，1分钟统计 */

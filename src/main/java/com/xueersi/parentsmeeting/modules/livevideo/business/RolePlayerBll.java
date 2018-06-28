@@ -289,7 +289,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     mRolePlayerPager = null;
                     if (mContext instanceof AudioRequest) {
                         AudioRequest audioRequest = (AudioRequest) mContext;
-                        audioRequest.release();
+                        audioRequest.releaseAudio();
                     }
                 }
             }

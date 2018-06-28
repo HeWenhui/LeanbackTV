@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.HardWareUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService;
 import com.xueersi.xesalib.umsagent.DeviceInfo;
@@ -71,6 +72,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     private String memsize;
     private String channelname;
     private int heartCount;
+    LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
     public TotalFrameStat(final Activity activity) {
         this.activity = activity;
@@ -167,11 +169,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                             }
                         }
                         if (framesPsTen.size() == 10) {
-                            try {
-                                xescdnLogHeart();
-                            } catch (OutOfMemoryError error) {
-
-                            }
+                            xescdnLogHeart();
                         }
 //                        if (lastFps != 0) {
 //                            frames.add("" + ((int) ((lastFps + fps) * 5 / 2)));
@@ -314,7 +312,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     }
 
     private void xescdnLogHeart() {
-        new Thread("xescdnHeart:" + heartCount++) {
+        liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 final HashMap<String, String> defaultKey = new HashMap<>();
@@ -333,7 +331,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                     }
                 });
             }
-        }.start();
+        });
     }
 
     private void xescdnLogHeart(HashMap<String, String> defaultKey) {

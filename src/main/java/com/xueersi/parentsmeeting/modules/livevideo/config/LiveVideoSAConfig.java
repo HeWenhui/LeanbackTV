@@ -90,7 +90,7 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_GET_QUESTION = HTTP_HOST + "/LiveCourse/getQuestion";
         /** 得到h5课件-不区分文理 */
         public String URL_LIVE_GET_WARE_URL = AppConfig.HTTP_HOST + "/LiveCourse/getCourseWareUrl";
-        /** 一次多发课件*/
+        /** 一次多发课件 */
         public String URL_LIVE_GET_MORE_WARE_URL = AppConfig.HTTP_HOST + "/science/LiveCourse/courseWarePreLoad";
         /** 互动题满分榜接口 */
         public String LIVE_FULL_MARK_LIST_QUESTION = HTTP_HOST + "/LiveCourse/teamTestFullScoreRank";
@@ -150,8 +150,8 @@ public class LiveVideoSAConfig {
         public String URL_TEMPK_STUPKRESULT = HTTP_HOST + "/LiveCourse/stuPKResult";
         /** 贡献之星结果 */
         public String URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR = HTTP_HOST + "/LiveCourse/teamEnergyNumAndContributionStar";
-
-
+        /** 直播回放的用户在线心跳 */
+        public String URL_LIVE_VISITTIME = HTTP_HOST + "/LiveCourse/visitTime";
     }
 
 }

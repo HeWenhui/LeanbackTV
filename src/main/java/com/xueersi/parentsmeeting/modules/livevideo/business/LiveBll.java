@@ -173,7 +173,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /**
      * 学习记录提交时间间隔
      */
-    private int mHbTime = 300, mHbCount = 0;
+    private int mHbTime = LiveVideoConfig.LIVE_HB_TIME, mHbCount = 0;
     private AtomicInteger mOpenCount = new AtomicInteger(0);
     private AtomicInteger mBufferCount = new AtomicInteger(0);
     private AtomicInteger mRepairBufferCount = new AtomicInteger(0);
@@ -2350,7 +2350,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         public void onUnknown(String line) {
             if (line.contains("BLOCK")) {//发送了敏感词
                 if (mLiveAutoNoticeBll != null) {
-                    if (System.currentTimeMillis() - blockTime > 2 * 60 * 1000) {
+                    if (System.currentTimeMillis() - blockTime > 30 * 60 * 1000) {
                         blockTime = System.currentTimeMillis();
                         postDelayedIfNotFinish(new Runnable() {
                             @Override

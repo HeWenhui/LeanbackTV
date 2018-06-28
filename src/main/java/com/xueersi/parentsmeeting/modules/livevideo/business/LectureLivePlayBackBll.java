@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
@@ -33,7 +35,6 @@ import com.xueersi.xesalib.utils.file.FileUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.view.layout.dataload.DataLoadEntity;
-import com.xueersi.xesalib.view.layout.dataload.PageDataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -41,11 +42,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.Call;
 
 
 /**
@@ -701,20 +699,20 @@ public class LectureLivePlayBackBll extends BaseBll {
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 ExPerienceLiveMessage livebackmsg = JsonUtil.getEntityFromJson(responseEntity.getJsonObject().toString(), ExPerienceLiveMessage.class);
                 getLiveLectureMsgs.getLiveExperienceMsgs(livebackmsg);
-                Log.e("Duncan","livebackmsgsize:" + livebackmsg.getMsg().size());
+                Log.e("Duncan", "livebackmsgsize:" + livebackmsg.getMsg().size());
             }
         });
 
     }
 
     // 18.04.11 获取讲座直播回放中的更多课程的广告信息
-    public void getMoreCourseChoices(String liveId,final AbstractBusinessDataCallBack getDataCallBack){
-        mCourseHttpManager.getMoreCourseChoices(liveId,new HttpCallBack(false){
+    public void getMoreCourseChoices(String liveId, final AbstractBusinessDataCallBack getDataCallBack) {
+        mCourseHttpManager.getMoreCourseChoices(liveId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Log.e("Duncan","playbackresponseEntity:" + responseEntity);
+                Log.e("Duncan", "playbackresponseEntity:" + responseEntity);
                 MoreChoice choiceEntity = JsonUtil.getEntityFromJson(responseEntity.getJsonObject().toString(), MoreChoice.class);
-                if(choiceEntity != null){
+                if (choiceEntity != null) {
                     getDataCallBack.onDataSucess(choiceEntity);
                 }
             }
@@ -723,26 +721,26 @@ public class LectureLivePlayBackBll extends BaseBll {
     }
 
     // 获取体验学习报告
-    public void getExperienceResult(String termId,String liveId,final AbstractBusinessDataCallBack getDataCallBack){
+    public void getExperienceResult(String termId, String liveId, final AbstractBusinessDataCallBack getDataCallBack) {
         mCourseHttpManager.getExperienceResult(termId, liveId, new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 ExperienceResult learn = JsonUtil.getEntityFromJson(responseEntity.getJsonObject().toString(), ExperienceResult.class);
-                if(learn != null){
+                if (learn != null) {
                     getDataCallBack.onDataSucess(learn);
                 }
-                Log.e("Duncan","playbackresponseEntity:" + responseEntity);
+                Log.e("Duncan", "playbackresponseEntity:" + responseEntity);
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                Log.e("Duncan","playbackerrorEntity:" + error);
+                Log.e("Duncan", "playbackerrorEntity:" + error);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                Log.e("Duncan","playbackerrorEntity:" + responseEntity);
+                Log.e("Duncan", "playbackerrorEntity:" + responseEntity);
             }
 
 
@@ -790,7 +788,7 @@ public class LectureLivePlayBackBll extends BaseBll {
     }
 
     // 回放式体验课的心跳时间
-    public void uploadPlaybackVideoPlayTime(int liveId, Long hbtime){
+    public void uploadPlaybackVideoPlayTime(int liveId, Long hbtime) {
         mCourseHttpManager.uploadPlaybackPlayTime(liveId, hbtime, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -799,5 +797,37 @@ public class LectureLivePlayBackBll extends BaseBll {
         });
     }
 
+    public void sendLiveCourseVisitTime(final String stuCouId, final String liveId, final int hbTime, final Handler handler, final long delayMillis) {
+        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        mCourseHttpManager.sendLiveCourseVisitTime(myUserInfoEntity.getEnstuId(), stuCouId, liveId, hbTime, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                Loger.d(TAG, "onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                Loger.d(TAG, "onPmError:errorMsg=" + responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                if ((mContext instanceof Activity) && ((Activity) mContext).isFinishing()) {
+                    return;
+                }
+                if (delayMillis > 12000) {
+                    return;
+                }
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        sendLiveCourseVisitTime(stuCouId, liveId, hbTime, handler, delayMillis + 2000);
+                    }
+                }, delayMillis);
+            }
+        });
+    }
 
 }

@@ -267,7 +267,7 @@ public class IRCMessage {
 
             @Override
             public void onJoin(String target, String sender, String login, String hostname) {
-                if (sender.startsWith("s_")) {
+                if (sender.startsWith("s_") || sender.startsWith("ws_")) {
                     Loger.i(TAG, "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                 } else {
                     mLogtf.d("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
@@ -279,8 +279,13 @@ public class IRCMessage {
 
             @Override
             public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-                mLogtf.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
-                        + sourceHostname + ",reason=" + reason);
+                if (sourceNick.startsWith("s_") || sourceNick.startsWith("ws_")) {
+                    Loger.d(TAG,"onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+                            + sourceHostname + ",reason=" + reason);
+                }else {
+                    mLogtf.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+                            + sourceHostname + ",reason=" + reason);
+                }
                 if (mIRCCallback != null) {
                     mIRCCallback.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
                 }

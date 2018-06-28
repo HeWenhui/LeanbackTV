@@ -430,7 +430,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         // 统计视频播放key
         mVisitTimeKey = mVideoEntity.getVisitTimeKey();
         // 播放器统计时长发送间隔
-        setmSendPlayVideoTime(mVideoEntity.getvCourseSendPlayVideoTime());
+        setmSendPlayVideoTime(LiveVideoConfig.LIVE_HB_TIME);
         // 播放视频
         mWebPath = mVideoEntity.getVideoPath();
 //        if (CourseInfoLiveActivity.isTest) {
@@ -722,6 +722,18 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
             }
         }
         return super.getVideoKey();
+    }
+
+    @Override
+    protected void sendPlayVideo() {
+        // 如果观看视频时间等于或大于统计数则发送
+        if (mPlayVideoTime >= mSendPlayVideoTime) {
+            String liveId = mVideoEntity.getLiveId();
+            // 发送观看视频时间
+            lectureLivePlayBackBll.sendLiveCourseVisitTime(stuCourId, liveId, mSendPlayVideoTime, sendPlayVideoHandler, 1000);
+            // 时长初始化
+            mPlayVideoTime = 0;
+        }
     }
 
     /** 视频播放进度实时获取 */

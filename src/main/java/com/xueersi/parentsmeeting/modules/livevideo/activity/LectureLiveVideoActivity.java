@@ -756,7 +756,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             mHandler.removeCallbacks(mOpenTimeOutRun);
             mHandler.removeCallbacks(mBufferTimeOutRun);
             mPlayStatistics.onOpenFailed(arg1, arg2);
-            mLogtf.d("onOpenFailed");
+            mLogtf.d("onOpenFailed:arg2=" + arg2);
             if (lastPlayserverEntity != null) {
                 mLiveBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "fail reconnect");
                 reportPlayStarTime = System.currentTimeMillis();
@@ -816,8 +816,12 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
 
         @Override
         public void run() {
-            mLogtf.d("bufferTimeOut:progress=" + vPlayer.getBufferProgress());
+            if (isInitialized()) {
+                vPlayer.releaseSurface();
+                vPlayer.stop();
+            }
             long openTime = System.currentTimeMillis() - openStartTime;
+            mLogtf.d("bufferTimeOut:progress=" + vPlayer.getBufferProgress() + ",openTime=" + openTime);
             if (openTime > 40000) {
                 mLiveBll.streamReport(LiveBll.MegId.MEGID_12107, mGetInfo.getChannelname(), openTime);
             } else {
@@ -853,6 +857,10 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
 
         @Override
         public void run() {
+            if (isInitialized()) {
+                vPlayer.releaseSurface();
+                vPlayer.stop();
+            }
             long openTimeOut = System.currentTimeMillis() - openStartTime;
             mLogtf.d("openTimeOut:progress=" + vPlayer.getBufferProgress() + ",openTimeOut=" + openTimeOut);
             mLiveBll.repair(false);

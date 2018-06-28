@@ -460,7 +460,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         voiceAnswerPager = voiceAnswerPager2;
         if (context instanceof AudioRequest) {
             AudioRequest audioRequest = (AudioRequest) context;
-            audioRequest.request(new AudioRequest.OnAudioRequest() {
+            audioRequest.requestAudio(new AudioRequest.OnAudioRequest() {
                 @Override
                 public void requestSuccess() {
                     if (voiceAnswerPager != null) {
@@ -478,7 +478,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         voiceAnswerPager = null;
         if (context instanceof AudioRequest) {
             AudioRequest audioRequest = (AudioRequest) context;
-            audioRequest.release();
+            audioRequest.releaseAudio();
         }
         if (isEnd) {
             onQuestionShow(false);

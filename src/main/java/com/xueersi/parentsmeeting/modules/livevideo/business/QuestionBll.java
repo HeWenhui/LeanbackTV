@@ -609,7 +609,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     }
                     if (activity instanceof AudioRequest) {
                         AudioRequest audioRequest = (AudioRequest) activity;
-                        audioRequest.request(new AudioRequest.OnAudioRequest() {
+                        audioRequest.requestAudio(new AudioRequest.OnAudioRequest() {
                             @Override
                             public void requestSuccess() {
 
@@ -1174,7 +1174,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         voiceAnswerPager = null;
                         if (activity instanceof AudioRequest) {
                             AudioRequest audioRequest = (AudioRequest) activity;
-                            audioRequest.release();
+                            audioRequest.releaseAudio();
                         }
                     }
                     mLogtf.d("onBack:Verify");
@@ -1328,7 +1328,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             speechAssessmentPager = null;
             if (activity instanceof AudioRequest) {
                 AudioRequest audioRequest = (AudioRequest) activity;
-                audioRequest.release();
+                audioRequest.releaseAudio();
             }
         }
 //        activity.getWindow().setFlags(haveExam ? 0 : WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager
@@ -1404,7 +1404,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         voiceAnswerPager = voiceAnswerPager2;
         if (activity instanceof AudioRequest) {
             AudioRequest audioRequest = (AudioRequest) activity;
-            audioRequest.request(new AudioRequest.OnAudioRequest() {
+            audioRequest.requestAudio(new AudioRequest.OnAudioRequest() {
                 @Override
                 public void requestSuccess() {
                     if (voiceAnswerPager != null) {
@@ -1748,7 +1748,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         voiceAnswerPager = null;
         if (activity instanceof AudioRequest) {
             AudioRequest audioRequest = (AudioRequest) activity;
-            audioRequest.release();
+            audioRequest.releaseAudio();
         }
     }
 
@@ -2049,7 +2049,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             voiceAnswerPager = null;
             if (activity instanceof AudioRequest) {
                 AudioRequest audioRequest = (AudioRequest) activity;
-                audioRequest.release();
+                audioRequest.releaseAudio();
             }
 //            if (rlVoiceQuestionContent != null) {
 //                rlVoiceQuestionContent.removeAllViews();
