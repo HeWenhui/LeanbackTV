@@ -238,6 +238,97 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                 Loger.e(TAG, "getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
             }
         });
+
+        // 一次多发的接口调用
+        liveBll.getMoreCourseWareUrl(liveId, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                Loger.e(TAG, "responseEntity.getJsonObject=" + responseEntity.getJsonObject());
+                final Object jsonObject = responseEntity.getJsonObject();
+                JSONArray array = new JSONArray(jsonObject.toString());
+                mList = new ArrayList<>();
+                for (int i = 0; i < array.length(); i++) {
+                    MoreCache cache = new MoreCache();
+                    JSONObject object = array.getJSONObject(i);
+                    cache.setPackageId(object.optString("packageId"));
+                    cache.setPackageSource(object.optString("packageSource"));
+                    cache.setIsTemplate(object.optInt("isTemplate"));
+                    cache.setPageId(object.optString("pageId"));
+                    cache.setResourceUrl(object.optString("resourceUrl"));
+                    cache.setTemplateUrl(object.optString("templateUrl"));
+                    mList.add(cache);
+                }
+                Loger.e(TAG, "list" + mList.size());
+                if (mList.size() > 0) {
+                    download(todayLiveCacheDir);
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                super.onFailure(call, e);
+                Loger.e(TAG, "getCourseWareUrl:onFailure:e=" + e);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                Loger.e(TAG, "getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
+            }
+        });
+    }
+
+    private void download(File path) {
+        mUrls = new ArrayList<>();
+        mMorecachein = new File(path, liveId);
+        if(!mMorecachein.exists()){
+            mMorecachein.mkdirs();
+        }
+        mMorecacheout = new File(path, liveId + "child");
+        if(!mMorecacheout.exists()){
+            mMorecacheout.mkdirs();
+        }
+        // 下载以及解压预加载的文件
+        for (int i = 0; i < mList.size(); i++) {
+            if (!mUrls.contains(mList.get(i).getResourceUrl()) && !TextUtils.isEmpty(mList.get(i).getResourceUrl())) {
+                mUrls.add(mList.get(i).getResourceUrl());
+            }
+            if (!TextUtils.isEmpty(mList.get(i).getTemplateUrl())) {
+                mUrls.add(mList.get(i).getTemplateUrl());
+            }
+        }
+        for (int i = 0; i < mUrls.size(); i++) {
+            final String url = i + ".zip";
+            liveBll.download(mUrls.get(i), new File(mMorecachein, url).getPath(), new DownloadCallBack() {
+                @Override
+                protected void onDownloadSuccess() {
+                    new ZipExtractorTask(new File(mMorecachein, url), mMorecacheout, true, new Progresses()).execute();
+                }
+
+                @Override
+                protected void onDownloadFailed() {
+                    XESToastUtils.showToast(context, "下载资源包失败");
+                }
+            });
+        }
+
+    }
+
+    private class Progresses implements ZipProg {
+        @Override
+        public void onProgressUpdate(Integer... values) {
+
+        }
+
+        @Override
+        public void onPostExecute(Exception exception) {
+
+        }
+
+        @Override
+        public void setMax(int max) {
+
+        }
     }
 
 

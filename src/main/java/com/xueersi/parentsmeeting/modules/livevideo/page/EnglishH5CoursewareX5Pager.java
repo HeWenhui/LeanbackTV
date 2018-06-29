@@ -61,6 +61,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private boolean IS_SCIENCE;
     private int mGoldNum;
     private int mEnergyNum;
+    private final File mMorecacheout;
     private EnglishH5Entity englishH5Entity;
     private String mLoadUrls;
 
@@ -93,6 +94,12 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         if (!cacheFile.exists()) {
             cacheFile.mkdirs();
         }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+        Date date = new Date();
+        final String today = dateFormat.format(date);
+        final File todayCacheDir = new File(cacheFile, today);
+        final File todayLiveCacheDir = new File(todayCacheDir, liveId);
+        mMorecacheout = new File(todayLiveCacheDir, liveId + "child");
         initData();
     }
 
@@ -241,22 +248,85 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     @Override
     public void initData() {
         super.initData();
+        wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
+                int index = s.indexOf("courseware_pages");
+                if (index != -1) {
+                    String url2 = s.substring(index + "courseware_pages".length());
+                    int index2 = url2.indexOf("?");
+                    if (index2 != -1) {
+                        url2 = url2.substring(0, index2);
+                    }
+                    File file = new File(mMorecacheout, url2);
+                    if (file.exists()) {
+                        FileInputStream inputStream = null;
+                        try {
+                            inputStream = new FileInputStream(file);
+                            String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
+                            String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+                            WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
+                            return webResourceResponse;
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    Loger.d(TAG, "shouldInterceptRequest:file=" + file);
+                }
+                return super.shouldInterceptRequest(view, s);
+            }
+        });
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
-        String loadUrl = url + "?t=" + System.currentTimeMillis();
-        if (isPlayBack) {
-            loadUrl += "&isPlayBack=1";
+        if (LiveVideoConfig.isNewEnglishH5) {
+            // 一题多发的课件预加载
+            String packageId = "";
+            String packageSource = "";
+            String packageAttr = "";
+            String releasedPageInfos = "";
+            String teamId = "";
+            String stuCouId = "";
+            String stuId = "";
+            String classId = "";
+            try {
+                JSONObject jsonObject = new JSONObject(mShareDataManager.getString(LiveVideoConfig.newEnglishH5, "{}", ShareDataManager.SHAREDATA_USER));
+                packageId = jsonObject.optString("packageId");
+                packageSource = jsonObject.optString("packageSource");
+                packageAttr = jsonObject.optString("packageAttr");
+                releasedPageInfos = jsonObject.optString("releasedPageInfos");
+                stuId = jsonObject.optString("stuId");
+                stuCouId = jsonObject.optString("stuCouId");
+                classId = jsonObject.optString("classId");
+                teamId = jsonObject.optString("teamId");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+//            if(mMorecacheout.exists()){
+//                mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos
+//                        + "&isPlayBack=1&stuClientPath=" + Base64.encodeToString(("file://" + mMorecacheout.getPath()).getBytes(), Base64.DEFAULT);
+//            } else {
+//                mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&isPlayBack=0";
+//            }
+            mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&isPlayBack=0";
+            loadUrl(mLoadUrls);
+            Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + mLoadUrls);
+            reloadurl = mLoadUrls;
+        } else {
+            String loadUrl = url + "?t=" + System.currentTimeMillis();
+            if (isPlayBack) {
+                loadUrl += "&isPlayBack=1";
+            }
+            loadUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
+            if (!StringUtils.isEmpty(nonce)) {
+                loadUrl += "&nonce=" + nonce;
+            }
+            loadUrl += "&isTowall=" + isShowRanks;
+            Loger.i(TAG, "initData:loadUrl=" + loadUrl);
+            loadUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
+            loadUrl(loadUrl);
+            Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + loadUrl);
+            reloadurl = loadUrl;
         }
-        loadUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
-        if (!StringUtils.isEmpty(nonce)) {
-            loadUrl += "&nonce=" + nonce;
-        }
-        loadUrl += "&isTowall=" + isShowRanks;
-        Loger.i(TAG, "initData:loadUrl=" + loadUrl);
-        loadUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
-        loadUrl(loadUrl);
-        Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + loadUrl);
-        reloadurl = loadUrl;
         mGoldNum = -1;
         mEnergyNum = -1;
 
