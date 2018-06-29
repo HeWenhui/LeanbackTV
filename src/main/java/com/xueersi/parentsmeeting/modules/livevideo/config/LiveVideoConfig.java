@@ -93,7 +93,7 @@ public class LiveVideoConfig {
     /** 站立直播-语音评测 */
     public static String LIVE_STAND_SPEECH_TEST = "standlive_voiceTest";
     /** 站立直播-roleplay */
-    public static String LIVE_STAND_ROLEPLAY= "standlive_roleplay";
+    public static String LIVE_STAND_ROLEPLAY = "standlive_roleplay";
     /** 直播-NB实验 */
     public static String LIVE_H5_EXPERIMENT = "live_h5experiment";
     /** 直播-星星互动 */
@@ -164,18 +164,25 @@ public class LiveVideoConfig {
     public static Boolean isloading = false;
     /** 讲座直播广告Id */
     public static String LECTUREADID;
+<<<<<<< HEAD
     public static Boolean isNewEnglishH5 = false;
     /** 一题多发发题和收题的标志*/
     public static Boolean isSend = false;
     public static String newEnglishH5 = "NewEnglishH5";
     /** 小学阶段年级的标识*/
     public static Boolean isPrimary = false;
+=======
+
+>>>>>>> 61201
     public static interface SubjectIds {
         /**
          * 学科id，语文
          */
         public String SUBJECT_ID_CH = "1";
     }
+
+    /** 直播心跳时长 */
+    public static int LIVE_HB_TIME = 300;
 
     /** 教育阶段1 */
     public final static String EDUCATION_STAGE_1 = "1";

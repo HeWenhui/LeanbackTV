@@ -1248,4 +1248,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     public void showPeopleCount(int num) {
         tvMessageCount.setText(num + "人正在上课");
     }
+
+    // 隐藏锁屏按钮
+    public void hideclock(){
+        cbMessageClock.setVisibility(View.GONE);
+    }
 }

@@ -158,7 +158,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
      * @param enStuId
      * @param requestCallBack
      */
-    public void getLivePlayRedPackets(String enStuId, String operateId,String termId, String liveId, HttpCallBack
+    public void getLivePlayRedPackets(String enStuId, String operateId, String termId, String liveId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
@@ -238,8 +238,8 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     }
 
     // 03.14 获取体验课聊天记录
-    public void getExperiencenMsgs(String liveId, String classId,Long start,
-                                   HttpCallBack requestCallBack){
+    public void getExperiencenMsgs(String liveId, String classId, Long start,
+                                   HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
         params.addBodyParam("liveId", liveId);
@@ -250,7 +250,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     }
 
     // 04.11 获取讲座直播回放中更多课程的广告信息
-    public void getMoreCourseChoices(String liveId, HttpCallBack requestCallBack){
+    public void getMoreCourseChoices(String liveId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         setDefaultParameter(params);
@@ -259,7 +259,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     }
 
     // 获取体验课学习报告
-    public void getExperienceResult(String termId,String liveId,HttpCallBack requestCallBack){
+    public void getExperienceResult(String termId, String liveId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("orderId", termId);
         params.addBodyParam("liveId", liveId);
@@ -304,11 +304,31 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     }
 
     /* 上传回放式体验课播放器播放时长的接口 */
-    public void uploadPlaybackPlayTime(int liveId, Long hbTime, HttpCallBack callBack){
+    public void uploadPlaybackPlayTime(int liveId, Long hbTime, HttpCallBack callBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId + "");
         params.addBodyParam("enstuId", UserBll.getInstance().getMyUserInfoEntity().getEnstuId());
         params.addBodyParam("hbTime", hbTime.toString());
         sendPost(LiveVideoConfig.URL_PLAYBACKPLAYTIME, params, callBack);
+    }
+
+    /**
+     * 直播回放视频播放访问时长接口
+     *
+     * @param enStuId
+     * @param stuCouId
+     * @param liveid
+     * @param hbTime
+     */
+    public void sendLiveCourseVisitTime(String enStuId, String stuCouId, String liveid, int hbTime, HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("enstuId", enStuId);
+        params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("liveId", liveid);
+        params.addBodyParam("hbTime", "" + hbTime);
+        params.addBodyParam("systemName", "android");
+        params.addBodyParam("fromType", "4");
+        params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
+        sendPost(liveVideoSAConfigInner.URL_LIVE_VISITTIME, params, httpCallBack);
     }
 }

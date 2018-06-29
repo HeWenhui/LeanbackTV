@@ -56,6 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveScienceHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
@@ -172,7 +173,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     /**
      * 学习记录提交时间间隔
      */
-    private int mHbTime = 300, mHbCount = 0;
+    private int mHbTime = LiveVideoConfig.LIVE_HB_TIME, mHbCount = 0;
     private AtomicInteger mOpenCount = new AtomicInteger(0);
     private AtomicInteger mBufferCount = new AtomicInteger(0);
     private AtomicInteger mRepairBufferCount = new AtomicInteger(0);
@@ -246,6 +247,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private TeamPkBll mTeamPKBll;
     private TeacherPraiseBll mTeacherPraiseBll1;
     public static boolean isAllowTeamPk = false;
+    LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
     public LiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form, LiveGetInfo
             liveGetInfo) {
@@ -517,6 +519,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 mLogtf.d("sendReceiveGold:onPmSuccess=" + responseEntity.getJsonObject().toString() + ",operateId=" +
                         operateId);
                 VideoResultEntity entity = mHttpResponseParser.redPacketParseParser(responseEntity);
+                entity.setHttpUrl(url);
+                entity.setHttpRes("" + responseEntity.getJsonObject());
                 callBack.onDataSucess(entity);
             }
 
@@ -551,6 +555,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         operateId);
                 GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId(),
                         mGetInfo.getHeadImgPath());
+                entity.setHttpUrl(url);
+                entity.setHttpRes("" + responseEntity.getJsonObject());
                 callBack.onDataSucess(entity);
             }
 
@@ -580,6 +586,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         operateId);
                 GoldTeamStatus entity = mHttpResponseParser.redGoldTeamStatus(responseEntity, mGetInfo.getStuId(),
                         mGetInfo.getHeadImgPath());
+                entity.setHttpUrl(url);
+                entity.setHttpRes("" + responseEntity.getJsonObject());
                 callBack.onDataSucess(entity);
             }
 
@@ -1147,7 +1155,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     String id = "";
                     String courseware_type = "";
                     if ("on".equals(status)) {
-                        LiveVideoConfig.isNewEnglishH5 = false;
                         id = h5_Experiment.getString("id");
                         courseware_type = h5_Experiment.getString("courseware_type");
                         play_url = liveVideoSAConfig.inner.coursewareH5 + mLiveId + "/" + vStuCourseID + "/" + id +
@@ -1171,37 +1178,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         if (mLiveAutoNoticeBll != null) {
                             mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                             mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.courseware_type);
-                        }
-                    } else {
-                        LiveVideoConfig.isNewEnglishH5 = true;
-                        if (englishH5CoursewareAction != null) {
-                            JSONObject object = jsonObject.optJSONObject("platformTest");
-                            if (object != null && !object.toString().equals("{}")) {
-                                LiveVideoConfig.isSend = true;
-                                status = LiveVideoConfig.isSend  ?  "on" : "off";
-                                String nonce = object.optString("nonce");
-                                StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
-                                String teamId = studentLiveInfo.getTeamId();
-                                String classId = studentLiveInfo.getClassId();
-                                EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
-                                englishH5Entity.setNewEnglishH5(true);
-                                try {
-                                    JSONObject objects = new JSONObject();
-                                    objects.put("packageId", object.getString("pId"));
-                                    objects.put("packageSource", object.getString("pSrc"));
-                                    objects.put("packageAttr", object.getString("pAttr"));
-                                    objects.put("releasedPageInfos", object.getString("tests"));
-                                    objects.put("teamId", teamId);
-                                    objects.put("stuCouId", vStuCourseID);
-                                    objects.put("stuId", mGetInfo.getStuId());
-                                    objects.put("classId", classId);
-                                    mShareDataManager.put(LiveVideoConfig.newEnglishH5, objects.toString(), ShareDataManager.SHAREDATA_USER);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                LiveVideoConfig.isSend = false;
-                            }
                         }
                     }
                     englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
@@ -1368,6 +1344,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         videoQuestionLiveEntity.isAllow42 = object.optString("isAllow42", "");
                         videoQuestionLiveEntity.speechContent = object.optString("answer", "");
                         videoQuestionLiveEntity.multiRolePlay = object.optString("multiRolePlay", "0");
+                        videoQuestionLiveEntity.roles = object.optString("roles", "");
 //                        if (BuildConfig.DEBUG) {onget
 //                            videoQuestionLiveEntity.isTestUseH5 = true;
 //                        }
@@ -1685,7 +1662,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     }
                     break;
                     case XESCODE.ENGLISH_H5_COURSEWARE: {
-                        LiveVideoConfig.isNewEnglishH5 = false;
                         if (englishH5CoursewareAction != null) {
                             VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                             String play_url = "";
@@ -1753,36 +1729,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     case XESCODE.H5_STOP: {
                         if (h5CoursewareAction != null) {
                             h5CoursewareAction.onH5Courseware("", "off");
-                        }
-                    }
-                    break;
-                    case XESCODE.MULTIPLE_H5_COURSEWARE: {
-                        LiveVideoConfig.isNewEnglishH5 = true;
-                        if (englishH5CoursewareAction != null) {
-                            VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-                            LiveVideoConfig.isSend = object.optBoolean("open");
-                            String status = "";
-                            String nonce = object.optString("nonce");
-                            StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
-                            String teamId = studentLiveInfo.getTeamId();
-                            String classId = studentLiveInfo.getClassId();
-                            EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
-                            englishH5Entity.setNewEnglishH5(true);
-                            try {
-                                JSONObject objects = new JSONObject();
-                                objects.put("packageId", object.getString("pId"));
-                                objects.put("packageSource", object.getString("pSrc"));
-                                objects.put("packageAttr", object.getString("pAttr"));
-                                objects.put("releasedPageInfos", object.getString("tests"));
-                                objects.put("teamId", teamId);
-                                objects.put("stuCouId", vStuCourseID);
-                                objects.put("stuId", mGetInfo.getStuId());
-                                objects.put("classId", classId);
-                                mShareDataManager.put(LiveVideoConfig.newEnglishH5, objects.toString(), ShareDataManager.SHAREDATA_USER);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
                         }
                     }
                     break;
@@ -2427,7 +2373,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         public void onUnknown(String line) {
             if (line.contains("BLOCK")) {//发送了敏感词
                 if (mLiveAutoNoticeBll != null) {
-                    if (System.currentTimeMillis() - blockTime > 2 * 60 * 1000) {
+                    if (System.currentTimeMillis() - blockTime > 30 * 60 * 1000) {
                         blockTime = System.currentTimeMillis();
                         postDelayedIfNotFinish(new Runnable() {
                             @Override
@@ -2468,7 +2414,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      */
     private boolean isPresent(String mode) {
         boolean isPresent = true;
-        if (mIRCMessage != null && mIRCMessage.isConnected()) {
+        if (mIRCMessage != null && mIRCMessage.onUserList()) {
             if (LiveTopic.MODE_CLASS.endsWith(mode)) {
                 isPresent = mMainTeacher != null;
             } else {
@@ -2903,7 +2849,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
      * @param modechange
      */
     public void liveGetPlayServer(boolean modechange) {
-        new Thread() {
+        liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 boolean isPresent = isPresent(mLiveTopic.getMode());
@@ -2912,7 +2858,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     mVideoAction.onTeacherNotPresent(true);
                 }
             }
-        }.start();
+        });
         liveGetPlayServer(mLiveTopic.getMode(), modechange);
     }
 
@@ -3933,10 +3879,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         mHttpManager.getCourseWareUrl(requestCallBack);
     }
 
-    public void getMoreCourseWareUrl(String liveId, HttpCallBack requestCallBack) {
-        mHttpManager.getMoreCoureWareUrl(liveId, requestCallBack);
-    }
-
 //    public void getPreDownload(String url,String path){
 //        mHttpManager.download(url,path,new DownloadCallBack(){
 //            @Override
@@ -4206,10 +4148,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     .get());
             mCompleteCounTeacherCount.set(mCompleteCounTeacherCount.get() > 1000 ? 1000 : mCompleteCounTeacherCount
                     .get());
-            XesMobAgent.liveStatistics(mBufferCount.get(), mRepairBufferCount.get(), mRepairOpenCount.get(), mFailCount
-                            .get(),
-                    mFailMainTeacherCount.get(), mFailCounTeacherCount.get(), mCompleteCount.get(),
-                    mCompleteMainTeacherCount.get(), mCompleteCounTeacherCount.get());
+//            XesMobAgent.liveStatistics(mBufferCount.get(), mRepairBufferCount.get(), mRepairOpenCount.get(), mFailCount
+//                            .get(),
+//                    mFailMainTeacherCount.get(), mFailCounTeacherCount.get(), mCompleteCount.get(),
+//                    mCompleteMainTeacherCount.get(), mCompleteCounTeacherCount.get());
             postDelayedIfNotFinish(mStatisticsRun, mStatisticsdelay);
         }
     };
@@ -4448,6 +4390,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         if (mServer == null || playserverEntity == null) {
             return;
         }
+        HttpRequestParams entity = new HttpRequestParams();
         if (MegId.MEGID_12107 == msgid) {
             boolean isPresent = true;
             if (mIRCMessage != null) {
@@ -4460,9 +4403,15 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             if (!isPresent) {
                 return;
             }
+        } else if (MegId.MEGID_12102 == msgid) {
+            if (totalFrameStat != null) {
+                String cpuName = totalFrameStat.getCpuName();
+                String memsize = totalFrameStat.getMemsize();
+                String ua = Build.VERSION.SDK_INT + ";" + cpuName + ";" + memsize;
+                entity.addBodyParam("UA", ua);
+            }
         }
         String url = mGetInfo.getLogServerUrl();
-        HttpRequestParams entity = new HttpRequestParams();
         entity.addBodyParam("msgid", msgid.msgid);
         entity.addBodyParam("userid", mGetInfo.getStuId());
         entity.addBodyParam("username", mGetInfo.getUname());

@@ -5,9 +5,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
  * 语音请求和释放
  */
 public interface AudioRequest {
-    void request(OnAudioRequest onAudioRequest);
+    void requestAudio(OnAudioRequest onAudioRequest);
 
-    void release();
+    void releaseAudio();
 
     interface OnAudioRequest {
         void requestSuccess();

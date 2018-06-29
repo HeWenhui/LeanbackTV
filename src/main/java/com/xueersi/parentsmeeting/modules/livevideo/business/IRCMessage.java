@@ -8,6 +8,7 @@ import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.network.NetWorkHelper;
 
@@ -47,7 +48,7 @@ public class IRCMessage {
     /** 调度是不是在无网络下失败 */
     private boolean connectError = false;
     /** 和服务器的ping，线程池 */
-    private ThreadPoolExecutor pingPool;
+    LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     /** 是不是获得过用户列表 */
     private boolean onUserList = false;
 
@@ -59,14 +60,6 @@ public class IRCMessage {
                 + ".txt"));
         mLogtf.clear();
         mLogtf.d("IRCMessage:channel=" + channel + ",login=" + login + ",nickname=" + nickname);
-        pingPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
-        pingPool.setRejectedExecutionHandler(new RejectedExecutionHandler() {
-
-            @Override
-            public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-
-            }
-        });
     }
 
     /**
@@ -274,7 +267,7 @@ public class IRCMessage {
 
             @Override
             public void onJoin(String target, String sender, String login, String hostname) {
-                if (sender.startsWith("s_")) {
+                if (sender.startsWith("s_") || sender.startsWith("ws_")) {
                     Loger.i(TAG, "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                 } else {
                     mLogtf.d("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
@@ -286,8 +279,13 @@ public class IRCMessage {
 
             @Override
             public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-                mLogtf.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
-                        + sourceHostname + ",reason=" + reason);
+                if (sourceNick.startsWith("s_") || sourceNick.startsWith("ws_")) {
+                    Loger.d(TAG,"onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+                            + sourceHostname + ",reason=" + reason);
+                }else {
+                    mLogtf.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+                            + sourceHostname + ",reason=" + reason);
+                }
                 if (mIRCCallback != null) {
                     mIRCCallback.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
                 }
@@ -325,12 +323,12 @@ public class IRCMessage {
         boolean getserver = ircTalkConf.getserver(businessDataCallBack);
         if (!getserver) {
             ircTalkConf = null;
-            new Thread() {
+            liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     connect("create");
                 }
-            }.start();
+            });
         }
     }
 
@@ -394,7 +392,7 @@ public class IRCMessage {
                 mNewTalkConf.remove(index);
             }
             mLogtf.d("connect:method=" + method + ",connectError=" + connectError + ",netWorkType=" + netWorkType + ",conf=" + (ircTalkConf == null));
-            new Thread() {
+            liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -404,7 +402,7 @@ public class IRCMessage {
                     }
                     connect("connect2");
                 }
-            }.start();
+            });
         }
     }
 
@@ -495,7 +493,6 @@ public class IRCMessage {
     /** 播放器销毁 */
     public void destory() {
         mIsDestory = true;
-        pingPool.shutdownNow();
         mHandler.removeCallbacks(mPingRunnable);
         mHandler.removeCallbacks(mTimeoutRunnable);
         if (mConnection != null) {
@@ -525,7 +522,7 @@ public class IRCMessage {
 
         @Override
         public void run() {
-            pingPool.execute(new Runnable() {
+            liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     if (mIsDestory) {
@@ -547,6 +544,7 @@ public class IRCMessage {
         @Override
         public void run() {
             new Thread() {
+                @Override
                 public void run() {
                     if (mIsDestory) {
                         return;
