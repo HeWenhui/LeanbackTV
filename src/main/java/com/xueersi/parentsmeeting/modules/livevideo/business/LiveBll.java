@@ -106,7 +106,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private QuestionAction mQuestionAction;
     private RollCallAction mRollCallAction;
     private PraiseOrEncourageAction mPraiseOrEncourageAction;
-    private RedPackageAction readPackageBll;
+    private RedPackageAction readPackageBll,psredpackageBll;
     private VideoAction mVideoAction;
     private RoomAction mRoomAction;
     private LearnReportAction mLearnReportAction;
@@ -896,6 +896,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         this.readPackageBll = redPackageAction;
     }
 
+    public void setPScienceRedPackageBll(RedPackageAction redPackageAction){
+        this.psredpackageBll = redPackageAction;
+    }
+
     public void setVideoAction(VideoAction videoAction) {
         this.mVideoAction = videoAction;
     }
@@ -1439,12 +1443,31 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     break;
                     case XESCODE.UNDERSTANDT:
                         msg += "UNDERSTANDT";
-                        if ("off".equals(voiceChatStatus)) {//接麦懂了么无效
-                            if (mQuestionAction != null) {
-                                String nonce = object.optString("nonce");
-                                mQuestionAction.understand(nonce);
+                        // 测试待放开
+//                        if ("off".equals(voiceChatStatus)) {//接麦懂了么无效
+//                            if (mQuestionAction != null) {
+//                                String nonce = object.optString("nonce");
+//                                mQuestionAction.understand(nonce);
+//                            }
+//                        }
+                        ////////////////////////////  06.28 测试红包的弹窗
+                        //接麦红包无效
+                        String voiceChatStatus = "off";
+                        if ("off".equals(voiceChatStatus)) {
+                            if (psredpackageBll != null) {
+                                psredpackageBll.onReadPackage(1, new RedPackageAction
+                                        .OnReceivePackage() {
+                                    @Override
+                                    public void onReceivePackage(int operateId) {
+                                        // 更新右侧 金币信息
+                                        if (mTeamPKBll != null) {
+                                            mTeamPKBll.updatePkStateLayout(false);
+                                        }
+                                    }
+                                });
                             }
                         }
+                        ////////////////////////////////
                         break;
                     case XESCODE.OPENBARRAGE: {
                         boolean open = object.getBoolean("open");

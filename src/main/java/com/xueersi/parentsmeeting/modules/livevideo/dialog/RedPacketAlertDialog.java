@@ -6,6 +6,7 @@ import android.widget.Button;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.base.BaseApplication;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.xesalib.view.alertdialog.BaseAlertDialog;
 
 /**
@@ -15,6 +16,7 @@ import com.xueersi.xesalib.view.alertdialog.BaseAlertDialog;
 public class RedPacketAlertDialog extends BaseAlertDialog {
 
     private Button btnRedPacket;
+    private View mView;
 
     public RedPacketAlertDialog(Context context, BaseApplication application, boolean isSystem) {
         super(context, application, isSystem);
@@ -24,27 +26,31 @@ public class RedPacketAlertDialog extends BaseAlertDialog {
 
     @Override
     protected View initDialogLayout(int type) {
-        View view = mInflater.inflate(R.layout.dialog_red_packet_view, null);
-        btnRedPacket = (Button) view.findViewById(R.id.bt_livevideo_redpackage_cofirm);
-        btnRedPacket.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAlertDialog.cancel();
-                if (mClickListener != null) {
-                    mClickListener.onClick(v);
+        if(LiveVideoConfig.isPrimary){
+            mView = mInflater.inflate(R.layout.dialog_primary_redpacket, null);
+        }else{
+            mView = mInflater.inflate(R.layout.dialog_red_packet_view, null);
+            btnRedPacket = (Button) mView.findViewById(R.id.bt_livevideo_redpackage_cofirm);
+            btnRedPacket.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mAlertDialog.cancel();
+                    if (mClickListener != null) {
+                        mClickListener.onClick(v);
+                    }
                 }
-            }
-        });
-        view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAlertDialog.cancel();
-                if (mClickListener != null) {
-                    mClickListener.onClick(v);
+            });
+            mView.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mAlertDialog.cancel();
+                    if (mClickListener != null) {
+                        mClickListener.onClick(v);
+                    }
                 }
-            }
-        });
-        return view;
+            });
+        }
+        return mView;
     }
 
     /**
