@@ -216,7 +216,7 @@ public class LiveStandFrameAnim {
             @Override
             protected void onDownloadSuccess() {
                 tempFileZip.renameTo(saveFileZip);
-                long downTime = (System.currentTimeMillis() - downloadStart) / 1000;
+                long downTime = (System.currentTimeMillis() - downloadStart) / 1000 + 1;
                 double dspeed = downloadSize / downTime;
                 String bps;
                 if (dspeed >= 1024 * 1024) {

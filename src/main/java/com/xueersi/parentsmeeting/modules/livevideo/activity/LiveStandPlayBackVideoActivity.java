@@ -506,6 +506,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                     return false;
                 }
             });
+        }
 //            if (AppConfig.DEBUG) {
 //                List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
 //                VideoQuestionEntity videoQuestionEntity = new VideoQuestionEntity();
@@ -590,7 +591,6 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //                });
 //                redPackageStandBll.onReadPackage(Integer.parseInt(mRedPacketId));
             }
-        }
 //        lectureLivePlayBackBll.getExperienceMsgs(mVideoEntity.getLiveId(), mVideoEntity.getClassId(), 0L, new ExperienceLiveVideoActivity.GetExperienceLiveMsgs() {
 //
 //            @Override

@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBo
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
 import com.xueersi.xesalib.adapter.CommonAdapter;
+import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 import java.util.ArrayList;
@@ -94,6 +95,10 @@ public class RankBll {
                 if (relativeLayout.getVisibility() == View.VISIBLE) {
                     relativeLayout.startAnimation(mAnimSlideOut);
                 } else {
+                    if (mLiveBll.getGetInfo() == null) {
+                        XESToastUtils.showToast(liveVideoActivity, "请稍等");
+                        return;
+                    }
                     mLiveBll.getAllRanking(new AbstractBusinessDataCallBack() {
                         @Override
                         public void onDataSucess(Object... objData) {
