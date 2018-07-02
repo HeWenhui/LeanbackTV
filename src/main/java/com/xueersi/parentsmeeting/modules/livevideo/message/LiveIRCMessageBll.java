@@ -49,6 +49,11 @@ import java.util.HashMap;
 
 public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
     private final String TAG = "LiveIRCMessageBll";
+    /** 主讲老师前缀 */
+    public static final String TEACHER_PREFIX = "t_";
+    /** 辅导老师前缀 */
+    public static String COUNTTEACHER_PREFIX = "f_";
+
     private LiveGetInfo mGetInfo;
     private int mLiveType;
     private LogToFile mLogtf;
@@ -103,13 +108,15 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
         this.mLiveTopic = mLiveTopic;
     }
 
-    public void onLiveInit(LiveGetInfo getInfo) {
+    public void onLiveInited(LiveGetInfo getInfo) {
+        this.mGetInfo = getInfo;
         if (mLiveType == LiveBll2.LIVE_TYPE_LIVE) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = this.mGetInfo.getStudentLiveInfo();
             if (!StringUtils.isEmpty(studentLiveInfo.getTeamId()) && !"0".equals(studentLiveInfo.getTeamId())) {
                 haveTeam = true;
             }
         }
+        mCounteacher = new Teacher(mGetInfo.getTeacherName());
     }
 
     @Override
@@ -186,7 +193,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
             User user = users[i];
             String _nick = user.getNick();
             if (_nick != null && _nick.length() > 2) {
-                if (_nick.startsWith(LiveBll2.TEACHER_PREFIX)) {
+                if (_nick.startsWith(TEACHER_PREFIX)) {
                     s += ",mainTeacher=" + _nick;
                     haveMainTeacher = true;
                     synchronized (lock) {
@@ -197,7 +204,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
                             && mVideoAction != null) {
                         mVideoAction.onTeacherQuit(false);
                     }
-                } else if (_nick.startsWith(LiveBll2.COUNTTEACHER_PREFIX)) {
+                } else if (_nick.startsWith(COUNTTEACHER_PREFIX)) {
                     mCounTeacherStr = _nick;
                     haveCounteacher = true;
                     mCounteacher.isLeave = false;
@@ -258,7 +265,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
     @Override
     public void onJoin(String target, String sender, String login, String hostname) {
         Loger.d(TAG, "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
-        if (sender.startsWith(LiveBll2.TEACHER_PREFIX)) {
+        if (sender.startsWith(TEACHER_PREFIX)) {
             synchronized (lock) {
                 mMainTeacher = new Teacher(sender);
                 mMainTeacherStr = sender;
@@ -267,7 +274,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
             if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode()) && mVideoAction != null) {
                 mVideoAction.onTeacherQuit(false);
             }
-        } else if (sender.startsWith(LiveBll2.COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(COUNTTEACHER_PREFIX)) {
             mCounTeacherStr = sender;
             mCounteacher.isLeave = false;
             mLogtf.d("onJoin:Counteacher:target=" + target + ",mode=" + mLiveTopic.getMode());
@@ -276,7 +283,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
             }
         } else {
             if (mRoomAction != null) {
-//                    if (sender.startsWith(LiveBll.TEACHER_PREFIX) || sender.startsWith(LiveBll.COUNTTEACHER_PREFIX)) {
+//                    if (sender.startsWith(LiveBll.TEACHER_PREFIX) || sender.startsWith(COUNTTEACHER_PREFIX)) {
 //                        //老师不计算在内
 //                        return;
 //                    }
@@ -292,7 +299,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
     public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
         Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                 + sourceHostname + ",reason=" + reason);
-        if (sourceNick.startsWith(LiveBll2.TEACHER_PREFIX)) {
+        if (sourceNick.startsWith(TEACHER_PREFIX)) {
             synchronized (lock) {
                 mMainTeacher = null;
             }
@@ -300,7 +307,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
             if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode()) && mVideoAction != null) {
                 mVideoAction.onTeacherQuit(true);
             }
-        } else if (sourceNick.startsWith(LiveBll2.COUNTTEACHER_PREFIX)) {
+        } else if (sourceNick.startsWith(COUNTTEACHER_PREFIX)) {
             mCounteacher.isLeave = true;
             mLogtf.d("onQuit:Counteacher quit");
             if (LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode()) && mVideoAction != null) {
@@ -478,6 +485,37 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
                 }
             });
         }
+    }
+
+    /**
+     * 当前状态
+     *
+     * @param mode 模式
+     */
+    public boolean isPresent(String mode) {
+        boolean isPresent = true;
+        if (LiveTopic.MODE_CLASS.endsWith(mode)) {
+            isPresent = mMainTeacher != null;
+        } else {
+            isPresent = !mCounteacher.isLeave;
+        }
+        return isPresent;
+    }
+
+    public Teacher getCounteacher() {
+        return mCounteacher;
+    }
+
+    public Teacher getMainTeacher() {
+        return mMainTeacher;
+    }
+
+    public String getmMainTeacherStr() {
+        return mMainTeacherStr;
+    }
+
+    public String getmCounTeacherStr() {
+        return mCounTeacherStr;
     }
 
     /**

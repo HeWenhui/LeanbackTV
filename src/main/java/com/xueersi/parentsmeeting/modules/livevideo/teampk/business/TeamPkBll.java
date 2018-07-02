@@ -870,8 +870,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "" + XESCODE.TEAM_PK_STUDENT_READY);
             jsonObject.put("stuId", "" + roomInitInfo.getStuId());
-            sendNotice(jsonObject, mLiveBll.getCounteacher().get_nick());
-            sendNotice(jsonObject, mLiveBll.getMainTeacher().get_nick());
+            sendNotice(jsonObject, mLiveBll.getCounTeacherStr());
+            sendNotice(jsonObject, mLiveBll.getMainTeacherStr());
         } catch (Exception e) {
             e.printStackTrace();
         }

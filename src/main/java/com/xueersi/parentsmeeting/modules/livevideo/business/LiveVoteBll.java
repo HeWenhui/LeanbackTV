@@ -432,7 +432,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
             jsonObject.put("id", "" + mGetInfo.getStuId());
             jsonObject.put("answer", "" + answer);
             jsonObject.put("nonce", "" + nonce);
-            sendNotice(jsonObject, mLiveBll.getMainTeacher().get_nick());
+            sendNotice(jsonObject, mLiveBll.getMainTeacherStr());
 
         } catch (Exception e) {
             e.printStackTrace();

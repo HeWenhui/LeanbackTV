@@ -45,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 
@@ -86,6 +87,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     /** 所有业务bll 集合 */
     private List<LiveBaseBll> businessBlls = new ArrayList<>();
     private Handler mHandler = new Handler(Looper.getMainLooper());
+    private LiveIRCMessageBll liveIRCMessageBll;
     private final int mLiveType;
     /** 录播课的直播 */
     public final static int LIVE_TYPE_TUTORIAL = 1;
@@ -110,16 +112,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     private final LiveTopic mLiveTopic = new LiveTopic();
     /** 校准系统时间 */
     private long sysTimeOffset;
-    /** 辅导老师 */
-    private Teacher mCounteacher;
-    /** 主讲老师 */
-    private Teacher mMainTeacher;
-    /** 渠道前缀 */
-    private final String CNANNEL_PREFIX = "x_";
-    /** 主讲老师前缀 */
-    public static final String TEACHER_PREFIX = "t_";
-    /** 辅导老师前缀 */
-    public static String COUNTTEACHER_PREFIX = "f_";
     private final String ROOM_MIDDLE = "L";
     private IRCMessage mIRCMessage;
     LiveVideoBll liveVideoBll;
@@ -202,12 +194,12 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         return mHttpResponseParser;
     }
 
-    public Teacher getCounteacher() {
-        return mCounteacher;
+    public String getMainTeacherStr() {
+        return liveIRCMessageBll.getmMainTeacherStr();
     }
 
-    public Teacher getMainTeacher() {
-        return mMainTeacher;
+    public String getCounTeacherStr() {
+        return liveIRCMessageBll.getmCounTeacherStr();
     }
 
     /**
@@ -237,6 +229,10 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             mMessageActions.add((MessageAction) bll);
         }
         businessBlls.add(bll);
+    }
+
+    public void setLiveIRCMessageBll(LiveIRCMessageBll liveIRCMessageBll) {
+        this.liveIRCMessageBll = liveIRCMessageBll;
     }
 
     public void onCreate() {
@@ -328,7 +324,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             }
             mLogtf.d("onGetInfoSuccess:onTeacherNotPresent");
         }
-        mCounteacher = new Teacher(mGetInfo.getTeacherName());
         String s = "onGetInfoSuccess:enterTime=" + enterTime + ",stat=" + mGetInfo.getStat();
         if (mVideoAction != null) {
             mVideoAction.onLiveInit(mGetInfo);
@@ -553,69 +548,10 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                     mesAction.onUserList(channel, users);
                 }
             }
-            String s = "onUserList:channel=" + channel + ",users=" + users.length;
-            //主讲老师
-            boolean haveMainTeacher = false;
-            //辅导老师
-            boolean haveCounteacher = false;
-            for (int i = 0; i < users.length; i++) {
-                User user = users[i];
-                String nick = user.getNick();
-                if (nick != null && nick.length() > 2) {
-                    if (nick.startsWith(TEACHER_PREFIX)) {
-                        s += ",mainTeacher=" + nick;
-                        haveMainTeacher = true;
-                        synchronized (mIRCcallback) {
-                            if (mMainTeacher == null) {
-                                mMainTeacher = new Teacher(nick);
-                            } else {
-                                mMainTeacher.set_nick(nick);
-                            }
-                        }
-                        if (LiveTopic.MODE_CLASS.endsWith(mLiveTopic.getMode())
-                                && mVideoAction != null) {
-                            mVideoAction.onTeacherQuit(false);
-                        }
-                    } else if (nick.startsWith(COUNTTEACHER_PREFIX)) {
-                        haveCounteacher = true;
-                        mCounteacher.set_nick(nick);
-                        mCounteacher.isLeave = false;
-                        s += ",counteacher=" + nick;
-                        if (LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode())
-                                && mVideoAction != null) {
-                            mVideoAction.onTeacherQuit(false);
-                        }
-                    }
-                } else {
-                    s += ",else=" + nick;
-                }
-            }
-            if (!haveCounteacher) {
-                mCounteacher.isLeave = true;
-            }
         }
 
         @Override
         public void onJoin(String target, String sender, String login, String hostname) {
-            //更新 本地 主/辅讲 态
-            if (sender.startsWith(TEACHER_PREFIX)) {
-                synchronized (mIRCcallback) {
-                    if (mMainTeacher == null) {
-                        mMainTeacher = new Teacher(sender);
-                    } else {
-                        mMainTeacher.set_nick(sender);
-                    }
-                }
-                if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode()) && mVideoAction != null) {
-                    mVideoAction.onTeacherQuit(false);
-                }
-            } else if (sender.startsWith(COUNTTEACHER_PREFIX)) {
-                mCounteacher.isLeave = false;
-                mCounteacher.set_nick(sender);
-                if (LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode()) && mVideoAction != null) {
-                    mVideoAction.onTeacherQuit(false);
-                }
-            }
             // 分发消息
             if (mMessageActions != null && mMessageActions.size() > 0) {
                 for (MessageAction mesAction : mMessageActions) {
@@ -628,19 +564,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
             Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                     + sourceHostname + ",reason=" + reason);
-            if (sourceNick.startsWith(TEACHER_PREFIX)) {
-                synchronized (mIRCcallback) {
-                    mMainTeacher = null;
-                }
-                if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode()) && mVideoAction != null) {
-                    mVideoAction.onTeacherQuit(true);
-                }
-            } else if (sourceNick.startsWith(COUNTTEACHER_PREFIX)) {
-                mCounteacher.isLeave = true;
-                if (LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode()) && mVideoAction != null) {
-                    mVideoAction.onTeacherQuit(true);
-                }
-            }
             if (mMessageActions != null && mMessageActions.size() > 0) {
                 for (MessageAction mesAction : mMessageActions) {
                     mesAction.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
@@ -901,11 +824,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     private boolean isPresent(String mode) {
         boolean isPresent = true;
         if (mIRCMessage != null && mIRCMessage.onUserList()) {
-            if (LiveTopic.MODE_CLASS.endsWith(mode)) {
-                isPresent = mMainTeacher != null;
-            } else {
-                isPresent = !mCounteacher.isLeave;
-            }
+            liveIRCMessageBll.isPresent(mode);
         }
         return isPresent;
     }
@@ -933,7 +852,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             businessShareParamMap.put(key, value);
         }
     }
-
 
     /**
      * 各模块调用此方法  查找其他模块暴露的 参数信息

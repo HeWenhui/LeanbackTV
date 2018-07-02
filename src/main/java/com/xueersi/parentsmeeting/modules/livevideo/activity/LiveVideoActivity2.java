@@ -209,6 +209,12 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         initAllBll();
         logger.d("onVideoCreate:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
+
+        liveVideoBll.setHttpManager(mLiveBll.getHttpManager());
+        liveVideoBll.setHttpResponseParser(mLiveBll.getHttpResponseParser());
+        liveVideoBll.setVideoFragment(videoFragment);
+        liveVideoBll.setVideoAction(this);
+
         addBusiness(activity, bottomContent);
         logger.d("onVideoCreate:time3=" + (System.currentTimeMillis() - before));
         return true;
@@ -262,10 +268,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
      * @param bottomContent
      */
     private void addBusiness(Activity activity, RelativeLayout bottomContent) {
-        liveVideoBll.setHttpManager(mLiveBll.getHttpManager());
-        liveVideoBll.setHttpResponseParser(mLiveBll.getHttpResponseParser());
-        liveVideoBll.setVideoFragment(videoFragment);
-        liveVideoBll.setVideoAction(this);
+
         teamPkBll = new TeamPkBll(activity, mLiveBll, bottomContent);
         mLiveBll.addBusinessBll(teamPkBll);
 
@@ -280,6 +283,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         mLiveBll.addBusinessBll(new LiveAutoNoticeBll(activity, mLiveBll, bottomContent));
         liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll, bottomContent);
         mLiveBll.addBusinessBll(liveIRCMessageBll);
+        mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
     }
 
     @Override
