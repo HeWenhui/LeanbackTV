@@ -17,7 +17,7 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 //    compile(rootProject.ext.libraries.ijkplayer) { changing = true }
-    compile(rootProject.ext.libraries.speechrecognizer) { changing = true }
+    implementation(rootProject.ext.xeslibraries.speechrecognizer) { changing = true }
     //    compile project(':lottiexes')
 //    compile('com.xueersi.lib:xeslottie:1.0.1-SNAPSHOT@aar') {
 //        changing = true
