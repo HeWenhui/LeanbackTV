@@ -516,7 +516,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //                videoQuestionEntity.setvEndTime(1600);
 //                lstVideoQuestion.add(videoQuestionEntity);
 //            }
-            //测试红包自动关闭
+        //测试红包自动关闭
 //            rlFirstBackgroundView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener
 // () {
 //                @Override
@@ -526,29 +526,29 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //                    return false;
 //                }
 //            });
-            //测试试卷
+        //测试试卷
 //            mQuestionEntity = new VideoQuestionEntity();
 //            mQuestionEntity.setvQuestionID("2");
 //            mQuestionEntity.setvEndTime(120);
 //            showExam();
-            MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
-            if (!StringUtils.isEmpty(mMyInfo.getEnglishName())) {
-                showName = mMyInfo.getEnglishName();
-            } else if (!StringUtils.isEmpty(mMyInfo.getRealName())) {
-                showName = mMyInfo.getRealName();
-            } else if (!StringUtils.isEmpty(mMyInfo.getNickName())) {
-                showName = mMyInfo.getNickName();
-            }
-            headUrl = mMyInfo.getHeadImg();
-            redPackageStandBll = new RedPackageStandBll(this, false, this);
-            redPackageStandBll.setVSectionID(mVideoEntity.getLiveId());
-            redPackageStandBll.setUserName(showName);
-            redPackageStandBll.setHeadUrl(headUrl);
-            redPackageStandBll.initView(rl_course_video_live_redpackage_content);
-            liveStandVoiceAnswerCreat = new LiveStandVoiceAnswerCreat(questionSwitch);
-            liveStandVoiceAnswerCreat.setUserName(showName);
-            liveStandVoiceAnswerCreat.setHeadUrl(headUrl);
-            if (AppConfig.DEBUG) {
+        MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
+        if (!StringUtils.isEmpty(mMyInfo.getEnglishName())) {
+            showName = mMyInfo.getEnglishName();
+        } else if (!StringUtils.isEmpty(mMyInfo.getRealName())) {
+            showName = mMyInfo.getRealName();
+        } else if (!StringUtils.isEmpty(mMyInfo.getNickName())) {
+            showName = mMyInfo.getNickName();
+        }
+        headUrl = mMyInfo.getHeadImg();
+        redPackageStandBll = new RedPackageStandBll(this, false, this);
+        redPackageStandBll.setVSectionID(mVideoEntity.getLiveId());
+        redPackageStandBll.setUserName(showName);
+        redPackageStandBll.setHeadUrl(headUrl);
+        redPackageStandBll.initView(rl_course_video_live_redpackage_content);
+        liveStandVoiceAnswerCreat = new LiveStandVoiceAnswerCreat(questionSwitch);
+        liveStandVoiceAnswerCreat.setUserName(showName);
+        liveStandVoiceAnswerCreat.setHeadUrl(headUrl);
+        if (AppConfig.DEBUG) {
 
 //                mRedPacketId = "2";
 //                final VideoQuestionEntity mQuestionEntity = new VideoQuestionEntity();
@@ -590,7 +590,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //                    }
 //                });
 //                redPackageStandBll.onReadPackage(Integer.parseInt(mRedPacketId));
-            }
+        }
 //        lectureLivePlayBackBll.getExperienceMsgs(mVideoEntity.getLiveId(), mVideoEntity.getClassId(), 0L, new ExperienceLiveVideoActivity.GetExperienceLiveMsgs() {
 //
 //            @Override
@@ -2689,6 +2689,9 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
     public void stopEnglishH5Exam() {
         Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 12, 12, mQuestionEntity);
         mPlayVideoControlHandler.sendMessage(msg);
+        if (englishH5CoursewarePager != null) {
+            englishH5CoursewarePager.destroy();
+        }
         englishH5CoursewarePager = null;
         if (mQuestionEntity != null && mIsShowQuestion) {
             seekTo(mQuestionEntity.getvEndTime() * 1000);

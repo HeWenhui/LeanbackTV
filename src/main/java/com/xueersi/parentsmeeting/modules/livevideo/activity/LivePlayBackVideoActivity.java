@@ -2674,6 +2674,9 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     public void stopEnglishH5Exam() {
         Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 12, 12, mQuestionEntity);
         mPlayVideoControlHandler.sendMessage(msg);
+        if (englishH5CoursewarePager != null) {
+            englishH5CoursewarePager.destroy();
+        }
         englishH5CoursewarePager = null;
         if (mQuestionEntity != null && mIsShowQuestion) {
             seekTo(mQuestionEntity.getvEndTime() * 1000);
