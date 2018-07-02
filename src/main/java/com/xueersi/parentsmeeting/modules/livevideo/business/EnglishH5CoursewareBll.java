@@ -98,6 +98,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     boolean IS_SCIENCE = false;
     private boolean isTeamPkAllowed = false;
     private boolean webViewCloseByTeacher = false;
+    private String mUrl;
 
     public boolean isWebViewCloseByTeacher() {
         return webViewCloseByTeacher;
@@ -258,11 +259,20 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         handler.post(new Runnable() {
             @Override
             public void run() {
-                if (LiveVideoConfig.isSend) {
-                    showH5Paper(videoQuestionLiveEntity);
-                    return;
-                }
                 if ("on".equals(status)) {
+                    if (LiveVideoConfig.isSend) {
+                        if (h5CoursewarePager != null) {
+                            if (LiveVideoConfig.englishH5Entity.equals(videoQuestionLiveEntity.englishH5Entity)) {
+                                logToFile.i("onH5Courseware:url.equals:" + h5CoursewarePager.getUrl());
+                                return;
+                            } else {
+                                logToFile.i("onH5Courseware:url=" + h5CoursewarePager.getUrl());
+                                bottomContent.removeView(h5CoursewarePager.getRootView());
+                            }
+                        }
+                        showH5Paper(videoQuestionLiveEntity);
+                        return;
+                    }
                     if (!isAnaswer) {
                         for (QuestionShowAction questionShowAction : questionShowActions) {
                             onQuestionShow(true);
@@ -377,6 +387,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
 
     private void showH5Paper(final VideoQuestionLiveEntity videoQuestionH5Entity) {
+        mUrl = videoQuestionH5Entity.getUrl();
         logToFile.i("onH5Courseware:url=" + videoQuestionH5Entity.getUrl());
         StableLogHashMap logHashMap = new StableLogHashMap("receiveCourseware");
         logHashMap.put("coursewareid", videoQuestionH5Entity.id);

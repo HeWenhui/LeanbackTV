@@ -8,16 +8,34 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:background="@drawable/redpacketsbg"/>
-    <Button
-        android:id="@id/bt_livevideo_redpackage_cofirm"
-        android:layout_width="130dp"
-        android:layout_height="40dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/shape_livevideo_redpackage_cofirm"
-        android:text="领取"
-        android:textColor="#ff4343"
-        android:textSize="16sp"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/iv_livevideo_redpackage_bg"
+        android:layout_alignLeft="@id/iv_livevideo_redpackage_bg"
+        android:layout_alignRight="@id/iv_livevideo_redpackage_bg"
+        android:layout_alignTop="@id/iv_livevideo_redpackage_bg"
+        android:paddingBottom="22dp">
+        <ImageView
+            android:id="@+id/iv_livevideo_redpackage_cofirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/psredpackage_confirm"
+            android:layout_marginBottom="38dp"
+            />
+        <ImageView
+            android:id="@id/iv_livevideo_redpackage_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/closeredpacketsbg"/>
+
+    </RelativeLayout>
 
 
 </RelativeLayout>

@@ -108,37 +108,37 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
         view.setTag(operateId);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         rlRedpacketContent.addView(view, params);
-//        Button btnRedPacket = (Button) view.findViewById(R.id.bt_livevideo_redpackage_cofirm);
-//        btnRedPacket.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mLiveBll.sendReceiveGold(operateId, mVSectionID, new AbstractBusinessDataCallBack() {
-//                    @Override
-//                    public void onDataSucess(Object... objData) {
-//                        if (onReceivePackage != null) {
-//                            onReceivePackage.onReceivePackage(operateId);
-//                        }
-//                        VideoResultEntity entity = (VideoResultEntity) objData[0];
-//                        onGetPackage(entity);
-//                    }
-//
-//                    @Override
-//                    public void onDataFail(int errStatus, String failMsg) {
-//                        if (errStatus == 0) {
-//                            onGetPackageFailure(operateId);
-//                        } else {
-//                            onGetPackageError(operateId);
-//                        }
-//                    }
-//                });
-//            }
-//        });
-//        view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                rlRedpacketContent.removeAllViews();
-//            }
-//        });
+        ImageView btnRedPacket = (ImageView) view.findViewById(R.id.iv_livevideo_redpackage_cofirm);
+        btnRedPacket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLiveBll.sendReceiveGold(operateId, mVSectionID, new AbstractBusinessDataCallBack() {
+                    @Override
+                    public void onDataSucess(Object... objData) {
+                        if (onReceivePackage != null) {
+                            onReceivePackage.onReceivePackage(operateId);
+                        }
+                        VideoResultEntity entity = (VideoResultEntity) objData[0];
+                        onGetPackage(entity);
+                    }
+
+                    @Override
+                    public void onDataFail(int errStatus, String failMsg) {
+                        if (errStatus == 0) {
+                            onGetPackageFailure(operateId);
+                        } else {
+                            onGetPackageError(operateId);
+                        }
+                    }
+                });
+            }
+        });
+        view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rlRedpacketContent.removeAllViews();
+            }
+        });
         activity.getWindow().getDecorView().requestLayout();
         activity.getWindow().getDecorView().invalidate();
     }

@@ -1196,13 +1196,21 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 try {
                                     JSONObject objects = new JSONObject();
                                     objects.put("packageId", object.getString("pId"));
+                                    englishH5Entity.setPackageId(object.getString("pId"));
                                     objects.put("packageSource", object.getString("pSrc"));
+                                    englishH5Entity.setPackageSource(object.getString("pSrc"));
                                     objects.put("packageAttr", object.getString("pAttr"));
+                                    englishH5Entity.setPackageAttr(object.getString("pAttr"));
                                     objects.put("releasedPageInfos", object.getString("tests"));
+                                    englishH5Entity.setReleasedPageInfos(object.getString("tests"));
                                     objects.put("teamId", teamId);
+                                    englishH5Entity.setTeamId(teamId);
                                     objects.put("stuCouId", vStuCourseID);
+                                    englishH5Entity.setStuCouId(vStuCourseID);
                                     objects.put("stuId", mGetInfo.getStuId());
+                                    englishH5Entity.setStuId(mGetInfo.getStuId());
                                     objects.put("classId", classId);
+                                    englishH5Entity.setClassId(classId);
                                     mShareDataManager.put(LiveVideoConfig.newEnglishH5, objects.toString(), ShareDataManager.SHAREDATA_USER);
                                 } catch (JSONException e) {
                                     e.printStackTrace();

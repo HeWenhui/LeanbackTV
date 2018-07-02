@@ -48,6 +48,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private String nonce;
     private boolean isFinish = false;
     private String jsSubmitData = "javascript:submitData()";
+    private String jsforceSubmit = "javascript:forceSubmit()";
     private EnglishH5CoursewareBll.OnH5ResultClose onClose;
     private String id;
     private String courseware_type;
@@ -83,6 +84,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         this.nonce = nonce;
         this.isShowRanks = isShowRanks;
         this.IS_SCIENCE = IS_SCIENCE;
+        LiveVideoConfig.englishH5Entity = englishH5Entity;
         initWebView();
         setErrorTip("H5课件加载失败，请重试");
         setLoadTip("H5课件正在加载，请稍候");
@@ -133,7 +135,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     @Override
     public void submitData() {
         isFinish = true;
-        wvSubjectWeb.loadUrl(jsSubmitData);
+        wvSubjectWeb.loadUrl(LiveVideoConfig.isNewEnglishH5 ? jsforceSubmit : jsSubmitData);
         StableLogHashMap logHashMap = new StableLogHashMap("coursewareEnd");
         logHashMap.put("coursewareid", id);
         logHashMap.put("coursewaretype", courseware_type);
@@ -143,7 +145,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     @Override
     protected void onPageFinished(WebView view, String url) {
         if (isFinish) {
-            wvSubjectWeb.loadUrl(jsSubmitData);
+            wvSubjectWeb.loadUrl(LiveVideoConfig.isNewEnglishH5 ? jsforceSubmit : jsSubmitData);
         }
         StableLogHashMap logHashMap = new StableLogHashMap("coursewareDidLoad");
         logHashMap.put("coursewareid", id);
@@ -416,6 +418,10 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
 
     public String getId() {
         return id;
+    }
+
+    public EnglishH5Entity getEnglishH5Entity() {
+        return englishH5Entity;
     }
 
 }

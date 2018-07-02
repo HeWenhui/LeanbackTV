@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
 import com.xueersi.parentsmeeting.config.AppConfig;
+import com.xueersi.parentsmeeting.entity.EnglishH5Entity;
 
 /**
  * 直播模块配置
@@ -168,6 +169,8 @@ public class LiveVideoConfig {
     /** 一题多发发题和收题的标志*/
     public static Boolean isSend = false;
     public static String newEnglishH5 = "NewEnglishH5";
+    /** 强制收题的标志*/
+    public static EnglishH5Entity englishH5Entity;
     /** 小学阶段年级的标识*/
     public static Boolean isPrimary = false;
 
