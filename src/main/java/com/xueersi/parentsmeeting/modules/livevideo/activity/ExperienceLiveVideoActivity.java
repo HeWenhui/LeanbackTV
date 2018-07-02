@@ -483,7 +483,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         mSectionName = mVideoEntity.getPlayVideoName();
         // 播放视频
         mWebPath = mVideoEntity.getVideoPath();
-        playNewVideo(Uri.parse(mWebPath), mSectionName);
+//        playNewVideo(Uri.parse(mWebPath), mSectionName); 放到onresume中调用
 
     }
 
@@ -555,8 +555,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_ENTER, logHashMap.getData());
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(View.GONE);
-            initView();
-            initMessagePager(bottomContent);
+            if(baseLiveMediaControllerTop == null){
+                initView();
+                initMessagePager(bottomContent);
+            }
             if (firstTime) {
                 startTime = System.currentTimeMillis();
                 firstTime = false;
