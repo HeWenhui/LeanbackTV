@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -338,11 +339,17 @@ public class TeamPkBll {
     }
 
     public void stopTeamSelect() {
-        if (mFocusPager != null && mFocusPager instanceof TeamPkTeamSelectPager) {
-            ((TeamPkTeamSelectPager) mFocusPager).closeTeamSelectPager();
-        } else if (mFocusPager != null && mFocusPager instanceof TeamPkTeamSelectingPager) {
-            ((TeamPkTeamSelectingPager) mFocusPager).closeTeamSelectPager();
-        }
+        rlTeamPkContent.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mFocusPager != null && mFocusPager instanceof TeamPkTeamSelectPager) {
+                    Log.e("SoundPoolHelper","=======> team");
+                    ((TeamPkTeamSelectPager) mFocusPager).closeTeamSelectPager();
+                } else if (mFocusPager != null && mFocusPager instanceof TeamPkTeamSelectingPager) {
+                    ((TeamPkTeamSelectingPager) mFocusPager).closeTeamSelectPager();
+                }
+            }
+        });
     }
 
     /**
