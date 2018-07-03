@@ -6,6 +6,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,16 +103,18 @@ public class TeamPkStateLayout extends FrameLayout {
         this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                try {
-                    addPkStatBar();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    TeamPkStateLayout.this.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    TeamPkStateLayout.this.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                Loger.e("0008","===========>:onGlobalLayout"+TeamPkStateLayout.this.getMeasuredWidth());
+                if(TeamPkStateLayout.this.getMeasuredWidth() > 0){
+                    try {
+                        addPkStatBar();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        TeamPkStateLayout.this.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    } else {
+                        TeamPkStateLayout.this.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
                 }
             }
         });
@@ -163,8 +166,8 @@ public class TeamPkStateLayout extends FrameLayout {
         mOtherTeamEnergy = mOtherTeamEnergy + otherEnergyAdd;
         mCoinNum = mCoinNum + coinAdd;
         Loger.e("coinNum", "====>updateData22222:" + mMyTeamEnergy + ":" + mOtherTeamEnergy + ":" + mCoinNum);
-        if(mTeamPkBll != null && coinAdd > 0){
-            TeamPkLog.showMyGold(mTeamPkBll.getLiveBll(),mCoinNum+"");
+        if (mTeamPkBll != null && coinAdd > 0) {
+            TeamPkLog.showMyGold(mTeamPkBll.getLiveBll(), mCoinNum + "");
         }
         //正 增长 显示动画 ，负增涨 不显示动画
         if (ownEnergyAdd > 0) {
@@ -247,8 +250,8 @@ public class TeamPkStateLayout extends FrameLayout {
         tvMyTeamEnergy.setText(mMyTeamEnergy + "");
         tvOtherTeamEnergy.setText(otherTeamAnergy + "");
 
-        if(mTeamPkBll != null && mCoinNum > 0){
-            TeamPkLog.showMyGold(mTeamPkBll.getLiveBll(),mCoinNum+"");
+        if (mTeamPkBll != null && mCoinNum > 0) {
+            TeamPkLog.showMyGold(mTeamPkBll.getLiveBll(), mCoinNum + "");
         }
 
         float ratio;
@@ -297,7 +300,7 @@ public class TeamPkStateLayout extends FrameLayout {
      * 淡入 淡出展示  当前pk 状态
      */
     private void showPkSateBar() {
-        showViewWithFadeInOutEffect(tvState,PK_STATE_DISPLAY_DURATION);
+        showViewWithFadeInOutEffect(tvState, PK_STATE_DISPLAY_DURATION);
     }
 
 
@@ -356,7 +359,7 @@ public class TeamPkStateLayout extends FrameLayout {
     }
 
 
-    public void setTeamPkBll(TeamPkBll teamPkBll){
+    public void setTeamPkBll(TeamPkBll teamPkBll) {
         mTeamPkBll = teamPkBll;
     }
 
