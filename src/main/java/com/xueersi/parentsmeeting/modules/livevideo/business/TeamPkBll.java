@@ -385,6 +385,11 @@ public class TeamPkBll {
      */
     private void showTeamSelectScene() {
         if (mFocusPager == null || !(mFocusPager instanceof TeamPkTeamSelectingPager)) {
+
+            if(mFocusPager != null && mFocusPager instanceof TeamPkTeamSelectPager){
+                return;
+            }
+
             Loger.e("teamPkBll", "====>showTeamSelectScene:" + mFocusPager);
             TeamPkTeamSelectPager teamSelectPager = new TeamPkTeamSelectPager(mActivity, this);
             addPager(teamSelectPager);
