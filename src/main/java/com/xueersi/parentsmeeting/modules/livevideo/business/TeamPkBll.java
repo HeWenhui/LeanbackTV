@@ -530,8 +530,10 @@ public class TeamPkBll {
             rlTeamPkContent.post(new Runnable() {
                 @Override
                 public void run() {
-                    rlTeamPkContent.removeView(mFocusPager.getRootView());
-                    mFocusPager = null;
+                    if(mFocusPager != null){
+                        rlTeamPkContent.removeView(mFocusPager.getRootView());
+                        mFocusPager = null;
+                    }
                 }
             });
         }
