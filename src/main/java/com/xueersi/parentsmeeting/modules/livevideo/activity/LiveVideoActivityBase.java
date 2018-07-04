@@ -368,7 +368,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 //                        tvVideoLoadingText.setText(getString(R.string.video_layout_buffering_progress,
 //                                vPlayer.getBufferProgress()));
                         vPlayerHandler.sendEmptyMessageDelayed(BUFFER_PROGRESS, 1000);
-                        stopPlayer();
+//                        stopPlayer(); 缓冲过程不暂停
                     }
                     break;
                 case BUFFER_COMPLETE:
