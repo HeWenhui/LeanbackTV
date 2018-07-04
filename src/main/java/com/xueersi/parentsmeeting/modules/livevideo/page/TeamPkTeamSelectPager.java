@@ -1046,8 +1046,8 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
 
     private void releaseRes() {
         try {
-            cancelMarquee();
             releaseSoundRes();
+            cancelMarquee();
         } catch (Exception e) {
             e.printStackTrace();
         }
