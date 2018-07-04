@@ -465,10 +465,15 @@ public class TeamPkBll {
                 }
 
             } else if (type == CHEST_TYPE_STUDENT) {
-                TeamPkAwardPager awardGetPager = new TeamPkAwardPager(mActivity, this);
-                addPager(awardGetPager);
-                awardGetPager.showBoxLoop();
-                Loger.e("teampkBll", "======>showAwardGetScene called 3333");
+                rlTeamPkContent.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        TeamPkAwardPager awardGetPager = new TeamPkAwardPager(mActivity, TeamPkBll.this);
+                        addPager(awardGetPager);
+                        awardGetPager.showBoxLoop();
+                        Loger.e("teampkBll", "======>showAwardGetScene called 3333");
+                    }
+                },1000);
             }
         } else if (mFocusPager != null && (mFocusPager instanceof TeamPkAwardPager)) {
             //由开宝箱直接切换到幸运之星页面
