@@ -231,6 +231,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private boolean hasSubmit;
     private String stuCouId;
     private RolePlayAction rolePlayAction;
+    private View mUnderatandView;
 
     public QuestionBll(Activity activity, String stuCouId) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -969,14 +970,27 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             public void run() {
                 //显示懂了吗？先移除互动题
                 removeQuestionViews();
-                final View underatandView = activity.getLayoutInflater().inflate(R.layout.layout_livevideo_understand,
-                        rlQuestionContent,
-                        false);
-                ((TextView) underatandView.findViewById(R.id.tv_livevideo_under_user)).setText(liveGetInfo.getStuName
-                        () + " 你好");
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) underatandView.getLayoutParams();
+                if(LiveVideoConfig.isPrimary){
+                    mUnderatandView = activity.getLayoutInflater().inflate(R.layout.dialog_livevideo_primary_understand,
+                            rlQuestionContent,
+                            false);
+                    mUnderatandView.findViewById(R.id.iv_understand_close).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            removeQuestionViews();
+                            mVPlayVideoControlHandler.sendEmptyMessage(NO_UNDERSTAND);
+                        }
+                    });
+                }else{
+                    mUnderatandView = activity.getLayoutInflater().inflate(R.layout.layout_livevideo_understand,
+                            rlQuestionContent,
+                            false);
+                    ((TextView) mUnderatandView.findViewById(R.id.tv_livevideo_under_user)).setText(liveGetInfo.getStuName
+                            () + " 你好");
+                }
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mUnderatandView.getLayoutParams();
                 params.addRule(RelativeLayout.CENTER_IN_PARENT);
-                rlQuestionContent.addView(underatandView, params);
+                rlQuestionContent.addView(mUnderatandView, params);
                 View.OnClickListener listener = new View.OnClickListener() {
 
                     @Override

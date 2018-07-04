@@ -1336,8 +1336,33 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     case XESCODE.READPACAGE:
                         msg += "READPACAGE";
                         //接麦红包无效
+//                        if ("off".equals(voiceChatStatus)) {
+//                            if (readPackageBll != null) {
+//                                readPackageBll.onReadPackage(object.getInt("id"), new RedPackageAction
+//                                        .OnReceivePackage() {
+//                                    @Override
+//                                    public void onReceivePackage(int operateId) {
+//                                        // 更新右侧 金币信息
+//                                        if (mTeamPKBll != null) {
+//                                            mTeamPKBll.updatePkStateLayout(false);
+//                                        }
+//                                    }
+//                                });
+//                            }
+//                        }
                         if ("off".equals(voiceChatStatus)) {
-                            if (readPackageBll != null) {
+                            if (psredpackageBll != null && LiveVideoConfig.isPrimary) {
+                                psredpackageBll.onReadPackage(object.getInt("id"), new RedPackageAction
+                                        .OnReceivePackage() {
+                                    @Override
+                                    public void onReceivePackage(int operateId) {
+                                        // 更新右侧 金币信息
+                                        if (mTeamPKBll != null) {
+                                            mTeamPKBll.updatePkStateLayout(false);
+                                        }
+                                    }
+                                });
+                            }else if(readPackageBll != null && !LiveVideoConfig.isPrimary){
                                 readPackageBll.onReadPackage(object.getInt("id"), new RedPackageAction
                                         .OnReceivePackage() {
                                     @Override
@@ -1461,29 +1486,29 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     case XESCODE.UNDERSTANDT:
                         msg += "UNDERSTANDT";
                         // 测试待放开
-//                        if ("off".equals(voiceChatStatus)) {//接麦懂了么无效
-//                            if (mQuestionAction != null) {
-//                                String nonce = object.optString("nonce");
-//                                mQuestionAction.understand(nonce);
-//                            }
-//                        }
-                        ////////////////////////////  06.28 测试红包的弹窗
-                        //接麦红包无效
-                        String voiceChatStatus = "off";
-                        if ("off".equals(voiceChatStatus)) {
-                            if (psredpackageBll != null) {
-                                psredpackageBll.onReadPackage(1, new RedPackageAction
-                                        .OnReceivePackage() {
-                                    @Override
-                                    public void onReceivePackage(int operateId) {
-                                        // 更新右侧 金币信息
-                                        if (mTeamPKBll != null) {
-                                            mTeamPKBll.updatePkStateLayout(false);
-                                        }
-                                    }
-                                });
+                        if ("off".equals(voiceChatStatus)) {//接麦懂了么无效
+                            if (mQuestionAction != null) {
+                                String nonce = object.optString("nonce");
+                                mQuestionAction.understand(nonce);
                             }
                         }
+                        ////////////////////////////  06.28 测试红包的弹窗
+                        //接麦红包无效
+//                        String voiceChatStatus = "off";
+//                        if ("off".equals(voiceChatStatus)) {
+//                            if (psredpackageBll != null) {
+//                                psredpackageBll.onReadPackage(1, new RedPackageAction
+//                                        .OnReceivePackage() {
+//                                    @Override
+//                                    public void onReceivePackage(int operateId) {
+//                                        // 更新右侧 金币信息
+//                                        if (mTeamPKBll != null) {
+//                                            mTeamPKBll.updatePkStateLayout(false);
+//                                        }
+//                                    }
+//                                });
+//                            }
+//                        }
                         ////////////////////////////////
                         break;
                     case XESCODE.OPENBARRAGE: {

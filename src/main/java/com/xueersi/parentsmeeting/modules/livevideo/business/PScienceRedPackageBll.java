@@ -90,11 +90,6 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
             rlRedpacketContent.setId(R.id.rl_livevideo_content_readpackage);
             bottomContent.addView(rlRedpacketContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
-
-        //测试红包自动关闭
-//        else {
-//            initRedPacketResult(5);
-//        }
     }
 
     /**
@@ -141,6 +136,23 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
         });
         activity.getWindow().getDecorView().requestLayout();
         activity.getWindow().getDecorView().invalidate();
+//        String msg = 8 + "";
+//        View view = activity.getLayoutInflater().inflate(R.layout.dialog_primary_redpacket_success, rlRedpacketContent, false);
+//        view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
+//        SpannableString msp = new SpannableString(msg);
+//        float screenDensity = ScreenUtils.getScreenDensity();
+//        // 字体
+//        msp.setSpan(new AbsoluteSizeSpan((int) (50 * screenDensity)), 0, 1,
+//                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        TextView tvGoldHint = (TextView) view.findViewById(R.id.tv_livevideo_redpackage_gold);
+//        tvGoldHint.setText(msp);
+//        rlRedpacketContent.addView(view);
+//        view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                rlRedpacketContent.removeAllViews();
+//            }
+//        });
     }
 
     /**
@@ -149,23 +161,17 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
      * @param goldNum 金币数量
      */
     private void initRedPacketResult(int goldNum) {
-        String msg = "+" + goldNum + "金币";
-        View view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_success, rlRedpacketContent, false);
+        String msg = goldNum + "";
+        View view = activity.getLayoutInflater().inflate(R.layout.dialog_primary_redpacket_success, rlRedpacketContent, false);
         view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
         SpannableString msp = new SpannableString(msg);
         float screenDensity = ScreenUtils.getScreenDensity();
         // 字体
-        msp.setSpan(new AbsoluteSizeSpan((int) (50 * screenDensity)), 0, msg.length() - 2,
+        msp.setSpan(new AbsoluteSizeSpan((int) (50 * screenDensity)), 0, msg.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         TextView tvGoldHint = (TextView) view.findViewById(R.id.tv_livevideo_redpackage_gold);
         tvGoldHint.setText(msp);
         rlRedpacketContent.addView(view);
-        view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rlRedpacketContent.removeAllViews();
-            }
-        });
         final TextView tvAutoclose = (TextView) view.findViewById(R.id.tv_livevideo_redpackage_autoclose);
         final AtomicInteger count = new AtomicInteger(3);
         postDelayedIfNotFinish(new Runnable() {
@@ -188,9 +194,12 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
                 mLiveBll.getStuGoldCount();
             }
         }, 2900);
-        ImageView ivRedpackageLight = (ImageView) view.findViewById(R.id.iv_livevideo_redpackage_light);
-        Animation animation = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_light_rotate);
-        ivRedpackageLight.startAnimation(animation);
+        view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rlRedpacketContent.removeAllViews();
+            }
+        });
     }
 
     public void postDelayedIfNotFinish(Runnable r, long delayMillis) {
