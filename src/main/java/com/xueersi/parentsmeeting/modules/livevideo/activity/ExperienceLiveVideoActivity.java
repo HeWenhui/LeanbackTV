@@ -729,9 +729,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             liveMediaControllerBottom.setPadding(0, 0, 0, paddingBottom);
         }
         mMediaController.setControllerBottom(liveMediaControllerBottom, false);
-//        rlFirstBackgroundView = (RelativeLayout) findViewById(R.id.rl_course_video_first_backgroud);
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
-//        ivTeacherNotpresent.setImageResource(R.drawable.);
         bottomContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
 
@@ -765,9 +763,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                         .OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
-//                        if (videoView.getWidth() <= 0) {
-//                            return;
-//                        }
                         boolean isLand = getResources().getConfiguration().orientation == Configuration
                                 .ORIENTATION_LANDSCAPE;
                         //Loger.i(TAG, "setVideoWidthAndHeight:isLand=" + isLand);
@@ -799,9 +794,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             params.rightMargin = rightMargin;
             params.bottomMargin = params.topMargin = topMargin;
             LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
-//            rlFirstBackgroundView.setLayoutParams(params);
             LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
-//            ivTeacherNotpresent.setLayoutParams(params);
         }
 
     }
@@ -815,37 +808,18 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         long before = System.currentTimeMillis();
         mLiveMessagePager = new LiveMessagePager(this, questionBll, ums, liveMediaControllerBottom,
                 liveMessageLandEntities, null);
-//        mLiveMessagePager = liveMessagePager;
         Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
-
-//        mLiveMessagePager.getInfo = getInfo;
-//        mLiveMessagePager.urlclick = urlclick;
-//        liveMessagePager.setPeopleCount(peopleCount);
-
 
         // 关联聊天人数
         mLiveMessagePager.setPeopleCount(peopleCount);
-
         mLiveMessagePager.setMessageBll(liveMessageBll);
         mLiveMessagePager.setLiveBll(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
-        // 03.08 设置假的聊天连接成功信号
-        if (!pause) {
-          //  mLiveMessagePager.onConnects();
-        }
         mLiveMessagePager.setIsRegister(true);
-        // 03.13 设置假的上课人数
-        if (mMessage != null && mMessage.getOnlineNum().size() != 0 && mMessage.getOnlineNum().get(0).getOnlineNum()
-                != null) {
-            mLiveMessagePager.showPeopleCount(Integer.parseInt(mMessage.getOnlineNum().get(0).getOnlineNum()));
-        } else {
-            mLiveMessagePager.showPeopleCount(3);
-        }
+
         // 03.22 设置统计日志的公共参数
         mLiveMessagePager.setLiveTermId(mVideoEntity.getLiveId(), mVideoEntity.getChapterId());
-//        if (mode != null) {
-//            mLiveMessagePager.onopenchat(openchat, mode, false);
-//        }
+
         // 隐藏锁屏按钮
         mLiveMessagePager.hideclock();
         rlLiveMessageContent.addView(mLiveMessagePager.getRootView(), params);
@@ -919,12 +893,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 send = true;
             }
         }
-        if (mMessage != null && mMessage.getOnlineNum().size() != 0 && mMessage.getOnlineNum().get(0).getOnlineNum()
-                != null) {
-            mLiveMessagePager.showPeopleCount(Integer.parseInt(mMessage.getOnlineNum().get(0).getOnlineNum()));
-        } else {
-            mLiveMessagePager.showPeopleCount(3);
-        }
+
     }
 
     /**
@@ -1323,7 +1292,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //            }
             startTime = videoQuestionEntity.getvQuestionInsretTime();
             endTime = videoQuestionEntity.getvEndTime();
-            Loger.e("ExperienceLiveVideoActivity","===>getPlayQuetion:category="+videoQuestionEntity.getvCategory());
+            Loger.e("ExperienceLiveVideoActivity","===>getPlayQuetion:category="+videoQuestionEntity.getvCategory() +":"+startTime);
             // 03.24 聊天指令的控制设置
             // 开启聊天
             if (LocalCourseConfig.CATEGORY_OPEN_CHAT == videoQuestionEntity.getvCategory()) {
@@ -1338,7 +1307,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             if (LocalCourseConfig.CATEGORY_CLOSE_CHAT == videoQuestionEntity.getvCategory()) {
                 if (startTime == playPosition) {
                     //mLiveMessagePager.onDisable(true, true);
-
                     mLiveMessagePager.onopenchat(false, "in-class", true);
                     mLiveBll.setChatOpen(false);
                     break;
@@ -1669,6 +1637,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                         mPopupWindow.dismiss();
                         mPopupWindow = null;
                     }
+
             }
         }
     };
@@ -1926,14 +1895,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             }.start();
         }
     }
-
-//    /** 刷新界面重新加载视频 */
-//    protected void onRefresh() {
-//        if (mIsEnalbePlayer) {
-//            loadView(mLayoutVideo);
-//            Log.e("Duncan","refresh");
-//        }
-//    }
 
 
     @Override

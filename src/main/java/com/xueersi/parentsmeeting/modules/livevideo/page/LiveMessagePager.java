@@ -1245,11 +1245,13 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
 
     // 03.16 模拟显示聊天人数
+
     public void showPeopleCount(int num) {
-       // tvMessageCount.setText(num + "人正在上课");
+        tvMessageCount.setText(num + "人正在上课");
     }
 
     // 隐藏锁屏按钮
+
     public void hideclock(){
         cbMessageClock.setVisibility(View.GONE);
     }
