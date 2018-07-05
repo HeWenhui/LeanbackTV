@@ -20,7 +20,7 @@
 //import com.xueersi.parentsmeeting.modules.livevideo.R;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
-//import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
+//import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 //import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;

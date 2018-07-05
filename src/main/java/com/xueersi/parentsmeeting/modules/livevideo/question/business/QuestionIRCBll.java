@@ -10,18 +10,14 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.business.AnswerRankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.OnSpeechEval;
-import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionAction;
-import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.StarInteractAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
@@ -32,7 +28,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.LiveAutoNoticeIRCBll;
-import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -78,7 +73,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     @Override
-    public void onTopic(LiveTopic liveTopic, boolean modeChange) {
+    public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
         if (mainRoomstatus.isHaveExam() && mQuestionAction != null) {
             if ("on".equals(mainRoomstatus.getExamStatus())) {

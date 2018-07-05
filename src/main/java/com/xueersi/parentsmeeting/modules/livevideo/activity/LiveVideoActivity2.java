@@ -57,6 +57,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRankIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
@@ -209,7 +210,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         initAllBll();
         logger.d("onVideoCreate:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-
+        videoFragment.setIsAutoOrientation(false);
         liveVideoBll.setHttpManager(mLiveBll.getHttpManager());
         liveVideoBll.setHttpResponseParser(mLiveBll.getHttpResponseParser());
         liveVideoBll.setVideoFragment(videoFragment);
@@ -275,8 +276,9 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         rollCallBll = new RollCallBll(activity, mLiveBll, bottomContent);
         mLiveBll.addBusinessBll(rollCallBll);
 
-        mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll, bottomContent));
         mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll, bottomContent));
+        mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
+        mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll, bottomContent));
         mLiveBll.addBusinessBll(new LiveVoteBll(activity, mLiveBll, bottomContent));
         mLiveBll.addBusinessBll(new LiveAutoNoticeIRCBll(activity, mLiveBll, bottomContent));
         mLiveBll.addBusinessBll(new AnswerRankIRCBll(activity, mLiveBll, bottomContent));

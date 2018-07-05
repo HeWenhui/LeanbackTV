@@ -63,7 +63,7 @@
 //import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoiceAnswerCreat;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
-//import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
+//import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackAction;

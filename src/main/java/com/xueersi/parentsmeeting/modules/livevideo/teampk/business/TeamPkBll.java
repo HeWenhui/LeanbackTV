@@ -981,7 +981,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
 
     @Override
-    public void onTopic(LiveTopic data, boolean modeChange) {
+    public void onTopic(LiveTopic data, JSONObject jsonObject, boolean modeChange) {
 
         Loger.e("TeamPkBll", "====>onTopic");
 

@@ -74,7 +74,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     RelativeLayout bottomContent;
     /** 语音强制提交，外层 */
     private RelativeLayout rlVoiceQuestionContent;
-    LiveVideoActivityBase liveVideoActivityBase;
     /** 存英语h5 */
     private static final String ENGLISH_H5 = "live_english_h5";
     /** 英语h5的暂存状态 */
@@ -119,7 +118,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         this.context = context;
-        liveVideoActivityBase = (LiveVideoActivityBase) context;
     }
 
     public void initView(RelativeLayout bottomContent) {

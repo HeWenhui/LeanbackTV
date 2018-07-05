@@ -1,12 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.video;
 
 import android.app.Activity;
-import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpRequestParams;
@@ -14,13 +10,9 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TotalFrameStat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
@@ -48,7 +40,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
 import okhttp3.Response;
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /**
  * Created by lyqai on 2018/6/22.

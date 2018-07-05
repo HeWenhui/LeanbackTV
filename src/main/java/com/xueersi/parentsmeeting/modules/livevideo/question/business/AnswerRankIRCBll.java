@@ -65,4 +65,9 @@ public class AnswerRankIRCBll extends LiveBaseBll implements NoticeAction {
         }
     }
 
+    public void setType(String type) {
+        if (mAnswerRankBll != null) {
+            mAnswerRankBll.setType(type);
+        }
+    }
 }

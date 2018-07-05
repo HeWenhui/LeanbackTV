@@ -55,7 +55,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandSpeechCrea
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandVoiceAnswerCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoiceAnswerCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageStandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;

@@ -635,6 +635,10 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
         }
     }
 
+    public void setIsAutoOrientation(boolean mIsAutoOrientation) {
+        this.mIsAutoOrientation = mIsAutoOrientation;
+    }
+
     /** 准备加载新视频 */
     protected void onPlayOpenStart() {
 
