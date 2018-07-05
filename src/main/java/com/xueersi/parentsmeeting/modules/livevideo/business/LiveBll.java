@@ -24,6 +24,8 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekHttp;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
@@ -115,9 +117,9 @@ import okhttp3.Response;
  *
  * @author linyuqiang
  */
-public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, QuestionHttp {
+public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, QuestionHttp, LiveAchievementHttp, EnglishSpeekHttp {
     private String TAG = "LiveBllLog";
-    LiveLazyBllCreat liveLazyBllCreat;
+    private LiveLazyBllCreat liveLazyBllCreat;
     /** 互动题 */
     private QuestionAction mQuestionAction;
     /** 点名 */
@@ -3299,6 +3301,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         });
     }
 
+    @Override
     public void setStuStarCount(final long reTryTime, final String starId, final AbstractBusinessDataCallBack
             callBack) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
@@ -3781,6 +3784,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         }, 500);
     }
 
+    @Override
     public void setTotalOpeningLength(final long reTryTime, final String duration, final String speakingNum, final
     String speakingLen, final float x, final float y) {
         String liveid = mGetInfo.getId();

@@ -24,6 +24,7 @@ import com.xueersi.lib.framework.utils.EventBusUtil;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.entity.UpdateAchievementEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.StarInteractAction;
@@ -48,7 +49,7 @@ import java.util.Map;
  * Created by linyuqiang on 2017/7/20.
  * 本场成就
  */
-public class LiveAchievementBll extends LiveBaseBll implements StarInteractAction {
+public class LiveAchievementBll implements StarInteractAction {
     private String TAG = "LiveAchievementBll";
     private String eventId;
     private int liveType;
@@ -95,7 +96,8 @@ public class LiveAchievementBll extends LiveBaseBll implements StarInteractActio
     String myMsg;
     private String mStarid;
     ArrayList<String> data;
-    LiveBll liveBll;
+    LiveAchievementHttp liveBll;
+    LiveAndBackDebug liveAndBackDebug;
     private int starCount;
     private int goldCount;
     boolean mIsLand;
@@ -153,13 +155,7 @@ public class LiveAchievementBll extends LiveBaseBll implements StarInteractActio
     private float starRotateLine2a, starRotateLine2b;
     private LiveGetInfo mRoomInitData;
 
-    public LiveAchievementBll(Activity context, LiveBll2 liveBll, ViewGroup rootView) {
-        super(context, liveBll, rootView);
-    }
-
     public LiveAchievementBll(Activity activity, int liveType, int starCount, int goldCount, boolean mIsLand) {
-        this(activity,null,null);
-
         this.activity = activity;
         this.liveType = liveType;
         this.starCount = starCount;
@@ -187,11 +183,15 @@ public class LiveAchievementBll extends LiveBaseBll implements StarInteractActio
     }
 
 
-
-
-
-    public void setLiveBll(LiveBll liveBll) {
+    public void setLiveBll(LiveAchievementHttp liveBll) {
+        if (liveBll instanceof LiveAndBackDebug) {
+            liveAndBackDebug = (LiveAndBackDebug) liveBll;
+        }
         this.liveBll = liveBll;
+    }
+
+    public void setLiveAndBackDebug(LiveAndBackDebug liveAndBackDebug) {
+        this.liveAndBackDebug = liveAndBackDebug;
     }
 
     public void initView(RelativeLayout bottomContent) {
@@ -417,7 +417,7 @@ public class LiveAchievementBll extends LiveBaseBll implements StarInteractActio
             mData.put("sno", "2");
             mData.put("stable", "1");
         }
-        liveBll.umsAgentDebugPv(eventId, mData);
+        liveAndBackDebug.umsAgentDebugPv(eventId, mData);
     }
 
     @Override
@@ -441,7 +441,7 @@ public class LiveAchievementBll extends LiveBaseBll implements StarInteractActio
             mData.put("answer", myAnswer);
             mData.put("starid", mStarid);
             mData.put("star_num", "" + (starCount));
-            liveBll.umsAgentDebugSys(eventId, mData);
+            liveAndBackDebug.umsAgentDebugSys(eventId, mData);
             if (receive > -1) {
                 liveBll.setStuStarCount(1000, id, new AbstractBusinessDataCallBack() {
                     @Override
@@ -462,7 +462,7 @@ public class LiveAchievementBll extends LiveBaseBll implements StarInteractActio
                         mData.put("status", "success");
                         mData.put("starnum", "" + (starCount));
                         mData.put("starid", mStarid);
-                        liveBll.umsAgentDebugSys(eventId, mData);
+                        liveAndBackDebug.umsAgentDebugSys(eventId, mData);
                     }
 
                     @Override
@@ -478,7 +478,7 @@ public class LiveAchievementBll extends LiveBaseBll implements StarInteractActio
                             mData.put("status", "error");
                         }
                         mData.put("msg", failMsg);
-                        liveBll.umsAgentDebugSys(eventId, mData);
+                        liveAndBackDebug.umsAgentDebugSys(eventId, mData);
                     }
                 });
             }
@@ -506,7 +506,7 @@ public class LiveAchievementBll extends LiveBaseBll implements StarInteractActio
                     mData.put("answer", msg);
                     mData.put("status", "true");
                     mData.put("starid", mStarid);
-                    liveBll.umsAgentDebugSys(eventId, mData);
+                    liveAndBackDebug.umsAgentDebugSys(eventId, mData);
                     break;
                 }
             }
@@ -810,7 +810,7 @@ public class LiveAchievementBll extends LiveBaseBll implements StarInteractActio
                             mData.put("time", "" + (System.currentTimeMillis() - before));
                             mData.put("location1", location1);
                             mData.put("location2", location2);
-                            liveBll.umsAgentDebugPv(eventId, mData);
+                            liveAndBackDebug.umsAgentDebugPv(eventId, mData);
                             bottomContent.removeView(flyStat);
                             allAnimations.add(AllAnimation.this);
                         }
@@ -931,50 +931,6 @@ public class LiveAchievementBll extends LiveBaseBll implements StarInteractActio
         void onEnd();
     }
 
-
-    @Override
-    public void onLiveInited(LiveGetInfo data) {
-        super.onLiveInited(data);
-        mRoomInitData = data;
-    }
-
-
-
-    private LiveHttpResponseParser mHttpResponseParser = null;
-
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateAchievementEvent(UpdateAchievementEvent event) {
-
-        if(mLiveBll.getLiveId().equals(event.getmLiveId())){
-
-            String liveid = mRoomInitData.getId();
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-            getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack() {
-                @Override
-                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-
-                    if(mHttpResponseParser == null){
-                        mHttpResponseParser = new LiveHttpResponseParser(mContext);
-                    }
-
-                    StarAndGoldEntity starAndGoldEntity = mHttpResponseParser.parseStuGoldCount(responseEntity);
-                    mRoomInitData.setGoldCount(starAndGoldEntity.getGoldCount());
-                    mRoomInitData.setStarCount(starAndGoldEntity.getStarCount());
-                    onGetStar(starAndGoldEntity);
-                }
-            });
-        }
-
-    }
-
-
-    @Override
-    public void onDestory() {
-
-        super.onDestory();
-        EventBusUtil.unregister(this);
-    }
 }
 
 //        AllAnimation() {

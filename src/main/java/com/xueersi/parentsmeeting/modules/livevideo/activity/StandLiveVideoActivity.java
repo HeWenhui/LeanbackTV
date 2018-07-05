@@ -75,6 +75,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
@@ -511,6 +512,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         liveLazyBllCreat.setQuestionBll(questionBll);
         mLiveBll.setLiveLazyBllCreat(liveLazyBllCreat);
         liveStandFrameAnim = new LiveStandFrameAnim(this);
+        ProxUtil.getProxUtil().put(this,AudioRequest.class, this);
     }
 
     /**
@@ -1109,7 +1111,6 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
             if (initView) {
                 englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                 englishSpeekBll.setLiveBll(mLiveBll);
-                englishSpeekBll.setLiveMessageBll(liveMessageBll);
                 englishSpeekBll.setmShareDataManager(mShareDataManager);
                 englishSpeekAction = englishSpeekBll;
             }
@@ -1126,7 +1127,6 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
             if (initView) {
                 englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                 englishSpeekBll.setLiveBll(mLiveBll);
-                englishSpeekBll.setLiveMessageBll(liveMessageBll);
                 englishSpeekBll.setmShareDataManager(mShareDataManager);
                 englishSpeekAction = englishSpeekBll;
             }
@@ -1726,6 +1726,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                     mLiveBll.onDestroy();
                     LogToFile.liveBll = null;
                 }
+                ProxUtil.getProxUtil().clear();
             }
         }.start();
         AppBll.getInstance().unRegisterAppEvent(this);

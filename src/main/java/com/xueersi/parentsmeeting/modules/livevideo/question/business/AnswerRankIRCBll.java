@@ -18,7 +18,7 @@ import org.json.JSONObject;
 public class AnswerRankIRCBll extends LiveBaseBll implements NoticeAction {
     AnswerRankBll mAnswerRankBll;
 
-    public AnswerRankIRCBll(Activity context, LiveBll2 liveBll, ViewGroup rootView) {
+    public AnswerRankIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context, liveBll, rootView);
         mAnswerRankBll = new AnswerRankBll(context, (RelativeLayout) rootView, liveBll);
         putInstance(AnswerRankIRCBll.class, this);

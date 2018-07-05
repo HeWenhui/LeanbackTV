@@ -44,6 +44,7 @@ import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONArray;
@@ -469,8 +470,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 //        params.rightMargin = wradio;
 //        bottomContent.addView(voiceAnswerPager2.getRootView(), params);
         voiceAnswerPager = voiceAnswerPager2;
-        if (context instanceof AudioRequest) {
-            AudioRequest audioRequest = (AudioRequest) context;
+        AudioRequest audioRequest = ProxUtil.getProxUtil().get(context, AudioRequest.class);
+        if (audioRequest != null) {
             audioRequest.request(new AudioRequest.OnAudioRequest() {
                 @Override
                 public void requestSuccess() {

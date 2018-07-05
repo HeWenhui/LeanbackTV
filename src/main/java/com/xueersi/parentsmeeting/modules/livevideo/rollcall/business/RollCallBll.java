@@ -113,7 +113,7 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
     private LiveGetInfo mGetInfo;
 
 
-    public RollCallBll(Activity context, LiveBll2 liveBll, ViewGroup rootView) {
+    public RollCallBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context, liveBll, rootView);
         this.activity = context;
 

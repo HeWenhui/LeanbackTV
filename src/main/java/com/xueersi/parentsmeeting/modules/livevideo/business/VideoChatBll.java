@@ -33,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveScienceHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.AgoraVideoChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
@@ -248,10 +249,8 @@ public class VideoChatBll implements VideoChatAction {
             videoChatInter.updateUser(classmateChange, classmateEntities);
             return;
         }
-        if (activity instanceof AudioRequest) {
-            AudioRequest audioRequest = (AudioRequest) activity;
-            audioRequest.request(null);
-        }
+        AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
+        audioRequest.request(null);
         if (mLiveRemarkBll != null) {
             mLiveRemarkBll.setOnChat(true);
         }

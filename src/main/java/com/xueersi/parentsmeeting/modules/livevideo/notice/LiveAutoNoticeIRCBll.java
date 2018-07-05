@@ -21,7 +21,7 @@ public class LiveAutoNoticeIRCBll extends LiveBaseBll {
     private LiveAutoNoticeBll mLiveAutoNoticeBll;
     private long blockTime;
 
-    public LiveAutoNoticeIRCBll(Activity context, LiveBll2 liveBll, ViewGroup rootView) {
+    public LiveAutoNoticeIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context, liveBll, rootView);
         putInstance(LiveAutoNoticeIRCBll.class, this);
     }

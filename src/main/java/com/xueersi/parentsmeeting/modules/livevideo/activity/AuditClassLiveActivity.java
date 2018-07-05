@@ -45,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusE
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerListener;
@@ -1490,6 +1491,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                     mLiveBll.onDestroy();
                     LogToFile.auditClassLiveBll = null;
                 }
+                ProxUtil.getProxUtil().clear();
             }
         }.start();
         AppBll.getInstance().unRegisterAppEvent(this);

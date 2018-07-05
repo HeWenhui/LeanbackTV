@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: rootDir.absolutePath + '/buildscript/new_module_extra_config.gradle'
+apply from: rootDir.absolutePath + '/buildscript/module_extra_config.gradle'
 apply from: rootDir.absolutePath + '/buildscript/module_upload_config.gradle'
 
 android {

@@ -620,12 +620,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             rlQuestionContent.removeView(speechAssessmentPager.getRootView());
                         }
                     }
-                    if (activity instanceof AudioRequest) {
-                        AudioRequest audioRequest = (AudioRequest) activity;
+                    AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
+                    if (audioRequest != null) {
                         audioRequest.request(new AudioRequest.OnAudioRequest() {
                             @Override
                             public void requestSuccess() {
-
+                                if (voiceAnswerPager != null) {
+                                    voiceAnswerPager.setAudioRequest();
+                                }
                             }
                         });
                     }
@@ -1428,17 +1430,15 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 //        rlQuestionContent.addView(voiceAnswerPager2.getRootView(), params);
 
         voiceAnswerPager = voiceAnswerPager2;
-        if (activity instanceof AudioRequest) {
-            AudioRequest audioRequest = (AudioRequest) activity;
-            audioRequest.request(new AudioRequest.OnAudioRequest() {
-                @Override
-                public void requestSuccess() {
-                    if (voiceAnswerPager != null) {
-                        voiceAnswerPager.setAudioRequest();
-                    }
+        AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
+        audioRequest.request(new AudioRequest.OnAudioRequest() {
+            @Override
+            public void requestSuccess() {
+                if (voiceAnswerPager != null) {
+                    voiceAnswerPager.setAudioRequest();
                 }
-            });
-        }
+            }
+        });
     }
 
     /**

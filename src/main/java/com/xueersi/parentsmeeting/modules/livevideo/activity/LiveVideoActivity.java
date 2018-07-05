@@ -73,6 +73,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.Play
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionWebCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
@@ -468,7 +469,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         liveLazyBllCreat = new LiveLazyBllCreat(this, mLiveBll);
         liveLazyBllCreat.setQuestionBll(questionBll);
         mLiveBll.setLiveLazyBllCreat(liveLazyBllCreat);
-
+        ProxUtil.getProxUtil().put(this,AudioRequest.class, this);
         // 初始战队pk
         //teamPKBll = new TeamPkBll(this);
         //setTeamPkBll(teamPKBll);
@@ -1017,7 +1018,6 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             if (initView) {
                 englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                 englishSpeekBll.setLiveBll(mLiveBll);
-                englishSpeekBll.setLiveMessageBll(liveMessageBll);
                 englishSpeekBll.setmShareDataManager(mShareDataManager);
                 mLiveBll.setEnglishSpeekAction(englishSpeekBll);
                 LiveVideoActivity.this.englishSpeekBll = englishSpeekBll;
@@ -1625,6 +1625,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                     mLiveBll.onDestroy();
                     LogToFile.liveBll = null;
                 }
+                ProxUtil.getProxUtil().clear();
             }
         }.start();
         AppBll.getInstance().unRegisterAppEvent(this);

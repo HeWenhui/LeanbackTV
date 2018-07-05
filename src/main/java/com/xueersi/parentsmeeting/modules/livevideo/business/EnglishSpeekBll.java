@@ -25,6 +25,7 @@ import com.tal.speech.language.LanguageListener;
 import com.tal.speech.language.TalLanguage;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
@@ -35,6 +36,7 @@ import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,12 +56,12 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
     String TAG = "EnglishSpeekBll" + staticInt++;
     static boolean loadSuccess = false;
     private Activity activity;
-    private LiveBll liveBll;
+    private EnglishSpeekHttp liveBll;
+    private LiveAndBackDebug liveAndBackDebug;
     String eventId = LiveVideoConfig.LIVE_ENGLISH_SPEEK;
     private static final String ENGLISH_TIP = LiveVideoConfig.LIVE_ENGLISH_TIP;
     private int MAX_TIPS = 1;
     protected ShareDataManager mShareDataManager;
-    LiveMessageBll liveMessageBll;
     LiveGetInfo.TotalOpeningLength totalOpeningLength;
     boolean isDestory = false;
     /** 静态destory */
@@ -122,12 +124,15 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
         isDestory2 = false;
     }
 
-    public void setLiveBll(LiveBll liveBll) {
+    public void setLiveBll(EnglishSpeekHttp liveBll) {
+        if (liveBll instanceof LiveAndBackDebug) {
+            liveAndBackDebug = (LiveAndBackDebug) liveBll;
+        }
         this.liveBll = liveBll;
     }
 
-    public void setLiveMessageBll(LiveMessageBll liveMessageBll) {
-        this.liveMessageBll = liveMessageBll;
+    public void setLiveAndBackDebug(LiveAndBackDebug liveAndBackDebug) {
+        this.liveAndBackDebug = liveAndBackDebug;
     }
 
     public void setmShareDataManager(ShareDataManager mShareDataManager) {
@@ -530,7 +535,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
             sendDbDuration = 0;
             Map<String, String> mData = new HashMap<>();
             mData.put("logtype", "start");
-            liveBll.umsAgentDebugSys(eventId, mData);
+            liveAndBackDebug.umsAgentDebugSys(eventId, mData);
         }
     }
 
@@ -539,11 +544,14 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
         Loger.d(TAG, "onDBStop:dbStart=" + dbStart + ",dbDuration=" + dbDuration + ",sendDbDuration=" + sendDbDuration);
         if (dbStart) {
             dbStart = false;
+            LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
             if (sendDbDuration == 0) {
                 liveBll.setNotOpeningNum();
-                liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP, "大声的说出来，老师很想听到你的声音哦~");
+                if (liveMessageBll != null) {
+                    liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP, "大声的说出来，老师很想听到你的声音哦~");
+                }
             } else {
-                if (lastdbDuration == 0) {
+                if (lastdbDuration == 0 && liveMessageBll != null) {
                     liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP, "没错，就是这样，继续坚持下去！");
                 }
             }
@@ -552,7 +560,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
             mData.put("duration", "" + dbDuration);
             mData.put("speakNum", "" + (lastEnSegNum - dbStartEnSegNum));
             mData.put("logtype", "stop");
-            liveBll.umsAgentDebugSys(eventId, mData);
+            liveAndBackDebug.umsAgentDebugSys(eventId, mData);
         }
     }
 
@@ -607,7 +615,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
             mData.put("logtype", "sendPraise");
             mData.put("answer", "" + answer);
             mData.put("duration", "" + sendDbDuration);
-            liveBll.umsAgentDebugSys(eventId, mData);
+            liveAndBackDebug.umsAgentDebugSys(eventId, mData);
             bottomContent.post(new Runnable() {
                 @Override
                 public void run() {
@@ -637,7 +645,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
             mData.put("logtype", "sendRemind");
             mData.put("answer", "" + answer);
             mData.put("duration", "" + sendDbDuration);
-            liveBll.umsAgentDebugSys(eventId, mData);
+            liveAndBackDebug.umsAgentDebugSys(eventId, mData);
             bottomContent.post(new Runnable() {
                 @Override
                 public void run() {

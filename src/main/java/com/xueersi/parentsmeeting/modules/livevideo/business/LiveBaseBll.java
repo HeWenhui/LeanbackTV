@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -28,7 +29,7 @@ import java.util.Map;
  */
 public class LiveBaseBll extends BaseBll {
 
-    protected ViewGroup mRootView;
+    protected RelativeLayout mRootView;
     protected LiveBll2 mLiveBll;
     protected Handler mHandler = new Handler(Looper.getMainLooper());
     protected LiveGetInfo mGetInfo;
@@ -36,7 +37,7 @@ public class LiveBaseBll extends BaseBll {
     protected final int mLiveType;
     protected Activity activity;
 
-    public LiveBaseBll(Activity context, LiveBll2 liveBll, ViewGroup rootView) {
+    public LiveBaseBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context);
         this.activity = context;
         mLiveBll = liveBll;

@@ -12,6 +12,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
@@ -52,7 +53,6 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
     /** 辅导老师前缀 */
     public static String COUNTTEACHER_PREFIX = "f_";
 
-    private LiveGetInfo mGetInfo;
     private int mLiveType;
     private LogToFile mLogtf;
     final Object lock = new Object();
@@ -73,12 +73,12 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
     private LiveMessageBll mRoomAction;
     /** 星星互动 */
-    private StarInteractAction starAction;
+    private LiveAchievementIRCBll starAction;
     private LiveHttpManager mHttpManager;
     private String mLiveId;
     private LiveHttpResponseParser mHttpResponseParser;
 
-    public LiveIRCMessageBll(Activity context, LiveBll2 liveBll, ViewGroup rootView) {
+    public LiveIRCMessageBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context, liveBll, rootView);
         this.mLiveType = liveBll.getLiveType();
         mLiveId = liveBll.getLiveId();
@@ -94,6 +94,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
         mVideoAction = getInstance(VideoAction.class);
         mHttpResponseParser = mLiveBll.getHttpResponseParser();
         mHttpManager = mLiveBll.getHttpManager();
+        starAction = getInstance(LiveAchievementIRCBll.class);
     }
 
     public void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
@@ -107,9 +108,9 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
     }
 
     public void onLiveInited(LiveGetInfo getInfo) {
-        this.mGetInfo = getInfo;
+        super.onLiveInited(getInfo);
         if (mLiveType == LiveBll2.LIVE_TYPE_LIVE) {
-            LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = this.mGetInfo.getStudentLiveInfo();
+            LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
             if (!StringUtils.isEmpty(studentLiveInfo.getTeamId()) && !"0".equals(studentLiveInfo.getTeamId())) {
                 haveTeam = true;
             }

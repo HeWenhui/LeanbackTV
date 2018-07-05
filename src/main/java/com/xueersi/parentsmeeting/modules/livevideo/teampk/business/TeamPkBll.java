@@ -119,7 +119,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      */
     private String nonce;
 
-    public TeamPkBll(Activity context, LiveBll2 liveBll, ViewGroup rootView) {
+    public TeamPkBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context, liveBll, rootView);
         mActivity = context;
     }

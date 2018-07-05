@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -25,7 +26,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     private AnswerRankIRCBll mAnswerRankBll;
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
 
-    public EnglishH5CoursewareIRCBll(Activity context, LiveBll2 liveBll, ViewGroup rootView) {
+    public EnglishH5CoursewareIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context, liveBll, rootView);
         englishH5CoursewareAction = new EnglishH5CoursewareBll(context);
     }

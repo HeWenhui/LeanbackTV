@@ -182,6 +182,10 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         return mStuCouId;
     }
 
+    public String getCourseId() {
+        return mCourseId;
+    }
+
     public String getMainTeacherStr() {
         return liveIRCMessageBll.getmMainTeacherStr();
     }
@@ -324,16 +328,16 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         if (mVideoAction != null) {
             mVideoAction.onLiveInit(mGetInfo);
         }
-        logger.e("=======>onGetInfoSuccess 11111111");
-        try {
-            for (LiveBaseBll businessBll : businessBlls) {
+        logger.d("=======>onGetInfoSuccess 11111111");
+        for (LiveBaseBll businessBll : businessBlls) {
+            try {
                 businessBll.onLiveInited(getInfo);
-                Log.e("LiveBll2", "=======>onGetInfoSuccess 22222222");
+                logger.d("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll);
+            } catch (Exception e) {
+                logger.e("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll, e);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        logger.e("=======>onGetInfoSuccess 333333333");
+        logger.d("=======>onGetInfoSuccess 333333333");
         LiveGetInfo.NewTalkConfEntity talkConfEntity = new LiveGetInfo.NewTalkConfEntity();
         talkConfEntity.setHost(mGetInfo.getTalkHost());
         talkConfEntity.setPort(mGetInfo.getTalkPort());

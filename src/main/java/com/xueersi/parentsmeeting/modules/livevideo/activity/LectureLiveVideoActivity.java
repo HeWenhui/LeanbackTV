@@ -66,6 +66,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.Play
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
@@ -1490,6 +1491,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 if (mLiveBll != null) {
                     mLiveBll.onDestroy();
                 }
+                ProxUtil.getProxUtil().clear();
             }
         }.start();
         AppBll.getInstance().unRegisterAppEvent(this);

@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
@@ -37,7 +38,7 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
     private View praiseRootView;
     private boolean isAnimStart;
 
-    public TeacherPraiseBll(Activity context, LiveBll2 liveBll, ViewGroup rootView) {
+    public TeacherPraiseBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context, liveBll, rootView);
         mActivity = context;
     }

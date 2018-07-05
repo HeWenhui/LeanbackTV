@@ -63,7 +63,7 @@ public class RedPackageBll extends LiveBaseBll implements NoticeAction, RedPacka
      */
     private RelativeLayout rlRedpacketContent;
 
-    public RedPackageBll(Activity context, LiveBll2 liveBll, ViewGroup rootView) {
+    public RedPackageBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context, liveBll, rootView);
 
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG

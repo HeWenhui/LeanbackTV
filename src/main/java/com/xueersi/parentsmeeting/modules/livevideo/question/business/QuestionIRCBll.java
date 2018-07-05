@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 import android.app.Activity;
 import android.os.Environment;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
@@ -46,7 +47,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
     private LogToFile mLogtf;
 
-    public QuestionIRCBll(Activity context, LiveBll2 liveBll, ViewGroup rootView) {
+    public QuestionIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context, liveBll, rootView);
         mQuestionAction = new QuestionBll(context, liveBll.getStuCouId());
         mLogtf = new LogToFile(context, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG

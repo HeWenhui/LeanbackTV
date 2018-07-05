@@ -55,7 +55,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
     int answer;
     private LiveGetInfo mGetInfo;
 
-    public LiveVoteBll(Activity context, LiveBll2 liveBll, ViewGroup rootView) {
+    public LiveVoteBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context, liveBll, rootView);
         bottomContent = (RelativeLayout) rootView;
         this.context = context;

@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveMessagePortPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
@@ -29,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by linyuqiang on 2016/9/23.
  * 聊天消息，一些进入房间状态的消息
  */
-public class LiveMessageBll implements RoomAction, QuestionShowAction,KeyBordAction {
+public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAction {
     private String TAG = "LiveMessageBll";
     /** 消息 */
     private BaseLiveMessagePager mLiveMessagePager;
@@ -58,6 +59,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction,KeyBordAct
     public LiveMessageBll(Activity activity, int liveType) {
         this.activity = activity;
         this.liveType = liveType;
+        ProxUtil.getProxUtil().put(activity, LiveMessageBll.class, this);
     }
 
     public void setQuestionBll(QuestionBll questionBll) {
