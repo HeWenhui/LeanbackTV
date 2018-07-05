@@ -1211,6 +1211,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                     englishH5Entity.setStuId(mGetInfo.getStuId());
                                     objects.put("classId", classId);
                                     englishH5Entity.setClassId(classId);
+                                    objects.put("classTestId", object.getString("ctId"));
                                     mShareDataManager.put(LiveVideoConfig.newEnglishH5, objects.toString(), ShareDataManager.SHAREDATA_USER);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -1820,6 +1821,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 objects.put("stuCouId", vStuCourseID);
                                 objects.put("stuId", mGetInfo.getStuId());
                                 objects.put("classId", classId);
+                                objects.put("classTestId", object.getString("ctId"));
                                 mShareDataManager.put(LiveVideoConfig.newEnglishH5, objects.toString(), ShareDataManager.SHAREDATA_USER);
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -2559,6 +2561,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 LiveVideoConfig.isPrimary = false;
             }
         }
+        LiveVideoConfig.educationstage = mGetInfo.getEducationStage();
         if (mLiveType == LIVE_TYPE_LIVE) {
             if (mGetInfo.getIsArts() == 1) {
                 liveArtsHttpManager = new LiveArtsHttpManager(mHttpManager);

@@ -290,6 +290,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             String stuCouId = "";
             String stuId = "";
             String classId = "";
+            String classTestId = "";
             try {
                 JSONObject jsonObject = new JSONObject(mShareDataManager.getString(LiveVideoConfig.newEnglishH5, "{}", ShareDataManager.SHAREDATA_USER));
                 packageId = jsonObject.optString("packageId");
@@ -300,6 +301,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 stuCouId = jsonObject.optString("stuCouId");
                 classId = jsonObject.optString("classId");
                 teamId = jsonObject.optString("teamId");
+                classTestId = jsonObject.optString("classTestId");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -309,7 +311,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
 //            } else {
 //                mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&isPlayBack=0";
 //            }
-            mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&isPlayBack=0";
+            mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos +"&classTestId="+ classTestId + "&educationStage= " + LiveVideoConfig.educationstage + "&isPlayBack=0";
+//            mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos +"&isPlayBack=0";
             loadUrl(mLoadUrls);
             Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + mLoadUrls);
             reloadurl = mLoadUrls;

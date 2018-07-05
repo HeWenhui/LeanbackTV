@@ -173,7 +173,8 @@ public class LiveVideoConfig {
     public static EnglishH5Entity englishH5Entity;
     /** 小学阶段年级的标识*/
     public static Boolean isPrimary = false;
-
+    /** 年级阶段的标识*/
+    public static String educationstage;
     public static interface SubjectIds {
         /**
          * 学科id，语文

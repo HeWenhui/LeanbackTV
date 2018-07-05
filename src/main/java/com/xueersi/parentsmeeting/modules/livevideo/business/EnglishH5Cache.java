@@ -244,8 +244,9 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 Loger.e(TAG, "responseEntity.getJsonObject=" + responseEntity.getJsonObject());
-                final Object jsonObject = responseEntity.getJsonObject();
-                JSONArray array = new JSONArray(jsonObject.toString());
+//                final Object jsonObject = responseEntity.getJsonObject();
+                JSONObject objects = new JSONObject(responseEntity.getJsonObject().toString());
+                JSONArray array = objects.optJSONArray("list");
                 mList = new ArrayList<>();
                 for (int i = 0; i < array.length(); i++) {
                     MoreCache cache = new MoreCache();
