@@ -23,7 +23,7 @@
 //import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 //import com.tal.speech.speechrecognizer.TalSpeech;
 //import com.xueersi.parentsmeeting.modules.livevideo.R;
-//import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
+//import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 //import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 //import com.xueersi.common.speech.SpeechEvaluatorUtils;
 //import com.xueersi.lib.framework.utils.AppUtils;

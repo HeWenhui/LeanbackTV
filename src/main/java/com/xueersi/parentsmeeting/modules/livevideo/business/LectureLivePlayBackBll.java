@@ -30,10 +30,11 @@ import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.XSAsykTask;
 import com.xueersi.lib.framework.utils.file.FileUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.ui.dataload.DataLoadEntity;
-import com.xueersi.ui.dataload.PageDataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -41,11 +42,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.Call;
 
 
 /**

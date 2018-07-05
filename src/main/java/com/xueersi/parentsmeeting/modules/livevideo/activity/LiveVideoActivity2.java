@@ -54,6 +54,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.UserOnline;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
+import com.xueersi.parentsmeeting.modules.livevideo.learnreport.LearnReportIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRankIRCBll;
@@ -282,6 +283,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         mLiveBll.addBusinessBll(new LiveVoteBll(activity, mLiveBll, bottomContent));
         mLiveBll.addBusinessBll(new LiveAutoNoticeIRCBll(activity, mLiveBll, bottomContent));
         mLiveBll.addBusinessBll(new AnswerRankIRCBll(activity, mLiveBll, bottomContent));
+        mLiveBll.addBusinessBll(new LearnReportIRCBll(activity, mLiveBll, bottomContent));
         liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll, bottomContent);
         mLiveBll.addBusinessBll(liveIRCMessageBll);
         mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);

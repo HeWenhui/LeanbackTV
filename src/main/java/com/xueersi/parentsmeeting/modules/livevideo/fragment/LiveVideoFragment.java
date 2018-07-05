@@ -48,7 +48,7 @@
 //import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CacheAction;
-//import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CoursewareBll;
+//import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishSpeekBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.ExpeBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.H5CoursewareBll;
@@ -61,13 +61,13 @@
 //import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
-//import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoiceAnswerCreat;
+//import com.xueersi.parentsmeeting.modules.livevideo.question.business.LiveVoiceAnswerCreat;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 //import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
-//import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackAction;
-//import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechFeedBackBll;
+//import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.SpeechFeedBackAction;
+//import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.SpeechFeedBackBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;

@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 import android.content.Context;
 
 import com.xueersi.common.base.BasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.business.PutQuestion;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.PutQuestion;
 
 /**
  * Created by linyuqiang on 2016/12/19.

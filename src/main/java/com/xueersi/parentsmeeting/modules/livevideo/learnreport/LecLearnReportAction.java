@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business;
+package com.xueersi.parentsmeeting.modules.livevideo.learnreport;
 
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 

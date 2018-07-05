@@ -463,6 +463,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                                 }
                             }
                             liveVideoBll.onModeChange(mode, isPresent);
+                            for (int i = 0; i < businessBlls.size(); i++) {
+                                businessBlls.get(i).onModeChange(mode, isPresent);
+                            }
                         }
                         break;
 
@@ -500,9 +503,12 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                     if (!(mLiveTopic.getMode().equals(liveTopic.getMode()))) {
                         mLiveTopic.setMode(liveTopic.getMode());
                         mGetInfo.setMode(liveTopic.getMode());
+                        boolean isPresent = isPresent(mLiveTopic.getMode());
                         if (mVideoAction != null) {
-                            boolean isPresent = isPresent(mLiveTopic.getMode());
                             mVideoAction.onModeChange(mLiveTopic.getMode(), isPresent);
+                        }
+                        for (int i = 0; i < businessBlls.size(); i++) {
+                            businessBlls.get(i).onModeChange(mLiveTopic.getMode(), isPresent);
                         }
                     }
                     if (mVideoAction != null) {

@@ -25,8 +25,8 @@
 //import com.xueersi.common.logerhelper.LogerTag;
 //import com.xueersi.common.logerhelper.XesMobAgent;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
-//import com.xueersi.parentsmeeting.modules.livevideo.business.OnSpeechEval;
-//import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
+//import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
+//import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 //import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 //import com.xueersi.common.speech.SpeechEvaluatorUtils;
 //import com.xueersi.lib.framework.utils.XESToastUtils;

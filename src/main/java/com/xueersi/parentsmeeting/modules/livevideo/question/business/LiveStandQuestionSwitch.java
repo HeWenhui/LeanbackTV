@@ -1,7 +1,8 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business;
+package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSwitch;
 
 /**
  * Created by lyqai on 2018/4/4.

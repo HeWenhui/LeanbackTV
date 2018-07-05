@@ -180,6 +180,10 @@ public class LiveBaseBll extends BaseBll {
         }
     }
 
+    public void onModeChange(String mode, boolean isPresent) {
+
+    }
+
     public void postDelayedIfNotFinish(Runnable r, long delayMillis) {
         ActivityStatic activityStatic = (ActivityStatic) mContext;
         if (activityStatic.isFinishing()) {

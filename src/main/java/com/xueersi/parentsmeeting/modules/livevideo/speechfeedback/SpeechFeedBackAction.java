@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business;
+package com.xueersi.parentsmeeting.modules.livevideo.speechfeedback;
 
 /**
  * Created by linyuqiang on 2018/1/11.
