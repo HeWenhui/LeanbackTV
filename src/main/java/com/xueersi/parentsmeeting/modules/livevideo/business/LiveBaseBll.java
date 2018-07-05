@@ -12,6 +12,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONObject;
@@ -29,11 +30,16 @@ public class LiveBaseBll extends BaseBll {
 
     protected ViewGroup mRootView;
     protected LiveBll2 mLiveBll;
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+    protected Handler mHandler = new Handler(Looper.getMainLooper());
+    protected LiveGetInfo mGetInfo;
+    protected String mLiveId;
+    protected final int mLiveType;
 
     public LiveBaseBll(Activity context, LiveBll2 liveBll, ViewGroup rootView) {
         super(context);
         mLiveBll = liveBll;
+        mLiveId = liveBll.getLiveId();
+        mLiveType = liveBll.getLiveType();
         mRootView = rootView;
     }
 
@@ -47,6 +53,10 @@ public class LiveBaseBll extends BaseBll {
             manager = mLiveBll.getHttpManager();
         }
         return manager;
+    }
+
+    public LiveHttpResponseParser getHttpResponseParser() {
+        return mLiveBll.getHttpResponseParser();
     }
 
 
@@ -115,8 +125,8 @@ public class LiveBaseBll extends BaseBll {
      *
      * @param data 直播间初始化参数
      */
-    public void onLiveInited(LiveGetInfo data) {
-
+    public void onLiveInited(LiveGetInfo getInfo) {
+        this.mGetInfo = getInfo;
     }
 
 
@@ -181,7 +191,7 @@ public class LiveBaseBll extends BaseBll {
         return ProxUtil.getProxUtil().get(mContext, clazz);
     }
 
-    public <T> void putInstance(Class<T> clazz, Object object) {
+    public <T> void putInstance(Class<T> clazz, T object) {
         ProxUtil.getProxUtil().put(mContext, clazz, object);
     }
 }

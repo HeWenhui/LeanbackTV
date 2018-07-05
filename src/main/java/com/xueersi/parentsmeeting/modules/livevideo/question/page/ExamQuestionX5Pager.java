@@ -21,6 +21,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
@@ -67,7 +68,7 @@ public class ExamQuestionX5Pager extends BasePager implements BaseExamQuestionIn
     /** 是不是考试结束 */
     private boolean isEnd = false;
     String jsExamSubmitAll = "javascript:examSubmitAll()";
-    private LiveBll mLiveBll;
+    private LiveAndBackDebug mLiveBll;
     private String isShowRankList;
     boolean IS_SCIENCE;
     String stuCouId;
@@ -75,7 +76,7 @@ public class ExamQuestionX5Pager extends BasePager implements BaseExamQuestionIn
     private int mGoldNum;
     private int mEnergyNum;
 
-    public ExamQuestionX5Pager(Context context, LiveBll liveBll, QuestionBll questionBll, String stuId
+    public ExamQuestionX5Pager(Context context, LiveAndBackDebug liveBll, QuestionBll questionBll, String stuId
             , String stuName, String liveid, String num, String nonce, String isShowRankList, boolean IS_SCIENCE, String stuCouId, int isTeamPkRoom) {
         super(context);
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG

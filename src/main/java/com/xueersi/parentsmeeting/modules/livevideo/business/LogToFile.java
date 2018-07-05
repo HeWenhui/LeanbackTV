@@ -1,8 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,25 +20,27 @@ public class LogToFile {
     private static SimpleDateFormat dateFormat;
     /** 静态唯一 */
     public static LiveBll liveBll;
+    public LiveBll2 liveBll2;
     public static AuditClassLiveBll auditClassLiveBll;
 
     static {
         dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
     }
 
-    public LogToFile(String tag, String path) {
+    public LogToFile(String tag, File file) {
         this.TAG = "L:" + tag;
-        this.path = path;
-        File parent = new File(path).getParentFile();
+        this.path = file.getPath();
+        File parent = file.getParentFile();
         if (!parent.exists()) {
             parent.mkdirs();
         }
     }
 
-    public LogToFile(String tag, File file) {
+    public LogToFile(Context context, String tag, File file) {
         this.TAG = "L:" + tag;
         this.path = file.getPath();
         File parent = file.getParentFile();
+        liveBll2 = ProxUtil.getProxUtil().get(context, LiveBll2.class);
         if (!parent.exists()) {
             parent.mkdirs();
         }
@@ -50,11 +55,14 @@ public class LogToFile {
     public void i(String message) {
         Loger.i(TAG, message);
         if (liveBll != null) {
-            liveBll.getOnloadLogs(TAG, TAG + "**" +message);
+            liveBll.getOnloadLogs(TAG, TAG + "**" + message);
         } else {
             if (auditClassLiveBll != null) {
-                auditClassLiveBll.getOnloadLogs(TAG, TAG + "**" +message);
+                auditClassLiveBll.getOnloadLogs(TAG, TAG + "**" + message);
+            } else {
+                liveBll2.getOnloadLogs(TAG, TAG + "**" + message);
             }
+            ;
         }
 //        if (BuildConfig.DEBUG) {
 //            new Thread(new WriteThread(message)).start();
@@ -64,10 +72,10 @@ public class LogToFile {
     public void d(String message) {
         Loger.i(TAG, message);
         if (liveBll != null) {
-            liveBll.getOnloadLogs(TAG, TAG + "**" +message);
+            liveBll.getOnloadLogs(TAG, TAG + "**" + message);
         } else {
             if (auditClassLiveBll != null) {
-                auditClassLiveBll.getOnloadLogs(TAG, TAG + "**" +message);
+                auditClassLiveBll.getOnloadLogs(TAG, TAG + "**" + message);
             }
         }
 //        if (BuildConfig.DEBUG) {
@@ -78,10 +86,10 @@ public class LogToFile {
     public void e(String message, Throwable e) {
         Loger.i(TAG, message, e);
         if (liveBll != null) {
-            liveBll.getOnloadLogs(TAG, TAG + "**" +message);
+            liveBll.getOnloadLogs(TAG, TAG + "**" + message);
         } else {
             if (auditClassLiveBll != null) {
-                auditClassLiveBll.getOnloadLogs(TAG, TAG + "**" +message);
+                auditClassLiveBll.getOnloadLogs(TAG, TAG + "**" + message);
             }
         }
 //        new Thread(new WriteThread(message, e)).start();

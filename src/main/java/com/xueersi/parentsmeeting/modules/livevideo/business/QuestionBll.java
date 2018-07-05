@@ -35,6 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankLivePager;
@@ -92,7 +93,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private VideoQuestionLiveEntity videoQuestionLiveEntity;
     private LogToFile mLogtf;
     private Activity activity;
-    private LiveBll mLiveBll;
+    private QuestionHttp mLiveBll;
+    private LiveAndBackDebug liveAndBackDebug;
     private LiveTopic mLiveTopic;
     private BasePager curQuestionView;
     private boolean isTeamPkAllowed = false;
@@ -254,8 +256,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         this.liveType = liveType;
     }
 
-    public void setLiveBll(LiveBll mLiveBll) {
+    public void setLiveBll(QuestionHttp mLiveBll) {
         this.mLiveBll = mLiveBll;
+    }
+
+    public void setLiveAndBackDebug(LiveAndBackDebug liveAndBackDebug) {
+        this.liveAndBackDebug = liveAndBackDebug;
     }
 
     public void setLiveMessageBll(KeyBordAction liveMessageBll) {
@@ -1053,7 +1059,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mData.put("logtype", "receiveExam");
                 mData.put("examid", num);
                 umsAgentDebugSys(examQuestionEventId, mData);
-                examQuestionPager = new ExamQuestionX5Pager(activity, mLiveBll, QuestionBll.this, liveGetInfo.getStuId
+                examQuestionPager = new ExamQuestionX5Pager(activity, liveAndBackDebug, QuestionBll.this, liveGetInfo.getStuId
                         (), liveGetInfo.getUname(), liveid, num, nonce, mAnswerRankBll == null ? "0" : mAnswerRankBll
                         .getIsShow(), IS_SCIENCE, stuCouId, 0);
                 rlQuestionContent.addView(examQuestionPager.getRootView());
@@ -1772,17 +1778,17 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void umsAgentDebugSys(String eventId, final Map<String, String> mData) {
-        mLiveBll.umsAgentDebugSys(eventId, mData);
+        liveAndBackDebug.umsAgentDebugSys(eventId, mData);
     }
 
     @Override
     public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
-        mLiveBll.umsAgentDebugInter(eventId, mData);
+        liveAndBackDebug.umsAgentDebugInter(eventId, mData);
     }
 
     @Override
     public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
-        mLiveBll.umsAgentDebugPv(eventId, mData);
+        liveAndBackDebug.umsAgentDebugPv(eventId, mData);
     }
 
     @Override
@@ -1969,7 +1975,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         @Override
         public void getTestAnswerTeamStatus(BaseVideoQuestionEntity videoQuestionLiveEntity,
                                             AbstractBusinessDataCallBack callBack) {
-            if (!"-1".equals(mLiveBll.getGetInfo().getRequestTime())) {
+            if (!"-1".equals(liveGetInfo.getRequestTime())) {
                 final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity)
                         videoQuestionLiveEntity;
                 mLiveBll.getTestAnswerTeamStatus(videoQuestionLiveEntity1, callBack);
@@ -1979,7 +1985,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         @Override
         public long getRequestTime() {
             try {
-                String requestTime = mLiveBll.getGetInfo().getRequestTime();
+                String requestTime = liveGetInfo.getRequestTime();
                 long time = Long.parseLong(requestTime);
                 return time * 1000;
             } catch (Exception e) {

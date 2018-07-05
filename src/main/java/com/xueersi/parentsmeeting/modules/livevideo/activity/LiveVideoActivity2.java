@@ -55,6 +55,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.UserOnline;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
@@ -74,6 +75,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.Play
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -101,10 +103,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
     private String TAG = "LiveVideoActivityLog";
     Logger logger = LoggerFactory.getLogger(TAG);
-
-    private RollCallBll rollCallBll;
-    private TeacherPraiseBll teacherPraiseBll;
-    LiveVideoBll liveVideoBll;
 
     {
         mLayoutVideo = R.layout.activity_video_live_new;
@@ -170,13 +168,14 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
      */
     boolean onPauseNotStopVideo = false;
     LiveTextureView liveTextureView;
-
     private LiveBll2 mLiveBll;
     private LiveIRCMessageBll liveIRCMessageBll;
+    private RollCallBll rollCallBll;
+    private TeacherPraiseBll teacherPraiseBll;
+    private LiveVideoBll liveVideoBll;
     private UserOnline userOnline;
     //LiveMessageBll liveMessageBll;
     private static String Tag = "LiveVideoActivity2";
-    private TeamPkBll teamPkBll;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -269,7 +268,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
      */
     private void addBusiness(Activity activity, RelativeLayout bottomContent) {
 
-        teamPkBll = new TeamPkBll(activity, mLiveBll, bottomContent);
+        TeamPkBll teamPkBll = new TeamPkBll(activity, mLiveBll, bottomContent);
         mLiveBll.addBusinessBll(teamPkBll);
 
         rollCallBll = new RollCallBll(activity, mLiveBll, bottomContent);
@@ -277,7 +276,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
         teacherPraiseBll = new TeacherPraiseBll(activity, mLiveBll, bottomContent);
         mLiveBll.addBusinessBll(teacherPraiseBll);
-
+        QuestionIRCBll questionIRCBll = new QuestionIRCBll(activity, mLiveBll, bottomContent);
+        mLiveBll.addBusinessBll(questionIRCBll);
         LiveVoteBll voteBll = new LiveVoteBll(activity, mLiveBll, bottomContent);
         mLiveBll.addBusinessBll(voteBll);
         mLiveBll.addBusinessBll(new LiveAutoNoticeBll(activity, mLiveBll, bottomContent));
@@ -346,6 +346,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             Toast.makeText(activity, "直播类型不支持", Toast.LENGTH_SHORT).show();
             return false;
         }
+        ProxUtil.getProxUtil().put(activity, LiveBll2.class, mLiveBll);
         return true;
     }
 
@@ -932,10 +933,10 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                 if (mLiveBll != null) {
                     mLiveBll.onDestory();
                 }
+                ProxUtil.getProxUtil().clear();
             }
         }.start();
         AppBll.getInstance().unRegisterAppEvent(this);
-
         super.onDestroy();
     }
 

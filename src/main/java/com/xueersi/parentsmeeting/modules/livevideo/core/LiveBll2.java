@@ -1,6 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.core;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,8 +18,10 @@ import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.lib.analytics.umsagent.UmsAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
@@ -47,6 +52,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 
 import org.json.JSONArray;
@@ -121,7 +127,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     public LiveBll2(Context context, String vStuCourseID, String courseId, String vSectionID, int form, LiveGetInfo
             liveGetInfo) {
         super(context);
-
         this.mStuCouId = vStuCourseID;
         this.mCourseId = courseId;
         this.mLiveId = vSectionID;
@@ -194,12 +199,20 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         return mHttpResponseParser;
     }
 
+    public String getStuCouId() {
+        return mStuCouId;
+    }
+
     public String getMainTeacherStr() {
         return liveIRCMessageBll.getmMainTeacherStr();
     }
 
     public String getCounTeacherStr() {
         return liveIRCMessageBll.getmCounTeacherStr();
+    }
+
+    public LiveTopic getLiveTopic() {
+        return mLiveTopic;
     }
 
     /**
@@ -741,6 +754,56 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
         setLogParam(eventId, mData);
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
+    }
+
+    /**
+     * 播放器异常日志
+     *
+     * @param str
+     */
+    public void getOnloadLogs(String TAG, final String str) {
+        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String bz = UserBll.getInstance().getMyUserInfoEntity().getUserType() == 1 ? "student" : "teacher";
+        PackageManager packageManager = mContext.getPackageManager();
+        PackageInfo packInfo = null;
+        String filenam = "f";
+        try {
+            packInfo = packageManager.getPackageInfo(mContext.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (packInfo != null) {//else不会发生
+            filenam = packInfo.versionCode + "";
+        }
+        filenam = Build.VERSION.SDK_INT + "&" + filenam;
+        if (mGetInfo == null) {
+            UmsAgent.onEvent(mContext, LogerTag.DEBUG_VIDEO_LIVEMSG, LogerTag.DEBUG_VIDEO_LIVEMSG, 0, str);
+            return;
+        }
+        mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mLiveId, mGetInfo.getUname(), enstuId,
+                mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, new Callback.CommonCallback<File>() {
+
+                    @Override
+                    public void onSuccess(File o) {
+                        //Loger.i(TAG, "getOnloadLogs:onSuccess");
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable, boolean b) {
+                        //Loger.i(TAG, "getOnloadLogs:onError", throwable);
+                    }
+
+                    @Override
+                    public void onCancelled(CancelledException e) {
+                        //Loger.i(TAG, "getOnloadLogs:onCancelled");
+                    }
+
+                    @Override
+                    public void onFinished() {
+                        //Loger.i(TAG, "getOnloadLogs:onFinished");
+                    }
+
+                });
     }
 
     /**

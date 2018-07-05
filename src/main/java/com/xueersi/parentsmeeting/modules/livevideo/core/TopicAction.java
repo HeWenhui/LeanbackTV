@@ -14,6 +14,6 @@ public interface TopicAction {
      * @param data
      * @param modeChange  是否发生主/辅导 态切换
      */
-      void onTopic(LiveTopic data,boolean modeChange);
+      void onTopic(LiveTopic liveTopic,boolean modeChange);
 
 }
