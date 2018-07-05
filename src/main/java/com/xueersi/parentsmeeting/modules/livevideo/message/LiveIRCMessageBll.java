@@ -32,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.notice.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
@@ -72,7 +73,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
     private String mCounTeacherStr = null;
     private VideoAction mVideoAction;
     /** 智能私信业务 */
-    private LiveAutoNoticeBll mLiveAutoNoticeBll;
+    private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
     private LiveMessageBll mRoomAction;
     /** 星星互动 */
     private StarInteractAction starAction;
@@ -92,7 +93,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
     @Override
     public void onCreate(HashMap<String, Object> data) {
         super.onCreate(data);
-        mLiveAutoNoticeBll = getInstance(LiveAutoNoticeBll.class);
+        mLiveAutoNoticeBll = getInstance(LiveAutoNoticeIRCBll.class);
         mVideoAction = getInstance(VideoAction.class);
         mHttpResponseParser = mLiveBll.getHttpResponseParser();
         mHttpManager = mLiveBll.getHttpManager();
@@ -339,18 +340,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
 
     @Override
     public void onUnknown(String line) {
-        if (line.contains("BLOCK")) {//发送了敏感词
-            if (mLiveAutoNoticeBll != null) {
-                if (System.currentTimeMillis() - blockTime > 2 * 60 * 1000) {
-                    blockTime = System.currentTimeMillis();
-                    postDelayedIfNotFinish(new Runnable() {
-                        @Override
-                        public void run() {
-                            mLiveAutoNoticeBll.showNotice(mGetInfo.getTeacherName(), mGetInfo.getTeacherIMG());
-                        }
-                    }, 10000);
-                }
-            }
+        if (mLiveAutoNoticeBll != null) {
+            mLiveAutoNoticeBll.onUnknown(line);
         }
     }
 
@@ -516,6 +507,21 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
 
     public String getmCounTeacherStr() {
         return mCounTeacherStr;
+    }
+
+    /**
+     * 得到老师名字
+     */
+    public String getModeTeacher(String mode) {
+        String mainnick = "null";
+        if (mMainTeacher != null) {
+            mainnick = mMainTeacher.get_nick();
+        }
+        if (mCounteacher == null) {
+            return "mode=" + mode + ",mainnick=" + mainnick + ",coun=null";
+        } else {
+            return "mode=" + mode + ",mainnick=" + mainnick + ",coun.isLeave=" + mCounteacher.isLeave;
+        }
     }
 
     /**

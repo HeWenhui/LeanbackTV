@@ -18,7 +18,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBllL;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
@@ -110,7 +109,7 @@ public class LiveVideoBll {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         totalFrameStat = new TotalFrameStat(activity);
-        liveVideoReportBll = new LiveVideoReportBll();
+        liveVideoReportBll = new LiveVideoReportBll(activity, liveBll);
         liveVideoReportBll.setTotalFrameStat(totalFrameStat);
         mPlayStatistics = liveVideoReportBll.getVideoListener();
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG

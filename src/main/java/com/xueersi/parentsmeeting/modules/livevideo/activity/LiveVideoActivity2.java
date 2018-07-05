@@ -55,6 +55,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.UserOnline;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.notice.LiveAutoNoticeIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRankIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
@@ -171,7 +173,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     private LiveBll2 mLiveBll;
     private LiveIRCMessageBll liveIRCMessageBll;
     private RollCallBll rollCallBll;
-    private TeacherPraiseBll teacherPraiseBll;
     private LiveVideoBll liveVideoBll;
     private UserOnline userOnline;
     //LiveMessageBll liveMessageBll;
@@ -274,13 +275,11 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         rollCallBll = new RollCallBll(activity, mLiveBll, bottomContent);
         mLiveBll.addBusinessBll(rollCallBll);
 
-        teacherPraiseBll = new TeacherPraiseBll(activity, mLiveBll, bottomContent);
-        mLiveBll.addBusinessBll(teacherPraiseBll);
-        QuestionIRCBll questionIRCBll = new QuestionIRCBll(activity, mLiveBll, bottomContent);
-        mLiveBll.addBusinessBll(questionIRCBll);
-        LiveVoteBll voteBll = new LiveVoteBll(activity, mLiveBll, bottomContent);
-        mLiveBll.addBusinessBll(voteBll);
-        mLiveBll.addBusinessBll(new LiveAutoNoticeBll(activity, mLiveBll, bottomContent));
+        mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll, bottomContent));
+        mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll, bottomContent));
+        mLiveBll.addBusinessBll(new LiveVoteBll(activity, mLiveBll, bottomContent));
+        mLiveBll.addBusinessBll(new LiveAutoNoticeIRCBll(activity, mLiveBll, bottomContent));
+        mLiveBll.addBusinessBll(new AnswerRankIRCBll(activity, mLiveBll, bottomContent));
         liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll, bottomContent);
         mLiveBll.addBusinessBll(liveIRCMessageBll);
         mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);

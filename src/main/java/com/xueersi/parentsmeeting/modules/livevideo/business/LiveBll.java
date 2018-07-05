@@ -1611,7 +1611,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                                 ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(false);
                                 Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: EXAM_START");
                             }
-
                         }
                     }
                     break;

@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.video;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
@@ -13,9 +14,9 @@ import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBllL;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TotalFrameStat;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
@@ -47,12 +48,13 @@ public class LiveVideoReportBll {
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private LiveGetInfo mGetInfo;
     private Context mContext;
-    LiveBllL liveBll;
+    LiveBll2 liveBll;
     private PlayServerEntity mServer;
     private PlayServerEntity.PlayserverEntity playserverEntity;
 
-    LiveVideoReportBll() {
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+    LiveVideoReportBll(Activity activity, LiveBll2 liveBll) {
+        this.liveBll = liveBll;
+        mLogtf = new LogToFile(activity, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
     }
 
@@ -136,8 +138,7 @@ public class LiveVideoReportBll {
         @Override
         public void onPlaybackComplete() {
             mLogtf.d("onPlaybackComplete:completeCount=" + liveBll.getModeTeacher() + "," +
-                    "NetWorkState=" +
-                    NetWorkHelper.getNetWorkState(mContext));
+                    "NetWorkState=" + NetWorkHelper.getNetWorkState(mContext));
             if (totalFrameStat != null) {
                 totalFrameStat.onPlaybackComplete();
             }

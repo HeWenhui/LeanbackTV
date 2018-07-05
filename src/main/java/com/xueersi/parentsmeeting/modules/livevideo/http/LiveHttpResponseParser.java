@@ -63,7 +63,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 
     public LiveHttpResponseParser(Context mContext) {
         this.mContext = mContext;
-        ProxUtil.getProxUtil().put(mContext, LiveHttpResponseParser.class, this);
     }
 
     /**

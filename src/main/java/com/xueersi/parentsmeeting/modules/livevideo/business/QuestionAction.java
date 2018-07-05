@@ -38,6 +38,7 @@ public interface QuestionAction {
     void onExamStop();
 
     /** 语音评测刷新 */
+    @Deprecated
     boolean onSpeechResult(String json);
 
     void onNetWorkChange(int netWorkType);

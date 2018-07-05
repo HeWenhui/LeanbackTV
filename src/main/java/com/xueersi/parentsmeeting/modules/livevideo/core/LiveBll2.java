@@ -211,6 +211,10 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         return liveIRCMessageBll.getmCounTeacherStr();
     }
 
+    public String getModeTeacher() {
+        return liveIRCMessageBll.getModeTeacher(getMode());
+    }
+
     public LiveTopic getLiveTopic() {
         return mLiveTopic;
     }

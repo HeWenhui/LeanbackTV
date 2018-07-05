@@ -31,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.notice.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -48,10 +49,9 @@ import okhttp3.Call;
  */
 
 public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, QuestionHttp {
-    QuestionBll mQuestionAction;
-    AnswerRankBll mAnswerRankBll;
-    LiveAutoNoticeBll mLiveAutoNoticeBll;
-    TeamPkBll mTeamPKBll;
+    private QuestionBll mQuestionAction;
+    private AnswerRankIRCBll mAnswerRankBll;
+    private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
     private LogToFile mLogtf;
 
     public QuestionIRCBll(Activity context, LiveBll2 liveBll, ViewGroup rootView) {
@@ -59,6 +59,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         mQuestionAction = new QuestionBll(context, liveBll.getStuCouId());
         mLogtf = new LogToFile(context, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
+        putInstance(QuestionIRCBll.class, this);
     }
 
     @Override
@@ -66,8 +67,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         super.onCreate(data);
         mQuestionAction.setLiveBll(this);
         mQuestionAction.setLiveAndBackDebug(mLiveBll);
-        mAnswerRankBll = ProxUtil.getProxUtil().get(mContext, AnswerRankBll.class);
-        mLiveAutoNoticeBll = ProxUtil.getProxUtil().get(mContext, LiveAutoNoticeBll.class);
+        mAnswerRankBll = getInstance(AnswerRankIRCBll.class);
+        mLiveAutoNoticeBll = getInstance(LiveAutoNoticeIRCBll.class);
+        mLogtf.d("onCreate:mAnswerRankBll=" + mAnswerRankBll + "," + mLiveAutoNoticeBll);
     }
 
     @Override
@@ -154,11 +156,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
                 break;
             case XESCODE.STOPQUESTION:
-                if (mTeamPKBll != null) {
-                    mTeamPKBll.setNonce(object.optString("nonce", ""));
-                    mTeamPKBll.showCurrentPkResult();
-                    Loger.e("TeamPkBll", "======>showCurrentPkResult: called in STOPQUESTION");
-                }
                 mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(null);
                 if (mQuestionAction != null) {
                     try {
@@ -172,10 +169,28 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
                     }
                 }
-                if (mAnswerRankBll != null) {
-                    mAnswerRankBll.setNonce(object.optString("nonce"));
+                break;
+            case XESCODE.EXAM_START:
+                if (mQuestionAction != null) {
+                    String num = object.optString("num", "0");
+                    String nonce = object.optString("nonce");
+                    mQuestionAction.onExamStart(mLiveId, num, nonce);
+                    if (mQuestionAction instanceof QuestionBll) {
+                        ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(false);
+                        Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: EXAM_START");
+                    }
                 }
                 break;
+            case XESCODE.EXAM_STOP: {
+                if (mQuestionAction != null) {
+                    mQuestionAction.onExamStop();
+                    if (mQuestionAction instanceof QuestionBll) {
+                        ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(true);
+                        Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: EXAM_STOP");
+                    }
+                }
+                break;
+            }
             default:
                 break;
         }
@@ -183,7 +198,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public int[] getNoticeFilter() {
-        return new int[]{XESCODE.SENDQUESTION, XESCODE.STOPQUESTION};
+        return new int[]{XESCODE.SENDQUESTION, XESCODE.STOPQUESTION, XESCODE.EXAM_START, XESCODE.EXAM_STOP};
     }
 
     @Override
@@ -498,5 +513,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 mLogtf.i("speechEval42IsAnswered:onPmError=" + responseEntity.getErrorMsg());
             }
         });
+    }
+
+    public void setLiveAutoNoticeBll(LiveAutoNoticeBll liveAutoNoticeBll) {
+        mQuestionAction.setLiveAutoNoticeBll(liveAutoNoticeBll);
     }
 }

@@ -59,7 +59,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
     private String teacherName;
     private String teacherImg;
     private String liveId;
-    private LiveBll mLiveBll;
+    private LiveAndBackDebug mLiveBll;
     private Runnable mRunnable;
     private int grade;
     String TAG = this.getClass().getSimpleName();
@@ -82,7 +82,6 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
         super(context, liveBll2, bottom);
         this.mContext = context;
         this.bottom = bottom;
-        putInstance(LiveAutoNoticeBll.class, this);
         setLayout(1920, 1080);
     }
 
@@ -142,7 +141,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
         this.teacherImg = teacherImg;
     }
 
-    public void setLiveBll(LiveBll liveBll) {
+    public void setLiveBll(LiveAndBackDebug liveBll) {
         mLiveBll = liveBll;
     }
 

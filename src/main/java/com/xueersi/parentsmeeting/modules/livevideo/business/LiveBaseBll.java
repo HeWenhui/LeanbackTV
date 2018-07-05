@@ -34,15 +34,16 @@ public class LiveBaseBll extends BaseBll {
     protected LiveGetInfo mGetInfo;
     protected String mLiveId;
     protected final int mLiveType;
+    protected Activity activity;
 
     public LiveBaseBll(Activity context, LiveBll2 liveBll, ViewGroup rootView) {
         super(context);
+        this.activity = context;
         mLiveBll = liveBll;
         mLiveId = liveBll.getLiveId();
         mLiveType = liveBll.getLiveType();
         mRootView = rootView;
     }
-
 
     /**
      * 获取网络请求对象

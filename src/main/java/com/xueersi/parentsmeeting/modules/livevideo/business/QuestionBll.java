@@ -240,7 +240,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     public QuestionBll(Activity activity, String stuCouId) {
         ProxUtil.getProxUtil().put(activity, QuestionBll.class, this);
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+        mLogtf = new LogToFile(activity, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
         this.activity = activity;

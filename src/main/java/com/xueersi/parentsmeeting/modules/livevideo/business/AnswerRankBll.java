@@ -59,7 +59,7 @@ public class AnswerRankBll {
     private SoundPool mSoundPool;
     private TextView tvStatus;
     private RCommonAdapter mAdapter;
-    private LiveBll mLiveBll;
+    private LiveAndBackDebug mLiveBll;
     private String nonce;
     //private HashMap<String,Integer> mapHasLog;
     private int curType;
@@ -113,7 +113,7 @@ public class AnswerRankBll {
         mLiveHttpManager = liveHttpManager;
     }
 
-    public AnswerRankBll(Context context, RelativeLayout bottomContent, LiveBll liveBll) {
+    public AnswerRankBll(Context context, RelativeLayout bottomContent, LiveAndBackDebug liveBll) {
         mContext = context;
         mLiveBll = liveBll;
         this.bottomContent = bottomContent;
@@ -596,7 +596,7 @@ public class AnswerRankBll {
                 eventId = "";
                 break;
         }
-        mLiveBll.umsAgentShowWithTeacherRole(eventId, map);
+        mLiveBll.umsAgentDebugInter(eventId, map);
         //mapHasLog.put(testId,1);
     }
 
