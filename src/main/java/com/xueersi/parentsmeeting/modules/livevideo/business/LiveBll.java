@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 
 import com.alibaba.fastjson.JSON;
@@ -168,7 +169,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private final String ROOM_MIDDLE = "L";
     private Callback.Cancelable mCataDataCancle;
     private Callback.Cancelable mGetPlayServerCancle;
-    /** 直播帧数统计 */
+    /**
+     * 直播帧数统计
+     */
     private TotalFrameStat totalFrameStat;
     /**
      * 学习记录提交时间间隔
@@ -2158,7 +2161,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         @Override
         public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target,
                                      String message) {
-            Loger.e("LiveBll", "=====> onPrivateMessage:" + sender + ":" + login + ":" + hostname + ":" + target + ":" + message);
+            Loger.e("LiveBll", "=====> onPrivateMessage:" + sender + ":" + login + ":" + hostname + ":" + target +
+                    ":" + message);
             if (!"T".equals(message) && haveTeam) {
                 StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
                 String teamId = studentLiveInfo.getTeamId();
@@ -2307,6 +2311,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
 
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+            Loger.e("LiveBll","=======>onQuit222:");
+
             Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                     + sourceHostname + ",reason=" + reason);
             if (sourceNick.startsWith(TEACHER_PREFIX)) {
@@ -3353,10 +3359,29 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         return openchat;
     }
 
+
+    public interface SendMsgListener {
+
+        void onMessageSend(String msg, String targetName);
+
+    }
+
+    private SendMsgListener mSendMsgListener;
+
+    public void setSendMsgListener(SendMsgListener listener) {
+        mSendMsgListener = listener;
+    }
+
+
     /**
      * 发生聊天消息
      */
     public boolean sendMessage(String msg, String name) {
+
+        if (mSendMsgListener != null) {
+            mSendMsgListener.onMessageSend(msg, name);
+        }
+
         if (mLiveTopic.isDisable()) {
             return false;
         } else {
@@ -4120,7 +4145,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     .get());
             mCompleteCounTeacherCount.set(mCompleteCounTeacherCount.get() > 1000 ? 1000 : mCompleteCounTeacherCount
                     .get());
-//            XesMobAgent.liveStatistics(mBufferCount.get(), mRepairBufferCount.get(), mRepairOpenCount.get(), mFailCount
+//            XesMobAgent.liveStatistics(mBufferCount.get(), mRepairBufferCount.get(), mRepairOpenCount.get(),
+// mFailCount
 //                            .get(),
 //                    mFailMainTeacherCount.get(), mFailCounTeacherCount.get(), mCompleteCount.get(),
 //                    mCompleteMainTeacherCount.get(), mCompleteCounTeacherCount.get());
@@ -4871,5 +4897,13 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                 }
             }
         });
+    }
+
+    public void setChatOpen(boolean open){
+        if (LiveTopic.MODE_CLASS.equals(getMode())) {
+            mLiveTopic.getMainRoomstatus().setOpenchat(open);
+        } else {
+            mLiveTopic.getCoachRoomstatus().setOpenchat(open);
+        }
     }
 }
