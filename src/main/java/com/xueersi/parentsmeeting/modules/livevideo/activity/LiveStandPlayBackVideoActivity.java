@@ -61,7 +61,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEv
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.PutQuestion;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionResultView;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSwitch;
-import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageStandBll;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageStandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -75,15 +75,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewareX5Pager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.NbH5CoursewareX5Pager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankLivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectLivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSubjectivePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionFillInBlankLivePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionMulitSelectLivePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionSelectLivePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionSubjectivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.StandSpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5PlaybackPager;
@@ -1907,7 +1907,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         if (mMediaController != null) {
             mMediaController.release();
         }
-        redPackageStandBll.setReceiveGold(new RedPackageStandBll.ReceiveGold() {
+        redPackageStandBll.setReceiveGold(new RedPackageStandBll.ReceiveGoldStand() {
             @Override
             public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
                 mQuestionEntity.setAnswered(true);

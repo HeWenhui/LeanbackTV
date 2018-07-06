@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveExPressionEditDat
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.common.business.UserBll;
@@ -654,6 +655,14 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     @Override
     public void onOtherDisable(String id, String name, boolean disable) {
 
+    }
+
+    @Override
+    public void onDestroy() {
+        if (pool != null) {
+            pool.shutdown();
+        }
+        super.onDestroy();
     }
 
     @Override

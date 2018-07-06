@@ -1,14 +1,13 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.lib.framework.utils.EventBusUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.entity.UpdateAchievementEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageStandBll;
 
 /**
  * Created by linyuqiang on 2018/4/2.
  * 站立直播金币接口连接
  */
-public class LiveReceiveGold implements RedPackageStandBll.ReceiveGold {
+public class LiveReceiveGold implements RedPackageStandBll.ReceiveGoldStand {
     LiveBll mLiveBll;
 
     public LiveReceiveGold(LiveBll liveBll) {

@@ -10,7 +10,7 @@ import com.xueersi.common.speech.SpeechEvaluatorUtils;
  * Created by lyqai on 2017/11/21.
  */
 
-public abstract class BaseSpeechAssessmentPager extends BasePager {
+public abstract class BaseSpeechAssessmentPager extends LiveBasePager {
     /** 语音评测 */
     protected SpeechEvaluatorUtils mIse;
 

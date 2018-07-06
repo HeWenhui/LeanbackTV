@@ -1,11 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 
 import android.app.Activity;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.tal.speech.language.TalLanguage;
@@ -14,15 +12,9 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.entity.UpdateAchievementEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.StandLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
-import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishSpeekAction;
-import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishSpeekBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishStandSpeekBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -30,7 +22,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.greenrobot.eventbus.EventBus;
@@ -39,7 +30,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,20 +37,17 @@ import java.util.HashMap;
 import okhttp3.Call;
 
 /**
- * Created by lyqai on 2018/7/5.
+ * Created by linyuqiang on 2018/7/5.
+ * 本场成就和语音能量条
  */
-
 public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, LiveAchievementHttp, EnglishSpeekHttp, AudioRequest {
     StarInteractAction starAction;
     EnglishSpeekAction englishSpeekAction;
     boolean audioRequest = false;
-    private LogToFile mLogtf;
     EnglishSpeekMode englishSpeekMode;
 
     public LiveAchievementIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context, liveBll, rootView);
-        mLogtf = new LogToFile(context, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
     }
 
     @Override

@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -43,16 +44,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author linyuqiang
- * Created by linyuqiang on 2016/9/23.
+ *         Created by linyuqiang on 2016/9/23.
  */
-public class RedPackageBll extends LiveBaseBll implements NoticeAction, RedPackageAction, Handler.Callback {
+public class RedPackageBll implements RedPackageAction, Handler.Callback {
     private static final String TAG = "RedPackageBll";
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     private LogToFile mLogtf;
     private Activity activity;
-
+    private ReceiveGold receiveGold;
     LiveHttpResponseParser mHttpResponseParser = null;
-
 
     /**
      * 直播id
@@ -63,28 +63,19 @@ public class RedPackageBll extends LiveBaseBll implements NoticeAction, RedPacka
      */
     private RelativeLayout rlRedpacketContent;
 
-    public RedPackageBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
-
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
-        mLogtf.clear();
-        this.activity = context;
-        rlRedpacketContent = (RelativeLayout) rootView;
-    }
-
     public RedPackageBll(Activity activity) {
-        this(activity, null, null);
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
         this.activity = activity;
-
-
     }
 
     public void setLiveBll(LiveBll mLiveBll) {
         // this.mLiveBll = mLiveBll;
+    }
+
+    public void setReceiveGold(ReceiveGold receiveGold) {
+        this.receiveGold = receiveGold;
     }
 
     public void setVSectionID(String mVSectionID) {
@@ -140,7 +131,7 @@ public class RedPackageBll extends LiveBaseBll implements NoticeAction, RedPacka
         rlRedpacketContent.removeAllViews();
         View view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_view, rlRedpacketContent, false);
 
-        view.setBackgroundColor(ContextCompat.getColor(activity,R.color.mediacontroller_bg));
+        view.setBackgroundColor(ContextCompat.getColor(activity, R.color.mediacontroller_bg));
 
         view.setTag(operateId);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
@@ -166,51 +157,29 @@ public class RedPackageBll extends LiveBaseBll implements NoticeAction, RedPacka
     }
 
 
-    private void sendReceiveGold(final int operateId, String mVSectionID) {
+    private void sendReceiveGold(final int operateId, String sectionID) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        getHttpManager().sendReceiveGold(mLiveBll.getLiveType(), enstuId, operateId, mLiveBll.getLiveId(), new
-                HttpCallBack() {
+        receiveGold.sendReceiveGold(operateId, sectionID, new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objData) {
+                VideoResultEntity entity = (VideoResultEntity) objData[0];
+                onGetPackage(entity);
 
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        mLogtf.d("sendReceiveGold:onPmSuccess=" + responseEntity.getJsonObject().toString() + "," +
-                                "operateId=" +
-                                operateId);
+                // 广播 领取红包成功事件
+                EventBusUtil.post(new RedPackageEvent(mVSectionID, entity.getGoldNum(),
+                        operateId + "", RedPackageEvent.STATE_CODE_SUCCESS));
+            }
 
-                        if (mHttpResponseParser == null) {
-                            mHttpResponseParser = new LiveHttpResponseParser(activity);
-                        }
-
-                        VideoResultEntity entity = mHttpResponseParser.redPacketParseParser(responseEntity);
-                        entity.setHttpUrl(url);
-                        entity.setHttpRes("" + responseEntity.getJsonObject());
-                        onGetPackage(entity);
-
-                        // 广播 领取红包成功事件
-                        EventBusUtil.post(new RedPackageEvent(mLiveBll.getLiveId(), entity.getGoldNum(),
-                                operateId + "", RedPackageEvent.STATE_CODE_SUCCESS));
-                    }
-
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        super.onPmFailure(error, msg);
-                        mLogtf.d("sendReceiveGold:onPmFailure=" + msg + ",operateId=" + operateId);
-                        onGetPackageFailure(operateId);
-                    }
-
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        super.onPmError(responseEntity);
-                        mLogtf.d("sendReceiveGold:onPmError=" + responseEntity.getErrorMsg() + ",operateId=" +
-                                operateId);
-                        onGetPackageError(operateId);
-                    }
-
-
-                });
-
-
+            @Override
+            public void onDataFail(int errStatus, String failMsg) {
+                super.onDataFail(errStatus, failMsg);
+                if (errStatus == 0) {
+                    onGetPackageFailure(operateId);
+                } else {
+                    onGetPackageError(operateId);
+                }
+            }
+        });
     }
 
     /**
@@ -222,7 +191,7 @@ public class RedPackageBll extends LiveBaseBll implements NoticeAction, RedPacka
         String msg = "+" + goldNum + "金币";
         View view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_success, rlRedpacketContent, false);
 
-        view.setBackgroundColor(ContextCompat.getColor(activity,R.color.mediacontroller_bg));
+        view.setBackgroundColor(ContextCompat.getColor(activity, R.color.mediacontroller_bg));
         SpannableString msp = new SpannableString(msg);
         float screenDensity = ScreenUtils.getScreenDensity();
         // 字体
@@ -257,7 +226,7 @@ public class RedPackageBll extends LiveBaseBll implements NoticeAction, RedPacka
             @Override
             public void run() {
                 // 更新 本场成就
-                EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
+                EventBusUtil.post(new UpdateAchievementEvent(mVSectionID));
             }
         }, 2900);
         ImageView ivRedpackageLight = (ImageView) view.findViewById(R.id.iv_livevideo_redpackage_light);
@@ -272,68 +241,10 @@ public class RedPackageBll extends LiveBaseBll implements NoticeAction, RedPacka
         mVPlayVideoControlHandler.postDelayed(r, delayMillis);
     }
 
-    @Override
     public void onDestory() {
-        super.onDestory();
-
         if (mVPlayVideoControlHandler != null) {
             mVPlayVideoControlHandler.removeCallbacksAndMessages(null);
         }
     }
 
-
-    ///消息通信///////
-
-    private int[] noticeCodes = {
-            XESCODE.READPACAGE
-    };
-
-
-
-    private static final String DEFULT_VOICE_CHAT_STATE = "off";
-
-    private boolean isRedPageAvaliable() {
-        boolean result = true;
-        try {
-            //与 语音接麦 功能互斥
-            Object targetParam = mLiveBll.getBusinessShareParam("voiceChatStatus");
-
-            if (targetParam != null) {
-                String voiceChatStatus = (String) targetParam;
-                result = DEFULT_VOICE_CHAT_STATE.equals(voiceChatStatus);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-
-    @Override
-    public void onNotice(JSONObject data, int type) {
-
-        try {
-            switch (type) {
-                case XESCODE.READPACAGE:
-                    if (isRedPageAvaliable()) {
-                        onReadPackage(data.getInt("id"), null);
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-    @Override
-    public int[] getNoticeFilter() {
-        return noticeCodes;
-    }
 }

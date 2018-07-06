@@ -32,7 +32,6 @@ import java.io.File;
 public class LearnReportIRCBll extends LiveBaseBll implements NoticeAction {
     /** 学习报告事件 */
     private LearnReportAction mLearnReportAction;
-    private LogToFile mLogtf;
     /**
      * 签到成功 状态码
      */
@@ -40,8 +39,6 @@ public class LearnReportIRCBll extends LiveBaseBll implements NoticeAction {
 
     public LearnReportIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context, liveBll, rootView);
-        mLogtf = new LogToFile(context, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
         mLearnReportAction = new LearnReportBll(context);
     }
 

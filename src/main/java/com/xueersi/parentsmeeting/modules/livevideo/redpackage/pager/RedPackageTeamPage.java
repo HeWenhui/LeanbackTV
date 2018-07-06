@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.page;
+package com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager;
 
 import android.app.Activity;
 import android.content.Context;

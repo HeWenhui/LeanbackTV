@@ -8,7 +8,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.PutQuestio
 /**
  * Created by linyuqiang on 2016/12/19.
  */
-public abstract class BaseLiveQuestionPager extends BasePager {
+public abstract class BaseLiveQuestionPager extends LiveBasePager {
     protected PutQuestion putQuestion;
 
     public BaseLiveQuestionPager(Context context) {

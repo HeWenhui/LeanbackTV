@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business;
+package com.xueersi.parentsmeeting.modules.livevideo.redpackage.business;
 
 import android.app.Activity;
 import android.os.Environment;
@@ -12,8 +12,11 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
-import com.xueersi.parentsmeeting.modules.livevideo.page.RedPackagePage;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.RedPackagePage;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog;
 import com.xueersi.common.business.UserBll;
@@ -38,7 +41,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     private RelativeLayout rlRedpacketContent;
     private RedPackagePage redPackagePage;
     private HashMap<String, RedPackagePage> packagePageHashMap = new HashMap<>();
-    private ReceiveGold receiveGold;
+    private ReceiveGoldStand receiveGold;
     private String headUrl;
     private String userName;
     private boolean isLive;
@@ -53,7 +56,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
         this.liveAndBackDebug = liveAndBackDebug;
     }
 
-    public void setReceiveGold(ReceiveGold receiveGold) {
+    public void setReceiveGold(ReceiveGoldStand receiveGold) {
         this.receiveGold = receiveGold;
     }
 
@@ -351,35 +354,4 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
         mVPlayVideoControlHandler.postDelayed(r, delayMillis);
     }
 
-    public interface ReceiveGold {
-        /**
-         * 请求获得红包
-         *
-         * @param operateId
-         * @param liveId
-         * @param callBack
-         */
-        void sendReceiveGold(final int operateId, String liveId, AbstractBusinessDataCallBack callBack);
-
-        /**
-         * 请求小组成员得到红包
-         *
-         * @param operateId
-         * @param callBack
-         */
-        void getReceiveGoldTeamStatus(int operateId, AbstractBusinessDataCallBack callBack);
-
-        /**
-         * 请求小组成员得到红包的top3
-         *
-         * @param operateId
-         * @param callBack
-         */
-        void getReceiveGoldTeamRank(int operateId, AbstractBusinessDataCallBack callBack);
-
-        /**
-         * 当请求到红包
-         */
-        void onReceiveGold();
-    }
 }

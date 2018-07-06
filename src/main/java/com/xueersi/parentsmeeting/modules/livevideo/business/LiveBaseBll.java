@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +38,7 @@ public class LiveBaseBll extends BaseBll {
     protected String mLiveId;
     protected final int mLiveType;
     protected Activity activity;
+    protected LogToFile mLogtf;
 
     public LiveBaseBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context);
@@ -44,6 +47,8 @@ public class LiveBaseBll extends BaseBll {
         mLiveId = liveBll.getLiveId();
         mLiveType = liveBll.getLiveType();
         mRootView = rootView;
+        mLogtf = new LogToFile(context, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+                + ".txt"));
     }
 
     /**
