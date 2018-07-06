@@ -35,7 +35,7 @@
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp">
 
-                <com.xueersi.xesalib.view.button.progressbutton.CircularProgressButton
+                <com.xueersi.ui.widget.button.progressbutton.CircularProgressButton
                     android:id="@id/btn_livevideo_question_fillin_submit"
                     android:layout_width="100dp"
                     android:layout_height="40dp"

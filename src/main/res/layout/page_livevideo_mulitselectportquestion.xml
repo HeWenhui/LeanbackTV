@@ -36,7 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.xueersi.xesalib.view.gridview.AutohGridview
+                <com.xueersi.ui.widget.AutohGridview
                     android:id="@id/gv_livevideo_question_mulitSelect"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
                     android:textSize="25sp" />
             </HorizontalScrollView>
 
-            <com.xueersi.xesalib.view.button.progressbutton.CircularProgressButton
+            <com.xueersi.ui.widget.button.progressbutton.CircularProgressButton
                 android:id="@id/btn_livevideo_question_fillin_submit"
                 android:layout_width="60dp"
                 android:layout_height="30dp"

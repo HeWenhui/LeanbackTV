@@ -53,6 +53,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         super.onCreate(data);
         mQuestionAction.setLiveBll(this);
         mQuestionAction.setLiveAndBackDebug(mLiveBll);
+        mQuestionAction.initView(mRootView, true);
         mAnswerRankBll = getInstance(AnswerRankIRCBll.class);
         mLiveAutoNoticeBll = getInstance(LiveAutoNoticeIRCBll.class);
         mLogtf.d("onCreate:mAnswerRankBll=" + mAnswerRankBll + "," + mLiveAutoNoticeBll);

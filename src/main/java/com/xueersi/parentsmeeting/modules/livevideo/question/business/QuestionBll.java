@@ -397,6 +397,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     mIsShowUnderstand = false;
                 }
                 mLogtf.d(s);
+                if (liveMessageBll == null) {
+                    liveMessageBll = ProxUtil.getProxUtil().get(activity, KeyBordAction.class);
+                }
                 liveMessageBll.hideInput();
             }
             break;
@@ -1565,6 +1568,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      */
     private void questionViewGone(boolean delay) {
         mIsShowQuestion = false;
+        if (liveMessageBll == null) {
+            liveMessageBll = ProxUtil.getProxUtil().get(activity, KeyBordAction.class);
+        }
         liveMessageBll.showInput();
         if (delay) {
             postDelayedIfNotFinish(new Runnable() {

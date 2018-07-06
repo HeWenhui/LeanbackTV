@@ -64,6 +64,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         this.activity = activity;
         this.liveType = liveType;
         ProxUtil.getProxUtil().put(activity, LiveMessageBll.class, this);
+        ProxUtil.getProxUtil().put(activity, KeyBordAction.class, this);
     }
 
     public void setQuestionBll(QuestionBll questionBll) {

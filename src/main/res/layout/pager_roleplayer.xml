@@ -519,7 +519,7 @@
 
 
             <!--角色分配列表-->
-            <com.xueersi.xesalib.view.gridview.AutohGridview
+            <com.xueersi.ui.widget.AutohGridview
                 android:id="@id/gv_live_roleplayer_headshow"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

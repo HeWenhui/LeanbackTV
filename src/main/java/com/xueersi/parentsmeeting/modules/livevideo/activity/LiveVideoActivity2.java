@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -43,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.UserOnline;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportIRCBll;
@@ -82,6 +84,7 @@ import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
@@ -167,6 +170,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     private UserOnline userOnline;
     //LiveMessageBll liveMessageBll;
     private static String Tag = "LiveVideoActivity2";
+    protected LogToFile mLogtf;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -182,6 +186,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             onUserBackPressed();
             return false;
         }
+        mLogtf = new LogToFile(mLiveBll, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+                + ".txt"));
         liveVideoBll = new LiveVideoBll(activity, mLiveBll, liveType);
         liveVideoBll.setVideoChatEvent(this);
         //先让播放器按照默认模式设置
@@ -199,12 +205,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         initAllBll();
         logger.d("onVideoCreate:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        videoFragment.setIsAutoOrientation(false);
-        liveVideoBll.setHttpManager(mLiveBll.getHttpManager());
-        liveVideoBll.setHttpResponseParser(mLiveBll.getHttpResponseParser());
-        liveVideoBll.setVideoFragment(videoFragment);
-        liveVideoBll.setVideoAction(this);
-
         addBusiness(activity, bottomContent);
         logger.d("onVideoCreate:time3=" + (System.currentTimeMillis() - before));
         return true;
@@ -215,7 +215,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         mLiveBll.onCreate();
         mLiveBll.getInfo(mGetInfo);
         liveVideoBll.setvPlayer(vPlayer);
-        liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
         final View contentView = activity.findViewById(android.R.id.content);
         contentView.postDelayed(new Runnable() {
             @Override
@@ -265,6 +264,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         rollCallBll = new RollCallBll(activity, mLiveBll, bottomContent);
         mLiveBll.addBusinessBll(rollCallBll);
         liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll, bottomContent);
+        liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+        mLiveBll.addBusinessBll(liveIRCMessageBll);
         mLiveBll.addBusinessBll(new LiveAchievementIRCBll(activity, mLiveBll, bottomContent));
         mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll, bottomContent));
         mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
@@ -275,7 +276,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         mLiveBll.addBusinessBll(new LearnReportIRCBll(activity, mLiveBll, bottomContent));
         mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll, bottomContent));
         mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
-        mLiveBll.addBusinessBll(liveIRCMessageBll);
         mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
     }
 
@@ -351,6 +351,11 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         mMediaController.setControllerBottom(liveMediaControllerBottom, false);
         mMediaController.setControllerTop(baseLiveMediaControllerTop);
         setMediaControllerBottomParam(videoView.getLayoutParams());
+        videoFragment.setIsAutoOrientation(false);
+        liveVideoBll.setHttpManager(mLiveBll.getHttpManager());
+        liveVideoBll.setHttpResponseParser(mLiveBll.getHttpResponseParser());
+        liveVideoBll.setVideoFragment(videoFragment);
+        liveVideoBll.setVideoAction(this);
     }
 
     /**
@@ -406,6 +411,24 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         protected void onPlayOpenStart() {
             setFirstBackgroundVisible(View.VISIBLE);
             mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void resultFailed(final int arg1, final int arg2) {
+            postDelayedIfNotFinish(new Runnable() {
+
+                @Override
+                public void run() {
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            synchronized (mIjkLock) {
+                                onFail(arg1, arg2);
+                            }
+                        }
+                    }.start();
+                }
+            }, 1200);
         }
 
         @Override
@@ -840,6 +863,9 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                         }
                     }
                     RoomStatusEntity status = mGetInfo.getLiveTopic().getMainRoomstatus();
+                    if (status != null) {
+                        mLogtf.d("onFail:classbegin=" + status.isClassbegin());
+                    }
                 }
             }
         });

@@ -664,8 +664,11 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
         showRefresyLayout(arg1, arg2);
     }
 
-    /** 加载视频异常时出现可重新刷新的背景界面 */
+    /** 加载视频异常时出现可重新刷新的背景界面 TODO */
     protected void showRefresyLayout(int arg1, int arg2) {
+        if (videoBackgroundRefresh == null) {
+            return;
+        }
         videoBackgroundRefresh.setVisibility(View.VISIBLE);
         updateRefreshImage();
         TextView errorInfo = (TextView) videoBackgroundRefresh.findViewById(R.id.tv_course_video_errorinfo);
