@@ -1686,13 +1686,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                     ((EnglishH5CoursewareBll) englishH5CoursewareAction).setWebViewCloseByTeacher(true);
                                 }
                                 if (mTeamPKBll != null) {
+                                    mTeamPKBll.setNonce(object.optString("nonce", ""));
                                     mTeamPKBll.showCurrentPkResult();
-                                    if (mTeamPKBll != null) {
-                                        mTeamPKBll.setNonce(object.optString("nonce", ""));
-                                        mTeamPKBll.showCurrentPkResult();
-                                        Loger.e("TeamPkBll", "======>showCurrentPkResult: called in " +
-                                                "ENGLISH_H5_COURSEWARE");
-                                    }
+                                    Loger.e("TeamPkBll", "======>showCurrentPkResult: called in " +
+                                            "ENGLISH_H5_COURSEWARE");
                                 }
                             }
                             englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
@@ -2311,7 +2308,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         }
 
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-            Loger.e("LiveBll","=======>onQuit222:");
+            Loger.e("LiveBll", "=======>onQuit222:");
 
             Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                     + sourceHostname + ",reason=" + reason);
@@ -4899,7 +4896,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         });
     }
 
-    public void setChatOpen(boolean open){
+    public void setChatOpen(boolean open) {
         if (LiveTopic.MODE_CLASS.equals(getMode())) {
             mLiveTopic.getMainRoomstatus().setOpenchat(open);
         } else {
