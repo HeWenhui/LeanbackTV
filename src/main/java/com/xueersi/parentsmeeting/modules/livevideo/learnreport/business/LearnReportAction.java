@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.learnreport;
+package com.xueersi.parentsmeeting.modules.livevideo.learnreport.business;
 
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 
@@ -6,12 +6,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
  * Created by linyuqiang on 2016/9/23.
  * 学习报告事件
  */
-public interface LecLearnReportAction {
+public interface LearnReportAction {
     /**
      * 学习报告
      *
-     * @param liveId
+     * @param reportEntity
      */
-    void onLearnReport(String liveId);
+    void onLearnReport(LearnReportEntity reportEntity);
 
 }

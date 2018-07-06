@@ -50,7 +50,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.H5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertBll;
-import com.xueersi.parentsmeeting.modules.livevideo.learnreport.LecLearnReportBll;
+import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LecLearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;

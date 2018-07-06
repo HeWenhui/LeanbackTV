@@ -43,7 +43,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.English
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekBll;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishStandSpeekBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.H5CoursewareBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportBll;
+import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLazyBllCreat;
@@ -490,7 +490,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         redPackageBll.setVSectionID(mVSectionID);
         questionBll.setLiveType(liveType);
         questionBll.initData();
-        questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mLiveBll, questionBll.new LiveQuestionSwitchImpl()));
+        questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(questionBll.new LiveQuestionSwitchImpl()));
         questionBll.setBaseSpeechCreat(new LiveStandSpeechCreat(mLiveBll));
         questionBll.setSpeechEndAction(new StandSpeechTop3Bll(mLiveBll));
 //        questionBll.setBaseSpeechCreat(new LiveSpeechCreat());

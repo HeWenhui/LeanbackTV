@@ -42,7 +42,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5C
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ExpeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.H5CoursewareBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportBll;
+import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
@@ -449,14 +449,14 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         //  redPackageBll.setVSectionID(mVSectionID);
         questionBll.setLiveType(liveType);
         questionBll.initData();
-        questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mLiveBll, questionBll.new LiveQuestionSwitchImpl()));
+        questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(questionBll.new LiveQuestionSwitchImpl()));
         questionBll.setBaseSpeechCreat(new LiveSpeechCreat());
         englishH5CoursewareBll.setShareDataManager(mShareDataManager);
         englishH5CoursewareBll.setLiveType(liveType);
         englishH5CoursewareBll.setVSectionID(mVSectionID);
         englishH5CoursewareBll.setLiveBll(mLiveBll);
         englishH5CoursewareBll.initData();
-        englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mLiveBll, englishH5CoursewareBll.new LiveQuestionSwitchImpl()));
+        englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(englishH5CoursewareBll.new LiveQuestionSwitchImpl()));
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
             rankBll = new RankBll(this);
             rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);

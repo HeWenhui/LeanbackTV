@@ -7,13 +7,10 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.BaseVoiceAnswerCreat;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -32,10 +29,8 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
  */
 public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     QuestionSwitch questionSwitch;
-    LiveBll liveBll;
 
-    public LiveVoiceAnswerCreat(LiveBll liveBll, QuestionSwitch questionSwitch) {
-        this.liveBll = liveBll;
+    public LiveVoiceAnswerCreat(QuestionSwitch questionSwitch) {
         this.questionSwitch = questionSwitch;
     }
 
@@ -52,7 +47,7 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         params.rightMargin = wradio;
         rlQuestionContent.addView(voiceAnswerPager2.getRootView(), params);
         String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
-        VoiceAnswerLog.sno2(liveBll, videoQuestionLiveEntity.type, videoQuestionLiveEntity.id, videoQuestionLiveEntity.nonce, sourcetype);
+        VoiceAnswerLog.sno2(liveAndBackDebug, videoQuestionLiveEntity.type, videoQuestionLiveEntity.id, videoQuestionLiveEntity.nonce, sourcetype);
         return voiceAnswerPager2;
     }
 

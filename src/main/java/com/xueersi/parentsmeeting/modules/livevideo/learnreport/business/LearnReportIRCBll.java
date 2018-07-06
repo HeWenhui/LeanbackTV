@@ -1,29 +1,20 @@
-package com.xueersi.parentsmeeting.modules.livevideo.learnreport;
+package com.xueersi.parentsmeeting.modules.livevideo.learnreport.business;
 
 import android.app.Activity;
-import android.os.Environment;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.XesMobAgent;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportAction;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
 
 import org.json.JSONObject;
-
-import java.io.File;
 
 /**
  * Created by lyqai on 2018/7/5.

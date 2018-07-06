@@ -9,7 +9,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.StarInteractAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -22,7 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.notice.LiveAutoNoticeIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -61,6 +61,12 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onLiveInited(LiveGetInfo data) {
         super.onLiveInited(data);
+        if (data.getPattern() == 2) {
+
+        } else {
+            mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl()));
+            mQuestionAction.setBaseSpeechCreat(new LiveSpeechCreat());
+        }
     }
 
     @Override
@@ -501,7 +507,4 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         });
     }
 
-    public void setLiveAutoNoticeBll(LiveAutoNoticeBll liveAutoNoticeBll) {
-        mQuestionAction.setLiveAutoNoticeBll(liveAutoNoticeBll);
-    }
 }

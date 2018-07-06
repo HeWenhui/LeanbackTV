@@ -1,13 +1,13 @@
-package com.xueersi.parentsmeeting.modules.livevideo.notice;
+package com.xueersi.parentsmeeting.modules.livevideo.notice.business;
 
 import android.app.Activity;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
-import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -43,7 +43,7 @@ public class LiveAutoNoticeIRCBll extends LiveBaseBll {
             liveAutoNoticeBll.setHttpManager(mLiveBll.getHttpManager());
             liveAutoNoticeBll.setLiveId(mLiveId);
             //if (mQuestionAction instanceof QuestionBll) {
-            QuestionIRCBll questionBll = ProxUtil.getProxUtil().get(activity, QuestionIRCBll.class);
+            QuestionBll questionBll = ProxUtil.getProxUtil().get(activity, QuestionBll.class);
             if (questionBll != null) {
                 questionBll.setLiveAutoNoticeBll(liveAutoNoticeBll);
             }
