@@ -47,10 +47,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.UserOnline;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.LearnReportIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5CoursewareIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRankIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
@@ -271,7 +273,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         mLiveBll.addBusinessBll(new LiveAutoNoticeIRCBll(activity, mLiveBll, bottomContent));
         mLiveBll.addBusinessBll(new AnswerRankIRCBll(activity, mLiveBll, bottomContent));
         mLiveBll.addBusinessBll(new LearnReportIRCBll(activity, mLiveBll, bottomContent));
-
+        mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll, bottomContent));
+        mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
         mLiveBll.addBusinessBll(liveIRCMessageBll);
         mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
     }

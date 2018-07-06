@@ -56,6 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveScienceHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.LecLearnReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
+import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.H5CoursewareAction;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRankBll;

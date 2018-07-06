@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.page;
+package com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.pager;
 
 import android.view.View;
 

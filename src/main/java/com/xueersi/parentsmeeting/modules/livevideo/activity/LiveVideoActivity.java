@@ -41,7 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CacheActio
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ExpeBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.H5CoursewareBll;
+import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.H5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;

@@ -77,6 +77,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.MoreChoiceItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
+import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertPagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
@@ -95,15 +96,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.BaseEnglishH5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.BaseNbH5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.pager.BaseNbH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewareX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.EnglishH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.NbH5CoursewareX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.pager.NbH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionFillInBlankLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionMulitSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionSelectLivePager;
@@ -118,6 +119,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessme
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SubjectResultX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
 import com.xueersi.ui.adapter.AdapterItemInterface;
@@ -141,7 +143,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile.liveBll;
-
 
 
 /**
@@ -600,7 +601,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         }
         // 04.12 第一次进入的时候，就去请求回放的所有广告信息
         lectureLivePlayBackBll.getMoreCourseChoices(mVideoEntity.getLiveId(), getDataCallBack);
-
+        ProxUtil.getProxUtil().put(this, ActivityChangeLand.class, this);
     }
 
     AbstractBusinessDataCallBack getDataCallBack = new AbstractBusinessDataCallBack() {
@@ -2423,6 +2424,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             }
         }
         unregisterReceiver(receiver);
+        ProxUtil.getProxUtil().clear();
     }
 
     @Override

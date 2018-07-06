@@ -120,7 +120,6 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
             bottomContent.addView(rlRedpacketContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT));
         }
-
     }
 
     /**

@@ -42,7 +42,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5C
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekAction;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekBll;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishStandSpeekBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.H5CoursewareBll;
+import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.H5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;

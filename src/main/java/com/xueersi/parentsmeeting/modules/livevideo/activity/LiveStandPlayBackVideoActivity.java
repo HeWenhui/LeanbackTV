@@ -68,18 +68,18 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.page.BaseEnglishH5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseLiveQuestionPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.BaseNbH5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.pager.BaseNbH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.EnglishH5CoursewareX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.EnglishH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.NbH5CoursewareX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.pager.NbH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionFillInBlankLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionMulitSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionSelectLivePager;
@@ -93,6 +93,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandPlaybackMediaController;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
@@ -505,6 +506,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                     return false;
                 }
             });
+        }
 //            if (AppConfig.DEBUG) {
 //                List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
 //                VideoQuestionEntity videoQuestionEntity = new VideoQuestionEntity();
@@ -514,7 +516,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //                videoQuestionEntity.setvEndTime(1600);
 //                lstVideoQuestion.add(videoQuestionEntity);
 //            }
-            //测试红包自动关闭
+        //测试红包自动关闭
 //            rlFirstBackgroundView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener
 // () {
 //                @Override
@@ -524,29 +526,30 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //                    return false;
 //                }
 //            });
-            //测试试卷
+        //测试试卷
 //            mQuestionEntity = new VideoQuestionEntity();
 //            mQuestionEntity.setvQuestionID("2");
 //            mQuestionEntity.setvEndTime(120);
 //            showExam();
-            MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
-            if (!StringUtils.isEmpty(mMyInfo.getEnglishName())) {
-                showName = mMyInfo.getEnglishName();
-            } else if (!StringUtils.isEmpty(mMyInfo.getRealName())) {
-                showName = mMyInfo.getRealName();
-            } else if (!StringUtils.isEmpty(mMyInfo.getNickName())) {
-                showName = mMyInfo.getNickName();
-            }
-            headUrl = mMyInfo.getHeadImg();
-            redPackageStandBll = new RedPackageStandBll(this, false, this);
-            redPackageStandBll.setVSectionID(mVideoEntity.getLiveId());
-            redPackageStandBll.setUserName(showName);
-            redPackageStandBll.setHeadUrl(headUrl);
-            redPackageStandBll.initView(rl_course_video_live_redpackage_content);
-            liveStandVoiceAnswerCreat = new LiveStandVoiceAnswerCreat(questionSwitch);
-            liveStandVoiceAnswerCreat.setUserName(showName);
-            liveStandVoiceAnswerCreat.setHeadUrl(headUrl);
-            if (AppConfig.DEBUG) {
+        MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
+        if (!StringUtils.isEmpty(mMyInfo.getEnglishName())) {
+            showName = mMyInfo.getEnglishName();
+        } else if (!StringUtils.isEmpty(mMyInfo.getRealName())) {
+            showName = mMyInfo.getRealName();
+        } else if (!StringUtils.isEmpty(mMyInfo.getNickName())) {
+            showName = mMyInfo.getNickName();
+        }
+        headUrl = mMyInfo.getHeadImg();
+        redPackageStandBll = new RedPackageStandBll(this, false, this);
+        redPackageStandBll.setVSectionID(mVideoEntity.getLiveId());
+        redPackageStandBll.setUserName(showName);
+        redPackageStandBll.setHeadUrl(headUrl);
+        redPackageStandBll.initView(rl_course_video_live_redpackage_content);
+        liveStandVoiceAnswerCreat = new LiveStandVoiceAnswerCreat(questionSwitch);
+        liveStandVoiceAnswerCreat.setUserName(showName);
+        liveStandVoiceAnswerCreat.setHeadUrl(headUrl);
+        ProxUtil.getProxUtil().put(this, ActivityChangeLand.class, this);
+        if (AppConfig.DEBUG) {
 
 //                mRedPacketId = "2";
 //                final VideoQuestionEntity mQuestionEntity = new VideoQuestionEntity();
@@ -588,8 +591,8 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //                    }
 //                });
 //                redPackageStandBll.onReadPackage(Integer.parseInt(mRedPacketId));
-            }
         }
+
 //        lectureLivePlayBackBll.getExperienceMsgs(mVideoEntity.getLiveId(), mVideoEntity.getClassId(), 0L, new ExperienceLiveVideoActivity.GetExperienceLiveMsgs() {
 //
 //            @Override
@@ -2444,6 +2447,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         if (liveStandFrameAnim != null) {
             liveStandFrameAnim.onDestory();
         }
+        ProxUtil.getProxUtil().clear();
     }
 
     @Override

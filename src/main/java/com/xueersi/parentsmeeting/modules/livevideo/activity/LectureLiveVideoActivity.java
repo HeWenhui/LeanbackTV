@@ -48,7 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.business.H5CoursewareBll;
+import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.H5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertBll;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.LecLearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
@@ -343,6 +343,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         mLiveBll.setLecAdvertAction(lecAdvertAction);
         mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), true);
         setMediaControllerBottomParam(videoView.getLayoutParams());
+        ProxUtil.getProxUtil().put(this, ActivityChangeLand.class, this);
         return true;
     }
 

@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 直播的一些公共方法
  */
 public abstract class LiveActivityBase extends LiveVideoActivityBase {
+
     public abstract AtomicBoolean getStartRemote();
 
     public abstract void stopPlay();
