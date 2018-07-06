@@ -275,7 +275,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     commonAction.clickTran();
                     return;
                 }
-                mFlowerWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
+                if(LiveVideoConfig.isPrimary){
+                    mFlowerWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
+                } else {
+                    mFlowerWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
+                }
                 isHaveFlowers = true;
             }
         });
@@ -480,8 +484,117 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         super.setGetInfo(getInfo);
         if (getInfo != null) {
             String educationStage = getInfo.getEducationStage();
-            initFlower(educationStage);
+            if(LiveVideoConfig.isPrimary){
+                initPrimaryFlower();
+            } else {
+                initFlower(educationStage);
+            }
+
         }
+    }
+
+    private void initPrimaryFlower() {
+        long before = System.currentTimeMillis();
+        final ArrayList<FlowerEntity> flowerEntities = new ArrayList<>();
+
+        commonAction = new GiftDisable();
+        flowsDrawTips[0] = R.drawable.primarypresentheart;
+        flowsDrawTips[1] = R.drawable.primarypresentcup;
+        flowsDrawTips[2] = R.drawable.primarypresentirc;
+
+        flowsDrawLittleTips[0] = R.drawable.primarypresentheart;
+        flowsDrawLittleTips[1] = R.drawable.primarypresentcup;
+        flowsDrawLittleTips[2] = R.drawable.primarypresentirc;
+
+        flowsTips[0] = "送老师一颗小心心，老师也喜欢你哟~";
+        flowsTips[1] = "送老师一杯暖心茉莉茶，老师嗓子好舒服~";
+        flowsTips[2] = "送老师一个冰淇淋，夏天好凉爽~";
+        flowerEntities.add(new FlowerEntity(FLOWERS_SMALL, flowsDrawTips[0], "小心心", 10));
+        flowerEntities.add(new FlowerEntity(FLOWERS_MIDDLE, flowsDrawTips[1], "暖心茉莉茶", 50));
+        flowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "冰淇淋", 100));
+
+        PopupWindow flowerWindow = new PopupWindow(mContext);
+        flowerWindow.setBackgroundDrawable(new BitmapDrawable());
+        flowerWindow.setOutsideTouchable(true);
+        flowerWindow.setFocusable(true);
+        flowerContentView = View.inflate(mContext, R.layout.pop_livevideo_message_primary_flower, null);
+        flowerWindow.setContentView(flowerContentView);
+        flowerWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                isHaveFlowers = false;
+            }
+        });
+        tvMessageGold = (TextView) flowerContentView.findViewById(R.id.tv_livevideo_message_gold);
+        tvMessageGoldLable = (TextView) flowerContentView.findViewById(R.id.tv_livevideo_message_gold_lable);
+        Loger.i(TAG, "initFlower:time1=" + (System.currentTimeMillis() - before));
+        before = System.currentTimeMillis();
+        mFlowerWindow = flowerWindow;
+        Loger.i(TAG, "initFlower:time2=" + (System.currentTimeMillis() - before));
+        before = System.currentTimeMillis();
+        Button flowerSend = flowerContentView.findViewById(R.id.bt_livevideo_message_flowersend);
+//        flowerSend.setText(commonAction.getFlowerSendText());
+        flowerSend.setOnClickListener(new View
+                .OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final FlowerEntity entity = (FlowerEntity) flowerContentView.getTag();
+                if (entity != null) {
+                    if (LiveTopic.MODE_CLASS.equals(liveBll.getMode())) {
+                        if (liveBll.isOpenbarrage()) {
+                            String educationStage = getInfo.getEducationStage();
+                            liveBll.praiseTeacher(entity.getFtype() + "", educationStage, new HttpCallBack(false) {
+                                @Override
+                                public void onPmSuccess(ResponseEntity responseEntity) {
+                                    if (goldNum == null) {
+                                        OtherModulesEnter.requestGoldTotal(mContext);
+                                    } else {
+                                        if (responseEntity.getJsonObject() instanceof JSONObject) {
+                                            try {
+                                                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                                                int gold = Integer.parseInt(goldNum);
+                                                goldNum = ("" + (gold - jsonObject.getInt("gold")));
+                                                onGetMyGoldDataEvent(goldNum);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }
+                                    addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
+                                    mView.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mFlowerWindow.dismiss();
+                                        }
+                                    }, 1000);
+                                }
+
+                                @Override
+                                public void onPmFailure(Throwable error, String msg) {
+                                    mFlowerWindow.dismiss();
+                                }
+
+                                @Override
+                                public void onPmError(ResponseEntity responseEntity) {
+                                    mFlowerWindow.dismiss();
+                                }
+                            });
+//                        liveBll.sendFlowerMessage(entity.getFtype());
+                        } else {
+                            commonAction.clickIsnotOpenbarrage();
+                        }
+                    } else {
+                        commonAction.clickTran();
+                    }
+                } else {
+                    commonAction.clickNoChoice();
+                }
+            }
+        });
+//        flowerWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+//        flowerWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        Loger.i(TAG, "initFlower:time3=" + (System.currentTimeMillis() - before));
+        before = System.currentTimeMillis();
     }
 
     private void initCommonWord() {

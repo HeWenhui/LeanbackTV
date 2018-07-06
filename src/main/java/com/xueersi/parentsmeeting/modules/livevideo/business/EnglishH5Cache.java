@@ -77,7 +77,9 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     private File mMorecachein;
     private File mMorecacheout;
     private ArrayList<String> mUrls;
+    private ArrayList<String> mtexts;
     private int count = 0;
+    private Boolean add = true;
 
     public EnglishH5Cache(Context context, LiveBll liveBll, String liveId) {
         this.context = context;
@@ -247,7 +249,9 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
 //                final Object jsonObject = responseEntity.getJsonObject();
                 JSONObject objects = new JSONObject(responseEntity.getJsonObject().toString());
                 JSONArray array = objects.optJSONArray("list");
+                JSONArray res = objects.optJSONArray("resource");
                 mList = new ArrayList<>();
+                mtexts = new ArrayList<>();
                 for (int i = 0; i < array.length(); i++) {
                     MoreCache cache = new MoreCache();
                     JSONObject object = array.getJSONObject(i);
@@ -259,7 +263,12 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                     cache.setTemplateUrl(object.optString("templateUrl"));
                     mList.add(cache);
                 }
+                for (int i = 0 ; i < res.length() ; i++){
+                    String txt = res.optString(i);
+                    mtexts.add(txt);
+                }
                 Loger.e(TAG, "list" + mList.size());
+                Loger.e(TAG, "text" + mtexts.size());
                 if (mList.size() > 0) {
                     download(todayLiveCacheDir);
                 }
@@ -297,6 +306,11 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             if (!TextUtils.isEmpty(mList.get(i).getTemplateUrl())) {
                 mUrls.add(mList.get(i).getTemplateUrl());
             }
+        }
+        // 添加字体的下载链接
+        if(mtexts.size() > 0 && add){
+            mUrls.add(mtexts.get(0));
+            add = !add;
         }
         for (int i = 0; i < mUrls.size(); i++) {
             final String url = i + ".zip";
