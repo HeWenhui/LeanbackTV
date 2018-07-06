@@ -63,6 +63,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
@@ -121,7 +122,7 @@ import okhttp3.Response;
  *
  * @author linyuqiang
  */
-public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, QuestionHttp, LiveAchievementHttp, EnglishSpeekHttp {
+public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, QuestionHttp, LiveAchievementHttp, EnglishSpeekHttp, EnglishH5CoursewareHttp {
     private String TAG = "LiveBllLog";
     private LiveLazyBllCreat liveLazyBllCreat;
     /** 互动题 */

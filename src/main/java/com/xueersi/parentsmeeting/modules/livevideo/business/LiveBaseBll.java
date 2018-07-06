@@ -47,7 +47,7 @@ public class LiveBaseBll extends BaseBll {
         mLiveId = liveBll.getLiveId();
         mLiveType = liveBll.getLiveType();
         mRootView = rootView;
-        mLogtf = new LogToFile(context, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+        mLogtf = new LogToFile(liveBll, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
     }
 

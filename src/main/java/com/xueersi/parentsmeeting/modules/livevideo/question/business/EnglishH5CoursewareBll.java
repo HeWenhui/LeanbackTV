@@ -23,6 +23,7 @@ import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -89,7 +90,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     /** 直播id */
     private String mVSectionID;
     protected ShareDataManager mShareDataManager;
-    private LiveBll mLiveBll;
+    private LiveGetInfo mGetInfo;
+    private EnglishH5CoursewareHttp mLiveBll;
+    private LiveAndBackDebug liveAndBackDebug;
     SpeechEvaluatorUtils mIse;
     private AnswerRankBll mAnswerRankBll;
     /** 智能私信业务 */
@@ -119,9 +122,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     }
 
     public EnglishH5CoursewareBll(Context context) {
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+        logToFile = new LogToFile(context, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         this.context = context;
+        liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
     }
 
     public void initView(RelativeLayout bottomContent) {
@@ -150,8 +154,15 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         mLiveAutoNoticeBll = liveAutoNoticeBll;
     }
 
-    public void setLiveBll(LiveBll mLiveBll) {
+    public void setLiveBll(EnglishH5CoursewareHttp mLiveBll) {
         this.mLiveBll = mLiveBll;
+        if (mLiveBll instanceof LiveAndBackDebug) {
+            liveAndBackDebug = (LiveAndBackDebug) mLiveBll;
+        }
+    }
+
+    public void setGetInfo(LiveGetInfo mGetInfo) {
+        this.mGetInfo = mGetInfo;
     }
 
     public void setIse(SpeechEvaluatorUtils ise) {
@@ -386,7 +397,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         logHashMap.put("coursewareid", videoQuestionH5Entity.id);
         logHashMap.put("coursewaretype", videoQuestionH5Entity.courseware_type);
         logHashMap.put("loadurl", videoQuestionH5Entity.getUrl());
-        mLiveBll.umsAgentDebugInter(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
         OnH5ResultClose onH5ResultClose = new OnH5ResultClose() {
             @Override
             public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager) {
@@ -461,7 +472,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             return;
         }
         BaseVoiceAnswerPager voiceAnswerPager2 =
-                baseVoiceAnswerCreat.create(context, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.type, bottomContent, mIse, mLiveBll);
+                baseVoiceAnswerCreat.create(context, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.type, bottomContent, mIse, liveAndBackDebug);
 //        voiceAnswerPager2.setIse(mIse);
 //        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 //                ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -596,17 +607,17 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        mLiveBll.umsAgentDebugSys(eventId, mData);
+        liveAndBackDebug.umsAgentDebugSys(eventId, mData);
     }
 
     @Override
     public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-        mLiveBll.umsAgentDebugInter(eventId, mData);
+        liveAndBackDebug.umsAgentDebugInter(eventId, mData);
     }
 
     @Override
     public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
-        mLiveBll.umsAgentDebugPv(eventId, mData);
+        liveAndBackDebug.umsAgentDebugPv(eventId, mData);
     }
 
     public interface OnH5ResultClose {
@@ -773,7 +784,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
         @Override
         public void getTestAnswerTeamStatus(BaseVideoQuestionEntity videoQuestionLiveEntity, AbstractBusinessDataCallBack callBack) {
-            if (!"-1".equals(mLiveBll.getGetInfo().getRequestTime())) {
+            if (!"-1".equals(mGetInfo.getRequestTime())) {
                 final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
                 mLiveBll.getTestAnswerTeamStatus(videoQuestionLiveEntity1, callBack);
             }
@@ -787,7 +798,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         @Override
         public long getRequestTime() {
             try {
-                String requestTime = mLiveBll.getGetInfo().getRequestTime();
+                String requestTime = mGetInfo.getRequestTime();
                 long time = Long.parseLong(requestTime);
                 return time * 1000;
             } catch (Exception e) {

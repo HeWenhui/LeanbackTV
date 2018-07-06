@@ -36,6 +36,16 @@ public class LogToFile {
         }
     }
 
+    public LogToFile(LiveBll2 liveBll2, String tag, File file) {
+        this.TAG = "L:" + tag;
+        this.path = file.getPath();
+        File parent = file.getParentFile();
+        this.liveBll2 = liveBll2;
+        if (!parent.exists()) {
+            parent.mkdirs();
+        }
+    }
+
     public LogToFile(Context context, String tag, File file) {
         this.TAG = "L:" + tag;
         this.path = file.getPath();
