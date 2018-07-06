@@ -295,7 +295,6 @@ public class TeamPkProgressBar extends View {
      */
     public void smoothAddProgress(int progress) {
         mProgress += progress;
-        progressRect = null;
         if (progressRect == null) {
             setProgress(mProgress);
         } else {
