@@ -164,7 +164,7 @@ public class TeamPkProgressBar extends View {
 
 
     public void setProgress(int progress) {
-        Loger.e("8888", "====>isAnimRunning:"+isAnimRunning());
+        Loger.e("8888", "====>isAnimRunning:" + isAnimRunning());
         if (!isAnimRunning()) {
             this.mProgress = progress;
             setProgressRightBound(-1);
@@ -294,47 +294,52 @@ public class TeamPkProgressBar extends View {
      * @param progress 进度增量
      */
     public void smoothAddProgress(int progress) {
-        animRunning = true;
-        canceled = false;
         mProgress += progress;
-        float endBound = progressRect.width() * getProgress() / getMaxProgress();
-        if (anim != null) {
-            anim.cancel();
-            anim = null;
-        }
-        anim = new ProgressAnim(getProgressRightBound(), endBound);
-        anim.setAnimListener(new ProgressAnim.ProgressAnimListener() {
-            @Override
-            public void onAnimFinish() {
-                animRunning = false;
-                if (mCacheProgress != -1) {
-                    postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            setProgress(mCacheProgress);
-                            mCacheProgress = -1;
-                            invalidate();
-                           // Loger.e("8888","=====onAnimFinish 99999 called:");
-                        }
-                    },100);
-                }
+        progressRect = null;
+        if (progressRect == null) {
+            setProgress(mProgress);
+        } else {
+            animRunning = true;
+            canceled = false;
+            float endBound = progressRect.width() * getProgress() / getMaxProgress();
+            if (anim != null) {
+                anim.cancel();
+                anim = null;
             }
-        });
-        invalidate();
+            anim = new ProgressAnim(getProgressRightBound(), endBound);
+            anim.setAnimListener(new ProgressAnim.ProgressAnimListener() {
+                @Override
+                public void onAnimFinish() {
+                    animRunning = false;
+                    if (mCacheProgress != -1) {
+                        postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                setProgress(mCacheProgress);
+                                mCacheProgress = -1;
+                                invalidate();
+                            }
+                        }, 100);
+                    }
+                }
+            });
+            invalidate();
+        }
+
     }
 
     /**
      * @param cacheProgress
      */
     private void cacheProgress(int cacheProgress) {
-        Loger.e("8888", "====>cacheProgress:"+mCacheProgress);
+        Loger.e("8888", "====>cacheProgress:" + mCacheProgress);
         mCacheProgress = cacheProgress;
     }
 
     boolean animRunning;
     boolean canceled;
 
-    public boolean isAnimRunning() {
+    private boolean isAnimRunning() {
         return animRunning;
     }
 
@@ -345,7 +350,8 @@ public class TeamPkProgressBar extends View {
     }
 
     float tempOffsetX;
-     private static final float HALF_PROGRESS = 0.5f;
+    private static final float HALF_PROGRESS = 0.5f;
+
     @Override
     public void computeScroll() {
 
@@ -417,8 +423,8 @@ public class TeamPkProgressBar extends View {
                 offsetX = progressRect.width() * getProgress() / getMaxProgress();
                 setProgressRightBound(offsetX);
             }
-            currentProgressPaintShader = new LinearGradient(progressRect.left + offsetX/2, progressRect.top,
-                    progressRect.left + offsetX/2, progressRect.bottom,
+            currentProgressPaintShader = new LinearGradient(progressRect.left + offsetX / 2, progressRect.top,
+                    progressRect.left + offsetX / 2, progressRect.bottom,
                     Color.parseColor("#FFCF1B"),
                     Color.parseColor("#FF881B"), Shader.TileMode.CLAMP);
             currentProgressPaint.setShader(currentProgressPaintShader);
@@ -461,7 +467,7 @@ public class TeamPkProgressBar extends View {
                 float startX = currentPorgressRect.right - mSliderWidth / 2;
                 float startY = (getMeasuredHeight() - mSliderHeight) / 2;
 
-                float  leftBound = animExtraSpace / 2;
+                float leftBound = animExtraSpace / 2;
                 if (animExtraSpace != 0) {
                     if (startX < leftBound) {
                         startX = leftBound;
