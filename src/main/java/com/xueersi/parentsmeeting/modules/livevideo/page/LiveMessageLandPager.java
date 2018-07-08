@@ -604,12 +604,15 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
     }
 
     /** 被禁言 */
+    @Override
     public void onDisable(final boolean disable, final boolean fromNotice) {
         mView.post(new Runnable() {
             @Override
             public void run() {
                 if (disable) {
-                    XESToastUtils.showToast(mContext, "你被老师禁言了");
+                    if (fromNotice) {
+                        XESToastUtils.showToast(mContext, "你被老师禁言了");
+                    }
                     btMesOpen.setAlpha(0.4f);
                     btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_open);
                 } else {
