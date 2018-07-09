@@ -8,12 +8,14 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.page.ClassSignPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.ClassmateSignPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.PrimaryScienceSignPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
@@ -61,6 +63,10 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
      * 点名
      */
     private ClassSignPager mClassSignPager;
+    /**
+     * 小学理科点名
+     */
+    private PrimaryScienceSignPager mPrimaryScienceSignPager;
     private LogToFile mLogtf;
     /**
      * 显示学生签到
@@ -231,16 +237,27 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (mClassSignPager != null) {
+                    if (mPrimaryScienceSignPager != null && LiveVideoConfig.isPrimary) {
+                        mPrimaryScienceSignPager.updateStatus(classSignEntity.getStatus());
+                        return;
+                    } else if(mClassSignPager != null && !LiveVideoConfig.isPrimary){
                         mClassSignPager.updateStatus(classSignEntity.getStatus());
                         return;
                     }
                     mIsShowUserSign = true;
-                    mClassSignPager = new ClassSignPager(activity, RollCallBll.this, classSignEntity, mLiveBll);
-                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
-                            .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    params.addRule(RelativeLayout.CENTER_IN_PARENT);
-                    rlRollCallContent.addView(mClassSignPager.getRootView(), params);
+                    if(LiveVideoConfig.isPrimary){
+                        mPrimaryScienceSignPager = new PrimaryScienceSignPager(activity, RollCallBll.this, classSignEntity, mLiveBll);
+                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                                .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+                        rlRollCallContent.addView(mPrimaryScienceSignPager.getRootView(), params);
+                    } else {
+                        mClassSignPager = new ClassSignPager(activity, RollCallBll.this, classSignEntity, mLiveBll);
+                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                                .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+                        rlRollCallContent.addView(mClassSignPager.getRootView(), params);
+                    }
                     activity.getWindow().getDecorView().requestLayout();
                     activity.getWindow().getDecorView().invalidate();
                 }
@@ -333,16 +350,27 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
             mVPlayVideoControlHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (mClassSignPager != null) {
+                    if (mPrimaryScienceSignPager != null && LiveVideoConfig.isPrimary) {
+                        mPrimaryScienceSignPager.updateStatus(classSignEntity.getStatus());
+                        return;
+                    }else if(mClassSignPager != null && !LiveVideoConfig.isPrimary){
                         mClassSignPager.updateStatus(classSignEntity.getStatus());
                         return;
                     }
                     mIsShowUserSign = true;
-                    mClassSignPager = new ClassSignPager(activity, RollCallBll.this, classSignEntity, mLiveBll);
-                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
-                            .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    params.addRule(RelativeLayout.CENTER_IN_PARENT);
-                    rlRollCallContent.addView(mClassSignPager.getRootView(), params);
+                    if(LiveVideoConfig.isPrimary){
+                        mPrimaryScienceSignPager = new PrimaryScienceSignPager(activity, RollCallBll.this, classSignEntity, mLiveBll);
+                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                                .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+                        rlRollCallContent.addView(mPrimaryScienceSignPager.getRootView(), params);
+                    } else {
+                        mClassSignPager = new ClassSignPager(activity, RollCallBll.this, classSignEntity, mLiveBll);
+                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                                .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+                        rlRollCallContent.addView(mClassSignPager.getRootView(), params);
+                    }
                     activity.getWindow().getDecorView().requestLayout();
                     activity.getWindow().getDecorView().invalidate();
                 }

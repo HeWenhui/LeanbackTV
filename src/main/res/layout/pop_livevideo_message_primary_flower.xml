@@ -53,7 +53,7 @@
         </LinearLayout>
         <LinearLayout
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="4dp"
             android:layout_below="@+id/ll_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -63,12 +63,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <RelativeLayout
+                    android:id="@+id/rl_heart"
                     android:background="@drawable/primarygift"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                     <ImageView
                         android:layout_centerInParent="true"
                         android:background="@drawable/primarypresentheart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <ImageView
+                        android:visibility="gone"
+                        android:id="@+id/iv_present_heart"
+                        android:background="@drawable/primarypresentselect"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </RelativeLayout>
@@ -84,12 +91,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <RelativeLayout
+                    android:id="@+id/rl_cup"
                     android:background="@drawable/primarygift"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                     <ImageView
                         android:layout_centerInParent="true"
                         android:background="@drawable/primarypresentcup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <ImageView
+                        android:visibility="gone"
+                        android:id="@+id/iv_present_cup"
+                        android:background="@drawable/primarypresentselect"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </RelativeLayout>
@@ -105,12 +119,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <RelativeLayout
+                    android:id="@+id/rl_ice"
                     android:background="@drawable/primarygift"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                     <ImageView
                         android:layout_centerInParent="true"
                         android:background="@drawable/primarypresentirc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <ImageView
+                        android:visibility="gone"
+                        android:id="@+id/iv_present_ice"
+                        android:background="@drawable/primarypresentselect"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </RelativeLayout>
@@ -132,7 +153,7 @@
             android:layout_marginBottom="38dp"
             />
         <ImageView
-            android:id="@id/iv_livevideo_redpackage_close"
+            android:id="@+id/iv_livevideo_present_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"

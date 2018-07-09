@@ -533,12 +533,49 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         Loger.i(TAG, "initFlower:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         Button flowerSend = flowerContentView.findViewById(R.id.bt_livevideo_message_flowersend);
+        final ImageView ice = flowerContentView.findViewById(R.id.iv_present_ice);
+        final ImageView cup = flowerContentView.findViewById(R.id.iv_present_cup);
+        final ImageView heart = flowerContentView.findViewById(R.id.iv_present_heart);
+        ImageView close = flowerContentView.findViewById(R.id.iv_livevideo_present_close);
+        RelativeLayout rl_heart = flowerContentView.findViewById(R.id.rl_heart);
+        RelativeLayout rl_cup = flowerContentView.findViewById(R.id.rl_cup);
+        RelativeLayout rl_ice = flowerContentView.findViewById(R.id.rl_ice);
+        View.OnClickListener listener = new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(v.getId() == R.id.rl_heart){
+                    flowerContentView.setTag(flowerEntities.get(0));
+                    ice.setVisibility(View.GONE);
+                    cup.setVisibility(View.GONE);
+                    heart.setVisibility(View.VISIBLE);
+                }else if(v.getId() == R.id.rl_cup){
+                    flowerContentView.setTag(flowerEntities.get(1));
+                    ice.setVisibility(View.GONE);
+                    cup.setVisibility(View.VISIBLE);
+                    heart.setVisibility(View.GONE);
+                }else if(v.getId() == R.id.rl_ice){
+                    flowerContentView.setTag(flowerEntities.get(2));
+                    ice.setVisibility(View.VISIBLE);
+                    cup.setVisibility(View.GONE);
+                    heart.setVisibility(View.GONE);
+                }else if(v.getId() == R.id.iv_livevideo_present_close){
+                    mFlowerWindow.dismiss();
+                }
+            }
+        };
+        rl_heart.setOnClickListener(listener);
+        rl_cup.setOnClickListener(listener);
+        rl_ice.setOnClickListener(listener);
+//        rl_heart.setOnClickListener(new ON);
 //        flowerSend.setText(commonAction.getFlowerSendText());
         flowerSend.setOnClickListener(new View
                 .OnClickListener() {
             @Override
             public void onClick(View v) {
                 final FlowerEntity entity = (FlowerEntity) flowerContentView.getTag();
+                ice.setVisibility(View.GONE);
+                cup.setVisibility(View.GONE);
+                heart.setVisibility(View.GONE);
                 if (entity != null) {
                     if (LiveTopic.MODE_CLASS.equals(liveBll.getMode())) {
                         if (liveBll.isOpenbarrage()) {
