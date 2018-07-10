@@ -107,7 +107,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private QuestionAction mQuestionAction;
     private RollCallAction mRollCallAction;
     private PraiseOrEncourageAction mPraiseOrEncourageAction;
-    private RedPackageAction readPackageBll,psredpackageBll;
+    private RedPackageAction readPackageBll, psredpackageBll;
     private VideoAction mVideoAction;
     private RoomAction mRoomAction;
     private LearnReportAction mLearnReportAction;
@@ -904,7 +904,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         this.readPackageBll = redPackageAction;
     }
 
-    public void setPScienceRedPackageBll(RedPackageAction redPackageAction){
+    public void setPScienceRedPackageBll(RedPackageAction redPackageAction) {
         this.psredpackageBll = redPackageAction;
     }
 
@@ -1186,7 +1186,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             JSONObject object = jsonObject.optJSONObject("platformTest");
                             if (object != null && !object.toString().equals("{}")) {
                                 LiveVideoConfig.isSend = true;
-                                status = LiveVideoConfig.isSend  ?  "on" : "off";
+                                status = LiveVideoConfig.isSend ? "on" : "off";
                                 String nonce = object.optString("nonce");
                                 StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
                                 String teamId = studentLiveInfo.getTeamId();
@@ -1363,7 +1363,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                         }
                                     }
                                 });
-                            }else if(readPackageBll != null && !LiveVideoConfig.isPrimary){
+                            } else if (readPackageBll != null && !LiveVideoConfig.isPrimary) {
                                 readPackageBll.onReadPackage(object.getInt("id"), new RedPackageAction
                                         .OnReceivePackage() {
                                     @Override
@@ -1814,9 +1814,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             try {
                                 JSONObject objects = new JSONObject();
                                 objects.put("packageId", object.getString("pId"));
+                                englishH5Entity.setPackageId(object.getString("pId"));
                                 objects.put("packageSource", object.getString("pSrc"));
                                 objects.put("packageAttr", object.getString("pAttr"));
                                 objects.put("releasedPageInfos", object.getString("tests"));
+                                englishH5Entity.setReleasedPageInfos(object.getString("tests"));
                                 objects.put("teamId", teamId);
                                 objects.put("stuCouId", vStuCourseID);
                                 objects.put("stuId", mGetInfo.getStuId());
@@ -2555,7 +2557,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         } else {
             appID = UmsConstants.LIVE_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
-            if(mGetInfo.getGrade() > 1 || mGetInfo.getGrade() < 65){
+            if (mGetInfo.getGrade() > 1 || mGetInfo.getGrade() < 65) {
                 LiveVideoConfig.isPrimary = true;
             } else {
                 LiveVideoConfig.isPrimary = false;
