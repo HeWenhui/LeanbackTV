@@ -573,6 +573,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 return;
             }
             seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
+            Log.e("Duncan","mVideoEntity.getVisitTimeKey():"+mVideoEntity.getVisitTimeKey());
         }
         if (mQuestionEntity != null) {
             Loger.d(TAG, "onPlayOpenSuccess:showQuestion:isAnswered=" + mQuestionEntity.isAnswered() + "," +
