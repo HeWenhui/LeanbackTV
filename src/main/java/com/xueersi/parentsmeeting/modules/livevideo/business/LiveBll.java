@@ -2563,6 +2563,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             isAllowTeamPk = false;
         }
         liveGetPlayServerFirst();
+        postDelayedIfNotFinish(mUserOnlineCall, mHbTime * 1000);
     }
 
 
@@ -3023,7 +3024,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     public void onDestroy() {
         mQuestionAction = null;
 
-
+        mHandler.removeCallbacks(mUserOnlineCall);
         if (mRollCallAction != null) {
             mRollCallAction.forceCloseRollCall();
         }
@@ -3091,8 +3092,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         @Override
         public void onOpenSuccess() {
             isOpenSuccess = true;
-            mHandler.removeCallbacks(mUserOnlineCall);
-            postDelayedIfNotFinish(mUserOnlineCall, mHbTime * 1000);
             long openTime = System.currentTimeMillis() - openStartTime;
             mLogtf.d("onOpenSuccess:openTime=" + openTime);
             streamReport(MegId.MEGID_12102, mGetInfo.getChannelname(), openTime);
@@ -3120,7 +3119,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     mFailCounTeacherCount.set(mFailCounTeacherCount.get() + 1);
                 }
             }
-            mHandler.removeCallbacks(mUserOnlineCall);
         }
 
         @Override
