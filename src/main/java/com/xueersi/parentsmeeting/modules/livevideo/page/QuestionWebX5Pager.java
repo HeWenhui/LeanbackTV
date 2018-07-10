@@ -115,6 +115,17 @@ public class QuestionWebX5Pager extends BasePager implements BaseQuestionWebInte
                 ((AnimationDrawable) ivLoading.getBackground()).start();
             }
         });
+        view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+                onDestroy();
+            }
+        });
         return view;
     }
 
@@ -177,6 +188,14 @@ public class QuestionWebX5Pager extends BasePager implements BaseQuestionWebInte
         });
 
 //        wvSubjectWeb.loadUrl("http://7.xesweb.sinaapp.com/test/examPaper2.html");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (wvSubjectWeb != null) {
+            wvSubjectWeb.destroy();
+        }
     }
 
     @android.webkit.JavascriptInterface

@@ -8,8 +8,10 @@ import android.os.Looper;
 import com.tencent.smtt.export.external.interfaces.WebResourceError;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
+import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
+import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.xesalib.utils.log.Loger;
 
@@ -30,10 +32,10 @@ public class QuestionWebCache {
     public void startCache() {
         CacheWebView webView = new CacheWebView(context);
         webView.setWebViewClient(new MyWebViewClient());
-        webView.loadUrl("https://live.xueersi.com/science/Live/getMultiTestPaper?liveId=119740&testId=365160-1&stuId=-111&stuName=test@talwx.com&stuCouId=12345654&isArts=0&nonce=45645dasf&isTowall=0");
+//        webView.loadUrl("https://live.xueersi.com/science/Live/getMultiTestPaper?liveId=119740&testId=365160-1&stuId=-111&stuName=test@talwx.com&stuCouId=12345654&isArts=0&nonce=45645dasf&isTowall=0");
     }
 
-    public class MyWebViewClient extends ErrorWebViewClient {
+    private class MyWebViewClient extends ErrorWebViewClient {
 
         public MyWebViewClient() {
             super(TAG);
@@ -44,5 +46,11 @@ public class QuestionWebCache {
             return super.shouldInterceptRequest(view, url);
         }
 
+        @Override
+        public void onPageFinished(WebView webView, String s) {
+            super.onPageFinished(webView, s);
+            webView.destroy();
+            Loger.d(TAG, "onPageFinished:s=" + s);
+        }
     }
 }
