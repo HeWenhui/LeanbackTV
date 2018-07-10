@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xueersi.common.entity.FooterIconEntity;
+import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.XesActivity;
@@ -48,7 +49,6 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.lib.framework.utils.ActivityUtils;
 import com.xueersi.lib.framework.utils.AppUtils;
-import com.xueersi.common.util.audio.AudioPlayer;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.log.FileLogger;
 import com.xueersi.lib.imageloader.ImageLoader;

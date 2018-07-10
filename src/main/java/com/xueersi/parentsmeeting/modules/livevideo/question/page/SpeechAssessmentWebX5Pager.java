@@ -24,6 +24,8 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
+import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
+import com.xueersi.parentsmeeting.module.audio.AudioPlayerListening;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
@@ -32,8 +34,6 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.framework.are.ContextManager;
-import com.xueersi.common.util.audio.AudioPlayer;
-import com.xueersi.common.util.audio.AudioPlayerListening;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -44,8 +44,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.xueersi.common.util.audio.AudioPlayer.mVoiceUrl;
+import static com.xueersi.parentsmeeting.module.audio.AudioPlayer.mVoiceUrl;
 
 /**
  * 语音评测WEB页

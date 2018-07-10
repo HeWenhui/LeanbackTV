@@ -17,6 +17,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.AudioPlayerManager;
+import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
@@ -26,8 +28,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.common.util.audio.safeaudioplayer.AudioPlayerManager;
-import com.xueersi.common.util.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.lib.framework.utils.listener.OnAlphaTouchListener;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;

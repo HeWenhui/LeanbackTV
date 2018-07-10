@@ -59,4 +59,5 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.arouterapi
     //
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
+    implementation project(path: ':business-base:audio')
 }
