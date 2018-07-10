@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -338,11 +339,17 @@ public class TeamPkBll {
     }
 
     public void stopTeamSelect() {
-        if (mFocusPager != null && mFocusPager instanceof TeamPkTeamSelectPager) {
-            ((TeamPkTeamSelectPager) mFocusPager).closeTeamSelectPager();
-        } else if (mFocusPager != null && mFocusPager instanceof TeamPkTeamSelectingPager) {
-            ((TeamPkTeamSelectingPager) mFocusPager).closeTeamSelectPager();
-        }
+        rlTeamPkContent.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mFocusPager != null && mFocusPager instanceof TeamPkTeamSelectPager) {
+                    Log.e("SoundPoolHelper","=======> team");
+                    ((TeamPkTeamSelectPager) mFocusPager).closeTeamSelectPager();
+                } else if (mFocusPager != null && mFocusPager instanceof TeamPkTeamSelectingPager) {
+                    ((TeamPkTeamSelectingPager) mFocusPager).closeTeamSelectPager();
+                }
+            }
+        });
     }
 
     /**
@@ -378,6 +385,11 @@ public class TeamPkBll {
      */
     private void showTeamSelectScene() {
         if (mFocusPager == null || !(mFocusPager instanceof TeamPkTeamSelectingPager)) {
+
+            if(mFocusPager != null && mFocusPager instanceof TeamPkTeamSelectPager){
+                return;
+            }
+
             Loger.e("teamPkBll", "====>showTeamSelectScene:" + mFocusPager);
             TeamPkTeamSelectPager teamSelectPager = new TeamPkTeamSelectPager(mActivity, this);
             addPager(teamSelectPager);
@@ -453,10 +465,15 @@ public class TeamPkBll {
                 }
 
             } else if (type == CHEST_TYPE_STUDENT) {
-                TeamPkAwardPager awardGetPager = new TeamPkAwardPager(mActivity, this);
-                addPager(awardGetPager);
-                awardGetPager.showBoxLoop();
-                Loger.e("teampkBll", "======>showAwardGetScene called 3333");
+                rlTeamPkContent.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        TeamPkAwardPager awardGetPager = new TeamPkAwardPager(mActivity, TeamPkBll.this);
+                        addPager(awardGetPager);
+                        awardGetPager.showBoxLoop();
+                        Loger.e("teampkBll", "======>showAwardGetScene called 3333");
+                    }
+                },1000);
             }
         } else if (mFocusPager != null && (mFocusPager instanceof TeamPkAwardPager)) {
             //由开宝箱直接切换到幸运之星页面
@@ -530,8 +547,10 @@ public class TeamPkBll {
             rlTeamPkContent.post(new Runnable() {
                 @Override
                 public void run() {
-                    rlTeamPkContent.removeView(mFocusPager.getRootView());
-                    mFocusPager = null;
+                    if(mFocusPager != null){
+                        rlTeamPkContent.removeView(mFocusPager.getRootView());
+                        mFocusPager = null;
+                    }
                 }
             });
         }

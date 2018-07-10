@@ -282,13 +282,19 @@ public class SoundPoolHelper {
      * 释放资源
      */
     public void release() {
+
+        if (mSoundInfoMap != null) {
+            for (Object o : mSoundInfoMap.keySet()) {
+                mSoundPool.stop(mSoundInfoMap.get(o).getStreamId());
+            }
+            mSoundInfoMap.clear();
+        }
+
         if (mSoundPool != null) {
             mSoundPool.release();
             Log.e("SoundPoolHelper", "=======>release called 22222");
         }
-        if (mSoundInfoMap != null) {
-            mSoundInfoMap.clear();
-        }
+
         mContext = null;
         Log.e("SoundPoolHelper", "=======>release called ");
     }

@@ -1,5 +1,5 @@
-package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
+package com.xueersi.parentsmeeting.modules.livevideo.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -79,7 +79,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  */
 public class AuditClassLiveActivity extends LiveVideoActivityBase implements AuditVideoAction, ActivityStatic {
 
-    private String TAG = "LiveVideoActivityLog";
+    private String TAG = "AcLiveVideoActivityLog";
 
     {
         mLayoutVideo = R.layout.activity_video_audit_live;
