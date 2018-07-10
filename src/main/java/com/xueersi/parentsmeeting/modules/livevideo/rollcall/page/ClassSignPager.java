@@ -31,7 +31,6 @@ public class ClassSignPager extends BasePager {
 
 
     RollCallBll rollCallBll;
-    LiveBll2 liveBll;
     RelativeLayout rlSignStatus1, rlSignStatus2;
     TextView tvSignName;
     /**
@@ -47,11 +46,10 @@ public class ClassSignPager extends BasePager {
     String[] bttips = {"签到成功", "签到失败"};
     private LogToFile logToFile;
 
-    public ClassSignPager(Context context, RollCallBll rollCallBll, ClassSignEntity classSignEntity, LiveBll2 liveBll) {
+    public ClassSignPager(Context context, RollCallBll rollCallBll, ClassSignEntity classSignEntity) {
         super(context);
         this.rollCallBll = rollCallBll;
         this.classSignEntity = classSignEntity;
-        this.liveBll = liveBll;
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         initData();

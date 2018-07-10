@@ -42,10 +42,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAch
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.UserOnline;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
@@ -55,7 +57,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRank
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll;
-import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
+import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
@@ -85,6 +87,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
@@ -165,12 +168,12 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     LiveTextureView liveTextureView;
     private LiveBll2 mLiveBll;
     private LiveIRCMessageBll liveIRCMessageBll;
-    private RollCallBll rollCallBll;
     private LiveVideoBll liveVideoBll;
     private UserOnline userOnline;
     //LiveMessageBll liveMessageBll;
     private static String Tag = "LiveVideoActivity2";
     protected LogToFile mLogtf;
+    private LiveVideoPoint liveVideoPoint;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -229,17 +232,55 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                         if (!isLand) {
                             return;
                         }
+                        if (liveVideoPoint == null) {
+                            liveVideoPoint = new LiveVideoPoint();
+                        }
                         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) LiveVideoConfig.VIDEO_WIDTH,
                                 (int) LiveVideoConfig.VIDEO_HEIGHT, LiveVideoConfig.VIDEO_RATIO);
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
                         setFirstParam(lp);
+                        initLiveVideoPoint(lp);
                         // liveMessageBll.setVideoLayout(lp.width, lp.height);
                         setMediaControllerBottomParam(lp);
-
+                        List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
+                        for (LiveBaseBll businessBll : businessBlls) {
+                            businessBll.setVideoLayout(liveVideoPoint);
+                        }
                     }
                 });
             }
         }, 10);
+    }
+
+    private void initLiveVideoPoint(ViewGroup.LayoutParams lp) {
+        final View contentView = activity.findViewById(android.R.id.content);
+        final View actionBarOverlayLayout = (View) contentView.getParent();
+        Rect r = new Rect();
+        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
+        int screenWidth = (r.right - r.left);
+        int screenHeight = ScreenUtils.getScreenHeight();
+        //计算x的几个点
+        liveVideoPoint.x2 = (screenWidth - lp.width) / 2;
+        //头像的宽度
+        int headWidth = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * lp.width / LiveVideoConfig.VIDEO_WIDTH);
+        liveVideoPoint.videoWidth = lp.width;
+        liveVideoPoint.headWidth = headWidth;
+        liveVideoPoint.pptWidth = liveVideoPoint.videoWidth - headWidth;
+
+        liveVideoPoint.x3 = liveVideoPoint.x2 + liveVideoPoint.pptWidth;
+        liveVideoPoint.x4 = liveVideoPoint.x2 + lp.width;
+        liveVideoPoint.screenWidth = screenWidth;
+        //计算y的几个点
+        liveVideoPoint.y2 = (screenHeight - lp.height) / 2;
+        //头像的高度
+        int headHeight = (int) ((LiveVideoConfig.VIDEO_HEAD_HEIGHT) * lp.height / LiveVideoConfig.VIDEO_HEIGHT);
+        liveVideoPoint.videoHeight = lp.height;
+        liveVideoPoint.headHeight = headHeight;
+        liveVideoPoint.msgHeight = lp.height - headHeight;
+        liveVideoPoint.y3 = liveVideoPoint.y2 + headHeight;
+        liveVideoPoint.y4 = liveVideoPoint.y2 + lp.height;
+        liveVideoPoint.screenHeight = screenHeight;
+        logger.d("initLiveVideoPoint:liveVideoPoint=" + liveVideoPoint);
     }
 
     @Nullable
@@ -261,8 +302,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         TeamPkBll teamPkBll = new TeamPkBll(activity, mLiveBll, bottomContent);
         mLiveBll.addBusinessBll(teamPkBll);
 
-        rollCallBll = new RollCallBll(activity, mLiveBll, bottomContent);
-        mLiveBll.addBusinessBll(rollCallBll);
+        mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll, bottomContent));
         liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll, bottomContent);
         liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
         mLiveBll.addBusinessBll(liveIRCMessageBll);
@@ -438,7 +478,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                 tvFail.setVisibility(View.INVISIBLE);
             }
             setFirstBackgroundVisible(View.GONE);
-            rollCallBll.onPlayOpenSuccess(videoView.getLayoutParams());
 //            if (mGetInfo != null && mGetInfo.getIsShowMarkPoint().equals("1")) {
 //                if (liveRemarkBll == null) {
 //                    liveRemarkBll = new LiveRemarkBll(activity, vPlayer);

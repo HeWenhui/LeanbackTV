@@ -231,6 +231,10 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         businessBlls.add(bll);
     }
 
+    public List<LiveBaseBll> getBusinessBlls() {
+        return businessBlls;
+    }
+
     public void setLiveIRCMessageBll(LiveIRCMessageBll liveIRCMessageBll) {
         this.liveIRCMessageBll = liveIRCMessageBll;
     }

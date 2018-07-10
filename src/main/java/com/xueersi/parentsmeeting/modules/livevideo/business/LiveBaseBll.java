@@ -13,6 +13,7 @@ import com.xueersi.common.base.BaseBll;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -87,6 +88,10 @@ public class LiveBaseBll extends BaseBll {
         if (mLiveBll != null) {
             mLiveBll.sendNotice(target, jsonObject);
         }
+    }
+
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+
     }
 
     /**

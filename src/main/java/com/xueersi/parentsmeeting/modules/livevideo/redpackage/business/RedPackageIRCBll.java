@@ -115,8 +115,7 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 mLogtf.d("getReceiveGoldTeamStatus:onPmSuccess=" + responseEntity.getJsonObject().toString() + "," +
-                        "operateId=" +
-                        operateId);
+                        "operateId=" + operateId);
                 GoldTeamStatus entity = getHttpResponseParser().redGoldTeamStatus(responseEntity, mGetInfo.getStuId(),
                         mGetInfo.getHeadImgPath());
                 entity.setHttpUrl(url);

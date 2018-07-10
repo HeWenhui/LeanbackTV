@@ -10,37 +10,31 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
-import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.page.ClassSignPager;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.page.ClassmateSignPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * @author linyuqiang
- * Created by linyuqiang on 2016/9/23.
+ *         Created by linyuqiang on 2016/9/23.
  */
-public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAction, Handler.Callback {
-
+public class RollCallBll implements RollCallAction, Handler.Callback {
 
     /**
      * 可签到时间  课前15 分钟
@@ -64,6 +58,8 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
     public static final boolean OPEN_AUTO_SIGN = true;
 
     private Activity activity;
+    RelativeLayout mRootView;
+    RollCallHttp rollCallHttp;
 
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     /**
@@ -112,25 +108,16 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
 
     private LiveGetInfo mGetInfo;
 
-
-    public RollCallBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
-        this.activity = context;
-
-    }
-
-
-    //todo 后期删除
-
     public RollCallBll(Activity activity) {
-        this(activity, null, null);
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+        mLogtf = new LogToFile(activity, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
         this.activity = activity;
     }
 
-
+    public void setRollCallHttp(RollCallHttp rollCallHttp) {
+        this.rollCallHttp = rollCallHttp;
+    }
 
     @Override
     public boolean handleMessage(Message msg) {
@@ -151,7 +138,7 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
 
 
     public void initView(final RelativeLayout bottomContent) {
-        Loger.e("RollCallBll", "======>:bottomContent" + bottomContent + ":" + mRootView);
+        Loger.e("RollCallBll", "======>:bottomContent" + bottomContent);
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -176,6 +163,18 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
                         .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             }
         });
+    }
+
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        if (IS_SHOW_CLASSMATE_SIGN && classmateSignPager != null) {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) classmateSignPager.getRootView()
+                    .getLayoutParams();
+            int rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x3;
+            if (params.rightMargin != rightMargin) {
+                params.rightMargin = rightMargin;
+                LayoutParamsUtil.setViewLayoutParams(classmateSignPager.getRootView(), params);
+            }
+        }
     }
 
     public void onPlayOpenSuccess(ViewGroup.LayoutParams lp) {
@@ -223,7 +222,7 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
                         return;
                     }
                     mIsShowUserSign = true;
-                    mClassSignPager = new ClassSignPager(activity, RollCallBll.this, classSignEntity, mLiveBll);
+                    mClassSignPager = new ClassSignPager(activity, RollCallBll.this, classSignEntity);
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                             .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                     params.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -274,51 +273,49 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
 
 
     @Override
-    public void userSign(ClassSignEntity classSignEntity, final HttpCallBack callBack){
+    public void userSign(ClassSignEntity classSignEntity, final HttpCallBack callBack) {
         if (classSignEntity.getStatus() != 1) {
             stopRollCall();
-        }else{
-
+        } else {
             String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
             String classId = "";
             if (mGetInfo.getStudentLiveInfo() != null) {
                 classId = mGetInfo.getStudentLiveInfo().getClassId();
             }
+            rollCallHttp.userSign(enstuId, mGetInfo.getId(), classId, mGetInfo.getTeacherId()
+                    , new HttpCallBack(false) {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            mGetInfo.getStudentLiveInfo().setSignStatus(2);
+                            callBack.onPmSuccess(responseEntity);
 
-           getHttpManager().userSign(enstuId, mLiveBll.getLiveId(), classId, mGetInfo.getTeacherId()
-                   , new HttpCallBack(false) {
-               @Override
-               public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                   mGetInfo.getStudentLiveInfo().setSignStatus(2);
-                   callBack.onPmSuccess(responseEntity);
+                            try {
+                                mGetInfo.getStudentLiveInfo().setSignStatus(2);
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put("type", "" + XESCODE.CLASS_MATEROLLCALL);
+                                jsonObject.put("id", "" + mGetInfo.getStuId());
+                                jsonObject.put("name", "" + mGetInfo.getStuName());
+                                jsonObject.put("path", "" + mGetInfo.getHeadImgPath());
+                                jsonObject.put("Version", "" + mGetInfo.getHeadImgVersion());
+                                rollCallHttp.sendRollCallNotice(jsonObject, null);
+                                //mLogtf.d("onRollCallSuccess ok");
+                            } catch (Exception e) {
+                                //mLogtf.e("onRollCallSuccess", e);
+                            }
+                        }
 
-                   try {
-                       mGetInfo.getStudentLiveInfo().setSignStatus(2);
-                       JSONObject jsonObject = new JSONObject();
-                       jsonObject.put("type", "" + XESCODE.CLASS_MATEROLLCALL);
-                       jsonObject.put("id", "" + mGetInfo.getStuId());
-                       jsonObject.put("name", "" + mGetInfo.getStuName());
-                       jsonObject.put("path", "" + mGetInfo.getHeadImgPath());
-                       jsonObject.put("Version", "" + mGetInfo.getHeadImgVersion());
-                       sendNotice(jsonObject,null);
-                       //mLogtf.d("onRollCallSuccess ok");
-                   } catch (Exception e) {
-                       //mLogtf.e("onRollCallSuccess", e);
-                   }
-               }
+                        @Override
+                        public void onPmFailure(Throwable error, String msg) {
+                            callBack.onPmFailure(error, msg);
+                            //logToFile.e("onPmFailure:msg=" + msg, error);
 
-               @Override
-               public void onPmFailure(Throwable error, String msg) {
-                   callBack.onPmFailure(error, msg);
-                   //logToFile.e("onPmFailure:msg=" + msg, error);
+                        }
 
-               }
-
-               @Override
-               public void onPmError(ResponseEntity responseEntity) {
-                   callBack.onPmError(responseEntity);
-               }
-           });
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            callBack.onPmError(responseEntity);
+                        }
+                    });
         }
     }
 
@@ -372,7 +369,7 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
                         return;
                     }
                     mIsShowUserSign = true;
-                    mClassSignPager = new ClassSignPager(activity, RollCallBll.this, classSignEntity, mLiveBll);
+                    mClassSignPager = new ClassSignPager(activity, RollCallBll.this, classSignEntity);
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                             .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                     params.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -425,101 +422,16 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
         }
     };
 
-
-    /////// 通信接口 相关///////
-
-    private int[] noticeCodes = {
-            XESCODE.CLASSBEGIN,
-            XESCODE.ROLLCALL,
-            XESCODE.STOPROLLCALL,
-            XESCODE.CLASS_MATEROLLCALL,
-
-    };
-
-    @Override
-    public void onNotice(JSONObject data, int type) {
-        Loger.e("=====>RollCallBll","=======>onNotice:" + type);
-        try {
-            switch (type) {
-                case XESCODE.CLASSBEGIN:
-                    //开始上课  结束签到相关逻辑
-                    forceCloseRollCall();
-                    break;
-                case XESCODE.ROLLCALL:
-
-                    onRollCall(false);
-                    if (mGetInfo.getStudentLiveInfo().getSignStatus() != Config.SIGN_STATE_CODE_SIGNED) {
-                        ClassSignEntity classSignEntity = new ClassSignEntity();
-                        classSignEntity.setStuName(mGetInfo.getStuName());
-                        classSignEntity.setTeacherName(mGetInfo.getTeacherName());
-                        classSignEntity.setTeacherIMG(mGetInfo.getTeacherIMG());
-                        classSignEntity.setStatus(1);
-                        onRollCall(classSignEntity);
-                    }
-                    break;
-                case XESCODE.STOPROLLCALL:
-
-                    onRollCall(true);
-                    //noinspection AlibabaUndefineMagicConstant
-                    if (mGetInfo.getStudentLiveInfo().getSignStatus() != Config.SIGN_STATE_CODE_SIGNED) {
-                        mGetInfo.getStudentLiveInfo().setSignStatus(3);
-                        ClassSignEntity classSignEntity = new ClassSignEntity();
-                        classSignEntity.setStuName(mGetInfo.getStuName());
-                        classSignEntity.setTeacherName(mGetInfo.getTeacherName());
-                        classSignEntity.setTeacherIMG(mGetInfo.getTeacherIMG());
-                        classSignEntity.setStatus(mGetInfo.getStudentLiveInfo().getSignStatus());
-                        onRollCall(classSignEntity);
-                    }
-                    break;
-
-                case XESCODE.CLASS_MATEROLLCALL:
-
-                    if (RollCallBll.IS_SHOW_CLASSMATE_SIGN) {
-                        List<String> headImgUrl = mGetInfo.getHeadImgUrl();
-                        ClassmateEntity classmateEntity = new ClassmateEntity();
-                        String id = data.optString("id");
-                        classmateEntity.setId(id);
-                        classmateEntity.setName(data.getString("name"));
-                        if (!headImgUrl.isEmpty()) {
-                            try {
-                                String img = headImgUrl.get(0) + "/" + data.getString("path") + "/" +
-                                        mGetInfo.getImgSizeType() + "?" + data.getString("Version");
-                                classmateEntity.setImg(img);
-                            } catch (JSONException e) {
-                                MobAgent.httpResponseParserError(TAG, "onNotice:setImg", e.getMessage());
-                            }
-                        }
-                        onClassmateRollCall(classmateEntity);
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    @Override
-    public int[] getNoticeFilter() {
-
-        return noticeCodes;
-    }
-
-
-    @Override
-    public void onLiveInited(LiveGetInfo data) {
-        super.onLiveInited(data);
+    public void onLiveInited(LiveGetInfo data, RelativeLayout rootView, int liveType) {
+        this.mRootView = rootView;
         Loger.e("RollCallBll", "======>onLiveInited called:" + data + ":" + mRootView);
         mGetInfo = data;
-        initView((RelativeLayout) mRootView);
+        initView(mRootView);
         classSignStop.setTraning(LiveTopic.MODE_TRANING.equals(data.getLiveTopic().getMode()));
 
         if (OPEN_AUTO_SIGN) {
             // 理科直播 自动签到
-            boolean isAutoSign = data != null && data.getIsArts() != 1 && mLiveBll.getLiveType() == LiveBll.LIVE_TYPE_LIVE;
+            boolean isAutoSign = data != null && data.getIsArts() != 1 && liveType == LiveBll.LIVE_TYPE_LIVE;
             setAutoSign(isAutoSign);
         }
 
@@ -553,9 +465,4 @@ public class RollCallBll extends LiveBaseBll implements NoticeAction, RollCallAc
         }
     }
 
-    @Override
-    public void onDestory() {
-        super.onDestory();
-        forceCloseRollCall();
-    }
 }
