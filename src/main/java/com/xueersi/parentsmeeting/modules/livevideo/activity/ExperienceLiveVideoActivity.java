@@ -1283,6 +1283,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 mIsShowRedpacket = false;
             }
         }.sendEmptyMessageDelayed(0, 1000); // 延迟1秒钟消失
+
+
     }
 
     /**
