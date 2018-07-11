@@ -379,12 +379,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         super.initData();
         Loger.i(TAG, "initData:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        new Thread() {
-            @Override
-            public void run() {
-                OtherModulesEnter.requestGoldTotal(mContext);
-            }
-        }.start();
         btMessageFlowers.setTag("0");
         btMessageFlowers.setAlpha(0.4f);
         btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
@@ -481,6 +475,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         if (getInfo != null) {
             String educationStage = getInfo.getEducationStage();
             initFlower(educationStage);
+            new Thread() {
+                @Override
+                public void run() {
+                    OtherModulesEnter.requestGoldTotal(mContext);
+                }
+            }.start();
         }
     }
 
