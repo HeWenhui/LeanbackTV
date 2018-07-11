@@ -230,8 +230,6 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         }
         Loger.d(TAG, "onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-        LiveGetInfo mGetInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
         initAllBll();
         Loger.d(TAG, "onVideoCreate:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
@@ -245,6 +243,8 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
     @Override
     protected void onVideoCreateEnd() {
         mLiveBll.setTotalFrameStat(totalFrameStat);
+        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        LiveGetInfo mGetInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
         mLiveBll.getInfo(mGetInfo);
     }
 
