@@ -1639,9 +1639,6 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         if (speechFeedBackAction != null) {
             speechFeedBackAction.stop();
         }
-        if (speechFeedBackAction != null) {
-            speechFeedBackAction.stop();
-        }
 
         /*if (teacherPraiseBll != null) {
             teacherPraiseBll.onDestroy();

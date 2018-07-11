@@ -18,6 +18,7 @@ import com.xueersi.component.cloud.config.XesCloudConfig;
 import com.xueersi.component.cloud.entity.CloudUploadEntity;
 import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.AGEventHandler;
@@ -59,7 +60,8 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
     boolean isStart = false;
     Activity activity;
     RelativeLayout bottomContent;
-    LiveBll liveBll;
+    SpeechFeedBackHttp liveBll;
+    LiveAndBackDebug liveAndBackDebug;
     LiveGetInfo mGetInfo;
     SpeechFeedBackPager speechFeedBackPager;
     private String nonce;
@@ -106,8 +108,20 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
     public SpeechFeedBackBll(Activity activity, LiveBll liveBll) {
         this.activity = activity;
         this.liveBll = liveBll;
+        liveAndBackDebug = liveBll;
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
+    }
+
+    public SpeechFeedBackBll(Activity activity, SpeechFeedBackHttp liveBll) {
+        this.activity = activity;
+        this.liveBll = liveBll;
+        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+                + ".txt"));
+    }
+
+    public void setLiveAndBackDebug(LiveAndBackDebug liveAndBackDebug) {
+        this.liveAndBackDebug = liveAndBackDebug;
     }
 
     public void setGetInfo(LiveGetInfo mGetInfo) {
@@ -346,7 +360,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
             hashMap.put("time", "" + time);
             hashMap.put("networktype", "" + netWorkType);
             hashMap.put("length", "" + saveVideoFile.length());
-            liveBll.umsAgentDebugSys("live_voice", hashMap.getData());
+            liveAndBackDebug.umsAgentDebugSys("live_voice", hashMap.getData());
             final File finalFile = saveVideoFile;
             XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(activity);
             CloudUploadEntity uploadEntity = new CloudUploadEntity();
@@ -489,7 +503,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         map.put("command", cmd);
         map.put("status", "" + micStatus);
         map.put("channelname", roomId);
-        liveBll.umsAgentDebugSys("live_voice", map);
+        liveAndBackDebug.umsAgentDebugSys("live_voice", map);
     }
 
     /**
@@ -503,7 +517,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         map.put("ex", "Y");
         map.put("logtype", "joinChannelSuccess");
         map.put("channelname", roomId);
-        liveBll.umsAgentDebugSys("live_voice", map);
+        liveAndBackDebug.umsAgentDebugSys("live_voice", map);
     }
 
     /**
@@ -518,7 +532,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         map.put("logtype", "leaveChannel");
         map.put("channelname", roomId);
         map.put("duration", "" + (System.currentTimeMillis() - joinTime) / 1000);
-        liveBll.umsAgentDebugSys("live_voice", map);
+        liveAndBackDebug.umsAgentDebugSys("live_voice", map);
     }
 
     /**
@@ -532,6 +546,6 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         map.put("stable", "2");
         map.put("logtype", "voiceInterationError");
         map.put("errcode", "" + errCode);
-        liveBll.umsAgentDebugSys("live_voice", map);
+        liveAndBackDebug.umsAgentDebugSys("live_voice", map);
     }
 }
