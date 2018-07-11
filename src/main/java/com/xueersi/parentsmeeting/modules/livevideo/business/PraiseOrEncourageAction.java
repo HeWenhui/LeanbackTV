@@ -6,6 +6,7 @@ import org.json.JSONObject;
  * Created by linyuqiang on 2016/9/23.
  * 表扬或批评事件
  */
+@Deprecated
 public interface PraiseOrEncourageAction {
 
     /**

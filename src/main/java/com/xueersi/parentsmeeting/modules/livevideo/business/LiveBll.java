@@ -131,16 +131,12 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     private QuestionAction mQuestionAction;
     /** 点名 */
     private RollCallAction mRollCallAction;
-    /** 表扬或批评事件 */
-    private PraiseOrEncourageAction mPraiseOrEncourageAction;
     /** 红包事件 */
     private RedPackageAction readPackageBll;
     /** 视频事件 */
     private VideoAction mVideoAction;
     /** 满分榜业务 */
     private AnswerRankBll mAnswerRankBll;
-    /** 标记点业务 */
-    private LiveRemarkBll mLiveRemarkBll;
     /** 战队pk业务 */
     private TeamPkBll mTeamPKBll;
     /** 老师点赞 */
@@ -149,8 +145,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     private RoomAction mRoomAction;
     /** 学习报告事件 */
     private LearnReportAction mLearnReportAction;
-    /** 学习报告事件 */
-    private LecLearnReportAction mLecLearnReportAction;
     /** nb物理h5课件 */
     private H5CoursewareAction h5CoursewareAction;
     /** 英语h5课件 */
@@ -163,14 +157,23 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     private EnglishSpeekAction englishSpeekAction;
     /** 理科投票 */
     private LiveVoteAction liveVoteAction;
-    /** 表扬榜事件 */
-    private PraiseListAction mPraiseListAction;
     /** 语音反馈 */
     private SpeechFeedBackAction speechFeedBackAction;
+
+    /** 表扬或批评事件 */
+    @Deprecated
+    private PraiseOrEncourageAction mPraiseOrEncourageAction;
+    /** 标记点业务 */
+    private LiveRemarkBll mLiveRemarkBll;
+    /** 学习报告事件 */
+    private LecLearnReportAction mLecLearnReportAction;
+    /** 表扬榜事件 */
+    private PraiseListAction mPraiseListAction;
     /** 讲座广告 */
     private LecAdvertAction lecAdvertAction;
     /** RolePlayer功能接口 */
     private RolePlayAction rolePlayAction;
+
     private LiveHttpManager mHttpManager;
     private LiveScienceHttpManager liveScienceHttpManager;
     private LiveArtsHttpManager liveArtsHttpManager;
