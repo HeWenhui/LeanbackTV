@@ -498,9 +498,14 @@ public class IRCMessage {
         pingPool.shutdownNow();
         mHandler.removeCallbacks(mPingRunnable);
         mHandler.removeCallbacks(mTimeoutRunnable);
-        if (mConnection != null) {
-            mConnection.disconnect();
-        }
+        new Thread() {
+            @Override
+            public void run() {
+                if (mConnection != null) {
+                    mConnection.disconnect();
+                }
+            }
+        }.start();
         if (ircTalkConf != null) {
             ircTalkConf.destory();
         }

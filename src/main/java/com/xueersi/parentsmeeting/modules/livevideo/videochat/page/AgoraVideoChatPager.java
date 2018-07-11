@@ -200,8 +200,10 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
             startRemote.set(false);
             videoChatEvent.rePlay(false);
         }
-        ViewGroup group = (ViewGroup) activity.findViewById(R.id.rl_course_video_live_agora_content);
-        group.removeAllViews();
+        ViewGroup group = activity.findViewById(R.id.rl_course_video_live_agora_content);
+        if (group != null) {
+            group.removeAllViews();
+        }
     }
 
     @Override

@@ -980,15 +980,10 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     public void onDestroy() {
         isPlay = false;
         //liveMessageBll.onDestroy();
-        new Thread() {
-            @Override
-            public void run() {
-                if (mLiveBll != null) {
-                    mLiveBll.onDestory();
-                }
-                ProxUtil.getProxUtil().clear();
-            }
-        }.start();
+        if (mLiveBll != null) {
+            mLiveBll.onDestory();
+        }
+        ProxUtil.getProxUtil().clear();
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
     }

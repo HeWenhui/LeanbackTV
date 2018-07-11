@@ -25,13 +25,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by lyqai on 2018/7/11.
  */
-
 public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, NoticeAction, TopicAction, VideoChatHttp {
     private VideoChatBll videoChatAction;
     private LiveFragmentBase liveFragmentBase;
-    /**
-     * 接麦已经连接老师
-     */
+    /** 接麦已经连接老师 */
     private AtomicBoolean startRemote = new AtomicBoolean(false);
     private String voiceChatStatus = "off";
     private ArrayList<VideoChatStatusChange.ChatStatusChange> chatStatusChanges = new ArrayList<>();

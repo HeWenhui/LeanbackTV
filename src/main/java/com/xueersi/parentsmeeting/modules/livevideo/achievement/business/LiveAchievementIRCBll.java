@@ -56,13 +56,13 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         String mode = mGetInfo.getMode();
         if (1 == getInfo.getIsAllowStar()) {
             putInstance(AudioRequest.class, this);
+            if (mGetInfo.getPattern() == 2) {
+                englishSpeekMode = new EnglishSpeekModeStand();
+            } else {
+                englishSpeekMode = new EnglishSpeekModeNomal();
+            }
+            initAchievement(mode);
         }
-        if (mGetInfo.getPattern() == 2) {
-            englishSpeekMode = new EnglishSpeekModeStand();
-        } else {
-            englishSpeekMode = new EnglishSpeekModeNomal();
-        }
-        initAchievement(mode);
     }
 
     private class EnglishSpeekModeNomal implements EnglishSpeekMode {
