@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.speechfeedback;
+package com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business;
 
 import android.app.Activity;
 import android.graphics.Rect;
@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 import com.tal.speech.speechrecognizer.PCMFormat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechFeedBackPager;
+import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.ScreenUtils;

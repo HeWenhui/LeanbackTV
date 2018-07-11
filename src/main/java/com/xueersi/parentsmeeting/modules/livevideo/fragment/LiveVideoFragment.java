@@ -66,8 +66,8 @@
 //import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
-//import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.SpeechFeedBackAction;
-//import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.SpeechFeedBackBll;
+//import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechFeedBackAction;
+//import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechFeedBackBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 //import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;

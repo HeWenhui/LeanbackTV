@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.speechfeedback;
+package com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business;
 
 import android.app.Activity;
 import android.content.Context;
@@ -25,7 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechFeedBackPager;
+import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.permission.PermissionCallback;

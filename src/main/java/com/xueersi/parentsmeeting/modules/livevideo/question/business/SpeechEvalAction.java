@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 
 /**
  * Created by linyuqiang on 2017/2/28.

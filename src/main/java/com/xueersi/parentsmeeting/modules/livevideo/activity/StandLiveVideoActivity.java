@@ -59,7 +59,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBl
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageStandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
-import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.SpeechFeedBackAction;
+import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechFeedBackAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandSpeechTop3Bll;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.StarInteractAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;

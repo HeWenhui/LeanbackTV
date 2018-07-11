@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.page;
+package com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page;
 
 import android.content.Context;
 import android.graphics.Color;

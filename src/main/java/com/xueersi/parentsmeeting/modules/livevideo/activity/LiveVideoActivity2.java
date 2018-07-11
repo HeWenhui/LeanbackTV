@@ -204,8 +204,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         // liveMessageBll.setVideoLayout(lp.width, lp.height);
         logger.d("onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-        LiveGetInfo mGetInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
         initAllBll();
         logger.d("onVideoCreate:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
@@ -217,6 +215,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     @Override
     protected void onVideoCreateEnd() {
         mLiveBll.onCreate();
+        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        LiveGetInfo mGetInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
         mLiveBll.getInfo(mGetInfo);
         liveVideoBll.setvPlayer(vPlayer);
         final View contentView = activity.findViewById(android.R.id.content);
@@ -378,12 +378,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         liveMediaControllerBottom.setVisibility(View.INVISIBLE);
         bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         bottomContent.addView(liveMediaControllerBottom);
-        //聊天
-        long before = System.currentTimeMillis();
-        //liveMessageBll.initViewLive(bottomContent);
-        Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
-        before = System.currentTimeMillis();
-        Loger.d(TAG, "initView:time2=" + (System.currentTimeMillis() - before));
     }
 
     protected boolean initData() {

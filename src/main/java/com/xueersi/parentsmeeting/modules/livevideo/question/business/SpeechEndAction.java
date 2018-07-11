@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.widget.RelativeLayout;
 
-import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 
 /**
  * Created by linyuqiang on 2018/4/10.
