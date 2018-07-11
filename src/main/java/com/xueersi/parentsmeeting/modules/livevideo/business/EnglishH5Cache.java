@@ -309,7 +309,21 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         }
         // 添加字体的下载链接
         if(mtexts.size() > 0 && add){
-            mUrls.add(mtexts.get(0));
+            // 字体文件直接下载到zip解压的文件夹中
+            for(int i = 0 ; i < mtexts.size() ; i++){
+                String url = i + ".ttf";
+                liveBll.download(mtexts.get(i), new File(mMorecacheout, url).getPath(), new DownloadCallBack() {
+                    @Override
+                    protected void onDownloadSuccess() {
+
+                    }
+
+                    @Override
+                    protected void onDownloadFailed() {
+                        XESToastUtils.showToast(context, "下载字体包失败");
+                    }
+                });
+            }
             add = !add;
         }
         for (int i = 0; i < mUrls.size(); i++) {

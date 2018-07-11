@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:background="#000000"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
     <ImageView
@@ -26,6 +27,7 @@
             android:layout_marginRight="20dp"
             android:src="@drawable/understandclose"/>
         <LinearLayout
+            android:id="@+id/ll_start_sign"
             android:layout_above="@+id/bt_primary_sign"
             android:orientation="vertical"
             android:layout_centerHorizontal="true"
@@ -54,6 +56,20 @@
             android:layout_marginBottom="25dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/iv_sign_success"
+            android:background="@drawable/primarysignsuccess"
+            android:layout_centerInParent="true"
+            android:layout_width="137dp"
+            android:layout_height="127dp"/>
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/iv_sign_fail"
+            android:background="@drawable/primarysignfail"
+            android:layout_centerInParent="true"
+            android:layout_width="143dp"
+            android:layout_height="119dp"/>
     </RelativeLayout>
 
 

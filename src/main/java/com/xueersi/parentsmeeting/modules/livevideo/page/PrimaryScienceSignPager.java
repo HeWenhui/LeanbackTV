@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -27,14 +28,15 @@ import java.io.File;
  */
 
 public class PrimaryScienceSignPager extends BasePager {
-    String TAG = "ClassSignPager";
+    String TAG = "PrimaryScienceSignPager";
     RollCallAction rollCallAction;
     LiveBll liveBll;
     RelativeLayout rlSignStatus1, rlSignStatus2;
+    LinearLayout mLinearLayout;
     TextView tvSignName;
     /** 查看评价，查看按钮 */
     Button btLearnreportCheck;
-    ImageView ivSignStatus;
+    ImageView ivSignSuccess,ivSignFail,ivClose;
     TextView tvSignStatus;
     ClassSignEntity classSignEntity;
     /** 点名按钮提示，0-准时签到，1-签到成功，2-签到失败(在签到的时候，老师点结束签到) */
@@ -60,14 +62,18 @@ public class PrimaryScienceSignPager extends BasePager {
 //        btLearnreportCheck = (Button) mView.findViewById(R.id.bt_livevideo_learnreport_check);
 //        ivSignStatus = (ImageView) mView.findViewById(R.id.iv_livevideo_sign_status);
 //        tvSignStatus = (TextView) mView.findViewById(R.id.tv_livevideo_sign_status);
+        mLinearLayout = (LinearLayout) mView.findViewById(R.id.ll_start_sign);
         tvSignName = (TextView) mView.findViewById(R.id.tv_sign_name);
         btLearnreportCheck = (Button) mView.findViewById(R.id.bt_primary_sign);
+        ivClose = (ImageView) mView.findViewById(R.id.iv_livevideo_primarysign_close);
+        ivSignSuccess = (ImageView) mView.findViewById(R.id.iv_sign_success);
+        ivSignFail = (ImageView) mView.findViewById(R.id.iv_sign_fail);
         return mView;
     }
 
     @Override
     public void initData() {
-        tvSignName.setText(String.format("%s 你好,", classSignEntity.getStuName()));
+        tvSignName.setText(String.format("%s 你好", classSignEntity.getStuName()));
         updateStatus(classSignEntity.getStatus());
         btLearnreportCheck.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,6 +107,12 @@ public class PrimaryScienceSignPager extends BasePager {
                 });
             }
         });
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mView.setVisibility(View.GONE);
+            }
+        });
     }
 
     /**
@@ -123,6 +135,22 @@ public class PrimaryScienceSignPager extends BasePager {
 //        }
 //        rlSignStatus1.setVisibility(View.GONE);
 //        rlSignStatus2.setVisibility(View.VISIBLE);
+        classSignEntity.setStatus(status);
+        if(status == 1){
+            mLinearLayout.setVisibility(View.VISIBLE);
+            btLearnreportCheck.setVisibility(View.VISIBLE);
+            ivSignSuccess.setVisibility(View.GONE);
+            ivSignFail.setVisibility(View.GONE);
+            return;
+        }else if(status == 2){
+            ivSignSuccess.setVisibility(View.VISIBLE);
+            ivSignFail.setVisibility(View.GONE);
+        } else {
+            ivSignSuccess.setVisibility(View.GONE);
+            ivSignFail.setVisibility(View.VISIBLE);
+        }
+        mLinearLayout.setVisibility(View.GONE);
+        btLearnreportCheck.setVisibility(View.GONE);
     }
 
 }
