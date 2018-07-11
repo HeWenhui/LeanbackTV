@@ -81,7 +81,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5C
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertPagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.PutQuestion;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionResultView;

@@ -48,7 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoti
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLazyBllCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.LiveVoiceAnswerCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -554,7 +554,6 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                     liveRemarkBll.showBtMark();
                     liveRemarkBll.setTextureView(liveTextureView);
                     liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-                    liveRemarkBll.setVideoView(videoView);
                     mLiveBll.setLiveRemarkBll(liveRemarkBll);
                     liveRemarkBll.setLiveAndBackDebug(mLiveBll);
                 }

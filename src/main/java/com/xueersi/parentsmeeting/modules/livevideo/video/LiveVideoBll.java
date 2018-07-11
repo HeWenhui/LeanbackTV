@@ -10,7 +10,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
@@ -23,9 +23,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoFragment;
 
 import org.json.JSONArray;
@@ -44,7 +46,7 @@ import okhttp3.Response;
  * Created by lyqai on 2018/6/22.
  */
 
-public class LiveVideoBll {
+public class LiveVideoBll implements VPlayerListenerReg {
     private final String TAG = "LiveVideoBll";
     private Logger logger = LoggerFactory.getLogger(TAG);
     /** 直播服务器 */
@@ -82,7 +84,7 @@ public class LiveVideoBll {
     /** 播放时长定时任务 */
     private final long mPlayDurTime = 420000;
     /** 直播缓存打开统计 */
-    private PlayerService.VPlayerListener mPlayStatistics;
+    private ArrayList<PlayerService.VPlayerListener> mPlayStatistics = new ArrayList<>();
     /** 播放时长 */
     private long playTime = 0;
     /** live_report_play_duration 开始时间 */
@@ -101,10 +103,11 @@ public class LiveVideoBll {
         totalFrameStat = new TotalFrameStat(activity);
         liveVideoReportBll = new LiveVideoReportBll(activity, liveBll);
         liveVideoReportBll.setTotalFrameStat(totalFrameStat);
-        mPlayStatistics = liveVideoReportBll.getVideoListener();
+        mPlayStatistics.add(liveVideoReportBll.getVideoListener());
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
+        ProxUtil.getProxUtil().put(activity, VPlayerListenerReg.class, this);
     }
 
     public void setvPlayer(PlayerService vPlayer) {
@@ -125,8 +128,14 @@ public class LiveVideoBll {
         this.videoChatEvent = videoChatEvent;
     }
 
-    public void setTotalFrameStat(TotalFrameStat totalFrameStat) {
-        this.totalFrameStat = totalFrameStat;
+    @Override
+    public void addVPlayerListener(PlayerService.VPlayerListener vPlayerListener) {
+        mPlayStatistics.add(vPlayerListener);
+    }
+
+    @Override
+    public void removeVPlayerListener(PlayerService.VPlayerListener vPlayerListener) {
+        mPlayStatistics.remove(vPlayerListener);
     }
 
     public void setVideoAction(VideoAction mVideoAction) {
@@ -406,7 +415,9 @@ public class LiveVideoBll {
             mHandler.removeCallbacks(mOpenTimeOutRun);
             mHandler.removeCallbacks(mBufferTimeOutRun);
             mHandler.removeCallbacks(mPlayDuration);
-            mPlayStatistics.onPlaybackComplete();
+            for (PlayerService.VPlayerListener vPlayerListener : mPlayStatistics) {
+                vPlayerListener.onPlaybackComplete();
+            }
             mLogtf.d("onPlaybackComplete");
             if (openSuccess) {
                 playTime += (System.currentTimeMillis() - lastPlayTime);
@@ -420,7 +431,9 @@ public class LiveVideoBll {
             mHandler.removeCallbacks(mOpenTimeOutRun);
             mHandler.removeCallbacks(mBufferTimeOutRun);
             mHandler.removeCallbacks(mPlayDuration);
-            mPlayStatistics.onPlayError();
+            for (PlayerService.VPlayerListener vPlayerListener : mPlayStatistics) {
+                vPlayerListener.onPlayError();
+            }
             if (openSuccess) {
                 playTime += (System.currentTimeMillis() - lastPlayTime);
             }
@@ -438,7 +451,9 @@ public class LiveVideoBll {
             reportPlayStarTime = System.currentTimeMillis();
             openSuccess = true;
             mHandler.removeCallbacks(mOpenTimeOutRun);
-            mPlayStatistics.onOpenSuccess();
+            for (PlayerService.VPlayerListener vPlayerListener : mPlayStatistics) {
+                vPlayerListener.onOpenSuccess();
+            }
             mHandler.removeCallbacks(mPlayDuration);
             mLogtf.d("onOpenSuccess:playTime=" + playTime);
             mHandler.postDelayed(mPlayDuration, mPlayDurTime);
@@ -453,7 +468,9 @@ public class LiveVideoBll {
             openSuccess = false;
             mHandler.removeCallbacks(mOpenTimeOutRun);
             postDelayedIfNotFinish(mOpenTimeOutRun, mOpenTimeOut);
-            mPlayStatistics.onOpenStart();
+            for (PlayerService.VPlayerListener vPlayerListener : mPlayStatistics) {
+                vPlayerListener.onOpenStart();
+            }
         }
 
         @Override
@@ -466,7 +483,10 @@ public class LiveVideoBll {
             mHandler.removeCallbacks(mOpenTimeOutRun);
             mHandler.removeCallbacks(mBufferTimeOutRun);
             mHandler.removeCallbacks(mPlayDuration);
-            mPlayStatistics.onOpenFailed(arg1, arg2);
+            onFail(arg1, arg2);
+            for (PlayerService.VPlayerListener vPlayerListener : mPlayStatistics) {
+                vPlayerListener.onOpenFailed(arg1, arg2);
+            }
             mLogtf.d("onOpenFailed");
             if (lastPlayserverEntity != null) {
                 liveVideoReportBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "fail reconnect");
@@ -478,14 +498,18 @@ public class LiveVideoBll {
         public void onBufferStart() {
             mHandler.removeCallbacks(mBufferTimeOutRun);
             postDelayedIfNotFinish(mBufferTimeOutRun, mBufferTimeout);
-            mPlayStatistics.onBufferStart();
+            for (PlayerService.VPlayerListener vPlayerListener : mPlayStatistics) {
+                vPlayerListener.onBufferStart();
+            }
             mLogtf.d("onBufferStart");
         }
 
         @Override
         public void onBufferComplete() {
             mHandler.removeCallbacks(mBufferTimeOutRun);
-            mPlayStatistics.onBufferComplete();
+            for (PlayerService.VPlayerListener vPlayerListener : mPlayStatistics) {
+                vPlayerListener.onBufferComplete();
+            }
             mLogtf.d("onBufferComplete");
         }
     };
@@ -533,9 +557,11 @@ public class LiveVideoBll {
                 liveVideoReportBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "buffer empty reconnect");
                 reportPlayStarTime = System.currentTimeMillis();
             }
-            LiveRemarkBll liveRemarkBll = ProxUtil.getProxUtil().get(activity, LiveRemarkBll.class);
-            if (liveRemarkBll != null) {
-                liveRemarkBll.setVideoReady(false);
+            for (PlayerService.VPlayerListener vPlayerListener : mPlayStatistics) {
+                if (vPlayerListener instanceof LiveVPlayerListener) {
+                    LiveVPlayerListener vPlayerListener1 = (LiveVPlayerListener) vPlayerListener;
+                    vPlayerListener1.onBufferTimeOutRun();
+                }
             }
             liveGetPlayServer.liveGetPlayServer(false);
         }
@@ -766,6 +792,7 @@ public class LiveVideoBll {
             liveGetPlayServer.onDestroy();
         }
         liveVideoReportBll.onDestory();
+        mPlayStatistics.clear();
     }
 
 }

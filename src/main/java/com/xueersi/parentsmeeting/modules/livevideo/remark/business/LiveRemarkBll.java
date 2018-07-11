@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business;
+package com.xueersi.parentsmeeting.modules.livevideo.remark.business;
 
 import android.app.Activity;
 import android.content.Context;
@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoPointEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
@@ -36,7 +37,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
-import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.lib.framework.are.ContextManager;
@@ -80,7 +80,6 @@ public class LiveRemarkBll {
     private long offSet;
     private LiveMediaControllerBottom mLiveMediaControllerBottom;
     private long sysTimeOffset;
-    private VideoView mVideoView;
     private int displayHeight;
     private int displayWidth;
     private int wradio;
@@ -325,10 +324,6 @@ public class LiveRemarkBll {
 
     public void setSysTimeOffset(long sysTimeOffset) {
         this.sysTimeOffset = sysTimeOffset;
-    }
-
-    public void setVideoView(VideoView videoView) {
-        mVideoView = videoView;
     }
 
     /**

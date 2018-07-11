@@ -71,6 +71,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionHt
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
+import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallAction;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechFeedBackAction;

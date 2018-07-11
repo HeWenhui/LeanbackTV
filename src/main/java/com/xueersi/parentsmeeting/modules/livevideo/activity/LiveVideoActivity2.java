@@ -57,6 +57,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRank
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechFeedBackIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
@@ -76,7 +77,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
-import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
@@ -168,7 +168,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     LiveTextureView liveTextureView;
     private LiveBll2 mLiveBll;
     private LiveIRCMessageBll liveIRCMessageBll;
-    private LiveVideoBll liveVideoBll;
+    private LiveVideoBll mLiveVideoBll;
     private UserOnline userOnline;
     //LiveMessageBll liveMessageBll;
     private static String Tag = "LiveVideoActivity2";
@@ -182,7 +182,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         long before = System.currentTimeMillis();
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         liveType = activity.getIntent().getIntExtra("type", 0);
-        isArts = activity.getIntent().getIntExtra("isArts", 0);
+        isArts = activity.getIntent().getIntExtra("isArts", -1);
         // 设置不可自动横竖屏
         setAutoOrientation(false);
         AppBll.getInstance().registerAppEvent(this);
@@ -193,8 +193,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         }
         mLogtf = new LogToFile(mLiveBll, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
-        liveVideoBll = new LiveVideoBll(activity, mLiveBll, liveType);
-
         //先让播放器按照默认模式设置
         videoView = mContentView.findViewById(R.id.vv_course_video_video);
         logger.d("onVideoCreate:videoView=" + (videoView == null));
@@ -219,7 +217,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
         LiveGetInfo mGetInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
         mLiveBll.getInfo(mGetInfo);
-        liveVideoBll.setvPlayer(vPlayer);
+        mLiveVideoBll.setvPlayer(vPlayer);
         final View contentView = activity.findViewById(android.R.id.content);
         contentView.postDelayed(new Runnable() {
             @Override
@@ -341,11 +339,16 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new SpeechFeedBackIRCBll(activity, mLiveBll, bottomContent));
+            LiveRemarkIRCBll liveRemarkIRCBll = new LiveRemarkIRCBll(activity, mLiveBll, bottomContent);
+            liveRemarkIRCBll.setvPlayer(vPlayer);
+            liveRemarkIRCBll.setVideoView(videoView);
+            liveRemarkIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+            mLiveBll.addBusinessBll(liveRemarkIRCBll);
         }
         videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll, bottomContent);
         videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
         videoChatIRCBll.setLiveFragmentBase(this);
-        liveVideoBll.setVideoChatEvent(videoChatIRCBll);
+        mLiveVideoBll.setVideoChatEvent(videoChatIRCBll);
         mLiveBll.addBusinessBll(videoChatIRCBll);
         mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
     }
@@ -409,6 +412,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     }
 
     private void initAllBll() {
+        LiveVideoBll liveVideoBll = new LiveVideoBll(activity, mLiveBll, liveType);
         mLiveBll.setVideoAction(this);
         mLiveBll.setLiveVideoBll(liveVideoBll);
         userOnline = new UserOnline(activity);
@@ -421,6 +425,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         liveVideoBll.setHttpResponseParser(mLiveBll.getHttpResponseParser());
         liveVideoBll.setVideoFragment(videoFragment);
         liveVideoBll.setVideoAction(this);
+        mLiveVideoBll = liveVideoBll;
     }
 
     /**
@@ -568,7 +573,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         }
 
         protected VPlayerListener getWrapListener() {
-            return liveVideoBll.getPlayListener();
+            return mLiveVideoBll.getPlayListener();
         }
 
     }
@@ -621,7 +626,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                     synchronized (mIjkLock) {
                         if (isInitialized()) {
                             if (openSuccess) {
-                                liveVideoBll.stopPlayDuration();
+                                mLiveVideoBll.stopPlayDuration();
                                 Loger.d(TAG, "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
                             }
                             vPlayer.releaseSurface();
@@ -760,7 +765,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                 }
             }
         });
-        liveVideoBll.onLiveStart(server, cacheData, modechange);
+        mLiveVideoBll.onLiveStart(server, cacheData, modechange);
         rePlay(change.get());
     }
 
@@ -771,7 +776,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             @Override
             public void run() {
                 if (isInitialized()) {
-                    liveVideoBll.stopPlayDuration();
+                    mLiveVideoBll.stopPlayDuration();
                     vPlayer.releaseSurface();
                     vPlayer.stop();
                 }
@@ -846,7 +851,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         if (videoChatIRCBll.isChat()) {
             return;
         }
-        liveVideoBll.onReplay();
+        mLiveVideoBll.onReplay();
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
             if (LiveTopic.MODE_TRANING.endsWith(mGetInfo.getLiveTopic().getMode()) && mGetInfo.getStudentLiveInfo().isExpe()) {
                 tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
@@ -877,14 +882,13 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                 }
             }
         }.start();
-        liveVideoBll.rePlay(modechange);
+        mLiveVideoBll.rePlay(modechange);
     }
 
     /**
      * 播放失败，或者完成时调用
      */
     private void onFail(int arg1, final int arg2) {
-        liveVideoBll.onFail(arg1, arg2);
         mHandler.post(new Runnable() {
 
             @Override

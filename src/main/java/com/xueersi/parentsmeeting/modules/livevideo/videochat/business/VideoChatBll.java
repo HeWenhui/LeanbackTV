@@ -26,7 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveRemarkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatInter;
@@ -36,7 +36,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.dialog.RaiseHandDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveScienceHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.page.AgoraVideoChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -112,6 +111,7 @@ public class VideoChatBll implements VideoChatAction {
     private String openhandsStatus = "off";
     private String onmicStatus = "off";
     private LiveRemarkBll mLiveRemarkBll;
+    private ArrayList<VideoChatStartChange.ChatStartChange> chatStatusChanges = new ArrayList<>();
 
     public VideoChatBll(Activity activity, VideoChatEvent videoChatEvent) {
         this.activity = activity;
@@ -119,6 +119,17 @@ public class VideoChatBll implements VideoChatAction {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
+        ProxUtil.getProxUtil().put(activity, VideoChatStartChange.class, new VideoChatStartChange() {
+            @Override
+            public void addVideoChatStatrtChange(ChatStartChange chatStartChange) {
+                chatStatusChanges.add(chatStartChange);
+            }
+
+            @Override
+            public void removeVideoChatStatrtChange(ChatStartChange chatStartChange) {
+                chatStatusChanges.remove(chatStartChange);
+            }
+        });
     }
 
     public void setLiveBll(LiveBll liveBll) {
@@ -271,6 +282,9 @@ public class VideoChatBll implements VideoChatAction {
         AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
         if (audioRequest != null) {
             audioRequest.request(null);
+        }
+        for (VideoChatStartChange.ChatStartChange chatStatusChange : chatStatusChanges) {
+            chatStatusChange.onVideoChatStartChange(true);
         }
         if (mLiveRemarkBll != null) {
             mLiveRemarkBll.setOnChat(true);
@@ -855,6 +869,9 @@ public class VideoChatBll implements VideoChatAction {
             if (mLiveRemarkBll != null) {
                 mLiveRemarkBll.setOnChat(false);
             }
+            for (VideoChatStartChange.ChatStartChange chatStatusChange : chatStatusChanges) {
+                chatStatusChange.onVideoChatStartChange(false);
+            }
         }
     }
 
@@ -869,6 +886,7 @@ public class VideoChatBll implements VideoChatAction {
             videoChatInter = null;
             mLogtf.d("MIC_TIME:onDestroy:time=" + (System.currentTimeMillis() - startTime));
         }
+        chatStatusChanges.clear();
     }
 
     /**
