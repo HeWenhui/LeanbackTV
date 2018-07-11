@@ -1396,14 +1396,15 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
     private int lastCheckTime = 0;
     private static final int MAX_CHECK_TIME_RANG = 2;
+    private boolean isRoomChatAvailable = true;
 
     private void handleChatEvent(int playPosition, VideoQuestionEntity chatEntity) {
         //出现视频快进
         if ((playPosition - lastCheckTime) >= MAX_CHECK_TIME_RANG || !isChatSateInited) {
            // isChatSateInited = false;
             boolean roomChatAvalible = recoverChatState(playPosition);
+            Loger.e("roomChat", "=====> resetRoomChatState_:roomChatAvalible=" + roomChatAvalible+":"+isChatSateInited);
             isChatSateInited = true;
-            Loger.e("roomChat", "=====> resetRoomChatState:roomChatAvalible=" + roomChatAvalible);
         }else{
             if (chatEntity != null) {
                 Loger.e("roomChat", "=====>handleChatEvent:category=" + chatEntity.getvCategory());
@@ -1415,6 +1416,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                         Loger.e("roomChat", "=====> teahcer close chat called begin");
                         mLiveMessagePager.onopenchat(false, "in-class", true);
                         mLiveBll.setChatOpen(false);
+                        isRoomChatAvailable = false;
                         Loger.e("roomChat", "=====> teahcer close chat called end 11111");
                     }
                 } else if (LocalCourseConfig.CATEGORY_OPEN_CHAT == chatEntity.getvCategory()) {
@@ -1425,6 +1427,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                         Loger.e("roomChat", "=====> teahcer open chat called begin");
                         mLiveMessagePager.onopenchat(true, "in-class", true);
                         mLiveBll.setChatOpen(true);
+                        isRoomChatAvailable = true;
                         Loger.e("roomChat", "=====> teahcer open chat called  end 111111");
                     }
                 }
@@ -1453,10 +1456,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             }
         }
         if (!roomChatAvalible) {
-            mLiveMessagePager.onopenchat(false, "in-class", true);
+            mLiveMessagePager.onopenchat(false, "in-class", isRoomChatAvailable);
             mLiveBll.setChatOpen(false);
         } else {
-            mLiveMessagePager.onopenchat(true, "in-class", isChatSateInited);
+            mLiveMessagePager.onopenchat(true, "in-class",!isRoomChatAvailable);
             mLiveBll.setChatOpen(true);
         }
         return roomChatAvalible;
