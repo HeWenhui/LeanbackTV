@@ -8,7 +8,7 @@ public class LiveVideoPoint {
     public final int x1 = 0;
     /** 视频左边的位置 */
     public int x2;
-    /** 视频ppt的位置 */
+    /** 视频ppt右侧的位置 */
     public int x3;
     /** 视频右边的位置 */
     public int x4;

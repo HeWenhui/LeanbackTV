@@ -24,6 +24,9 @@ import com.tal.speech.language.LanguageEncodeThread;
 import com.tal.speech.language.LanguageListener;
 import com.tal.speech.language.TalLanguage;
 import com.tal.speech.speechrecognizer.ResultEntity;
+import com.xueersi.common.permission.PermissionCallback;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
@@ -34,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
@@ -192,10 +196,35 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
         layout_livevideo_stat_gold.findViewById(R.id.bt_livevideo_english_speak_set).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
-                intent.setData(Uri.fromParts("package", activity.getPackageName(), null));
-                activity.startActivity(intent);
+                XesPermission.checkPermission(activity, new PermissionCallback() {
+
+                    @Override
+                    public void onFinish() {
+
+                    }
+
+                    @Override
+                    public void onDeny(String permission, int position) {
+
+                    }
+
+                    @Override
+                    public void onGuarantee(String permission, int position) {
+                        if (!initLanuage()) {
+                            return;
+                        }
+                        talAsrJni.LangIDReset(0);
+                        rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+                        rl_livevideo_english_speak_error.setVisibility(View.GONE);
+                        isDestory = false;
+                        isDestory2 = false;
+                        start();
+                    }
+                }, PermissionConfig.PERMISSION_CODE_AUDIO);
+//                Intent intent = new Intent();
+//                intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+//                intent.setData(Uri.fromParts("package", activity.getPackageName(), null));
+//                activity.startActivity(intent);
 //                activity.startActivityForResult(intent,100);
             }
         });

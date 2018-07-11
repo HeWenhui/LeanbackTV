@@ -11,6 +11,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePage
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RoomAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.KeyBordAction;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageStandPager;
@@ -477,6 +478,12 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     public void setVideoLayout(int width, int height) {
         if (mLiveMessagePager != null) {
             mLiveMessagePager.setVideoWidthAndHeight(width, height);
+        }
+    }
+
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        if (mLiveMessagePager != null) {
+            mLiveMessagePager.setVideoLayout(liveVideoPoint);
         }
     }
 

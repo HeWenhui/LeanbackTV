@@ -239,26 +239,33 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                                 (int) LiveVideoConfig.VIDEO_HEIGHT, LiveVideoConfig.VIDEO_RATIO);
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
                         setFirstParam(lp);
-                        initLiveVideoPoint(lp);
+                        boolean change = initLiveVideoPoint(lp);
                         // liveMessageBll.setVideoLayout(lp.width, lp.height);
                         setMediaControllerBottomParam(lp);
-                        List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
-                        for (LiveBaseBll businessBll : businessBlls) {
-                            businessBll.setVideoLayout(liveVideoPoint);
+                        long before = System.currentTimeMillis();
+                        if (change) {
+                            List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
+                            for (LiveBaseBll businessBll : businessBlls) {
+                                businessBll.setVideoLayout(liveVideoPoint);
+                            }
                         }
+                        logger.d("onGlobalLayout:change=" + change + ",time=" + (System.currentTimeMillis() - before));
                     }
                 });
             }
         }, 10);
     }
 
-    private void initLiveVideoPoint(ViewGroup.LayoutParams lp) {
+    private boolean initLiveVideoPoint(ViewGroup.LayoutParams lp) {
         final View contentView = activity.findViewById(android.R.id.content);
         final View actionBarOverlayLayout = (View) contentView.getParent();
         Rect r = new Rect();
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
         int screenWidth = (r.right - r.left);
         int screenHeight = ScreenUtils.getScreenHeight();
+        if (liveVideoPoint.screenWidth == screenWidth && liveVideoPoint.videoWidth == lp.width && liveVideoPoint.videoHeight == lp.height) {
+            return false;
+        }
         //计算x的几个点
         liveVideoPoint.x2 = (screenWidth - lp.width) / 2;
         //头像的宽度
@@ -281,6 +288,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         liveVideoPoint.y4 = liveVideoPoint.y2 + lp.height;
         liveVideoPoint.screenHeight = screenHeight;
         logger.d("initLiveVideoPoint:liveVideoPoint=" + liveVideoPoint);
+        return true;
     }
 
     @Nullable

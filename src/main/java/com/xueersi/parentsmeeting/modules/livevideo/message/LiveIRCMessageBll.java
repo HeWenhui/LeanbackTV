@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAch
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
@@ -536,6 +537,13 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
         } catch (Exception e) {
             // Loger.e(TAG, "understand", e);
             mLogtf.e("sendFlowerMessage", e);
+        }
+    }
+
+    @Override
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        if (mRoomAction != null) {
+            mRoomAction.setVideoLayout(liveVideoPoint);
         }
     }
 }

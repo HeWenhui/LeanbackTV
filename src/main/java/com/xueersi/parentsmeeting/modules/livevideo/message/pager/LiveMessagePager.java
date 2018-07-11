@@ -47,6 +47,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -717,6 +718,46 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         return cbMessageClock.isChecked();
     }
 
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        {
+            int wradio = liveVideoPoint.screenWidth - liveVideoPoint.x3;
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
+            if (wradio != params.width) {
+                //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+                // + ",wradio=" + wradio + "," + params.width);
+                params.width = wradio;
+//                rlInfo.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
+            }
+            if (cbMessageClock != null) {
+                params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
+                if (params.rightMargin != wradio) {
+                    params.rightMargin = wradio;
+//                cbMessageClock.setLayoutParams(params);
+                    LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
+                }
+            }
+        }
+        {
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();
+            int topMargin = liveVideoPoint.y3;
+            if (topMargin != params.topMargin) {
+                params.topMargin = topMargin;
+//                rlInfo.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
+                Loger.e(TAG, "setVideoWidthAndHeight:topMargin=" + params.topMargin);
+            }
+            int bottomMargin = liveVideoPoint.y2;
+            params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
+            if (params.bottomMargin != bottomMargin) {
+                params.bottomMargin = bottomMargin;
+//                lvMessage.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
+                //Loger.e(TAG, "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
+            }
+        }
+    }
+
     public void setVideoWidthAndHeight(int width, int height) {
         final View contentView = liveVideoActivity.findViewById(android.R.id.content);
         final View actionBarOverlayLayout = (View) contentView.getParent();
@@ -848,9 +889,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if(liveBll.isSeniorOfHighSchool()){
+                if (liveBll.isSeniorOfHighSchool()) {
                     tvMessageCount.setText("班内" + peopleCount + "人");
-                }else{
+                } else {
                     if (liveBll.isHaveTeam()) {
                         tvMessageCount.setText("组内" + peopleCount + "人");
                     } else {
@@ -863,7 +904,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-        Loger.e("LiveMessagerPager","=====>onMessage called");
+        Loger.e("LiveMessagerPager", "=====>onMessage called");
         if (sender.startsWith(LiveBll.TEACHER_PREFIX)) {
             sender = "主讲老师";
         } else if (sender.startsWith(LiveBll.COUNTTEACHER_PREFIX)) {
@@ -903,9 +944,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if(liveBll.isSeniorOfHighSchool()){
+                if (liveBll.isSeniorOfHighSchool()) {
                     tvMessageCount.setText("班内" + peopleCount + "人");
-                }else{
+                } else {
                     if (liveBll.isHaveTeam()) {
                         tvMessageCount.setText("组内" + peopleCount + "人");
                     } else {
@@ -921,9 +962,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if(liveBll.isSeniorOfHighSchool()){
+                if (liveBll.isSeniorOfHighSchool()) {
                     tvMessageCount.setText("班内" + peopleCount + "人");
-                }else {
+                } else {
                     if (liveBll.isHaveTeam()) {
                         tvMessageCount.setText("组内" + peopleCount + "人");
                     } else {
