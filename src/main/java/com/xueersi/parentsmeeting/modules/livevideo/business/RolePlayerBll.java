@@ -32,6 +32,7 @@ import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -287,8 +288,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     bottomContent.removeView(mRolePlayerPager.getRootView());
                     mRolePlayerPager.onDestroy();
                     mRolePlayerPager = null;
-                    if (mContext instanceof AudioRequest) {
-                        AudioRequest audioRequest = (AudioRequest) mContext;
+                    AudioRequest audioRequest = ProxUtil.getProxUtil().get(mContext, AudioRequest.class);
+                    if (audioRequest != null) {
                         audioRequest.release();
                     }
                 }

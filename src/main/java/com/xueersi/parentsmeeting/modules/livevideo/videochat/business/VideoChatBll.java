@@ -848,8 +848,8 @@ public class VideoChatBll implements VideoChatAction {
     public void stopRecord() {
         if (videoChatInter != null) {
             videoChatInter.stopRecord();
-            if (activity instanceof AudioRequest) {
-                AudioRequest audioRequest = (AudioRequest) activity;
+            AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
+            if (audioRequest != null) {
                 audioRequest.release();
             }
             if (mLiveRemarkBll != null) {

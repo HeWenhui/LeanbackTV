@@ -499,8 +499,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         voiceAnswerPager.stopPlayer();
         bottomContent.removeView(voiceAnswerPager.getRootView());
         voiceAnswerPager = null;
-        if (context instanceof AudioRequest) {
-            AudioRequest audioRequest = (AudioRequest) context;
+        AudioRequest audioRequest = ProxUtil.getProxUtil().get(context, AudioRequest.class);
+        if (audioRequest != null) {
             audioRequest.release();
         }
         if (isEnd) {
