@@ -76,6 +76,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
@@ -97,7 +98,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  *
  * @author linyuqiang
  */
-public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest, VideoChatEvent {
+public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest {
 
     private String TAG = "LiveVideoActivityLog";
     Logger logger = LoggerFactory.getLogger(TAG);
@@ -155,10 +156,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     boolean audioRequest = false;
     SpeechEvaluatorUtils mIse;
     long openStartTime;
-    /**
-     * 接麦已经连接老师
-     */
-    private AtomicBoolean startRemote = new AtomicBoolean(false);
     int from = 0;
     long startTime = System.currentTimeMillis();
     /**
@@ -173,7 +170,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     //LiveMessageBll liveMessageBll;
     private static String Tag = "LiveVideoActivity2";
     protected LogToFile mLogtf;
-    private LiveVideoPoint liveVideoPoint;
+    private LiveVideoPoint liveVideoPoint = new LiveVideoPoint();
+    VideoChatIRCBll videoChatIRCBll;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -192,7 +190,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         mLogtf = new LogToFile(mLiveBll, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         liveVideoBll = new LiveVideoBll(activity, mLiveBll, liveType);
-        liveVideoBll.setVideoChatEvent(this);
+
         //先让播放器按照默认模式设置
         videoView = mContentView.findViewById(R.id.vv_course_video_video);
         logger.d("onVideoCreate:videoView=" + (videoView == null));
@@ -231,9 +229,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                         boolean isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
                         if (!isLand) {
                             return;
-                        }
-                        if (liveVideoPoint == null) {
-                            liveVideoPoint = new LiveVideoPoint();
                         }
                         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) LiveVideoConfig.VIDEO_WIDTH,
                                 (int) LiveVideoConfig.VIDEO_HEIGHT, LiveVideoConfig.VIDEO_RATIO);
@@ -324,6 +319,11 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         mLiveBll.addBusinessBll(new LearnReportIRCBll(activity, mLiveBll, bottomContent));
         mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll, bottomContent));
         mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
+        videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll, bottomContent);
+        videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+        videoChatIRCBll.setLiveFragmentBase(this);
+        liveVideoBll.setVideoChatEvent(videoChatIRCBll);
+        mLiveBll.addBusinessBll(videoChatIRCBll);
         mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
     }
 
@@ -562,7 +562,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         mIsResume = true;
         if (mHaveStop) {
             mHaveStop = false;
-            if (startRemote.get()) {
+            if (videoChatIRCBll.isChat()) {
                 return;
             }
             if (!onPauseNotStopVideo) {
@@ -594,7 +594,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         super.onPause();
         mIsResume = false;
         mHaveStop = true;
-        if (startRemote.get()) {
+        if (videoChatIRCBll.isChat()) {
             return;
         }
         if (!onPauseNotStopVideo) {
@@ -816,11 +816,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         }
     }
 
-    @Override
-    public AtomicBoolean getStartRemote() {
-        return startRemote;
-    }
-
     /**
      * 第一次播放，或者播放失败，重新播放
      *
@@ -831,7 +826,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         if (mGetInfo == null) {//上次初始化尚未完成
             return;
         }
-        if (startRemote.get()) {
+        if (videoChatIRCBll.isChat()) {
             return;
         }
         liveVideoBll.onReplay();
@@ -866,14 +861,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             }
         }.start();
         liveVideoBll.rePlay(modechange);
-    }
-
-    @Override
-    public void stopPlay() {
-        if (isInitialized()) {
-            vPlayer.releaseSurface();
-            vPlayer.stop();
-        }
     }
 
     /**

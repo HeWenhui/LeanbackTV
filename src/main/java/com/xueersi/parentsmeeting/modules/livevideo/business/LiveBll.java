@@ -15,6 +15,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.config.AppConfig;
+import com.xueersi.common.http.HttpCall;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.DownloadCallBack;
@@ -90,6 +91,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.video.TotalFrameStat;
+import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatHttp;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
 
@@ -122,7 +124,7 @@ import okhttp3.Response;
  *
  * @author linyuqiang
  */
-public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, QuestionHttp, LiveAchievementHttp, EnglishSpeekHttp, EnglishH5CoursewareHttp {
+public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, QuestionHttp, LiveAchievementHttp, EnglishSpeekHttp, EnglishH5CoursewareHttp, VideoChatHttp {
     private String TAG = "LiveBllLog";
     private LiveLazyBllCreat liveLazyBllCreat;
     /** 互动题 */
@@ -3998,6 +4000,27 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
     public LiveScienceHttpManager getLiveScienceHttpManager() {
         return liveScienceHttpManager;
+    }
+
+    public void chatHandAdd(HttpCallBack call) {
+        liveScienceHttpManager.chatHandAdd(new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                Loger.d(TAG, "chatHandAdd:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                Loger.d(TAG, "chatHandAdd:onPmError:responseEntity=" + responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                Loger.e(TAG, "chatHandAdd:onPmFailure:responseEntity=" + msg);
+            }
+        });
     }
 
     public LiveArtsHttpManager getLiveArtsHttpManager() {

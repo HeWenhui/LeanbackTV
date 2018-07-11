@@ -210,7 +210,7 @@ public class LiveVideoFragmentBase extends Fragment {
         if (isInitialized()) {
             if (vPlayer != null && vPlayer.isPlaying()) {
                 // 暂停播放
-                stopPlayer();
+                pausePlayer();
             }
         }
     }
@@ -424,9 +424,17 @@ public class LiveVideoFragmentBase extends Fragment {
     }
 
     /** 暂停播放 */
-    protected void stopPlayer() {
+    protected void pausePlayer() {
         if (isInitialized()) {
             vPlayer.pause();
+        }
+    }
+
+    /** 停止播放 */
+    public void stopPlayer() {
+        if (isInitialized()) {
+            vPlayer.releaseSurface();
+            vPlayer.stop();
         }
     }
 

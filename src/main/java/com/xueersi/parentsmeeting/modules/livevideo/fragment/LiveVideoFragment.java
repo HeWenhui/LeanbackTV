@@ -69,7 +69,7 @@
 //import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.SpeechFeedBackAction;
 //import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.SpeechFeedBackBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
-//import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
+//import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
 //import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;

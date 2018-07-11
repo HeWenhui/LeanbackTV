@@ -7,9 +7,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 直播的一些公共方法
  */
 public abstract class LiveFragmentBase extends LiveVideoFragmentBase {
-    public abstract AtomicBoolean getStartRemote();
 
-    public abstract void stopPlay();
-
-    public abstract void rePlay(boolean b);
+    public abstract void rePlay(boolean modechange);
 }

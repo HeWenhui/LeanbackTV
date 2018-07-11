@@ -1152,4 +1152,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_TEMPK_STUPKRESULT + "/" + liveId, params, requestCallBack);
     }
 
+    /**
+     * 理科接麦举手接口
+     *
+     * @param requestCallBack
+     */
+    public void chatHandAdd(HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_HANDADD, params, requestCallBack);
+    }
 }
