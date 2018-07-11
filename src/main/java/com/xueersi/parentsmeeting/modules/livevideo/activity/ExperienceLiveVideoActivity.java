@@ -201,9 +201,13 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private int mNetWorkType;
     private LiveGetInfo mGetInfo;
     private LiveHttpManager mHttpManager;
-    /**聊天服务器 参数获取   接口地址*/
+    /**
+     * 聊天服务器 参数获取   接口地址
+     */
     private List<String> chatCfgServerList;
-    /**连接聊天服务器的 chnnel id*/
+    /**
+     * 连接聊天服务器的 chnnel id
+     */
     private String expChatId;
     private String sex;
 
@@ -407,7 +411,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
      */
     private static final int NO_QUESTION = 1;
 
-    /**体验课 直播类型*/
+    /**
+     * 体验课 直播类型
+     */
     private static final int EXP_LIVE_TYPE = 4;
 
     /**
@@ -485,7 +491,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         getInfo.setId(mVideoEntity.getLiveId());
         getInfo.setLiveType(EXP_LIVE_TYPE);
         getInfo.setStuId(UserBll.getInstance().getMyUserInfoEntity().getStuId());
-        getInfo.setStuSex(TextUtils.isEmpty(sex)?"":sex);
+        getInfo.setStuSex(TextUtils.isEmpty(sex) ? "" : sex);
 
         String stuName = TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getRealName())
                 ? UserBll.getInstance().getMyUserInfoEntity().getNickName() : UserBll.getInstance()
@@ -512,19 +518,20 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
      */
     private void connectChatServer() {
         //避免多次 连接
-        if(mIRCMessage != null && mIRCMessage.isConnected()){
+        if (mIRCMessage != null && mIRCMessage.isConnected()) {
             return;
         }
         mGetInfo = getRoomInitData();
-        String channel = IRC_CHANNEL_PREFIX +expChatId;
+        String channel = IRC_CHANNEL_PREFIX + expChatId;
         String chatRoomUid = "s_" + mGetInfo.getLiveType() + "_"
                 + expChatId + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
-        Loger.e("ExperienceLiveVideoActivity","=====>connectChatServer:channel="+channel +":nickname ="+chatRoomUid);
+        Loger.e("ExperienceLiveVideoActivity", "=====>connectChatServer:channel=" + channel + ":nickname =" +
+                chatRoomUid);
 
         // 获取 聊天服务器地址  的接口地址
         ArrayList<TalkConfHost> talkConfHosts = new ArrayList<>();
         TalkConfHost confHost = null;
-        if(chatCfgServerList != null && chatCfgServerList.size() >0){
+        if (chatCfgServerList != null && chatCfgServerList.size() > 0) {
             for (int i = 0; i < chatCfgServerList.size(); i++) {
                 confHost = new TalkConfHost();
                 confHost.setHost(chatCfgServerList.get(i));
@@ -615,33 +622,34 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
         @Override
         public void onUserList(String channel, User[] users) {
-            Loger.e("ExperiencLvieAvtiv", "=====>onUserList:" + mLiveMessagePager);
-
+            Loger.e("ExperiencLvieAvtiv", "=====>onUserList start:" + peopleCount);
             peopleCount.set(users.length, new Exception());
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onUserList(channel, users);
             }
+            Loger.e("ExperiencLvieAvtiv", "=====>onUserList end:" + peopleCount);
         }
 
         @Override
         public void onJoin(String target, String sender, String login, String hostname) {
-            Loger.e("ExperiencLvieAvtiv", "=====>onJoin");
 
+            Loger.e("ExperiencLvieAvtiv", "=====>onJoin start:" + peopleCount);
             peopleCount.set(peopleCount.get() + 1, new Exception(sender));
-
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onJoin(target, sender, login, hostname);
             }
+            Loger.e("ExperiencLvieAvtiv", "=====>onJoin end:" + peopleCount);
+
         }
 
         @Override
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-            Loger.e("ExperiencLvieAvtiv", "=====>onQuit");
-
+            Loger.e("ExperiencLvieAvtiv", "=====>onQuit start:" + peopleCount);
             peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
             }
+            Loger.e("ExperiencLvieAvtiv", "=====>onQuit end:" + peopleCount);
         }
 
         @Override
@@ -863,24 +871,26 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         chatCfgServerList = getIntent().getStringArrayListExtra("roomChatCfgServerList");
         expChatId = getIntent().getStringExtra("expChatId");
         sex = getIntent().getStringExtra("sex");
-        Loger.e("ExperienceLiveVideoActivity","=========>loadData:"+chatCfgServerList);
+        Loger.e("ExperienceLiveVideoActivity", "=========>loadData:" + chatCfgServerList);
         List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
 
         //初始化 老师开关聊天事件
-        if(lstVideoQuestion != null && lstVideoQuestion.size() > 0){
+        if (lstVideoQuestion != null && lstVideoQuestion.size() > 0) {
             roomChatEvent = new ArrayList<VideoQuestionEntity>();
             VideoQuestionEntity entity = null;
             for (int i = 0; i < lstVideoQuestion.size(); i++) {
                 entity = lstVideoQuestion.get(i);
-                 if(LocalCourseConfig.CATEGORY_OPEN_CHAT ==entity.getvCategory() ||  LocalCourseConfig.CATEGORY_CLOSE_CHAT == entity.getvCategory()){
-                     roomChatEvent.add(lstVideoQuestion.get(i));
-                 }
+                if (LocalCourseConfig.CATEGORY_OPEN_CHAT == entity.getvCategory() || LocalCourseConfig
+                        .CATEGORY_CLOSE_CHAT == entity.getvCategory()) {
+                    roomChatEvent.add(lstVideoQuestion.get(i));
+                }
             }
         }
     }
 
     public interface GetExperienceLiveMsgs {
         void getLiveExperienceMsgs(ExPerienceLiveMessage liveMessageGroupEntity);
+
         void onPmFailure();
     }
 
@@ -943,7 +953,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_ENTER, logHashMap.getData());
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(View.GONE);
-            if(baseLiveMediaControllerTop == null){
+            if (baseLiveMediaControllerTop == null) {
                 initView();
                 initMessagePager(bottomContent);
                 connectChatServer();
@@ -1123,28 +1133,30 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         // 扫描互动题
         scanQuestion(currentPosition);
         Log.e("Duncan", "currentPosition:" + currentPosition + ": threadId =" + Thread.currentThread().getId());
-        if(HISTROY_MSG_DISPLAY){
+        if (HISTROY_MSG_DISPLAY) {
             displayHistoryMsg();
         }
     }
 
-    /**展示历史聊天信息*/
+    /**
+     * 展示历史聊天信息
+     */
     private void displayHistoryMsg() {
-            // 获取聊天记录
-            if (scanRunnable == null) {
-                scanRunnable = new ScanRunnable();
-                scanHandler.post(scanRunnable);
-            }
-            //发送聊天记录
-            if (send && mMsgs.size() > 0) {
-                for (int i = 0; i < mMsgs.size(); i++) {
-                    if (currentMsg / 1000 == mMsgs.get(i).getReleative_time()) {
-                        mLiveMessagePager.addMessage(mMsgs.get(i).getText().getName(), LiveMessageEntity.MESSAGE_TIP,
-                                mMsgs.get(i).getText().getMsg(), "");
-                        mMsgs.remove(i);
-                    }
+        // 获取聊天记录
+        if (scanRunnable == null) {
+            scanRunnable = new ScanRunnable();
+            scanHandler.post(scanRunnable);
+        }
+        //发送聊天记录
+        if (send && mMsgs.size() > 0) {
+            for (int i = 0; i < mMsgs.size(); i++) {
+                if (currentMsg / 1000 == mMsgs.get(i).getReleative_time()) {
+                    mLiveMessagePager.addMessage(mMsgs.get(i).getText().getName(), LiveMessageEntity.MESSAGE_TIP,
+                            mMsgs.get(i).getText().getMsg(), "");
+                    mMsgs.remove(i);
                 }
             }
+        }
     }
 
     /**
@@ -1301,13 +1313,12 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }
 
 
-        if(roomChatEvent != null && roomChatEvent.size() > 0 ){
+        if (roomChatEvent != null && roomChatEvent.size() > 0) {
             for (int i = 0; i < roomChatEvent.size(); i++) {
                 // 处理聊天事件 开闭事件
-                handleChatEvent(playPosition,roomChatEvent.get(i));
+                handleChatEvent(playPosition, roomChatEvent.get(i));
             }
         }
-
 
 
         int startTime, endTime;
@@ -1317,7 +1328,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             if (lstVideoQuestion.get(i) != null) {
                 videoQuestionEntity = lstVideoQuestion.get(i);
             } else {
-                Loger.e("ExperienceLiveVideoActivity","=====>continue:");
+                Loger.e("ExperienceLiveVideoActivity", "=====>continue:");
                 continue;
             }
 //            if (videoQuestionEntity.isAnswered()) {
@@ -1325,8 +1336,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //            }
             startTime = videoQuestionEntity.getvQuestionInsretTime();
             endTime = videoQuestionEntity.getvEndTime();
-            Loger.e("ExperienceLiveVideoActivity","===>getPlayQuetion:category="
-                    +videoQuestionEntity.getvCategory() +":"+startTime+":"+lstVideoQuestion.size());
+            Loger.e("ExperienceLiveVideoActivity", "===>getPlayQuetion:category="
+                    + videoQuestionEntity.getvCategory() + ":" + startTime + ":" + lstVideoQuestion.size());
 
             // 红包只有开始时间
             if (LocalCourseConfig.CATEGORY_REDPACKET == videoQuestionEntity.getvCategory()) {
@@ -1383,63 +1394,76 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     }
 
 
-    private void handleChatEvent(int playPosition ,VideoQuestionEntity chatEntity) {
-        if(isChatSateInited){
-            if (chatEntity != null) {
-                Loger.e("roomChat","=====>handleChatEvent:category="+chatEntity.getvCategory());
-                //关闭聊天
-                if(LocalCourseConfig.CATEGORY_CLOSE_CHAT == chatEntity.getvCategory()){
-                    Log.e("roomChat","=====> CATEGORY_CLOSE_CHAT 11111:"+chatEntity.getvQuestionInsretTime()+":"+playPosition);
-                    if (playPosition == chatEntity.getvQuestionInsretTime()) {
-                        Loger.e("roomChat","=====> teahcer close chat called begin");
-                        try {
-                            mLiveMessagePager.onopenchat(false, "in-class", true);
-                            mLiveBll.setChatOpen(false);
-                            Loger.e("roomChat","=====> teahcer close chat called end 11111");
-                        }catch ( Exception e){
-                            e.printStackTrace();
-                        }
-                        Loger.e("roomChat","=====> teahcer close chat called end 222222");
-                    }
-                }
-                 else if(LocalCourseConfig.CATEGORY_OPEN_CHAT == chatEntity.getvCategory()){
-                     // 开启聊天
-                    Loger.e("roomChat","=====> CATEGORY_OPEN_CHAT  22222:"+chatEntity.getvQuestionInsretTime()+":"+playPosition);
-                    if (playPosition == chatEntity.getvQuestionInsretTime()) {
-                        Loger.e("roomChat","=====> teahcer open chat called begin");
-                        try {
-                            mLiveMessagePager.onopenchat(true, "in-class", true);
-                            mLiveBll.setChatOpen(true);
-                            Loger.e("roomChat","=====> teahcer open chat called  end 111111");
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-                        Loger.e("roomChat","=====> teahcer open chat called  end 222222");
-                    }
-                }
-            }
-        }else{
-            List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
-            boolean roomChatAvalible = true;
-            if(lstVideoQuestion != null  && lstVideoQuestion.size() >0){
-                for (VideoQuestionEntity entity : lstVideoQuestion) {
-                      if(entity.getvQuestionInsretTime() <= playPosition){
-                          if(entity.getvCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT){
-                              roomChatAvalible = true;
-                          }else if(entity.getvCategory() == LocalCourseConfig.CATEGORY_CLOSE_CHAT){
-                              roomChatAvalible = false;
-                          }
-                      }
-                }
-            }
-            if(!roomChatAvalible){
-                mLiveMessagePager.onopenchat(false, "in-class", true);
-                mLiveBll.setChatOpen(false);
-            }
+    private int lastCheckTime = 0;
+    private static final int MAX_CHECK_TIME_RANG = 2;
+
+    private void handleChatEvent(int playPosition, VideoQuestionEntity chatEntity) {
+        //出现视频快进
+        if ((playPosition - lastCheckTime) >= MAX_CHECK_TIME_RANG || !isChatSateInited) {
+           // isChatSateInited = false;
+            boolean roomChatAvalible = recoverChatState(playPosition);
             isChatSateInited = true;
-            Loger.e("roomChat","=====> resetRoomChatState:roomChatAvalible="+roomChatAvalible);
+            Loger.e("roomChat", "=====> resetRoomChatState:roomChatAvalible=" + roomChatAvalible);
+        }else{
+            if (chatEntity != null) {
+                Loger.e("roomChat", "=====>handleChatEvent:category=" + chatEntity.getvCategory());
+                //关闭聊天
+                if (LocalCourseConfig.CATEGORY_CLOSE_CHAT == chatEntity.getvCategory()) {
+                    Log.e("roomChat", "=====> CATEGORY_CLOSE_CHAT 11111:" + chatEntity.getvQuestionInsretTime() + ":"
+                            + playPosition);
+                    if (playPosition == chatEntity.getvQuestionInsretTime()) {
+                        Loger.e("roomChat", "=====> teahcer close chat called begin");
+                        mLiveMessagePager.onopenchat(false, "in-class", true);
+                        mLiveBll.setChatOpen(false);
+                        Loger.e("roomChat", "=====> teahcer close chat called end 11111");
+                    }
+                } else if (LocalCourseConfig.CATEGORY_OPEN_CHAT == chatEntity.getvCategory()) {
+                    // 开启聊天
+                    Loger.e("roomChat", "=====> CATEGORY_OPEN_CHAT  22222:" + chatEntity.getvQuestionInsretTime() +
+                            ":" + playPosition);
+                    if (playPosition == chatEntity.getvQuestionInsretTime()) {
+                        Loger.e("roomChat", "=====> teahcer open chat called begin");
+                        mLiveMessagePager.onopenchat(true, "in-class", true);
+                        mLiveBll.setChatOpen(true);
+                        Loger.e("roomChat", "=====> teahcer open chat called  end 111111");
+                    }
+                }
+            }
         }
+        lastCheckTime = playPosition;
+
     }
+
+    /**
+     * 当进入直播间 或者 发生 视频快进的情况时
+     * 恢复聊天状态
+     */
+    private boolean recoverChatState(int playPosition) {
+        List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
+        boolean roomChatAvalible = true;
+        if (lstVideoQuestion != null && lstVideoQuestion.size() > 0) {
+            for (VideoQuestionEntity entity : lstVideoQuestion) {
+                if (entity.getvQuestionInsretTime() <= playPosition) {
+                    if (entity.getvCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT) {
+                        roomChatAvalible = true;
+                    } else if (entity.getvCategory() == LocalCourseConfig.CATEGORY_CLOSE_CHAT) {
+                        roomChatAvalible = false;
+                    }
+                }
+            }
+        }
+        if (!roomChatAvalible) {
+            mLiveMessagePager.onopenchat(false, "in-class", true);
+            mLiveBll.setChatOpen(false);
+        } else {
+            mLiveMessagePager.onopenchat(true, "in-class", isChatSateInited);
+            mLiveBll.setChatOpen(true);
+        }
+        return roomChatAvalible;
+    }
+
+
+
 
     private VideoQuestionEntity getOpenChatEntity(int playPosition) {
         return null;
@@ -1448,9 +1472,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private VideoQuestionEntity getCloseChatEntity(int playPosition) {
         return null;
     }
-
-
-
 
 
     @Override
@@ -1972,7 +1993,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         mLiveMessagePager = null;
         if (mIRCMessage != null) {
             mIRCMessage.setCallback(null);
-            new Thread(){
+            new Thread() {
                 @Override
                 public void run() {
                     super.run();
