@@ -260,6 +260,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                         url2 = url2.substring(0, index2);
                     }
                     File file = new File(mMorecacheout, url2);
+                    Loger.d(TAG, "shouldInterceptRequest:file=" + file + ",file=" + file.exists());
                     if (file.exists()) {
                         FileInputStream inputStream = null;
                         try {
@@ -272,7 +273,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                             e.printStackTrace();
                         }
                     }
-                    Loger.d(TAG, "shouldInterceptRequest:file=" + file);
                 }
                 return super.shouldInterceptRequest(view, s);
             }
@@ -310,8 +310,11 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
 //            } else {
 //                mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&isPlayBack=0";
 //            }
-            mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos +"&classTestId="+ classTestId + "&educationStage= " + LiveVideoConfig.educationstage + "&isPlayBack=0";
+            mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" + LiveVideoConfig.educationstage + "&isPlayBack=0";
 //            mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos +"&isPlayBack=0";
+            if (LiveBll.isAllowTeamPk) {
+                mLoadUrls += "&isShowTeamPk=1";
+            }
             loadUrl(mLoadUrls);
             Loger.e(TAG, "======> loadUrl:" + mLoadUrls);
             reloadurl = mLoadUrls;
