@@ -143,6 +143,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     public static final String ENTER_ROOM_FROM = "from";
     /** 直播类型 */
     private int liveType;
+    /** 是不是文科 */
+    private int isArts;
     /** 连接老师加载-主讲 */
     private final String mainTeacherLoad = "正在连接主讲老师，请耐心等候";
     /** 连接老师加载-辅导 */
@@ -179,6 +181,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         long before = System.currentTimeMillis();
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         liveType = activity.getIntent().getIntExtra("type", 0);
+        isArts = activity.getIntent().getIntExtra("isArts", 0);
         // 设置不可自动横竖屏
         setAutoOrientation(false);
         AppBll.getInstance().registerAppEvent(this);
@@ -301,24 +304,42 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
      * @param bottomContent
      */
     private void addBusiness(Activity activity, RelativeLayout bottomContent) {
-
-        TeamPkBll teamPkBll = new TeamPkBll(activity, mLiveBll, bottomContent);
-        mLiveBll.addBusinessBll(teamPkBll);
-
-        mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll, bottomContent));
-        liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll, bottomContent);
-        liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-        mLiveBll.addBusinessBll(liveIRCMessageBll);
-        mLiveBll.addBusinessBll(new LiveAchievementIRCBll(activity, mLiveBll, bottomContent));
-        mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll, bottomContent));
-        mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
-        mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll, bottomContent));
-        mLiveBll.addBusinessBll(new LiveVoteBll(activity, mLiveBll, bottomContent));
-        mLiveBll.addBusinessBll(new LiveAutoNoticeIRCBll(activity, mLiveBll, bottomContent));
-        mLiveBll.addBusinessBll(new AnswerRankIRCBll(activity, mLiveBll, bottomContent));
-        mLiveBll.addBusinessBll(new LearnReportIRCBll(activity, mLiveBll, bottomContent));
-        mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll, bottomContent));
-        mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
+        if (isArts == 1) {
+            //理科
+//            mLiveBll.addBusinessBll(new TeamPkBll(activity, mLiveBll, bottomContent));
+            mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll, bottomContent));
+            liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll, bottomContent);
+            liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+            mLiveBll.addBusinessBll(liveIRCMessageBll);
+            mLiveBll.addBusinessBll(new LiveAchievementIRCBll(activity, mLiveBll, bottomContent));
+            mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll, bottomContent));
+            mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
+            //理科
+//            mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll, bottomContent));
+//            mLiveBll.addBusinessBll(new LiveVoteBll(activity, mLiveBll, bottomContent));
+//            mLiveBll.addBusinessBll(new LiveAutoNoticeIRCBll(activity, mLiveBll, bottomContent));
+//            mLiveBll.addBusinessBll(new AnswerRankIRCBll(activity, mLiveBll, bottomContent));
+            mLiveBll.addBusinessBll(new LearnReportIRCBll(activity, mLiveBll, bottomContent));
+            mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll, bottomContent));
+            mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
+        } else {
+            mLiveBll.addBusinessBll(new TeamPkBll(activity, mLiveBll, bottomContent));
+            mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll, bottomContent));
+            liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll, bottomContent);
+            liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+            mLiveBll.addBusinessBll(liveIRCMessageBll);
+            //文科
+//            mLiveBll.addBusinessBll(new LiveAchievementIRCBll(activity, mLiveBll, bottomContent));
+            mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll, bottomContent));
+            mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
+            mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll, bottomContent));
+            mLiveBll.addBusinessBll(new LiveVoteBll(activity, mLiveBll, bottomContent));
+            mLiveBll.addBusinessBll(new LiveAutoNoticeIRCBll(activity, mLiveBll, bottomContent));
+            mLiveBll.addBusinessBll(new AnswerRankIRCBll(activity, mLiveBll, bottomContent));
+            mLiveBll.addBusinessBll(new LearnReportIRCBll(activity, mLiveBll, bottomContent));
+            mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll, bottomContent));
+            mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
+        }
         videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll, bottomContent);
         videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
         videoChatIRCBll.setLiveFragmentBase(this);

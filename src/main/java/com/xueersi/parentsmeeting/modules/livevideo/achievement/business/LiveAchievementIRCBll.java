@@ -74,7 +74,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 starBll.setLiveBll(LiveAchievementIRCBll.this);
                 starBll.setLiveAndBackDebug(mLiveBll);
                 starBll.initView(mRootView);
-                LiveAchievementIRCBll.this.starAction = starAction;
+                LiveAchievementIRCBll.this.starAction = starBll;
                 //能量条
                 EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(activity);
                 boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), null);
@@ -85,9 +85,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     englishSpeekBll.setmShareDataManager(mShareDataManager);
                     LiveAchievementIRCBll.this.englishSpeekAction = englishSpeekBll;
                 }
-            } else {
-                LiveAchievementIRCBll.this.englishSpeekAction.onModeChange(mode, audioRequest);
             }
+            LiveAchievementIRCBll.this.englishSpeekAction.onModeChange(mode, audioRequest);
         }
     }
 
@@ -142,9 +141,14 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         }
     }
 
-    private void initAchievement(String mode) {
+    private void initAchievement(final String mode) {
         if (englishSpeekMode != null) {
-            englishSpeekMode.initAchievement(mode);
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    englishSpeekMode.initAchievement(mode);
+                }
+            });
         }
     }
 
