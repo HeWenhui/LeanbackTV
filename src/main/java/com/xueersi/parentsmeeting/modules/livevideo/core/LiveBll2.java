@@ -350,7 +350,8 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             mVideoAction.onLiveInit(mGetInfo);
         }
         logger.d("=======>onGetInfoSuccess 11111111");
-        for (LiveBaseBll businessBll : businessBlls) {
+        List<LiveBaseBll> businessBllTemps = new ArrayList<>(businessBlls);
+        for (LiveBaseBll businessBll : businessBllTemps) {
             try {
                 businessBll.onLiveInited(getInfo);
                 logger.d("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll);
@@ -358,6 +359,8 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 logger.e("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll, e);
             }
         }
+        getOnloadLogs(TAG, "onGetInfoSuccess:old=" + businessBlls + ",new=" + businessBllTemps.size());
+        businessBllTemps.clear();
         logger.d("=======>onGetInfoSuccess 333333333");
         LiveGetInfo.NewTalkConfEntity talkConfEntity = new LiveGetInfo.NewTalkConfEntity();
         talkConfEntity.setHost(mGetInfo.getTalkHost());
