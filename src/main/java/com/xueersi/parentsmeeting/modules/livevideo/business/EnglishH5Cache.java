@@ -314,41 +314,45 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             }
         }
         // 添加字体的下载链接
-        if (mtexts.size() > 0 && add) {
+        if (mtexts.size() > 0) {
             // 字体文件直接下载到zip解压的文件夹中
             for (int i = 0; i < mtexts.size(); i++) {
                 String url = mtexts.get(i);
                 final String fileName = MD5Utils.getMD5(url);
-                liveBll.download(mtexts.get(i), new File(mMorecacheout, fileName).getPath(), new DownloadCallBack() {
+                if(!fileIsExists(new File(mMorecacheout, fileName).getPath())){
+                    liveBll.download(mtexts.get(i), new File(mMorecacheout, fileName).getPath(), new DownloadCallBack() {
+                        @Override
+                        protected void onDownloadSuccess() {
+                            Loger.d(TAG, "onDownloadSuccess:fileName=" + fileName);
+                        }
+
+                        @Override
+                        protected void onDownloadFailed() {
+                            Loger.d(TAG, "onDownloadFailed:fileName=" + fileName);
+                            XESToastUtils.showToast(context, "下载字体包失败");
+                        }
+                    });
+                }
+
+            }
+        }
+        for (int i = 0; i < mUrls.size(); i++) {
+            final String url = i + ".zip";
+            if(!fileIsExists(new File(mMorecachein, url).getPath())){
+                liveBll.download(mUrls.get(i), new File(mMorecachein, url).getPath(), new DownloadCallBack() {
                     @Override
                     protected void onDownloadSuccess() {
-                        Loger.d(TAG, "onDownloadSuccess:fileName=" + fileName);
+                        Loger.d(TAG, "onDownloadSuccess:url=" + url);
+                        new ZipExtractorTask(new File(mMorecachein, url), mMorecacheout, true, new Progresses()).execute();
                     }
 
                     @Override
                     protected void onDownloadFailed() {
-                        Loger.d(TAG, "onDownloadFailed:fileName=" + fileName);
-                        XESToastUtils.showToast(context, "下载字体包失败");
+                        Loger.d(TAG, "onDownloadFailed:url=" + url);
+                        XESToastUtils.showToast(context, "下载资源包失败");
                     }
                 });
             }
-            add = !add;
-        }
-        for (int i = 0; i < mUrls.size(); i++) {
-            final String url = i + ".zip";
-            liveBll.download(mUrls.get(i), new File(mMorecachein, url).getPath(), new DownloadCallBack() {
-                @Override
-                protected void onDownloadSuccess() {
-                    Loger.d(TAG, "onDownloadSuccess:url=" + url);
-                    new ZipExtractorTask(new File(mMorecachein, url), mMorecacheout, true, new Progresses()).execute();
-                }
-
-                @Override
-                protected void onDownloadFailed() {
-                    Loger.d(TAG, "onDownloadFailed:url=" + url);
-                    XESToastUtils.showToast(context, "下载资源包失败");
-                }
-            });
         }
 
     }
@@ -578,6 +582,27 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             }
         }, 10000);
     }
+
+    //判断文件是否存在
+    public boolean fileIsExists(String strFile)
+    {
+        try
+        {
+            File f=new File(strFile);
+            if(!f.exists())
+            {
+                return false;
+            }
+
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
 
 //    public class MyWebViewClient extends WebViewClient {
 //        String failingUrl;
