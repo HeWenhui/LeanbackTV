@@ -29,6 +29,7 @@ import com.xueersi.xesalib.utils.string.StringUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xutils.xutils.common.util.MD5;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,6 +37,8 @@ import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
 /**
  * Created by linyuqiang on 2017/3/25.
@@ -249,18 +252,31 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     @Override
     public void initData() {
         super.initData();
-        wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
-                int index = s.indexOf("courseware_pages");
-                if (index != -1) {
-                    String url2 = s.substring(index + "courseware_pages".length());
-                    int index2 = url2.indexOf("?");
-                    if (index2 != -1) {
-                        url2 = url2.substring(0, index2);
+        WebSettings webSetting = wvSubjectWeb.getSettings();
+        webSetting.setBuiltInZoomControls(true);
+        if (LiveVideoConfig.isNewEnglishH5) {
+            wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
+                @Override
+                public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
+                    File file;
+                    int index = s.indexOf("courseware_pages");
+                    if (index != -1) {
+                        String url2 = s.substring(index + "courseware_pages".length());
+                        int index2 = url2.indexOf("?");
+                        if (index2 != -1) {
+                            url2 = url2.substring(0, index2);
+                        }
+                        file = new File(mMorecacheout, url2);
+                        Loger.d(TAG, "shouldInterceptRequest:file=" + file + ",file=" + file.exists());
+                    } else {
+                        file = new File(mMorecacheout, MD5Utils.getMD5(s));
+                        index = s.lastIndexOf("/");
+                        String name = s;
+                        if (index != -1) {
+                            name = s.substring(index);
+                        }
+                        Loger.d(TAG, "shouldInterceptRequest:file2=" + file.getName() + ",name=" + name + ",file=" + file.exists());
                     }
-                    File file = new File(mMorecacheout, url2);
-                    Loger.d(TAG, "shouldInterceptRequest:file=" + file + ",file=" + file.exists());
                     if (file.exists()) {
                         FileInputStream inputStream = null;
                         try {
@@ -273,13 +289,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                             e.printStackTrace();
                         }
                     }
+                    return super.shouldInterceptRequest(view, s);
                 }
-                return super.shouldInterceptRequest(view, s);
-            }
-        });
-        WebSettings webSetting = wvSubjectWeb.getSettings();
-        webSetting.setBuiltInZoomControls(true);
-        if (LiveVideoConfig.isNewEnglishH5) {
+            });
             // 一题多发的课件预加载
             String packageId = "";
             String packageSource = "";

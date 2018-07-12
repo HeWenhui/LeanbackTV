@@ -54,6 +54,7 @@ import ren.yale.android.cachewebviewlib.CachePreLoadService;
 import ren.yale.android.cachewebviewlib.CacheWebView;
 import ren.yale.android.cachewebviewlib.WebViewCache;
 import ren.yale.android.cachewebviewlib.config.CacheExtensionConfig;
+import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
 /**
  * 英语课件缓存
@@ -250,6 +251,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                 JSONObject objects = new JSONObject(responseEntity.getJsonObject().toString());
                 JSONArray array = objects.optJSONArray("list");
                 JSONArray res = objects.optJSONArray("resource");
+                JSONArray loadpages = objects.optJSONArray("loadpages");
                 mList = new ArrayList<>();
                 mtexts = new ArrayList<>();
                 for (int i = 0; i < array.length(); i++) {
@@ -263,12 +265,16 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                     cache.setTemplateUrl(object.optString("templateUrl"));
                     mList.add(cache);
                 }
-                for (int i = 0 ; i < res.length() ; i++){
+                for (int i = 0; i < res.length(); i++) {
                     String txt = res.optString(i);
                     mtexts.add(txt);
                 }
-                Loger.e(TAG, "list" + mList.size());
-                Loger.e(TAG, "text" + mtexts.size());
+                for (int i = 0; i < loadpages.length(); i++) {
+                    String txt = loadpages.optString(i);
+                    mtexts.add(txt);
+                }
+                Loger.e(TAG, "list=" + mList.size());
+                Loger.e(TAG, "text=" + mtexts.size());
                 if (mList.size() > 0) {
                     download(todayLiveCacheDir);
                 }
@@ -291,11 +297,11 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     private void download(File path) {
         mUrls = new ArrayList<>();
         mMorecachein = new File(path, liveId);
-        if(!mMorecachein.exists()){
+        if (!mMorecachein.exists()) {
             mMorecachein.mkdirs();
         }
         mMorecacheout = new File(path, liveId + "child");
-        if(!mMorecacheout.exists()){
+        if (!mMorecacheout.exists()) {
             mMorecacheout.mkdirs();
         }
         // 下载以及解压预加载的文件
@@ -308,18 +314,20 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             }
         }
         // 添加字体的下载链接
-        if(mtexts.size() > 0 && add){
+        if (mtexts.size() > 0 && add) {
             // 字体文件直接下载到zip解压的文件夹中
-            for(int i = 0 ; i < mtexts.size() ; i++){
-                String url = i + ".ttf";
-                liveBll.download(mtexts.get(i), new File(mMorecacheout, url).getPath(), new DownloadCallBack() {
+            for (int i = 0; i < mtexts.size(); i++) {
+                String url = mtexts.get(i);
+                final String fileName = MD5Utils.getMD5(url);
+                liveBll.download(mtexts.get(i), new File(mMorecacheout, fileName).getPath(), new DownloadCallBack() {
                     @Override
                     protected void onDownloadSuccess() {
-
+                        Loger.d(TAG, "onDownloadSuccess:fileName=" + fileName);
                     }
 
                     @Override
                     protected void onDownloadFailed() {
+                        Loger.d(TAG, "onDownloadFailed:fileName=" + fileName);
                         XESToastUtils.showToast(context, "下载字体包失败");
                     }
                 });
@@ -331,11 +339,13 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             liveBll.download(mUrls.get(i), new File(mMorecachein, url).getPath(), new DownloadCallBack() {
                 @Override
                 protected void onDownloadSuccess() {
+                    Loger.d(TAG, "onDownloadSuccess:url=" + url);
                     new ZipExtractorTask(new File(mMorecachein, url), mMorecacheout, true, new Progresses()).execute();
                 }
 
                 @Override
                 protected void onDownloadFailed() {
+                    Loger.d(TAG, "onDownloadFailed:url=" + url);
                     XESToastUtils.showToast(context, "下载资源包失败");
                 }
             });

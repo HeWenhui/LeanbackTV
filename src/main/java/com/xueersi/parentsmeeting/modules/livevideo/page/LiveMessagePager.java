@@ -275,7 +275,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     commonAction.clickTran();
                     return;
                 }
-                if(LiveVideoConfig.isPrimary){
+                if (LiveVideoConfig.isPrimary) {
                     mFlowerWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
                 } else {
                     mFlowerWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
@@ -484,12 +484,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         super.setGetInfo(getInfo);
         if (getInfo != null) {
             String educationStage = getInfo.getEducationStage();
-            if(LiveVideoConfig.isPrimary){
+            if (LiveVideoConfig.isPrimary) {
                 initPrimaryFlower();
             } else {
                 initFlower(educationStage);
             }
-
         }
     }
 
@@ -540,25 +539,25 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         RelativeLayout rl_heart = flowerContentView.findViewById(R.id.rl_heart);
         RelativeLayout rl_cup = flowerContentView.findViewById(R.id.rl_cup);
         RelativeLayout rl_ice = flowerContentView.findViewById(R.id.rl_ice);
-        View.OnClickListener listener = new View.OnClickListener(){
+        View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(v.getId() == R.id.rl_heart){
+                if (v.getId() == R.id.rl_heart) {
                     flowerContentView.setTag(flowerEntities.get(0));
                     ice.setVisibility(View.GONE);
                     cup.setVisibility(View.GONE);
                     heart.setVisibility(View.VISIBLE);
-                }else if(v.getId() == R.id.rl_cup){
+                } else if (v.getId() == R.id.rl_cup) {
                     flowerContentView.setTag(flowerEntities.get(1));
                     ice.setVisibility(View.GONE);
                     cup.setVisibility(View.VISIBLE);
                     heart.setVisibility(View.GONE);
-                }else if(v.getId() == R.id.rl_ice){
+                } else if (v.getId() == R.id.rl_ice) {
                     flowerContentView.setTag(flowerEntities.get(2));
                     ice.setVisibility(View.VISIBLE);
                     cup.setVisibility(View.GONE);
                     heart.setVisibility(View.GONE);
-                }else if(v.getId() == R.id.iv_livevideo_present_close){
+                } else if (v.getId() == R.id.iv_livevideo_present_close) {
                     mFlowerWindow.dismiss();
                 }
             }
@@ -999,9 +998,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if(liveBll.isSeniorOfHighSchool()){
+                if (liveBll.isSeniorOfHighSchool()) {
                     tvMessageCount.setText("班内" + peopleCount + "人");
-                }else{
+                } else {
                     if (liveBll.isHaveTeam()) {
                         tvMessageCount.setText("组内" + peopleCount + "人");
                     } else {
@@ -1014,7 +1013,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-        Loger.e("LiveMessagerPager","=====>onMessage called");
+        Loger.e("LiveMessagerPager", "=====>onMessage called");
         if (sender.startsWith(LiveBll.TEACHER_PREFIX)) {
             sender = "主讲老师";
         } else if (sender.startsWith(LiveBll.COUNTTEACHER_PREFIX)) {
@@ -1054,9 +1053,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if(liveBll.isSeniorOfHighSchool()){
+                if (liveBll.isSeniorOfHighSchool()) {
                     tvMessageCount.setText("班内" + peopleCount + "人");
-                }else{
+                } else {
                     if (liveBll.isHaveTeam()) {
                         tvMessageCount.setText("组内" + peopleCount + "人");
                     } else {
@@ -1072,9 +1071,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if(liveBll.isSeniorOfHighSchool()){
+                if (liveBll.isSeniorOfHighSchool()) {
                     tvMessageCount.setText("班内" + peopleCount + "人");
-                }else {
+                } else {
                     if (liveBll.isHaveTeam()) {
                         tvMessageCount.setText("组内" + peopleCount + "人");
                     } else {
@@ -1390,7 +1389,10 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         tvMessageGold.setText(goldNum);
         tvMessageGold.setVisibility(View.VISIBLE);
         tvMessageGoldLable.setVisibility(View.VISIBLE);
-        flowerContentView.findViewById(R.id.tv_livevideo_message_gold_word).setVisibility(View.VISIBLE);
+        View view = flowerContentView.findViewById(R.id.tv_livevideo_message_gold_word);
+        if (view != null) {
+            view.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -1400,7 +1402,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     // 隐藏锁屏按钮
-    public void hideclock(){
+    public void hideclock() {
         cbMessageClock.setVisibility(View.GONE);
     }
 }
