@@ -43,7 +43,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
@@ -403,7 +405,8 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
                 .OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (questionBll.isAnaswer()) {
+                QuestionStatic questionStatic = ProxUtil.getProxUtil().get(mContext, QuestionStatic.class);
+                if (questionStatic != null && questionStatic.isAnaswer()) {
                     XESToastUtils.showToast(mContext, "正在答题，不能献花");
                     return;
                 }

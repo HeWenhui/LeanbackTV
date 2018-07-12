@@ -58,6 +58,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.common.event.MiniEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
@@ -118,7 +120,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     private long lastSendMsg;
     private KPSwitchFSPanelLinearLayout switchFSPanelLinearLayout;
     private ImageView ivExpressionCancle;
-    private QuestionBll questionBll;
+    private KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener;
     /** 竖屏的时候，也添加横屏的消息 */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
     /** 献花倒计时标记 */
@@ -147,11 +149,11 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     private Handler mHandler;
     private BroadcastReceiver receiver;
 
-    public LiveMessagePortPager(Context context, QuestionBll questionBll,
+    public LiveMessagePortPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                 ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
         super(context);
         liveVideoActivity = (Activity) context;
-        this.questionBll = questionBll;
+        this.keyboardShowingListener = keyboardShowingListener;
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
         mHandler = new Handler();
@@ -271,7 +273,8 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                 if (goldNum == null) {
                     OtherModulesEnter.requestGoldTotal(mContext);
                 }
-                if (questionBll.isAnaswer()) {
+                QuestionStatic questionStatic = ProxUtil.getProxUtil().get(mContext, QuestionStatic.class);
+                if (questionStatic != null && questionStatic.isAnaswer()) {
                     XESToastUtils.showToast(mContext, "正在答题，不能献花");
                     return;
                 }
@@ -332,7 +335,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                         btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers_port_disable);
                     }
                 }
-                questionBll.onKeyboardShowing(isShowing);
+                keyboardShowingListener.onKeyboardShowing(isShowing);
             }
         });
         btMessageExpress.setOnClickListener(new View.OnClickListener() {

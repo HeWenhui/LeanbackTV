@@ -72,6 +72,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import cn.dreamtobe.kpswitch.util.KeyboardUtil;
+
 import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE1;
 import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE2;
 import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE3;
@@ -82,7 +84,7 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
  * Created by linyuqiang on 2016/9/23.
  */
 public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEvalAction, BaseQuestionWebInter
-        .StopWebQuestion, BaseVoiceAnswerCreat.AnswerRightResultVoice {
+        .StopWebQuestion, BaseVoiceAnswerCreat.AnswerRightResultVoice, QuestionStatic, KeyboardUtil.OnKeyboardShowingListener {
     String TAG = "QuestionBll";
     SpeechEvaluatorUtils mIse;
     private LiveVideoSAConfig liveVideoSAConfig;
@@ -221,7 +223,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     /** 语文主观题 */
     private BaseSubjectResultInter subjectResultPager;
     boolean isLand;
-    private KeyBordAction liveMessageBll;
+    private KeyBordAction keyBordAction;
     /**
      * 是不是在显示互动题,结果页或者语音评测top3
      */
@@ -241,7 +243,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private RolePlayAction rolePlayAction;
 
     public QuestionBll(Activity activity, String stuCouId) {
-        ProxUtil.getProxUtil().put(activity, QuestionBll.class, this);
+        ProxUtil.getProxUtil().put(activity, QuestionStatic.class, this);
         mLogtf = new LogToFile(activity, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
@@ -264,10 +266,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     public void setLiveAndBackDebug(LiveAndBackDebug liveAndBackDebug) {
         this.liveAndBackDebug = liveAndBackDebug;
-    }
-
-    public void setLiveMessageBll(KeyBordAction liveMessageBll) {
-        this.liveMessageBll = liveMessageBll;
     }
 
     public void setLiveAutoNoticeBll(LiveAutoNoticeBll liveAutoNoticeBll) {
@@ -373,12 +371,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
+    @Override
     public void onKeyboardShowing(boolean isShowing) {
         if (examQuestionPager != null) {
             examQuestionPager.onKeyboardShowing(isShowing);
         }
     }
 
+    @Override
     public boolean isAnaswer() {
         return isAnaswer;
     }
@@ -397,10 +397,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     mIsShowUnderstand = false;
                 }
                 mLogtf.d(s);
-                if (liveMessageBll == null) {
-                    liveMessageBll = ProxUtil.getProxUtil().get(activity, KeyBordAction.class);
+                if (keyBordAction == null) {
+                    keyBordAction = ProxUtil.getProxUtil().get(activity, KeyBordAction.class);
                 }
-                liveMessageBll.hideInput();
+                keyBordAction.hideInput();
             }
             break;
             case NO_QUESTION: {
@@ -1570,10 +1570,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      */
     private void questionViewGone(boolean delay) {
         mIsShowQuestion = false;
-        if (liveMessageBll == null) {
-            liveMessageBll = ProxUtil.getProxUtil().get(activity, KeyBordAction.class);
+        if (keyBordAction == null) {
+            keyBordAction = ProxUtil.getProxUtil().get(activity, KeyBordAction.class);
         }
-        liveMessageBll.showInput();
+        keyBordAction.showInput();
         if (delay) {
             postDelayedIfNotFinish(new Runnable() {
 

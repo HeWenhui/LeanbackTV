@@ -31,11 +31,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import cn.dreamtobe.kpswitch.util.KeyboardUtil;
+
 /**
  * Created by linyuqiang on 2016/9/23.
  * 聊天消息，一些进入房间状态的消息
  */
-public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAction {
+public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAction, KeyboardShowingReg, KeyboardUtil.OnKeyboardShowingListener {
     private String TAG = "LiveMessageBll";
     /** 消息 */
     private BaseLiveMessagePager mLiveMessagePager;
@@ -60,18 +62,19 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     public int urlclick = 0;
     public LiveGetInfo getInfo;
     Handler mainHandler = new Handler(Looper.getMainLooper());
+    ArrayList<KeyboardUtil.OnKeyboardShowingListener> keyboardShowingListeners = new ArrayList<>();
 
     public LiveMessageBll(Activity activity, int liveType) {
         this.activity = activity;
         this.liveType = liveType;
         ProxUtil.getProxUtil().put(activity, LiveMessageBll.class, this);
         ProxUtil.getProxUtil().put(activity, KeyBordAction.class, this);
+        ProxUtil.getProxUtil().put(activity, KeyboardShowingReg.class, this);
     }
 
     public void setQuestionBll(QuestionBll questionBll) {
         this.questionBll = questionBll;
         questionBll.registQuestionShow(this);
-        questionBll.setLiveMessageBll(this);
     }
 
     public void setLiveBll(IRCState mLiveBll) {
@@ -122,7 +125,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
         long before = System.currentTimeMillis();
         liveMessageLandEntities.clear();
-        LiveMessageStandPager liveMessagePager = new LiveMessageStandPager(activity, questionBll, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+        LiveMessageStandPager liveMessagePager = new LiveMessageStandPager(activity, this, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
         mLiveMessagePager = liveMessagePager;
         Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
 
@@ -185,7 +188,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         }
 
         long before = System.currentTimeMillis();
-        LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+        LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
         mLiveMessagePager = liveMessagePager;
         Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
 
@@ -236,16 +239,16 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //            }
             if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
                 LiveMessagePager liveMessagePager =
-                        new LiveMessagePager(activity, questionBll, null, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
+                        new LiveMessagePager(activity, this, null, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
                 mLiveMessagePager = liveMessagePager;
             } else {
                 long before = System.currentTimeMillis();
-                LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
                 Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
             }
         } else {
-            mLiveMessagePager = new LiveMessagePortPager(activity, questionBll, liveMessagePortEntities, liveMessageLandEntities);
+            mLiveMessagePager = new LiveMessagePortPager(activity, this, liveMessagePortEntities, liveMessageLandEntities);
         }
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
@@ -517,5 +520,22 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         if (mLiveMessagePager != null) {
             mLiveMessagePager.onQuestionShow(isShow);
         }
+    }
+
+    @Override
+    public void onKeyboardShowing(boolean isShowing) {
+        for (KeyboardUtil.OnKeyboardShowingListener listener : keyboardShowingListeners) {
+            listener.onKeyboardShowing(isShowing);
+        }
+    }
+
+    @Override
+    public void addKeyboardShowing(KeyboardUtil.OnKeyboardShowingListener listener) {
+        keyboardShowingListeners.add(listener);
+    }
+
+    @Override
+    public void removeKeyboardShowing(KeyboardUtil.OnKeyboardShowingListener listener) {
+        keyboardShowingListeners.remove(listener);
     }
 }

@@ -47,8 +47,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessSysItem;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
@@ -116,19 +118,19 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     private KPSwitchFSPanelLinearLayout switchFSPanelLinearLayout;
     private ImageView ivExpressionCancle;
     private Activity liveVideoActivity;
-    private QuestionBll questionBll;
+    private KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener;
     /** 竖屏的时候，也添加横屏的消息 */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
     /** 是不是正在答题 */
     private boolean isAnaswer = false;
     LiveSoundPool liveSoundPool;
 
-    public LiveMessageStandPager(Context context, QuestionBll questionBll, BaseLiveMediaControllerBottom
+    public LiveMessageStandPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener, BaseLiveMediaControllerBottom
             liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
         super(context);
         liveVideoActivity = (Activity) context;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
-        this.questionBll = questionBll;
+        this.keyboardShowingListener = keyboardShowingListener;
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
         Resources resources = context.getResources();
@@ -313,7 +315,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                 if (goldNum == null) {
                     OtherModulesEnter.requestGoldTotal(mContext);
                 }
-                if (questionBll.isAnaswer()) {
+                QuestionStatic questionStatic = ProxUtil.getProxUtil().get(mContext, QuestionStatic.class);
+                if (questionStatic != null && questionStatic.isAnaswer()) {
                     XESToastUtils.showToast(mContext, "正在答题，不能献花");
                     return;
                 }
@@ -409,7 +412,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                             onTitleShow(true);
                         }
                         keyboardShowing = isShowing;
-                        questionBll.onKeyboardShowing(isShowing);
+                        keyboardShowingListener.onKeyboardShowing(isShowing);
                         if (keyboardShowing) {
                             btMessageExpress.setBackgroundResource(R.drawable.selector_live_stand_chat_expression);
                         }

@@ -58,7 +58,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
@@ -123,7 +125,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     private KPSwitchFSPanelLinearLayout switchFSPanelLinearLayout;
     private ImageView ivExpressionCancle;
     private Activity liveVideoActivity;
-    private QuestionBll questionBll;
+    private KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener;
     /** 竖屏的时候，也添加横屏的消息 */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
     LiveAndBackDebug liveAndBackDebug;
@@ -132,12 +134,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     private View mFloatView;
     private PopupWindow mPopupWindow;
 
-    public LiveMessagePager(Context context, QuestionBll questionBll, LiveAndBackDebug ums, BaseLiveMediaControllerBottom
+    public LiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener, LiveAndBackDebug ums, BaseLiveMediaControllerBottom
             liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
         super(context);
         liveVideoActivity = (Activity) context;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
-        this.questionBll = questionBll;
+        this.keyboardShowingListener = keyboardShowingListener;
         this.liveAndBackDebug = ums;
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
@@ -262,7 +264,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 if (goldNum == null) {
                     OtherModulesEnter.requestGoldTotal(mContext);
                 }
-                if (questionBll.isAnaswer()) {
+                QuestionStatic questionStatic = ProxUtil.getProxUtil().get(mContext, QuestionStatic.class);
+                if (questionStatic != null && questionStatic.isAnaswer()) {
                     commonAction.isAnaswer();
                     return;
                 }
@@ -348,7 +351,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                             onTitleShow(true);
                         }
                         keyboardShowing = isShowing;
-                        questionBll.onKeyboardShowing(isShowing);
+                        keyboardShowingListener.onKeyboardShowing(isShowing);
                         if (keyboardShowing) {
                             btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
                         }

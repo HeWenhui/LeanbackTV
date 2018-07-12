@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.KeyboardShowingReg;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
@@ -99,7 +100,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mHttpResponseParser = mLiveBll.getHttpResponseParser();
         mHttpManager = mLiveBll.getHttpManager();
         starAction = getInstance(LiveAchievementIRCBll.class);
-        mRoomAction.setQuestionBll(getInstance(QuestionBll.class));
+//        mRoomAction.setQuestionBll(getInstance(QuestionBll.class));
         VideoChatStatusChange videoChatStatusChange = getInstance(VideoChatStatusChange.class);
         if (videoChatStatusChange != null) {
             videoChatStatusChange.addVideoChatStatusChange(new VideoChatStatusChange.ChatStatusChange() {
