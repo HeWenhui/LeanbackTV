@@ -12,10 +12,10 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -431,7 +431,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
 
         if (OPEN_AUTO_SIGN) {
             // 理科直播 自动签到
-            boolean isAutoSign = data != null && data.getIsArts() != 1 && liveType == LiveBll.LIVE_TYPE_LIVE;
+            boolean isAutoSign = data != null && data.getIsArts() != 1 && liveType == LiveVideoConfig.LIVE_TYPE_LIVE;
             setAutoSign(isAutoSign);
         }
 

@@ -34,7 +34,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AuditClassBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AuditClassLiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AuditVideoAction;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -445,7 +444,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 "times=" + times + ",mVSectionID=" + mVSectionID);
         from = intent.getIntExtra(ENTER_ROOM_FROM, 0);
         //XesMobAgent.enterLiveRoomFrom(from);
-        if (liveType == LiveBll.LIVE_TYPE_LIVE) {// 直播
+        if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {// 直播
             mLiveBll = new AuditClassLiveBll(this, stuCouId, "", mVSectionID, from);
         } else {
             Toast.makeText(this, "直播类型不支持", Toast.LENGTH_SHORT).show();
@@ -797,7 +796,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 //                if (tvLoadingHint != null) {
 //                    tvLoadingHint.setText(msg);
 //                }
-                if (liveType == LiveBll.LIVE_TYPE_LIVE) {
+                if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                     if (mGetInfo.getStudentLiveInfo().isExpe() && LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())) {
                         tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
                         setFirstBackgroundVisible(View.VISIBLE);
@@ -854,7 +853,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                     setFirstBackgroundVisible(View.VISIBLE);
                 }
                 if (tvLoadingHint != null) {
-                    if (liveType != LiveBll.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
+                    if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
                         tvLoadingHint.setText(mainTeacherLoad);
                     } else {
                         tvLoadingHint.setText(coachTeacherLoad);
@@ -969,7 +968,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 }
                 isPlay = false;
                 setFirstBackgroundVisible(View.VISIBLE);
-                if (liveType == LiveBll.LIVE_TYPE_LIVE) {
+                if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                     if (mGetInfo.getStudentLiveInfo().isExpe() && LiveTopic.MODE_TRANING.equals(mode)) {
                         tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
                         return;
@@ -1043,7 +1042,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             return;
         }
         totalFrameStat.onReplay();
-        if (liveType == LiveBll.LIVE_TYPE_LIVE) {
+        if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (LiveTopic.MODE_TRANING.endsWith(mGetInfo.getLiveTopic().getMode()) && mGetInfo.getStudentLiveInfo().isExpe()) {
                 tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
                 setFirstBackgroundVisible(View.VISIBLE);
@@ -1062,7 +1061,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                         @Override
                         public void run() {
                             if (tvLoadingHint != null) {
-                                if (liveType != LiveBll.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
+                                if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
                                     tvLoadingHint.setText(mainTeacherLoad);
                                 } else {
                                     tvLoadingHint.setText(coachTeacherLoad);
@@ -1376,7 +1375,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                     }
                     mLogtf.d("onFail:arg2=" + arg2 + ",errorMsg=" + errorMsg + ",isPresent=" + mLiveBll.isPresent());
                     if (mLiveBll.isPresent()) {
-                        if (liveType != LiveBll.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
+                        if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
                             tvLoadingHint.setText(mainTeacherLoad);
                         } else {
                             tvLoadingHint.setText(coachTeacherLoad);
@@ -1509,7 +1508,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         Intent intent = new Intent(context, AuditClassLiveActivity.class);
         intent.putExtra("stuCouId", stuCouId);
         intent.putExtra("vSectionID", liveId);
-        intent.putExtra("type", LiveBll.LIVE_TYPE_LIVE);
+        intent.putExtra("type", LiveVideoConfig.LIVE_TYPE_LIVE);
         context.startActivity(intent);
     }
 

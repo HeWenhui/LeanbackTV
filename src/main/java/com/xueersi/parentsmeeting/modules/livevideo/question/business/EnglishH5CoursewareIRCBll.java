@@ -11,6 +11,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
@@ -230,7 +231,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     videoQuestionLiveEntity.id + ",liveId=" + mLiveId + ",testAnswer="
                     + testAnswer);
             String userMode = "1";
-            if (mLiveType == LiveBll2.LIVE_TYPE_LIVE) {
+            if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 if (mGetInfo.getStudentLiveInfo().isExpe()) {
                     userMode = "0";
                 }

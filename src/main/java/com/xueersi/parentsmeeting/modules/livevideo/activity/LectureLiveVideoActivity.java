@@ -323,9 +323,9 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         }
         int from = intent.getIntExtra(ENTER_ROOM_FROM, 0);
         XesMobAgent.enterLiveRoomFrom(from);
-        if (liveType == LiveBll.LIVE_TYPE_LIVE || liveType == LiveBll.LIVE_TYPE_LECTURE) {// 直播
+        if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE || liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {// 直播
             mLiveBll = new LiveBll(this, mVSectionID, liveType, from);
-        } else if (liveType == LiveBll.LIVE_TYPE_TUTORIAL) {// 辅导
+        } else if (liveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {// 辅导
             mLiveBll = new LiveBll(this, mVSectionID, intent.getStringExtra("currentDutyId"), liveType, from);
         } else {
             Toast.makeText(this, "直播类型不支持", Toast.LENGTH_SHORT).show();
@@ -925,7 +925,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
             @Override
             public void run() {
                 if (tvLoadingHint != null) {
-                    if (liveType != LiveBll.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic()
+                    if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic()
                             .getMode())) {
                         tvLoadingHint.setText(mainTeacherLoad);
                     } else {
@@ -1035,7 +1035,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                         @Override
                         public void run() {
                             if (tvLoadingHint != null) {
-                                if (liveType != LiveBll.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo
+                                if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo
                                         .getLiveTopic().getMode())) {
                                     tvLoadingHint.setText(mainTeacherLoad);
                                 } else {
@@ -1274,7 +1274,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                     }
                     mLogtf.d("onFail:arg2=" + arg2 + ",errorMsg=" + errorMsg + ",isPresent=" + mLiveBll.isPresent());
                     if (mLiveBll.isPresent()) {
-                        if (liveType != LiveBll.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic
+                        if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic
                                 ().getMode())) {
                             tvLoadingHint.setText(mainTeacherLoad);
                         } else {

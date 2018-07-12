@@ -316,7 +316,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         final ViewGroup.LayoutParams lp = videoView.getLayoutParams();
 
         //公开表扬,只有直播有
-        if (liveType == LiveBll.LIVE_TYPE_LIVE) {
+        if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (rankBll != null) {
                 rankBll.initView(bottomContent, lp);
             }
@@ -432,13 +432,13 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         }
         from = intent.getIntExtra(ENTER_ROOM_FROM, 0);
         XesMobAgent.enterLiveRoomFrom(from);
-        if (liveType == LiveBll.LIVE_TYPE_LIVE) {// 直播
+        if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {// 直播
             String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
             mGetInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
             mLiveBll = new LiveBll(this, vStuCourseID, courseId, mVSectionID, from, mGetInfo);
-        } else if (liveType == LiveBll.LIVE_TYPE_LECTURE) {
+        } else if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
             mLiveBll = new LiveBll(this, mVSectionID, liveType, from);
-        } else if (liveType == LiveBll.LIVE_TYPE_TUTORIAL) {// 辅导
+        } else if (liveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {// 辅导
             mLiveBll = new LiveBll(this, mVSectionID, intent.getStringExtra("currentDutyId"), liveType, from);
         } else {
             Toast.makeText(this, "直播类型不支持", Toast.LENGTH_SHORT).show();
@@ -499,7 +499,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         englishH5CoursewareBll.setVSectionID(mVSectionID);
         englishH5CoursewareBll.setLiveBll(mLiveBll);
         englishH5CoursewareBll.initData();
-        if (liveType == LiveBll.LIVE_TYPE_LIVE) {
+        if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             rankBll = new RankBll(this);
             rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
             rankBll.setLiveBll(mLiveBll);
@@ -1038,7 +1038,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
 //        mMediaController.setControllerBottom(liveMessageBll.getLiveMediaControllerBottom(), false);
 //        rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
 
-        if (liveType == LiveBll.LIVE_TYPE_LIVE) {
+        if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
             if (rankBll != null) {
                 rankBll.setGetInfo(mGetInfo);
@@ -1152,7 +1152,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                     setFirstBackgroundVisible(View.VISIBLE);
                 }
                 if (tvLoadingHint != null) {
-                    if (liveType != LiveBll.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
+                    if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
                         tvLoadingHint.setText(mainTeacherLoad);
                     } else {
                         tvLoadingHint.setText(coachTeacherLoad);
@@ -1224,7 +1224,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                 }
                 isPlay = false;
                 setFirstBackgroundVisible(View.VISIBLE);
-                if (liveType == LiveBll.LIVE_TYPE_LIVE) {
+                if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                     if (mGetInfo.getStudentLiveInfo().isExpe() && LiveTopic.MODE_TRANING.equals(mode)) {
                         tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
                         return;
@@ -1318,7 +1318,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                         @Override
                         public void run() {
                             if (tvLoadingHint != null) {
-                                if (liveType != LiveBll.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
+                                if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
                                     tvLoadingHint.setText(mainTeacherLoad);
                                 } else {
                                     tvLoadingHint.setText(coachTeacherLoad);
@@ -1571,7 +1571,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
 //                    }
                     mLogtf.d("onFail:arg2=" + arg2 + ",errorMsg=" + errorMsg + ",isPresent=" + mLiveBll.isPresent());
                     if (mLiveBll.isPresent()) {
-                        if (liveType != LiveBll.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
+                        if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
                             tvLoadingHint.setText(mainTeacherLoad);
                         } else {
                             tvLoadingHint.setText(coachTeacherLoad);

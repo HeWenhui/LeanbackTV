@@ -43,7 +43,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.UserOnline;
@@ -397,11 +396,11 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         }
         from = intent.getIntExtra(ENTER_ROOM_FROM, 0);
         XesMobAgent.enterLiveRoomFrom(from);
-        if (liveType == LiveBll.LIVE_TYPE_LIVE) {// 直播
+        if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {// 直播
             mLiveBll = new LiveBll2(activity, vStuCourseID, courseId, mVSectionID, from, null);
-        } else if (liveType == LiveBll.LIVE_TYPE_LECTURE) {
+        } else if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
             mLiveBll = new LiveBll2(activity, mVSectionID, liveType, from);
-        } else if (liveType == LiveBll.LIVE_TYPE_TUTORIAL) {// 辅导
+        } else if (liveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {// 辅导
             mLiveBll = new LiveBll2(activity, mVSectionID, intent.getStringExtra("currentDutyId"), liveType, from);
         } else {
             Toast.makeText(activity, "直播类型不支持", Toast.LENGTH_SHORT).show();
@@ -675,7 +674,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (liveType == LiveBll.LIVE_TYPE_LIVE) {
+                if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                     if (mGetInfo.getStudentLiveInfo().isExpe() && LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())) {
                         tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
                         setFirstBackgroundVisible(View.VISIBLE);
@@ -712,7 +711,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             liveMediaControllerBottom.getBtMark().setVisibility(View.VISIBLE);
         }
         long before = System.currentTimeMillis();
-        if (liveType == LiveBll.LIVE_TYPE_LIVE) {
+        if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
         }
         Loger.d(TAG, "onLiveInit:time=" + (System.currentTimeMillis() - before));
@@ -757,7 +756,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                     setFirstBackgroundVisible(View.VISIBLE);
                 }
                 if (tvLoadingHint != null) {
-                    if (liveType != LiveBll.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
+                    if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
                         tvLoadingHint.setText(mainTeacherLoad);
                     } else {
                         tvLoadingHint.setText(coachTeacherLoad);
@@ -782,7 +781,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                 }
                 isPlay = false;
                 setFirstBackgroundVisible(View.VISIBLE);
-                if (liveType == LiveBll.LIVE_TYPE_LIVE) {
+                if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                     if (mGetInfo.getStudentLiveInfo().isExpe() && LiveTopic.MODE_TRANING.equals(mode)) {
                         tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
                         return;
@@ -852,7 +851,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             return;
         }
         mLiveVideoBll.onReplay();
-        if (liveType == LiveBll.LIVE_TYPE_LIVE) {
+        if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (LiveTopic.MODE_TRANING.endsWith(mGetInfo.getLiveTopic().getMode()) && mGetInfo.getStudentLiveInfo().isExpe()) {
                 tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
                 setFirstBackgroundVisible(View.VISIBLE);
@@ -871,7 +870,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                         @Override
                         public void run() {
                             if (tvLoadingHint != null) {
-                                if (liveType != LiveBll.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
+                                if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
                                     tvLoadingHint.setText(mainTeacherLoad);
                                 } else {
                                     tvLoadingHint.setText(coachTeacherLoad);
@@ -911,7 +910,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                         }
                     }
                     if (mLiveBll.isPresent()) {
-                        if (liveType != LiveBll.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
+                        if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
                             tvLoadingHint.setText(mainTeacherLoad);
                         } else {
                             tvLoadingHint.setText(coachTeacherLoad);

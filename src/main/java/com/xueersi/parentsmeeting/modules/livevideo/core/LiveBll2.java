@@ -36,6 +36,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -74,12 +75,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private LiveIRCMessageBll liveIRCMessageBll;
     private final int mLiveType;
-    /** 录播课的直播 */
-    public final static int LIVE_TYPE_TUTORIAL = 1;
-    /** 公开直播 */
-    public final static int LIVE_TYPE_LECTURE = 2;
-    /** 直播课的直播 */
-    public final static int LIVE_TYPE_LIVE = 3;
     private LogToFile mLogtf;
     private String mLiveId;
     private String mCourseId;
@@ -109,7 +104,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         this.mStuCouId = vStuCourseID;
         this.mCourseId = courseId;
         this.mLiveId = vSectionID;
-        this.mLiveType = LIVE_TYPE_LIVE;
+        this.mLiveType = LiveVideoConfig.LIVE_TYPE_LIVE;
         this.mForm = form;
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("courseId", courseId);
@@ -138,7 +133,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 + ".txt"));
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
-        if (type != LIVE_TYPE_LIVE) {
+        if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
             mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         }
     }
@@ -157,7 +152,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 + ".txt"));
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
-        if (type != LIVE_TYPE_LIVE) {
+        if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
             mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         }
     }
@@ -279,7 +274,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 public void onPmSuccess(ResponseEntity responseEntity) {
                     mLogtf.d("getInfo:onPmSuccess" + responseEntity.getJsonObject());
                     JSONObject object = (JSONObject) responseEntity.getJsonObject();
-                    if (mLiveType == LIVE_TYPE_LECTURE) {
+                    if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
                         if (object.optInt("isAllow", 1) == 0) {
                             if (mVideoAction != null) {
                                 mVideoAction.onLiveDontAllow(object.optString("refuseReason"));
@@ -308,13 +303,13 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 }
             };
             // 直播
-            if (mLiveType == LIVE_TYPE_LIVE) {
+            if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 mHttpManager.liveGetInfo(enstuId, mCourseId, mLiveId, 0, callBack);
             }
             // 录播
-            else if (mLiveType == LIVE_TYPE_TUTORIAL) {
+            else if (mLiveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {
                 mHttpManager.liveTutorialGetInfo(enstuId, mLiveId, callBack);
-            } else if (mLiveType == LIVE_TYPE_LECTURE) {
+            } else if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
                 mHttpManager.liveLectureGetInfo(enstuId, mLiveId, callBack);
             }
         } else {
@@ -374,9 +369,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             newTalkConf.addAll(mGetInfo.getNewTalkConf());
         }
         String channel = "";
-        if (mLiveType == LIVE_TYPE_TUTORIAL) {
+        if (mLiveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {
             channel = "1" + ROOM_MIDDLE + mGetInfo.getId();
-        } else if (mLiveType == LIVE_TYPE_LECTURE) {
+        } else if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
             if (StringUtils.isEmpty(mGetInfo.getRoomId())) {
                 channel = "2" + ROOM_MIDDLE + mGetInfo.getId();
             } else {
@@ -528,7 +523,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 LiveTopic liveTopic = mHttpResponseParser.parseLiveTopic(mLiveTopic, jsonObject, mLiveType);
                 boolean teacherModeChanged = !mLiveTopic.getMode().equals(liveTopic.getMode());
                 ////直播相关//////
-                if (mLiveType == LIVE_TYPE_LIVE) {
+                if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                     //模式切换
                     if (!(mLiveTopic.getMode().equals(liveTopic.getMode()))) {
                         mLiveTopic.setMode(liveTopic.getMode());
@@ -834,7 +829,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
      */
     public String getMode() {
         String mode;
-        if (mLiveType == LIVE_TYPE_LIVE) {
+        if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (mLiveTopic == null) {
                 mode = LiveTopic.MODE_CLASS;
             } else {

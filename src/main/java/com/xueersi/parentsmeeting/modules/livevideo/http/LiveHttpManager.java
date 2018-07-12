@@ -10,7 +10,6 @@ import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.common.business.UserBll;
@@ -280,16 +279,16 @@ public class LiveHttpManager extends BaseHttpBusiness {
             hbTime, HttpCallBack requestCallBack) {
         String url;
         HttpRequestParams params = new HttpRequestParams();
-        if (type == LiveBll.LIVE_TYPE_LIVE) {// 直播
+        if (type == LiveVideoConfig.LIVE_TYPE_LIVE) {// 直播
             url = liveVideoSAConfigInner.URL_LIVE_USER_ONLINE;
             params.addBodyParam("liveId", liveId);
             params.addBodyParam("teacherId", teacherId);
             setDefaultParameter(params);
-        } else if (type == LiveBll.LIVE_TYPE_TUTORIAL) {// 辅导
+        } else if (type == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {// 辅导
             url = LiveVideoConfig.URL_LIVE_TUTORIAL_USER_ONLINE;
             params.addBodyParam("classId", liveId);
             params.addBodyParam("dutyId", currentDutyId);
-        } else if (type == LiveBll.LIVE_TYPE_LECTURE) {// 公开直播
+        } else if (type == LiveVideoConfig.LIVE_TYPE_LECTURE) {// 公开直播
             url = LiveVideoConfig.URL_LIVE_LECTURE_USER_ONLINE;
             params.addBodyParam("liveId", liveId);
         } else {
@@ -314,16 +313,16 @@ public class LiveHttpManager extends BaseHttpBusiness {
                                 HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         String url;
-        if (type == LiveBll.LIVE_TYPE_LIVE) {// 直播
+        if (type == LiveVideoConfig.LIVE_TYPE_LIVE) {// 直播
             url = liveVideoSAConfigInner.URL_LIVE_RECEIVE_GOLD;
             requestCallBack.url = url;
             params.addBodyParam("liveId", liveid);
             setDefaultParameter(params);
-        } else if (type == LiveBll.LIVE_TYPE_TUTORIAL) {// 辅导
+        } else if (type == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {// 辅导
             url = LiveVideoConfig.URL_LIVE_TUTORIAL_GOLD;
             requestCallBack.url = LiveVideoConfig.URL_LIVE_TUTORIAL_GOLD;
             params.addBodyParam("classId", liveid);
-        } else if (type == LiveBll.LIVE_TYPE_LECTURE) {// 公开直播
+        } else if (type == LiveVideoConfig.LIVE_TYPE_LECTURE) {// 公开直播
             url = LiveVideoConfig.URL_LIVE_LECTURE_GOLD;
             requestCallBack.url = LiveVideoConfig.URL_LIVE_LECTURE_GOLD;
             params.addBodyParam("liveId", liveid);
@@ -373,7 +372,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
                                      boolean isRight, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         String url;
-        if (type == LiveBll.LIVE_TYPE_LIVE) {// 直播
+        if (type == LiveVideoConfig.LIVE_TYPE_LIVE) {// 直播
             if (isVoice) {
                 url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_TEST_ANSWER_VOICE;
             } else {
@@ -381,10 +380,10 @@ public class LiveHttpManager extends BaseHttpBusiness {
             }
             params.addBodyParam("liveId", liveId);
             setDefaultParameter(params);
-        } else if (type == LiveBll.LIVE_TYPE_TUTORIAL) {// 辅导
+        } else if (type == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {// 辅导
             url = LiveVideoConfig.URL_LIVE_TUTORIAL_SUBMIT_TEST_ANSWER;
             params.addBodyParam("classId", liveId);
-        } else if (type == LiveBll.LIVE_TYPE_LECTURE) {// 公开
+        } else if (type == LiveVideoConfig.LIVE_TYPE_LECTURE) {// 公开
             url = LiveVideoConfig.URL_LIVE_LECTURE_SUBMIT_TEST_ANSWER;
             params.addBodyParam("liveId", liveId);
         } else {
@@ -479,7 +478,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
 //        params.addBodyParam("enstuId", enstuId);
         setDefaultParameter(params);
         String url;
-        if (livetype == LiveBll.LIVE_TYPE_LIVE) {
+        if (livetype == LiveVideoConfig.LIVE_TYPE_LIVE) {
             url = liveVideoSAConfigInner.URL_LIVE_GET_LEARNING_STAT;
         } else {
             url = LiveVideoConfig.URL_LIVE_GET_FEED_BACK;
@@ -524,14 +523,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         String url;
-        if (type == LiveBll.LIVE_TYPE_LIVE) {// 直播
+        if (type == LiveVideoConfig.LIVE_TYPE_LIVE) {// 直播
             url = liveVideoSAConfigInner.URL_LIVE_PRAISE_TEACHER;
             params.addBodyParam("liveId", liveId);
             setDefaultParameter(params);
-        } else if (type == LiveBll.LIVE_TYPE_TUTORIAL) {// 辅导
+        } else if (type == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {// 辅导
             url = LiveVideoConfig.URL_LIVE_TUTORIAL_PRAISE_TEACHER;
             params.addBodyParam("classId", liveId);
-        } else if (type == LiveBll.LIVE_TYPE_LECTURE) {// 公开
+        } else if (type == LiveVideoConfig.LIVE_TYPE_LECTURE) {// 公开
             url = LiveVideoConfig.URL_LIVE_LECTURE_PRAISE_TEACHER;
             params.addBodyParam("liveId", liveId);
         } else {
@@ -646,14 +645,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         String url;
-        if (type == LiveBll.LIVE_TYPE_LIVE) {// 直播
+        if (type == LiveVideoConfig.LIVE_TYPE_LIVE) {// 直播
             url = liveVideoSAConfigInner.URL_LIVE_SETSTAR;
             requestCallBack.url = url;
             params.addBodyParam("liveId", liveId);
             setDefaultParameter(params);
-        } else if (type == LiveBll.LIVE_TYPE_TUTORIAL) {// 辅导
+        } else if (type == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {// 辅导
             return;
-        } else if (type == LiveBll.LIVE_TYPE_LECTURE) {// 公开
+        } else if (type == LiveVideoConfig.LIVE_TYPE_LECTURE) {// 公开
             url = LiveVideoConfig.URL_LIVE_LEC_SETSTAR;
             requestCallBack.url = url;
             params.addBodyParam("liveId", liveId);

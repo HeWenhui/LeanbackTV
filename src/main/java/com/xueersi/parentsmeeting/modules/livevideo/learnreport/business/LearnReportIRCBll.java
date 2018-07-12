@@ -9,6 +9,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
@@ -30,14 +31,13 @@ public class LearnReportIRCBll extends LiveBaseBll implements NoticeAction {
 
     public LearnReportIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context, liveBll, rootView);
-        mLearnReportAction = new LearnReportBll(context);
     }
 
 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        if (mLiveType == LiveBll2.LIVE_TYPE_LIVE && mGetInfo.getStudentLiveInfo() != null) {
+        if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE && mGetInfo.getStudentLiveInfo() != null) {
             if (mGetInfo.getStudentLiveInfo().getEvaluateStatus() == 1) {
                 mLogtf.d("onGetInfoSuccess:getLearnReport");
                 getLearnReport(1, 1000);

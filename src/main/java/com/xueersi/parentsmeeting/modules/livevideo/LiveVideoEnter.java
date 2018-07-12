@@ -20,9 +20,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLiveVideoAct
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveStandPlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity2;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.StandLiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -120,7 +119,7 @@ public class LiveVideoEnter {
         Bundle bundle = new Bundle();
         bundle.putString("courseId", courseId);
         bundle.putString("vSectionID", vSectionID);
-        bundle.putInt("type", LiveBll.LIVE_TYPE_LIVE);
+        bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LIVE);
         bundle.putInt(LiveVideoActivity.ENTER_ROOM_FROM, from);
         LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
         return true;
@@ -143,7 +142,7 @@ public class LiveVideoEnter {
         bundle.putString("courseId", courseId);
         bundle.putString("vStuCourseID", vStuCourseID);
         bundle.putString("vSectionID", vSectionID);
-        bundle.putInt("type", LiveBll.LIVE_TYPE_LIVE);
+        bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LIVE);
         bundle.putInt(LiveVideoActivity.ENTER_ROOM_FROM, from);
 
         DataLoadEntity dataLoadEntity = new DataLoadEntity(context);
@@ -158,7 +157,7 @@ public class LiveVideoEnter {
                 LiveHttpResponseParser mHttpResponseParser = new LiveHttpResponseParser(context);
                 JSONObject object = (JSONObject) responseEntity.getJsonObject();
                 LiveTopic mLiveTopic = new LiveTopic();
-                LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, LiveBll.LIVE_TYPE_LIVE, from);
+                LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, LiveVideoConfig.LIVE_TYPE_LIVE, from);
                 if (mGetInfo == null) {
                     XESToastUtils.showToast(context, "服务器异常");
                     return;
@@ -217,7 +216,7 @@ public class LiveVideoEnter {
         }
         Bundle bundle = new Bundle();
         bundle.putString("vSectionID", vSectionID);
-        bundle.putInt("type", LiveBll.LIVE_TYPE_LECTURE);
+        bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LECTURE);
         bundle.putInt(LectureLiveVideoActivity.ENTER_ROOM_FROM, from);
         LectureLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
     }
@@ -243,7 +242,7 @@ public class LiveVideoEnter {
         Bundle bundle = new Bundle();
         bundle.putString("vSectionID", vSectionID);
         bundle.putString("currentDutyId", currentDutyId);
-        bundle.putInt("type", LiveBll.LIVE_TYPE_TUTORIAL);
+        bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_TUTORIAL);
         bundle.putInt(LiveVideoActivity.ENTER_ROOM_FROM, from);
         LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
     }
@@ -264,7 +263,7 @@ public class LiveVideoEnter {
         bundle.putString("vSectionID", jsonObject.optString("vSectionId"));
         bundle.putString("vStuCourseID", jsonObject.optString("stuCouId"));
         bundle.putString("courseId", jsonObject.optString("courseId"));
-        bundle.putInt("type", LiveBll.LIVE_TYPE_LIVE);
+        bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LIVE);
         bundle.putInt(LiveVideoActivity.ENTER_ROOM_FROM, LiveVideoBusinessConfig.ENTER_FROM_5);
         intent.putExtras(bundle);
         return intent;
@@ -286,7 +285,7 @@ public class LiveVideoEnter {
         Bundle bundle = new Bundle();
         bundle.putString("vSectionID", jsonObject.optString("vSectionId"));
         bundle.putString("currentDutyId", jsonObject.optString("currentDutyId"));
-        bundle.putInt("type", LiveBll.LIVE_TYPE_TUTORIAL);
+        bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_TUTORIAL);
         bundle.putInt(LiveVideoActivity.ENTER_ROOM_FROM, LiveVideoBusinessConfig.ENTER_FROM_13);
         intent.putExtras(bundle);
         return intent;
@@ -306,7 +305,7 @@ public class LiveVideoEnter {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Bundle bundle = new Bundle();
         bundle.putString("vSectionID", jsonObject.optString("courseId"));
-        bundle.putInt("type", LiveBll.LIVE_TYPE_LECTURE);
+        bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LECTURE);
         bundle.putInt(LiveVideoActivity.ENTER_ROOM_FROM, LiveVideoBusinessConfig.ENTER_FROM_25);
         intent.putExtras(bundle);
         return intent;

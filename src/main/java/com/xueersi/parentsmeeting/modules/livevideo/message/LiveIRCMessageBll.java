@@ -14,7 +14,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -120,7 +120,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
 
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        if (mLiveType == LiveBll2.LIVE_TYPE_LIVE) {
+        if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
             if (!StringUtils.isEmpty(studentLiveInfo.getTeamId()) && !"0".equals(studentLiveInfo.getTeamId())) {
                 haveTeam = true;
@@ -240,7 +240,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
             s += ",arrayList=isSpace";
         }
         s += ",haveMainTeacher=" + haveMainTeacher;
-        if (mLiveType == LiveBll2.LIVE_TYPE_LIVE) {
+        if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             s += ",haveCounteacher=" + haveCounteacher;
         }
         mLogtf.d(s);
@@ -255,7 +255,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
     private boolean isMyTeam(String sender) {
         boolean isMyTeam = true;
         ArrayList<String> teamStuIds = mGetInfo.getTeamStuIds();
-        if (mLiveType == LiveBll.LIVE_TYPE_LIVE && !teamStuIds.isEmpty()) {
+        if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE && !teamStuIds.isEmpty()) {
             isMyTeam = false;
             String split[] = sender.split("_");
             if (split.length > 4) {

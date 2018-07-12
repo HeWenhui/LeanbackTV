@@ -8,6 +8,7 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 
@@ -106,19 +107,19 @@ public class UserOnline {
                         return;
                     }
                     userOnlineError++;
-                    if (mLiveType == LiveBll.LIVE_TYPE_LIVE) {
+                    if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                         //liveId
                         //teacherId
                         mLogtf.d("getUserOnline(JSONException):enstuId=" + enstuId + ",mHbCount=" + mHbCount + "," +
                                 "teacherId=" + finalTeacherId +
                                 ",result=" + result);
-                    } else if (mLiveType == LiveBll.LIVE_TYPE_TUTORIAL) {
+                    } else if (mLiveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {
                         //classId
                         //dutyId
                         mLogtf.d("getUserOnline(JSONException):enstuId=" + enstuId + ",mHbCount=" + mHbCount + "," +
                                 "mCurrentDutyId=" +
                                 mCurrentDutyId + ",result=" + result);
-                    } else if (mLiveType == LiveBll.LIVE_TYPE_LECTURE) {
+                    } else if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
                         //liveId
                         mLogtf.d("getUserOnline(JSONException):enstuId=" + enstuId + ",mHbCount=" + mHbCount + "," +
                                 "result=" + result);

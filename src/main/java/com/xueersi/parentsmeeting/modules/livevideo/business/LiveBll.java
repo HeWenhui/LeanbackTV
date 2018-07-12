@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.English
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
@@ -58,6 +59,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnRe
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LecLearnReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
+import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.H5CoursewareAction;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.PraiseListPager;
@@ -211,14 +213,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
      * 渠道前缀
      */
     private final String CNANNEL_PREFIX = "x_";
-    /**
-     * 主讲老师前缀
-     */
-    public static final String TEACHER_PREFIX = "t_";
-    /**
-     * 辅导老师前缀
-     */
-    public static String COUNTTEACHER_PREFIX = "f_";
     private final String ROOM_MIDDLE = "L";
     private Callback.Cancelable mCataDataCancle;
     private Callback.Cancelable mGetPlayServerCancle;
@@ -238,18 +232,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     private AtomicInteger mCompleteCount = new AtomicInteger(0);
     private AtomicInteger mCompleteMainTeacherCount = new AtomicInteger(0);
     private AtomicInteger mCompleteCounTeacherCount = new AtomicInteger(0);
-    /**
-     * 录播课的直播
-     */
-    public final static int LIVE_TYPE_TUTORIAL = 1;
-    /**
-     * 公开直播
-     */
-    public final static int LIVE_TYPE_LECTURE = 2;
-    /**
-     * 直播课的直播
-     */
-    public final static int LIVE_TYPE_LIVE = 3;
 
     /**
      * 签到成功 状态码
@@ -295,7 +277,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         this.vStuCourseID = vStuCourseID;
         this.courseId = courseId;
         this.mLiveId = vSectionID;
-        this.mLiveType = LIVE_TYPE_LIVE;
+        this.mLiveType = LiveVideoConfig.LIVE_TYPE_LIVE;
         this.form = form;
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("courseId", courseId);
@@ -324,7 +306,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 + ".txt"));
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
-        if (type != LIVE_TYPE_LIVE) {
+        if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
             mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         }
     }
@@ -342,7 +324,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 + ".txt"));
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
-        if (type != LIVE_TYPE_LIVE) {
+        if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
             mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         }
     }
@@ -366,7 +348,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 public void onPmSuccess(ResponseEntity responseEntity) {
                     mLogtf.d("getInfo:onPmSuccess" + responseEntity.getJsonObject());
                     JSONObject object = (JSONObject) responseEntity.getJsonObject();
-                    if (mLiveType == LIVE_TYPE_LECTURE) {
+                    if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
                         if (object.optInt("isAllow", 1) == 0) {
                             if (mVideoAction != null) {
                                 mVideoAction.onLiveDontAllow(object.optString("refuseReason"));
@@ -397,11 +379,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 }
             };
 //        mHttpManager.addBodyParam("enstuId", enstuId);
-            if (mLiveType == LIVE_TYPE_LIVE) {// 直播
+            if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {// 直播
                 mHttpManager.liveGetInfo(enstuId, courseId, mLiveId, 0, callBack);
-            } else if (mLiveType == LIVE_TYPE_TUTORIAL) {// 辅导
+            } else if (mLiveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {// 辅导
                 mHttpManager.liveTutorialGetInfo(enstuId, mLiveId, callBack);
-            } else if (mLiveType == LIVE_TYPE_LECTURE) {
+            } else if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
                 mHttpManager.liveLectureGetInfo(enstuId, mLiveId, callBack);
             }
         } else {
@@ -515,19 +497,19 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                         return;
                     }
                     userOnlineError++;
-                    if (mLiveType == LiveBll.LIVE_TYPE_LIVE) {
+                    if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                         //liveId
                         //teacherId
                         mLogtf.d("getUserOnline(JSONException):enstuId=" + enstuId + ",mHbCount=" + mHbCount + "," +
                                 "teacherId=" + finalTeacherId +
                                 ",result=" + result);
-                    } else if (mLiveType == LiveBll.LIVE_TYPE_TUTORIAL) {
+                    } else if (mLiveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {
                         //classId
                         //dutyId
                         mLogtf.d("getUserOnline(JSONException):enstuId=" + enstuId + ",mHbCount=" + mHbCount + "," +
                                 "mCurrentDutyId=" +
                                 mCurrentDutyId + ",result=" + result);
-                    } else if (mLiveType == LiveBll.LIVE_TYPE_LECTURE) {
+                    } else if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
                         //liveId
                         mLogtf.d("getUserOnline(JSONException):enstuId=" + enstuId + ",mHbCount=" + mHbCount + "," +
                                 "result=" + result);
@@ -661,7 +643,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 videoQuestionLiveEntity.id + ",liveId=" + liveId + ",testAnswer="
                 + testAnswer);
         String userMode = "1";
-        if (mLiveType == LIVE_TYPE_LIVE) {
+        if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (mGetInfo.getStudentLiveInfo().isExpe()) {
                 userMode = "0";
             }
@@ -818,7 +800,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 videoQuestionLiveEntity.id + ",liveId=" + liveId + ",testAnswer="
                 + testAnswer);
         String userMode = "1";
-        if (mLiveType == LIVE_TYPE_LIVE) {
+        if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (mGetInfo.getStudentLiveInfo().isExpe()) {
                 userMode = "0";
             }
@@ -1044,7 +1026,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 //                mLiveTopic.setMode(LiveTopic.MODE_CLASS);
                 mLogtf.d("onTopic:oldmode=" + mLiveTopic.getMode() + ",newmode=" + liveTopic.getMode() + ",topic=" +
                         liveTopic.getVideoQuestionLiveEntity());
-                if (mLiveType == LIVE_TYPE_LIVE) {
+                if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                     //模式切换
                     if (!(mLiveTopic.getMode().equals(liveTopic.getMode()))) {
                         mLiveTopic.setMode(liveTopic.getMode());
@@ -2245,7 +2227,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 User user = users[i];
                 String _nick = user.getNick();
                 if (_nick != null && _nick.length() > 2) {
-                    if (_nick.startsWith(TEACHER_PREFIX)) {
+                    if (_nick.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
                         s += ",mainTeacher=" + _nick;
                         haveMainTeacher = true;
                         synchronized (mIRCcallback) {
@@ -2256,7 +2238,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                                 && mVideoAction != null) {
                             mVideoAction.onTeacherQuit(false);
                         }
-                    } else if (_nick.startsWith(COUNTTEACHER_PREFIX)) {
+                    } else if (_nick.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
                         mCounTeacherStr = _nick;
                         haveCounteacher = true;
                         mCounteacher.isLeave = false;
@@ -2282,7 +2264,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 s += ",arrayList=isSpace";
             }
             s += ",haveMainTeacher=" + haveMainTeacher;
-            if (mLiveType == LIVE_TYPE_LIVE) {
+            if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 s += ",haveCounteacher=" + haveCounteacher;
             }
             mLogtf.d(s);
@@ -2297,7 +2279,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         private boolean isMyTeam(String sender) {
             boolean isMyTeam = true;
             ArrayList<String> teamStuIds = mGetInfo.getTeamStuIds();
-            if (mLiveType == LiveBll.LIVE_TYPE_LIVE && !teamStuIds.isEmpty()) {
+            if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE && !teamStuIds.isEmpty()) {
                 isMyTeam = false;
                 String split[] = sender.split("_");
                 if (split.length > 4) {
@@ -2316,7 +2298,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
         public void onJoin(String target, String sender, String login, String hostname) {
             Loger.d(TAG, "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
-            if (sender.startsWith(TEACHER_PREFIX)) {
+            if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
                 synchronized (mIRCcallback) {
                     mMainTeacher = new Teacher(sender);
                     mMainTeacherStr = sender;
@@ -2325,7 +2307,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode()) && mVideoAction != null) {
                     mVideoAction.onTeacherQuit(false);
                 }
-            } else if (sender.startsWith(COUNTTEACHER_PREFIX)) {
+            } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
                 mCounTeacherStr = sender;
                 mCounteacher.isLeave = false;
                 mLogtf.d("onJoin:Counteacher:target=" + target + ",mode=" + mLiveTopic.getMode());
@@ -2349,7 +2331,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
             Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                     + sourceHostname + ",reason=" + reason);
-            if (sourceNick.startsWith(TEACHER_PREFIX)) {
+            if (sourceNick.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
                 synchronized (mIRCcallback) {
                     mMainTeacher = null;
                 }
@@ -2357,7 +2339,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode()) && mVideoAction != null) {
                     mVideoAction.onTeacherQuit(true);
                 }
-            } else if (sourceNick.startsWith(COUNTTEACHER_PREFIX)) {
+            } else if (sourceNick.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
                 mCounteacher.isLeave = true;
                 mLogtf.d("onQuit:Counteacher quit");
                 if (LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode()) && mVideoAction != null) {
@@ -2475,7 +2457,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             appID = UmsConstants.LIVE_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
         }
-        if (mLiveType == LIVE_TYPE_LIVE) {
+        if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (mGetInfo.getIsArts() == 1) {
                 liveArtsHttpManager = new LiveArtsHttpManager(mHttpManager);
             } else {
@@ -2538,9 +2520,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             newTalkConf.addAll(mGetInfo.getNewTalkConf());
         }
         String channel = "";
-        if (mLiveType == LIVE_TYPE_TUTORIAL) {
+        if (mLiveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {
             channel = "1" + ROOM_MIDDLE + mGetInfo.getId();
-        } else if (mLiveType == LIVE_TYPE_LECTURE) {
+        } else if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
             if (StringUtils.isEmpty(mGetInfo.getRoomId())) {
                 channel = "2" + ROOM_MIDDLE + mGetInfo.getId();
             } else {
@@ -2877,7 +2859,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     private long lastGetPlayServer;
 
     private void liveGetPlayServer(final String mode, final boolean modechange) {
-        if (mLiveType == LIVE_TYPE_LIVE) {
+        if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (mGetInfo.getStudentLiveInfo().isExpe() && LiveTopic.MODE_TRANING.equals(mode)) {
                 mLogtf.d("liveGetPlayServer:isExpe");
                 return;
@@ -3603,7 +3585,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
      */
     public String getMode() {
         String mode;
-        if (mLiveType == LIVE_TYPE_LIVE) {
+        if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             mode = mLiveTopic.getMode();
         } else {
             mode = LiveTopic.MODE_CLASS;

@@ -53,6 +53,18 @@ public class LiveVideoConfig {
     public static final int VIDEO_MAXIMUM_HEIGHT = 2048;
     /** 播放器最大的宽 */
     public static final int VIDEO_MAXIMUM_WIDTH = 2048;
+    /**
+     * 录播课的直播
+     */
+    public final static int LIVE_TYPE_TUTORIAL = 1;
+    /**
+     * 公开直播
+     */
+    public final static int LIVE_TYPE_LECTURE = 2;
+    /**
+     * 直播课的直播
+     */
+    public final static int LIVE_TYPE_LIVE = 3;
     /** 语音评测地址 */
     public static String SPEECH_URL = "https://live.xueersi.com/LivePlayBack/speechEvalResult/";
     /** 获取学习报告-讲座 */

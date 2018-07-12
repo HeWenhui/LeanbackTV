@@ -2,12 +2,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
 
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
-import com.xueersi.parentsmeeting.modules.livevideo.BuildConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
@@ -47,8 +44,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -185,7 +180,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 liveTopic.setMode(mode == 0 ? LiveTopic.MODE_TRANING : LiveTopic.MODE_CLASS);
                 getInfo.setMode(liveTopic.getMode());
             }
-            if (liveType == LiveBll.LIVE_TYPE_LIVE) {
+            if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 JSONArray teamStuIdArray = data.optJSONArray("teamStuIds");
                 if (teamStuIdArray != null) {
                     try {
@@ -311,7 +306,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 String[] arrSubjIds = strSubjIds.split(",");
                 getInfo.setSubjectIds(arrSubjIds);
             }
-            if (liveType == LiveBll.LIVE_TYPE_LIVE) {
+            if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 if (getInfo.getIsArts() == 1) {
                     parseLiveGetInfoLibarts(data, liveTopic, getInfo);
                 } else {
@@ -371,12 +366,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     /** 解析直播topic数据 */
     public LiveTopic parseLiveTopic(LiveTopic oldLiveTopic, JSONObject liveTopicJson, int type) throws JSONException {
         LiveTopic liveTopic = new LiveTopic();
-        if (type != LiveBll.LIVE_TYPE_LIVE) {
+        if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
             liveTopic.setMode(LiveTopic.MODE_CLASS);
         }
 
         LiveTopic.TeamPkEntity teamPkEntity = new LiveTopic.TeamPkEntity();
-        if (type == LiveBll.LIVE_TYPE_LIVE && liveTopicJson.has("room_2")) {
+        if (type == LiveVideoConfig.LIVE_TYPE_LIVE && liveTopicJson.has("room_2")) {
             JSONObject status = liveTopicJson.getJSONObject("room_2");
             RoomStatusEntity coachStatusEntity = liveTopic.getCoachRoomstatus();
             coachStatusEntity.setMode(status.getString("mode"));

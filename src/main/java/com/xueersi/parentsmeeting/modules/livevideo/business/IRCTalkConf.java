@@ -112,7 +112,7 @@ public class IRCTalkConf {
         }
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveid", liveId);
-        if (mLiveType == LiveBll.LIVE_TYPE_LIVE) {
+        if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             params.addBodyParam("appid", "1");
             params.addBodyParam("classid", classid);
         } else {
