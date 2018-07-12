@@ -130,6 +130,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
         }
         mCounteacher = new Teacher(mGetInfo.getTeacherName());
+        mRoomAction.setLiveGetInfo(getInfo);
     }
 
     @Override
@@ -368,11 +369,12 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 
     @Override
     public void onNotice(JSONObject object, int type) {
+        String msg = "onNotice";
         switch (type) {
             case XESCODE.OPENBARRAGE: {
                 try {
                     boolean open = object.getBoolean("open");
-                    String msg = open ? "OPENBARRAGE" : "CLOSEBARRAGE";
+                    msg = open ? "OPENBARRAGE" : "CLOSEBARRAGE";
                     mLiveTopic.getMainRoomstatus().setOpenbarrage(open);
                     mLogtf.d(msg);
                     if (mRoomAction != null) {
@@ -384,13 +386,36 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 //getLearnReport();
                 break;
             }
+            case XESCODE.GAG: {
+                try {
+                    msg += "GAG";
+                    boolean disable = object.getBoolean("disable");
+                    //s_3_13827_11022_1
+                    String id = object.getString("id");
+                    if (("" + id).contains(mLiveBll.getNickname())) {
+                        mLiveTopic.setDisable(disable);
+                        if (mRoomAction != null) {
+                            mRoomAction.onDisable(disable, true);
+                        }
+                    } else {
+                        if (mRoomAction != null) {
+                            String name = object.optString("name");
+                            mRoomAction.onOtherDisable(id, name, disable);
+                        }
+                    }
+                    msg += ",disable=" + disable + ",id=" + id + "," + mLiveBll.getNickname();
+                } catch (Exception e) {
+
+                }
+            }
+            break;
         }
     }
 
     @Override
     public int[] getNoticeFilter() {
         return new int[]{
-                XESCODE.OPENBARRAGE
+                XESCODE.OPENBARRAGE, XESCODE.GAG
         };
     }
 
