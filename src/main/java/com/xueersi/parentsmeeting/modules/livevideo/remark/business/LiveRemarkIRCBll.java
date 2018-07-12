@@ -9,9 +9,14 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
+import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.SampleLiveVPlayerListener;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
@@ -19,11 +24,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChat
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
 
+import org.json.JSONObject;
+
 /**
  * Created by lyqai on 2018/7/11.
  */
 
-public class LiveRemarkIRCBll extends LiveBaseBll {
+public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, TopicAction {
     private PlayerService vPlayer;
     private LiveRemarkBll liveRemarkBll;
     LiveTextureView liveTextureView;
@@ -71,6 +78,8 @@ public class LiveRemarkIRCBll extends LiveBaseBll {
                     LiveRemarkIRCBll.this.onOpenSuccess();
                 }
             });
+        } else {
+            mLiveBll.removeBusinessBll(this);
         }
     }
 
@@ -119,6 +128,20 @@ public class LiveRemarkIRCBll extends LiveBaseBll {
                     liveRemarkBll.setTextureView(liveTextureView);
                     liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
                     liveRemarkBll.setLiveAndBackDebug(mLiveBll);
+                    liveRemarkBll.setHttpManager(getHttpManager());
+                    if (mGetInfo != null) {
+                        liveRemarkBll.setSysTimeOffset(mLiveBll.getSysTimeOffset());
+                    }
+                    if (mGetInfo != null && !"1".equals(mGetInfo.getIsShowMarkPoint())) {
+                        liveRemarkBll.hideBtMark();
+                    }
+                    mLogtf.i("setlivebll____onbreak:" + mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak()
+                            + "   stat:" + mGetInfo.getStat() + "   mode:" + mLiveBll.getLiveTopic().getMode());
+                    if (!mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak() && LiveTopic.MODE_CLASS.equals(mLiveBll.getLiveTopic().getMode())) {
+                        liveRemarkBll.setClassReady(true);
+                    } else {
+                        liveRemarkBll.setClassReady(false);
+                    }
                 }
             } else {
                 liveRemarkBll.initData();
@@ -126,4 +149,53 @@ public class LiveRemarkIRCBll extends LiveBaseBll {
         }
     }
 
+    @Override
+    public void onNotice(JSONObject object, int type) {
+        String msg = "onNotice";
+        switch (type) {
+            case XESCODE.CLASSBEGIN:
+                try {
+                    boolean begin = object.getBoolean("begin");
+                    mLiveBll.getLiveTopic().getMainRoomstatus().setClassbegin(begin);
+                    msg += begin ? "CLASSBEGIN" : "CLASSEND";
+                    logger.i("classBegin____onbreak:" + mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak()
+                            + "   mode:" + mLiveBll.getLiveTopic().getMode());
+                    if (!mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak() && liveRemarkBll != null && LiveTopic
+                            .MODE_CLASS.equals(mLiveBll.getLiveTopic().getMode())) {
+                        liveRemarkBll.setClassReady(true);
+                    }
+                } catch (Exception e) {
+
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        super.setVideoLayout(liveVideoPoint);
+        if (liveRemarkBll != null) {
+            liveRemarkBll.setVideoLayout(liveVideoPoint);
+        }
+    }
+
+    @Override
+    public int[] getNoticeFilter() {
+        return new int[]{XESCODE.CLASSBEGIN};
+    }
+
+    @Override
+    public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
+        if (liveRemarkBll != null) {
+            //主讲
+            logger.i("ontopic____onbreak:" + mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak()
+                    + "   mode:" + mLiveBll.getLiveTopic().getMode());
+            if (!liveTopic.getMainRoomstatus().isOnbreak() && liveTopic.getMode().equals(LiveTopic
+                    .MODE_CLASS)) {
+                liveRemarkBll.setClassReady(true);
+            } else {
+                liveRemarkBll.setClassReady(false);
+            }
+        }
+    }
 }

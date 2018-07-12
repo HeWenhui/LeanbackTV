@@ -11,6 +11,8 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -31,7 +33,7 @@ import java.util.Map;
  *         created  at 2018/6/20 9:34
  */
 public class LiveBaseBll extends BaseBll {
-
+    protected Logger logger = LoggerFactory.getLogger(TAG);
     protected RelativeLayout mRootView;
     protected LiveBll2 mLiveBll;
     protected Handler mHandler = new Handler(Looper.getMainLooper());

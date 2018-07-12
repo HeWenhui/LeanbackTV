@@ -231,6 +231,28 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         businessBlls.add(bll);
     }
 
+    public void removeBusinessBll(LiveBaseBll bll) {
+        businessBlls.remove(bll);
+        if (bll instanceof TopicAction) {
+            mTopicActions.remove(bll);
+        }
+        if (bll instanceof NoticeAction) {
+            //获得需要的notice type值
+            int[] noticeFilter = ((NoticeAction) bll).getNoticeFilter();
+            List<NoticeAction> noticeActions = null;
+            if (noticeFilter != null && noticeFilter.length > 0) {
+                for (int i = 0; i < noticeFilter.length; i++) {
+                    if ((noticeActions = mNoticeActionMap.get(noticeFilter[i])) != null) {
+                        noticeActions.remove(bll);
+                    }
+                }
+            }
+        }
+        if (bll instanceof MessageAction) {
+            mMessageActions.remove(bll);
+        }
+    }
+
     public List<LiveBaseBll> getBusinessBlls() {
         return businessBlls;
     }
@@ -645,6 +667,10 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             XesMobAgent.enterLiveRoom(1, (milliseconds1 - milliseconds2) / 60000);
         }
         return (milliseconds1 - milliseconds2) / 60000;
+    }
+
+    public long getSysTimeOffset() {
+        return sysTimeOffset;
     }
 
     private void onLiveFailure(String msg, Runnable runnable) {

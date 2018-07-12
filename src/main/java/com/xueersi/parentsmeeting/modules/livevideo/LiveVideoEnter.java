@@ -168,12 +168,13 @@ public class LiveVideoEnter {
                 if (mGetInfo.getPattern() == 2) {
                     StandLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
                 } else {
-
-                    if(mGetInfo.getIsArts() == 1){
-                        LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
-                    }else{
-                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
-                    }
+                    bundle.putInt("isArts", mGetInfo.getIsArts());
+//                    if (mGetInfo.getIsArts() == 1) {
+//                        LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+//                    } else {
+//                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+//                    }
+                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
                 }
             }
 
