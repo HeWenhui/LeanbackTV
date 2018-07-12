@@ -5,6 +5,8 @@ import android.os.Environment;
 import android.view.View;
 
 import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 
 import java.io.File;
@@ -14,6 +16,7 @@ import java.io.File;
  * 直播基础pager
  */
 public class LiveBasePager extends BasePager {
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     protected LogToFile mLogtf;
 
     public LiveBasePager(Context context) {

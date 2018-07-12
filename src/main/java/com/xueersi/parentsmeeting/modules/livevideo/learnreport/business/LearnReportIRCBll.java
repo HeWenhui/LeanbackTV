@@ -70,7 +70,7 @@ public class LearnReportIRCBll extends LiveBaseBll implements NoticeAction {
      */
     private synchronized void getLearnReport(final int from, final long delayTime) {
         XesMobAgent.liveLearnReport("request:" + from);
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        final String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("getLearnReport:enstuId=" + enstuId + ",liveType=" + mLiveType + ",liveId=" + mLiveId + "," +
                 "delayTime=" + delayTime);
         getHttpManager().getLearnReport(enstuId, mLiveId, mLiveType, new HttpCallBack(false) {
@@ -82,9 +82,23 @@ public class LearnReportIRCBll extends LiveBaseBll implements NoticeAction {
                     learnReportEntity.getStu().setStuName(mGetInfo.getStuName());
                     learnReportEntity.getStu().setTeacherName(mGetInfo.getTeacherName());
                     learnReportEntity.getStu().setTeacherIMG(mGetInfo.getTeacherIMG());
-                    if (mLearnReportAction != null) {
-                        mLearnReportAction.onLearnReport(learnReportEntity);
+                    if (mLearnReportAction == null) {
+                        LearnReportBll reportBll = new LearnReportBll(activity);
+                        reportBll.initView(mRootView);
+                        reportBll.setLiveBll(new LearnReportHttp() {
+                            @Override
+                            public void sendTeacherEvaluate(int[] score, HttpCallBack requestCallBack) {
+                                LearnReportIRCBll.this.sendTeacherEvaluate(score, requestCallBack);
+                            }
+
+                            @Override
+                            public void showToast(String errorMsg) {
+                                mLiveBll.showToast(errorMsg);
+                            }
+                        });
+                        mLearnReportAction = reportBll;
                     }
+                    mLearnReportAction.onLearnReport(learnReportEntity);
                 }
                 XesMobAgent.liveLearnReport("request-ok:" + from);
                 mLogtf.d("getLearnReport:onPmSuccess:learnReportEntity=" + (learnReportEntity == null) + "," +
@@ -114,5 +128,32 @@ public class LearnReportIRCBll extends LiveBaseBll implements NoticeAction {
         });
     }
 
+    /**
+     * 提交教师评价
+     */
+    public synchronized void sendTeacherEvaluate(int[] score, final HttpCallBack requestCallBack) {
+        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        mLogtf.d("sendTeacherEvaluate:enstuId=" + enstuId + ",liveId=" + mLiveId);
+        String classId = "";
+        if (mGetInfo.getStudentLiveInfo() != null) {
+            classId = mGetInfo.getStudentLiveInfo().getClassId();
+        }
+        getHttpManager().sendTeacherEvaluate(enstuId, mLiveId, classId, score, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                requestCallBack.onPmSuccess(responseEntity);
+            }
 
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                requestCallBack.onPmFailure(error, msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                requestCallBack.onPmError(responseEntity);
+                //onLiveError(responseEntity);
+            }
+        });
+    }
 }

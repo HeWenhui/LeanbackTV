@@ -9,11 +9,10 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.page.LearnReportPager;
+import com.xueersi.parentsmeeting.modules.livevideo.learnreport.page.LearnReportPager;
 
 import java.io.File;
 
@@ -25,7 +24,7 @@ public class LearnReportBll implements LearnReportAction, Handler.Callback {
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     private LogToFile mLogtf;
     private Activity activity;
-    private LiveBll mLiveBll;
+    private LearnReportHttp mLiveBll;
     /** 学习报告的布局 */
     private RelativeLayout rlLearnReportContent;
     /** 学习报告 */
@@ -44,7 +43,7 @@ public class LearnReportBll implements LearnReportAction, Handler.Callback {
         this.activity = activity;
     }
 
-    public void setLiveBll(LiveBll mLiveBll) {
+    public void setLiveBll(LearnReportHttp mLiveBll) {
         this.mLiveBll = mLiveBll;
     }
 
