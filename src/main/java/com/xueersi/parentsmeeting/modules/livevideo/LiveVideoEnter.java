@@ -164,10 +164,12 @@ public class LiveVideoEnter {
                 }
                 String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                 getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
+                bundle.putInt("isArts", mGetInfo.getIsArts());
+                bundle.putInt("pattern", mGetInfo.getPattern());
                 if (mGetInfo.getPattern() == 2) {
                     StandLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
                 } else {
-                    bundle.putInt("isArts", mGetInfo.getIsArts());
+
 //                    if (mGetInfo.getIsArts() == 1) {
 //                        LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
 //                    } else {

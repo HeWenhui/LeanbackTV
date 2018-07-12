@@ -23,13 +23,13 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
@@ -48,18 +48,22 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
  * 直播创建语音答题
  */
 public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
-    String TAG = "LiveStandVoiceAnswerCreat";
-    QuestionSwitch questionSwitch;
+    private String TAG = "LiveStandVoiceAnswerCreat";
+    private QuestionSwitch questionSwitch;
     private String headUrl;
     private String userName;
-    private LiveBll liveBll;
+    private LiveAndBackDebug liveAndBackDebug;
+    Context context;
 
-    public LiveStandVoiceAnswerCreat(QuestionSwitch questionSwitch) {
+    public LiveStandVoiceAnswerCreat(Context context, QuestionSwitch questionSwitch, LiveAndBackDebug liveAndBackDebug) {
+        this.context = context;
         this.questionSwitch = questionSwitch;
+        this.liveAndBackDebug = liveAndBackDebug;
     }
 
-    public LiveStandVoiceAnswerCreat(LiveBll liveBll, QuestionSwitch questionSwitch, String headUrl, String userName) {
-        this.liveBll = liveBll;
+    public LiveStandVoiceAnswerCreat(Context context, LiveAndBackDebug liveAndBackDebug, QuestionSwitch questionSwitch, String headUrl, String userName) {
+        this.context = context;
+        this.liveAndBackDebug = liveAndBackDebug;
         this.questionSwitch = questionSwitch;
         this.headUrl = headUrl;
         this.userName = userName;
@@ -77,7 +81,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     public BaseVoiceAnswerPager create(Context activity, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
                                        RelativeLayout rlQuestionContent, SpeechEvaluatorUtils mIse, LiveAndBackDebug liveAndBackDebug) {
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
-        VoiceAnswerStandLog.sno2(liveBll, videoQuestionLiveEntity);
+        VoiceAnswerStandLog.sno2(this.liveAndBackDebug, videoQuestionLiveEntity);
         VoiceAnswerStandPager voiceAnswerPager2 = new VoiceAnswerStandPager(activity, baseVideoQuestionEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch, liveAndBackDebug, headUrl, userName);
         voiceAnswerPager2.setIse(mIse);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -181,8 +185,9 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                 }
             });
             isSuccess = true;
-            if (liveBll != null) {
-                liveBll.getStuGoldCount();
+            QuestionIRCBll questionIRCBll = ProxUtil.getProxUtil().get(context, QuestionIRCBll.class);
+            if (questionIRCBll != null) {
+                questionIRCBll.getStuGoldCount();
                 // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
                 //EventBusUtil.post(new UpdateAchievementEvent(liveBll.getLiveId()));
             }

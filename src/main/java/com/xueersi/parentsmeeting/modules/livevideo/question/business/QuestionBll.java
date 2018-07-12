@@ -21,6 +21,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayAction;
@@ -953,6 +954,24 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 //                Loger.i(TAG, "onPmError:error=" + responseEntity.getErrorMsg());
 //            }
 //        });
+    }
+
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        if (speechAssessmentPager instanceof SpeechAssAutoPager || voiceAnswerPager != null) {
+            if (liveVideoPoint.videoWidth > 0) {
+                int wradio = liveVideoPoint.getRightMargin();
+                if (speechAssessmentPager instanceof SpeechAssAutoPager) {
+                    if (baseSpeechCreat != null) {
+                        baseSpeechCreat.setViewLayoutParams(speechAssessmentPager, wradio);
+                    }
+                }
+                if (baseVoiceAnswerCreat != null) {
+                    if (voiceAnswerPager != null) {
+                        baseVoiceAnswerCreat.setViewLayoutParams(voiceAnswerPager, wradio);
+                    }
+                }
+            }
+        }
     }
 
     public void setVideoLayout(int width, int height) {

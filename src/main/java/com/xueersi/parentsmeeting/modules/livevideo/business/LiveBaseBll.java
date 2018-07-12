@@ -42,6 +42,7 @@ public class LiveBaseBll extends BaseBll {
     protected final int mLiveType;
     protected Activity activity;
     protected LogToFile mLogtf;
+    protected LiveVideoPoint liveVideoPoint;
 
     public LiveBaseBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context);
@@ -90,6 +91,11 @@ public class LiveBaseBll extends BaseBll {
         if (mLiveBll != null) {
             mLiveBll.sendNotice(target, jsonObject);
         }
+    }
+
+    public final void setVideoLayoutF(LiveVideoPoint liveVideoPoint) {
+        this.liveVideoPoint = liveVideoPoint;
+        setVideoLayout(liveVideoPoint);
     }
 
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {

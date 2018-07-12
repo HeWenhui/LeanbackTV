@@ -431,7 +431,7 @@ public class LiveRemarkBll {
         displayHeight = liveVideoPoint.videoHeight;
         int displayWidth = liveVideoPoint.screenWidth;
         if (liveVideoPoint.videoWidth > 0) {
-            int wradio = liveVideoPoint.screenWidth - liveVideoPoint.x3;
+            int wradio = liveVideoPoint.getRightMargin();
             if (displayWidth - wradio != videoWidth) {
                 videoWidth = displayWidth - wradio;
             }

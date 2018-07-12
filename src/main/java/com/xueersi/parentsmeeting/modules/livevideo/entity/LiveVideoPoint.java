@@ -5,6 +5,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
  * 直播的10个点
  */
 public class LiveVideoPoint {
+    private static LiveVideoPoint instance;
     public final int x1 = 0;
     /** 视频左边的位置 */
     public int x2;
@@ -27,6 +28,21 @@ public class LiveVideoPoint {
     public int videoHeight;
     public int headHeight;
     public int msgHeight;
+
+    private LiveVideoPoint() {
+
+    }
+
+    public static LiveVideoPoint getInstance() {
+        if (instance == null) {
+            return instance = new LiveVideoPoint();
+        }
+        return instance;
+    }
+
+    public int getRightMargin() {
+        return screenWidth - x3;
+    }
 
     @Override
     public String toString() {

@@ -21,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -201,6 +202,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public int[] getNoticeFilter() {
         return new int[]{XESCODE.SENDQUESTION, XESCODE.STOPQUESTION, XESCODE.EXAM_START, XESCODE.EXAM_STOP};
+    }
+
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        mQuestionAction.setVideoLayout(liveVideoPoint);
     }
 
     @Override

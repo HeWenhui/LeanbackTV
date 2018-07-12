@@ -172,7 +172,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     protected boolean shouldOverrideUrlLoading(WebView view, String url) {
         //      if ("http://baidu.com/".equals(url)) {
         Loger.d(TAG, "shouldOverrideUrlLoading:url=" + url);
-        Loger.e("EnglishH5CoursewarePager", "======> shouldOverrideUrlLoading:" + url);
+        Loger.e(TAG, "======> shouldOverrideUrlLoading:" + url);
         reloadurl = url;
         if (url.contains("baidu.com")) {
             onClose.onH5ResultClose(this);
@@ -201,7 +201,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     if (!TextUtils.isEmpty(goldNUmStr)) {
                         mGoldNum = Integer.parseInt(goldNUmStr.trim());
                     }
-                    Loger.e("EnglishH5Courseware", "======> shouldOverrideUrlLoading: mGoldNum=" + mGoldNum);
+                    Loger.e(TAG, "======> shouldOverrideUrlLoading: mGoldNum=" + mGoldNum);
                 }
                 int satrIndex2 = url.indexOf("energyNum=") + "energyNum=".length();
                 if (satrIndex2 != -1) {
@@ -215,7 +215,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     if (!TextUtils.isEmpty(energyNumStr)) {
                         mEnergyNum = Integer.parseInt(energyNumStr.trim());
                     }
-                    Loger.e("EnglishH5Courseware", "======> shouldOverrideUrlLoading: mEnergyNum=" + mEnergyNum);
+                    Loger.e(TAG, "======> shouldOverrideUrlLoading: mEnergyNum=" + mEnergyNum);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -244,7 +244,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         Loger.i(TAG, "initData:loadUrl=" + loadUrl);
         loadUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
         loadUrl(loadUrl);
-        Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + loadUrl);
+        Loger.e(TAG, "======> loadUrl:" + loadUrl);
         reloadurl = loadUrl;
         mGoldNum = -1;
         mEnergyNum = -1;

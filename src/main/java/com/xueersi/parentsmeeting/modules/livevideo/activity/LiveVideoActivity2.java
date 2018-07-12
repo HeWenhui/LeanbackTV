@@ -172,7 +172,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     //LiveMessageBll liveMessageBll;
     private static String Tag = "LiveVideoActivity2";
     protected LogToFile mLogtf;
-    private LiveVideoPoint liveVideoPoint = new LiveVideoPoint();
+    private LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
     VideoChatIRCBll videoChatIRCBll;
 
     @Override
@@ -207,6 +207,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         before = System.currentTimeMillis();
         addBusiness(activity, bottomContent);
         logger.d("onVideoCreate:time3=" + (System.currentTimeMillis() - before));
+        initLiveVideoPoint(lp);
         return true;
     }
 
@@ -242,7 +243,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                         if (change) {
                             List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
                             for (LiveBaseBll businessBll : businessBlls) {
-                                businessBll.setVideoLayout(liveVideoPoint);
+                                businessBll.setVideoLayoutF(liveVideoPoint);
                             }
                         }
                         logger.d("onGlobalLayout:change=" + change + ",time=" + (System.currentTimeMillis() - before));

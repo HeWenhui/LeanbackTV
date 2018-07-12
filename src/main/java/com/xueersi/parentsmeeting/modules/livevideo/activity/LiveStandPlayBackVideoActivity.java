@@ -545,7 +545,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         redPackageStandBll.setUserName(showName);
         redPackageStandBll.setHeadUrl(headUrl);
         redPackageStandBll.initView(rl_course_video_live_redpackage_content);
-        liveStandVoiceAnswerCreat = new LiveStandVoiceAnswerCreat(questionSwitch);
+        liveStandVoiceAnswerCreat = new LiveStandVoiceAnswerCreat(this, questionSwitch, this);
         liveStandVoiceAnswerCreat.setUserName(showName);
         liveStandVoiceAnswerCreat.setHeadUrl(headUrl);
         ProxUtil.getProxUtil().put(this, ActivityChangeLand.class, this);

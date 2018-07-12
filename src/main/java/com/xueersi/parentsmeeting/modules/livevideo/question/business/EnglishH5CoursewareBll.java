@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
@@ -580,6 +581,13 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 rlQuestionResContent.removeAllViews();
             }
         }, 3000);
+    }
+
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        if (voiceAnswerPager instanceof VoiceAnswerPager) {
+            int wradio = liveVideoPoint.getRightMargin();
+            baseVoiceAnswerCreat.setViewLayoutParams(voiceAnswerPager, wradio);
+        }
     }
 
     public void setVideoLayout(int width, int height) {

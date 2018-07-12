@@ -382,12 +382,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         super.initData();
         Loger.i(TAG, "initData:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        new Thread() {
-            @Override
-            public void run() {
-                OtherModulesEnter.requestGoldTotal(mContext);
-            }
-        }.start();
         btMessageFlowers.setTag("0");
         btMessageFlowers.setAlpha(0.4f);
         btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
@@ -484,6 +478,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         if (getInfo != null) {
             String educationStage = getInfo.getEducationStage();
             initFlower(educationStage);
+            new Thread() {
+                @Override
+                public void run() {
+                    OtherModulesEnter.requestGoldTotal(mContext);
+                }
+            }.start();
         }
     }
 
@@ -723,7 +723,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         {
-            int wradio = liveVideoPoint.screenWidth - liveVideoPoint.x3;
+            int wradio = liveVideoPoint.getRightMargin();
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
             if (wradio != params.width) {
                 //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height

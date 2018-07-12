@@ -16,10 +16,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONObject;
 
@@ -30,7 +31,7 @@ import java.util.HashMap;
  */
 
 public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, TopicAction {
-    private EnglishH5CoursewareAction englishH5CoursewareAction;
+    private EnglishH5CoursewareBll englishH5CoursewareAction;
     private AnswerRankIRCBll mAnswerRankBll;
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
 
@@ -42,13 +43,34 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     public void onCreate(HashMap<String, Object> data) {
         super.onCreate(data);
         EnglishH5CoursewareBll englishH5CoursewareBll = new EnglishH5CoursewareBll(activity);
+        englishH5CoursewareBll.setShareDataManager(mShareDataManager);
         englishH5CoursewareBll.setLiveType(mLiveType);
         englishH5CoursewareBll.setVSectionID(mLiveId);
         englishH5CoursewareBll.initView(mRootView);
         englishH5CoursewareBll.setLiveBll(new EnglishH5CoursewareImpl());
+        englishH5CoursewareBll.initData();
         englishH5CoursewareAction = englishH5CoursewareBll;
         mAnswerRankBll = getInstance(AnswerRankIRCBll.class);
         mLiveAutoNoticeBll = getInstance(LiveAutoNoticeIRCBll.class);
+    }
+
+    @Override
+    public void onLiveInited(LiveGetInfo getInfo) {
+        super.onLiveInited(getInfo);
+        int pattern = getInfo.getPattern();
+        EnglishH5CoursewareBll englishH5CoursewareBll = (EnglishH5CoursewareBll) englishH5CoursewareAction;
+        if (pattern == 2) {
+            englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveStandVoiceAnswerCreat(activity, mLiveBll, englishH5CoursewareBll.new LiveStandQuestionSwitchImpl(), mGetInfo.getHeadImgPath(), mGetInfo.getStandLiveName()));
+        } else {
+            englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(englishH5CoursewareBll.new LiveQuestionSwitchImpl()));
+        }
+    }
+
+    @Override
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        if (englishH5CoursewareAction != null) {
+            englishH5CoursewareAction.setVideoLayout(liveVideoPoint);
+        }
     }
 
     @Override
@@ -64,7 +86,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 if ("on".equals(status)) {
                     id = h5_Experiment.getString("id");
                     courseware_type = h5_Experiment.getString("courseware_type");
-                    play_url = mLiveBll.getLiveVideoSAConfig().inner.coursewareH5 + mLiveId + "/" + mLiveId + "/" + id +
+                    play_url = mLiveBll.getLiveVideoSAConfig().inner.coursewareH5 + mLiveId + "/" + mLiveBll.getStuCouId() + "/" + id +
                             "/" + courseware_type
                             + "/" + mGetInfo.getStuId();
                     videoQuestionLiveEntity.id = id;
@@ -109,7 +131,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         if ("on".equals(status)) {
                             id = object.getString("id");
                             courseware_type = object.getString("courseware_type");
-                            play_url = mLiveBll.getLiveVideoSAConfig().inner.coursewareH5 + mLiveId + "/" + mLiveId + "/"
+                            play_url = mLiveBll.getLiveVideoSAConfig().inner.coursewareH5 + mLiveId + "/" + mLiveBll.getStuCouId() + "/"
                                     + id + "/" + courseware_type
                                     + "/" + mGetInfo.getStuId();
                             videoQuestionLiveEntity.id = id;

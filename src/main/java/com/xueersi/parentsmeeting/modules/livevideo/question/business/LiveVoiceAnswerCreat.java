@@ -8,6 +8,7 @@ import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerPager;
@@ -28,7 +29,7 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
  * 直播创建语音答题
  */
 public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
-    QuestionSwitch questionSwitch;
+    private QuestionSwitch questionSwitch;
 
     public LiveVoiceAnswerCreat(QuestionSwitch questionSwitch) {
         this.questionSwitch = questionSwitch;
@@ -42,9 +43,14 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         voiceAnswerPager2.setIse(mIse);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        int screenWidth = ScreenUtils.getScreenWidth();
-        int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
-        params.rightMargin = wradio;
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+        if (liveVideoPoint != null) {
+            params.rightMargin = liveVideoPoint.getRightMargin();
+        } else {
+            int screenWidth = ScreenUtils.getScreenWidth();
+            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
+            params.rightMargin = wradio;
+        }
         rlQuestionContent.addView(voiceAnswerPager2.getRootView(), params);
         String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
         VoiceAnswerLog.sno2(liveAndBackDebug, videoQuestionLiveEntity.type, videoQuestionLiveEntity.id, videoQuestionLiveEntity.nonce, sourcetype);
