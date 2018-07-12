@@ -77,7 +77,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     public void setLiveBll(IRCState mLiveBll) {
         this.mLiveBll = mLiveBll;
         if (mLiveMessagePager != null) {
-            mLiveMessagePager.setLiveBll(mLiveBll);
+            mLiveMessagePager.setIrcState(mLiveBll);
         }
     }
 
@@ -130,7 +130,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
         mLiveMessagePager.setMessageBll(LiveMessageBll.this);
-        mLiveMessagePager.setLiveBll(mLiveBll);
+        mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
 
         if (text != null) {
@@ -193,7 +193,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
         mLiveMessagePager.setMessageBll(LiveMessageBll.this);
-        mLiveMessagePager.setLiveBll(mLiveBll);
+        mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
 
         if (text != null) {
@@ -251,7 +251,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
         mLiveMessagePager.setMessageBll(LiveMessageBll.this);
-        mLiveMessagePager.setLiveBll(mLiveBll);
+        mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
         mLiveMessagePager.setIsRegister(isRegister);
         if (peopleCount.get() > 0) {

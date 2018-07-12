@@ -73,7 +73,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
     }
 
     public void setLiveBll(LiveBll liveBll) {
-        // this.liveBll = liveBll;
+        // this.liveBll = ircState;
     }
 
     private void showResult(final LiveTopic.VoteEntity voteEntity) {

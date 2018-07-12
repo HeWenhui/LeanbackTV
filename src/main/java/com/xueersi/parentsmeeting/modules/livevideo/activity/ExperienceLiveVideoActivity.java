@@ -434,7 +434,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //        mLiveMessagePager.urlclick = urlclick;
 //        liveMessagePager.setPeopleCount(peopleCount);
         mLiveMessagePager.setMessageBll(liveMessageBll);
-        mLiveMessagePager.setLiveBll(mLiveBll);
+        mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
         // 03.08 设置假的聊天连接成功信号
         if (!pause) {

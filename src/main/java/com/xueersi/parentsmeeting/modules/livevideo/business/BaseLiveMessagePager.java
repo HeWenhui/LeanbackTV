@@ -113,7 +113,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     protected boolean isRegister = false;
     protected boolean isHaveFlowers = false;
     protected boolean keyboardShowing = false;
-    protected IRCState liveBll;
+    protected IRCState ircState;
     protected LiveMessageBll messageBll;
     protected static int MESSAGE_SEND_DEF = 0;
     protected static int MESSAGE_SEND_DIS = 1;
@@ -342,8 +342,8 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
 
     }
 
-    public void setLiveBll(IRCState mLiveBll) {
-        this.liveBll = mLiveBll;
+    public void setIrcState(IRCState ircState) {
+        this.ircState = ircState;
     }
 
     /** 控制栏显示 */

@@ -70,7 +70,7 @@
 //        this.context = context;
 //        Activity activity = (Activity) context;
 //        bottomContent = (RelativeLayout) activity.findViewById(R.id.rl_course_video_live_question_content);
-//        this.liveBll = liveBll;
+//        this.liveBll = ircState;
 //        this.liveId = liveId;
 //        zipFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webview/zip");
 //        unzipFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webview/unzip");

@@ -46,7 +46,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
@@ -267,8 +266,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     commonAction.isAnaswer();
                     return;
                 }
-                if (LiveTopic.MODE_CLASS.equals(liveBll.getMode())) {
-                    if (!liveBll.isOpenbarrage()) {
+                if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
+                    if (!ircState.isOpenbarrage()) {
                         commonAction.clickIsnotOpenbarrage();
                         return;
                     }
@@ -301,9 +300,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                         onTitleShow(true);
                         return;
                     }
-                    if (liveBll.openchat()) {
+                    if (ircState.openchat()) {
                         if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
-                            boolean send = liveBll.sendMessage(msg, "");
+                            boolean send = ircState.sendMessage(msg, "");
                             if (send) {
                                 etMessageContent.setText("");
                                 addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
@@ -503,9 +502,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String msg = words.get(position);
-                if (liveBll.openchat()) {
+                if (ircState.openchat()) {
                     if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
-                        boolean send = liveBll.sendMessage(msg, "");
+                        boolean send = ircState.sendMessage(msg, "");
                         if (send) {
                             etMessageContent.setText("");
                             addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
@@ -632,10 +631,10 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             public void onClick(View v) {
                 final FlowerEntity entity = (FlowerEntity) flowerContentView.getTag();
                 if (entity != null) {
-                    if (LiveTopic.MODE_CLASS.equals(liveBll.getMode())) {
-                        if (liveBll.isOpenbarrage()) {
+                    if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
+                        if (ircState.isOpenbarrage()) {
                             String educationStage = getInfo.getEducationStage();
-                            liveBll.praiseTeacher(entity.getFtype() + "", educationStage, new HttpCallBack(false) {
+                            ircState.praiseTeacher(entity.getFtype() + "", educationStage, new HttpCallBack(false) {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) {
                                     if (goldNum == null) {
@@ -890,10 +889,10 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (liveBll.isSeniorOfHighSchool()) {
+                if (ircState.isSeniorOfHighSchool()) {
                     tvMessageCount.setText("班内" + peopleCount + "人");
                 } else {
-                    if (liveBll.isHaveTeam()) {
+                    if (ircState.isHaveTeam()) {
                         tvMessageCount.setText("组内" + peopleCount + "人");
                     } else {
                         tvMessageCount.setText(peopleCount + "人正在上课");
@@ -945,10 +944,10 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (liveBll.isSeniorOfHighSchool()) {
+                if (ircState.isSeniorOfHighSchool()) {
                     tvMessageCount.setText("班内" + peopleCount + "人");
                 } else {
-                    if (liveBll.isHaveTeam()) {
+                    if (ircState.isHaveTeam()) {
                         tvMessageCount.setText("组内" + peopleCount + "人");
                     } else {
                         tvMessageCount.setText(peopleCount + "人正在上课");
@@ -963,10 +962,10 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (liveBll.isSeniorOfHighSchool()) {
+                if (ircState.isSeniorOfHighSchool()) {
                     tvMessageCount.setText("班内" + peopleCount + "人");
                 } else {
-                    if (liveBll.isHaveTeam()) {
+                    if (ircState.isHaveTeam()) {
                         tvMessageCount.setText("组内" + peopleCount + "人");
                     } else {
                         tvMessageCount.setText(peopleCount + "人正在上课");
@@ -1000,7 +999,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     if (fromNotice) {
                         XESToastUtils.showToast(mContext, "老师解除了你的禁言");
                     }
-                    if (liveBll.openchat()) {
+                    if (ircState.openchat()) {
                         btMesOpen.setAlpha(1.0f);
                         btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_open);
                     } else {
@@ -1017,7 +1016,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (liveBll.isDisable()) {
+                if (ircState.isDisable()) {
                     btMesOpen.setAlpha(0.4f);
                     btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_open);
                 } else {
@@ -1048,7 +1047,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             public void run() {
                 // 主讲模式可以献花
                 if (LiveTopic.MODE_CLASS.equals(mode)) {
-                    if (liveBll.isOpenbarrage()) {
+                    if (ircState.isOpenbarrage()) {
                         btMessageFlowers.setTag("1");
                         btMessageFlowers.setAlpha(1.0f);
                         btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
@@ -1071,7 +1070,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (LiveTopic.MODE_CLASS.equals(liveBll.getMode())) {
+                if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
                     if (openbarrage) {
                         if (fromNotice) {
                             commonAction.onOpenbarrage(true);

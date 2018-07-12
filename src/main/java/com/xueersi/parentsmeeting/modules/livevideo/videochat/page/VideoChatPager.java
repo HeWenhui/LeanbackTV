@@ -27,7 +27,7 @@
 //
 //    public VideoChatPager(Context context, LiveBll liveBll, LiveGetInfo getInfo) {
 //        super(context);
-//        this.liveBll = liveBll;
+//        this.liveBll = ircState;
 //        this.getInfo = getInfo;
 //        netWorkType = NetWorkHelper.getNetWorkState(context);
 //        url = "https://test-rtc.xesimg.com:12443/room?id=x_" + liveBll.mLiveType + "_" + getInfo.getId()
