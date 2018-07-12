@@ -106,12 +106,12 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
                 }
             });
         }
+        mRoomAction.initViewLive(mRootView);
     }
 
     public void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
         mRoomAction.setLiveBll(new LiveIRCState());
         mRoomAction.setLiveMediaControllerBottom(baseLiveMediaControllerBottom);
-        mRoomAction.initViewLive((RelativeLayout) mRootView);
     }
 
     public void setLiveTopic(LiveTopic mLiveTopic) {
