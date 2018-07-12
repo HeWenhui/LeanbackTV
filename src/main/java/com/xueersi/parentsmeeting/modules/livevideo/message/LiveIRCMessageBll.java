@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStatusChange;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -111,6 +112,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             });
         }
         mRoomAction.initViewLive(mRootView);
+        QuestionShowReg questionShowReg = getInstance(QuestionShowReg.class);
+        if (questionShowReg != null) {
+            questionShowReg.registQuestionShow(mRoomAction);
+        }
     }
 
     public void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {

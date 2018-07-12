@@ -84,7 +84,7 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
  * Created by linyuqiang on 2016/9/23.
  */
 public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEvalAction, BaseQuestionWebInter
-        .StopWebQuestion, BaseVoiceAnswerCreat.AnswerRightResultVoice, QuestionStatic, KeyboardUtil.OnKeyboardShowingListener {
+        .StopWebQuestion, BaseVoiceAnswerCreat.AnswerRightResultVoice, QuestionStatic, QuestionShowReg, KeyboardUtil.OnKeyboardShowingListener {
     String TAG = "QuestionBll";
     SpeechEvaluatorUtils mIse;
     private LiveVideoSAConfig liveVideoSAConfig;
@@ -244,6 +244,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     public QuestionBll(Activity activity, String stuCouId) {
         ProxUtil.getProxUtil().put(activity, QuestionStatic.class, this);
+        ProxUtil.getProxUtil().put(activity, QuestionShowReg.class, this);
         mLogtf = new LogToFile(activity, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
@@ -1971,11 +1972,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     }
 
-
+    @Override
     public void registQuestionShow(QuestionShowAction questionShowAction) {
         questionShowActions.add(questionShowAction);
     }
 
+    @Override
     public void unRegistQuestionShow(QuestionShowAction questionShowAction) {
         questionShowActions.remove(questionShowAction);
     }

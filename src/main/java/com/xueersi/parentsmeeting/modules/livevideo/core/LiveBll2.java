@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 
 import org.json.JSONObject;
@@ -119,6 +120,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         if (liveGetInfo != null) {
             mLiveTopic.setMode(liveGetInfo.getMode());
         }
+        ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
     }
 
     public LiveBll2(Context context, String vSectionID, int type, int form) {
@@ -136,6 +138,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
             mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         }
+        ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
     }
 
     public LiveBll2(Context context, String vSectionID, String currentDutyId, int type, int form) {
@@ -155,6 +158,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
             mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         }
+        ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
     }
 
     public String getLiveId() {
