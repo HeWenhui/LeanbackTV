@@ -557,14 +557,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                         mTopicAction.onTopic(liveTopic, jsonObject, teacherModeChanged);
                     }
                 }
-                List<String> disableSpeaking = liveTopic.getDisableSpeaking();
-                boolean forbidSendMsg = false;
-                for (String id : disableSpeaking) {
-                    if (("" + id).contains(mIRCMessage.getNickname())) {
-                        forbidSendMsg = true;
-                    }
-                }
-                liveTopic.setDisable(forbidSendMsg);
                 mLiveTopic.copy(liveTopic);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -851,6 +843,15 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.onPause();
         }
+    }
+
+    /**
+     * 得到短名字
+     *
+     * @return
+     */
+    public String getNickname() {
+        return mIRCMessage.getNickname();
     }
 
     /**

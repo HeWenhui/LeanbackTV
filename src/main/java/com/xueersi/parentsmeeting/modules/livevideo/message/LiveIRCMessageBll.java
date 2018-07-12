@@ -15,6 +15,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAch
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
+import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -42,12 +44,13 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by lyqai on 2018/6/26.
  */
 
-public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
+public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, NoticeAction, TopicAction {
     private final String TAG = "LiveIRCMessageBll";
     /** 主讲老师前缀 */
     public static final String TEACHER_PREFIX = "t_";
@@ -361,6 +364,50 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction {
      */
     public boolean isSeniorOfHighSchool() {
         return mGetInfo != null && mGetInfo.getIsSeniorOfHighSchool() == 1;
+    }
+
+    @Override
+    public void onNotice(JSONObject object, int type) {
+        switch (type) {
+            case XESCODE.OPENBARRAGE: {
+                try {
+                    boolean open = object.getBoolean("open");
+                    String msg = open ? "OPENBARRAGE" : "CLOSEBARRAGE";
+                    mLiveTopic.getMainRoomstatus().setOpenbarrage(open);
+                    mLogtf.d(msg);
+                    if (mRoomAction != null) {
+                        mRoomAction.onOpenbarrage(open, true);
+                    }
+                } catch (Exception e) {
+
+                }
+                //getLearnReport();
+                break;
+            }
+        }
+    }
+
+    @Override
+    public int[] getNoticeFilter() {
+        return new int[]{
+                XESCODE.OPENBARRAGE
+        };
+    }
+
+    @Override
+    public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
+        List<String> disableSpeaking = liveTopic.getDisableSpeaking();
+        boolean forbidSendMsg = false;
+        for (String id : disableSpeaking) {
+            if (("" + id).contains(mLiveBll.getNickname())) {
+                forbidSendMsg = true;
+            }
+        }
+        liveTopic.setDisable(forbidSendMsg);
+        if (mRoomAction != null) {
+            mRoomAction.onOpenbarrage(mLiveTopic.getMainRoomstatus().isOpenbarrage(), false);
+            mRoomAction.onDisable(forbidSendMsg, false);
+        }
     }
 
     class LiveIRCState implements IRCState {

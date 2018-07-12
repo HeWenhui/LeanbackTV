@@ -33,17 +33,6 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         if (mGetInfo.getPattern() == 2) {
-            RedPackageBll redPackageBll = new RedPackageBll(activity);
-            redPackageBll.setVSectionID(mLiveId);
-            redPackageBll.initView(mRootView);
-            redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {
-                @Override
-                public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
-                    RedPackageIRCBll.this.sendReceiveGold(operateId, liveId, callBack);
-                }
-            });
-            redPackageAction = redPackageBll;
-        } else {
             RedPackageStandBll redPackageStandBll = new RedPackageStandBll(activity, true, mLiveBll);
             redPackageStandBll.setReceiveGold(new RedPackageAction.ReceiveGoldStand() {
                 @Override
@@ -70,6 +59,17 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
                 }
             });
             redPackageAction = redPackageStandBll;
+        } else {
+            RedPackageBll redPackageBll = new RedPackageBll(activity);
+            redPackageBll.setVSectionID(mLiveId);
+            redPackageBll.initView(mRootView);
+            redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {
+                @Override
+                public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
+                    RedPackageIRCBll.this.sendReceiveGold(operateId, liveId, callBack);
+                }
+            });
+            redPackageAction = redPackageBll;
         }
     }
 
