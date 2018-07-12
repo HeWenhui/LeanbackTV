@@ -512,7 +512,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         liveLazyBllCreat.setQuestionBll(questionBll);
         mLiveBll.setLiveLazyBllCreat(liveLazyBllCreat);
         liveStandFrameAnim = new LiveStandFrameAnim(this);
-        ProxUtil.getProxUtil().put(this,AudioRequest.class, this);
+        ProxUtil.getProxUtil().put(this, AudioRequest.class, this);
     }
 
     /**

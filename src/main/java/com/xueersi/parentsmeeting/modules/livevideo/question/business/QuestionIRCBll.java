@@ -5,6 +5,7 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -64,7 +65,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void onLiveInited(LiveGetInfo data) {
         super.onLiveInited(data);
         if (data.getPattern() == 2) {
-
+            mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl()));
+            mQuestionAction.setBaseSpeechCreat(new LiveStandSpeechCreat(this, mLiveBll));
+            mQuestionAction.setSpeechEndAction(new StandSpeechTop3Bll(this, mLiveBll));
         } else {
             mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl()));
             mQuestionAction.setBaseSpeechCreat(new LiveSpeechCreat());
@@ -509,4 +512,110 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         });
     }
 
+    private int test1 = 0;
+
+    public void getSpeechEvalAnswerTeamStatus(String testId, final AbstractBusinessDataCallBack callBack) {
+        getHttpManager().getSpeechEvalAnswerTeamStatus(testId, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                GoldTeamStatus entity = getHttpResponseParser().getSpeechEvalAnswerTeamStatus(responseEntity, mGetInfo
+                        .getStuId());
+                callBack.onDataSucess(entity);
+//                if (AppConfig.DEBUG) {
+//                    GoldTeamStatus entity = new GoldTeamStatus();
+//                    Random random = new Random();
+//                    for (int i = 0; i < 5; i++) {
+//                        GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                        student.setNickname("测试" + (test1++));
+//                        student.createShowName();
+//                        student.setScore("" + random.nextInt(101));
+//                        student.setAvatar_path(mGetInfo.getHeadImgPath());
+//                        entity.getStudents().add(student);
+//                    }
+//                    callBack.onDataSucess(entity);
+//                } else {
+//                    callBack.onDataFail(1, responseEntity.getErrorMsg());
+//                }
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                callBack.onDataFail(0, msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                if (AppConfig.DEBUG) {
+                    GoldTeamStatus entity = new GoldTeamStatus();
+                    for (int i = 0; i < 3; i++) {
+                        GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+                        student.setNickname("测试" + (test1++));
+                        student.createShowName();
+                        student.setScore("90");
+                        student.setAvatar_path(mGetInfo.getHeadImgPath());
+                        entity.getStudents().add(student);
+                    }
+                    callBack.onDataSucess(entity);
+                } else {
+                    callBack.onDataFail(1, responseEntity.getErrorMsg());
+                }
+            }
+        });
+    }
+
+    public String getRequestTime() {
+        return mGetInfo.getRequestTime();
+    }
+
+    public void getRolePlayAnswerTeamRank(String testId, final AbstractBusinessDataCallBack callBack) {
+        getHttpManager().getRolePlayAnswerTeamRank(testId, new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                mLogtf.d("getRolePlayAnswerTeamRank:responseEntity=" + responseEntity.getJsonObject());
+                GoldTeamStatus entity = getHttpResponseParser().parseRolePlayTeamRank(responseEntity, mGetInfo);
+                callBack.onDataSucess(entity);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                Loger.d(TAG, "getRolePlayAnswerTeamRank:msg=" + msg);
+                callBack.onDataFail(0, msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                Loger.d(TAG, "getRolePlayAnswerTeamRank:onPmError=" + responseEntity.getErrorMsg());
+                callBack.onDataFail(1, responseEntity.getErrorMsg());
+            }
+
+        });
+    }
+
+    public void getSpeechEvalAnswerTeamRank(String id, final AbstractBusinessDataCallBack callBack) {
+        getHttpManager().getSpeechEvalAnswerTeamRank(id, new HttpCallBack(false) {
+
+            @Override
+            public void onPmSuccess(final ResponseEntity responseEntity) {
+                mLogtf.i("getSpeechEvalAnswerTeamRank:onPmSuccess=" + responseEntity.getJsonObject());
+                GoldTeamStatus entity = getHttpResponseParser().parseSpeechTeamRank(responseEntity, mGetInfo);
+                callBack.onDataSucess(entity);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                mLogtf.i("getSpeechEvalAnswerTeamRank:onPmFailure=" + msg);
+                callBack.onDataFail(0, msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                mLogtf.i("getSpeechEvalAnswerTeamRank:onPmError=" + responseEntity.getErrorMsg());
+                callBack.onDataFail(1, responseEntity.getErrorMsg());
+            }
+        });
+    }
 }

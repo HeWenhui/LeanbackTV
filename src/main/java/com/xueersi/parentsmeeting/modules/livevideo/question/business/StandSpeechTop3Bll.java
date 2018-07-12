@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
@@ -26,6 +27,8 @@ import java.util.HashMap;
 public class StandSpeechTop3Bll implements SpeechEndAction {
     String TAG = "StandSpeechTop3Bll";
     LiveBll liveBll;
+    QuestionIRCBll questionIRCBll;
+    LiveAndBackDebug liveAndBackDebug;
     StandSpeechTop3Pager standSpeechTop3Pager;
     RelativeLayout bottomContent;
     GoldTeamStatus entity;
@@ -34,8 +37,17 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
     HashMap<String, OnTop3End> top3EndHashMap = new HashMap<>();
     LogToFile logToFile;
 
+    @Deprecated
     public StandSpeechTop3Bll(LiveBll liveBll) {
         this.liveBll = liveBll;
+        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+                + ".txt"));
+        liveAndBackDebug = liveBll;
+    }
+
+    public StandSpeechTop3Bll(QuestionIRCBll questionIRCBll, LiveAndBackDebug liveAndBackDebug) {
+        this.questionIRCBll = questionIRCBll;
+        this.liveAndBackDebug = liveAndBackDebug;
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
     }
@@ -52,7 +64,7 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
             public void run() {
                 //原生语音评测
                 if (speechAssessmentPager instanceof StandSpeechAssAutoPager) {
-                    liveBll.getSpeechEvalAnswerTeamRank(num, new AbstractBusinessDataCallBack() {
+                    questionIRCBll.getSpeechEvalAnswerTeamRank(num, new AbstractBusinessDataCallBack() {
                         @Override
                         public void onDataSucess(Object... objData) {
                             entity = (GoldTeamStatus) objData[0];
@@ -75,7 +87,7 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
                     });
                     /** 语音评测 roleplay */
                 } else if (speechAssessmentPager instanceof SpeechAssessmentWebX5Pager) {
-                    liveBll.getRolePlayAnswerTeamRank(num, new AbstractBusinessDataCallBack() {
+                    questionIRCBll.getRolePlayAnswerTeamRank(num, new AbstractBusinessDataCallBack() {
                         @Override
                         public void onDataSucess(Object... objData) {
                             entity = (GoldTeamStatus) objData[0];
@@ -128,9 +140,9 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
             logToFile.d("onStopSpeech:entity=" + entity.getId() + ",num=" + num);
             initTop(num, entity, top3End);
             if (speechAssessmentPager instanceof StandSpeechAssAutoPager) {
-                SpeechStandLog.sno7(liveBll, num);
+                SpeechStandLog.sno7(liveAndBackDebug, num);
             } else if (speechAssessmentPager instanceof SpeechAssessmentWebX5Pager) {
-                RolePlayStandLog.sno6(liveBll, num);
+                RolePlayStandLog.sno6(liveAndBackDebug, num);
             }
         }
     }

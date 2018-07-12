@@ -4,7 +4,9 @@ import android.content.Context;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
@@ -12,6 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.StandSpeechAss
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.Map;
 
@@ -21,20 +24,29 @@ import java.util.Map;
  */
 public class LiveStandSpeechCreat implements BaseSpeechCreat {
     LiveBll liveBll;
+    QuestionIRCBll questionIRCBll;
+    LiveAndBackDebug liveAndBackDebug;
 
+    @Deprecated
     public LiveStandSpeechCreat(LiveBll liveBll) {
         this.liveBll = liveBll;
+        liveAndBackDebug = liveBll;
+    }
+
+    public LiveStandSpeechCreat(QuestionIRCBll questionIRCBll, LiveAndBackDebug liveAndBackDebug) {
+        this.questionIRCBll = questionIRCBll;
+        this.liveAndBackDebug = liveAndBackDebug;
     }
 
     @Override
     public void receiveRolePlay(VideoQuestionLiveEntity videoQuestionLiveEntity) {
-        RolePlayStandLog.sno2(liveBll, videoQuestionLiveEntity.id);
+        RolePlayStandLog.sno2(liveAndBackDebug, videoQuestionLiveEntity.id);
     }
 
     @Override
     public BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String testId, String nonce, String content,
                                                   int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String learning_stage) {
-        SpeechStandLog.sno2(liveBll, testId, nonce);
+        SpeechStandLog.sno2(liveAndBackDebug, testId, nonce);
         speechEvalAction = new LiveStandSpeechEvalActionImpl(speechEvalAction);
         StandSpeechAssAutoPager speechAssAutoPager =
                 new StandSpeechAssAutoPager(context, liveid, testId, nonce,
@@ -49,7 +61,7 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
                 liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
                 true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false);
         speechAssessmentPager.setStandingLive(true);
-        RolePlayStandLog.sno3(liveBll, testId);
+        RolePlayStandLog.sno3(liveAndBackDebug, testId);
         return speechAssessmentPager;
     }
 
@@ -72,7 +84,7 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         @Override
         public long getRequestTime() {
             try {
-                String requestTime = liveBll.getGetInfo().getRequestTime();
+                String requestTime = questionIRCBll.getRequestTime();
                 long time = Long.parseLong(requestTime);
                 return time * 1000;
             } catch (Exception e) {
@@ -98,9 +110,9 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
 
         @Override
         public void getSpeechEvalAnswerTeamStatus(String testId, AbstractBusinessDataCallBack callBack) {
-            String requestTime = liveBll.getGetInfo().getRequestTime();
+            String requestTime = questionIRCBll.getRequestTime();
             if (!"-1".equals(requestTime)) {
-                liveBll.getSpeechEvalAnswerTeamStatus(testId, callBack);
+                questionIRCBll.getSpeechEvalAnswerTeamStatus(testId, callBack);
             }
         }
 
@@ -127,9 +139,9 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         @Override
         public void onSpeechSuccess(String num) {
             action.onSpeechSuccess(num);
-            liveBll.getStuGoldCount();
+            questionIRCBll.getStuGoldCount();
             // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
-           // EventBusUtil.post(new UpdateAchievementEvent(liveBll.getLiveId()));
+            // EventBusUtil.post(new UpdateAchievementEvent(liveBll.getLiveId()));
         }
 
         @Override
