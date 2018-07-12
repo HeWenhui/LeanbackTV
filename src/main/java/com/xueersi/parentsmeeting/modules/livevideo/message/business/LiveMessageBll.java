@@ -333,6 +333,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         if (mLiveMessagePager != null) {
             mLiveMessagePager.onDestroy();
         }
+        keyboardShowingListeners.clear();
     }
 
     @Override

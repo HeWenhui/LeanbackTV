@@ -410,13 +410,39 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 }
             }
             break;
+            case XESCODE.OPENCHAT: {
+                try {
+                    boolean open = object.getBoolean("open");
+                    String from = object.optString("from", "t");
+                    msg += "from=" + from + ",open=" + open;
+                    if ("t".equals(from)) {
+                        mLiveTopic.getMainRoomstatus().setOpenchat(open);
+                        if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
+                            if (mRoomAction != null) {
+                                mRoomAction.onopenchat(open, LiveTopic.MODE_CLASS, true);
+                            }
+                        }
+                    } else {
+                        mLiveTopic.getCoachRoomstatus().setOpenchat(open);
+                        if (LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())) {
+                            if (mRoomAction != null) {
+                                mRoomAction.onopenchat(open, LiveTopic.MODE_TRANING, true);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+
+                }
+
+            }
+            break;
         }
     }
 
     @Override
     public int[] getNoticeFilter() {
         return new int[]{
-                XESCODE.OPENBARRAGE, XESCODE.GAG
+                XESCODE.OPENBARRAGE, XESCODE.GAG, XESCODE.OPENCHAT
         };
     }
 
@@ -433,6 +459,13 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         if (mRoomAction != null) {
             mRoomAction.onOpenbarrage(mLiveTopic.getMainRoomstatus().isOpenbarrage(), false);
             mRoomAction.onDisable(forbidSendMsg, false);
+            if (LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
+                mRoomAction.onopenchat(liveTopic.getMainRoomstatus().isOpenchat(), LiveTopic.MODE_CLASS,
+                        false);
+            } else {
+                mRoomAction.onopenchat(liveTopic.getCoachRoomstatus().isOpenchat(), LiveTopic.MODE_TRANING,
+                        false);
+            }
         }
     }
 
@@ -628,5 +661,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         if (mRoomAction != null) {
             mRoomAction.setVideoLayout(liveVideoPoint);
         }
+    }
+
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        mRoomAction.onDestroy();
     }
 }
