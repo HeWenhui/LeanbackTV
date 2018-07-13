@@ -342,9 +342,9 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         }
         for (int i = 0; i < mUrls.size(); i++) {
             final String url = i + ".zip";
-            final File save = new File(mMorecacheout, url);
+            final File save = new File(mMorecachein, url);
             if (!fileIsExists(save.getPath())) {
-                final File tempFile = new File(mMorecacheout, url + ".temp");
+                final File tempFile = new File(mMorecachein, url + ".temp");
                 liveBll.download(mUrls.get(i), tempFile.getPath(), new DownloadCallBack() {
                     @Override
                     protected void onDownloadSuccess() {
