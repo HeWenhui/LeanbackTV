@@ -335,8 +335,9 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                             XESToastUtils.showToast(context, "下载字体包失败");
                         }
                     });
+                } else {
+                    Loger.d(TAG, "fileIsExists(mtexts):fileName=" + fileName);
                 }
-
             }
         }
         for (int i = 0; i < mUrls.size(); i++) {
@@ -358,6 +359,8 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                         XESToastUtils.showToast(context, "下载资源包失败");
                     }
                 });
+            } else {
+                Loger.d(TAG, "fileIsExists(mtexts):fileName=" + url);
             }
         }
 
