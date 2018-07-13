@@ -111,7 +111,6 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 }
             });
         }
-        mRoomAction.initViewLive(mRootView);
         QuestionShowReg questionShowReg = getInstance(QuestionShowReg.class);
         if (questionShowReg != null) {
             questionShowReg.registQuestionShow(mRoomAction);
@@ -137,6 +136,28 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         }
         mCounteacher = new Teacher(mGetInfo.getTeacherName());
         mRoomAction.setLiveGetInfo(getInfo);
+        if (getInfo.getPattern() == 2) {
+            mRoomAction.initViewLiveStand(mRootView);
+        } else {
+            mRoomAction.initViewLive(mRootView);
+        }
+    }
+
+    @Override
+    public void onModeChange(final String mode, boolean isPresent) {
+        super.onModeChange(mode, isPresent);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mGetInfo.getPattern() == 2) {
+                    if (LiveTopic.MODE_CLASS.equals(mode)) {
+                        mRoomAction.initViewLiveStand(mRootView);
+                    } else {
+                        mRoomAction.initViewLive(mRootView);
+                    }
+                }
+            }
+        });
     }
 
     @Override

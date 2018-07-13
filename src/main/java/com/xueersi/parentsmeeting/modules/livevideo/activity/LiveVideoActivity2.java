@@ -103,7 +103,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     private String TAG = "LiveVideoActivity2Log";
     Logger logger = LoggerFactory.getLogger(TAG);
 
-    {
+    public LiveVideoActivity2() {
         mLayoutVideo = R.layout.activity_video_live_new;
     }
 
@@ -111,7 +111,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
      * 播放器同步
      */
     private static final Object mIjkLock = new Object();
-    private WeakHandler mHandler = new WeakHandler(null);
+    protected WeakHandler mHandler = new WeakHandler(null);
     /** 上次播放统计开始时间 */
     long lastPlayTime;
     /** 是否播放成功 */
@@ -119,19 +119,19 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     /** 播放时长定时任务 */
     private final long mPlayDurTime = 420000;
     /** 初始进入播放器时的预加载界面 */
-    private RelativeLayout rlFirstBackgroundView;
+    protected RelativeLayout rlFirstBackgroundView;
     /** 老师不在直播间 */
-    private ImageView ivTeacherNotpresent;
+    protected ImageView ivTeacherNotpresent;
     RelativeLayout bottomContent;
     RelativeLayout praiselistContent;
     /** 缓冲提示 */
     private ImageView ivLoading;
     private TextView tvLoadingHint;
-    private LiveGetInfo mGetInfo;
-    private LiveTopic mLiveTopic;
-    private String vStuCourseID;
-    private String courseId;
-    private String mVSectionID;
+    protected LiveGetInfo mGetInfo;
+    protected LiveTopic mLiveTopic;
+    protected String vStuCourseID;
+    protected String courseId;
+    protected String mVSectionID;
     /** Activity暂停过，执行onStop */
     private boolean mHaveStop = false;
     /** Activity在onResume */
@@ -154,7 +154,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     /** video缓存时间 */
     private long videoCachedDuration;
     BaseLiveMediaControllerTop baseLiveMediaControllerTop;
-    LiveMediaControllerBottom liveMediaControllerBottom;
+    protected BaseLiveMediaControllerBottom liveMediaControllerBottom;
     boolean audioRequest = false;
     long openStartTime;
     int from = 0;
@@ -163,8 +163,9 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
      * onPause状态不暂停视频
      */
     boolean onPauseNotStopVideo = false;
-    private LiveBll2 mLiveBll;
+    protected LiveBll2 mLiveBll;
     private LiveIRCMessageBll liveIRCMessageBll;
+    protected String mode = LiveTopic.MODE_TRANING;
     private LiveVideoBll mLiveVideoBll;
     private UserOnline userOnline;
     //LiveMessageBll liveMessageBll;
@@ -196,6 +197,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) LiveVideoConfig.VIDEO_WIDTH,
                 (int) LiveVideoConfig.VIDEO_HEIGHT, LiveVideoConfig.VIDEO_RATIO);
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+        LiveVideoPoint.initLiveVideoPoint(activity, liveVideoPoint, lp);
         setFirstParam(lp);
         // liveMessageBll.setVideoLayout(lp.width, lp.height);
         logger.d("onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System.currentTimeMillis() - before));
@@ -205,18 +207,27 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         before = System.currentTimeMillis();
         addBusiness(activity, bottomContent);
         logger.d("onVideoCreate:time3=" + (System.currentTimeMillis() - before));
-        LiveVideoPoint.initLiveVideoPoint(activity, liveVideoPoint, lp);
         return true;
     }
 
     @Override
     protected void onVideoCreateEnd() {
         mLiveBll.onCreate();
+        mLiveVideoBll.setvPlayer(vPlayer);
+        addOnGlobalLayoutListener();
+        startGetInfo();
+    }
+
+    protected void startGetInfo() {
         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
         LiveGetInfo mGetInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
+        if (mGetInfo != null) {
+            mode = mGetInfo.getMode();
+        }
         mLiveBll.getInfo(mGetInfo);
-        mLiveVideoBll.setvPlayer(vPlayer);
-        userOnline.start();
+    }
+
+    protected void addOnGlobalLayoutListener() {
         final View contentView = activity.findViewById(android.R.id.content);
         contentView.postDelayed(new Runnable() {
             @Override
@@ -234,8 +245,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) LiveVideoConfig.VIDEO_WIDTH,
                                 (int) LiveVideoConfig.VIDEO_HEIGHT, LiveVideoConfig.VIDEO_RATIO);
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-                        setFirstParam(lp);
                         boolean change = LiveVideoPoint.initLiveVideoPoint(activity, liveVideoPoint, lp);
+                        setFirstParam(lp);
                         // liveMessageBll.setVideoLayout(lp.width, lp.height);
                         setMediaControllerBottomParam(lp);
                         long before = System.currentTimeMillis();
@@ -304,11 +315,14 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new SpeechFeedBackIRCBll(activity, mLiveBll, bottomContent));
-            LiveRemarkIRCBll liveRemarkIRCBll = new LiveRemarkIRCBll(activity, mLiveBll, bottomContent);
-            liveRemarkIRCBll.setvPlayer(vPlayer);
-            liveRemarkIRCBll.setVideoView(videoView);
-            liveRemarkIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-            mLiveBll.addBusinessBll(liveRemarkIRCBll);
+            if (liveMediaControllerBottom instanceof LiveMediaControllerBottom) {
+                LiveRemarkIRCBll liveRemarkIRCBll = new LiveRemarkIRCBll(activity, mLiveBll, bottomContent);
+                liveRemarkIRCBll.setvPlayer(vPlayer);
+                liveRemarkIRCBll.setVideoView(videoView);
+                LiveMediaControllerBottom controllerBottom = (LiveMediaControllerBottom) liveMediaControllerBottom;
+                liveRemarkIRCBll.setLiveMediaControllerBottom(controllerBottom);
+                mLiveBll.addBusinessBll(liveRemarkIRCBll);
+            }
         }
         videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll, bottomContent);
         videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
@@ -328,7 +342,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         super.showLongMediaController();
     }
 
-    private void initView() {
+    protected void initView() {
         // 预加载布局
         rlFirstBackgroundView = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_first_backgroud);
         ivTeacherNotpresent = (ImageView) mContentView.findViewById(R.id.iv_course_video_teacher_notpresent);
@@ -344,10 +358,14 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
         tvLoadingHint.setText("获取课程信息");
         baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, mMediaController, videoFragment);
-        liveMediaControllerBottom = new LiveMediaControllerBottom(activity, mMediaController, videoFragment);
-        liveMediaControllerBottom.setVisibility(View.INVISIBLE);
+        createMediaControllerBottom();
         bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         bottomContent.addView(liveMediaControllerBottom);
+    }
+
+    protected void createMediaControllerBottom() {
+        liveMediaControllerBottom = new LiveMediaControllerBottom(activity, mMediaController, videoFragment);
+        liveMediaControllerBottom.setVisibility(View.INVISIBLE);
     }
 
     protected boolean initData() {
@@ -363,7 +381,12 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         from = intent.getIntExtra(ENTER_ROOM_FROM, 0);
         XesMobAgent.enterLiveRoomFrom(from);
         if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {// 直播
-            mLiveBll = new LiveBll2(activity, vStuCourseID, courseId, mVSectionID, from, null);
+            String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+            LiveGetInfo mGetInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
+            if (mGetInfo != null) {
+                mode = mGetInfo.getMode();
+            }
+            mLiveBll = new LiveBll2(activity, vStuCourseID, courseId, mVSectionID, from, mGetInfo);
         } else if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
             mLiveBll = new LiveBll2(activity, mVSectionID, liveType, from);
         } else if (liveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {// 辅导
@@ -409,13 +432,13 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     /**
      * 设置蓝屏界面
      */
-    private void setFirstParam(ViewGroup.LayoutParams lp) {
+    protected void setFirstParam(ViewGroup.LayoutParams lp) {
         final View contentView = activity.findViewById(android.R.id.content);
         final View actionBarOverlayLayout = (View) contentView.getParent();
         Rect r = new Rect();
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
         int screenWidth = (r.right - r.left);
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlFirstBackgroundView.getLayoutParams();
         int rightMargin = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * lp.width / LiveVideoConfig.VIDEO_WIDTH + (screenWidth - lp.width) / 2);
         int topMargin = (ScreenUtils.getScreenHeight() - lp.height) / 2;
         if (params.rightMargin != rightMargin || params.bottomMargin != topMargin) {
@@ -669,7 +692,9 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
     @Override
     public void onLiveInit(LiveGetInfo getInfo) {
+        userOnline.start();
         mGetInfo = getInfo;
+        mode = mGetInfo.getMode();
         liveVideoSAConfig = mLiveBll.getLiveVideoSAConfig();
         IS_SCIENCE = liveVideoSAConfig.IS_SCIENCE;
         liveMediaControllerBottom.setVisibility(View.VISIBLE);
@@ -708,6 +733,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
     @Override
     public void onModeChange(final String mode, final boolean isPresent) {
+        LiveVideoActivity2.this.mode = mGetInfo.getMode();
         mHandler.post(new Runnable() {
 
             @Override
