@@ -44,6 +44,14 @@ public class ProxUtil {
         return prox.get(clazz);
     }
 
+    public <T> T remove(Context context, Class<T> clazz) {
+        Prox prox = proxHashMap.get(context);
+        if (prox == null) {
+            return null;
+        }
+        return prox.remove(clazz);
+    }
+
     public void clear() {
         Set<Context> keys = proxHashMap.keySet();
         for (Context key : keys) {
@@ -62,6 +70,10 @@ public class ProxUtil {
         //**把类和对象保存*/
         private <T> T get(Class<T> clazz) {
             return (T) objectHashMap.get(clazz);
+        }
+
+        private <T> T remove(Class<T> clazz) {
+            return (T) objectHashMap.remove(clazz);
         }
 
         private void clear() {

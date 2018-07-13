@@ -52,7 +52,9 @@ public class LiveVideoActivityBase extends XesActivity {
     @Override
     public void setRequestedOrientation(int requestedOrientation) {
         super.setRequestedOrientation(requestedOrientation);
-        liveVideoFragmentBase.setRequestedOrientation(requestedOrientation);
+        if (liveVideoFragmentBase != null) {
+            liveVideoFragmentBase.setRequestedOrientation(requestedOrientation);
+        }
     }
 
     @Override
@@ -104,7 +106,9 @@ public class LiveVideoActivityBase extends XesActivity {
 
     @Override
     public final void onBackPressed() {
-        liveVideoFragmentBase.onBackPressed();
+        if (liveVideoFragmentBase != null) {
+            liveVideoFragmentBase.onBackPressed();
+        }
     }
 
     /**
@@ -123,10 +127,21 @@ public class LiveVideoActivityBase extends XesActivity {
         setContentView(id);
         getWindow().setBackgroundDrawable(null);
         liveVideoFragmentBase = getFragment();
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.rl_course_video_contentview, liveVideoFragmentBase, "liveVideo");
-        fragmentTransaction.commit();
+        if (liveVideoFragmentBase != null) {
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            fragmentTransaction.add(R.id.rl_course_video_contentview, liveVideoFragmentBase, "liveVideo");
+            fragmentTransaction.commit();
+        }
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // 使屏幕保持长亮
+    }
+
+    protected void addLiveVideoFragment(LiveVideoFragmentBase base) {
+        liveVideoFragmentBase = base;
+        if (base != null) {
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            fragmentTransaction.add(R.id.rl_course_video_contentview, base, "liveVideo");
+            fragmentTransaction.commit();
+        }
     }
 
     protected LiveVideoFragmentBase getFragment() {

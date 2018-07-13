@@ -215,6 +215,10 @@ public class LiveBaseBll extends BaseBll {
         return ProxUtil.getProxUtil().get(mContext, clazz);
     }
 
+    public <T> T removeInstance(Class<T> clazz) {
+        return ProxUtil.getProxUtil().remove(mContext, clazz);
+    }
+
     public <T> void putInstance(Class<T> clazz, T object) {
         ProxUtil.getProxUtil().put(mContext, clazz, object);
     }

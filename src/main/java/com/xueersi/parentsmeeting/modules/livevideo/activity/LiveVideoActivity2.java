@@ -100,7 +100,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  */
 public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest {
 
-    private String TAG = "LiveVideoActivityLog";
+    private String TAG = "LiveVideoActivity2Log";
     Logger logger = LoggerFactory.getLogger(TAG);
 
     {
@@ -156,7 +156,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     BaseLiveMediaControllerTop baseLiveMediaControllerTop;
     LiveMediaControllerBottom liveMediaControllerBottom;
     boolean audioRequest = false;
-    SpeechEvaluatorUtils mIse;
     long openStartTime;
     int from = 0;
     long startTime = System.currentTimeMillis();
@@ -164,7 +163,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
      * onPause状态不暂停视频
      */
     boolean onPauseNotStopVideo = false;
-    LiveTextureView liveTextureView;
     private LiveBll2 mLiveBll;
     private LiveIRCMessageBll liveIRCMessageBll;
     private LiveVideoBll mLiveVideoBll;
@@ -173,7 +171,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     private static String Tag = "LiveVideoActivity2";
     protected LogToFile mLogtf;
     private LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
-    VideoChatIRCBll videoChatIRCBll;
+    private VideoChatIRCBll videoChatIRCBll;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -218,6 +216,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         LiveGetInfo mGetInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
         mLiveBll.getInfo(mGetInfo);
         mLiveVideoBll.setvPlayer(vPlayer);
+        userOnline.start();
         final View contentView = activity.findViewById(android.R.id.content);
         contentView.postDelayed(new Runnable() {
             @Override
@@ -268,8 +267,9 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
      * @param bottomContent
      */
     private void addBusiness(Activity activity, RelativeLayout bottomContent) {
+        //是文科
         if (isArts == 1) {
-            //理科
+            //理科功能
 //            mLiveBll.addBusinessBll(new TeamPkBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll, bottomContent));
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll, bottomContent);
@@ -278,7 +278,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             mLiveBll.addBusinessBll(new LiveAchievementIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
-            //理科
+            //理科功能
 //            mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll, bottomContent));
 //            mLiveBll.addBusinessBll(new LiveVoteBll(activity, mLiveBll, bottomContent));
 //            mLiveBll.addBusinessBll(new LiveAutoNoticeIRCBll(activity, mLiveBll, bottomContent));
@@ -292,7 +292,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll, bottomContent);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
-            //文科
+            //文科功能
 //            mLiveBll.addBusinessBll(new LiveAchievementIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
@@ -673,39 +673,11 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         liveVideoSAConfig = mLiveBll.getLiveVideoSAConfig();
         IS_SCIENCE = liveVideoSAConfig.IS_SCIENCE;
         liveMediaControllerBottom.setVisibility(View.VISIBLE);
-        if ("1".equals(mGetInfo.getIsShowMarkPoint())) {
-            liveMediaControllerBottom.getBtMark().setVisibility(View.VISIBLE);
-        }
         long before = System.currentTimeMillis();
-        if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-            LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
-        }
         Loger.d(TAG, "onLiveInit:time=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         Loger.d(TAG, "onLiveInit:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        if (1 == getInfo.getIsEnglish()) {
-            mIse = new SpeechEvaluatorUtils(true);
-            //记录当前正在走的模型，留给界面更新使用
-            ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
-                    RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
-        } else {
-            if (!IS_SCIENCE) {
-                String[] subjectIds = getInfo.getSubjectIds();
-                if (subjectIds != null) {
-                    for (int i = 0; i < subjectIds.length; i++) {
-                        String subjectId = subjectIds[i];
-                        if (LiveVideoConfig.SubjectIds.SUBJECT_ID_CH.equals(subjectId)) {
-                            mIse = new SpeechEvaluatorUtils(true, Constants.ASSESS_PARAM_LANGUAGE_CH);
-                            //记录当前正在走的模型，留给界面更新使用
-                            ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
-                                    RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
         mMediaController.setFileName(getInfo.getName());
         Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
     }
@@ -972,19 +944,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         ProxUtil.getProxUtil().clear();
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
-    }
-
-    /**
-     * 跳转到播放器
-     *
-     * @param context
-     * @param bundle
-     * @param requestCode
-     */
-    public static void intentTo(Activity context, Bundle bundle, int requestCode) {
-        Intent intent = new Intent(context, LiveVideoActivity2.class);
-        intent.putExtras(bundle);
-        context.startActivityForResult(intent, requestCode);
+        userOnline.stop();
     }
 
     @Override

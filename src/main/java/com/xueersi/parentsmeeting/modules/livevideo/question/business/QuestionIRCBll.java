@@ -3,11 +3,14 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 import android.app.Activity;
 import android.widget.RelativeLayout;
 
+import com.tal.speech.speechrecognizer.Constants;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
@@ -16,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.StarInteractAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.RolePlayConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
@@ -46,6 +50,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private QuestionBll mQuestionAction;
     private AnswerRankIRCBll mAnswerRankBll;
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
+    private SpeechEvaluatorUtils mIse;
 
     public QuestionIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context, liveBll, rootView);
@@ -77,6 +82,33 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         } else {
             mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl()));
             mQuestionAction.setBaseSpeechCreat(new LiveSpeechCreat());
+        }
+        if (1 == data.getIsEnglish()) {
+            mIse = new SpeechEvaluatorUtils(true);
+            //记录当前正在走的模型，留给界面更新使用
+            ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
+                    RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
+        } else {
+            if (data.getIsArts() == 1) {
+                String[] subjectIds = data.getSubjectIds();
+                if (subjectIds != null) {
+                    for (int i = 0; i < subjectIds.length; i++) {
+                        String subjectId = subjectIds[i];
+                        if (LiveVideoConfig.SubjectIds.SUBJECT_ID_CH.equals(subjectId)) {
+                            mIse = new SpeechEvaluatorUtils(true, Constants.ASSESS_PARAM_LANGUAGE_CH);
+                            //记录当前正在走的模型，留给界面更新使用
+                            ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
+                                    RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        mQuestionAction.setIse(mIse);
+        EnglishH5CoursewareIRCBll englishH5CoursewareIRCBll = getInstance(EnglishH5CoursewareIRCBll.class);
+        if (englishH5CoursewareIRCBll != null) {
+            englishH5CoursewareIRCBll.setIse(mIse);
         }
     }
 

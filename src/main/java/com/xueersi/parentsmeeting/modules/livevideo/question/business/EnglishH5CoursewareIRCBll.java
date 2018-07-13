@@ -7,6 +7,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
@@ -38,6 +39,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 
     public EnglishH5CoursewareIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context, liveBll, rootView);
+        putInstance(EnglishH5CoursewareIRCBll.class, this);
     }
 
     @Override
@@ -65,6 +67,10 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         } else {
             englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(englishH5CoursewareBll.new LiveQuestionSwitchImpl()));
         }
+    }
+
+    public void setIse(SpeechEvaluatorUtils ise) {
+        englishH5CoursewareAction.setIse(ise);
     }
 
     @Override

@@ -8,9 +8,13 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.event.AppEvent;
+import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.lib.log.FileLogger;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity2;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -52,7 +56,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
 
     @Override
     protected void onUserBackPressed() {
-        liveVideoFragmentBase.onUserBackPressed();
+        if (liveVideoFragmentBase != null) {
+            liveVideoFragmentBase.onUserBackPressed();
+        }
     }
 
     @Override
@@ -63,13 +69,19 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
 
     @Override
     protected LiveVideoFragmentBase getFragment() {
+        int pattern = getIntent().getIntExtra("pattern", 0);
+        if (pattern == 2) {
+            return null;
+        }
         return new LiveVideoActivity2();
     }
 
     @Override
     protected void updateIcon() {
-        LiveVideoActivity2 liveVideoFragment = (LiveVideoActivity2) liveVideoFragmentBase;
-        liveVideoFragment.updateIcon();
+        if (liveVideoFragmentBase instanceof LiveVideoActivity2) {
+            LiveVideoActivity2 liveVideoFragment = (LiveVideoActivity2) liveVideoFragmentBase;
+            liveVideoFragment.updateIcon();
+        }
     }
 
     /**
@@ -87,6 +99,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
 
 
     private boolean isResume = true;
+
     @Override
     public boolean isResume() {
         return isResume;
