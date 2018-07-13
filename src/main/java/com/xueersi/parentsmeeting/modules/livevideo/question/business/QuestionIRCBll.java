@@ -10,6 +10,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.StarInteractAction;
@@ -49,7 +50,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public QuestionIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context, liveBll, rootView);
         mQuestionAction = new QuestionBll(context, liveBll.getStuCouId());
-        putInstance(QuestionIRCBll.class, this);
     }
 
     @Override
@@ -210,38 +210,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void getStuGoldCount() {
-        postDelayedIfNotFinish(new Runnable() {
-            @Override
-            public void run() {
-                String liveid = mGetInfo.getId();
-                String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-                getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack(false) {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        Loger.i(TAG, "getStuGoldCount:onPmSuccess=" + responseEntity.getJsonObject());
-                        StarInteractAction starAction = ProxUtil.getProxUtil().get(mContext, StarInteractAction.class);
-                        if (starAction != null) {
-                            StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount(responseEntity);
-                            mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
-                            mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
-                            starAction.onGetStar(starAndGoldEntity);
-                        }
-                    }
-
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        super.onPmFailure(error, msg);
-                        Loger.i(TAG, "getStuGoldCount:onPmFailure=" + msg);
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        super.onPmError(responseEntity);
-                        Loger.i(TAG, "getStuGoldCount:onPmError=" + responseEntity.getErrorMsg());
-                    }
-                });
-            }
-        }, 500);
+        UpdateAchievement updateAchievement = getInstance(UpdateAchievement.class);
+        if (updateAchievement != null) {
+            updateAchievement.getStuGoldCount();
+        }
     }
 
     @Override

@@ -22,6 +22,7 @@ import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
@@ -185,11 +186,9 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                 }
             });
             isSuccess = true;
-            QuestionIRCBll questionIRCBll = ProxUtil.getProxUtil().get(context, QuestionIRCBll.class);
-            if (questionIRCBll != null) {
-                questionIRCBll.getStuGoldCount();
-                // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
-                //EventBusUtil.post(new UpdateAchievementEvent(liveBll.getLiveId()));
+            UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(context, UpdateAchievement.class);
+            if (updateAchievement != null) {
+                updateAchievement.getStuGoldCount();
             }
             // 回答错误提示
         } else if (entity.getResultType() == QUE_RES_TYPE2) {

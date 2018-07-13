@@ -9,6 +9,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -184,9 +185,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 
         @Override
         public void getStuGoldCount() {
-            QuestionIRCBll questionIRCBll = getInstance(QuestionIRCBll.class);
-            if (questionIRCBll != null) {
-                questionIRCBll.getStuGoldCount();
+            UpdateAchievement updateAchievement = getInstance(UpdateAchievement.class);
+            if (updateAchievement != null) {
+                updateAchievement.getStuGoldCount();
             }
         }
 

@@ -11,7 +11,6 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.entity.UpdateAchievementEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -24,9 +23,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -62,6 +58,29 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 englishSpeekMode = new EnglishSpeekModeNomal();
             }
             initAchievement(mode);
+            putInstance(UpdateAchievement.class, new UpdateAchievement() {
+                @Override
+                public void getStuGoldCount() {
+                    postDelayedIfNotFinish(new Runnable() {
+                        @Override
+                        public void run() {
+                            String liveid = mGetInfo.getId();
+                            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+                            getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack() {
+                                @Override
+                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                    StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount(responseEntity);
+                                    mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
+                                    mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
+                                    if (starAction != null) {
+                                        starAction.onGetStar(starAndGoldEntity);
+                                    }
+                                }
+                            });
+                        }
+                    }, 500);
+                }
+            });
         }
     }
 
@@ -155,7 +174,6 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     @Override
     public void onCreate(HashMap<String, Object> data) {
         super.onCreate(data);
-        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -164,33 +182,12 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         if (englishSpeekAction != null) {
             englishSpeekAction.destory();
         }
-        EventBus.getDefault().unregister(this);
     }
 
     @Override
     public void onModeChange(String mode, boolean isPresent) {
         super.onModeChange(mode, isPresent);
         initAchievement(mode);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateAchievementEvent(UpdateAchievementEvent event) {
-
-        if (mLiveBll.getLiveId().equals(event.getmLiveId())) {
-            String liveid = mGetInfo.getId();
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-            getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack() {
-                @Override
-                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                    StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount(responseEntity);
-                    mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
-                    mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
-                    if (starAction != null) {
-                        starAction.onGetStar(starAndGoldEntity);
-                    }
-                }
-            });
-        }
     }
 
     @Override

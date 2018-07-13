@@ -8,6 +8,7 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -16,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONObject;
 
@@ -47,9 +49,9 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
 
                 @Override
                 public void onReceiveGold() {
-                    QuestionIRCBll questionIRCBll = getInstance(QuestionIRCBll.class);
-                    if (questionIRCBll != null) {
-                        questionIRCBll.getStuGoldCount();
+                    UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
+                    if (updateAchievement != null) {
+                        updateAchievement.getStuGoldCount();
                     }
                 }
 
