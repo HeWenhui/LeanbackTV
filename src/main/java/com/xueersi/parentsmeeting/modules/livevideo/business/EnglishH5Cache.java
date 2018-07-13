@@ -319,16 +319,19 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             for (int i = 0; i < mtexts.size(); i++) {
                 String url = mtexts.get(i);
                 final String fileName = MD5Utils.getMD5(url);
-                if(!fileIsExists(new File(mMorecacheout, fileName).getPath())){
-                    liveBll.download(mtexts.get(i), new File(mMorecacheout, fileName).getPath(), new DownloadCallBack() {
+                final File save = new File(mMorecacheout, fileName);
+                if (!fileIsExists(save.getPath())) {
+                    final File tempFile = new File(mMorecacheout, fileName + ".temp");
+                    liveBll.download(mtexts.get(i), tempFile.getPath(), new DownloadCallBack() {
                         @Override
                         protected void onDownloadSuccess() {
-                            Loger.d(TAG, "onDownloadSuccess:fileName=" + fileName);
+                            boolean renameTo = tempFile.renameTo(save);
+                            Loger.d(TAG, "onDownloadSuccess(mtexts):fileName=" + fileName + ",renameTo=" + renameTo);
                         }
 
                         @Override
                         protected void onDownloadFailed() {
-                            Loger.d(TAG, "onDownloadFailed:fileName=" + fileName);
+                            Loger.d(TAG, "onDownloadFailed(mtexts):fileName=" + fileName);
                             XESToastUtils.showToast(context, "下载字体包失败");
                         }
                     });
@@ -338,17 +341,20 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         }
         for (int i = 0; i < mUrls.size(); i++) {
             final String url = i + ".zip";
-            if(!fileIsExists(new File(mMorecachein, url).getPath())){
-                liveBll.download(mUrls.get(i), new File(mMorecachein, url).getPath(), new DownloadCallBack() {
+            final File save = new File(mMorecacheout, url);
+            if (!fileIsExists(save.getPath())) {
+                final File tempFile = new File(mMorecacheout, url + ".temp");
+                liveBll.download(mUrls.get(i), tempFile.getPath(), new DownloadCallBack() {
                     @Override
                     protected void onDownloadSuccess() {
-                        Loger.d(TAG, "onDownloadSuccess:url=" + url);
+                        boolean renameTo = tempFile.renameTo(save);
+                        Loger.d(TAG, "onDownloadSuccess(mUrls):url=" + url + ",renameTo=" + renameTo);
                         new ZipExtractorTask(new File(mMorecachein, url), mMorecacheout, true, new Progresses()).execute();
                     }
 
                     @Override
                     protected void onDownloadFailed() {
-                        Loger.d(TAG, "onDownloadFailed:url=" + url);
+                        Loger.d(TAG, "onDownloadFailed(mUrls):url=" + url);
                         XESToastUtils.showToast(context, "下载资源包失败");
                     }
                 });
@@ -584,19 +590,14 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     }
 
     //判断文件是否存在
-    public boolean fileIsExists(String strFile)
-    {
-        try
-        {
-            File f=new File(strFile);
-            if(!f.exists())
-            {
+    public boolean fileIsExists(String strFile) {
+        try {
+            File f = new File(strFile);
+            if (!f.exists()) {
                 return false;
             }
 
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return false;
         }
 
