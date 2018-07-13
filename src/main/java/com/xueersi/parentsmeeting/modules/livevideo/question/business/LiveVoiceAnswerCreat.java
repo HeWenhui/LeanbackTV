@@ -5,6 +5,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -30,6 +32,7 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
  */
 public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     private QuestionSwitch questionSwitch;
+    Logger logger = LoggerFactory.getLogger("LiveVoiceAnswerCreat");
 
     public LiveVoiceAnswerCreat(QuestionSwitch questionSwitch) {
         this.questionSwitch = questionSwitch;
@@ -46,6 +49,7 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         if (liveVideoPoint != null) {
             params.rightMargin = liveVideoPoint.getRightMargin();
+            logger.d("create:rightMargin=" + params.rightMargin);
         } else {
             int screenWidth = ScreenUtils.getScreenWidth();
             int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
@@ -62,6 +66,7 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) baseVoiceAnswerPager.getRootView().getLayoutParams();
         if (rightMargin != params.rightMargin) {
             params.rightMargin = rightMargin;
+            logger.d("setViewLayoutParams:rightMargin=" + params.rightMargin);
             LayoutParamsUtil.setViewLayoutParams(baseVoiceAnswerPager.getRootView(), params);
         }
     }

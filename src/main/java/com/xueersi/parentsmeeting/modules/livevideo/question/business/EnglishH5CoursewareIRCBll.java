@@ -58,7 +58,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         int pattern = getInfo.getPattern();
-        EnglishH5CoursewareBll englishH5CoursewareBll = (EnglishH5CoursewareBll) englishH5CoursewareAction;
+        EnglishH5CoursewareBll englishH5CoursewareBll = englishH5CoursewareAction;
         if (pattern == 2) {
             englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveStandVoiceAnswerCreat(activity, mLiveBll, englishH5CoursewareBll.new LiveStandQuestionSwitchImpl(), mGetInfo.getHeadImgPath(), mGetInfo.getStandLiveName()));
         } else {

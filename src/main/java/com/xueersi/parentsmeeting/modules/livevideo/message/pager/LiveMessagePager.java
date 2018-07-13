@@ -178,14 +178,15 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         switchFSPanelLinearLayout = (KPSwitchFSPanelLinearLayout) mView.findViewById(R.id
                 .rl_livevideo_message_panelroot);
         ivExpressionCancle = (ImageView) mView.findViewById(R.id.iv_livevideo_message_expression_cancle);
-        int screenWidth = ScreenUtils.getScreenWidth();
-        int screenHeight = ScreenUtils.getScreenHeight();
+//        int screenWidth = ScreenUtils.getScreenWidth();
+//        int screenHeight = ScreenUtils.getScreenHeight();
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
-        int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
-        int hradio = (int) ((LiveVideoConfig.VIDEO_HEIGHT - LiveVideoConfig.VIDEO_HEAD_HEIGHT) * screenHeight /
-                LiveVideoConfig.VIDEO_HEIGHT);
-        params.width = wradio;
-        params.topMargin = screenHeight - hradio;
+//        int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
+//        int hradio = (int) ((LiveVideoConfig.VIDEO_HEIGHT - LiveVideoConfig.VIDEO_HEAD_HEIGHT) * screenHeight /
+//                LiveVideoConfig.VIDEO_HEIGHT);
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+        params.width = liveVideoPoint.getRightMargin();
+        params.topMargin = liveVideoPoint.y3;
         return mView;
     }
 

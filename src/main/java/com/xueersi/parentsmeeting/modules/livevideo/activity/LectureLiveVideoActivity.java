@@ -48,6 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.H5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertBll;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LecLearnReportBll;
@@ -200,6 +201,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     private static WindowManager mWindowManager;
     private static WindowManager.LayoutParams wmParams;
     private ViewGroup mParent;
+    private LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -216,7 +218,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         questionBll = new QuestionBll(this, "");
         liveMessageBll.setQuestionBll(questionBll);
         rollCallBll = new RollCallBll(this);
-       // redPackageBll = new RedPackageBll(this);
+        // redPackageBll = new RedPackageBll(this);
         learnReportBll = new LecLearnReportBll(this);
         h5CoursewareBll = new H5CoursewareBll(this);
         lecAdvertAction = new LecAdvertBll(this);
@@ -271,7 +273,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         //互动题和懂了吗
         questionBll.initView(questionContent, mIsLand);
         //红包
-       // redPackageBll.initView(questionContent);
+        // redPackageBll.initView(questionContent);
         //学习报告
         learnReportBll.initView(questionContent);
         h5CoursewareBll.initView(questionContent);
@@ -287,6 +289,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 (int) VIDEO_HEIGHT, VIDEO_RATIO);
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
         liveMessageBll.setVideoLayout(lp.width, lp.height);
+        LiveVideoPoint.initLiveVideoPoint(this, liveVideoPoint, lp);
         final View contentView = findViewById(android.R.id.content);
         contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -303,6 +306,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                         (int) VIDEO_HEIGHT, VIDEO_RATIO);
                 ViewGroup.LayoutParams lp = videoView.getLayoutParams();
                 setFirstParamLand(lp);
+                LiveVideoPoint.initLiveVideoPoint(LectureLiveVideoActivity.this, liveVideoPoint, lp);
                 liveMessageBll.setVideoLayout(lp.width, lp.height);
                 setMediaControllerBottomParam(lp);
 //                if (starBll != null) {

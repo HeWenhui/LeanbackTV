@@ -38,6 +38,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CacheAction;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekAction;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekBll;
@@ -218,6 +219,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
     LiveTextureView liveTextureView;
     String mode = LiveTopic.MODE_TRANING;
     LiveStandFrameAnim liveStandFrameAnim;
+    private LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -336,7 +338,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
 
         setFirstParam(lp, true);
         liveMessageBll.setVideoLayout(lp.width, lp.height);
-
+        LiveVideoPoint.initLiveVideoPoint(this, liveVideoPoint, lp);
         Loger.d(TAG, "initView:time2=" + (System.currentTimeMillis() - before));
         final View contentView = findViewById(android.R.id.content);
         contentView.postDelayed(new Runnable() {
@@ -360,6 +362,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                                 (int) VIDEO_HEIGHT, VIDEO_RATIO);
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
                         setFirstParam(lp, false);
+                        LiveVideoPoint.initLiveVideoPoint(StandLiveVideoActivity.this, liveVideoPoint, lp);
                         liveMessageBll.setVideoLayout(lp.width, lp.height);
                         questionBll.setVideoLayout(lp.width, lp.height);
                         if (rankBll != null) {
