@@ -8,13 +8,9 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.event.AppEvent;
-import com.xueersi.common.logerhelper.XesMobAgent;
-import com.xueersi.lib.log.FileLogger;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity2;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -86,15 +82,14 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
 
     /**
      * 跳转到播放器
-     *
-     * @param context
+     *  @param context
      * @param bundle
-     * @param requestCode
      */
-    public static void intentTo(Activity context, Bundle bundle, int requestCode) {
+    public static void intentTo(Activity context, Bundle bundle) {
         Intent intent = new Intent(context, LiveVideoActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         intent.putExtras(bundle);
-        context.startActivityForResult(intent, requestCode);
+        context.startActivity(intent);
     }
 
 

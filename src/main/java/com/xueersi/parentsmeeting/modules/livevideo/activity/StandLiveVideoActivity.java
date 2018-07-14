@@ -1762,6 +1762,9 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
      */
     public static void intentTo(Activity context, Bundle bundle, int requestCode) {
         Intent intent = new Intent(context, StandLiveVideoActivity.class);
+        if (requestCode < 0) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        }
         intent.putExtras(bundle);
         context.startActivityForResult(intent, requestCode);
     }

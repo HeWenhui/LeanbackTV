@@ -3,12 +3,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.UserBll;
-import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -74,7 +72,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 bundle.putInt("isArts", mGetInfo.getIsArts());
                 bundle.putInt("pattern", mGetInfo.getPattern());
                 if (mGetInfo.getPattern() == 2) {
-                    StandLiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+                    StandLiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle, -1);
                 } else {
 
 //                    if (mGetInfo.getIsArts() == 1) {
@@ -82,7 +80,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
 //                    } else {
 //                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
 //                    }
-                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                 }
                 finish();
             }
