@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLiveVideoAct
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveStandPlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.StandLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -144,51 +145,51 @@ public class LiveVideoEnter {
         bundle.putString("vSectionID", vSectionID);
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LIVE);
         bundle.putInt(LiveVideoActivity.ENTER_ROOM_FROM, from);
-
-        DataLoadEntity dataLoadEntity = new DataLoadEntity(context);
-        BaseBll.postDataLoadEvent(dataLoadEntity.beginLoading());
-        LiveHttpManager httpManager = new LiveHttpManager(context);
-        httpManager.addBodyParam("stuCouId", vStuCourseID);
-        httpManager.addBodyParam("liveId", vSectionID);
-        httpManager.addBodyParam("from", "" + from);
-        httpManager.liveGetInfo("", courseId, vSectionID, 0, new HttpCallBack(dataLoadEntity) {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                LiveHttpResponseParser mHttpResponseParser = new LiveHttpResponseParser(context);
-                JSONObject object = (JSONObject) responseEntity.getJsonObject();
-                LiveTopic mLiveTopic = new LiveTopic();
-                LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, LiveVideoConfig.LIVE_TYPE_LIVE, from);
-                if (mGetInfo == null) {
-                    XESToastUtils.showToast(context, "服务器异常");
-                    return;
-                }
-                String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-                getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
-                bundle.putInt("isArts", mGetInfo.getIsArts());
-                bundle.putInt("pattern", mGetInfo.getPattern());
-                if (mGetInfo.getPattern() == 2) {
-                    StandLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
-                } else {
-
-//                    if (mGetInfo.getIsArts() == 1) {
-//                        LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
-//                    } else {
-//                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
-//                    }
-                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
-                }
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                XESToastUtils.showToast(context, "初始化失败");
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                XESToastUtils.showToast(context, responseEntity.getErrorMsg());
-            }
-        });
+        LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+//        DataLoadEntity dataLoadEntity = new DataLoadEntity(context);
+//        BaseBll.postDataLoadEvent(dataLoadEntity.beginLoading());
+//        LiveHttpManager httpManager = new LiveHttpManager(context);
+//        httpManager.addBodyParam("stuCouId", vStuCourseID);
+//        httpManager.addBodyParam("liveId", vSectionID);
+//        httpManager.addBodyParam("from", "" + from);
+//        httpManager.liveGetInfo("", courseId, vSectionID, 0, new HttpCallBack(dataLoadEntity) {
+//            @Override
+//            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+//                LiveHttpResponseParser mHttpResponseParser = new LiveHttpResponseParser(context);
+//                JSONObject object = (JSONObject) responseEntity.getJsonObject();
+//                LiveTopic mLiveTopic = new LiveTopic();
+//                LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, LiveVideoConfig.LIVE_TYPE_LIVE, from);
+//                if (mGetInfo == null) {
+//                    XESToastUtils.showToast(context, "服务器异常");
+//                    return;
+//                }
+//                String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+//                getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
+//                bundle.putInt("isArts", mGetInfo.getIsArts());
+//                bundle.putInt("pattern", mGetInfo.getPattern());
+//                if (mGetInfo.getPattern() == 2) {
+//                    StandLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+//                } else {
+//
+////                    if (mGetInfo.getIsArts() == 1) {
+////                        LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+////                    } else {
+////                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+////                    }
+//                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+//                }
+//            }
+//
+//            @Override
+//            public void onPmFailure(Throwable error, String msg) {
+//                XESToastUtils.showToast(context, "初始化失败");
+//            }
+//
+//            @Override
+//            public void onPmError(ResponseEntity responseEntity) {
+//                XESToastUtils.showToast(context, responseEntity.getErrorMsg());
+//            }
+//        });
         return true;
     }
 
@@ -259,7 +260,7 @@ public class LiveVideoEnter {
         if (TextUtils.isEmpty(jsonObject.optString("vSectionId"))) {
             return null;
         }
-        Intent intent = new Intent(context, LiveVideoActivity.class);
+        Intent intent = new Intent(context, LiveVideoLoadActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Bundle bundle = new Bundle();
         bundle.putString("vSectionID", jsonObject.optString("vSectionId"));

@@ -220,7 +220,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
     protected void startGetInfo() {
         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-        LiveGetInfo mGetInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
+        LiveGetInfo mGetInfo = LiveVideoLoadActivity.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
         if (mGetInfo != null) {
             mode = mGetInfo.getMode();
         }
@@ -382,7 +382,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         XesMobAgent.enterLiveRoomFrom(from);
         if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {// 直播
             String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-            LiveGetInfo mGetInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
+            LiveGetInfo mGetInfo = LiveVideoLoadActivity.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
             if (mGetInfo != null) {
                 mode = mGetInfo.getMode();
             }
