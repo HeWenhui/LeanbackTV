@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -58,15 +59,23 @@ public class SpeechBulletScreenBll implements SpeechBulletScreenAction, Handler.
         mWeakHandler.post(new Runnable() {
             @Override
             public void run() {
-                mSpeechBulPager = new SpeechBulletScreenPager(activity);
+                mSpeechBulPager = new SpeechBulletScreenPager(activity,SpeechBulletScreenBll.this);
                 rlSpeechBulContent.removeAllViews();
                 rlSpeechBulContent.addView(mSpeechBulPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                rlSpeechBulContent.setVisibility(View.VISIBLE);
             }
         });
     }
 
     @Override
     public void onCloseSpeechBulletScreen() {
-
+        mWeakHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mSpeechBulPager = null;
+                rlSpeechBulContent.removeAllViews();
+                rlSpeechBulContent.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 }

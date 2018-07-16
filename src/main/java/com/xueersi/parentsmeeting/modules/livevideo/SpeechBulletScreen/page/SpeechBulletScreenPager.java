@@ -18,6 +18,7 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenBll;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.page.BaseSpeechBulletScreenPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
@@ -58,9 +59,11 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
     private boolean isSpeechError = false;
     /** 是不是评测成功 */
     private boolean isSpeechSuccess = false;
+    SpeechBulletScreenBll speechBulletScreenBll;
 
-    public SpeechBulletScreenPager(Context context) {
+    public SpeechBulletScreenPager(Context context, SpeechBulletScreenBll speechBulletScreenBll) {
         super(context);
+        this.speechBulletScreenBll = speechBulletScreenBll;
         initListener();
         initData();
     }
@@ -88,13 +91,17 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
     public void initListener() {
         Log.d(TAG,"initListener()");
         super.initListener();
+        //关闭语音评测
         ivSpeechbulClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d(TAG,"onClick: ivSpeechbulClose");
+                speechBulletScreenBll.onCloseSpeechBulletScreen();
+                stopPlayer();
 
             }
         });
+        //编辑话语
         etSpeechbulWords.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,8 +144,11 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
     }
 
     @Override
-    public void setSpeechEvaluatorUtils(SpeechEvaluatorUtils speechEvaluatorUtils) {
-        Log.d(TAG,"setSpeechEvaluatorUtils()");
+    public void stopPlayer() {
+        Log.d(TAG,"stopPlayer()");
+        if (mSpeechEvaluatorUtils != null) {
+            mSpeechEvaluatorUtils.stop();
+        }
     }
 
     private void startEvaluator() {
