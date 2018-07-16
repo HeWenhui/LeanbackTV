@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.MicTipDialog;
+import com.xueersi.parentsmeeting.modules.livevideo.dialog.MicTipPsDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.RaiseHandDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -658,6 +659,12 @@ public class VideoChatBll implements VideoChatAction {
                         raisehand = false;
                     }
                     btRaiseHands.setAlpha(0.4f);
+                    // 小学理科的改版
+                    if(LiveVideoConfig.isPrimary){
+                        MicTipPsDialog micTipDialogs = new MicTipPsDialog(activity);
+                        micTipDialogs.showDialog();
+                        return;
+                    }
                     MicTipDialog micTipDialog = new MicTipDialog(activity);
                     micTipDialog.setFail("老师已经结束了这次举手!");
                     micTipDialog.showDialog();
