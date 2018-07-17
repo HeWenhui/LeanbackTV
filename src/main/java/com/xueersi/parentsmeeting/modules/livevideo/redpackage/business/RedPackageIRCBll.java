@@ -18,17 +18,36 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStatusChange;
 
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 /**
  * Created by lyqai on 2018/7/5.
  */
 public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
-    RedPackageAction redPackageAction;
+    private RedPackageAction redPackageAction;
+    private String voiceChatStatus;
 
     public RedPackageIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context, liveBll, rootView);
+    }
+
+    @Override
+    public void onCreate(HashMap<String, Object> data) {
+        super.onCreate(data);
+        VideoChatStatusChange videoChatStatusChange = getInstance(VideoChatStatusChange.class);
+        if (videoChatStatusChange != null) {
+            videoChatStatusChange.addVideoChatStatusChange(new VideoChatStatusChange.ChatStatusChange() {
+                @Override
+                public void onVideoChatStatusChange(String voiceChatStatus) {
+                    RedPackageIRCBll.this.voiceChatStatus = voiceChatStatus;
+                }
+            });
+        }
     }
 
     @Override
@@ -171,28 +190,11 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
         });
     }
 
-    private static final String DEFULT_VOICE_CHAT_STATE = "off";
-
-    private boolean isRedPageAvaliable() {
-        boolean result = true;
-        try {
-            //与 语音接麦 功能互斥
-            Object targetParam = mLiveBll.getBusinessShareParam("voiceChatStatus");
-            if (targetParam != null) {
-                String voiceChatStatus = (String) targetParam;
-                result = DEFULT_VOICE_CHAT_STATE.equals(voiceChatStatus);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
     @Override
     public void onNotice(JSONObject data, int type) {
         switch (type) {
             case XESCODE.READPACAGE:
-                if (isRedPageAvaliable() && redPackageAction != null) {
+                if (VideoChatIRCBll.DEFULT_VOICE_CHAT_STATE.equals(voiceChatStatus) && redPackageAction != null) {
                     redPackageAction.onReadPackage(data.optInt("id"), null);
                 }
                 break;

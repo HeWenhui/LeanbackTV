@@ -86,14 +86,14 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
  */
 public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEvalAction, BaseQuestionWebInter
         .StopWebQuestion, BaseVoiceAnswerCreat.AnswerRightResultVoice, QuestionStatic, QuestionShowReg, KeyboardUtil.OnKeyboardShowingListener {
-    String TAG = "QuestionBll";
-    SpeechEvaluatorUtils mIse;
+    private String TAG = "QuestionBll";
+    private SpeechEvaluatorUtils mIse;
     private LiveVideoSAConfig liveVideoSAConfig;
     boolean IS_SCIENCE = false;
-    String examQuestionEventId = LiveVideoConfig.LIVE_H5_EXAM;
-    String questionEventId = LiveVideoConfig.LIVE_PUBLISH_TEST;
-    String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
-    String understandEventId = LiveVideoConfig.LIVE_DOYOUSEE;
+    private String examQuestionEventId = LiveVideoConfig.LIVE_H5_EXAM;
+    private String questionEventId = LiveVideoConfig.LIVE_PUBLISH_TEST;
+    private String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
+    private String understandEventId = LiveVideoConfig.LIVE_DOYOUSEE;
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     private VideoQuestionLiveEntity videoQuestionLiveEntity;
     private LogToFile mLogtf;
@@ -104,136 +104,70 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private BasePager curQuestionView;
     private boolean isTeamPkAllowed = false;
     private boolean webViewCloseByTeacher = false;
-    /**
-     * 直播id
-     */
+    /** 直播id */
     private String mVSectionID;
-    /**
-     * 直播类型
-     */
+    /** 直播类型 */
     private int liveType;
     protected ShareDataManager mShareDataManager;
-    /**
-     * 显示互动题
-     */
+    /** 显示互动题 */
     private static final int SHOW_QUESTION = 0;
-    /**
-     * 没有互动题
-     */
+    /** 没有互动题 */
     private static final int NO_QUESTION = 1;
-    /**
-     * 显示懂了吗
-     */
-    private static final int SHOW_UNDERSTAND = 2;
-    /**
-     * 没有懂了吗显示
-     */
-    private static final int NO_UNDERSTAND = 3;
-    /**
-     * 当前是否正在显示互动题
-     */
+    /** 当前是否正在显示互动题 */
     private boolean mIsShowQuestion = false;
-    /**
-     * 当前是否正在显示懂了吗
-     */
-    private boolean mIsShowUnderstand = false;
-    /**
-     * 语音答题
-     */
+    /** 语音答题 */
     private BaseVoiceAnswerPager voiceAnswerPager;
-    /**
-     * 创建语音答题
-     */
+    /** 创建语音答题 */
     private BaseVoiceAnswerCreat baseVoiceAnswerCreat;
-    /**
-     * 语音强制提交，外层
-     */
+    /** 语音强制提交，外层 */
     private RelativeLayout rlVoiceQuestionContent;
-    /**
-     * 互动题布局
-     */
+    /** 互动题布局 */
     private BaseLiveQuestionPager baseQuestionPager;
     RelativeLayout bottomContent;
-    /**
-     * 互动题的布局
-     */
+    /** 互动题的布局 */
     private RelativeLayout rlQuestionContent;
-    /**
-     * 互动题作答成功的布局
-     */
+    /** 互动题作答成功的布局 */
     private RelativeLayout rlQuestionResContent;
-    /**
-     * video缓存时间
-     */
+    /** video缓存时间 */
     private long videoCachedDuration;
     private LiveGetInfo liveGetInfo;
-    /**
-     * 存互动题
-     */
+    /** 存互动题 */
     private static final String QUESTION = "live_question";
-    /**
-     * 存试卷
-     */
+    /** 存试卷 */
     private static final String EXAM = "live_exam";
-    /**
-     * 答题的暂存状态
-     */
+    /** 答题的暂存状态 */
     private HashSet<String> mQueAndBool = new HashSet<>();
-    /**
-     * 答题的暂存状态-可以重复作答的
-     */
+    /** 答题的暂存状态-可以重复作答的 */
     private HashSet<String> mQueReAnswer = new HashSet<>();
-    /**
-     * 语音答题错误
-     */
+    /** 语音答题错误 */
     private HashSet<String> mErrorVoiceQue = new HashSet<>();
-    /**
-     * 试卷的暂存状态
-     */
+    /** 试卷的暂存状态 */
     private HashSet<String> mExamAndBool = new HashSet<>();
-    /**
-     * 试卷正在作答
-     */
+    /** 试卷正在作答 */
     private boolean isHaveExam = false;
-    /**
-     * 语音评测正在作答
-     */
+    /** 语音评测正在作答 */
     private boolean isHaveSpeech = false;
-    /**
-     * 网页互动题正在作答
-     */
+    /** 网页互动题正在作答 */
     private boolean isHaveWebQuestion = false;
     private BaseQuestionWebInter questionWebPager;
-    /**
-     * 试卷页面
-     */
+    /** 试卷页面 */
     private BaseExamQuestionInter examQuestionPager;
-    /**
-     * 语音评测页面
-     */
+    /** 语音评测页面 */
     private BaseSpeechAssessmentPager speechAssessmentPager;
-    /**
-     * 语音评测页面,用户点击返回暂存
-     */
+    /** 语音评测页面,用户点击返回暂存 */
     private BaseSpeechAssessmentPager speechAssessmentPagerUserBack;
     private BaseSpeechCreat baseSpeechCreat;
-    /**
-     * 语音评测结束后的事件
-     */
+    /** 语音评测结束后的事件 */
     private SpeechEndAction speechEndAction;
     /** 语文主观题 */
     private BaseSubjectResultInter subjectResultPager;
     boolean isLand;
     private KeyBordAction keyBordAction;
-    /**
-     * 是不是在显示互动题,结果页或者语音评测top3
-     */
+    /** 是不是在显示互动题,结果页或者语音评测top3 */
     private boolean isAnaswer = false;
     private ArrayList<QuestionShowAction> questionShowActions = new ArrayList<>();
     private AnswerRankBll mAnswerRankBll;
-    /**
-     * 智能私信业务
-     */
+    /** 智能私信业务 */
     private LiveAutoNoticeBll mLiveAutoNoticeBll;
     private VideoQuestionLiveEntity mVideoQuestionLiveEntity;
     private boolean hasQuestion;
@@ -368,9 +302,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
             rlQuestionContent.addView(speechAssessmentPager.getRootView());
         }
-        if (mIsShowUnderstand) {
-            understand("");
-        }
     }
 
     @Override
@@ -396,7 +327,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 String s = "handleMessage:SHOW_QUESTION:mIsShow=" + mIsShowQuestion;
                 if (!mIsShowQuestion) {
                     mIsShowQuestion = true;
-                    mIsShowUnderstand = false;
                 }
                 mLogtf.d(s);
                 if (keyBordAction == null) {
@@ -426,22 +356,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mLogtf.d(s);
             }
             break;
-            case SHOW_UNDERSTAND: {
-                mIsShowUnderstand = true;
-            }
-            break;
-            case NO_UNDERSTAND: {
-                String s = "handleMessage:NO_UNDERSTAND:mIsShow=" + mIsShowUnderstand;
-                if (mIsShowUnderstand) {
-                    mIsShowUnderstand = false;
-                    if (baseQuestionPager != null) {
-                        baseQuestionPager.hideInputMode();
-                    }
-                    understandViewGone();
-                }
-                mLogtf.d(s);
-            }
-            break;
+            default:
+                break;
         }
         return false;
     }
@@ -1001,69 +917,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void understand(final String nonce) {
-        Map<String, String> mData = new HashMap<>();
-        mData.put("logtype", "understandReceive");
-        umsAgentDebugSys(understandEventId, mData);
-        Runnable runnable = new Runnable() {
 
-            @Override
-            public void run() {
-                //显示懂了吗？先移除互动题
-                removeQuestionViews();
-                final View underatandView = activity.getLayoutInflater().inflate(R.layout.layout_livevideo_understand,
-                        rlQuestionContent,
-                        false);
-                ((TextView) underatandView.findViewById(R.id.tv_livevideo_under_user)).setText(liveGetInfo.getStuName
-                        () + " 你好");
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) underatandView.getLayoutParams();
-                params.addRule(RelativeLayout.CENTER_IN_PARENT);
-                rlQuestionContent.addView(underatandView, params);
-                View.OnClickListener listener = new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        boolean isUnderstand = v.getId() == R.id.tv_livevideo_understand_understand;
-                        mLogtf.d("understand:isUnderstand=" + isUnderstand);
-                        String nonce = "" + StableLogHashMap.creatNonce();
-                        mLiveBll.understand(isUnderstand, nonce);
-                        removeQuestionViews();
-                        mVPlayVideoControlHandler.sendEmptyMessage(NO_UNDERSTAND);
-                        Map<String, String> mData = new HashMap<>();
-                        mData.put("logtype", "sendUnderstand");
-                        mData.put("answerType", isUnderstand ? "1" : "0");
-                        mData.put("expect", "1");
-                        mData.put("nonce", "" + nonce);
-                        mData.put("sno", "3");
-                        mData.put("stable", "1");
-                        umsAgentDebugInter(understandEventId, mData);
-                    }
-                };
-                activity.findViewById(R.id.tv_livevideo_understand_donotunderstand).setOnClickListener(listener);
-                activity.findViewById(R.id.tv_livevideo_understand_understand).setOnClickListener(listener);
-                postDelayedIfNotFinish(new Runnable() {
-                    public void run() {
-                        if (mIsShowUnderstand) {
-                            Map<String, String> mData = new HashMap<>();
-                            mData.put("logtype", "understandTimeout");
-                            umsAgentDebugSys(understandEventId, mData);
-                            removeQuestionViews();
-                            mVPlayVideoControlHandler.sendEmptyMessage(NO_UNDERSTAND);
-                        }
-                    }
-                }, 10000);
-                activity.getWindow().getDecorView().requestLayout();
-                activity.getWindow().getDecorView().invalidate();
-                Map<String, String> mData = new HashMap<>();
-                mData.put("logtype", "showUnderstand");
-                mData.put("nonce", "" + nonce);
-                mData.put("ex", "Y");
-                mData.put("sno", "2");
-                mData.put("stable", "1");
-                umsAgentDebugPv(understandEventId, mData);
-            }
-        };
-        mVPlayVideoControlHandler.post(runnable);
-        mVPlayVideoControlHandler.sendEmptyMessage(SHOW_UNDERSTAND);
     }
 
     @Override
@@ -1623,21 +1477,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 rlQuestionResContent.removeAllViews();
             }
         }, 5000);
-    }
-
-    /**
-     * 试题布局隐藏
-     */
-    private void understandViewGone() {
-        mIsShowUnderstand = false;
-        if (videoQuestionLiveEntity != null) {
-            showQuestion(videoQuestionLiveEntity);
-        } else if (mLiveTopic != null && mLiveTopic.getVideoQuestionLiveEntity() != null) {
-            VideoQuestionLiveEntity videoQuestionLiveEntity = mLiveTopic.getVideoQuestionLiveEntity();
-            showQuestion(videoQuestionLiveEntity);
-        } else {
-            removeQuestionViews();
-        }
     }
 
     /**

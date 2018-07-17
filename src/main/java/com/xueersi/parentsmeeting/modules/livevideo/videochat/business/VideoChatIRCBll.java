@@ -32,7 +32,8 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
     private LiveFragmentBase liveFragmentBase;
     /** 接麦已经连接老师 */
     private AtomicBoolean startRemote = new AtomicBoolean(false);
-    private String voiceChatStatus = "off";
+    public static final String DEFULT_VOICE_CHAT_STATE = "off";
+    private String voiceChatStatus =DEFULT_VOICE_CHAT_STATE;
     private ArrayList<VideoChatStatusChange.ChatStatusChange> chatStatusChanges = new ArrayList<>();
     private BaseLiveMediaControllerBottom baseLiveMediaControllerBottom;
 
@@ -248,6 +249,8 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
                 }
                 break;
             }
+            default:
+                break;
         }
     }
 

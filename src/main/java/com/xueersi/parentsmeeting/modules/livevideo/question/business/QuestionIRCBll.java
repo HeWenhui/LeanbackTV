@@ -75,6 +75,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onLiveInited(LiveGetInfo data) {
         super.onLiveInited(data);
+        mQuestionAction.setUserName(data);
         if (data.getPattern() == 2) {
             mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl()));
             mQuestionAction.setBaseSpeechCreat(new LiveStandSpeechCreat(this, mLiveBll));
@@ -110,6 +111,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (englishH5CoursewareIRCBll != null) {
             englishH5CoursewareIRCBll.setIse(mIse);
         }
+        mQuestionAction.initData();
     }
 
     @Override

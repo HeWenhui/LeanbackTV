@@ -75,6 +75,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -296,6 +297,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             mLiveBll.addBusinessBll(new LearnReportIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
+            mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll, bottomContent));
         } else {
             mLiveBll.addBusinessBll(new TeamPkBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll, bottomContent));
@@ -325,6 +327,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                 liveRemarkIRCBll.setLiveMediaControllerBottom(controllerBottom);
                 mLiveBll.addBusinessBll(liveRemarkIRCBll);
             }
+            mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll, bottomContent));
         }
         videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll, bottomContent);
         videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
@@ -402,6 +405,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     }
 
     private void initAllBll() {
+        mLiveBll.setmIsLand(mIsLand);
         ProxUtil.getProxUtil().put(activity, RegMediaPlayerControl.class, new RegMediaPlayerControl() {
 
             @Override
@@ -462,7 +466,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (mIsLand) {
+        if (mIsLand.get()) {
             mMediaController.setControllerBottom(liveMediaControllerBottom, false);
             setMediaControllerBottomParam(videoView.getLayoutParams());
         }

@@ -41,6 +41,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoFragment;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 
@@ -63,7 +65,7 @@ public class LiveVideoFragmentBase extends Fragment {
     private boolean mCreated = false;
 
     /** 当前界面是否横屏 */
-    protected boolean mIsLand = false;
+    protected AtomicBoolean mIsLand = new AtomicBoolean(false);
 
     /** 是否点击了横竖屏切换按钮 */
     private boolean mClick = false;
@@ -148,7 +150,7 @@ public class LiveVideoFragmentBase extends Fragment {
         super.onCreate(savedInstanceState);
         activity = (BaseActivity) getActivity();
         sendPlayVideoHandler.sendEmptyMessageDelayed(1, 1000);
-        mIsLand = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+        mIsLand.set(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
         mClick = false;
         mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
         logger.d("onCreate");
@@ -185,8 +187,6 @@ public class LiveVideoFragmentBase extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (!mCreated)
-            return;
     }
 
 
@@ -195,8 +195,6 @@ public class LiveVideoFragmentBase extends Fragment {
         super.onResume();
         // 设置视频可播放
         mIsPlayerEnable = true;
-        if (!mCreated)
-            return;
     }
 
 
@@ -205,8 +203,9 @@ public class LiveVideoFragmentBase extends Fragment {
         super.onPause();
         // 设置视频不可播放
         mIsPlayerEnable = false;
-        if (!mCreated)
+        if (!mCreated) {
             return;
+        }
         if (isInitialized()) {
             if (vPlayer != null && vPlayer.isPlaying()) {
                 // 暂停播放
@@ -218,8 +217,9 @@ public class LiveVideoFragmentBase extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if (!mCreated)
+        if (!mCreated) {
             return;
+        }
         XesMobAgent.userMarkVideoDestory(MobEnumUtil.MARK_VIDEO_ONSTOP);
         // 友盟统计
         umPlayVideoTime();
@@ -228,15 +228,16 @@ public class LiveVideoFragmentBase extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (!mCreated)
+        if (!mCreated) {
             return;
+        }
         // 注销事件
         EventBus.getDefault().unregister(this);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        mIsLand = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE; //
+        mIsLand.set(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
         // 设置当前屏幕是否横屏
         loadLandOrPortView(); // 重新加载界面
 
@@ -245,7 +246,7 @@ public class LiveVideoFragmentBase extends Fragment {
 
     public final void onBackPressed() {
         // 这里需要写代码，如果是横屏则转换竖屏
-        if (mIsLand) {
+        if (mIsLand.get()) {
             // 如果是横屏则切换为竖屏
             if (mIsAutoOrientation) {
                 videoFragment.changeLOrP();
@@ -364,7 +365,7 @@ public class LiveVideoFragmentBase extends Fragment {
         if (lpr == null) {
             return;
         }
-        if (mIsLand) {
+        if (mIsLand.get()) {
             lpr.height = LayoutParams.MATCH_PARENT;
         } else {
             lpr.height = mPortVideoHeight;
@@ -479,7 +480,7 @@ public class LiveVideoFragmentBase extends Fragment {
 
     /** 判断当前为竖屏并且处于播放状态时，显示控制栏 */
     public void showLongMediaController() {
-        if (!mIsLand) {
+        if (!mIsLand.get()) {
             // 竖屏时长时间显示
             mMediaController.showLong();
         } else {
@@ -562,8 +563,9 @@ public class LiveVideoFragmentBase extends Fragment {
         ImageView ivRefresh = (ImageView) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.base.R.id.iv_course_video_refresh_bg);
         if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
-            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
+            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl)) {
                 ImageLoader.with(activity).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivRefresh);
+            }
         }
     }
 }

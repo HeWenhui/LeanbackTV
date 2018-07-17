@@ -56,6 +56,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 直播间管理类
@@ -97,6 +98,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     private IRCMessage mIRCMessage;
     LiveVideoBll liveVideoBll;
     private String mCurrentDutyId;
+    private AtomicBoolean mIsLand;
     private static String Tag = "LiveBll2";
 
     public LiveBll2(Context context, String vStuCourseID, String courseId, String vSectionID, int form, LiveGetInfo
@@ -199,6 +201,14 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
 
     public LiveTopic getLiveTopic() {
         return mLiveTopic;
+    }
+
+    public AtomicBoolean getmIsLand() {
+        return mIsLand;
+    }
+
+    public void setmIsLand(AtomicBoolean mIsLand) {
+        this.mIsLand = mIsLand;
     }
 
     /**
