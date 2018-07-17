@@ -366,7 +366,7 @@ public class RolePlayerActivity extends XesActivity {
         //entity.getLstRolePlayerMessage().add(emptyMsg);
         RolePlayerBll bll = new RolePlayerBll(mContext, null, null, null);
         bll.setRolePlayEntity(entity);
-        mPager = new RolePlayerPager(mContext, entity, true, bll, null, null);
+        mPager = new RolePlayerPager(mContext, entity, true, bll, null);
         bll.setRolePlayPager((RolePlayerPager) mPager);
         mPager.initData();
         llRoleMain.addView(mPager.getRootView());

@@ -20,11 +20,13 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -83,14 +85,14 @@ public class RolePlayerOtherItem extends RolePlayerItem {
      */
     //private LottieAnimationView lavMessageDZ;
     private AudioPlayerManager mAudioPlayerManager;//音频播放管理类
-    private final LiveBll mLiveBll;//只为记录日志用
+    private final LiveAndBackDebug mLiveBll;//只为记录日志用
     private boolean mIsPlaying = false;//标记当前语音正在播放,true 表示正在播放； flase 表示已经停止播放
     private boolean mIsVideoUnClick = true;//标记当前语音是否可点击；true 不可点击 false 可点击；默认true
 
 
-    public RolePlayerOtherItem(Context context, RolePlayerBll bll, LiveBll liveBll) {
+    public RolePlayerOtherItem(Context context, RolePlayerBll bll) {
         super(context, bll);
-        mLiveBll = liveBll;
+        mLiveBll = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
     }
 
     @Override

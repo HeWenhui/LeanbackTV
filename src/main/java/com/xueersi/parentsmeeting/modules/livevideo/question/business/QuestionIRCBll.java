@@ -17,6 +17,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateA
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.StarInteractAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.RolePlayConfig;
@@ -51,6 +53,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private AnswerRankIRCBll mAnswerRankBll;
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
     private SpeechEvaluatorUtils mIse;
+    /** RolePlayer功能接口 */
+    private RolePlayAction rolePlayAction;
 
     public QuestionIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
         super(context, liveBll, rootView);
@@ -228,6 +232,16 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
                 break;
             }
+            case XESCODE.XCR_ROOM_ROLE_READ: {
+                if (rolePlayAction == null) {
+                    RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
+                    mQuestionAction.setRolePlayAction(rolePlayerBll);
+                    rolePlayAction = rolePlayerBll;
+                }
+                String nonce = object.optString("nonce");
+                rolePlayAction.teacherRead(mLiveId, mLiveBll.getStuCouId(), nonce);
+                break;
+            }
             default:
                 break;
         }
@@ -235,9 +249,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public int[] getNoticeFilter() {
-        return new int[]{XESCODE.SENDQUESTION, XESCODE.STOPQUESTION, XESCODE.EXAM_START, XESCODE.EXAM_STOP};
+        return new int[]{XESCODE.SENDQUESTION, XESCODE.STOPQUESTION, XESCODE.EXAM_START, XESCODE.EXAM_STOP, XESCODE.XCR_ROOM_ROLE_READ};
     }
 
+    @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         mQuestionAction.setVideoLayout(liveVideoPoint);
     }

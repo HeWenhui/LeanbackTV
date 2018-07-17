@@ -16,7 +16,6 @@ import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -35,7 +34,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerSelfItem;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -44,6 +43,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.view.CustomUnScorllListView;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -258,12 +258,12 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     private RolePlayerSelfItem mRolePlayerSelfItem;
     private RolePlayerOtherItem mRolePlayerOtherItem;
     private ImageView iv_live_roleplayer_title;//roleplay标题icon
-    private final LiveBll mLiveBll;//只为记录日志调用方便
+    private final LiveAndBackDebug liveAndBackDebug;//只为记录日志调用方便
     private boolean mIsListViewUnSroll;//listview是否可滑动
     //private boolean mIsEvaluatoring;//标记正在测评中
 
     public RolePlayerPager(Context context, RolePlayerEntity obj, boolean isNewView, RolePlayerBll rolePlayerBll,
-                           LiveGetInfo liveGetInfo, LiveBll liveBll) {
+                           LiveGetInfo liveGetInfo) {
         super(context, obj, isNewView);
         this.mRolePlayBll = rolePlayerBll;
         mLiveGetInfo = liveGetInfo;
@@ -274,7 +274,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         mWorkerThread = new WorkerThread(ContextManager.getApplication(), Integer.parseInt(UserBll.getInstance()
                 .getMyUserInfoEntity().getStuId()), false, true);
 
-        mLiveBll = liveBll;
+        liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
 
     }
 
@@ -513,11 +513,11 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             public AdapterItemInterface<RolePlayerEntity.RolePlayerMessage> getItemView(Object type) {
                 if ((boolean) type) {
                     //自己朗读的
-                    mRolePlayerSelfItem = new RolePlayerSelfItem(mContext, mRolePlayBll, mLiveBll);
+                    mRolePlayerSelfItem = new RolePlayerSelfItem(mContext, mRolePlayBll);
                     return mRolePlayerSelfItem;
                 } else {
                     //他人朗读的
-                    mRolePlayerOtherItem = new RolePlayerOtherItem(mContext, mRolePlayBll, mLiveBll);
+                    mRolePlayerOtherItem = new RolePlayerOtherItem(mContext, mRolePlayBll);
                     return mRolePlayerOtherItem;
                 }
             }
@@ -743,7 +743,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         isShowResult = true;
         Loger.i("RolePlayerDemoTestlog", "显示结果,记录日志");
         //显示结果的时候记录日志
-        RolePlayLog.sno7(mLiveBll, mEntity, mContext);
+        RolePlayLog.sno7(liveAndBackDebug, mEntity, mContext);
         tvBeginTipMsg.setVisibility(View.GONE);//readgo不再占位
 
         vwvSpeechVolume.stop();
@@ -910,13 +910,13 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     public void recoverListScrollAndCancelDZ() {
         //恢复listview可滑动
         mIsListViewUnSroll = false;
-        if(rlResult != null){
+        if (rlResult != null) {
             rlResult.setVisibility(View.GONE);
         }
-        if(lvReadList != null){
+        if (lvReadList != null) {
             lvReadList.setUnScroll(mIsListViewUnSroll);//恢复列表滑动
         }
-        if(mRolePlayBll != null){
+        if (mRolePlayBll != null) {
             mRolePlayBll.cancelDZ();//取消点赞
         }
 
@@ -951,7 +951,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      * 结束RolePlayer
      */
     private void endRolePlayer() {
-        if(mEntity == null){
+        if (mEntity == null) {
             Loger.i("RolePlayerDemoTest", "roleplay界面的数据已经销毁，不再向下执行");
             return;
         }
@@ -1274,7 +1274,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     private SpannableString getCountDownTime() {
         long countTime = 3000;//默认三秒
         boolean isFu = false;
-        if(mEntity != null){
+        if (mEntity != null) {
             if (mEntity.getCountDownSecond() < 0) {
                 isFu = true;
                 countTime = Math.abs(mEntity.getCountDownSecond());
@@ -1282,7 +1282,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 countTime = mEntity.getCountDownSecond();
             }
         }
-        
+
         long min = countTime / 60;
         long sec = countTime % 60;
         long hour = min / 60;

@@ -93,7 +93,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     /**
      * 直播基础BLL
      */
-    private LiveBll mLiveBll;
+    private LiveAndBackDebug mLiveBll;
 
     private RolePlayerPager mRolePlayerPager;
 
@@ -104,7 +104,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     private boolean mIsBeginSocket;
     private boolean isGoToRobot;//是否开始了人机
 
-    public RolePlayerBll(Context context, RelativeLayout bottomContent, LiveBll liveBll, LiveGetInfo liveGetInfo) {
+    public RolePlayerBll(Context context, RelativeLayout bottomContent, LiveAndBackDebug liveBll, LiveGetInfo liveGetInfo) {
         super(context);
         this.bottomContent = bottomContent;
         this.mLiveBll = liveBll;
@@ -255,7 +255,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
         //拉取试题a
         requestTestInfos();
-        mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this, mLiveGetInfo, mLiveBll);
+        mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this, mLiveGetInfo);
         mRolePlayerPager.initData();
         if (bottomContent != null) {
             bottomContent.addView(mRolePlayerPager.getRootView());
