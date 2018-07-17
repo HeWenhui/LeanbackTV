@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.videochat.business;
 
 import android.app.Activity;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
@@ -15,6 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveScienceHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -70,8 +72,19 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
             videoChatBll.setVideoChatHttp(this);
             videoChatBll.onLiveInit(getInfo);
             videoChatAction = videoChatBll;
+            if (baseLiveMediaControllerBottom instanceof LiveStandMediaControllerBottom) {
+                LiveStandMediaControllerBottom liveStandMediaControllerBottom = (LiveStandMediaControllerBottom) baseLiveMediaControllerBottom;
+                liveStandMediaControllerBottom.addOnViewChange(onViewChange);
+            }
         }
     }
+
+    private LiveStandMediaControllerBottom.OnViewChange onViewChange = new LiveStandMediaControllerBottom.OnViewChange() {
+        @Override
+        public void onViewChange(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
+            videoChatAction.setControllerBottom(baseLiveMediaControllerBottom);
+        }
+    };
 
     public boolean isChat() {
         return startRemote.get();

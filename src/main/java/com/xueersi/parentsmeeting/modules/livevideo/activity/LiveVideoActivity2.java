@@ -42,9 +42,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAch
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
+import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5CacheAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.UserOnline;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
@@ -173,6 +176,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     protected LogToFile mLogtf;
     private LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
     private VideoChatIRCBll videoChatIRCBll;
+    private EnglishH5CacheAction englishH5Cache;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -287,6 +291,9 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
             mLiveBll.addBusinessBll(new LiveAchievementIRCBll(activity, mLiveBll, bottomContent));
+            RankBll rankBll = new RankBll(activity, mLiveBll, bottomContent);
+            rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
+            mLiveBll.addBusinessBll(rankBll);
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
             //理科功能
@@ -305,6 +312,9 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             mLiveBll.addBusinessBll(liveIRCMessageBll);
             //文科功能
 //            mLiveBll.addBusinessBll(new LiveAchievementIRCBll(activity, mLiveBll, bottomContent));
+            RankBll rankBll = new RankBll(activity, mLiveBll, bottomContent);
+            rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
+            mLiveBll.addBusinessBll(rankBll);
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll, bottomContent));
@@ -323,6 +333,12 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                 liveRemarkIRCBll.setLiveMediaControllerBottom(controllerBottom);
                 mLiveBll.addBusinessBll(liveRemarkIRCBll);
             }
+        }
+        if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+            EnglishH5Cache englishH5Cache = new EnglishH5Cache(activity, null, mVSectionID);
+            englishH5Cache.setHttpManager(mLiveBll.getHttpManager());
+            LiveVideoActivity2.this.englishH5Cache = englishH5Cache;
+//            englishH5Cache = new EnglishH5CacheZip(this, mLiveBll, mVSectionID);
         }
         videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll, bottomContent);
         videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
@@ -705,6 +721,9 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         before = System.currentTimeMillis();
         mMediaController.setFileName(getInfo.getName());
         Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
+        if (englishH5Cache != null) {
+            englishH5Cache.getCourseWareUrl();
+        }
     }
 
     @Override

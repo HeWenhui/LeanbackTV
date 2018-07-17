@@ -287,7 +287,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
 
         //公开表扬,只有直播有
         if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-            rankBll.initView(bottomContent, lp);
+            rankBll.initView(bottomContent);
         }
         videoChatBll.initView(bottomContent);
         //点名
@@ -326,7 +326,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                         liveMessageBll.setVideoLayout(lp.width, lp.height);
                         questionBll.setVideoLayout(lp.width, lp.height);
                         if (rankBll != null) {
-                            rankBll.setVideoLayout(lp.width, lp.height);
+                            rankBll.setVideoLayout();
                         }
 //                        if (expeBll != null) {
 //                            expeBll.setVideoLayout(lp.width, lp.height);
@@ -458,9 +458,9 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         englishH5CoursewareBll.initData();
         englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(englishH5CoursewareBll.new LiveQuestionSwitchImpl()));
         if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-            rankBll = new RankBll(this);
-            rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
-            rankBll.setLiveBll(mLiveBll);
+//            rankBll = new RankBll(this);
+//            rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
+//            rankBll.setLiveBll(mLiveBll);
             englishH5Cache = new EnglishH5Cache(this, mLiveBll, mVSectionID);
 //            englishH5Cache = new EnglishH5CacheZip(this, mLiveBll, mVSectionID);
         }

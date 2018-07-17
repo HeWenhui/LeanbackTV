@@ -320,7 +320,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         //公开表扬,只有直播有
         if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (rankBll != null) {
-                rankBll.initView(bottomContent, lp);
+                rankBll.initView(bottomContent);
             }
         }
         videoChatBll.initView(bottomContent);
@@ -366,7 +366,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                         liveMessageBll.setVideoLayout(lp.width, lp.height);
                         questionBll.setVideoLayout(lp.width, lp.height);
                         if (rankBll != null) {
-                            rankBll.setVideoLayout(lp.width, lp.height);
+                            rankBll.setVideoLayout();
                         }
                         setMediaControllerBottomParam(lp);
                         if (englishSpeekAction != null) {
@@ -503,9 +503,9 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         englishH5CoursewareBll.setLiveBll(mLiveBll);
         englishH5CoursewareBll.initData();
         if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-            rankBll = new RankBll(this);
-            rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
-            rankBll.setLiveBll(mLiveBll);
+//            rankBll = new RankBll(this);
+//            rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
+//            rankBll.setLiveBll(mLiveBll);
             englishH5Cache = new EnglishH5Cache(this, mLiveBll, mVSectionID);
 //            englishH5Cache = new EnglishH5CacheZip(this, mLiveBll, mVSectionID);
         }
@@ -756,6 +756,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         }
     }
 
+    @Override
     protected VPlayerListener getWrapListener() {
         return mPlayListener;
     }

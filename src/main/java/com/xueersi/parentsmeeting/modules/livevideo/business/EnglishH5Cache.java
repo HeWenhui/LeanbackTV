@@ -27,8 +27,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreCache;
 import com.xueersi.lib.framework.utils.file.FileUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,6 +62,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     String eventId = LiveVideoConfig.LIVE_H5_CACHE;
     Context context;
     LiveBll liveBll;
+    LiveAndBackDebug liveAndBackDebug;
     String liveId;
     File cacheFile;
     RelativeLayout bottomContent;
@@ -74,10 +77,12 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     private File mMorecacheout;
     private ArrayList<String> mUrls;
     private int count = 0;
+    private LiveHttpManager mHttpManager;
 
     public EnglishH5Cache(Context context, LiveBll liveBll, String liveId) {
         this.context = context;
         Activity activity = (Activity) context;
+        LiveAndBackDebug liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
         bottomContent = (RelativeLayout) activity.findViewById(R.id.rl_course_video_live_question_content);
         this.liveBll = liveBll;
         this.liveId = liveId;
@@ -86,6 +91,10 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         if (!cacheFile.exists()) {
             cacheFile.mkdirs();
         }
+    }
+
+    public void setHttpManager(LiveHttpManager httpManager) {
+        this.mHttpManager = httpManager;
     }
 
     Handler handler = new Handler(Looper.getMainLooper()) {
@@ -136,7 +145,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
 //        CacheExtensionConfig.addGlobalExtension("mp3");
 //        CacheExtensionConfig.addGlobalExtension("WAV");
 //        CacheExtensionConfig.removeNoCacheExtension("mp3");
-        liveBll.getCourseWareUrl(new HttpCallBack(false) {
+        mHttpManager.getCourseWareUrl(new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 if (responseEntity.getJsonObject() instanceof JSONArray) {
@@ -322,7 +331,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                     mData.put("times", "2");
                     mData.put("error", "" + errorUrls.size());
                     mData.put("total", "" + total);
-                    liveBll.umsAgentDebugSys(eventId, mData);
+                    liveAndBackDebug.umsAgentDebugSys(eventId, mData);
                     if (context instanceof WebViewRequest) {
                         WebViewRequest webViewRequest = (WebViewRequest) context;
                         webViewRequest.onWebViewEnd();
@@ -339,7 +348,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                         mData.put("times", "1");
                         mData.put("error", "0");
                         mData.put("total", "" + total);
-                        liveBll.umsAgentDebugSys(eventId, mData);
+                        liveAndBackDebug.umsAgentDebugSys(eventId, mData);
                         if (context instanceof WebViewRequest) {
                             WebViewRequest webViewRequest = (WebViewRequest) context;
                             webViewRequest.onWebViewEnd();
