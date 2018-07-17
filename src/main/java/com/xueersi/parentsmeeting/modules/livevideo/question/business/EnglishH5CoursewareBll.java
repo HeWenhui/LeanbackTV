@@ -210,8 +210,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                             h5CoursewarePager.destroy();
                             bottomContent.removeView(h5CoursewarePager.getRootView());
                             h5CoursewarePager = null;
-                            if (context instanceof WebViewRequest) {
-                                WebViewRequest webViewRequest = (WebViewRequest) context;
+                            WebViewRequest webViewRequest = ProxUtil.getProxUtil().get(context, WebViewRequest.class);
+                            if (webViewRequest != null) {
                                 webViewRequest.releaseWebView();
                             }
                         }
@@ -347,8 +347,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 //                        liveVideoActivityBase.setAutoOrientation(true);
 //                        bottomContent.removeView(h5CoursewarePager.getRootView());
 //                        h5CoursewarePager = null;
-                        if (context instanceof WebViewRequest) {
-                            WebViewRequest webViewRequest = (WebViewRequest) context;
+                        WebViewRequest webViewRequest = ProxUtil.getProxUtil().get(context, WebViewRequest.class);
+                        if (webViewRequest != null) {
                             webViewRequest.releaseWebView();
                         }
                         delayTime = 3000;
@@ -428,8 +428,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
                 // EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
 
-                if (context instanceof WebViewRequest) {
-                    WebViewRequest webViewRequest = (WebViewRequest) context;
+                WebViewRequest webViewRequest = ProxUtil.getProxUtil().get(context, WebViewRequest.class);
+                if (webViewRequest != null) {
                     webViewRequest.releaseWebView();
                 }
             }
@@ -442,8 +442,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         h5CoursewarePager.setEnglishH5CoursewareBll(this);
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         bottomContent.addView(h5CoursewarePager.getRootView(), lp);
-        if (context instanceof WebViewRequest) {
-            WebViewRequest webViewRequest = (WebViewRequest) context;
+        WebViewRequest webViewRequest = ProxUtil.getProxUtil().get(context, WebViewRequest.class);
+        if (webViewRequest != null) {
             webViewRequest.requestWebView();
         }
     }

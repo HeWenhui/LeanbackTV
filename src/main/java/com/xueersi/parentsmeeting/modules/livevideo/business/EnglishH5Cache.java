@@ -91,7 +91,25 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         if (!cacheFile.exists()) {
             cacheFile.mkdirs();
         }
+        ProxUtil.getProxUtil().put(context, WebViewRequest.class, webViewRequest);
     }
+
+    private WebViewRequest webViewRequest = new WebViewRequest() {
+        @Override
+        public void requestWebView() {
+            start();
+        }
+
+        @Override
+        public void releaseWebView() {
+            stop();
+        }
+
+        @Override
+        public void onWebViewEnd() {
+
+        }
+    };
 
     public void setHttpManager(LiveHttpManager httpManager) {
         this.mHttpManager = httpManager;
@@ -149,10 +167,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 if (responseEntity.getJsonObject() instanceof JSONArray) {
-                    if (context instanceof WebViewRequest) {
-                        WebViewRequest webViewRequest = (WebViewRequest) context;
-                        webViewRequest.onWebViewEnd();
-                    }
+                    ProxUtil.getProxUtil().remove(context, WebViewRequest.class);
                     return;
                 }
                 if (!isStart) {
@@ -204,10 +219,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
 //                        urls.add(play_url);
                     }
                     if (urls.isEmpty()) {
-                        if (context instanceof WebViewRequest) {
-                            WebViewRequest webViewRequest = (WebViewRequest) context;
-                            webViewRequest.onWebViewEnd();
-                        }
+                        ProxUtil.getProxUtil().remove(context, WebViewRequest.class);
                         return;
                     }
                     final ArrayList<String> urls2 = new ArrayList<>();
@@ -332,10 +344,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                     mData.put("error", "" + errorUrls.size());
                     mData.put("total", "" + total);
                     liveAndBackDebug.umsAgentDebugSys(eventId, mData);
-                    if (context instanceof WebViewRequest) {
-                        WebViewRequest webViewRequest = (WebViewRequest) context;
-                        webViewRequest.onWebViewEnd();
-                    }
+                    ProxUtil.getProxUtil().remove(context, WebViewRequest.class);
                 } else {
                     if (errorUrls.isEmpty()) {
                         context.unregisterReceiver(this);
@@ -349,10 +358,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                         mData.put("error", "0");
                         mData.put("total", "" + total);
                         liveAndBackDebug.umsAgentDebugSys(eventId, mData);
-                        if (context instanceof WebViewRequest) {
-                            WebViewRequest webViewRequest = (WebViewRequest) context;
-                            webViewRequest.onWebViewEnd();
-                        }
+                        ProxUtil.getProxUtil().remove(context, WebViewRequest.class);
                     } else {
                         if (netWorkType == NetWorkHelper.NO_NETWORK) {
                             return;
