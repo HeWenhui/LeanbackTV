@@ -437,7 +437,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     public void setMediaControllerBottomParam(ViewGroup.LayoutParams lp) {
         //控制栏下面距离视频底部的尺寸
         BaseLiveMediaControllerBottom baseLiveMediaControllerBottom = liveMediaControllerBottom;
-        int topGap = (ScreenUtils.getScreenHeight() - lp.height) / 2;
+        int topGap = liveVideoPoint.y2;
         int paddingBottom = (int) (topGap + 15 * ScreenUtils.getScreenDensity());
         if (baseLiveMediaControllerBottom.getPaddingBottom() != paddingBottom) {
             baseLiveMediaControllerBottom.setPadding(0, 0, 0, paddingBottom);
@@ -448,14 +448,9 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
      * 设置蓝屏界面
      */
     protected void setFirstParam(ViewGroup.LayoutParams lp) {
-        final View contentView = activity.findViewById(android.R.id.content);
-        final View actionBarOverlayLayout = (View) contentView.getParent();
-        Rect r = new Rect();
-        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
-        int screenWidth = (r.right - r.left);
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlFirstBackgroundView.getLayoutParams();
-        int rightMargin = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * lp.width / LiveVideoConfig.VIDEO_WIDTH + (screenWidth - lp.width) / 2);
-        int topMargin = (ScreenUtils.getScreenHeight() - lp.height) / 2;
+        int rightMargin = liveVideoPoint.getRightMargin();
+        int topMargin = liveVideoPoint.y2;
         if (params.rightMargin != rightMargin || params.bottomMargin != topMargin) {
             params.rightMargin = rightMargin;
             params.bottomMargin = params.topMargin = topMargin;
