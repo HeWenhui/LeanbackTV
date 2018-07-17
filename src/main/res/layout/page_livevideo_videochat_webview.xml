@@ -7,7 +7,7 @@
         android:layout_height="140dp"
         android:background="@color/COLOR_66000000">
 
-        <com.xueersi.xesalib.view.activity.browser.XESNoZoomWebView
+        <com.xueersi.parentsmeeting.module.browser.view.XESNoZoomWebView
             android:id="@id/wv_livevideo_subject_web"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

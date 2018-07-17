@@ -123,7 +123,7 @@
                 android:textColor="@color/COLOR_333333"
                 android:textSize="14dp" />
 
-            <com.xueersi.xesalib.view.activity.browser.XESNoZoomWebView
+            <com.xueersi.parentsmeeting.module.browser.view.XESNoZoomWebView
                 android:id="@id/wv_livevideo_speecteval_eval"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -160,7 +160,7 @@
                 android:scaleType="center"
                 android:src="@drawable/bg_livevideo_speecheval_video" />
 
-            <com.xueersi.xesalib.view.RoundProgressBar
+            <com.xueersi.ui.widget.RoundProgressBar
                 android:id="@id/rrp_livevideo_speecteval_video"
                 android:layout_width="59dp"
                 android:layout_height="59dp"
@@ -273,7 +273,7 @@
 
     </RelativeLayout>
 
-    <com.xueersi.xesalib.view.activity.browser.XESNoZoomWebView
+    <com.xueersi.parentsmeeting.module.browser.view.XESNoZoomWebView
         android:id="@id/wv_livevideo_speecteval_web"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

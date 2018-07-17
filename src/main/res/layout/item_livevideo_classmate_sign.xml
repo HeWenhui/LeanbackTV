@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="15dp">
 
-    <com.xueersi.xesalib.view.image.CircleImageView
+    <com.xueersi.ui.widget.CircleImageView
         android:id="@id/iv_livevideo_classmate_head"
         android:layout_width="30dp"
         android:layout_height="30dp"

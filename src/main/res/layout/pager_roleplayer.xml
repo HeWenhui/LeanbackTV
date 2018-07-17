@@ -192,7 +192,7 @@
                         </LinearLayout>
 
 
-                        <com.xueersi.xesalib.view.image.CircleImageView
+                        <com.xueersi.ui.widget.CircleImageView
                             android:id="@id/civ_livevideo_roleplayer_result_headimg"
                             android:layout_width="55dp"
                             android:layout_height="55dp"
@@ -261,7 +261,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1">
 
-                            <com.xueersi.xesalib.view.image.CircleImageView
+                            <com.xueersi.ui.widget.CircleImageView
                                 android:id="@id/civ_livevideo_roleplayer_result_role_head_1"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
@@ -304,7 +304,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1">
 
-                            <com.xueersi.xesalib.view.image.CircleImageView
+                            <com.xueersi.ui.widget.CircleImageView
                                 android:id="@id/civ_livevideo_roleplayer_result_role_head_2"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
@@ -346,7 +346,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1">
 
-                            <com.xueersi.xesalib.view.image.CircleImageView
+                            <com.xueersi.ui.widget.CircleImageView
                                 android:id="@id/civ_livevideo_roleplayer_result_role_head_3"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
@@ -461,7 +461,7 @@
                     app:lottie_loop="true"
                     app:lottie_repeatMode="restart" />
 
-                <com.xueersi.xesalib.view.image.CircleImageView
+                <com.xueersi.ui.widget.CircleImageView
                     android:id="@id/civ_live_roleplayer_match_head"
                     android:layout_width="61dp"
                     android:layout_height="61dp"
