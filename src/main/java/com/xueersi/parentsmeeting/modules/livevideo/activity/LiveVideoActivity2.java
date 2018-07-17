@@ -101,7 +101,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  *
  * @author linyuqiang
  */
-public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick {
+public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick {
 
     private String TAG = "LiveVideoActivity2Log";
     Logger logger = LoggerFactory.getLogger(TAG);
@@ -135,8 +135,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     protected String mVSectionID;
     /** Activity暂停过，执行onStop */
     private boolean mHaveStop = false;
-    /** Activity在onResume */
-    private boolean mIsResume = false;
 
     private LiveVideoSAConfig liveVideoSAConfig;
     /** 是不是文理 */
@@ -580,7 +578,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     @Override
     public void onResume() {
         super.onResume();
-        mIsResume = true;
         if (mHaveStop) {
             mHaveStop = false;
             if (videoChatIRCBll.isChat()) {
@@ -613,7 +610,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     @Override
     public void onPause() {
         super.onPause();
-        mIsResume = false;
         mHaveStop = true;
         if (videoChatIRCBll.isChat()) {
             return;
@@ -644,11 +640,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         if (mLiveBll != null) {
             mLiveBll.onStop();
         }
-    }
-
-    @Override
-    public boolean isResume() {
-        return mIsResume;
     }
 
     @Override
@@ -905,7 +896,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     }
 
     public void postDelayedIfNotFinish(Runnable r, long delayMillis) {
-        if (isFinishing()) {
+        if (activity.isFinishing()) {
             return;
         }
         mHandler.postDelayed(r, delayMillis);
@@ -1007,8 +998,4 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         }
     }
 
-    @Override
-    public boolean isFinishing() {
-        return activity.isFinishing();
-    }
 }
