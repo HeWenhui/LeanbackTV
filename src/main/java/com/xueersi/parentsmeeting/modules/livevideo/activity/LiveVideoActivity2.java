@@ -419,7 +419,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         LiveVideoBll liveVideoBll = new LiveVideoBll(activity, mLiveBll, liveType);
         mLiveBll.setVideoAction(this);
         mLiveBll.setLiveVideoBll(liveVideoBll);
-        userOnline = new UserOnline(activity);
+        userOnline = new UserOnline(activity, liveType, mVSectionID);
+        userOnline.setHttpManager(mLiveBll.getHttpManager());
         android.util.Log.e("LiveVideoActivity", "====>initAllBll:" + bottomContent);
         mMediaController.setControllerBottom(liveMediaControllerBottom, false);
         mMediaController.setControllerTop(baseLiveMediaControllerTop);
@@ -708,6 +709,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
     @Override
     public void onLiveInit(LiveGetInfo getInfo) {
+        userOnline.setGetInfo(getInfo);
         userOnline.start();
         mGetInfo = getInfo;
         mode = mGetInfo.getMode();
