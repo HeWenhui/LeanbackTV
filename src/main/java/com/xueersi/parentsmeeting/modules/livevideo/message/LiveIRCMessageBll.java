@@ -12,6 +12,8 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.SampleMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
@@ -61,6 +63,7 @@ import java.util.List;
 
 public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, NoticeAction, TopicAction {
     private final String TAG = "LiveIRCMessageBll";
+    Logger loger = LoggerFactory.getLogger(TAG);
     /** 主讲老师前缀 */
     public static final String TEACHER_PREFIX = "t_";
     /** 辅导老师前缀 */
@@ -227,7 +230,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     }
                 }
             } catch (JSONException e) {
-                e.printStackTrace();
+                loger.e("onPrivateMessage", e);
             }
         }
         if (mRoomAction != null) {
@@ -424,7 +427,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         mRoomAction.onOpenbarrage(open, true);
                     }
                 } catch (Exception e) {
-
+                    loger.e("onNotice:OPENBARRAGE", e);
                 }
                 //getLearnReport();
                 break;
@@ -448,7 +451,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     }
                     msg += ",disable=" + disable + ",id=" + id + "," + mLiveBll.getNickname();
                 } catch (Exception e) {
-
+                    loger.e("onNotice:GAG", e);
                 }
             }
             break;
@@ -473,11 +476,12 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         }
                     }
                 } catch (Exception e) {
-
+                    loger.e("onNotice:OPENCHAT", e);
                 }
-
             }
             break;
+            default:
+                break;
         }
     }
 

@@ -93,7 +93,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private String examQuestionEventId = LiveVideoConfig.LIVE_H5_EXAM;
     private String questionEventId = LiveVideoConfig.LIVE_PUBLISH_TEST;
     private String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
-    private String understandEventId = LiveVideoConfig.LIVE_DOYOUSEE;
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     private VideoQuestionLiveEntity videoQuestionLiveEntity;
     private LogToFile mLogtf;
@@ -1743,6 +1742,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 case XESCODE.EXAM_STOP:
                     hasExam = false;
                     break;
+                default:
+                    break;
             }
         } else {
             hasSubmit = true;
@@ -1790,6 +1791,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                     curQuestionView = null;
                                 }
                             }
+                            break;
+                        default:
                             break;
 
                     }

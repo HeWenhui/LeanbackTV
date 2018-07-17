@@ -854,6 +854,8 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
 //                        }
 //                    }
 //                    break;
+                    default:
+                        break;
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

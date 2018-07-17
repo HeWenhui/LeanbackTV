@@ -510,7 +510,8 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                             }
                         }
                         break;
-
+                    default:
+                        break;
                 }
                 //////////////////////
                 List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);

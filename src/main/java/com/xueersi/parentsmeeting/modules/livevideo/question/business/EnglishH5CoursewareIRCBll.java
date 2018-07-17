@@ -189,8 +189,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 
     @Override
     public int[] getNoticeFilter() {
-        return new int[]{
-                XESCODE.ENGLISH_H5_COURSEWARE};
+        return new int[]{XESCODE.ENGLISH_H5_COURSEWARE};
     }
 
     class EnglishH5CoursewareImpl implements EnglishH5CoursewareHttp {

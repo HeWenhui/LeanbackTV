@@ -113,10 +113,8 @@ public class RollCallIRCBll extends LiveBaseBll implements NoticeAction, RollCal
     @Override
     public int[] getNoticeFilter() {
         return new int[]{
-                XESCODE.CLASSBEGIN,
-                XESCODE.ROLLCALL,
-                XESCODE.STOPROLLCALL,
-                XESCODE.CLASS_MATEROLLCALL};
+                XESCODE.CLASSBEGIN, XESCODE.ROLLCALL,
+                XESCODE.STOPROLLCALL, XESCODE.CLASS_MATEROLLCALL};
     }
 
     @Override

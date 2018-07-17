@@ -33,7 +33,7 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
     /** 接麦已经连接老师 */
     private AtomicBoolean startRemote = new AtomicBoolean(false);
     public static final String DEFULT_VOICE_CHAT_STATE = "off";
-    private String voiceChatStatus =DEFULT_VOICE_CHAT_STATE;
+    private String voiceChatStatus = DEFULT_VOICE_CHAT_STATE;
     private ArrayList<VideoChatStatusChange.ChatStatusChange> chatStatusChanges = new ArrayList<>();
     private BaseLiveMediaControllerBottom baseLiveMediaControllerBottom;
 
@@ -249,6 +249,18 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
                 }
                 break;
             }
+            case XESCODE.RAISE_HAND_COUNT: {
+                String from = object.optString("from", "t");
+                msg += ",RAISE_HAND_COUNT:from=" + from + ",mode=" + mLiveBll.getMode();
+                if ("t".equals(from) && LiveTopic.MODE_CLASS.equals(mLiveBll.getMode()) || "f".equals(from) &&
+                        LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())) {
+                    if (videoChatAction != null) {
+                        int count = object.optInt("num", 0);
+                        videoChatAction.raiseHandCount(count);
+                    }
+                }
+                break;
+            }
             default:
                 break;
         }
@@ -256,7 +268,7 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
 
     @Override
     public int[] getNoticeFilter() {
-        return new int[]{XESCODE.RAISE_HAND, XESCODE.RAISE_HAND_SELF, XESCODE.REQUEST_ACCEPT, XESCODE.START_MICRO, XESCODE.ST_MICRO};
+        return new int[]{XESCODE.RAISE_HAND, XESCODE.RAISE_HAND_SELF, XESCODE.REQUEST_ACCEPT, XESCODE.START_MICRO, XESCODE.ST_MICRO, XESCODE.RAISE_HAND_COUNT};
     }
 
     @Override
