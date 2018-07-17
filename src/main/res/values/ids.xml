@@ -272,6 +272,7 @@
     <item name="tv_livevideo_redpackage_num" type="id" />
     <!--直播-学习报告根布局-->
     <item name="rl_livevideo_content_learnreport" type="id" />
+    <item name="rl_livevideo_content_learnpsreport" type="id" />
     <item name="tv_livevideo_float_title" type="id" />
     <item name="im_livevideo_float_cancle" type="id" />
     <!--直播-表扬榜根布局-->

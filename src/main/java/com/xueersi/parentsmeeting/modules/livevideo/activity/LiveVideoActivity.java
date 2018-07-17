@@ -64,6 +64,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
+import com.xueersi.parentsmeeting.modules.livevideo.business.irc.LearnPsReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.RolePlayConfig;
@@ -181,6 +182,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
     RedPackageBll redPackageBll;
     PScienceRedPackageBll pscienceBll;
     LearnReportBll learnReportBll;
+    LearnPsReportBll learnPsReportBll;
     H5CoursewareBll h5CoursewareBll;
     EnglishH5CoursewareBll englishH5CoursewareBll;
     LiveAchievementBll starBll;
@@ -302,6 +304,8 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         pscienceBll.initView(bottomContent);
         //学习报告
         learnReportBll.initView(bottomContent);
+        // 小理学习报告
+        learnPsReportBll.initView(bottomContent);
         h5CoursewareBll.initView(bottomContent);
         englishH5CoursewareBll.initView(bottomContent);
 
@@ -424,6 +428,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         redPackageBll = new RedPackageBll(this);
         pscienceBll = new PScienceRedPackageBll(this);
         learnReportBll = new LearnReportBll(this);
+        learnPsReportBll = new LearnPsReportBll(this);
         h5CoursewareBll = new H5CoursewareBll(this);
         englishH5CoursewareBll = new EnglishH5CoursewareBll(this);
         questionBll.setShareDataManager(mShareDataManager);
@@ -435,6 +440,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         mLiveBll.setReadPackageBll(redPackageBll);
         mLiveBll.setPScienceRedPackageBll(pscienceBll);
         mLiveBll.setLearnReportAction(learnReportBll);
+        mLiveBll.setLearnPsReportAction(learnPsReportBll);
         mLiveBll.setVideoAction(this);
         mLiveBll.setRoomAction(liveMessageBll);
         mLiveBll.setH5CoursewareAction(h5CoursewareBll);
@@ -451,6 +457,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         redPackageBll.setLiveBll(mLiveBll);
         pscienceBll.setLiveBll(mLiveBll);
         learnReportBll.setLiveBll(mLiveBll);
+        learnPsReportBll.setLiveBll(mLiveBll);
         questionBll.setLiveBll(mLiveBll);
         questionBll.setVSectionID(mVSectionID);
         redPackageBll.setVSectionID(mVSectionID);

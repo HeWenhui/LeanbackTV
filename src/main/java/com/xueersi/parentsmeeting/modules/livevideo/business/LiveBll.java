@@ -110,7 +110,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private RedPackageAction readPackageBll, psredpackageBll;
     private VideoAction mVideoAction;
     private RoomAction mRoomAction;
-    private LearnReportAction mLearnReportAction;
+    private LearnReportAction mLearnReportAction,mLearnPsReportAction;
     private LecLearnReportAction mLecLearnReportAction;
     private H5CoursewareAction h5CoursewareAction;
     private EnglishH5CoursewareAction englishH5CoursewareAction;
@@ -920,6 +920,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         this.mLearnReportAction = mLearnReportAction;
     }
 
+    public void setLearnPsReportAction(LearnReportAction mLearnPsReportAction) {
+        this.mLearnPsReportAction = mLearnPsReportAction;
+    }
+
     public void setLecLearnReportAction(LecLearnReportAction mLearnReportAction) {
         this.mLecLearnReportAction = mLearnReportAction;
     }
@@ -1493,6 +1497,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 mQuestionAction.understand(nonce);
                             }
                         }
+                        // 学习反馈的测试
+//                        getLearnReport(2, 1000);
                         ////////////////////////////  06.28 测试红包的弹窗
                         //接麦红包无效
 //                        String voiceChatStatus = "off";
@@ -2806,6 +2812,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     learnReportEntity.getStu().setStuName(mGetInfo.getStuName());
                     learnReportEntity.getStu().setTeacherName(mGetInfo.getTeacherName());
                     learnReportEntity.getStu().setTeacherIMG(mGetInfo.getTeacherIMG());
+                    if(LiveVideoConfig.isPrimary && mLearnPsReportAction != null){
+                        mLearnPsReportAction.onLearnReport(learnReportEntity);
+                        return;
+                    }
                     if (mLearnReportAction != null) {
                         mLearnReportAction.onLearnReport(learnReportEntity);
                     }
