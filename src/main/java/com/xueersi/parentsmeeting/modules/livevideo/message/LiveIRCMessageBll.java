@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -40,6 +41,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChat
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -115,6 +119,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         if (questionShowReg != null) {
             questionShowReg.registQuestionShow(mRoomAction);
         }
+        EventBus.getDefault().register(this);
     }
 
     public void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
@@ -495,6 +500,15 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         }
     }
 
+    public void onTitleShow(boolean show) {
+        mRoomAction.onTitleShow(show);
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void onEvent(AppEvent.OnGetGoldUpdateEvent event) {
+        mRoomAction.onGetMyGoldDataEvent(event.goldNum);
+    }
+
     class LiveIRCState implements IRCState {
 
         @Override
@@ -693,5 +707,6 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     public void onDestory() {
         super.onDestory();
         mRoomAction.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

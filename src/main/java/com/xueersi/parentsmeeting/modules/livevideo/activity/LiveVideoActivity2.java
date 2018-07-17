@@ -101,7 +101,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  *
  * @author linyuqiang
  */
-public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest {
+public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick {
 
     private String TAG = "LiveVideoActivity2Log";
     Logger logger = LoggerFactory.getLogger(TAG);
@@ -110,9 +110,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         mLayoutVideo = R.layout.activity_video_live_new;
     }
 
-    /**
-     * 播放器同步
-     */
+    /** 播放器同步 */
     private static final Object mIjkLock = new Object();
     protected WeakHandler mHandler = new WeakHandler(null);
     /** 上次播放统计开始时间 */
@@ -162,16 +160,13 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     long openStartTime;
     int from = 0;
     long startTime = System.currentTimeMillis();
-    /**
-     * onPause状态不暂停视频
-     */
+    /** onPause状态不暂停视频 */
     boolean onPauseNotStopVideo = false;
     protected LiveBll2 mLiveBll;
     private LiveIRCMessageBll liveIRCMessageBll;
     protected String mode = LiveTopic.MODE_TRANING;
     private LiveVideoBll mLiveVideoBll;
     private UserOnline userOnline;
-    //LiveMessageBll liveMessageBll;
     private static String Tag = "LiveVideoActivity2";
     protected LogToFile mLogtf;
     private LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
@@ -203,7 +198,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
         LiveVideoPoint.initLiveVideoPoint(activity, liveVideoPoint, lp);
         setFirstParam(lp);
-        // liveMessageBll.setVideoLayout(lp.width, lp.height);
         logger.d("onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         initAllBll();
@@ -251,7 +245,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
                         boolean change = LiveVideoPoint.initLiveVideoPoint(activity, liveVideoPoint, lp);
                         setFirstParam(lp);
-                        // liveMessageBll.setVideoLayout(lp.width, lp.height);
                         setMediaControllerBottomParam(lp);
                         long before = System.currentTimeMillis();
                         if (change) {
@@ -571,12 +564,13 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
         @Override
         public void onTitleShow(boolean show) {
-//            liveMessageBll.onTitleShow(show);
+            liveIRCMessageBll.onTitleShow(show);
 //            if (rankBll != null) {
 //                rankBll.onTitleShow(show);
 //            }
         }
 
+        @Override
         protected VPlayerListener getWrapListener() {
             return mLiveVideoBll.getPlayListener();
         }
@@ -971,11 +965,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.POSTING)
-    public void onEvent(AppEvent.OnGetGoldUpdateEvent event) {
-        //liveMessageBll.onGetMyGoldDataEvent(event.goldNum);
-    }
-
     @Override
     protected void onUserBackPressed() {
         super.onUserBackPressed();
@@ -984,7 +973,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     @Override
     public void onDestroy() {
         isPlay = false;
-        //liveMessageBll.onDestroy();
         if (mLiveBll != null) {
             mLiveBll.onDestory();
         }
@@ -1002,32 +990,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     @Override
     public void onMediaViewClick(View child) {
 
-    }
-
-
-    @Override
-    public void request(OnAudioRequest onAudioRequest) {
-        audioRequest = true;
-        if (onAudioRequest != null) {
-            onAudioRequest.requestSuccess();
-        }
-    }
-
-    @Override
-    public void release() {
-        audioRequest = false;
-    }
-
-    @Override
-    public void requestWebView() {
-    }
-
-    @Override
-    public void releaseWebView() {
-    }
-
-    @Override
-    public void onWebViewEnd() {
     }
 
     public void updateIcon() {

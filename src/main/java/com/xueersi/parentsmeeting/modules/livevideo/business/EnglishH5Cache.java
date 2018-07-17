@@ -82,7 +82,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     public EnglishH5Cache(Context context, LiveBll liveBll, String liveId) {
         this.context = context;
         Activity activity = (Activity) context;
-        LiveAndBackDebug liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
+        liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
         bottomContent = (RelativeLayout) activity.findViewById(R.id.rl_course_video_live_question_content);
         this.liveBll = liveBll;
         this.liveId = liveId;
@@ -105,10 +105,6 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             stop();
         }
 
-        @Override
-        public void onWebViewEnd() {
-
-        }
     };
 
     public void setHttpManager(LiveHttpManager httpManager) {
@@ -254,12 +250,14 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         });
     }
 
+    @Override
     public void start() {
         isStart = true;
         Loger.d(TAG, "start");
         getCourseWareUrl();
     }
 
+    @Override
     public void stop() {
         isStart = false;
         Loger.d(TAG, "stop");
@@ -388,6 +386,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         }
     }
 
+    @Override
     public void onNetWorkChange(int netWorkType) {
         this.netWorkType = netWorkType;
         if (netWorkType == NetWorkHelper.NO_NETWORK) {

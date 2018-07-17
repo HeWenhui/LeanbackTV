@@ -301,16 +301,16 @@ public class RankBll extends LiveBaseBll {
         }
     }
 
+    @Override
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        super.setVideoLayout(liveVideoPoint);
+        setVideoLayout();
+    }
+
     public void setVideoLayout() {
         if (relativeLayout == null) {
             return;
         }
-        final View contentView = activity.findViewById(android.R.id.content);
-        final View actionBarOverlayLayout = (View) contentView.getParent();
-        Rect r = new Rect();
-        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
-        int screenWidth = (r.right - r.left);
-        int screenHeight = ScreenUtils.getScreenHeight();
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) relativeLayout.getLayoutParams();
         int wradio = liveVideoPoint.getRightMargin();

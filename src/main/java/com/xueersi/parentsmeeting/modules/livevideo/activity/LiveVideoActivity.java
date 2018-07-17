@@ -469,7 +469,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         liveLazyBllCreat = new LiveLazyBllCreat(this, mLiveBll);
         liveLazyBllCreat.setQuestionBll(questionBll);
         mLiveBll.setLiveLazyBllCreat(liveLazyBllCreat);
-        ProxUtil.getProxUtil().put(this,AudioRequest.class, this);
+        ProxUtil.getProxUtil().put(this, AudioRequest.class, this);
         // 初始战队pk
         //teamPKBll = new TeamPkBll(this);
         //setTeamPkBll(teamPKBll);
@@ -711,6 +711,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         }
     }
 
+    @Override
     protected VPlayerListener getWrapListener() {
         return mPlayListener;
     }
@@ -1435,6 +1436,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         return msg;
     }
 
+    @Override
     public void stopPlay() {
         if (isInitialized()) {
             vPlayer.releaseSurface();
@@ -1722,11 +1724,6 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
     }
 
     @Override
-    public void onWebViewEnd() {
-        englishH5Cache = null;
-    }
-
-    @Override
     protected void updateIcon() {
         updateLoadingImage();
         updateRefreshImage();
@@ -1736,8 +1733,9 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
         if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
-            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
+            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl)) {
                 ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
+            }
         }
     }
 }

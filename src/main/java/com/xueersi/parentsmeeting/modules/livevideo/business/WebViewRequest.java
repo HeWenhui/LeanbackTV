@@ -9,5 +9,4 @@ public interface WebViewRequest {
 
     void releaseWebView();
 
-    void onWebViewEnd();
 }
