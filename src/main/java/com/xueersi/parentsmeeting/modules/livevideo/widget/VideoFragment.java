@@ -600,6 +600,8 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
                     // 初始化一些播放器的配置参数
                     loadVPlayerPrefs();
                     break;
+                default:
+                    break;
             }
             return true;
         }
