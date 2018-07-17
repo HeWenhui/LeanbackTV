@@ -1833,11 +1833,6 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
     }
 
     @Override
-    public void onWebViewEnd() {
-        englishH5Cache = null;
-    }
-
-    @Override
     protected void updateIcon() {
         updateLoadingImage();
         updateRefreshImage();
