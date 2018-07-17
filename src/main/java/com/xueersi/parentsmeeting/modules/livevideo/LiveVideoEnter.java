@@ -122,7 +122,7 @@ public class LiveVideoEnter {
         bundle.putString("vSectionID", vSectionID);
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LIVE);
         bundle.putInt(LiveVideoActivity.ENTER_ROOM_FROM, from);
-        LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+        LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
         return true;
     }
 
@@ -232,6 +232,7 @@ public class LiveVideoEnter {
      * @param currentDutyId 正在进行直播的场次ID
      * @param from          入口
      */
+    @Deprecated
     public static void intentToLiveVideoActivityTutorial(Activity context, String vSectionID, String currentDutyId,
                                                          int from) {
         if (TextUtils.isEmpty(vSectionID)) {
@@ -247,7 +248,7 @@ public class LiveVideoEnter {
         bundle.putString("currentDutyId", currentDutyId);
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_TUTORIAL);
         bundle.putInt(LiveVideoActivity.ENTER_ROOM_FROM, from);
-        LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+        LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
     }
 
     /**
