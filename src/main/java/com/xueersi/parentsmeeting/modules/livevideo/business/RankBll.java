@@ -31,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 import com.xueersi.ui.adapter.AdapterItemInterface;
@@ -43,7 +44,7 @@ import java.util.ArrayList;
  * Created by lyqai on 2017/9/20.
  */
 
-public class RankBll extends LiveBaseBll {
+public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBottom.MediaChildViewClick {
     Logger logger = LoggerFactory.getLogger("RankBll");
     LiveMediaController mMediaController;
     BaseLiveMediaControllerBottom liveMediaControllerBottom;
@@ -182,6 +183,17 @@ public class RankBll extends LiveBaseBll {
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         initView(mRootView);
+        BaseLiveMediaControllerBottom.RegMediaChildViewClick regMediaChildViewClick = ProxUtil.getProxUtil().get(activity, BaseLiveMediaControllerBottom.RegMediaChildViewClick.class);
+        if (regMediaChildViewClick != null) {
+            regMediaChildViewClick.regMediaViewClick(this);
+        }
+        RegMediaPlayerControl regMediaPlayerControl = getInstance(RegMediaPlayerControl.class);
+        regMediaPlayerControl.addMediaPlayerControl(new LiveMediaController.SampleMediaPlayerControl() {
+            @Override
+            public void onTitleShow(boolean show) {
+                RankBll.this.onTitleShow(show);
+            }
+        });
     }
 
     public void initView(final RelativeLayout bottomContent) {
@@ -321,5 +333,10 @@ public class RankBll extends LiveBaseBll {
 //                relativeLayout.setLayoutParams(params);
             LayoutParamsUtil.setViewLayoutParams(relativeLayout, params);
         }
+    }
+
+    @Override
+    public void onMediaViewClick(View child) {
+        onTitleShow(true);
     }
 }

@@ -15,6 +15,9 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.ControllerBottomInter
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+
+import java.util.ArrayList;
 
 /**
  * 直播播放器控制栏底部区域
@@ -40,6 +43,7 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     private CheckBox cbMessageClock;
     /** 标记疑问点按钮 */
     public Button btMark;
+    ArrayList<MediaChildViewClick> mediaChildViewClicks = new ArrayList<>();
 
     public BaseLiveMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
         super(context);
@@ -47,6 +51,17 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
         mPlayer = player;
         this.controller = controller;
         initResources();
+        ProxUtil.getProxUtil().put(context, RegMediaChildViewClick.class, new RegMediaChildViewClick() {
+            @Override
+            public void regMediaViewClick(MediaChildViewClick mediaChildViewClick) {
+                mediaChildViewClicks.add(mediaChildViewClick);
+            }
+
+            @Override
+            public void remMediaViewClick(MediaChildViewClick mediaChildViewClick) {
+                mediaChildViewClicks.remove(mediaChildViewClick);
+            }
+        });
     }
 
     protected void initResources() {
@@ -148,10 +163,15 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     }
 
     public void onChildViewClick(View child) {
-        if (mPlayer instanceof MediaChildViewClick) {
-            MediaChildViewClick liveVideoActivity = (MediaChildViewClick) mPlayer;
-            liveVideoActivity.onMediaViewClick(child);
+        for (MediaChildViewClick childViewClick : mediaChildViewClicks) {
+            childViewClick.onMediaViewClick(child);
         }
+    }
+
+    public interface RegMediaChildViewClick {
+        void regMediaViewClick(MediaChildViewClick mediaChildViewClick);
+
+        void remMediaViewClick(MediaChildViewClick mediaChildViewClick);
     }
 
     public interface MediaChildViewClick {

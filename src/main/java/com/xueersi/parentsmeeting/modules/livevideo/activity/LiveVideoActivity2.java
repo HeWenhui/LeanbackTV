@@ -34,6 +34,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.VPlayerListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
@@ -48,6 +49,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.UserOnline;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
@@ -91,6 +93,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -101,7 +104,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  *
  * @author linyuqiang
  */
-public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick {
+public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction, BaseLiveMessagePager.OnMsgUrlClick {
 
     private String TAG = "LiveVideoActivity2Log";
     Logger logger = LoggerFactory.getLogger(TAG);
@@ -170,6 +173,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     private LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
     private VideoChatIRCBll videoChatIRCBll;
     private EnglishH5CacheAction englishH5Cache;
+    private ArrayList<LiveMediaController.MediaPlayerControl> mediaPlayerControls = new ArrayList<>();
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -407,6 +411,18 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     }
 
     private void initAllBll() {
+        ProxUtil.getProxUtil().put(activity, RegMediaPlayerControl.class, new RegMediaPlayerControl() {
+
+            @Override
+            public void addMediaPlayerControl(LiveMediaController.MediaPlayerControl mediaPlayerControl) {
+                mediaPlayerControls.add(mediaPlayerControl);
+            }
+
+            @Override
+            public void removeMediaPlayerControl(LiveMediaController.MediaPlayerControl mediaPlayerControl) {
+                mediaPlayerControls.remove(mediaPlayerControl);
+            }
+        });
         LiveVideoBll liveVideoBll = new LiveVideoBll(activity, mLiveBll, liveType);
         mLiveBll.setVideoAction(this);
         mLiveBll.setLiveVideoBll(liveVideoBll);
@@ -562,10 +578,9 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
         @Override
         public void onTitleShow(boolean show) {
-            liveIRCMessageBll.onTitleShow(show);
-//            if (rankBll != null) {
-//                rankBll.onTitleShow(show);
-//            }
+            for (LiveMediaController.MediaPlayerControl control : mediaPlayerControls) {
+                control.onTitleShow(show);
+            }
         }
 
         @Override
@@ -978,10 +993,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 //        onPauseNotStopVideo = true;
     }
 
-    @Override
-    public void onMediaViewClick(View child) {
-
-    }
 
     public void updateIcon() {
         updateLoadingImage();

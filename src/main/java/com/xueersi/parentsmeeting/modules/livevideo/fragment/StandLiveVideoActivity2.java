@@ -193,7 +193,7 @@ public class StandLiveVideoActivity2 extends LiveVideoActivity2 {
                     ViewGroup group = (ViewGroup) vsLiveStandUpdate.getParent();
                     group.removeView(vsLiveStandUpdate);
                 }
-                if (isFinishing()) {
+                if (activity.isFinishing()) {
                     return;
                 }
                 startGetInfo();

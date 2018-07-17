@@ -12,9 +12,12 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.SampleMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
@@ -120,6 +123,13 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             questionShowReg.registQuestionShow(mRoomAction);
         }
         EventBus.getDefault().register(this);
+        RegMediaPlayerControl regMediaPlayerControl = getInstance(RegMediaPlayerControl.class);
+        regMediaPlayerControl.addMediaPlayerControl(new SampleMediaPlayerControl() {
+            @Override
+            public void onTitleShow(boolean show) {
+                mRoomAction.onTitleShow(show);
+            }
+        });
     }
 
     public void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
@@ -131,6 +141,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         this.mLiveTopic = mLiveTopic;
     }
 
+    @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {

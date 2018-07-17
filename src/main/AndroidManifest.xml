@@ -42,9 +42,9 @@
         <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:process=":livevideo"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
-
 
         <activity
             android:name=".activity.StandLiveVideoActivity"
@@ -61,9 +61,11 @@
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
-        <service android:name="ren.yale.android.cachewebviewlib.CachePreLoadService"></service>
+        <service
+            android:name="ren.yale.android.cachewebviewlib.CachePreLoadService"
+            android:process=":livevideo" />
     </application>
 
 </manifest>
