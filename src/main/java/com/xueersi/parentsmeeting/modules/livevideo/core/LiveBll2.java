@@ -574,7 +574,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 }
                 mLiveTopic.copy(liveTopic);
             } catch (Exception e) {
-                e.printStackTrace();
+                getOnloadLogs(TAG, "" + e);
             }
         }
 

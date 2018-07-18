@@ -21,27 +21,9 @@ import org.greenrobot.eventbus.ThreadMode;
  * @author linyuqiang
  */
 public class LiveVideoActivity extends LiveVideoActivityBase implements ActivityStatic {
-
     private String TAG = "LiveVideoActivityLog";
     /** 直播类型 */
     private int liveType;
-
-    @Subscribe(threadMode = ThreadMode.POSTING)
-    public void onEvent(AppEvent event) {
-
-    }
-
-    /**
-     * 只在WIFI下使用激活
-     *
-     * @param onlyWIFIEvent
-     * @author zouhao
-     * @Create at: 2015-9-24 下午1:57:04
-     */
-    @Subscribe(threadMode = ThreadMode.POSTING)
-    public void onEvent(AppEvent.OnlyWIFIEvent onlyWIFIEvent) {
-
-    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
