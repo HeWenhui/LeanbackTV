@@ -1,7 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.page;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -12,10 +14,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tal.speech.speechrecognizer.EvaluatorListener;
-import com.tal.speech.speechrecognizer.PhoneScore;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
+import com.xueersi.common.permission.PermissionCallback;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
+import com.xueersi.lib.framework.utils.CheckUtil;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenBll;
@@ -60,12 +65,16 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
     /** 是不是评测成功 */
     private boolean isSpeechSuccess = false;
     SpeechBulletScreenBll speechBulletScreenBll;
+    private int status;
+    public final static int RECORDING = 1;
+    public final static int ERROR = 2;
+    public final static int NOPERMISSION = 3;
 
     public SpeechBulletScreenPager(Context context, SpeechBulletScreenBll speechBulletScreenBll) {
         super(context);
         this.speechBulletScreenBll = speechBulletScreenBll;
-        initListener();
         initData();
+        initListener();
     }
 
     @Override
@@ -86,6 +95,45 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
         return view;
     }
 
+    @Override
+    public void initData() {
+        Log.d(TAG,"initData()");
+        mView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                vwvSpeechbulWave.start();
+                if (mSpeechEvaluatorUtils == null) {
+                    mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(false);
+                }
+                startEvaluator();
+            }
+        }, 1000);
+        XesPermission.checkPermission(mContext, new PermissionCallback() {
+            /**
+             * 结束
+             */
+            @Override
+            public void onFinish() {
+                Log.d(TAG, "onFinish()");
+            }
+
+            /**
+             * 用户拒绝某个权限
+             */
+            @Override
+            public void onDeny(String permission, int position) {
+                Log.d(TAG, "onDeny()");
+            }
+
+            /**
+             * 用户允许某个权限
+             */
+            @Override
+            public void onGuarantee(String permission, int position) {
+                Log.d(TAG, "onGuarantee()");
+            }
+        }, PermissionConfig.PERMISSION_CODE_AUDIO);
+    }
 
     @Override
     public void initListener() {
@@ -97,8 +145,7 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
             public void onClick(View view) {
                 Log.d(TAG,"onClick: ivSpeechbulClose");
                 speechBulletScreenBll.onCloseSpeechBulletScreen();
-                stopPlayer();
-
+                stopEvaluator();
             }
         });
         //编辑话语
@@ -128,26 +175,20 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
         });
     }
 
-    @Override
-    public void initData() {
-        Log.d(TAG,"initData()");
-        mView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                vwvSpeechbulWave.start();
-                if (mSpeechEvaluatorUtils == null) {
-                    mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(false);
-                }
-                startEvaluator();
-            }
-        }, 1000);
-    }
-
-    @Override
-    public void stopPlayer() {
-        Log.d(TAG,"stopPlayer()");
-        if (mSpeechEvaluatorUtils != null) {
-            mSpeechEvaluatorUtils.stop();
+    /**
+     * 设置状态：录音/失败/无权限
+     */
+    private void setStatus(int status){
+        this.status = status;
+        switch (status) {
+            case RECORDING:
+                break;
+            case ERROR:
+                break;
+            case NOPERMISSION:
+                break;
+            default:
+                break;
         }
     }
 
@@ -173,12 +214,12 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
                             if (resultEntity.getErrorNo() > 0) {
                                 onEvaluatorError(resultEntity);
                             } else {
-                                onEvaluatorSuccess(resultEntity, true);
+                                onEvaluatorSuccess(resultEntity.getCurString(), true);
                             }
                         } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                             onEvaluatorError(resultEntity);
                         } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-                            onEvaluatorSuccess(resultEntity, false);
+                            onEvaluatorSuccess(resultEntity.getCurString(), false);
                         }
                     }
 
@@ -190,9 +231,16 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
                 });
     }
 
-    private void onEvaluatorSuccess(ResultEntity resultEntity, boolean isSpeechFinish) {
-        Log.d(TAG,"onEvaluatorSuccess():isSpeechFinish=" + isSpeechFinish);
-        String str = resultEntity.getCurString();
+    @Override
+    public void stopEvaluator() {
+        Log.d(TAG,"stopEvaluator()");
+        if (mSpeechEvaluatorUtils != null) {
+            mSpeechEvaluatorUtils.stop();
+        }
+    }
+
+    private void onEvaluatorSuccess(String str, boolean isSpeechFinished) {
+        Log.d(TAG,"onEvaluatorSuccess():isSpeechFinish=" + isSpeechFinished);
         try {
             JSONObject jsonObject = new JSONObject(str);
             String content = jsonObject.optString("nbest");
@@ -208,14 +256,16 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
             }
             content = content.replaceAll("。", "");
             if (!TextUtils.isEmpty(content)) {
-                Log.d(TAG,"speech evaluate result:" + content);
+                Log.d(TAG,"=====speech evaluating" + content);
+                tvSpeechbulTitle.setText(content);
             }
-            if (isSpeechFinish) {
+            if (isSpeechFinished ) {
                 mSpeechEvaluatorUtils.cancel();
                 vwvSpeechbulWave.setVisibility(View.GONE);
                 tvSpeechbulTitle.setVisibility(View.GONE);
                 llSpeechbulContent.setVisibility(View.VISIBLE);
                 etSpeechbulWords.setText(content);
+                tvSpeechbulCount.setText(getChineseCharNumber(content)+"/15");
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -225,29 +275,57 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
     private void onEvaluatorError(ResultEntity resultEntity) {
         Log.d(TAG,"onEvaluatorError()");
         isSpeechError = true;
-        if (resultEntity.getErrorNo() == ResultCode.MUTE_AUDIO || resultEntity.getErrorNo() == ResultCode.MUTE) {
-            Log.d(TAG,"声音有点小，再来一次哦！");
-            mView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    startEvaluator();
+        if (TextUtils.isEmpty(tvSpeechbulTitle.getText().toString())
+                || tvSpeechbulTitle.getText().toString().equals("语音录入中（15字以内）")){
+            if (resultEntity.getErrorNo() == ResultCode.MUTE_AUDIO || resultEntity.getErrorNo() == ResultCode.MUTE) {
+                Log.d(TAG,"声音有点小，再来一次哦！");
+                mView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startEvaluator();
+                    }
+                }, 300);
+                return;
+            } else if (resultEntity.getErrorNo() == ResultCode.NO_AUTHORITY) {
+                Log.d(TAG,"麦克风不可用，快去检查一下！");
+            } else if (resultEntity.getErrorNo() == ResultCode.WEBSOCKET_TIME_OUT || resultEntity.getErrorNo() == ResultCode.NETWORK_FAIL
+                    || resultEntity.getErrorNo() == ResultCode.WEBSOCKET_CONN_REFUSE) {
+                int netWorkType = NetWorkHelper.getNetWorkState(mContext);
+                if (netWorkType == NetWorkHelper.NO_NETWORK) {
+                    Log.d(TAG,"好像没网了，快检查一下");
+                } else {
+                    Log.d(TAG,"服务器连接不上");
                 }
-            }, 300);
-            return;
-        }else if (resultEntity.getErrorNo() == ResultCode.NO_AUTHORITY) {
-            Log.d(TAG,"麦克风不可用，快去检查一下！");
-        }
-        else if (resultEntity.getErrorNo() == ResultCode.WEBSOCKET_TIME_OUT || resultEntity.getErrorNo() == ResultCode.NETWORK_FAIL
-                || resultEntity.getErrorNo() == ResultCode.WEBSOCKET_CONN_REFUSE) {
-            int netWorkType = NetWorkHelper.getNetWorkState(mContext);
-            if (netWorkType == NetWorkHelper.NO_NETWORK) {
-                Log.d(TAG,"好像没网了，快检查一下");
-            } else {
-                Log.d(TAG,"服务器连接不上");
             }
         } else {
-            Log.d(TAG,"语音输入有点小问题");
+            onEvaluatorSuccess(str2json(tvSpeechbulTitle.getText().toString()), true);
         }
     }
+
+    private String str2json(String str) {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("nbest", str);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return object.toString();
+    }
+
+    /**
+     * 统计汉字数量
+     */
+    private int getChineseCharNumber(String str) {
+        int count = 0;
+        for (int i = 0; i < str.length(); i++) {
+            char tmp = str.charAt(i);
+            if (CheckUtil.isChinese(tmp)){
+                count++;
+            }
+        }
+        return count;
+    }
+
+
 
 }

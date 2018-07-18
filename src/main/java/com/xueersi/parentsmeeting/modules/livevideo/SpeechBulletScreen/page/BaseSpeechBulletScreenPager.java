@@ -15,6 +15,6 @@ public abstract class BaseSpeechBulletScreenPager extends BasePager {
         super(context);
     }
 
-    public abstract void stopPlayer();
+    public abstract void stopEvaluator();
 
 }

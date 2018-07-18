@@ -41,6 +41,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
     @Override
     public void onNotice(JSONObject data, int type) {
 
+
     }
 
     @Override
