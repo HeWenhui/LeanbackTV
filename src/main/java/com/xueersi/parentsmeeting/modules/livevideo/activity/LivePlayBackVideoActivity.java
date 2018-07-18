@@ -2462,6 +2462,9 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                         mPopupWindow.dismiss();
                         mPopupWindow = null;
                     }
+                    break;
+                default:
+                    break;
             }
         }
     };
