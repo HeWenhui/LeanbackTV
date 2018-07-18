@@ -119,7 +119,8 @@ public class StandLiveVideoAction extends LiveVideoAction {
     }
 
     @Override
-    public void onModeChange(final String mode, boolean isPresent) {
+    public void onModeChange(final String mode, final boolean isPresent) {
+        StandLiveVideoAction.this.mode = mode;
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -144,6 +145,7 @@ public class StandLiveVideoAction extends LiveVideoAction {
                         }
                     }
                 }
+                StandLiveVideoAction.super.onModeChange(mode, isPresent);
             }
         });
     }
