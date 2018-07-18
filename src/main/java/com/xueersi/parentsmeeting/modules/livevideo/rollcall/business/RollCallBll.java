@@ -434,9 +434,9 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
             boolean isAutoSign = data != null && data.getIsArts() != 1 && liveType == LiveVideoConfig.LIVE_TYPE_LIVE;
             setAutoSign(isAutoSign);
         }
-
-        initUserSignState(data);
-
+        if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+            initUserSignState(data);
+        }
     }
 
     private void initUserSignState(LiveGetInfo data) {

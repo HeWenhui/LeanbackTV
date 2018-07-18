@@ -78,7 +78,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.MoreChoiceItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertPagerClose;
+import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertPagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;

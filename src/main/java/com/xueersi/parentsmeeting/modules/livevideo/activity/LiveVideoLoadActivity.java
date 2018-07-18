@@ -45,54 +45,87 @@ public class LiveVideoLoadActivity extends BaseActivity {
     private void initData() {
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
-        final String vStuCourseID = intent.getStringExtra("vStuCourseID");
-        String courseId = intent.getStringExtra("courseId");
         final String vSectionID = intent.getStringExtra("vSectionID");
+        final int liveType = bundle.getInt("type", 0);
         final int from = intent.getIntExtra("", 0);
         DataLoadEntity dataLoadEntity = new DataLoadEntity(this);
         BaseBll.postDataLoadEvent(dataLoadEntity.beginLoading());
         LiveHttpManager httpManager = new LiveHttpManager(this);
-        httpManager.addBodyParam("stuCouId", vStuCourseID);
-        httpManager.addBodyParam("liveId", vSectionID);
-        httpManager.addBodyParam("from", "" + from);
-        httpManager.liveGetInfo("", courseId, vSectionID, 0, new HttpCallBack(dataLoadEntity) {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                LiveHttpResponseParser mHttpResponseParser = new LiveHttpResponseParser(LiveVideoLoadActivity.this);
-                JSONObject object = (JSONObject) responseEntity.getJsonObject();
-                LiveTopic mLiveTopic = new LiveTopic();
-                LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, LiveVideoConfig.LIVE_TYPE_LIVE, from);
-                if (mGetInfo == null) {
-                    XESToastUtils.showToast(LiveVideoLoadActivity.this, "服务器异常");
+        if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
+            httpManager.liveLectureGetInfo("", vSectionID, new HttpCallBack(dataLoadEntity) {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) {
+                    LiveHttpResponseParser mHttpResponseParser = new LiveHttpResponseParser(LiveVideoLoadActivity.this);
+                    JSONObject object = (JSONObject) responseEntity.getJsonObject();
+                    LiveTopic mLiveTopic = new LiveTopic();
+                    LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, liveType, from);
+                    if (mGetInfo == null) {
+                        XESToastUtils.showToast(LiveVideoLoadActivity.this, "服务器异常");
+                        finish();
+                        return;
+                    }
+                    getInfos.put(liveType + "-" + vSectionID, mGetInfo);
+                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                     finish();
-                    return;
                 }
-                String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-                getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
-//                mGetInfo.setPattern(2);
-                bundle.putInt("isArts", mGetInfo.getIsArts());
-                bundle.putInt("pattern", mGetInfo.getPattern());
+
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    XESToastUtils.showToast(LiveVideoLoadActivity.this, "初始化失败");
+                    finish();
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
+                    finish();
+                }
+            });
+        } else {
+            final String vStuCourseID = intent.getStringExtra("vStuCourseID");
+            String courseId = intent.getStringExtra("courseId");
+            httpManager.addBodyParam("stuCouId", vStuCourseID);
+            httpManager.addBodyParam("liveId", vSectionID);
+            httpManager.addBodyParam("from", "" + from);
+            httpManager.liveGetInfo("", courseId, vSectionID, 0, new HttpCallBack(dataLoadEntity) {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                    LiveHttpResponseParser mHttpResponseParser = new LiveHttpResponseParser(LiveVideoLoadActivity.this);
+                    JSONObject object = (JSONObject) responseEntity.getJsonObject();
+                    LiveTopic mLiveTopic = new LiveTopic();
+                    LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, liveType, from);
+                    if (mGetInfo == null) {
+                        XESToastUtils.showToast(LiveVideoLoadActivity.this, "服务器异常");
+                        finish();
+                        return;
+                    }
+                    String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                    getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
+                    mGetInfo.setPattern(2);
+                    bundle.putInt("isArts", mGetInfo.getIsArts());
+                    bundle.putInt("pattern", mGetInfo.getPattern());
 //                if (mGetInfo.getPattern() == 2) {
 //                    StandLiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle, -1);
 //                } else {
 //                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
 //                }
-                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                finish();
-            }
+                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                    finish();
+                }
 
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                XESToastUtils.showToast(LiveVideoLoadActivity.this, "初始化失败");
-                finish();
-            }
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    XESToastUtils.showToast(LiveVideoLoadActivity.this, "初始化失败");
+                    finish();
+                }
 
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
-                finish();
-            }
-        });
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
+                    finish();
+                }
+            });
+        }
     }
 
     /**

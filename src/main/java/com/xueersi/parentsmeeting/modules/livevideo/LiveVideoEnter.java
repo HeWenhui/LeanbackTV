@@ -221,7 +221,8 @@ public class LiveVideoEnter {
         bundle.putString("vSectionID", vSectionID);
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LECTURE);
         bundle.putInt(LectureLiveVideoActivity.ENTER_ROOM_FROM, from);
-        LectureLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+//        LectureLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+        LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
     }
 
     /**

@@ -58,6 +58,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveScienceHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LecLearnReportAction;
+import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertAction;
+import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertHttp;
+import com.xueersi.parentsmeeting.modules.livevideo.leclearnreport.business.LecLearnReportHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.H5CoursewareAction;
@@ -128,7 +131,7 @@ import okhttp3.Response;
  *
  * @author linyuqiang
  */
-public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, QuestionHttp, LiveAchievementHttp, EnglishSpeekHttp, EnglishH5CoursewareHttp, VideoChatHttp, SpeechFeedBackHttp, LearnReportHttp {
+public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, QuestionHttp, LiveAchievementHttp, EnglishSpeekHttp, EnglishH5CoursewareHttp, VideoChatHttp, SpeechFeedBackHttp, LearnReportHttp, LecAdvertHttp, LecLearnReportHttp {
     private String TAG = "LiveBllLog";
     private LiveLazyBllCreat liveLazyBllCreat;
     /** 互动题 */

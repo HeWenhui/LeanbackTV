@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business;
+package com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,15 +6,15 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.event.MiniEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.LecAdvertLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-
-import org.greenrobot.eventbus.EventBus;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
 
@@ -29,15 +29,17 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
     RelativeLayout bottomContent;
     LecAdvertPager lecAdvertager;
     ArrayList<LecAdvertEntity> entities = new ArrayList<>();
-    LiveBll liveBll;
+    LecAdvertHttp lecAdvertHttp;
+    LiveAndBackDebug liveAndBackDebug;
     String liveid;
 
     public LecAdvertBll(Context context) {
         this.context = context;
+        liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
     }
 
-    public void setLiveBll(LiveBll liveBll) {
-        this.liveBll = liveBll;
+    public void setLecAdvertHttp(LecAdvertHttp lecAdvertHttp) {
+        this.lecAdvertHttp = lecAdvertHttp;
     }
 
     public void setLiveid(String liveid) {
@@ -70,7 +72,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
         logHashMap.put("adsid", "" + lecAdvertEntity.id);
         logHashMap.addSno("3").addStable("2");
         logHashMap.addNonce("" + lecAdvertEntity.nonce);
-        liveBll.umsAgentDebugSys(eventid, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
         bottomContent.post(new Runnable() {
             @Override
             public void run() {
@@ -80,7 +82,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                 }
 //                PageDataLoadEntity mPageDataLoadEntity = new PageDataLoadEntity(lecAdvertager.getRootView(), R.id.fl_livelec_advert_content, DataErrorManager.IMG_TIP_BUTTON);
 //                PageDataLoadManager.newInstance().loadDataStyle(mPageDataLoadEntity.beginLoading());
-                liveBll.getAdOnLL(lecAdvertEntity, new AbstractBusinessDataCallBack() {
+                lecAdvertHttp.getAdOnLL(lecAdvertEntity, new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
                         // 刷新广告列表数据
@@ -96,32 +98,32 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                             logHashMap.put("adsid", "" + lecAdvertEntity.id);
                             logHashMap.addSno("4").addStable("1").addExN();
                             logHashMap.addNonce("" + lecAdvertEntity.nonce);
-                            logHashMap.put("extra","此广告已报名");
-                            liveBll.umsAgentDebugSys(eventid, logHashMap.getData());
+                            logHashMap.put("extra", "此广告已报名");
+                            liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
                             return;
                         }
-                        if("0".equals(lecAdvertEntity.limit)){
+                        if ("0".equals(lecAdvertEntity.limit)) {
                             // 已报满的情况也不弹出广告
                             StableLogHashMap logHashMap = new StableLogHashMap("interactiveAdsShown");
                             logHashMap.put("adsid", "" + lecAdvertEntity.id);
                             logHashMap.addSno("4").addStable("1").addExN();
                             logHashMap.addNonce("" + lecAdvertEntity.nonce);
-                            logHashMap.put("extra","此广告已报满");
-                            liveBll.umsAgentDebugSys(eventid, logHashMap.getData());
+                            logHashMap.put("extra", "此广告已报满");
+                            liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
                             return;
                         }
-                        lecAdvertager = new LecAdvertPager(context, lecAdvertEntity, LecAdvertBll.this, liveid, liveBll);
+                        lecAdvertager = new LecAdvertPager(context, lecAdvertEntity, LecAdvertBll.this, liveid, liveAndBackDebug);
                         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                         bottomContent.addView(lecAdvertager.getRootView(), lp);
                         lecAdvertager.initStep1();
-                        LecAdvertLog.sno4(lecAdvertEntity, liveBll);
+                        LecAdvertLog.sno4(lecAdvertEntity, liveAndBackDebug);
                         // 添加成功弹出广告的日志
                         StableLogHashMap logHashMap = new StableLogHashMap("interactiveAdsShown");
                         logHashMap.put("adsid", "" + lecAdvertEntity.id);
                         logHashMap.addSno("4").addStable("1").addExY();
                         logHashMap.addNonce("" + lecAdvertEntity.nonce);
-                        logHashMap.put("extra","成功弹出广告");
-                        liveBll.umsAgentDebugSys(eventid, logHashMap.getData());
+                        logHashMap.put("extra", "成功弹出广告");
+                        liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
                     }
 
                     @Override
@@ -131,8 +133,8 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                         logHashMap.put("adsid", "" + lecAdvertEntity.id);
                         logHashMap.addSno("4").addStable("1").addExN();
                         logHashMap.addNonce("" + lecAdvertEntity.nonce);
-                        logHashMap.put("extra","接口返回数据失败");
-                        liveBll.umsAgentDebugSys(eventid, logHashMap.getData());
+                        logHashMap.put("extra", "接口返回数据失败");
+                        liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
                     }
                 });
             }

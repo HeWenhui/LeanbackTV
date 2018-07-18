@@ -50,7 +50,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.H5CoursewareBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertBll;
+import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertBll;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LecLearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
@@ -159,17 +159,11 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
      * 连接老师加载-主讲
      */
     private final String mainTeacherLoad = "正在连接主讲老师，请耐心等候";
-    /**
-     * 连接老师加载-辅导
-     */
+    /** 连接老师加载-辅导  */
     private final String coachTeacherLoad = "正在连接辅导老师，请耐心等候";
-    /**
-     * 正在播放
-     */
+    /** 正在播放 */
     private boolean isPlay = false;
-    /**
-     * video缓存时间
-     */
+    /** video缓存时间  */
     private long videoCachedDuration;
     LiveMessageBll liveMessageBll;
     QuestionBll questionBll;
@@ -236,7 +230,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         learnReportBll.setLiveBll(mLiveBll);
         learnReportBll.setmShareDataManager(mShareDataManager);
         questionBll.setLiveBll(mLiveBll);
-        lecAdvertAction.setLiveBll(mLiveBll);
+        lecAdvertAction.setLecAdvertHttp(mLiveBll);
         lecAdvertAction.setLiveid(mVSectionID);
         questionBll.setVSectionID(mVSectionID);
         //redPackageBll.setVSectionID(mVSectionID);

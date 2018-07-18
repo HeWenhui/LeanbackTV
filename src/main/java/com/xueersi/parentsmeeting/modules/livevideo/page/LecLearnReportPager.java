@@ -29,7 +29,7 @@ public class LecLearnReportPager extends BasePager {
     TextView tv_livelec_dialog_paiming_text;
     TextView tv_livelec_dialog_paiming_text2;
 
-    public LecLearnReportPager(Context context, LearnReportEntity reportEntity, LiveBll liveBll, LecLearnReportBll learnReportBll) {
+    public LecLearnReportPager(Context context, LearnReportEntity reportEntity, LecLearnReportBll learnReportBll) {
         super(context);
 //        if (reportEntity == null) {
 //            reportEntity = new LearnReportEntity();
@@ -43,7 +43,6 @@ public class LecLearnReportPager extends BasePager {
 //            reportEntity.setStu(stu);
 //        }
         this.reportEntity = reportEntity;
-        this.liveBll = liveBll;
         this.learnReportBll = learnReportBll;
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));

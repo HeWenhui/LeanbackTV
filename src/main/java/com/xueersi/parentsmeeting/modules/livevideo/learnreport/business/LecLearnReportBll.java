@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.leclearnreport.business.LecLearnReportHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecLearnReportPager;
 import com.xueersi.common.sharedata.ShareDataManager;
 
@@ -34,7 +35,7 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     private LogToFile mLogtf;
     private Activity activity;
-    private LiveBll mLiveBll;
+    private LecLearnReportHttp mLiveBll;
     /** 学习报告的布局 */
     private RelativeLayout rlLearnReportContent;
     /** 学习报告 */
@@ -64,7 +65,7 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
         this.liveId = liveId;
     }
 
-    public void setLiveBll(LiveBll mLiveBll) {
+    public void setLiveBll(LecLearnReportHttp mLiveBll) {
         this.mLiveBll = mLiveBll;
     }
 
@@ -99,6 +100,7 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
                 }
                 mLogtf.d(s);
             }
+            break;
             case NO_LEARNREPORT: {
                 String s = "handleMessage:NO_LEARNREPORT:mIsShow=" + mIsShowLearnReport;
                 if (mIsShowLearnReport) {
@@ -107,6 +109,9 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
                 }
                 mLogtf.d(s);
             }
+            break;
+            default:
+                break;
         }
         return false;
     }
@@ -162,7 +167,7 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
                     e.printStackTrace();
                 }
                 LearnReportEntity reportEntity = (LearnReportEntity) objData[0];
-                mLearnReport = new LecLearnReportPager(activity, reportEntity, mLiveBll, LecLearnReportBll.this);
+                mLearnReport = new LecLearnReportPager(activity, reportEntity, LecLearnReportBll.this);
                 rlLearnReportContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);

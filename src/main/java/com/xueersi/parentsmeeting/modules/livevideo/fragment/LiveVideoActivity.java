@@ -10,6 +10,7 @@ import com.xueersi.common.business.AppBll;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity2;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -22,6 +23,8 @@ import org.greenrobot.eventbus.ThreadMode;
 public class LiveVideoActivity extends LiveVideoActivityBase implements ActivityStatic {
 
     private String TAG = "LiveVideoActivityLog";
+    /** 直播类型 */
+    private int liveType;
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent event) {
@@ -65,11 +68,16 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
 
     @Override
     protected LiveVideoFragmentBase getFragment() {
-        int pattern = getIntent().getIntExtra("pattern", 0);
-        if (pattern == 2) {
-            return new StandLiveVideoActivity2();
+        liveType = getIntent().getIntExtra("type", 0);
+        if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
+            return new LectureLiveVideoFrame();
+        } else {
+            int pattern = getIntent().getIntExtra("pattern", 0);
+            if (pattern == 2) {
+                return new StandLiveVideoActivity2();
+            }
+            return new LiveVideoActivity2();
         }
-        return new LiveVideoActivity2();
     }
 
     @Override
@@ -82,7 +90,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
 
     /**
      * 跳转到播放器
-     *  @param context
+     *
+     * @param context
      * @param bundle
      */
     public static void intentTo(Activity context, Bundle bundle) {

@@ -2,28 +2,19 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
-import com.xueersi.parentsmeeting.module.browser.business.BrowserBll;
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.event.MiniEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertPagerClose;
+import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertPagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.LecAdvertLog;
-import com.xueersi.common.business.UserBll;
 
 import org.greenrobot.eventbus.EventBus;
 

@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business;
+package com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business;
 
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 
