@@ -21,8 +21,10 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
@@ -46,6 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
@@ -81,13 +84,18 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     boolean onPauseNotStopVideo = false;
     private LiveIRCMessageBll liveIRCMessageBll;
     protected String mode = LiveTopic.MODE_TRANING;
-    protected VideoChatIRCBll videoChatIRCBll;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         boolean onVideoCreate = super.onVideoCreate(savedInstanceState);
         if (onVideoCreate) {
             isArts = activity.getIntent().getIntExtra("isArts", -1);
+            String mode2 = activity.getIntent().getStringExtra("mode");
+            if (mode2 != null) {
+                mode = mode2;
+            }
+            createLiveVideoAction();
+            liveVideoAction.setFirstParam(LiveVideoPoint.getInstance());
             long before = System.currentTimeMillis();
             initAllBll();
             logger.d("onVideoCreate:time2=" + (System.currentTimeMillis() - before));
@@ -112,14 +120,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     protected void onGlobalLayoutListener() {
         super.onGlobalLayoutListener();
         setMediaControllerBottomParam();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        mContentView = (RelativeLayout) super.onCreateView(inflater, container, savedInstanceState);
-        initView();
-        return mContentView;
     }
 
     /**
@@ -186,8 +186,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll, bottomContent);
         videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
         videoChatIRCBll.setLiveFragmentBase(this);
-        mLiveVideoBll.setVideoChatEvent(videoChatIRCBll);
-        LiveVideoActivity2.this.videoChatIRCBll = videoChatIRCBll;
         mLiveBll.addBusinessBll(videoChatIRCBll);
         mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
     }
@@ -285,7 +283,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         super.onResume();
         if (mHaveStop) {
             mHaveStop = false;
-            if (videoChatIRCBll != null && videoChatIRCBll.isChat()) {
+            VideoChatEvent videoChatEvent = ProxUtil.getProxUtil().get(activity, VideoChatEvent.class);
+            if (videoChatEvent != null && videoChatEvent.getStartRemote().get()) {
                 return;
             }
             if (!onPauseNotStopVideo) {
@@ -315,7 +314,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     public void onPause() {
         super.onPause();
         mHaveStop = true;
-        if (videoChatIRCBll != null && videoChatIRCBll.isChat()) {
+        VideoChatEvent videoChatEvent = ProxUtil.getProxUtil().get(activity, VideoChatEvent.class);
+        if (videoChatEvent != null && videoChatEvent.getStartRemote().get()) {
             return;
         }
         if (!onPauseNotStopVideo) {
@@ -389,7 +389,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         if (mGetInfo == null) {//上次初始化尚未完成
             return;
         }
-        if (videoChatIRCBll != null && videoChatIRCBll.isChat()) {
+        VideoChatEvent videoChatEvent = ProxUtil.getProxUtil().get(activity, VideoChatEvent.class);
+        if (videoChatEvent != null && videoChatEvent.getStartRemote().get()) {
             return;
         }
         liveVideoAction.rePlay(modechange);

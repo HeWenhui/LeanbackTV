@@ -101,7 +101,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     }
                     String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                     getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
-                    mGetInfo.setPattern(2);
+//                    mGetInfo.setPattern(2);
+                    bundle.putString("mode", mGetInfo.getMode());
                     bundle.putInt("isArts", mGetInfo.getIsArts());
                     bundle.putInt("pattern", mGetInfo.getPattern());
 //                if (mGetInfo.getPattern() == 2) {

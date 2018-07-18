@@ -108,7 +108,6 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         LiveVideoPoint.initLiveVideoPoint(activity, liveVideoPoint, lp);
         setFirstParam();
         createLiveVideoBll();
-        createLiveVideoAction();
         mLiveBll.setmIsLand(mIsLand);
         mLiveBll.setVideoAction(this);
         ProxUtil.getProxUtil().put(activity, RegMediaPlayerControl.class, new RegMediaPlayerControl() {
@@ -169,6 +168,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
                         boolean change = LiveVideoPoint.initLiveVideoPoint(activity, liveVideoPoint, lp);
                         long before = System.currentTimeMillis();
+                        setFirstParam();
                         if (change) {
                             onGlobalLayoutListener();
                         }
@@ -180,7 +180,6 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     }
 
     protected void onGlobalLayoutListener() {
-        setFirstParam();
         List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.setVideoLayoutF(liveVideoPoint);

@@ -68,7 +68,6 @@ public class LiveVideoAction implements VideoAction {
         mLogtf = new LogToFile(mLiveBll, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         updateLoadingImage();
-        setFirstParam(LiveVideoPoint.getInstance());
     }
 
     /**

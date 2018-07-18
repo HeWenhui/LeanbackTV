@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.leclearnreport.business.LecLearnReportIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
@@ -32,9 +33,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControll
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 
 /**
- * Created by lyqai on 2018/7/18.
+ * Created by linyuqiang on 2018/7/18.
+ * 讲座布局
  */
-
 public class LectureLiveVideoFrame extends LiveFragmentBase {
     private String TAG = "LectureLiveVideoFrameLog";
     protected LiveIRCMessageBll liveIRCMessageBll;
@@ -47,6 +48,8 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
         boolean onVideoCreate = super.onVideoCreate(savedInstanceState);
         if (onVideoCreate) {
             long before = System.currentTimeMillis();
+            createLiveVideoAction();
+            liveVideoAction.setFirstParam(LiveVideoPoint.getInstance());
             initAllBll();
             logger.d("onVideoCreate:time2=" + (System.currentTimeMillis() - before));
             before = System.currentTimeMillis();
@@ -91,11 +94,6 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
     }
 
     @Override
-    protected void createLiveVideoAction() {
-        super.createLiveVideoAction();
-    }
-
-    @Override
     public boolean initData() {
         Intent intent = activity.getIntent();
         mVideoType = MobEnumUtil.VIDEO_LIVE;
@@ -121,7 +119,6 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
     }
 
     protected void addBusiness(Activity activity, RelativeLayout bottomContent) {
-        mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll, bottomContent));
         liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll, bottomContent);
         liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
         mLiveBll.addBusinessBll(liveIRCMessageBll);

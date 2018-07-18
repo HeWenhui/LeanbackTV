@@ -91,7 +91,6 @@ public class LiveVideoBll implements VPlayerListenerReg {
     /** live_report_play_duration 开始时间 */
     protected long reportPlayStarTime;
     private LiveVideoReportBll liveVideoReportBll;
-    VideoChatEvent videoChatEvent;
     private VideoAction mVideoAction;
     private int mLiveType;
 
@@ -123,10 +122,6 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
     public void setHttpResponseParser(LiveHttpResponseParser httpResponseParser) {
         this.mHttpResponseParser = httpResponseParser;
-    }
-
-    public void setVideoChatEvent(VideoChatEvent videoChatEvent) {
-        this.videoChatEvent = videoChatEvent;
     }
 
     @Override
@@ -408,7 +403,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
         @Override
         public void onPlaying(long currentPosition, long duration) {
-            if (videoChatEvent.getStartRemote().get()) {
+            VideoChatEvent videoChatEvent = ProxUtil.getProxUtil().get(activity, VideoChatEvent.class);
+            if (videoChatEvent != null && videoChatEvent.getStartRemote().get()) {
                 mLogtf.d("onPlaying:startRemote");
                 stopPlay();
             }
@@ -447,7 +443,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
         @Override
         public void onOpenSuccess() {
             isPlay = true;
-            if (videoChatEvent.getStartRemote().get()) {
+            VideoChatEvent videoChatEvent = ProxUtil.getProxUtil().get(activity, VideoChatEvent.class);
+            if (videoChatEvent != null && videoChatEvent.getStartRemote().get()) {
                 mLogtf.d("onOpenSuccess:startRemote=true");
                 stopPlay();
                 return;
