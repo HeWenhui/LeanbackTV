@@ -159,11 +159,11 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
      * 连接老师加载-主讲
      */
     private final String mainTeacherLoad = "正在连接主讲老师，请耐心等候";
-    /** 连接老师加载-辅导  */
+    /** 连接老师加载-辅导 */
     private final String coachTeacherLoad = "正在连接辅导老师，请耐心等候";
     /** 正在播放 */
     private boolean isPlay = false;
-    /** video缓存时间  */
+    /** video缓存时间 */
     private long videoCachedDuration;
     LiveMessageBll liveMessageBll;
     QuestionBll questionBll;
@@ -197,6 +197,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
     private ViewGroup mParent;
     private LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
 
+    @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
@@ -1527,8 +1528,9 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
         if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
-            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
+            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl)) {
                 ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
+            }
         }
     }
 }

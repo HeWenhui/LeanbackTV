@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.S
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLecViewChange;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -61,7 +62,7 @@ import java.util.List;
  * Created by lyqai on 2018/6/26.
  */
 
-public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, NoticeAction, TopicAction {
+public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, NoticeAction, TopicAction, LiveLecViewChange {
     private final String TAG = "LiveIRCMessageBll";
     Logger loger = LoggerFactory.getLogger(TAG);
     /** 主讲老师前缀 */
@@ -522,6 +523,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent.OnGetGoldUpdateEvent event) {
         mRoomAction.onGetMyGoldDataEvent(event.goldNum);
+    }
+
+    @Override
+    public void initView(RelativeLayout bottomContent, boolean isLand) {
+        mRoomAction.initView(bottomContent, isLand);
     }
 
     class LiveIRCState implements IRCState {

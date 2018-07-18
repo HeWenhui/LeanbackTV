@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
@@ -52,6 +53,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
     protected LiveVideoFragmentBase getFragment() {
         liveType = getIntent().getIntExtra("type", 0);
         if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             return new LectureLiveVideoFrame();
         } else {
             int pattern = getIntent().getIntExtra("pattern", 0);

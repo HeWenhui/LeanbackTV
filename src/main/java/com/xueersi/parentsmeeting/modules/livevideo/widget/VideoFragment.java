@@ -155,7 +155,7 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
         activity = (BaseActivity) getActivity();
         logger.d("onCreate:activity=" + activity);
         mShareDataManager = ShareDataManager.getInstance();
-        mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
+        mPortVideoHeight = (int) LiveVideoConfig.VIDEO_HEIGHT;
     }
 
     @Override
@@ -379,7 +379,8 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
     }
 
     /** 加载旋转屏时相关布局 */
-    public void loadLandOrPortView() {
+    public void loadLandOrPortView(boolean isLand) {
+        mIsLand = isLand;
         if (viewRoot != null) {
             ViewGroup.LayoutParams lp = viewRoot.getLayoutParams();
             if (mIsLand) {

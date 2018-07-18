@@ -152,8 +152,8 @@ public class LiveVideoFragmentBase extends Fragment {
         sendPlayVideoHandler.sendEmptyMessageDelayed(1, 1000);
         mIsLand.set(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
         mClick = false;
-        mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
-        logger.d("onCreate");
+        mPortVideoHeight = (int) LiveVideoConfig.VIDEO_HEIGHT;
+        logger.d("onCreate:mPortVideoHeight=" + mPortVideoHeight);
         //showDialog(savedInstanceState);
     }
 
@@ -371,13 +371,7 @@ public class LiveVideoFragmentBase extends Fragment {
             lpr.height = mPortVideoHeight;
             // lpr.height = VP.DEFAULT_PORT_HEIGHT;
         }
-        videoFragment.loadLandOrPortView();
-    }
-
-    /** 设置播放器的界面布局 */
-    protected void setVideoLayout() {
-        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, vPlayer.getVideoWidth(),
-                vPlayer.getVideoHeight(), vPlayer.getVideoAspectRatio());
+        videoFragment.loadLandOrPortView(mIsLand.get());
     }
 
     /** 加载视频异常时出现可重新刷新的背景界面 */
