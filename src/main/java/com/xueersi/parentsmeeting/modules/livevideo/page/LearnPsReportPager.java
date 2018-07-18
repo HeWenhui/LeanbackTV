@@ -1,11 +1,10 @@
-package com.xueersi.parentsmeeting.modules.livevideo.page.item;
+package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Environment;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,11 +15,9 @@ import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LearnPsReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.LearnPsReportBll;
-import com.xueersi.parentsmeeting.modules.livevideo.dialog.MicTipPsDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.PsLearnReportTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.xesalib.view.ratingbar.RatingBar;

@@ -275,6 +275,8 @@
     <item name="rl_livevideo_content_learnpsreport" type="id" />
     <item name="tv_livevideo_float_title" type="id" />
     <item name="im_livevideo_float_cancle" type="id" />
+    <!--直播-组内排名根布局-->
+    <item name="rl_livevideo_ranking" type="id" />
     <!--直播-表扬榜根布局-->
     <item name="rl_livevideo_content_praiselist" type="id" />
     <!--直播-专题问题-->

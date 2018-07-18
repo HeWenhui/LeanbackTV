@@ -42,6 +42,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Courseware
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishSpeekBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ExpeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.H5CoursewareBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LearnPsReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAchievementBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAutoNoticeBll;
@@ -53,6 +54,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoiceAnswerCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PScienceRedPackageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.PsRankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageBll;
@@ -64,7 +66,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.LearnPsReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.RolePlayConfig;
@@ -191,6 +192,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
     boolean audioRequest = false;
     SpeechEvaluatorUtils mIse;
     RankBll rankBll;
+    PsRankBll mPsRankBll;
     EnglishH5CacheAction englishH5Cache;
     private LiveRemarkBll liveRemarkBll;
     /** 视频宽度 */
@@ -291,7 +293,8 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
 
         //公开表扬,只有直播有
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
-            rankBll.initView(bottomContent, lp);
+//            rankBll.initView(bottomContent, lp);
+            mPsRankBll.initView(bottomContent, lp);
         }
         videoChatBll.initView(bottomContent);
         //点名
@@ -333,8 +336,11 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                         setFirstParam(lp);
                         liveMessageBll.setVideoLayout(lp.width, lp.height);
                         questionBll.setVideoLayout(lp.width, lp.height);
-                        if (rankBll != null) {
-                            rankBll.setVideoLayout(lp.width, lp.height);
+//                        if (rankBll != null) {
+//                            rankBll.setVideoLayout(lp.width, lp.height);
+//                        }
+                        if (mPsRankBll != null) {
+                            mPsRankBll.setVideoLayout(lp.width, lp.height);
                         }
 //                        if (expeBll != null) {
 //                            expeBll.setVideoLayout(lp.width, lp.height);
@@ -473,9 +479,12 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         englishH5CoursewareBll.initData();
         englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mLiveBll, englishH5CoursewareBll.new LiveQuestionSwitchImpl()));
         if (liveType == LiveBll.LIVE_TYPE_LIVE) {
-            rankBll = new RankBll(this);
-            rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
-            rankBll.setLiveBll(mLiveBll);
+//            rankBll = new RankBll(this);
+//            rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
+//            rankBll.setLiveBll(mLiveBll);
+            mPsRankBll = new PsRankBll(this);
+            mPsRankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
+            mPsRankBll.setLiveBll(mLiveBll);
             englishH5Cache = new EnglishH5Cache(this, mLiveBll, mVSectionID);
 //            englishH5Cache = new EnglishH5CacheZip(this, mLiveBll, mVSectionID);
         }
@@ -722,8 +731,11 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
     @Override
     public void onTitleShow(boolean show) {
         liveMessageBll.onTitleShow(show);
-        if (rankBll != null) {
-            rankBll.onTitleShow(show);
+//        if (rankBll != null) {
+//            rankBll.onTitleShow(show);
+//        }
+        if (mPsRankBll != null) {
+            mPsRankBll.mRankPager.onTitleShow(show);
         }
     }
 
@@ -1011,8 +1023,11 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                 RelativeLayout bottomContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_content);
                 expeBll.initView(bottomContent);
             }
-            if (rankBll != null) {
-                rankBll.setGetInfo(mGetInfo);
+//            if (rankBll != null) {
+//                rankBll.setGetInfo(mGetInfo);
+//            }
+            if (mPsRankBll != null) {
+                mPsRankBll.setGetInfo(mGetInfo);
             }
             if (englishH5Cache != null) {
                 englishH5Cache.getCourseWareUrl();
@@ -1619,7 +1634,10 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             } else if (h5CoursewareBll.onBack()) {
 
             } else {
-                if (rankBll != null && rankBll.onBack()) {
+//                if (rankBll != null && rankBll.onBack()) {
+//                    return;
+//                }
+                if (mPsRankBll != null && mPsRankBll.mRankPager.onBack()) {
                     return;
                 }
                 super.onUserBackPressed();
@@ -1697,8 +1715,11 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
 
     @Override
     public void onMediaViewClick(View child) {
-        if (rankBll != null) {
-            rankBll.onTitleShow(true);
+//        if (rankBll != null) {
+//            rankBll.onTitleShow(true);
+//        }
+        if(mPsRankBll != null){
+            mPsRankBll.mRankPager.onTitleShow(true);
         }
     }
 

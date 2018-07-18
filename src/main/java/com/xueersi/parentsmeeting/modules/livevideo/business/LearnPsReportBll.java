@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business.irc;
+package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.os.Environment;
@@ -9,12 +9,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportAction;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.page.item.LearnPsReportPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LearnPsReportPager;
 
 import java.io.File;
 
