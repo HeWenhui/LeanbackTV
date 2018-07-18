@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -13,37 +12,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tal.speech.speechrecognizer.Constants;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
-import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
-import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
-import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.VPlayerListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
-import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
-import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
@@ -66,17 +55,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.Teach
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
-import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.RolePlayConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
@@ -84,7 +69,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChat
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoFragment;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -96,15 +80,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
-
 /**
  * 直播
  *
  * @author linyuqiang
  */
 public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction, BaseLiveMessagePager.OnMsgUrlClick {
-
     private String TAG = "LiveVideoActivity2Log";
     Logger logger = LoggerFactory.getLogger(TAG);
 
@@ -121,17 +102,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     boolean openSuccess = false;
     /** 播放时长定时任务 */
     private final long mPlayDurTime = 420000;
-    /** 初始进入播放器时的预加载界面 */
-    protected RelativeLayout rlFirstBackgroundView;
-    /** 老师不在直播间 */
-    protected ImageView ivTeacherNotpresent;
     RelativeLayout bottomContent;
-    RelativeLayout praiselistContent;
-    /** 缓冲提示 */
-    private ImageView ivLoading;
-    private TextView tvLoadingHint;
     protected LiveGetInfo mGetInfo;
-    protected LiveTopic mLiveTopic;
     protected String vStuCourseID;
     protected String courseId;
     protected String mVSectionID;
@@ -146,14 +118,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     private int liveType;
     /** 是不是文科 */
     private int isArts;
-    /** 连接老师加载-主讲 */
-    private final String mainTeacherLoad = "正在连接主讲老师，请耐心等候";
-    /** 连接老师加载-辅导 */
-    private final String coachTeacherLoad = "正在连接辅导老师，请耐心等候";
     /** 正在播放 */
     private boolean isPlay = false;
-    /** video缓存时间 */
-    private long videoCachedDuration;
     BaseLiveMediaControllerTop baseLiveMediaControllerTop;
     protected BaseLiveMediaControllerBottom liveMediaControllerBottom;
     boolean audioRequest = false;
@@ -169,9 +135,10 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     private UserOnline userOnline;
     private static String Tag = "LiveVideoActivity2";
     protected LogToFile mLogtf;
-    private LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
-    private VideoChatIRCBll videoChatIRCBll;
-    private ArrayList<LiveMediaController.MediaPlayerControl> mediaPlayerControls = new ArrayList<>();
+    protected LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+    protected VideoChatIRCBll videoChatIRCBll;
+    protected ArrayList<LiveMediaController.MediaPlayerControl> mediaPlayerControls = new ArrayList<>();
+    protected LiveVideoAction liveVideoAction;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -197,7 +164,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                 (int) LiveVideoConfig.VIDEO_HEIGHT, LiveVideoConfig.VIDEO_RATIO);
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
         LiveVideoPoint.initLiveVideoPoint(activity, liveVideoPoint, lp);
-        setFirstParam(lp);
+        setFirstParam();
         logger.d("onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         initAllBll();
@@ -244,7 +211,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                                 (int) LiveVideoConfig.VIDEO_HEIGHT, LiveVideoConfig.VIDEO_RATIO);
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
                         boolean change = LiveVideoPoint.initLiveVideoPoint(activity, liveVideoPoint, lp);
-                        setFirstParam(lp);
+                        setFirstParam();
                         setMediaControllerBottomParam(lp);
                         long before = System.currentTimeMillis();
                         if (change) {
@@ -348,20 +315,11 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     }
 
     protected void initView() {
-        // 预加载布局
-        rlFirstBackgroundView = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_first_backgroud);
-        ivTeacherNotpresent = (ImageView) mContentView.findViewById(R.id.iv_course_video_teacher_notpresent);
         bottomContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
         logger.e("========>:initView:" + bottomContent);
-        praiselistContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_praiselist_content);
-        praiselistContent.setVisibility(View.VISIBLE);
-        ivLoading = (ImageView) mContentView.findViewById(R.id.iv_course_video_loading_bg);
-        updateLoadingImage();
-        tvLoadingHint = (TextView) mContentView.findViewById(R.id.tv_course_video_loading_content);
         // 预加载布局中退出事件
         mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
-        tvLoadingHint.setText("获取课程信息");
         baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, mMediaController, videoFragment);
         createMediaControllerBottom();
         bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -406,6 +364,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
     private void initAllBll() {
         mLiveBll.setmIsLand(mIsLand);
+        createLiveVideoAction();
         ProxUtil.getProxUtil().put(activity, RegMediaPlayerControl.class, new RegMediaPlayerControl() {
 
             @Override
@@ -435,6 +394,10 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         mLiveVideoBll = liveVideoBll;
     }
 
+    protected void createLiveVideoAction() {
+        liveVideoAction = new LiveVideoAction(activity, mLiveBll, mContentView);
+    }
+
     /**
      * 控制栏下面距离视频底部的尺寸
      */
@@ -451,15 +414,9 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     /**
      * 设置蓝屏界面
      */
-    protected void setFirstParam(ViewGroup.LayoutParams lp) {
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlFirstBackgroundView.getLayoutParams();
-        int rightMargin = liveVideoPoint.getRightMargin();
-        int topMargin = liveVideoPoint.y2;
-        if (params.rightMargin != rightMargin || params.bottomMargin != topMargin) {
-            params.rightMargin = rightMargin;
-            params.bottomMargin = params.topMargin = topMargin;
-            LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
-            LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
+    protected void setFirstParam() {
+        if (liveVideoAction != null) {
+            liveVideoAction.setFirstParam(liveVideoPoint);
         }
     }
 
@@ -556,14 +513,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
         @Override
         protected void onPlayError() {
-            mHandler.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    tvLoadingHint.setText("您的手机暂时不支持播放直播");
-                    mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
-                }
-            });
+            liveVideoAction.onPlayError();
         }
 
         @Override
@@ -667,27 +617,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
     @Override
     public void onTeacherNotPresent(final boolean isBefore) {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-                    if (mGetInfo.getStudentLiveInfo().isExpe() && LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())) {
-                        tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
-                        setFirstBackgroundVisible(View.VISIBLE);
-                        mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.GONE);
-                        ivTeacherNotpresent.setVisibility(View.GONE);
-                        return;
-                    }
-                }
-                if (rlFirstBackgroundView.getVisibility() == View.GONE) {
-                    ivTeacherNotpresent.setVisibility(View.GONE);
-                } else {
-                    ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                    ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
-                    mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
-                }
-            }
-        });
+        liveVideoAction.onTeacherNotPresent(isBefore);
     }
 
     @Override
@@ -707,35 +637,16 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         IS_SCIENCE = liveVideoSAConfig.IS_SCIENCE;
         liveMediaControllerBottom.setVisibility(View.VISIBLE);
         long before = System.currentTimeMillis();
-        Loger.d(TAG, "onLiveInit:time=" + (System.currentTimeMillis() - before));
-        before = System.currentTimeMillis();
-        Loger.d(TAG, "onLiveInit:time2=" + (System.currentTimeMillis() - before));
-        before = System.currentTimeMillis();
         mMediaController.setFileName(getInfo.getName());
+        liveVideoAction.onLiveInit(getInfo);
         Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
     }
 
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
-        final AtomicBoolean change = new AtomicBoolean(modechange);// 直播状态是不是变化
-        mLiveTopic = cacheData;
-        mHandler.post(new Runnable() {
-
-            @Override
-            public void run() {
-                if (change.get()) {
-                    setFirstBackgroundVisible(View.VISIBLE);
-                }
-                if (tvLoadingHint != null) {
-                    if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
-                        tvLoadingHint.setText(mainTeacherLoad);
-                    } else {
-                        tvLoadingHint.setText(coachTeacherLoad);
-                    }
-                }
-            }
-        });
+        liveVideoAction.onLiveStart(server, cacheData, modechange);
         mLiveVideoBll.onLiveStart(server, cacheData, modechange);
+        AtomicBoolean change = new AtomicBoolean(modechange);// 直播状态是不是变化
         rePlay(change.get());
     }
 
@@ -752,22 +663,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                     vPlayer.stop();
                 }
                 isPlay = false;
-                setFirstBackgroundVisible(View.VISIBLE);
-                if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-                    if (mGetInfo.getStudentLiveInfo().isExpe() && LiveTopic.MODE_TRANING.equals(mode)) {
-                        tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
-                        return;
-                    }
-                }
-                if (isPresent) {
-                    if (tvLoadingHint != null) {
-                        if (LiveTopic.MODE_CLASS.endsWith(mode)) {
-                            tvLoadingHint.setText(mainTeacherLoad);
-                        } else {
-                            tvLoadingHint.setText(coachTeacherLoad);
-                        }
-                    }
-                }
+                liveVideoAction.onModeChange(mode, isPresent);
             }
         });
 
@@ -775,38 +671,17 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
     @Override
     public void onClassTimoOut() {
-        mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
-        final String msg = "你来晚了，下课了，等着看回放吧";
-        if (tvLoadingHint != null) {
-            tvLoadingHint.setText(msg);
-        }
+        liveVideoAction.onClassTimoOut();
     }
 
     @Override
     public void onLiveDontAllow(final String msg) {
-        mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
-        if (tvLoadingHint != null) {
-            tvLoadingHint.setText(msg);
-        }
-        XESToastUtils.showToast(activity, "将在3秒内退出");
-        postDelayedIfNotFinish(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent();
-                intent.putExtra("msg", msg);
-                activity.setResult(ShareBusinessConfig.LIVE_USER_ERROR, intent);
-                activity.finish();
-            }
-        }, 3000);
+        liveVideoAction.onLiveDontAllow(msg);
     }
 
     @Override
-    public void onLiveError(final ResponseEntity responseEntity) {
-        mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
-        final String msg = "" + responseEntity.getErrorMsg();
-        if (tvLoadingHint != null) {
-            tvLoadingHint.setText(msg);
-        }
+    public void onLiveError(ResponseEntity responseEntity) {
+        liveVideoAction.onLiveError(responseEntity);
     }
 
     /**
@@ -822,37 +697,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         if (videoChatIRCBll.isChat()) {
             return;
         }
-        mLiveVideoBll.onReplay();
-        if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-            if (LiveTopic.MODE_TRANING.endsWith(mGetInfo.getLiveTopic().getMode()) && mGetInfo.getStudentLiveInfo().isExpe()) {
-                tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
-                setFirstBackgroundVisible(View.VISIBLE);
-                mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.GONE);
-                ivTeacherNotpresent.setVisibility(View.GONE);
-                return;
-            }
-        }
-        new Thread() {
-            @Override
-            public void run() {
-                boolean isPresent = mLiveBll.isPresent();
-                if (isPresent) {
-                    mHandler.post(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            if (tvLoadingHint != null) {
-                                if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
-                                    tvLoadingHint.setText(mainTeacherLoad);
-                                } else {
-                                    tvLoadingHint.setText(coachTeacherLoad);
-                                }
-                            }
-                        }
-                    });
-                }
-            }
-        }.start();
+        liveVideoAction.rePlay(modechange);
         mLiveVideoBll.rePlay(modechange);
     }
 
@@ -860,41 +705,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
      * 播放失败，或者完成时调用
      */
     private void onFail(int arg1, final int arg2) {
-        mHandler.post(new Runnable() {
-
-            @Override
-            public void run() {
-                if (tvLoadingHint != null) {
-                    String errorMsg = null;
-                    AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
-                    if (error != null) {
-                        errorMsg = error.getNum() + " (" + error.getTag() + ")";
-                    }
-                    TextView tvFail = (TextView) mContentView.findViewById(R.id.tv_course_video_loading_fail);
-                    if (errorMsg != null) {
-                        if (tvFail != null) {
-                            tvFail.setVisibility(View.VISIBLE);
-                            tvFail.setText(errorMsg);
-                        }
-                    } else {
-                        if (tvFail != null) {
-                            tvFail.setVisibility(View.INVISIBLE);
-                        }
-                    }
-                    if (mLiveBll.isPresent()) {
-                        if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
-                            tvLoadingHint.setText(mainTeacherLoad);
-                        } else {
-                            tvLoadingHint.setText(coachTeacherLoad);
-                        }
-                    }
-                    RoomStatusEntity status = mGetInfo.getLiveTopic().getMainRoomstatus();
-                    if (status != null) {
-                        mLogtf.d("onFail:classbegin=" + status.isClassbegin());
-                    }
-                }
-            }
-        });
+        liveVideoAction.onFail(arg1, arg2);
     }
 
     public void postDelayedIfNotFinish(Runnable r, long delayMillis) {
@@ -905,10 +716,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     }
 
     public void setFirstBackgroundVisible(int visible) {
-        rlFirstBackgroundView.setVisibility(visible);
-        if (visible == View.GONE) {
-            ivTeacherNotpresent.setVisibility(View.GONE);
-        }
+        liveVideoAction.setFirstBackgroundVisible(visible);
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
@@ -982,18 +790,10 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
 
     public void updateIcon() {
-        updateLoadingImage();
-        updateRefreshImage();
-    }
-
-    protected void updateLoadingImage() {
-        FooterIconEntity footerIconEntity = ShareDataManager.getInstance().getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
-        if (footerIconEntity != null) {
-            String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
-            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl)) {
-                ImageLoader.with(activity).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
-            }
+        if (liveVideoAction != null) {
+            liveVideoAction.updateLoadingImage();
         }
+        updateRefreshImage();
     }
 
 }

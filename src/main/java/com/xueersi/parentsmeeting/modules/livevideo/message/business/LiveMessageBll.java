@@ -128,7 +128,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         liveMessageLandEntities.clear();
         LiveMessageStandPager liveMessagePager = new LiveMessageStandPager(activity, this, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
         mLiveMessagePager = liveMessagePager;
-        Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
+        Loger.d(TAG, "initViewLiveStand:time1=" + (System.currentTimeMillis() - before));
 
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;

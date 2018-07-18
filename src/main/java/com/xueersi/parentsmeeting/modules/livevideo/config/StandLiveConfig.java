@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.config;
 import android.content.Context;
 import android.os.Environment;
 
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+
 import java.io.File;
 
 /**
@@ -12,7 +14,7 @@ import java.io.File;
  * @date 2018/5/9
  */
 public class StandLiveConfig {
-
+    static String TAG = "StandLiveConfig";
     /**
      * 背景音乐 占系统音量的 比列
      */
@@ -26,6 +28,7 @@ public class StandLiveConfig {
     private static String voiceDir;
 
     public static void createVoice(Context context) {
+        Loger.d(TAG, "createVoice:voicePath=" + (voicePath != null));
         if (voicePath != null) {
             return;
         }

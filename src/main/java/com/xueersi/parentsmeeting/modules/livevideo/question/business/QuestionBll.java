@@ -21,6 +21,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -199,10 +200,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         this.mLiveBll = mLiveBll;
     }
 
-    public void setLiveAndBackDebug(LiveAndBackDebug liveAndBackDebug) {
-        this.liveAndBackDebug = liveAndBackDebug;
-    }
-
     public void setLiveAutoNoticeBll(LiveAutoNoticeBll liveAutoNoticeBll) {
         mLiveAutoNoticeBll = liveAutoNoticeBll;
     }
@@ -219,6 +216,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         this.mShareDataManager = mShareDataManager;
     }
 
+    @Override
     public void setVideoCachedDuration(long videoCachedDuration) {
         this.videoCachedDuration = videoCachedDuration;
     }
@@ -939,6 +937,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mData.put("logtype", "receiveExam");
                 mData.put("examid", num);
                 umsAgentDebugSys(examQuestionEventId, mData);
+                if (liveAndBackDebug == null) {
+                    liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
+                }
                 examQuestionPager = new ExamQuestionX5Pager(activity, liveAndBackDebug, QuestionBll.this, liveGetInfo.getStuId
                         (), liveGetInfo.getUname(), liveid, num, nonce, mAnswerRankBll == null ? "0" : mAnswerRankBll
                         .getIsShow(), IS_SCIENCE, stuCouId, 0);
@@ -1646,16 +1647,25 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void umsAgentDebugSys(String eventId, final Map<String, String> mData) {
+        if (liveAndBackDebug == null) {
+            liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
+        }
         liveAndBackDebug.umsAgentDebugSys(eventId, mData);
     }
 
     @Override
     public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
+        if (liveAndBackDebug == null) {
+            liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
+        }
         liveAndBackDebug.umsAgentDebugInter(eventId, mData);
     }
 
     @Override
     public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
+        if (liveAndBackDebug == null) {
+            liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
+        }
         liveAndBackDebug.umsAgentDebugPv(eventId, mData);
     }
 

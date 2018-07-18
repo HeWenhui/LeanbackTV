@@ -155,7 +155,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         }
         mCounteacher = new Teacher(mGetInfo.getTeacherName());
         mRoomAction.setLiveGetInfo(getInfo);
-        if (getInfo.getPattern() == 2) {
+        if (getInfo.getPattern() == 2 && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
             mRoomAction.initViewLiveStand(mRootView);
         } else {
             mRoomAction.initViewLive(mRootView);

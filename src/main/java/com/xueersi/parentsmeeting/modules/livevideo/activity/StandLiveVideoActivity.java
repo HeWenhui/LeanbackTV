@@ -1228,12 +1228,6 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                 }
                 isPlay = false;
                 setFirstBackgroundVisible(View.VISIBLE);
-                if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-                    if (mGetInfo.getStudentLiveInfo().isExpe() && LiveTopic.MODE_TRANING.equals(mode)) {
-                        tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
-                        return;
-                    }
-                }
                 if (isPresent) {
                     if (tvLoadingHint != null) {
                         if (LiveTopic.MODE_CLASS.endsWith(mode)) {
@@ -1842,8 +1836,9 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
         if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
-            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
+            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl)) {
                 ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
+            }
         }
     }
 

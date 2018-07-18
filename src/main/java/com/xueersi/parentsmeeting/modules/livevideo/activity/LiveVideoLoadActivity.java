@@ -69,19 +69,15 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 }
                 String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                 getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
+//                mGetInfo.setPattern(2);
                 bundle.putInt("isArts", mGetInfo.getIsArts());
                 bundle.putInt("pattern", mGetInfo.getPattern());
-                if (mGetInfo.getPattern() == 2) {
-                    StandLiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle, -1);
-                } else {
-
-//                    if (mGetInfo.getIsArts() == 1) {
-//                        LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
-//                    } else {
-//                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
-//                    }
-                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                }
+//                if (mGetInfo.getPattern() == 2) {
+//                    StandLiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle, -1);
+//                } else {
+//                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+//                }
+                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                 finish();
             }
 

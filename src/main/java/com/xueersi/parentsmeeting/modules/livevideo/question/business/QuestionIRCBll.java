@@ -65,7 +65,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void onCreate(HashMap<String, Object> data) {
         super.onCreate(data);
         mQuestionAction.setLiveBll(this);
-        mQuestionAction.setLiveAndBackDebug(mLiveBll);
+        mQuestionAction.setVSectionID(mLiveId);
+        mQuestionAction.setShareDataManager(mShareDataManager);
         mQuestionAction.initView(mRootView, true);
         mAnswerRankBll = getInstance(AnswerRankIRCBll.class);
         mLiveAutoNoticeBll = getInstance(LiveAutoNoticeIRCBll.class);

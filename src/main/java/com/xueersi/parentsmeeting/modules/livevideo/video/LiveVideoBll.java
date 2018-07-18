@@ -10,6 +10,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
@@ -183,6 +184,9 @@ public class LiveVideoBll implements VPlayerListenerReg {
      * @param modechange
      */
     public void rePlay(boolean modechange) {
+        if (totalFrameStat != null) {
+            totalFrameStat.onReplay();
+        }
         String url;
         String msg = "rePlay:";
         if (mServer == null) {
@@ -602,9 +606,9 @@ public class LiveVideoBll implements VPlayerListenerReg {
                     @Override
                     public void run() {
                         long videoCachedDuration = vPlayer.getVideoCachedDuration();
-                        QuestionBll questionBll = ProxUtil.getProxUtil().get(activity, QuestionBll.class);
-                        if (questionBll != null) {
-                            questionBll.setVideoCachedDuration(videoCachedDuration);
+                        QuestionStatic questionStatic = ProxUtil.getProxUtil().get(activity, QuestionStatic.class);
+                        if (questionStatic != null) {
+                            questionStatic.setVideoCachedDuration(videoCachedDuration);
                         }
                         mHandler.postDelayed(getVideoCachedDurationRun, 30000);
                         mLogtf.d("videoCachedDuration=" + videoCachedDuration);
@@ -778,12 +782,6 @@ public class LiveVideoBll implements VPlayerListenerReg {
     public void onPause() {
         if (totalFrameStat != null) {
             totalFrameStat.onPause();
-        }
-    }
-
-    public void onReplay() {
-        if (totalFrameStat != null) {
-            totalFrameStat.onReplay();
         }
     }
 

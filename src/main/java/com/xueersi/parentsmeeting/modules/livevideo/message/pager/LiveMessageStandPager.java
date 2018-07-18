@@ -947,6 +947,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     }
 
     /** 关闭开启聊天 */
+    @Override
     public void onopenchat(final boolean openchat, final String mode, final boolean fromNotice) {
         mainHandler.post(new Runnable() {
             @Override
