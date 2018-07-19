@@ -3,9 +3,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
-import android.net.Uri;
+import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -27,23 +28,23 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.common.speech.SpeechEvaluatorUtils;
+import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONException;
@@ -185,15 +186,21 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
         this.bottomContent = bottomContent;
         myView = (ViewGroup) activity.findViewById(R.id.rl_livevideo_english_content);
         myView.setVisibility(View.VISIBLE);
-        final View layout_livevideo_stat_gold = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_english_speek, myView, false);
+        final View layout_livevideo_stat_gold = LayoutInflater.from(activity).inflate(R.layout
+                .layout_livevideo_english_speek, myView, false);
         myView.addView(layout_livevideo_stat_gold);
-        rl_livevideo_english_speak_content = layout_livevideo_stat_gold.findViewById(R.id.rl_livevideo_english_speak_content);
-        rl_livevideo_english_speak_error = layout_livevideo_stat_gold.findViewById(R.id.rl_livevideo_english_speak_error);
+        rl_livevideo_english_speak_content = layout_livevideo_stat_gold.findViewById(R.id
+                .rl_livevideo_english_speak_content);
+        rl_livevideo_english_speak_error = layout_livevideo_stat_gold.findViewById(R.id
+                .rl_livevideo_english_speak_error);
         rl_livevideo_english_stat = layout_livevideo_stat_gold.findViewById(R.id.rl_livevideo_english_stat);
         tv_livevideo_english_time = (TextView) layout_livevideo_stat_gold.findViewById(R.id.tv_livevideo_english_time);
-        tv_livevideo_english_prog = (ProgressBar) layout_livevideo_stat_gold.findViewById(R.id.tv_livevideo_english_prog);
-        tv_livevideo_english_time2 = (TextView) layout_livevideo_stat_gold.findViewById(R.id.tv_livevideo_english_time2);
-        layout_livevideo_stat_gold.findViewById(R.id.bt_livevideo_english_speak_set).setOnClickListener(new View.OnClickListener() {
+        tv_livevideo_english_prog = (ProgressBar) layout_livevideo_stat_gold.findViewById(R.id
+                .tv_livevideo_english_prog);
+        tv_livevideo_english_time2 = (TextView) layout_livevideo_stat_gold.findViewById(R.id
+                .tv_livevideo_english_time2);
+        layout_livevideo_stat_gold.findViewById(R.id.bt_livevideo_english_speak_set).setOnClickListener(new View
+                .OnClickListener() {
             @Override
             public void onClick(View v) {
                 XesPermission.checkPermission(activity, new PermissionCallback() {
@@ -228,7 +235,8 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
 //                activity.startActivityForResult(intent,100);
             }
         });
-        layout_livevideo_stat_gold.findViewById(R.id.bt_livevideo_english_speak_close).setOnClickListener(new View.OnClickListener() {
+        layout_livevideo_stat_gold.findViewById(R.id.bt_livevideo_english_speak_close).setOnClickListener(new View
+                .OnClickListener() {
             @Override
             public void onClick(View v) {
                 myView.removeView(layout_livevideo_stat_gold);
@@ -260,7 +268,8 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
 
     private void setFirstTip() {
         final ViewGroup rl_livevideo_info = (ViewGroup) activity.findViewById(R.id.rl_livevideo_info);
-        final View english_speek_tip = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_english_speek_tip, rl_livevideo_info, false);
+        final View english_speek_tip = LayoutInflater.from(activity).inflate(R.layout
+                .layout_livevideo_english_speek_tip, rl_livevideo_info, false);
         rl_livevideo_info.addView(english_speek_tip);
         english_speek_tip.findViewById(R.id.bt_livevideo_english_tip_ok).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -274,7 +283,8 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
             public boolean onPreDraw() {
                 tv_livevideo_english_prog.getViewTreeObserver().removeOnPreDrawListener(this);
                 ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) english_speek_tip.getLayoutParams();
-                lp.topMargin = (int) (myView.getTop() + tv_livevideo_english_prog.getTop() + tv_livevideo_english_prog.getHeight() + 5 * ScreenUtils.getScreenDensity());
+                lp.topMargin = (int) (myView.getTop() + tv_livevideo_english_prog.getTop() +
+                        tv_livevideo_english_prog.getHeight() + 5 * ScreenUtils.getScreenDensity());
 //                english_speek_tip.setLayoutParams(lp);
                 LayoutParamsUtil.setViewLayoutParams(english_speek_tip, lp);
                 return false;
@@ -284,7 +294,8 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
 
     private void setTime(int second) {
         SpannableString sp = new SpannableString("再说" + second + "秒获得");
-        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.COLOR_FFFF00));
+        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color
+                .COLOR_FFFF00));
         sp.setSpan(foregroundColorSpan, 2, 2 + ("" + second).length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         tv_livevideo_english_time2.setText(sp);
     }
@@ -391,7 +402,8 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
 //                                                setTime(2 * MAX_SECOND - second15);
                                             newProgress = (second15 % MAX_SECOND) * 3;
                                             setTime(MAX_SECOND - second15 % MAX_SECOND);
-//                                                        Loger.d(TAG, "onProcessData(<0):oldProgress=" + oldProgress + ",second15=" + second15);
+//                                                        Loger.d(TAG, "onProcessData(<0):oldProgress=" + oldProgress
+// + ",second15=" + second15);
                                         } else {
                                             newProgress = second15 * 3;
                                             if (second15 != 15) {
@@ -400,15 +412,18 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                                                 setTime(MAX_SECOND);
                                             }
                                         }
-                                        Loger.d(TAG, "onProcessData:second=" + second + ",oldProgress=" + oldProgress + ",newProgress=" + newProgress);
+                                        Loger.d(TAG, "onProcessData:second=" + second + ",oldProgress=" + oldProgress
+                                                + ",newProgress=" + newProgress);
                                         if (newProgress != 45) {
-                                            final ValueAnimator valueAnimator = ValueAnimator.ofFloat(startProgress, newProgress);
+                                            final ValueAnimator valueAnimator = ValueAnimator.ofFloat(startProgress,
+                                                    newProgress);
                                             final float finalNewProgress = newProgress;
                                             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                                                 @Override
                                                 public void onAnimationUpdate(ValueAnimator animation) {
                                                     float fraction = animation.getAnimatedFraction();
-                                                    float oldProgress = startProgress + (finalNewProgress - startProgress) * fraction;
+                                                    float oldProgress = startProgress + (finalNewProgress -
+                                                            startProgress) * fraction;
                                                     tv_livevideo_english_prog.setProgress((int) oldProgress);
                                                 }
                                             });
@@ -420,7 +435,8 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
 
                                                 @Override
                                                 public void onAnimationEnd(Animator animation) {
-//                                                        Loger.i(TAG, "onAnimationEnd:equal=" + (lastValueAnimator == valueAnimator));
+//                                                        Loger.i(TAG, "onAnimationEnd:equal=" + (lastValueAnimator
+// == valueAnimator));
                                                     if (lastValueAnimator == valueAnimator) {
                                                         lastValueAnimator = null;
                                                     }
@@ -428,7 +444,8 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
 
                                                 @Override
                                                 public void onAnimationCancel(Animator animation) {
-                                                    Loger.i(TAG, "onAnimationCancel:equal=" + (lastValueAnimator == valueAnimator));
+                                                    Loger.i(TAG, "onAnimationCancel:equal=" + (lastValueAnimator ==
+                                                            valueAnimator));
                                                 }
 
                                                 @Override
@@ -459,7 +476,8 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                                         int location[] = new int[2];
                                         tv_livevideo_english_prog.getLocationInWindow(location);
                                         String speakingLen = totalEn_seg_len.toString();
-                                        liveBll.setTotalOpeningLength(1000, "" + (douduration + totalOpeningLength.duration),
+                                        liveBll.setTotalOpeningLength(1000, "" + (douduration + totalOpeningLength
+                                                        .duration),
                                                 "" + (totalEn_seg_num + totalOpeningLength.speakingNum), speakingLen,
                                                 location[0] + tv_livevideo_english_prog.getWidth(), location[1]);
                                     }
@@ -581,11 +599,13 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
             if (sendDbDuration == 0) {
                 liveBll.setNotOpeningNum();
                 if (liveMessageBll != null) {
-                    liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP, "大声的说出来，老师很想听到你的声音哦~");
+                    liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+                            "大声的说出来，老师很想听到你的声音哦~");
                 }
             } else {
                 if (lastdbDuration == 0 && liveMessageBll != null) {
-                    liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP, "没错，就是这样，继续坚持下去！");
+                    liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+                            "没错，就是这样，继续坚持下去！");
                 }
             }
             lastdbDuration = sendDbDuration;
@@ -641,6 +661,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
         }
     }
 
+    @Override
     public void praise(int answer) {
         Loger.d(TAG, "praise:dbDuration=" + sendDbDuration + ",answer=" + answer);
         if (sendDbDuration >= answer) {
@@ -652,13 +673,26 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
             bottomContent.post(new Runnable() {
                 @Override
                 public void run() {
-                    final View view = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_english_speek_praise, bottomContent, false);
-                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                    final View view = LayoutInflater.from(activity).inflate(R.layout
+                            .layout_livevideo_english_speek_praise, bottomContent, false);
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                            .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     lp.rightMargin = praiseWidth;
                     ImageView imageView = (ImageView) view.findViewById(R.id.iv_livevideo_english_praise);
                     imageView.setImageResource(R.drawable.bg_livevideo_english_speek_praise);
-                    TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id.tv_livevideo_english_praise);
-                    tv_livevideo_english_praise.setText("老师表扬了你！");
+
+                    //让弹窗居中显示
+                    LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+                    Drawable drawable = activity.getResources().getDrawable(R.drawable
+                            .bg_livevideo_english_speek_remind);
+                    int wight = (liveVideoPoint.x3 - liveVideoPoint.x2 - drawable.getIntrinsicWidth()) / 2;
+//                    Loger.i(tag, "屏幕x3是" + liveVideoPoint.x3 + "   ,drawable的大小是" + drawable.getIntrinsicWidth() +
+// "," +
+//                            "drawable的最小drawable是" + drawable.getMinimumWidth());
+                    lp.leftMargin = wight;
+//                    TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id
+//                            .tv_livevideo_english_praise);
+//                    tv_livevideo_english_praise.setText("老师表扬了你！");
                     bottomContent.addView(view, lp);
                     bottomContent.postDelayed(new Runnable() {
                         @Override
@@ -671,6 +705,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
         }
     }
 
+    @Override
     public void remind(int answer) {
         Loger.d(TAG, "remind:sendDbDuration=" + sendDbDuration + ",answer=" + answer);
         if (sendDbDuration <= answer) {
@@ -682,13 +717,28 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
             bottomContent.post(new Runnable() {
                 @Override
                 public void run() {
-                    final View view = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_english_speek_praise, bottomContent, false);
-                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                    final View view = LayoutInflater.from(activity).inflate(R.layout
+                            .layout_livevideo_english_speek_praise, bottomContent, false);
+
+
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                            .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     lp.rightMargin = praiseWidth;
                     ImageView imageView = (ImageView) view.findViewById(R.id.iv_livevideo_english_praise);
                     imageView.setImageResource(R.drawable.bg_livevideo_english_speek_remind);
-                    TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id.tv_livevideo_english_praise);
-                    tv_livevideo_english_praise.setText("大声说英语啦！");
+
+                    //让弹窗居中显示
+                    LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+                    String tag = "EnglishSpeekBll";
+                    Drawable drawable = activity.getResources().getDrawable(R.drawable
+                            .bg_livevideo_english_speek_remind);
+                    int wight = (liveVideoPoint.x3 - liveVideoPoint.x2 - drawable.getIntrinsicWidth()) / 2;
+                    Loger.i(tag, "屏幕x3是" + liveVideoPoint.x3 + "   ,drawable的大小是" + drawable.getIntrinsicWidth() + "," +
+                            "drawable的最小drawable是" + drawable.getMinimumWidth());
+                    lp.leftMargin = wight;
+//                    TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id
+//                            .tv_livevideo_english_praise);
+//                    tv_livevideo_english_praise.setText("大声说英语啦！");
                     bottomContent.addView(view, lp);
                     bottomContent.postDelayed(new Runnable() {
                         @Override
