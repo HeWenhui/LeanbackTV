@@ -131,33 +131,24 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     private void addBusiness(Activity activity, RelativeLayout bottomContent) {
         //是文科
         if (isArts == 1) {
-            //理科功能
-//            mLiveBll.addBusinessBll(new TeamPkBll(activity, mLiveBll, bottomContent));
-            mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll, bottomContent));
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll, bottomContent);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
+            mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new LiveAchievementIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new RankBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
-            //理科功能
-//            mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll, bottomContent));
-//            mLiveBll.addBusinessBll(new LiveVoteBll(activity, mLiveBll, bottomContent));
-//            mLiveBll.addBusinessBll(new LiveAutoNoticeIRCBll(activity, mLiveBll, bottomContent));
-//            mLiveBll.addBusinessBll(new AnswerRankIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new LearnReportIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll, bottomContent));
         } else {
-            mLiveBll.addBusinessBll(new TeamPkBll(activity, mLiveBll, bottomContent));
-            mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll, bottomContent));
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll, bottomContent);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
-            //文科功能
-//            mLiveBll.addBusinessBll(new LiveAchievementIRCBll(activity, mLiveBll, bottomContent));
+            mLiveBll.addBusinessBll(new TeamPkBll(activity, mLiveBll, bottomContent));
+            mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new RankBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
