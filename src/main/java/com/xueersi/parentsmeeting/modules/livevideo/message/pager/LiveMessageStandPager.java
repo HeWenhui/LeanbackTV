@@ -668,6 +668,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         before = System.currentTimeMillis();
     }
 
+    @Override
     public void onTitleShow(boolean show) {
 //        if (rlMessageContent.getVisibility() != View.GONE) {
 //            rlMessageContent.setVisibility(View.GONE);
@@ -692,6 +693,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         StandLiveMethod.onClickVoice(liveSoundPool);
     }
 
+    @Override
     public void closeChat(final boolean close) {
 //        mView.post(new Runnable() {
 //            @Override
@@ -713,6 +715,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         return false;
     }
 
+    @Override
     public void setVideoWidthAndHeight(int width, int height) {
         final View contentView = liveVideoActivity.findViewById(android.R.id.content);
         final View actionBarOverlayLayout = (View) contentView.getParent();
@@ -1116,6 +1119,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         this.otherMessageAdapter = otherMessageAdapter;
     }
 
+    @Override
     public void onGetMyGoldDataEvent(String goldNum) {
         this.goldNum = goldNum;
 //        tvMessageGold.setText(goldNum);
