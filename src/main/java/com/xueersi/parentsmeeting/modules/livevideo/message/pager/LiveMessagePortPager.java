@@ -750,6 +750,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
         }
     }
 
+    @Override
     public void onTitleShow(boolean show) {
 
     }
@@ -777,6 +778,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
         }
     }
 
+    @Override
     public void closeChat(final boolean close) {
         mView.post(new Runnable() {
             @Override
