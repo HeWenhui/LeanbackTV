@@ -16,11 +16,13 @@ import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.*;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecLiveVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLecViewChange;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -156,6 +158,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
         createMediaControllerBottom();
         bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         bottomContent.addView(liveMediaControllerBottom);
+        baseLiveMediaControllerTop.setAutoOrientation(true);
     }
 
     protected void createMediaControllerBottom() {
@@ -222,11 +225,13 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (!mIsLand.get()) {
-            LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
-            ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-            liveVideoPoint.videoWidth = lp.width;
-            liveVideoPoint.videoHeight = lp.height;
+        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+        logger.d("onConfigurationChanged:videoView=" + lp.width + "," + lp.height);
+        if (mIsLand.get()) {
+            videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) LiveVideoConfig.VIDEO_WIDTH,
+                    (int) LiveVideoConfig.VIDEO_HEIGHT, LiveVideoConfig.VIDEO_RATIO);
+            LiveVideoPoint.initLiveVideoPoint(activity, liveVideoPoint, lp);
+            logger.d("onConfigurationChanged:videoView2=" + lp.width + "," + lp.height);
         }
         changeLandAndPort();
     }
@@ -236,6 +241,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
      */
     private void changeLandAndPort() {
         ViewGroup group = (ViewGroup) bottomContent.getParent();
+        long before = System.currentTimeMillis();
         if (mIsLand.get()) {
             if (group != rlContent) {
                 //设置控制
@@ -263,8 +269,10 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                         .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                 lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                rlContent.addView(bottomContent, lp);
                 bottomContent.removeAllViews();
+                rlContent.addView(bottomContent, lp);
+                logger.d("changeLandAndPort:time1=" + (System.currentTimeMillis() - before));
+                before = System.currentTimeMillis();
                 List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
                 for (LiveBaseBll businessBll : businessBlls) {
                     if (businessBll instanceof LiveLecViewChange) {
@@ -272,6 +280,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                         liveLecViewChange.initView(bottomContent, mIsLand.get());
                     }
                 }
+                logger.d("changeLandAndPort:time2=" + (System.currentTimeMillis() - before));
 //                liveMessageBll.initView(questionContent, mIsLand);
 //                //点名
 //                rollCallBll.initView(questionContent);
@@ -285,12 +294,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
 //                lecAdvertAction.initView(questionContent, mIsLand);
                 mMediaController.show();
             }
-            group.post(new Runnable() {
-                @Override
-                public void run() {
-                    setFirstParamLand();
-                }
-            });
+            setFirstParamLand();
         } else {
             ViewGroup content = (ViewGroup) mContentView.findViewById(R.id.rl_course_video_contentview);
             if (group != content) {
@@ -319,8 +323,10 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                         .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                 lp.addRule(RelativeLayout.BELOW, R.id.rl_course_video_content);
-                content.addView(bottomContent, lp);
                 bottomContent.removeAllViews();
+                content.addView(bottomContent, lp);
+                logger.d("changeLandAndPort:time3=" + (System.currentTimeMillis() - before));
+                before = System.currentTimeMillis();
                 List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
                 for (LiveBaseBll businessBll : businessBlls) {
                     if (businessBll instanceof LiveLecViewChange) {
@@ -328,6 +334,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                         liveLecViewChange.initView(bottomContent, mIsLand.get());
                     }
                 }
+                logger.d("changeLandAndPort:time4=" + (System.currentTimeMillis() - before));
 //                liveMessageBll.initView(questionContent, mIsLand);
 //                //点名
 //                rollCallBll.initView(questionContent);
@@ -341,12 +348,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
 //                lecAdvertAction.initView(questionContent, mIsLand);
                 mMediaController.show();
             }
-            group.post(new Runnable() {
-                @Override
-                public void run() {
-                    setFirstParamPort();
-                }
-            });
+            setFirstParamPort();
             if (mPopupWindows != null && mPopupWindows.isShowing()) {
                 mHandler.post(new Runnable() {
                     @Override
@@ -356,6 +358,17 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                 });
             }
         }
+    }
+
+    public void onNewIntent(Intent intent) {
+        ViewGroup parents = (ViewGroup) videoView.getParent();
+//        if (parents != null) {
+//            parents.removeView(videoView);
+//            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+//                    ViewGroup.LayoutParams.MATCH_PARENT,
+//                    ViewGroup.LayoutParams.MATCH_PARENT);
+//            mParent.addView(videoView, params);
+//        }
     }
 
     /**

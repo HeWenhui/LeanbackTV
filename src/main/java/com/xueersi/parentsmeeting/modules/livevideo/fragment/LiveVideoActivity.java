@@ -23,8 +23,6 @@ import org.greenrobot.eventbus.ThreadMode;
  */
 public class LiveVideoActivity extends LiveVideoActivityBase implements ActivityStatic {
     private String TAG = "LiveVideoActivityLog";
-    /** 直播类型 */
-    private int liveType;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -51,17 +49,11 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
 
     @Override
     protected LiveVideoFragmentBase getFragment() {
-        liveType = getIntent().getIntExtra("type", 0);
-        if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            return new LectureLiveVideoFrame();
-        } else {
-            int pattern = getIntent().getIntExtra("pattern", 0);
-            if (pattern == 2) {
-                return new StandLiveVideoActivity2();
-            }
-            return new LiveVideoActivity2();
+        int pattern = getIntent().getIntExtra("pattern", 0);
+        if (pattern == 2) {
+            return new StandLiveVideoActivity2();
         }
+        return new LiveVideoActivity2();
     }
 
     @Override

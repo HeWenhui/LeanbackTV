@@ -15,6 +15,8 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity2;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -36,6 +38,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 public class LiveVideoAction implements VideoAction {
     private final String TAG = "LiveVideoAction";
+    Logger logger = LoggerFactory.getLogger(TAG);
     protected WeakHandler mHandler = new WeakHandler(null);
     Activity activity;
     /** 初始进入播放器时的预加载界面 */
@@ -67,6 +70,7 @@ public class LiveVideoAction implements VideoAction {
         tvLoadingHint.setText("获取课程信息");
         mLogtf = new LogToFile(mLiveBll, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
+        logger.setLogMethod(false);
         updateLoadingImage();
     }
 
@@ -76,6 +80,7 @@ public class LiveVideoAction implements VideoAction {
     public void setFirstParam(LiveVideoPoint liveVideoPoint) {
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlFirstBackgroundView.getLayoutParams();
         int rightMargin = liveVideoPoint.getRightMargin();
+        logger.d("setFirstParam:point=" + liveVideoPoint.videoWidth + "," + rightMargin);
         int topMargin = liveVideoPoint.y2;
         if (params.rightMargin != rightMargin || params.bottomMargin != topMargin) {
             params.rightMargin = rightMargin;

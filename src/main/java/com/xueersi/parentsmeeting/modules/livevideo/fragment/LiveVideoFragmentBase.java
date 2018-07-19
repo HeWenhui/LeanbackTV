@@ -30,7 +30,6 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
@@ -148,6 +147,7 @@ public class LiveVideoFragmentBase extends Fragment {
     @Override
     public final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        logger.setLogMethod(false);
         activity = (BaseActivity) getActivity();
         sendPlayVideoHandler.sendEmptyMessageDelayed(1, 1000);
         mIsLand.set(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
@@ -240,7 +240,17 @@ public class LiveVideoFragmentBase extends Fragment {
         mIsLand.set(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
         // 设置当前屏幕是否横屏
         loadLandOrPortView(); // 重新加载界面
+        if (isInitialized()) {
+            setVideoLayout(); // 设置播放器VideoView的布局样式
 
+            if (mIsLand.get()) {
+                if (mMediaController != null) {
+                    mMediaController.showSystemUi(false);
+                }
+            }
+        }
+        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onConfigurationChanged(newConfig);
     }
 
@@ -296,7 +306,7 @@ public class LiveVideoFragmentBase extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        mContentView = new RelativeLayout(activity);
+        mContentView = (RelativeLayout) inflater.inflate(R.layout.frag_livevideo_content, container, false);
         logger.d("onCreateView");
         loadView(mLayoutVideo);
         return mContentView;
@@ -362,6 +372,7 @@ public class LiveVideoFragmentBase extends Fragment {
     /** 加载旋转屏时相关布局 */
     protected void loadLandOrPortView() {
         LayoutParams lpr = rlContent.getLayoutParams();
+        logger.d("loadLandOrPortView:mIsLand=" + mIsLand.get());
         if (lpr == null) {
             return;
         }
@@ -371,7 +382,14 @@ public class LiveVideoFragmentBase extends Fragment {
             lpr.height = mPortVideoHeight;
             // lpr.height = VP.DEFAULT_PORT_HEIGHT;
         }
+        rlContent.setLayoutParams(lpr);
         videoFragment.loadLandOrPortView(mIsLand.get());
+    }
+
+    /** 设置播放器的界面布局 */
+    protected void setVideoLayout() {
+        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, vPlayer.getVideoWidth(),
+                vPlayer.getVideoHeight(), vPlayer.getVideoAspectRatio());
     }
 
     /** 加载视频异常时出现可重新刷新的背景界面 */

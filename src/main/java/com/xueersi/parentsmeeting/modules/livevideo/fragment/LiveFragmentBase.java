@@ -448,7 +448,9 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     @Override
     public void onDestroy() {
         isPlay = false;
-        userOnline.stop();
+        if (userOnline != null) {
+            userOnline.stop();
+        }
         if (mLiveBll != null) {
             mLiveBll.onDestory();
         }

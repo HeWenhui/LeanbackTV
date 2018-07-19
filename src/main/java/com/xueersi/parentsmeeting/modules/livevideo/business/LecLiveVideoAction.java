@@ -27,6 +27,7 @@ public class LecLiveVideoAction extends LiveVideoAction {
     public void setmIsLand(AtomicBoolean mIsLand) {
         this.mIsLand = mIsLand;
     }
+
 //    @Override
 //    public void setFirstParam(LiveVideoPoint liveVideoPoint) {
 //

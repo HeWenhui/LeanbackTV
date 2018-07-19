@@ -152,6 +152,7 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        logger.setLogMethod(false);
         activity = (BaseActivity) getActivity();
         logger.d("onCreate:activity=" + activity);
         mShareDataManager = ShareDataManager.getInstance();
@@ -380,6 +381,7 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
 
     /** 加载旋转屏时相关布局 */
     public void loadLandOrPortView(boolean isLand) {
+        logger.d("loadLandOrPortView:isLand=" + isLand);
         mIsLand = isLand;
         if (viewRoot != null) {
             ViewGroup.LayoutParams lp = viewRoot.getLayoutParams();

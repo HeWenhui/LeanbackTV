@@ -65,7 +65,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         return;
                     }
                     getInfos.put(liveType + "-" + vSectionID, mGetInfo);
-                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                     finish();
                 }
 

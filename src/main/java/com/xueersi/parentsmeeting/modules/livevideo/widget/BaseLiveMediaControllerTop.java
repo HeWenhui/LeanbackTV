@@ -134,6 +134,7 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
     }
 
     /** 设置横竖屏切换按钮是否显示 */
+    @Override
     public void setAutoOrientation(boolean autoOrientation) {
         if (autoOrientation) {
             mAllView.setVisibility(View.VISIBLE);
