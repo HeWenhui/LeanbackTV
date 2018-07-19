@@ -466,6 +466,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
         mFlowerWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
+    @Override
     public void onTitleShow(boolean show) {
         if (rlMessageContent.getVisibility() != View.GONE) {
             InputMethodManager mInputMethodManager = (InputMethodManager) mContext.getSystemService(Context
@@ -476,6 +477,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
         switchFSPanelLinearLayout.setVisibility(View.GONE);
     }
 
+    @Override
     public void closeChat(final boolean close) {
         mView.post(new Runnable() {
             @Override
@@ -496,10 +498,12 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
         return cbMessageClock.isChecked();
     }
 
+    @Override
     public void setVideoWidthAndHeight(int width, int height) {
     }
 
     /** 聊天开始连接 */
+    @Override
     public void onStartConnect() {
     }
 
@@ -519,6 +523,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
     }
 
     /** 聊天连上 */
+    @Override
     public void onConnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -529,6 +534,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
     }
 
     /** 聊天进入房间 */
+    @Override
     public void onRegister() {
         mainHandler.post(new Runnable() {
             @Override
@@ -539,6 +545,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
     }
 
     /** 聊天断开 */
+    @Override
     public void onDisconnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -607,6 +614,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
     }
 
     /** 被禁言 */
+    @Override
     public void onDisable(final boolean disable, final boolean fromNotice) {
         mView.post(new Runnable() {
             @Override
@@ -632,6 +640,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
     }
 
     /** 关闭开启聊天 */
+    @Override
     public void onopenchat(final boolean openchat, final String mode, final boolean fromNotice) {
         mView.post(new Runnable() {
             @Override
@@ -686,6 +695,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
     }
 
     /** 关闭开启弹幕 */
+    @Override
     public void onOpenbarrage(final boolean openbarrage, final boolean fromNotice) {
         mView.post(new Runnable() {
             @Override
@@ -745,6 +755,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
         });
     }
 
+    @Override
     public void onGetMyGoldDataEvent(String goldNum) {
         this.goldNum = goldNum;
         tvMessageGold.setText(goldNum);
