@@ -33,12 +33,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by lyqai on 2017/9/20.
@@ -87,6 +89,14 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                 }
             });
         }
+    }
+
+    @Override
+    public void onCreate(HashMap<String, Object> data) {
+        super.onCreate(data);
+        mMediaController = (LiveMediaController) data.get("mMediaController");
+        LiveMediaControllerBottom controllerBottom = (LiveMediaControllerBottom) data.get("liveMediaControllerBottom");
+        setLiveMediaController(mMediaController, controllerBottom);
     }
 
     public void setLiveMediaController(final LiveMediaController mMediaController, BaseLiveMediaControllerBottom liveMediaControllerBottom) {

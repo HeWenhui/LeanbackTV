@@ -187,6 +187,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         params.width = liveVideoPoint.getRightMargin();
         params.topMargin = liveVideoPoint.y3;
+        logger.setLogMethod(false);
+        logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
         return mView;
     }
 
@@ -722,6 +724,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         return cbMessageClock.isChecked();
     }
 
+    @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         {
             int wradio = liveVideoPoint.getRightMargin();
@@ -749,7 +752,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 params.topMargin = topMargin;
 //                rlInfo.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-                Loger.e(TAG, "setVideoWidthAndHeight:topMargin=" + params.topMargin);
+                logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
             }
             int bottomMargin = liveVideoPoint.y2;
             params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();

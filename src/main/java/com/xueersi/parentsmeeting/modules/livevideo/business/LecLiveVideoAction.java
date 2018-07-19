@@ -37,7 +37,6 @@ public class LecLiveVideoAction extends LiveVideoAction {
 //
 //    }
 
-
     @Override
     public void onTeacherNotPresent(boolean isBefore) {
         mHandler.post(new Runnable() {

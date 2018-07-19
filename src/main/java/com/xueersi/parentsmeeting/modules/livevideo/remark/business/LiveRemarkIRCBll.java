@@ -26,6 +26,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
 
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 /**
  * Created by lyqai on 2018/7/11.
  */
@@ -41,16 +43,13 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
         super(context, liveBll, rootView);
     }
 
-    public void setvPlayer(PlayerService vPlayer) {
-        this.vPlayer = vPlayer;
-    }
-
-    public void setVideoView(VideoView videoView) {
-        this.videoView = videoView;
-    }
-
-    public void setLiveMediaControllerBottom(LiveMediaControllerBottom liveMediaControllerBottom) {
-        this.liveMediaControllerBottom = liveMediaControllerBottom;
+    @Override
+    public void onCreate(HashMap<String, Object> data) {
+        super.onCreate(data);
+        vPlayer = (PlayerService) data.get("vPlayer");
+        this.videoView = (VideoView) data.get("videoView");
+        LiveMediaControllerBottom controllerBottom = (LiveMediaControllerBottom) data.get("liveMediaControllerBottom");
+        this.liveMediaControllerBottom = controllerBottom;
     }
 
     @Override

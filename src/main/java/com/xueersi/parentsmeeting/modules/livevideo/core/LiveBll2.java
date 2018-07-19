@@ -894,6 +894,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.onDestory();
         }
+        businessShareParamMap.clear();
         businessBlls.clear();
         mNoticeActionMap.clear();
         mTopicActions.clear();

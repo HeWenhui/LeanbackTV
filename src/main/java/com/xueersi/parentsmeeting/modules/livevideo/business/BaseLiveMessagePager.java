@@ -126,6 +126,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
 
     public BaseLiveMessagePager(Context context) {
         super(context);
+        logger.setLogMethod(false);
         pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(3);
         pool.setRejectedExecutionHandler(new RejectedExecutionHandler() {
 

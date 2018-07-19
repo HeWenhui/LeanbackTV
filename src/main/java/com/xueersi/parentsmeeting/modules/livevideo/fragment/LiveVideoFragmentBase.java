@@ -30,6 +30,7 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
@@ -152,7 +153,8 @@ public class LiveVideoFragmentBase extends Fragment {
         sendPlayVideoHandler.sendEmptyMessageDelayed(1, 1000);
         mIsLand.set(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
         mClick = false;
-        mPortVideoHeight = (int) LiveVideoConfig.VIDEO_HEIGHT;
+        mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
+//        mPortVideoHeight = (int) LiveVideoConfig.VIDEO_HEIGHT;
         logger.d("onCreate:mPortVideoHeight=" + mPortVideoHeight);
         //showDialog(savedInstanceState);
     }
@@ -382,7 +384,7 @@ public class LiveVideoFragmentBase extends Fragment {
             lpr.height = mPortVideoHeight;
             // lpr.height = VP.DEFAULT_PORT_HEIGHT;
         }
-        rlContent.setLayoutParams(lpr);
+//        rlContent.setLayoutParams(lpr);
         videoFragment.loadLandOrPortView(mIsLand.get());
     }
 

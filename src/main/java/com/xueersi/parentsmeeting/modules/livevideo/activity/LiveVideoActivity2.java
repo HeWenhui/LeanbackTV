@@ -138,9 +138,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
             mLiveBll.addBusinessBll(new LiveAchievementIRCBll(activity, mLiveBll, bottomContent));
-            RankBll rankBll = new RankBll(activity, mLiveBll, bottomContent);
-            rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
-            mLiveBll.addBusinessBll(rankBll);
+            mLiveBll.addBusinessBll(new RankBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
             //理科功能
@@ -160,9 +158,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             mLiveBll.addBusinessBll(liveIRCMessageBll);
             //文科功能
 //            mLiveBll.addBusinessBll(new LiveAchievementIRCBll(activity, mLiveBll, bottomContent));
-            RankBll rankBll = new RankBll(activity, mLiveBll, bottomContent);
-            rankBll.setLiveMediaController(mMediaController, liveMediaControllerBottom);
-            mLiveBll.addBusinessBll(rankBll);
+            mLiveBll.addBusinessBll(new RankBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll, bottomContent));
@@ -173,14 +169,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new SpeechFeedBackIRCBll(activity, mLiveBll, bottomContent));
-            if (liveMediaControllerBottom instanceof LiveMediaControllerBottom) {
-                LiveRemarkIRCBll liveRemarkIRCBll = new LiveRemarkIRCBll(activity, mLiveBll, bottomContent);
-                liveRemarkIRCBll.setvPlayer(vPlayer);
-                liveRemarkIRCBll.setVideoView(videoView);
-                LiveMediaControllerBottom controllerBottom = (LiveMediaControllerBottom) liveMediaControllerBottom;
-                liveRemarkIRCBll.setLiveMediaControllerBottom(controllerBottom);
-                mLiveBll.addBusinessBll(liveRemarkIRCBll);
-            }
+            mLiveBll.addBusinessBll(new LiveRemarkIRCBll(activity, mLiveBll, bottomContent));
             mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll, bottomContent));
         }
         VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll, bottomContent);
@@ -254,6 +243,9 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         mMediaController.setControllerTop(baseLiveMediaControllerTop);
         setMediaControllerBottomParam();
         videoFragment.setIsAutoOrientation(false);
+        mLiveBll.addBusinessShareParam("videoView", videoView);
+        mLiveBll.addBusinessShareParam("mMediaController", mMediaController);
+        mLiveBll.addBusinessShareParam("liveMediaControllerBottom", liveMediaControllerBottom);
     }
 
     /**

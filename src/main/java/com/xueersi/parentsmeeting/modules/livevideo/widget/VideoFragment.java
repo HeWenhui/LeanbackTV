@@ -156,7 +156,8 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
         activity = (BaseActivity) getActivity();
         logger.d("onCreate:activity=" + activity);
         mShareDataManager = ShareDataManager.getInstance();
-        mPortVideoHeight = (int) LiveVideoConfig.VIDEO_HEIGHT;
+//        mPortVideoHeight = (int) LiveVideoConfig.VIDEO_HEIGHT;
+        mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
     }
 
     @Override

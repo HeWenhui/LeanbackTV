@@ -65,6 +65,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
             before = System.currentTimeMillis();
             addBusiness(activity, bottomContent);
             logger.d("onVideoCreate:time3=" + (System.currentTimeMillis() - before));
+            changeLandAndPort();
         }
         return onVideoCreate;
     }
@@ -106,6 +107,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
         int topGap = liveVideoPoint.y2;
         int paddingBottom = (int) (topGap + 15 * ScreenUtils.getScreenDensity());
         if (baseLiveMediaControllerBottom.getPaddingBottom() != paddingBottom) {
+            logger.d("setMediaControllerBottomParam:paddingBottom=" + paddingBottom);
             baseLiveMediaControllerBottom.setPadding(0, 0, 0, paddingBottom);
         }
     }
@@ -268,7 +270,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                 group.removeView(bottomContent);
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                         .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+//                lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                 bottomContent.removeAllViews();
                 rlContent.addView(bottomContent, lp);
                 logger.d("changeLandAndPort:time1=" + (System.currentTimeMillis() - before));
