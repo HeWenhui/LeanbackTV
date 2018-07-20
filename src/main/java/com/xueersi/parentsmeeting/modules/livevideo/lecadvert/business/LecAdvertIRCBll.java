@@ -7,7 +7,6 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLecViewChange;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -17,17 +16,18 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
 
 /**
  * Created by lyqai on 2018/7/18.
  */
-public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdvertHttp, LiveLecViewChange {
+public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdvertHttp{
     LecAdvertBll lecAdvertAction;
 
-    public LecAdvertIRCBll(Activity activity, LiveBll2 liveBll2, RelativeLayout mRootView) {
-        super(activity, liveBll2, mRootView);
+    public LecAdvertIRCBll(Activity activity, LiveBll2 liveBll2) {
+        super(activity, liveBll2);
     }
 
     @Override
@@ -113,9 +113,10 @@ public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdv
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, boolean isLand) {
+    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         if (lecAdvertAction != null) {
-            lecAdvertAction.initView(bottomContent, isLand);
+            lecAdvertAction.initView(bottomContent, mIsLand.get());
         }
     }
+
 }

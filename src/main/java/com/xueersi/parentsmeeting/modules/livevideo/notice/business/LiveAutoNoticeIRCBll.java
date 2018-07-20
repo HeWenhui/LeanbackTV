@@ -8,7 +8,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 /**
@@ -20,8 +19,8 @@ public class LiveAutoNoticeIRCBll extends LiveBaseBll {
     private LiveAutoNoticeBll mLiveAutoNoticeBll;
     private long blockTime;
 
-    public LiveAutoNoticeIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
+    public LiveAutoNoticeIRCBll(Activity context, LiveBll2 liveBll) {
+        super(context, liveBll);
         putInstance(LiveAutoNoticeIRCBll.class, this);
     }
 

@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.understand.business;
 
 import android.app.Activity;
-import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -10,7 +9,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -21,14 +19,9 @@ public class UnderstandIRCBll extends LiveBaseBll implements NoticeAction {
     private UnderstandAction understandAction;
     private AtomicBoolean mIsLand;
 
-    public UnderstandIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
+    public UnderstandIRCBll(Activity context, LiveBll2 liveBll) {
+        super(context, liveBll);
         mIsLand = liveBll.getmIsLand();
-    }
-
-    @Override
-    public void onCreate(HashMap<String, Object> data) {
-        super.onCreate(data);
     }
 
     @Override

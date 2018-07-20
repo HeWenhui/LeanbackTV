@@ -1,12 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.BaseBll;
@@ -25,6 +22,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 直播间 bll 基类
@@ -43,14 +41,14 @@ public class LiveBaseBll extends BaseBll {
     protected Activity activity;
     protected LogToFile mLogtf;
     protected LiveVideoPoint liveVideoPoint;
+    private AtomicBoolean mIsLand;
 
-    public LiveBaseBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
+    public LiveBaseBll(Activity context, LiveBll2 liveBll) {
         super(context);
         this.activity = context;
         mLiveBll = liveBll;
         mLiveId = liveBll.getLiveId();
         mLiveType = liveBll.getLiveType();
-        mRootView = rootView;
         mLogtf = new LogToFile(liveBll, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
     }
@@ -149,6 +147,15 @@ public class LiveBaseBll extends BaseBll {
         this.mGetInfo = getInfo;
     }
 
+    public final void initViewF(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+        mRootView = bottomContent;
+        this.mIsLand = mIsLand;
+        initView(bottomContent, mIsLand);
+    }
+
+    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+
+    }
 
     /**
      * 直播间创建

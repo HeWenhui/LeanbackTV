@@ -7,14 +7,12 @@ import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -38,8 +36,8 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
     private View praiseRootView;
     private boolean isAnimStart;
 
-    public TeacherPraiseBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
+    public TeacherPraiseBll(Activity context, LiveBll2 liveBll) {
+        super(context, liveBll);
         mActivity = context;
     }
 

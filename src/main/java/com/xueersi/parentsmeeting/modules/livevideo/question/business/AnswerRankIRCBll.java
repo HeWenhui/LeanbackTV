@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -11,6 +10,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 
 import org.json.JSONObject;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Created by lyqai on 2018/7/5.
  */
@@ -18,10 +19,15 @@ import org.json.JSONObject;
 public class AnswerRankIRCBll extends LiveBaseBll implements NoticeAction {
     AnswerRankBll mAnswerRankBll;
 
-    public AnswerRankIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
-        mAnswerRankBll = new AnswerRankBll(context, (RelativeLayout) rootView, liveBll);
+    public AnswerRankIRCBll(Activity context, LiveBll2 liveBll) {
+        super(context, liveBll);
+        mAnswerRankBll = new AnswerRankBll(context, liveBll);
         putInstance(AnswerRankIRCBll.class, this);
+    }
+
+    @Override
+    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+        mAnswerRankBll.initView(bottomContent);
     }
 
     @Override

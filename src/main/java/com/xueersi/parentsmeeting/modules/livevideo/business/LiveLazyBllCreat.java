@@ -71,7 +71,9 @@ public class LiveLazyBllCreat {
     }
 
     AnswerRankBll createAnswerRankBll() {
-        return new AnswerRankBll(liveVideoActivity, bottomContent, liveBll);
+        AnswerRankBll answerRankBll = new AnswerRankBll(liveVideoActivity, liveBll);
+        answerRankBll.initView(bottomContent);
+        return answerRankBll;
     }
 
     public LiveAutoNoticeBll createAutoNoticeBll() {

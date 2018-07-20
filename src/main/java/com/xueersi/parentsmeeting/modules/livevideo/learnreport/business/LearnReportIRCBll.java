@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.learnreport.business;
 
 import android.app.Activity;
-import android.widget.RelativeLayout;
 
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
@@ -29,8 +28,8 @@ public class LearnReportIRCBll extends LiveBaseBll implements NoticeAction {
      */
     private static final int SIGN_STATE_CODE_SUCCESS = 2;
 
-    public LearnReportIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
+    public LearnReportIRCBll(Activity context, LiveBll2 liveBll) {
+        super(context, liveBll);
     }
 
 

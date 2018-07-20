@@ -115,12 +115,15 @@ public class AnswerRankBll {
         mLiveHttpManager = liveHttpManager;
     }
 
-    public AnswerRankBll(Context context, RelativeLayout bottomContent, LiveAndBackDebug liveBll) {
+    public AnswerRankBll(Context context, LiveAndBackDebug liveBll) {
         mContext = context;
         mLiveBll = liveBll;
-        this.bottomContent = bottomContent;
         mLst = new ArrayList<>();
         setVideoLayout(getScreenParam(), ScreenUtils.getScreenHeight());
+    }
+
+    public void initView(RelativeLayout bottomContent) {
+        this.bottomContent = bottomContent;
     }
 
     /**

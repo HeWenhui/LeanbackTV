@@ -1,10 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
-import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -21,23 +19,17 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RankItem;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,8 +54,8 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     int colorYellow;
     int colorWhite;
 
-    public RankBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
+    public RankBll(Activity context, LiveBll2 liveBll) {
+        super(context, liveBll);
         colorYellow = context.getResources().getColor(R.color.COLOR_FFFF00);
         colorWhite = context.getResources().getColor(R.color.white);
     }
@@ -95,7 +87,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     public void onCreate(HashMap<String, Object> data) {
         super.onCreate(data);
         mMediaController = (LiveMediaController) data.get("mMediaController");
-        LiveMediaControllerBottom controllerBottom = (LiveMediaControllerBottom) data.get("liveMediaControllerBottom");
+        BaseLiveMediaControllerBottom controllerBottom = (BaseLiveMediaControllerBottom) data.get("liveMediaControllerBottom");
         setLiveMediaController(mMediaController, controllerBottom);
     }
 

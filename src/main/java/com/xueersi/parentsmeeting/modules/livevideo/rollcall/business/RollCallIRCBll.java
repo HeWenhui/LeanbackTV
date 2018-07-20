@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by lyqai on 2018/7/10.
@@ -27,8 +28,8 @@ import java.util.List;
 public class RollCallIRCBll extends LiveBaseBll implements NoticeAction, RollCallHttp {
     RollCallBll rollCallBll;
 
-    public RollCallIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
+    public RollCallIRCBll(Activity context, LiveBll2 liveBll) {
+        super(context, liveBll);
         rollCallBll = new RollCallBll(context);
         rollCallBll.setRollCallHttp(this);
     }
@@ -37,6 +38,11 @@ public class RollCallIRCBll extends LiveBaseBll implements NoticeAction, RollCal
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         rollCallBll.onLiveInited(getInfo, mRootView, mLiveType);
+    }
+
+    @Override
+    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+        rollCallBll.initView(bottomContent);
     }
 
     @Override

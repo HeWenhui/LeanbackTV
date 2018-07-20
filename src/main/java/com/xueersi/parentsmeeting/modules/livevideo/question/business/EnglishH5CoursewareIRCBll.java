@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoti
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by lyqai on 2018/7/5.
@@ -38,8 +39,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     private AnswerRankIRCBll mAnswerRankBll;
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
 
-    public EnglishH5CoursewareIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
+    public EnglishH5CoursewareIRCBll(Activity context, LiveBll2 liveBll) {
+        super(context, liveBll);
         putInstance(EnglishH5CoursewareIRCBll.class, this);
     }
 
@@ -50,12 +51,16 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         englishH5CoursewareBll.setShareDataManager(mShareDataManager);
         englishH5CoursewareBll.setLiveType(mLiveType);
         englishH5CoursewareBll.setVSectionID(mLiveId);
-        englishH5CoursewareBll.initView(mRootView);
         englishH5CoursewareBll.setLiveBll(new EnglishH5CoursewareImpl());
         englishH5CoursewareBll.initData();
         englishH5CoursewareAction = englishH5CoursewareBll;
         mAnswerRankBll = getInstance(AnswerRankIRCBll.class);
         mLiveAutoNoticeBll = getInstance(LiveAutoNoticeIRCBll.class);
+    }
+
+    @Override
+    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+        englishH5CoursewareAction.initView(mRootView);
     }
 
     @Override

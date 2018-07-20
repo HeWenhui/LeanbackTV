@@ -1,9 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.remark.business;
 
 import android.app.Activity;
-import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
@@ -16,7 +14,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.SampleLiveVPlayerListener;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
@@ -39,8 +36,8 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
     LiveMediaControllerBottom liveMediaControllerBottom;
     VideoView videoView;
 
-    public LiveRemarkIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
+    public LiveRemarkIRCBll(Activity context, LiveBll2 liveBll) {
+        super(context, liveBll);
     }
 
     @Override

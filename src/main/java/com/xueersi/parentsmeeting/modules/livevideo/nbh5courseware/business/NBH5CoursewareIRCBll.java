@@ -5,7 +5,6 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLecViewChange;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -14,15 +13,17 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 
 import org.json.JSONObject;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Created by lyqai on 2018/7/6.
  * nb实验网页
  */
-public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, LiveLecViewChange {
+public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, TopicAction {
     H5CoursewareBll h5CoursewareAction;
 
-    public NBH5CoursewareIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
+    public NBH5CoursewareIRCBll(Activity context, LiveBll2 liveBll) {
+        super(context, liveBll);
     }
 
     @Override
@@ -100,9 +101,10 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, boolean isLand) {
+    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         if (h5CoursewareAction != null) {
             h5CoursewareAction.initView(bottomContent);
         }
     }
+
 }

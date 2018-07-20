@@ -14,10 +14,8 @@ import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLecViewChange;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.StarInteractAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -31,17 +29,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.KeyboardShowingReg;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
 
@@ -49,7 +46,7 @@ import okhttp3.Call;
  * Created by lyqai on 2018/7/5.
  */
 
-public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, QuestionHttp, LiveLecViewChange {
+public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, QuestionHttp {
     private QuestionBll mQuestionAction;
     private AnswerRankIRCBll mAnswerRankBll;
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
@@ -57,8 +54,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     /** RolePlayer功能接口 */
     private RolePlayAction rolePlayAction;
 
-    public QuestionIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
+    public QuestionIRCBll(Activity context, LiveBll2 liveBll) {
+        super(context, liveBll);
         mQuestionAction = new QuestionBll(context, liveBll.getStuCouId());
     }
 
@@ -68,7 +65,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         mQuestionAction.setLiveBll(this);
         mQuestionAction.setVSectionID(mLiveId);
         mQuestionAction.setShareDataManager(mShareDataManager);
-        mQuestionAction.initView(mRootView, true);
         mAnswerRankBll = getInstance(AnswerRankIRCBll.class);
         mLiveAutoNoticeBll = getInstance(LiveAutoNoticeIRCBll.class);
         mLogtf.d("onCreate:mAnswerRankBll=" + mAnswerRankBll + "," + mLiveAutoNoticeBll);
@@ -76,6 +72,11 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (keyboardShowingReg != null) {
             keyboardShowingReg.addKeyboardShowing(mQuestionAction);
         }
+    }
+
+    @Override
+    public void initView(RelativeLayout bottomContent, AtomicBoolean isLand) {
+        mQuestionAction.initView(bottomContent, isLand.get());
     }
 
     @Override
@@ -652,8 +653,4 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         });
     }
 
-    @Override
-    public void initView(RelativeLayout bottomContent, boolean isLand) {
-        mQuestionAction.initView(bottomContent, isLand);
-    }
 }

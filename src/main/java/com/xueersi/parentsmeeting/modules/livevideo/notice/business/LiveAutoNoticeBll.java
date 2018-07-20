@@ -81,7 +81,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
             "脏话及敏感词汇会被屏蔽掉，别再发了。"};
 
     public LiveAutoNoticeBll(Activity context, LiveBll2 liveBll2, RelativeLayout bottom) {
-        super(context, liveBll2, bottom);
+        super(context, liveBll2);
         this.mContext = context;
         this.bottom = bottom;
         setLayout(1920, 1080);

@@ -137,10 +137,14 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     @Override
     protected void onVideoCreateEnd() {
         mLiveBll.addBusinessShareParam("vPlayer", vPlayer);
-        mLiveBll.onCreate();
         mLiveVideoBll.setvPlayer(vPlayer);
         addOnGlobalLayoutListener();
+        onBusinessCreate();
         startGetInfo();
+    }
+
+    protected void onBusinessCreate() {
+        mLiveBll.onCreate();
     }
 
     protected abstract void startGetInfo();

@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business;
 
 import android.app.Activity;
-import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -10,7 +9,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
@@ -23,8 +21,8 @@ import org.json.JSONObject;
 public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackHttp, NoticeAction, TopicAction {
     SpeechFeedBackBll speechFeedBackAction;
 
-    public SpeechFeedBackIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
+    public SpeechFeedBackIRCBll(Activity context, LiveBll2 liveBll) {
+        super(context, liveBll);
     }
 
     @Override

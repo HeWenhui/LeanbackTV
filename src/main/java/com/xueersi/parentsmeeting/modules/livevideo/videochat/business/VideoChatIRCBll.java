@@ -1,8 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.videochat.business;
 
 import android.app.Activity;
-import android.view.View;
-import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -13,7 +11,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveScienceHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
@@ -37,8 +34,8 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
     private ArrayList<VideoChatStatusChange.ChatStatusChange> chatStatusChanges = new ArrayList<>();
     private BaseLiveMediaControllerBottom baseLiveMediaControllerBottom;
 
-    public VideoChatIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
+    public VideoChatIRCBll(Activity context, LiveBll2 liveBll) {
+        super(context, liveBll);
         putInstance(VideoChatStatusChange.class, new VideoChatStatusChange() {
 
             @Override

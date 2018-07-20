@@ -19,7 +19,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
     SpeechBulletScreenAction speechBulletScreenAction;
 
     public SpeechBulletScreenIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
+        super(context, liveBll);
     }
 
     @Override

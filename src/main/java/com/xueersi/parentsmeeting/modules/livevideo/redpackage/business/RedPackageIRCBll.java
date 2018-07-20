@@ -10,13 +10,11 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLecViewChange;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatIRCBll;
@@ -25,16 +23,17 @@ import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChat
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by lyqai on 2018/7/5.
  */
-public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction, LiveLecViewChange {
+public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
     private RedPackageAction redPackageAction;
     private String voiceChatStatus;
 
-    public RedPackageIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
+    public RedPackageIRCBll(Activity context, LiveBll2 liveBll) {
+        super(context, liveBll);
     }
 
     @Override
@@ -48,6 +47,14 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction, LiveL
                     RedPackageIRCBll.this.voiceChatStatus = voiceChatStatus;
                 }
             });
+        }
+    }
+
+    @Override
+    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+        if (redPackageAction instanceof RedPackageBll) {
+            RedPackageBll redPackageBll = (RedPackageBll) redPackageAction;
+            redPackageBll.initView(bottomContent);
         }
     }
 
@@ -210,11 +217,4 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction, LiveL
                 XESCODE.READPACAGE};
     }
 
-    @Override
-    public void initView(RelativeLayout bottomContent, boolean isLand) {
-        if (redPackageAction instanceof RedPackageBll) {
-            RedPackageBll redPackageBll = (RedPackageBll) redPackageAction;
-            redPackageBll.initView(bottomContent);
-        }
-    }
 }

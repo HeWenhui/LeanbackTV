@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.widget.RelativeLayout;
 
 import com.tal.speech.language.TalLanguage;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -28,7 +27,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import okhttp3.Call;
 
@@ -42,8 +40,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     boolean audioRequest = false;
     EnglishSpeekMode englishSpeekMode;
 
-    public LiveAchievementIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
+    public LiveAchievementIRCBll(Activity context, LiveBll2 liveBll) {
+        super(context, liveBll);
     }
 
     @Override
@@ -170,12 +168,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             });
         }
     }
-
-    @Override
-    public void onCreate(HashMap<String, Object> data) {
-        super.onCreate(data);
-    }
-
+ 
     @Override
     public void onDestory() {
         super.onDestory();

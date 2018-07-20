@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -15,12 +14,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BaseApplication;
-import com.xueersi.lib.framework.utils.Log;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
-import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.VoteWaitDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -46,7 +43,6 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
     private static String TAG = "LiveVoteBll";
     String eventId = LiveVideoConfig.LIVE_VOTE;
     Context context;
-    RelativeLayout bottomContent;
     RelativeLayout contentView;
     LiveTopic.VoteEntity voteEntity;
 
@@ -55,21 +51,20 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
     int answer;
     private LiveGetInfo mGetInfo;
 
-    public LiveVoteBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
-        bottomContent = (RelativeLayout) rootView;
+    public LiveVoteBll(Activity context, LiveBll2 liveBll) {
+        super(context, liveBll);
         this.context = context;
     }
 
     public LiveVoteBll(Context context) {
 
-        this((Activity) context, null, null);
+        this((Activity) context, null);
         this.context = context;
 
     }
 
     public void initView(final RelativeLayout bottomContent) {
-        this.bottomContent = bottomContent;
+        this.mRootView = bottomContent;
     }
 
     public void setLiveBll(LiveBll liveBll) {
@@ -78,17 +73,17 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
 
     private void showResult(final LiveTopic.VoteEntity voteEntity) {
         if (contentView != null) {
-            bottomContent.removeView(contentView);
+            mRootView.removeView(contentView);
         }
         if (voteWaitDialog != null) {
             voteWaitDialog.cancelDialog();
             voteWaitDialog = null;
         }
-        final View view1 = LayoutInflater.from(context).inflate(R.layout.layout_livevideo_vote_result, bottomContent,
+        final View view1 = LayoutInflater.from(context).inflate(R.layout.layout_livevideo_vote_result, mRootView,
                 false);
         contentView = new RelativeLayout(context);
         contentView.addView(view1);
-        bottomContent.addView(contentView);
+        mRootView.addView(contentView);
         LinearLayout linearLayout = (LinearLayout) view1.findViewById(R.id.ll_livevideo_vote_result_content);
         int choiceNum = voteEntity.getChoiceNum();
         ArrayList<LiveTopic.VoteResult> voteResults = voteEntity.getVoteResults();
@@ -164,7 +159,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
         view1.findViewById(R.id.iv_livevideo_vote_result_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bottomContent.removeView(contentView);
+                mRootView.removeView(contentView);
                 contentView = null;
                 EventBus.getDefault().post(new NativeVoteRusltulCloseEvent(answer > 0, voteEntity.getChoiceId()));
             }
@@ -199,18 +194,18 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
     }
 
     private void showChoice(final LiveTopic.VoteEntity voteEntity) {
-        bottomContent.post(new Runnable() {
+        mRootView.post(new Runnable() {
             @Override
             public void run() {
                 if (contentView != null) {
-                    bottomContent.removeView(contentView);
+                    mRootView.removeView(contentView);
                 }
                 if (voteWaitDialog != null) {
                     voteWaitDialog.cancelDialog();
                     voteWaitDialog = null;
                 }
                 final View view = LayoutInflater.from(context).inflate(R.layout.page_livevodeo_vote_select,
-                        bottomContent, false);
+                        mRootView, false);
                 view.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
@@ -219,7 +214,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
                 });
                 contentView = new RelativeLayout(context);
                 contentView.addView(view);
-                bottomContent.addView(contentView);
+                mRootView.addView(contentView);
                 LinearLayout llVoteChoice = (LinearLayout) view.findViewById(R.id.il_livevideo_vote_choice);
                 int choiceNum = voteEntity.getChoiceNum();
                 for (int i = 0; i < choiceNum; i++) {
@@ -259,7 +254,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
                                     }
                                 }
                             }, 20000);
-                            bottomContent.removeView(contentView);
+                            mRootView.removeView(contentView);
                             contentView = null;
                             LiveVoteBll.this.answer = answer;
                             idAndAnswer.put(voteEntity, answer);
@@ -276,7 +271,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
                             .OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            bottomContent.removeView(contentView);
+                            mRootView.removeView(contentView);
                             contentView = null;
                         }
                     });
@@ -293,13 +288,13 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
     public void voteStop(final LiveTopic.VoteEntity voteEntity) {
         Loger.d(TAG, "voteStop:voteEntity=" + voteEntity);
         this.voteEntity = null;
-        bottomContent.post(new Runnable() {
+        mRootView.post(new Runnable() {
             @Override
             public void run() {
                 ArrayList<LiveTopic.VoteResult> voteResults = voteEntity.getVoteResults();
                 if (voteResults.isEmpty()) {
                     if (contentView != null) {
-                        bottomContent.removeView(contentView);
+                        mRootView.removeView(contentView);
                         contentView = null;
                     }
                     if (voteWaitDialog != null) {

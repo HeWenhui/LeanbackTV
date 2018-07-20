@@ -14,18 +14,15 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.SampleMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLecViewChange;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.KeyboardShowingReg;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
@@ -40,7 +37,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStatusChange;
@@ -57,12 +53,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by lyqai on 2018/6/26.
  */
 
-public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, NoticeAction, TopicAction, LiveLecViewChange {
+public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, NoticeAction, TopicAction {
     private final String TAG = "LiveIRCMessageBll";
     Logger loger = LoggerFactory.getLogger(TAG);
     /** 主讲老师前缀 */
@@ -95,8 +92,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     private String mLiveId;
     private LiveHttpResponseParser mHttpResponseParser;
 
-    public LiveIRCMessageBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
-        super(context, liveBll, rootView);
+    public LiveIRCMessageBll(Activity context, LiveBll2 liveBll) {
+        super(context, liveBll);
         this.mLiveType = liveBll.getLiveType();
         mLiveId = liveBll.getLiveId();
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -528,8 +525,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, boolean isLand) {
-        mRoomAction.initView(bottomContent, isLand);
+    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+        mRoomAction.initView(bottomContent, mIsLand.get());
     }
 
     class LiveIRCState implements IRCState {
