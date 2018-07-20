@@ -2096,7 +2096,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                                         JSONArray ipArray = jsonObject.optJSONArray("ips");
                                         String ip = ipArray.getString(0);
                                         String url = "rtmp://" + ip + "/" + host + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
-                                        playserverEntity.setIpAddress(host);
+                                        playserverEntity.setIpAddress(ip);
                                         dataCallBack.onDataSucess(provide, url);
                                         mLogtf.d("dns_resolve_stream:ip_gslb_addr=" + playserverEntity.getIp_gslb_addr() + ",ip=" + ip);
                                         return;

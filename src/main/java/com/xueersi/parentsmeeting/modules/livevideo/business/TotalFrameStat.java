@@ -150,7 +150,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                 if (vPlayer.isInitialized() && lastPlayserverEntity != null) {
                     if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
                         IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
-                        float fps = ijkMediaPlayer.getVideoDecodeFramesPerSecond();
+                        float fps = ijkMediaPlayer.getVideoOutputFramesPerSecond();
                         if (frames.isEmpty()) {
                             frameStart = System.currentTimeMillis();
                         }
