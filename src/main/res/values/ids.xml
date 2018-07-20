@@ -706,5 +706,12 @@
     <item name="lav_teacher_priase" type="id" />
 
     <item name="tv_teampk_pkstate_adversary" type="id" />
-
+    <!--alpha001新加的文科举麦的弹窗-->
+    <item name="iv_livevideo_arts_raise_hand" type="id" />
+    <!--小英组内-->
+    <item name="iv_livevideo_arts_rank_mygroup" type="id" />
+    <!--小英小组-->
+    <item name="rl_livevideo_arts_rank_groups" type="id" />
+    <!--小英班级-->
+    <item name="rl_livevideo_arts_rank_class" type="id" />
 </resources>
