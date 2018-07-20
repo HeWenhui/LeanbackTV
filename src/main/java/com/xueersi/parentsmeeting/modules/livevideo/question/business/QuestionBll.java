@@ -275,6 +275,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 ViewGroup.LayoutParams.MATCH_PARENT));
         if (rlQuestionResContent == null) {
             rlQuestionResContent = new RelativeLayout(activity);
+        } else {
+            ViewGroup group = (ViewGroup) rlQuestionResContent.getParent();
+            if (group != null) {
+                group.removeView(rlQuestionResContent);
+            }
         }
         bottomContent.addView(rlQuestionResContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));

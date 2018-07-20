@@ -10,6 +10,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLecViewChange;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -28,7 +29,7 @@ import java.util.HashMap;
 /**
  * Created by lyqai on 2018/7/5.
  */
-public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
+public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction, LiveLecViewChange {
     private RedPackageAction redPackageAction;
     private String voiceChatStatus;
 
@@ -207,5 +208,13 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
     public int[] getNoticeFilter() {
         return new int[]{
                 XESCODE.READPACAGE};
+    }
+
+    @Override
+    public void initView(RelativeLayout bottomContent, boolean isLand) {
+        if (redPackageAction instanceof RedPackageBll) {
+            RedPackageBll redPackageBll = (RedPackageBll) redPackageAction;
+            redPackageBll.initView(bottomContent);
+        }
     }
 }

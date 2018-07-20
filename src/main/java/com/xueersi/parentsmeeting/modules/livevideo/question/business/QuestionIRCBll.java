@@ -14,6 +14,7 @@ import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLecViewChange;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.StarInteractAction;
@@ -48,7 +49,7 @@ import okhttp3.Call;
  * Created by lyqai on 2018/7/5.
  */
 
-public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, QuestionHttp {
+public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, QuestionHttp, LiveLecViewChange {
     private QuestionBll mQuestionAction;
     private AnswerRankIRCBll mAnswerRankBll;
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
@@ -649,5 +650,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 callBack.onDataFail(1, responseEntity.getErrorMsg());
             }
         });
+    }
+
+    @Override
+    public void initView(RelativeLayout bottomContent, boolean isLand) {
+        mQuestionAction.initView(bottomContent, isLand);
     }
 }

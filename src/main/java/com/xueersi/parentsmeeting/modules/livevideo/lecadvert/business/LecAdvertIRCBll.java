@@ -7,6 +7,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLecViewChange;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -22,7 +23,7 @@ import okhttp3.Call;
 /**
  * Created by lyqai on 2018/7/18.
  */
-public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdvertHttp {
+public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdvertHttp, LiveLecViewChange {
     LecAdvertBll lecAdvertAction;
 
     public LecAdvertIRCBll(Activity activity, LiveBll2 liveBll2, RelativeLayout mRootView) {
@@ -109,5 +110,12 @@ public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdv
 //                PageDataLoadManager.newInstance().loadDataStyle(pageDataLoadEntity.webDataError());
             }
         });
+    }
+
+    @Override
+    public void initView(RelativeLayout bottomContent, boolean isLand) {
+        if (lecAdvertAction != null) {
+            lecAdvertAction.initView(bottomContent, isLand);
+        }
     }
 }

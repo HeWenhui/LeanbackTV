@@ -5,6 +5,7 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveLecViewChange;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -17,7 +18,7 @@ import org.json.JSONObject;
  * Created by lyqai on 2018/7/6.
  * nb实验网页
  */
-public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, TopicAction {
+public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, LiveLecViewChange {
     H5CoursewareBll h5CoursewareAction;
 
     public NBH5CoursewareIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
@@ -96,5 +97,12 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
     @Override
     public int[] getNoticeFilter() {
         return new int[]{XESCODE.H5_START, XESCODE.H5_STOP};
+    }
+
+    @Override
+    public void initView(RelativeLayout bottomContent, boolean isLand) {
+        if (h5CoursewareAction != null) {
+            h5CoursewareAction.initView(bottomContent);
+        }
     }
 }
