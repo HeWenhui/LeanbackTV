@@ -393,11 +393,4 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 //        onPauseNotStopVideo = true;
     }
 
-    public void updateIcon() {
-        if (liveVideoAction != null) {
-            liveVideoAction.updateLoadingImage();
-        }
-        updateRefreshImage();
-    }
-
 }

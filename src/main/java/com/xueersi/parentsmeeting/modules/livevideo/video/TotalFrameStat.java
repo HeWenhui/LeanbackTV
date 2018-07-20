@@ -40,6 +40,7 @@ import okhttp3.Callback;
 import okhttp3.Response;
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
+import tv.danmaku.ijk.media.player.misc.IjkTrackInfo;
 
 /**
  * Created by linyuqiang on 2018/4/24.
@@ -150,6 +151,8 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                     if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
                         IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
                         float fps = ijkMediaPlayer.getVideoDecodeFramesPerSecond();
+                        float fps2 = ijkMediaPlayer.getVideoOutputFramesPerSecond();
+                        Loger.d(TAG, "handleMessage:fps=" + fps + "," + fps2);
                         if (frames.isEmpty()) {
                             frameStart = System.currentTimeMillis();
                         }

@@ -12,6 +12,7 @@ import com.xueersi.common.event.AppEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity2;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -58,8 +59,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
 
     @Override
     protected void updateIcon() {
-        if (liveVideoFragmentBase instanceof LiveVideoActivity2) {
-            LiveVideoActivity2 liveVideoFragment = (LiveVideoActivity2) liveVideoFragmentBase;
+        if (liveVideoFragmentBase instanceof LiveFragmentBase) {
+            LiveFragmentBase liveVideoFragment = (LiveFragmentBase) liveVideoFragmentBase;
             liveVideoFragment.updateIcon();
         }
     }

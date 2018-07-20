@@ -33,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoFragment;
@@ -450,6 +451,13 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         mHandler.postDelayed(r, delayMillis);
     }
 
+    public void updateIcon() {
+        if (liveVideoAction != null) {
+            liveVideoAction.updateLoadingImage();
+        }
+        updateRefreshImage();
+    }
+
     @Override
     public void onDestroy() {
         isPlay = false;
@@ -462,5 +470,11 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         ProxUtil.getProxUtil().clear();
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                LiveThreadPoolExecutor.destory();
+            }
+        });
     }
 }
