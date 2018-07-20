@@ -21,6 +21,7 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
     }
 
     /** 播放器的布局界面 */
+    @Override
     public View inflateLayout() {
         return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this);
     }
