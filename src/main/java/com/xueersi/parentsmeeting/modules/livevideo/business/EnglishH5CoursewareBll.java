@@ -769,7 +769,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
         @Override
         public void onAnswerTimeOutError(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
-            baseVoiceAnswerCreat.onAnswerReslut(context, EnglishH5CoursewareBll.this, voiceAnswerPager, baseVideoQuestionEntity, entity);
+            logToFile.d("onAnswerTimeOutError:question=" + baseVideoQuestionEntity + ",pager=" + (voiceAnswerPager == null));
+            if (voiceAnswerPager != null) {
+                baseVoiceAnswerCreat.onAnswerReslut(context, EnglishH5CoursewareBll.this, voiceAnswerPager, baseVideoQuestionEntity, entity);
+            }
         }
 
         @Override
