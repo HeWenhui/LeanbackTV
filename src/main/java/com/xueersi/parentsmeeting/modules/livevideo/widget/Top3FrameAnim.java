@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,13 +19,16 @@ import android.widget.TextView;
 
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -44,12 +48,15 @@ public class Top3FrameAnim {
     private ArrayList<FrameAnimation> frameAnimations;
     private boolean isGold = true;
     LiveSoundPool liveSoundPool;
+    private LogToFile logToFile;
 
     public Top3FrameAnim(Context mContext, View rl_livevideo_redpackage_bg, HashMap<String, Bitmap> stuHeadBitmap, ArrayList<FrameAnimation> frameAnimations) {
         this.mContext = mContext;
         this.rl_livevideo_redpackage_bg = rl_livevideo_redpackage_bg;
         this.stuHeadBitmap = stuHeadBitmap;
         this.frameAnimations = frameAnimations;
+        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+                + ".txt"));
     }
 
     public void setHeadBitmap(Bitmap headBitmap) {
@@ -280,7 +287,7 @@ public class Top3FrameAnim {
                                     ImageLoader.with(mContext).load(entity.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
                                         @Override
                                         public void onSuccess(Drawable drawable) {
-                                            Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                                            Bitmap headBitmap = GlideDrawableUtil.getBitmap(drawable, logToFile, "initTeamHeadAndGold", entity.getAvatar_path());
                                             if (isMe) {
                                                 Top3FrameAnim.this.headBitmap = headBitmap;
                                             }

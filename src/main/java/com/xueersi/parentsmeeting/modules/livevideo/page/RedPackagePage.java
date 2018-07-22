@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +25,10 @@ import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
@@ -36,6 +39,7 @@ import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -84,6 +88,7 @@ public class RedPackagePage extends BasePager {
     String file13 = "live_stand/frame_anim/redpackage/13_team_other_loop";
     String file14 = "live_stand/frame_anim/redpackage/14_transition";
     LiveSoundPool soundPool;
+    private LogToFile logToFile;
 
     public RedPackagePage(Context context, int operateId, RedPackagePageAction redPackageAction, String userName, String headUrl, boolean isLive, LiveAndBackDebug liveAndBackDebug) {
         super(context);
@@ -96,6 +101,8 @@ public class RedPackagePage extends BasePager {
             top3FrameAnim = new Top3FrameAnim(context, rlLivevideoRedpackageBg, stuHeadBitmap, frameAnimations);
         }
         this.liveAndBackDebug = liveAndBackDebug;
+        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+                + ".txt"));
         initData();
     }
 
@@ -154,7 +161,7 @@ public class RedPackagePage extends BasePager {
         ImageLoader.with(mContext).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
             @Override
             public void onSuccess(Drawable drawable) {
-                headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                headBitmap = GlideDrawableUtil.getBitmap(drawable, logToFile, "initData", headUrl);
                 if (top3FrameAnim != null) {
                     top3FrameAnim.setHeadBitmap(headBitmap);
                 }
@@ -506,8 +513,7 @@ public class RedPackagePage extends BasePager {
                             ImageLoader.with(mContext).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
                                 @Override
                                 public void onSuccess(Drawable drawable) {
-                                    Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                                    RedPackagePage.this.headBitmap = headBitmap;
+                                    headBitmap = GlideDrawableUtil.getBitmap(drawable, logToFile, "initHeadAndGold", headUrl);
                                     btframeAnimation1.removeBitmapCache(file);
                                 }
 

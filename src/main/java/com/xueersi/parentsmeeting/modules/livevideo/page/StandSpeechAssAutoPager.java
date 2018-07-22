@@ -47,6 +47,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
@@ -311,7 +312,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         ImageLoader.with(mContext).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
             @Override
             public void onSuccess(Drawable drawable) {
-                headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                headBitmap = GlideDrawableUtil.getBitmap(drawable, logToFile, "initData", headUrl);
             }
 
             @Override
@@ -743,7 +744,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                             ImageLoader.with(mContext).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
                                 @Override
                                 public void onSuccess(Drawable drawable) {
-                                    Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                                    Bitmap headBitmap = GlideDrawableUtil.getBitmap(drawable, logToFile, "updateHead", headUrl);
                                     StandSpeechAssAutoPager.this.headBitmap = headBitmap;
                                     frameAnimation.removeBitmapCache(file);
                                 }
@@ -1324,7 +1325,10 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 ImageLoader.with(mContext).load(student.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
                     @Override
                     public void onSuccess(Drawable drawable) {
-                        Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                        Bitmap headBitmap = GlideDrawableUtil.getBitmap(drawable, logToFile, "updateHead", student.getAvatar_path());
+                        if (headBitmap == null) {
+                            return;
+                        }
                         InputStream inputStream = null;
                         try {
                             inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_2.png");

@@ -6,8 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +17,9 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
@@ -26,6 +28,7 @@ import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
 import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -56,6 +59,7 @@ public class RedPackageTeamPage extends BasePager {
      * 非常循环声音
      */
     LiveSoundPool.SoundPlayTask shipFloatSoundId;
+    private LogToFile logToFile;
 
     public RedPackageTeamPage(Context context, int operateId, boolean isLive, GoldTeamStatus goldTeamStatus, RedPackagePage.RedPackagePageAction redPackageAction) {
         super(context);
@@ -64,6 +68,8 @@ public class RedPackageTeamPage extends BasePager {
         this.goldTeamStatus = goldTeamStatus;
         this.redPackageAction = redPackageAction;
         students = goldTeamStatus.getStudents();
+        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+                + ".txt"));
     }
 
     public void setHeadBitmap(Bitmap headBitmap) {
@@ -394,7 +400,10 @@ public class RedPackageTeamPage extends BasePager {
                             ImageLoader.with(mContext).load(entity.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
                                 @Override
                                 public void onSuccess(Drawable drawable) {
-                                    Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                                    Bitmap headBitmap = GlideDrawableUtil.getBitmap(drawable, logToFile, "initTeamHeadAndGold", entity.getAvatar_path());
+                                    if (headBitmap == null) {
+                                        return;
+                                    }
                                     if (isMe) {
                                         RedPackageTeamPage.this.headBitmap = headBitmap;
                                     }

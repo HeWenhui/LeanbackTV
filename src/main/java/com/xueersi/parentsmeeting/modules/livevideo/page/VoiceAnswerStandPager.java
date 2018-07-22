@@ -38,11 +38,13 @@ import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandQuestionSwitch;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
@@ -153,6 +155,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     String file3 = "live_stand/frame_anim/voice_answer/3_switch_loop";
     String file4 = "live_stand/frame_anim/voice_answer/4_switch";
     LiveSoundPool liveSoundPool;
+    private LogToFile logToFile;
 
     public VoiceAnswerStandPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch, LiveAndBackDebug liveAndBackDebug, String headUrl, String userName) {
         super(context);
@@ -177,6 +180,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 e.printStackTrace();
             }
         }
+        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+                + ".txt"));
         initListener();
         initData();
     }
@@ -1060,7 +1065,10 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 ImageLoader.with(mContext).load(student.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
                     @Override
                     public void onSuccess(Drawable drawable) {
-                        Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                        Bitmap headBitmap = GlideDrawableUtil.getBitmap(drawable, logToFile, "updateHead", student.getAvatar_path());
+                        if (headBitmap == null) {
+                            return;
+                        }
                         InputStream inputStream = null;
                         try {
                             inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_2.png");
