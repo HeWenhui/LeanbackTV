@@ -309,17 +309,27 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        ImageLoader.with(mContext).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
-            @Override
-            public void onSuccess(Drawable drawable) {
-                headBitmap = GlideDrawableUtil.getBitmap(drawable, logToFile, "initData", headUrl);
+        boolean loadImg = true;
+        if (mContext instanceof Activity) {
+            Activity activity = (Activity) mContext;
+            if (activity.isFinishing()) {
+                loadImg = false;
             }
+        }
+        logToFile.d("initData:loadImg=" + loadImg);
+        if (loadImg) {
+            ImageLoader.with(mContext).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
+                @Override
+                public void onSuccess(Drawable drawable) {
+                    headBitmap = GlideDrawableUtil.getBitmap(drawable, logToFile, "initData", headUrl);
+                }
 
-            @Override
-            public void onFail() {
+                @Override
+                public void onFail() {
 
-            }
-        });
+                }
+            });
+        }
         saveVideoFile = new File(dir, "ise" + System.currentTimeMillis() + ".mp3");
         rgivLivevideoStandReadygo.setAnimationListener(new FrameAnimation.AnimationListener() {
             @Override

@@ -33,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveExPressionEditData;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.widget.expressionView.ExpressionView;
@@ -119,6 +120,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     /** 聊天线程池 */
     protected ThreadPoolExecutor pool;
     protected Handler mainHandler = new Handler(Looper.getMainLooper());
+    LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
     public BaseLiveMessagePager(Context context) {
         super(context);
@@ -372,7 +374,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
         public void prepareDrawing(final BaseDanmaku danmaku, boolean fromWorkerThread) {
             if (danmaku.text instanceof Spanned) { // 根据你的条件检查是否需要需要更新弹幕
                 // FIXME 这里只是简单启个线程来加载远程url图片，请使用你自己的异步线程池，最好加上你的缓存池
-                new Thread() {
+                liveThreadPoolExecutor.execute(new Runnable() {
 
                     @Override
                     public void run() {
@@ -412,7 +414,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
                             }
                         }
                     }
-                }.start();
+                });
             }
         }
 
