@@ -844,6 +844,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
                 @Override
                 public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+                    logToFile.d("liveSubmitTestH5Answer:question=" + baseVideoQuestionEntity + ",pager=" + (voiceAnswerPager == null));
                     answerReslut.onAnswerReslut(baseVideoQuestionEntity, entity);
                     if (entity != null) {
                         if (entity.getIsAnswer() == 1) {
