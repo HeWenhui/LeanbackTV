@@ -8,8 +8,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 
 import com.alibaba.fastjson.JSON;
@@ -17,7 +15,6 @@ import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BaseBll;
 import com.xueersi.parentsmeeting.config.AppConfig;
-import com.xueersi.parentsmeeting.entity.EnglishH5Entity;
 import com.xueersi.parentsmeeting.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.http.CommonRequestCallBack;
 import com.xueersi.parentsmeeting.http.DownloadCallBack;
@@ -61,7 +58,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.xesalib.umsagent.UmsAgent;
 import com.xueersi.xesalib.umsagent.UmsAgentManager;
 import com.xueersi.xesalib.umsagent.UmsConstants;
@@ -78,6 +74,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.xutils.common.Callback;
 import org.xutils.xutils.ex.HttpException;
+import org.xutils.xutils.http.RequestParams;
 
 import java.io.File;
 import java.io.IOException;
@@ -400,30 +397,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
             UmsAgent.onEvent(mContext, LogerTag.DEBUG_VIDEO_LIVEMSG, LogerTag.DEBUG_VIDEO_LIVEMSG, 0, str);
             return;
         }
-        mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mLiveId, mGetInfo.getUname(), enstuId,
-                mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, new Callback.CommonCallback<File>() {
-
-                    @Override
-                    public void onSuccess(File o) {
-                        //Loger.i(TAG, "getOnloadLogs:onSuccess");
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable, boolean b) {
-                        //Loger.i(TAG, "getOnloadLogs:onError", throwable);
-                    }
-
-                    @Override
-                    public void onCancelled(CancelledException e) {
-                        //Loger.i(TAG, "getOnloadLogs:onCancelled");
-                    }
-
-                    @Override
-                    public void onFinished() {
-                        //Loger.i(TAG, "getOnloadLogs:onFinished");
-                    }
-
-                });
+        LiveLogCallback liveLogCallback = new LiveLogCallback();
+        RequestParams params = mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mLiveId, mGetInfo.getUname(), enstuId,
+                mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, liveLogCallback);
+        liveLogCallback.params = params;
     }
 
     /**

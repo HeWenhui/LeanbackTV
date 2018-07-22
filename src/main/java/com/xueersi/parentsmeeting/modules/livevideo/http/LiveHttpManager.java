@@ -235,8 +235,8 @@ public class LiveHttpManager extends BaseHttpBusiness {
     /**
      * filename暂时用做版本号
      */
-    public void liveOnloadLogs(String url, String type, String groupid, String uname, String uid, String stuid,
-                               String tpid, String filename, String str, String bz, Callback.CommonCallback requestCallBack) {
+    public RequestParams liveOnloadLogs(String url, String type, String groupid, String uname, String uid, String stuid,
+                                        String tpid, String filename, String str, String bz, Callback.CommonCallback requestCallBack) {
         RequestParams params = new RequestParams(url);
         params.addBodyParameter("type", type);
         params.addBodyParameter("groupid", groupid);
@@ -249,6 +249,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParameter("bz", bz);
 //        sendGetNoBusiness(url, params, callback);
         x.http().get(params, requestCallBack);
+        return params;
     }
 
     public void liveOnloadLogs2(String url, String type, String groupid, String uname, String uid, String stuid,
