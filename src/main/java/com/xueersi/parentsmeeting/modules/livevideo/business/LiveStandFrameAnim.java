@@ -66,9 +66,12 @@ public class LiveStandFrameAnim {
     private int progWidth;
     private LiveSoundPool liveSoundPool;
     private LiveSoundPool.SoundPlayTask loadTask;
+    private LogToFile mLogtf;
 
     public LiveStandFrameAnim(Activity activity) {
         this.activity = activity;
+        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+                + ".txt"));
     }
 
     /**
@@ -99,7 +102,7 @@ public class LiveStandFrameAnim {
             externalFilesDir.mkdirs();
         }
 
-        Loger.d(TAG, "LiveStandFrameAnim:externalFilesDir=" + externalFilesDir);
+        mLogtf.d("LiveStandFrameAnim:externalFilesDir=" + externalFilesDir);
 
         final File saveFileZip = new File(externalFilesDir, "frame_anim.zip");
         final File tempFileZip = new File(externalFilesDir, "frame_anim.zip.tmp");
@@ -224,7 +227,7 @@ public class LiveStandFrameAnim {
                 } else {
                     bps = String.format("%.2f", dspeed / 1024.0d) + " KB/s";
                 }
-                Loger.d(TAG, "onDownloadSuccess:bps=" + bps + ",downTime=" + downTime);
+                mLogtf.d("onDownloadSuccess:bps=" + bps + ",downTime=" + downTime);
                 StableLogHashMap logHashMap = new StableLogHashMap();
                 logHashMap.put("bps", bps);
                 logHashMap.put("downTime", "" + downTime);
@@ -413,6 +416,7 @@ public class LiveStandFrameAnim {
                     }
                 });
             } else {
+                mLogtf.e("onPostExecute:cancle=" + cancle, exception);
                 if (!cancle) {
                     pbLiveStandUpdate.post(new Runnable() {
                         @Override

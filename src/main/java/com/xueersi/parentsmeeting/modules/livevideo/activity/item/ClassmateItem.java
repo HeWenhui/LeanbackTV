@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.activity.item;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
@@ -51,6 +52,12 @@ public class ClassmateItem implements AdapterItemInterface<ClassmateEntity> {
                         .ic_default_head_square)
                 .diskCacheStrategy(DiskCacheStrategy.ALL);
 
+        if (mContext instanceof Activity) {
+            Activity activity = (Activity) mContext;
+            if (activity.isFinishing()) {
+                return;
+            }
+        }
         ImageLoader.with(mContext).load(entity.getImg())
                 .placeHolder(R.drawable.ic_default_head_square)
                 .error(R.drawable.ic_default_head_square).into(ivClassmateHead);

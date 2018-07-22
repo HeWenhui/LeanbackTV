@@ -113,6 +113,9 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
         } catch (IOException e) {
             exception = e;
             e.printStackTrace();
+        } catch (Exception e) {
+            exception = e;
+            e.printStackTrace();
         } finally {
             if (zip != null) {
                 try {
