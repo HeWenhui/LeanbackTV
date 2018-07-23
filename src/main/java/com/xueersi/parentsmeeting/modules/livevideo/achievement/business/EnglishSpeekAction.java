@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 
 import com.tal.speech.language.TalLanguage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 
 /**
  * Created by lyqyuqiang on 2017/11/8.
@@ -14,9 +15,13 @@ public interface EnglishSpeekAction {
 
     TalLanguage getTalLanguage();
 
-    void praise(int answer);
+    /**
+     * @param answer
+     * @param liveGetInfo 用来区别是否是小英
+     */
+    void praise(int answer, LiveGetInfo liveGetInfo);
 
-    void remind(int answer);
+    void remind(int answer, LiveGetInfo liveGetInfo);
 
     void onModeChange(String mode, boolean audioRequest);
 
