@@ -115,8 +115,6 @@ public class PraiseListPager extends BasePager {
 
     /** 点赞弹幕定时器*/
     private Timer mTimer = null;
-    /** 点赞弹幕定时任务*/
-    private TimerTask mTimerTask = null;
     /** 点赞弹幕计数*/
     private int number = 0;
     /** 点赞弹幕线程是否停止*/
@@ -639,41 +637,39 @@ public class PraiseListPager extends BasePager {
             startTimer();
     }
 
+    class TanmakuTimerTask extends TimerTask {
+
+        @Override
+        public void run() {
+            if(isStop)
+                stopTimer();
+            else{
+                weakHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        tvDanmaku.next();
+                        tvDanmaku.setText(Html.fromHtml(
+                                "<font color='#F13232'>"+stuNames.get(number%stuNames.size())+"</font>"
+                                        +thumbsUpCopywriting[thumbsUpCopywritingIndex.get(number%stuNames.size())]
+                        ));
+                        number++;
+                    }
+                });
+                if(stuNames.size()==1)
+                    stopTimer();
+            }
+        }
+    }
+
     private void startTimer(){
         if (mTimer == null) {
             mTimer = new Timer();
         }
 
-        if (mTimerTask == null) {
-            mTimerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    if(isStop)
-                        stopTimer();
-                    else{
-                        weakHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                tvDanmaku.next();
-                                tvDanmaku.setText(Html.fromHtml(
-                                            "<font color='#F13232'>"+stuNames.get(number%stuNames.size())+"</font>"
-                                                    +thumbsUpCopywriting[thumbsUpCopywritingIndex.get(number%stuNames.size())]
-                                ));
-                                number++;
-                            }
-                        });
-                        if(stuNames.size()==1)
-                            stopTimer();
-                    }
-                }
-            };
-        }
-
-        if(mTimer != null && mTimerTask != null & isStop){
+        if(mTimer != null  && isStop){
             isStop = false;
-            mTimer.schedule(mTimerTask, 0, 2000);
+            mTimer.schedule(new TanmakuTimerTask(), 0, 2000);
         }
-
     }
 
     private void stopTimer(){
@@ -681,10 +677,6 @@ public class PraiseListPager extends BasePager {
         if (mTimer != null) {
             mTimer.cancel();
             mTimer = null;
-        }
-        if (mTimerTask != null) {
-            mTimerTask.cancel();
-            mTimerTask = null;
         }
     }
 
