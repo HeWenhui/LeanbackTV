@@ -113,7 +113,9 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  *
  * @author linyuqiang
  */
-public class StandLiveVideoActivity extends LiveActivityBase implements VideoAction, ActivityStatic, BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest, WebViewRequest, VideoChatEvent {
+public class StandLiveVideoActivity extends LiveActivityBase implements VideoAction, ActivityStatic,
+        BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest,
+        WebViewRequest, VideoChatEvent {
 
     private String TAG = "StandLiveVideoActivity";
 
@@ -237,7 +239,8 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
             onUserBackPressed();
             return false;
         }
-        Loger.d(TAG, "onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System.currentTimeMillis() - before));
+        Loger.d(TAG, "onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System
+                .currentTimeMillis() - before));
         before = System.currentTimeMillis();
         if (mGetInfo != null) {
             mode = mGetInfo.getMode();
@@ -301,7 +304,8 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         // 预加载布局中退出事件
         findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
         tvLoadingHint.setText("获取课程信息");
-        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+                .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         bottomContent.addView(liveMediaControllerBottom);
         //聊天
         long before = System.currentTimeMillis();
@@ -344,13 +348,15 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         contentView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
+                        .OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
                         if (videoView.getWidth() <= 0) {
                             return;
                         }
-                        boolean isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+                        boolean isLand = getResources().getConfiguration().orientation == Configuration
+                                .ORIENTATION_LANDSCAPE;
                         //Loger.i(TAG, "setVideoWidthAndHeight:isLand=" + isLand);
                         if (!isLand) {
                             return;
@@ -526,7 +532,8 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         BaseLiveMediaControllerBottom baseLiveMediaControllerBottom = liveMessageBll.getLiveMediaControllerBottom();
         int topGap = (ScreenUtils.getScreenHeight() - lp.height) / 2;
         int paddingBottom = (int) (topGap + 15 * ScreenUtils.getScreenDensity());
-        //Loger.e(TAG, "setMediaControllerBottomParam:paddingBottom=" + paddingBottom + "," + liveMediaControllerBottom.getPaddingBottom());
+        //Loger.e(TAG, "setMediaControllerBottomParam:paddingBottom=" + paddingBottom + "," +
+        // liveMediaControllerBottom.getPaddingBottom());
         if (baseLiveMediaControllerBottom.getPaddingBottom() != paddingBottom) {
             baseLiveMediaControllerBottom.setPadding(0, 0, 0, paddingBottom);
         }
@@ -554,7 +561,8 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                     }
                 }
             }
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlFirstBackgroundView.getLayoutParams();
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlFirstBackgroundView
+                    .getLayoutParams();
 //           主讲模式铺满屏幕，等比例缩放
             int screenHeight = ScreenUtils.getScreenHeight();
             float density = ScreenUtils.getScreenDensity();
@@ -586,7 +594,8 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                     }
                 }
             }
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlFirstBackgroundView.getLayoutParams();
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlFirstBackgroundView
+                    .getLayoutParams();
             // 辅导模式保留三分屏
             if (params.width != ScreenUtils.getScreenWidth() || params.height != ScreenUtils.getScreenHeight()) {
                 params.width = ScreenUtils.getScreenWidth();
@@ -596,7 +605,8 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                 Loger.d(TAG, "setFirstParam:width");
             }
 
-            int rightMargin = (int) (StandLiveVideoActivity.VIDEO_HEAD_WIDTH * lp.width / VIDEO_WIDTH + (screenWidth - lp.width) / 2);
+            int rightMargin = (int) (StandLiveVideoActivity.VIDEO_HEAD_WIDTH * lp.width / VIDEO_WIDTH + (screenWidth
+                    - lp.width) / 2);
             int topMargin = (ScreenUtils.getScreenHeight() - lp.height) / 2;
             if (params.rightMargin != rightMargin || params.bottomMargin != topMargin) {
                 params.rightMargin = rightMargin;
@@ -606,7 +616,8 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                 Loger.d(TAG, "setFirstParam:rightMargin");
             }
         }
-        //Loger.e(TAG, "setFirstParam:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
+        //Loger.e(TAG, "setFirstParam:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," +
+        // rightMargin);
     }
 
     @Override
@@ -838,7 +849,8 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
             mPlayStatistics.onOpenFailed(arg1, arg2);
             mLogtf.d("onOpenFailed");
             if (lastPlayserverEntity != null) {
-                mLiveBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "fail reconnect");
+                mLiveBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() -
+                        reportPlayStarTime, lastPlayserverEntity, "fail reconnect");
                 reportPlayStarTime = System.currentTimeMillis();
             }
         }
@@ -877,7 +889,9 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                         if (videoCachedDuration > 10000) {
                             mLiveBll.streamReport(LiveBll.MegId.MEGID_12130, mGetInfo.getChannelname(), -1);
                             if (lastPlayserverEntity != null) {
-                                mLiveBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "play delay reconnect");
+                                mLiveBll.live_report_play_duration(mGetInfo.getChannelname(), System
+                                        .currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "play delay " +
+                                        "reconnect");
                                 reportPlayStarTime = System.currentTimeMillis();
                             }
                         }
@@ -903,7 +917,8 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
             }
             mLogtf.d("bufferTimeOut:progress=" + vPlayer.getBufferProgress());
             if (lastPlayserverEntity != null) {
-                mLiveBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "buffer empty reconnect");
+                mLiveBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() -
+                        reportPlayStarTime, lastPlayserverEntity, "buffer empty reconnect");
                 reportPlayStarTime = System.currentTimeMillis();
             }
             mLiveBll.repair(true);
@@ -919,7 +934,8 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                 lastPlayTime = System.currentTimeMillis();
                 playTime += mPlayDurTime;
                 Loger.d(TAG, "mPlayDuration:playTime=" + playTime / 1000);
-                mLiveBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "normal");
+                mLiveBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() -
+                        reportPlayStarTime, lastPlayserverEntity, "normal");
                 reportPlayStarTime = System.currentTimeMillis();
             }
             if (isPlay && !isFinishing()) {
@@ -1021,7 +1037,9 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         if (liveLazyBllCreat != null) {
             liveLazyBllCreat.setGetInfo(getInfo);
         }
-        englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveStandVoiceAnswerCreat(this, mLiveBll, englishH5CoursewareBll.new LiveStandQuestionSwitchImpl(), getInfo.getHeadImgPath(), getInfo.getStandLiveName()));
+        englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveStandVoiceAnswerCreat(this, mLiveBll,
+                englishH5CoursewareBll.new LiveStandQuestionSwitchImpl(), getInfo.getHeadImgPath(), getInfo
+                .getStandLiveName()));
         String mode = mGetInfo.getMode();
         this.mode = mode;
         liveMediaControllerBottom.onModeChange(mode, mGetInfo);
@@ -1104,7 +1122,8 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
             talLanguage = StandLiveVideoActivity.this.englishSpeekAction.getTalLanguage();
         }
         if (LiveTopic.MODE_CLASS.equals(mode)) {
-            LiveStandAchievementBll starBll = new LiveStandAchievementBll(this, liveType, mGetInfo.getStarCount(), mGetInfo.getGoldCount(), mIsLand);
+            LiveStandAchievementBll starBll = new LiveStandAchievementBll(this, liveType, mGetInfo.getStarCount(),
+                    mGetInfo.getGoldCount(), mIsLand);
             starBll.setLiveBll(mLiveBll);
             starBll.initView(bottomContent);
             starAction = starBll;
@@ -1120,13 +1139,14 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
             }
 
         } else {
-            LiveAchievementBll starBll = new LiveAchievementBll(this, liveType, mGetInfo.getStarCount(), mGetInfo.getGoldCount(), mIsLand);
+            LiveAchievementBll starBll = new LiveAchievementBll(this, liveType, mGetInfo.getStarCount(), mGetInfo
+                    .getGoldCount(), mIsLand);
             starBll.setLiveBll(mLiveBll);
             starBll.initView(bottomContent);
             starAction = starBll;
 
             //能量条
-            EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(this);
+            EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(this, mGetInfo);
             boolean initView = englishSpeekBll.initView(bottomContent, mGetInfo.getMode(), talLanguage);
             if (initView) {
                 englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
@@ -1156,7 +1176,8 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                     setFirstBackgroundVisible(View.VISIBLE);
                 }
                 if (tvLoadingHint != null) {
-                    if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
+                    if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo
+                            .getLiveTopic().getMode())) {
                         tvLoadingHint.setText(mainTeacherLoad);
                     } else {
                         tvLoadingHint.setText(coachTeacherLoad);
@@ -1298,7 +1319,8 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         }
         totalFrameStat.onReplay();
 //        if (liveType == LiveBll.LIVE_TYPE_LIVE) {
-//            if (LiveTopic.MODE_TRANING.endsWith(mGetInfo.getLiveTopic().getMode()) && mGetInfo.getStudentLiveInfo().isExpe()) {
+//            if (LiveTopic.MODE_TRANING.endsWith(mGetInfo.getLiveTopic().getMode()) && mGetInfo.getStudentLiveInfo()
+// .isExpe()) {
 //                tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
 //                setFirstBackgroundVisible(View.VISIBLE);
 //                findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.GONE);
@@ -1316,7 +1338,8 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                         @Override
                         public void run() {
                             if (tvLoadingHint != null) {
-                                if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
+                                if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith
+                                        (mGetInfo.getLiveTopic().getMode())) {
                                     tvLoadingHint.setText(mainTeacherLoad);
                                 } else {
                                     tvLoadingHint.setText(coachTeacherLoad);
@@ -1429,13 +1452,16 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
             mLiveBll.setPlayserverEntity(entity);
             totalFrameStat.setLastPlayserverEntity(entity);
             if (useFlv) {
-                url = "http://" + entity.getAddress() + ":" + entity.getHttpport() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname() + entity.getFlvpostfix();
+                url = "http://" + entity.getAddress() + ":" + entity.getHttpport() + "/" + mServer.getAppname() + "/"
+                        + mGetInfo.getChannelname() + entity.getFlvpostfix();
             } else {
                 final PlayserverEntity finalEntity = entity;
                 if (StringUtils.isEmpty(entity.getIp_gslb_addr())) {
-                    url = "rtmp://" + entity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+                    url = "rtmp://" + entity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo
+                            .getChannelname();
                 } else {
-                    mLiveBll.dns_resolve_stream(entity, mServer, mGetInfo.getChannelname(), new AbstractBusinessDataCallBack() {
+                    mLiveBll.dns_resolve_stream(entity, mServer, mGetInfo.getChannelname(), new
+                            AbstractBusinessDataCallBack() {
                         @Override
                         public void onDataSucess(Object... objData) {
                             if (finalEntity != lastPlayserverEntity) {
@@ -1466,7 +1492,8 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                             if (finalEntity != lastPlayserverEntity) {
                                 return;
                             }
-                            String url = "rtmp://" + finalEntity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+                            String url = "rtmp://" + finalEntity.getAddress() + "/" + mServer.getAppname() + "/" +
+                                    mGetInfo.getChannelname();
                             StringBuilder stringBuilder = new StringBuilder(url);
                             addBody("Fail", stringBuilder);
                             playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
@@ -1569,7 +1596,8 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
 //                    }
                     mLogtf.d("onFail:arg2=" + arg2 + ",errorMsg=" + errorMsg + ",isPresent=" + mLiveBll.isPresent());
                     if (mLiveBll.isPresent()) {
-                        if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
+                        if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo
+                                .getLiveTopic().getMode())) {
                             tvLoadingHint.setText(mainTeacherLoad);
                         } else {
                             tvLoadingHint.setText(coachTeacherLoad);
@@ -1833,11 +1861,13 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
     }
 
     protected void updateLoadingImage() {
-        FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
+        FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false,
+                ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
         if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
             if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl)) {
-                ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
+                ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal)
+                        .error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
             }
         }
     }

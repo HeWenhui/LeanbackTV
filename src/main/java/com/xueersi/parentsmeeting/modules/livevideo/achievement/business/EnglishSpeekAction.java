@@ -17,11 +17,10 @@ public interface EnglishSpeekAction {
 
     /**
      * @param answer
-     * @param liveGetInfo 用来区别是否是小英
      */
-    void praise(int answer, LiveGetInfo liveGetInfo);
+    void praise(int answer);
 
-    void remind(int answer, LiveGetInfo liveGetInfo);
+    void remind(int answer);
 
     void onModeChange(String mode, boolean audioRequest);
 

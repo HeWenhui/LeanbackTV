@@ -96,7 +96,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 starBll.initView(mRootView);
                 LiveAchievementIRCBll.this.starAction = starBll;
                 //能量条
-                EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(activity);
+                EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(activity, mGetInfo);
                 boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), null);
                 if (initView) {
                     englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
@@ -151,7 +151,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 starAction = starBll;
 
                 //能量条
-                EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(activity);
+                EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(activity, mGetInfo);
                 boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), talLanguage);
                 if (initView) {
                     englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
@@ -403,14 +403,14 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 case XESCODE.XCR_ROOM_DB_PRAISE: {
                     if (englishSpeekAction != null) {
                         int answer = object.getInt("answer");
-                        englishSpeekAction.praise(answer, mGetInfo);
+                        englishSpeekAction.praise(answer);
                     }
                     break;
                 }
                 case XESCODE.XCR_ROOM_DB_REMIND: {
                     if (englishSpeekAction != null) {
                         int answer = object.getInt("answer");
-                        englishSpeekAction.remind(answer, mGetInfo);
+                        englishSpeekAction.remind(answer);
                     }
                     break;
                 }

@@ -108,6 +108,8 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
     int tips;
     AudioRequest.OnAudioRequest onAudioRequest;
     LogToFile mLogtf;
+    //用来判断是否是小英
+    private LiveGetInfo liveGetInfo;
 
     static {
         try {
@@ -121,8 +123,9 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
         }
     }
 
-    public EnglishSpeekBll(Activity activity) {
+    public EnglishSpeekBll(Activity activity, LiveGetInfo liveGetInfo) {
         this.activity = activity;
+        this.liveGetInfo = liveGetInfo;
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         if (isDestory2) {
@@ -660,7 +663,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
     }
 
     @Override
-    public void praise(int answer, final LiveGetInfo liveGetInfo) {
+    public void praise(int answer) {
         Loger.d(TAG, "praise:dbDuration=" + sendDbDuration + ",answer=" + answer);
         if (sendDbDuration >= answer) {
             Map<String, String> mData = new HashMap<>();
@@ -708,7 +711,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
     }
 
     @Override
-    public void remind(int answer, final LiveGetInfo liveGetInfo) {
+    public void remind(int answer) {
         Loger.d(TAG, "remind:sendDbDuration=" + sendDbDuration + ",answer=" + answer);
         if (sendDbDuration <= answer) {
             Map<String, String> mData = new HashMap<>();

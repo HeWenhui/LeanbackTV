@@ -628,6 +628,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
         }
     }
 
+    @Override
     public void praise(int answer) {
         Loger.d(TAG, "praise:dbDuration=" + sendDbDuration + ",answer=" + answer);
         if (sendDbDuration >= answer) {
@@ -643,7 +644,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     lp.rightMargin = praiseWidth;
                     ImageView imageView = (ImageView) view.findViewById(R.id.iv_livevideo_english_praise);
-                    imageView.setImageResource(R.drawable.bg_livevideo_english_speek_praise);
+                    imageView.setImageResource(R.drawable.bg_arts_livevideo_english_speek_praise);
                     TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id.tv_livevideo_english_praise);
                     tv_livevideo_english_praise.setText("老师表扬了你！");
                     bottomContent.addView(view, lp);
@@ -658,6 +659,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
         }
     }
 
+    @Override
     public void remind(int answer) {
         Loger.d(TAG, "remind:sendDbDuration=" + sendDbDuration + ",answer=" + answer);
         if (sendDbDuration <= answer) {
@@ -673,7 +675,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     lp.rightMargin = praiseWidth;
                     ImageView imageView = (ImageView) view.findViewById(R.id.iv_livevideo_english_praise);
-                    imageView.setImageResource(R.drawable.bg_livevideo_english_speek_remind);
+                    imageView.setImageResource(R.drawable.bg_arts_livevideo_english_speek_remind);
                     TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id.tv_livevideo_english_praise);
                     tv_livevideo_english_praise.setText("大声说英语啦！");
                     bottomContent.addView(view, lp);
