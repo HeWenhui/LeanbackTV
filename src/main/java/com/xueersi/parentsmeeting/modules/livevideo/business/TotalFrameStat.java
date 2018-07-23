@@ -279,13 +279,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     @Override
     public void onOpenSuccess() {
         super.onOpenSuccess();
-        if (vPlayer.isInitialized() && lastPlayserverEntity != null) {
-            if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
-                IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
-                fistDisaplyCount = ijkMediaPlayer.getDisaplyCount();
-                lastDisaplyCount = fistDisaplyCount;
-            }
-        }
+        lastDisaplyCount = fistDisaplyCount = 0;
         handler.sendEmptyMessageDelayed(1, 1000);
         long openTime = (System.currentTimeMillis() - openStart);
         getFps();
@@ -364,7 +358,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         return remoteIp;
     }
 
-    private void xescdnLogHeart(final ArrayList<Float> framesPsTen, final float fps2) {
+    private void xescdnLogHeart(final ArrayList<Float> framesPsTen, final float averagefps) {
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -382,14 +376,14 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                     Float f = framesPsTen.get(i);
                     totalfps += f;
                 }
-                float averagefps = totalfps / 10f;
-                Loger.d(TAG, "xescdnLogHeart:averagefps=" + averagefps + "," + fps2);
-                xescdnLogHeart(defaultKey, averagefps);
+                float averagefps2 = totalfps / 10f;
+                Loger.d(TAG, "xescdnLogHeart:averagefps=" + averagefps + "," + averagefps2);
+                xescdnLogHeart(defaultKey, averagefps, averagefps2);
             }
         });
     }
 
-    private void xescdnLogHeart(HashMap<String, String> defaultKey, float averagefps) {
+    private void xescdnLogHeart(HashMap<String, String> defaultKey, float averagefps, float averagefps2) {
         defaultKey.put("dataType", "603");
         defaultKey.put("traceId", "" + UUID.randomUUID());
         String remoteIp = getRemoteIp();
@@ -413,6 +407,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
             framesPsTen.clear();
             dataJson.put("bufferduration", "" + bufferduration);
             dataJson.put("averagefps", "" + averagefps);
+            dataJson.put("averagefps2", "" + averagefps2);
             dataJson.put("fps", "" + fps);
             dataJson.put("bitrate", "" + bitrate);
         } catch (JSONException e) {
