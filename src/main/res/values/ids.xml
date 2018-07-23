@@ -714,4 +714,17 @@
     <item name="rl_livevideo_arts_rank_groups" type="id" />
     <!--小英班级-->
     <item name="rl_livevideo_arts_rank_class" type="id" />
+
+    <item name="iv_live_video_arts_sign_background" type="id" />
+    <item name="tv_livevideo_arts_sign_user_name" type="id" />
+    <item name="iv_livevideo_arts_sign_click" type="id" />
+    <!--小英签到-->
+    <item name="tv_livevideo_arts_sign_start_sign" type="id" />
+
+    <item name="iv_livevideo_arts_redpackage_close" type="id" />
+    <item name="iv_livevideo_arts_redpackage_open" type="id" />
+    <item name="iv_livevideo_arts_redpackage_board" type="id" />
+    <item name="rl_livevideo_arts_redpackage_unopen" type="id" />
+    <item name="rl_livevideo_arts_redpackage_open" type="id" />
+    <item name="tv_livevidoe_arts_redpackage_money" type="id" />
 </resources>
