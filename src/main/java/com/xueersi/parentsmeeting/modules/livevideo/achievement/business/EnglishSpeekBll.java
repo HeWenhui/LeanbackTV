@@ -3,8 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
@@ -662,7 +660,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
     }
 
     @Override
-    public void praise(int answer) {
+    public void praise(int answer, final LiveGetInfo liveGetInfo) {
         Loger.d(TAG, "praise:dbDuration=" + sendDbDuration + ",answer=" + answer);
         if (sendDbDuration >= answer) {
             Map<String, String> mData = new HashMap<>();
@@ -679,20 +677,24 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                             .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     lp.rightMargin = praiseWidth;
                     ImageView imageView = (ImageView) view.findViewById(R.id.iv_livevideo_english_praise);
-                    imageView.setImageResource(R.drawable.bg_livevideo_english_speek_praise);
+                    TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id
+                            .tv_livevideo_english_praise);
+                    //小学英语
+                    if (liveGetInfo.getIsArts() == 1 && (liveGetInfo.getGrade() > 1 && liveGetInfo.getGrade() < 65)) {
+                        tv_livevideo_english_prog.setVisibility(View.GONE);
+                        imageView.setImageResource(R.drawable.bg_arts_livevideo_english_speek_praise);
+                        //让弹窗居中显示
+                        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+                        Drawable drawable = activity.getResources().getDrawable(R.drawable
+                                .bg_arts_livevideo_english_speek_remind);
+                        int wight = (liveVideoPoint.x3 - liveVideoPoint.x2 - drawable.getIntrinsicWidth()) / 2;
+                        lp.leftMargin = wight;
+                    } else {//其他
+                        tv_livevideo_english_praise.setVisibility(View.VISIBLE);
+                        imageView.setImageResource(R.drawable.bg_livevideo_english_speek_praise);
 
-                    //让弹窗居中显示
-                    LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
-                    Drawable drawable = activity.getResources().getDrawable(R.drawable
-                            .bg_livevideo_english_speek_remind);
-                    int wight = (liveVideoPoint.x3 - liveVideoPoint.x2 - drawable.getIntrinsicWidth()) / 2;
-//                    Loger.i(tag, "屏幕x3是" + liveVideoPoint.x3 + "   ,drawable的大小是" + drawable.getIntrinsicWidth() +
-// "," +
-//                            "drawable的最小drawable是" + drawable.getMinimumWidth());
-                    lp.leftMargin = wight;
-//                    TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id
-//                            .tv_livevideo_english_praise);
-//                    tv_livevideo_english_praise.setText("老师表扬了你！");
+                        tv_livevideo_english_praise.setText("老师表扬了你！");
+                    }
                     bottomContent.addView(view, lp);
                     bottomContent.postDelayed(new Runnable() {
                         @Override
@@ -706,7 +708,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
     }
 
     @Override
-    public void remind(int answer) {
+    public void remind(int answer, final LiveGetInfo liveGetInfo) {
         Loger.d(TAG, "remind:sendDbDuration=" + sendDbDuration + ",answer=" + answer);
         if (sendDbDuration <= answer) {
             Map<String, String> mData = new HashMap<>();
@@ -725,20 +727,24 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                             .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     lp.rightMargin = praiseWidth;
                     ImageView imageView = (ImageView) view.findViewById(R.id.iv_livevideo_english_praise);
-                    imageView.setImageResource(R.drawable.bg_livevideo_english_speek_remind);
-
-                    //让弹窗居中显示
-                    LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
-                    String tag = "EnglishSpeekBll";
-                    Drawable drawable = activity.getResources().getDrawable(R.drawable
-                            .bg_livevideo_english_speek_remind);
-                    int wight = (liveVideoPoint.x3 - liveVideoPoint.x2 - drawable.getIntrinsicWidth()) / 2;
-                    Loger.i(tag, "屏幕x3是" + liveVideoPoint.x3 + "   ,drawable的大小是" + drawable.getIntrinsicWidth() + "," +
-                            "drawable的最小drawable是" + drawable.getMinimumWidth());
-                    lp.leftMargin = wight;
-//                    TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id
-//                            .tv_livevideo_english_praise);
-//                    tv_livevideo_english_praise.setText("大声说英语啦！");
+                    TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id
+                            .tv_livevideo_english_praise);
+                    //小英
+                    if (liveGetInfo.getIsArts() == 1 && (liveGetInfo.getGrade() > 1 && liveGetInfo.getGrade() < 65)) {
+                        //让弹窗居中显示
+                        tv_livevideo_english_praise.setVisibility(View.GONE);
+                        imageView.setImageResource(R.drawable.bg_arts_livevideo_english_speek_remind);
+                        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+                        String tag = "EnglishSpeekBll";
+                        Drawable drawable = activity.getResources().getDrawable(R.drawable
+                                .bg_arts_livevideo_english_speek_remind);
+                        int wight = (liveVideoPoint.x3 - liveVideoPoint.x2 - drawable.getIntrinsicWidth()) / 2;
+                        lp.leftMargin = wight;
+                    } else {
+                        tv_livevideo_english_praise.setBackgroundResource(R.drawable.bg_livevideo_english_speek_remind);
+                        tv_livevideo_english_praise.setVisibility(View.GONE);
+                        tv_livevideo_english_praise.setText("大声说英语啦！");
+                    }
                     bottomContent.addView(view, lp);
                     bottomContent.postDelayed(new Runnable() {
                         @Override
