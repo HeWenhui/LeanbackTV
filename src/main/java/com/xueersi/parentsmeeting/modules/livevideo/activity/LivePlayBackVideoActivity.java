@@ -71,6 +71,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.PutQuestion;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionResultView;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.TotalFrameStat;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.RedPacketAlertDialog;
@@ -172,7 +173,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
     /** 视频节对象 */
     VideoLivePlayBackEntity mVideoEntity;
     String beforeAttach;
-
+    /** 直播帧数统计 */
+    TotalFrameStat totalFrameStat;
     /** 是否显示移动网络提示 */
     private boolean mIsShowMobileAlert = true;
     /** 是否显示无网络提示 */
@@ -505,6 +507,8 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         }
         // 播放视频
         mWebPath = mVideoEntity.getVideoPath();
+        totalFrameStat = new TotalFrameStat(this, false);
+        totalFrameStat.setvPlayer(vPlayer);
 //        if (CourseInfoLiveActivity.isTest) {
 //            mWebPath = "http://r01.xesimg.com/stream/tmp/2016/11/30/1480481513276687694567.mp4";
 //        }
@@ -652,6 +656,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(View.VISIBLE);
         }
+        totalFrameStat.onOpenStart();
     }
 
     @Override
@@ -664,6 +669,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     "mIsShowQuestion=" + mIsShowQuestion);
 //            showQuestion(mQuestionEntity);
         }
+        totalFrameStat.onOpenSuccess();
         // 回放式心跳时间的上传(暂时废弃)
 //        mHandler.postDelayed(mPlayDuration, mPlayTime);
     }
@@ -724,6 +730,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 }
             }
         }
+        totalFrameStat.onOpenFailed(arg1, arg2);
     }
 
     @Override

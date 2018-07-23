@@ -28,7 +28,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.umeng.analytics.MobclickAgent;
 import com.xueersi.parentsmeeting.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.base.BaseApplication;
@@ -579,7 +578,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         // 设置当前是否为横屏
         setFileName(); // 设置视频显示名称
         showLongMediaController();
-        totalFrameStat = new TotalFrameStat(this);
+        totalFrameStat = new TotalFrameStat(this, true);
         totalFrameStat.setvPlayer(vPlayer);
     }
 
@@ -1156,6 +1155,9 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             if (wrapListener != null) {
                 wrapListener.onBufferStart();
             }
+            if (totalFrameStat != null) {
+                totalFrameStat.onBufferStart();
+            }
         }
 
         /** 缓冲结束 */
@@ -1170,6 +1172,9 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onBufferComplete();
+            }
+            if (totalFrameStat != null) {
+                totalFrameStat.onBufferComplete();
             }
         }
 

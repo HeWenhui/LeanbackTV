@@ -63,6 +63,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionResultView;
 import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RedPackageStandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SpeechEvalAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.TotalFrameStat;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
@@ -165,7 +166,8 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
     /** 视频节对象 */
     VideoLivePlayBackEntity mVideoEntity;
     String beforeAttach;
-
+    /** 直播帧数统计 */
+    TotalFrameStat totalFrameStat;
     /** 是否显示移动网络提示 */
     private boolean mIsShowMobileAlert = true;
     /** 是否显示无网络提示 */
@@ -436,6 +438,8 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         setmSendPlayVideoTime(LiveVideoConfig.LIVE_HB_TIME);
         // 播放视频
         mWebPath = mVideoEntity.getVideoPath();
+        totalFrameStat = new TotalFrameStat(this, false);
+        totalFrameStat.setvPlayer(vPlayer);
         Map<String, String> mParams = new HashMap<>();
         mParams.put("logtype", "initData");
         mParams.put("mSectionName", "" + mSectionName);
@@ -658,6 +662,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(View.VISIBLE);
         }
+        totalFrameStat.onOpenStart();
     }
 
     @Override
@@ -670,6 +675,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                     "mIsShowQuestion=" + mIsShowQuestion);
 //            showQuestion(mQuestionEntity);
         }
+        totalFrameStat.onOpenSuccess();
     }
 
     @Override
@@ -728,6 +734,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                 }
             }
         }
+        totalFrameStat.onOpenFailed(arg1, arg2);
     }
 
     @Override
