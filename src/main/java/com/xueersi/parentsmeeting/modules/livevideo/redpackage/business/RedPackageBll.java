@@ -19,33 +19,27 @@ import android.widget.TextView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
-import com.xueersi.common.http.HttpCallBack;
-import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.EventBusUtil;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
-import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
-import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.ArtsRedPackagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
-
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author linyuqiang
- *         Created by linyuqiang on 2016/9/23.
+ * Created by linyuqiang on 2016/9/23.
  */
 public class RedPackageBll implements RedPackageAction, Handler.Callback {
     private static final String TAG = "RedPackageBll";
@@ -55,6 +49,8 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
     private ReceiveGold receiveGold;
     LiveHttpResponseParser mHttpResponseParser = null;
 
+    ArtsRedPackagePager artsRedPackagePager;
+    private LiveGetInfo mGetInfo;
     /**
      * 直播id
      */
@@ -64,11 +60,12 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
      */
     private RelativeLayout rlRedpacketContent;
 
-    public RedPackageBll(Activity activity) {
+    public RedPackageBll(Activity activity, LiveGetInfo liveGetInfo) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
         this.activity = activity;
+        this.mGetInfo = liveGetInfo;
     }
 
     public void setLiveBll(LiveBll mLiveBll) {
@@ -129,33 +126,53 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
     private void showRedPacket(final int operateId, final OnReceivePackage onReceivePackage) {
         mLogtf.d("showRedPacket:operateId=" + operateId);
         rlRedpacketContent.removeAllViews();
-        View view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_view, rlRedpacketContent, false);
-
-        view.setBackgroundColor(ContextCompat.getColor(activity, R.color.mediacontroller_bg));
-
-        view.setTag(operateId);
+        View view = null;
+        //小英
+        if (mGetInfo.getIsArts() == 1 && (mGetInfo.getGrade() > 1 && mGetInfo.getGrade() < 65)) {
+            artsRedPackagePager = new ArtsRedPackagePager(activity);
+            view = artsRedPackagePager.getRootView();
+            //小英红包打开红包按钮的监听器
+            artsRedPackagePager.setRedPackageTouchListenr(new ArtsRedPackagePager.RedPackageTouchListenr() {
+                @Override
+                public void openRedPackage() {
+                    sendReceiveGold(operateId, mVSectionID);
+                }
+            });
+            artsRedPackagePager.setCancelRedPackageTouchListener(cancelRedPackageTouchListener);
+        } else {
+            view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_view, rlRedpacketContent, false);
+            view.setBackgroundColor(ContextCompat.getColor(activity, R.color.mediacontroller_bg));
+            view.setTag(operateId);
+            Button btnRedPacket = view.findViewById(R.id.bt_livevideo_redpackage_cofirm);
+            btnRedPacket.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    sendReceiveGold(operateId, mVSectionID);
+                }
+            });
+            view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    rlRedpacketContent.removeAllViews();
+                }
+            });
+        }
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
                 .LayoutParams.MATCH_PARENT);
         rlRedpacketContent.addView(view, params);
-        Button btnRedPacket = (Button) view.findViewById(R.id.bt_livevideo_redpackage_cofirm);
 
-        btnRedPacket.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendReceiveGold(operateId, mVSectionID);
-
-            }
-        });
-        view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rlRedpacketContent.removeAllViews();
-            }
-        });
         activity.getWindow().getDecorView().requestLayout();
         activity.getWindow().getDecorView().invalidate();
     }
 
+    //小英红包页面取消红包的监听器
+    private ArtsRedPackagePager.CancelRedPackageTouchListener cancelRedPackageTouchListener = new ArtsRedPackagePager
+            .CancelRedPackageTouchListener() {
+        @Override
+        public void cancelRedPackage() {
+            rlRedpacketContent.removeAllViews();
+        }
+    };
 
     private void sendReceiveGold(final int operateId, String sectionID) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
@@ -164,7 +181,6 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
             public void onDataSucess(Object... objData) {
                 VideoResultEntity entity = (VideoResultEntity) objData[0];
                 onGetPackage(entity);
-
                 // 广播 领取红包成功事件
                 EventBusUtil.post(new RedPackageEvent(mVSectionID, entity.getGoldNum(),
                         operateId + "", RedPackageEvent.STATE_CODE_SUCCESS));
@@ -188,53 +204,62 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
      * @param goldNum 金币数量
      */
     private void initRedPacketResult(int goldNum) {
-        String msg = "+" + goldNum + "金币";
-        View view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_success, rlRedpacketContent, false);
-
-        view.setBackgroundColor(ContextCompat.getColor(activity, R.color.mediacontroller_bg));
-        SpannableString msp = new SpannableString(msg);
-        float screenDensity = ScreenUtils.getScreenDensity();
-        // 字体
-        msp.setSpan(new AbsoluteSizeSpan((int) (50 * screenDensity)), 0, msg.length() - 2,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        TextView tvGoldHint = (TextView) view.findViewById(R.id.tv_livevideo_redpackage_gold);
-        tvGoldHint.setText(msp);
-        rlRedpacketContent.addView(view);
-        view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rlRedpacketContent.removeAllViews();
+        //小英
+        if (mGetInfo.getIsArts() == 1 && (mGetInfo.getGrade() > 1 && mGetInfo.getGrade() < 65)) {
+            artsRedPackagePager.updateStatus(String.valueOf(goldNum));
+            if (artsRedPackagePager.getCancelRedPackageTouchListener() == null) {
+                artsRedPackagePager.setCancelRedPackageTouchListener(cancelRedPackageTouchListener);
             }
-        });
-        final TextView tvAutoclose = (TextView) view.findViewById(R.id.tv_livevideo_redpackage_autoclose);
-        final AtomicInteger count = new AtomicInteger(3);
-        postDelayedIfNotFinish(new Runnable() {
-            @Override
-            public void run() {
-                count.set(count.get() - 1);
-                if (count.get() == 0) {
+
+        } else {
+            String msg = "+" + goldNum + "金币";
+            View view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_success, rlRedpacketContent,
+                    false);
+            view.setBackgroundColor(ContextCompat.getColor(activity, R.color.mediacontroller_bg));
+            SpannableString msp = new SpannableString(msg);
+            float screenDensity = ScreenUtils.getScreenDensity();
+            // 字体
+            msp.setSpan(new AbsoluteSizeSpan((int) (50 * screenDensity)), 0, msg.length() - 2,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            TextView tvGoldHint = (TextView) view.findViewById(R.id.tv_livevideo_redpackage_gold);
+            tvGoldHint.setText(msp);
+            rlRedpacketContent.addView(view);
+            view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     rlRedpacketContent.removeAllViews();
-                } else {
-                    if (rlRedpacketContent.getChildCount() > 0) {
-                        tvAutoclose.setText(count.get() + "秒自动关闭");
-                        postDelayedIfNotFinish(this, 1000);
+                }
+            });
+            final TextView tvAutoclose = (TextView) view.findViewById(R.id.tv_livevideo_redpackage_autoclose);
+            final AtomicInteger count = new AtomicInteger(3);
+            postDelayedIfNotFinish(new Runnable() {
+                @Override
+                public void run() {
+                    count.set(count.get() - 1);
+                    if (count.get() == 0) {
+                        rlRedpacketContent.removeAllViews();
+                    } else {
+                        if (rlRedpacketContent.getChildCount() > 0) {
+                            tvAutoclose.setText(count.get() + "秒自动关闭");
+                            postDelayedIfNotFinish(this, 1000);
+                        }
                     }
                 }
-            }
-        }, 1000);
-        postDelayedIfNotFinish(new Runnable() {
-            @Override
-            public void run() {
-                // 更新 本场成就
-                UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(activity, UpdateAchievement.class);
-                if (updateAchievement != null) {
-                    updateAchievement.getStuGoldCount();
+            }, 1000);
+            postDelayedIfNotFinish(new Runnable() {
+                @Override
+                public void run() {
+                    // 更新 本场成就
+                    UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(activity, UpdateAchievement.class);
+                    if (updateAchievement != null) {
+                        updateAchievement.getStuGoldCount();
+                    }
                 }
-            }
-        }, 2900);
-        ImageView ivRedpackageLight = (ImageView) view.findViewById(R.id.iv_livevideo_redpackage_light);
-        Animation animation = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_light_rotate);
-        ivRedpackageLight.startAnimation(animation);
+            }, 2900);
+            ImageView ivRedpackageLight = (ImageView) view.findViewById(R.id.iv_livevideo_redpackage_light);
+            Animation animation = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_light_rotate);
+            ivRedpackageLight.startAnimation(animation);
+        }
     }
 
     public void postDelayedIfNotFinish(Runnable r, long delayMillis) {
