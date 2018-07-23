@@ -1,34 +1,26 @@
 package com.xueersi.parentsmeeting.modules.livevideo.dialog;
 
-import android.app.Application;
-import android.content.Context;
 import android.os.Handler;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.xesalib.view.alertdialog.BaseAlertDialog;
 
 /**
- * Created by David on 2018/7/16.
+ * Created by David on 2018/7/21.
  */
 
-public class MicTipPsDialog extends BaseAlertDialog {
-    public TextView tips;
-    public MicTipPsDialog(Context context) {
-        super(context, (Application) BaseApplication.getContext(), false);
-    }
+public class PsRaiseHandDialog extends BaseAlertDialog {
+    private TextView tip;
     @Override
     protected View initDialogLayout(int i) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_livevideo_psmictips, null);
-        tips = (TextView)view.findViewById(R.id.tv_tip_detail);
+        View view = mInflater.inflate(R.layout.dialog_livevideo_psraisehand, null);
+        tip = (TextView) view.findViewById(R.id.tv_tip_detail);
         return view;
     }
-
-    public void setTips(String msg){
-        tips.setText(msg);
+    public void setRaiseHandsCount(int count) {
+        tip.setText(count + "人");
     }
 
     public void showDialog() {

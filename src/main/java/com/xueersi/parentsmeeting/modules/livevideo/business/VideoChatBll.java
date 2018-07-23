@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBa
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.MicTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.MicTipPsDialog;
+import com.xueersi.parentsmeeting.modules.livevideo.dialog.PsRaiseHandDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.RaiseHandDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -522,9 +523,16 @@ public class VideoChatBll implements VideoChatAction {
                             @Override
                             public void run() {
                                 if (!openhands.equals(oldOpenhandsStatus)) {
-                                    MicTipDialog micTipDialog = new MicTipDialog(activity);
-                                    micTipDialog.setSuccessTip("老师已开启举手，\n举手有机会与老师语音对话！");
-                                    micTipDialog.showDialog();
+                                    if(LiveVideoConfig.isPrimary){
+                                        MicTipPsDialog micTipDialogs = new MicTipPsDialog(activity);
+                                        micTipDialogs.setTips("老师已开启举手， \n 举手有机会与老师语音对话！");
+                                        micTipDialogs.showDialog();
+                                    } else {
+                                        MicTipDialog micTipDialog = new MicTipDialog(activity);
+                                        micTipDialog.setSuccessTip("老师已开启举手，\n举手有机会与老师语音对话！");
+                                        micTipDialog.showDialog();
+                                    }
+
 //                            XESToastUtils.showToast(activity, "老师已开启举手，\n举手有机会与老师语音对话！");
                                 }
                                 btRaiseHands.setAlpha(1.0f);
@@ -604,9 +612,16 @@ public class VideoChatBll implements VideoChatAction {
      * 检查权限后举手
      */
     private void raisehand() {
-        MicTipDialog micTipDialog = new MicTipDialog(activity);
-        micTipDialog.setSuccessTip("老师已开启举手，\n举手有机会与老师语音对话！");
-        micTipDialog.showDialog();
+        // 小学理科的改版
+        if(LiveVideoConfig.isPrimary){
+            MicTipPsDialog micTipDialogs = new MicTipPsDialog(activity);
+            micTipDialogs.setTips("老师已开启举手， \n 举手有机会与老师语音对话！");
+            micTipDialogs.showDialog();
+        } else {
+            MicTipDialog micTipDialog = new MicTipDialog(activity);
+            micTipDialog.setSuccessTip("老师已开启举手，\n举手有机会与老师语音对话！");
+            micTipDialog.showDialog();
+        }
         btRaiseHands.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -662,6 +677,7 @@ public class VideoChatBll implements VideoChatAction {
                     // 小学理科的改版
                     if(LiveVideoConfig.isPrimary){
                         MicTipPsDialog micTipDialogs = new MicTipPsDialog(activity);
+                        micTipDialogs.setTips("老师已经 \n 结束这次举手!");
                         micTipDialogs.showDialog();
                         return;
                     }
@@ -683,11 +699,18 @@ public class VideoChatBll implements VideoChatAction {
                 if (raiseHandDialog == null && "on".equals(status) && "off".equals(onMic)) {
                     headsetPrompt = true;
                     raisehand = true;
-                    BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
-                    raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
-                    raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
-                    raiseHandDialog.setRaiseHandsCount(raiseHandCount);
-                    raiseHandDialog.showDialog();
+                    if(LiveVideoConfig.isPrimary){
+                        PsRaiseHandDialog psHandDialog = new PsRaiseHandDialog();
+                        psHandDialog.setRaiseHandsCount(raiseHandCount);
+                        psHandDialog.showDialog();
+                    } else {
+                        BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
+                        raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
+                        raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
+                        raiseHandDialog.setRaiseHandsCount(raiseHandCount);
+                        raiseHandDialog.showDialog();
+                    }
+
                 }
             }
         });
@@ -708,11 +731,18 @@ public class VideoChatBll implements VideoChatAction {
             public void run() {
                 if (raiseHandDialog == null) {
                     mLogtf.d("requestAccept:raiseHandDialog=null");
-                    BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
-                    raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
-                    raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
-                    raiseHandDialog.setRaiseHandsCount(raiseHandCount);
-                    raiseHandDialog.showDialog();
+                    if(LiveVideoConfig.isPrimary){
+                        PsRaiseHandDialog psHandDialog = new PsRaiseHandDialog();
+                        psHandDialog.setRaiseHandsCount(raiseHandCount);
+                        psHandDialog.showDialog();
+                    } else {
+                        BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
+                        raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
+                        raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
+                        raiseHandDialog.setRaiseHandsCount(raiseHandCount);
+                        raiseHandDialog.showDialog();
+                    }
+
                 }
                 btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands_check);
                 raiseHandDialog.setSuccess();
@@ -770,11 +800,18 @@ public class VideoChatBll implements VideoChatAction {
                     }
                     Loger.d(TAG, "startMicro:raisehand=" + raisehand);
                     if (raisehand) {
-                        BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
-                        raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
-                        raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
-                        raiseHandDialog.setRaiseHandsCount(raiseHandCount);
-                        raiseHandDialog.showDialog();
+                        if(LiveVideoConfig.isPrimary){
+                            PsRaiseHandDialog psHandDialog = new PsRaiseHandDialog();
+                            psHandDialog.setRaiseHandsCount(raiseHandCount);
+                            psHandDialog.showDialog();
+                        } else {
+                            BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
+                            raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
+                            raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
+                            raiseHandDialog.setRaiseHandsCount(raiseHandCount);
+                            raiseHandDialog.showDialog();
+                        }
+
                     }
                 }
             }

@@ -1509,5 +1509,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         super.resultFailed(arg1, arg2);
         resultFailed = true;
         mIsShowQuestion = mIsShowRedpacket = false;
+        Loger.d(this,TAG, "liveId=" + mVideoEntity.getLiveId() + "," +
+                "url=" + Uri.parse(mWebPath),true);
     }
 }

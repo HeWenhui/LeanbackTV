@@ -972,6 +972,59 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     });
                     verifyCancelAlertDialog.showDialog();
                     return;
+                }else if (LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == mQuestionEntity.getvCategory()) {
+                    if (vPlayer != null) {
+                        vPlayer.pause();
+                    }
+                    mQuestionEntity.setAnswered(true);
+                    // 获取拼装一题多发的字段
+                    AppConfig.LIVEPLAYBACKINFOS = mQuestionEntity.getUrl();
+                    AppConfig.LIVEPLAYBACKSTUID = mVideoEntity.getStuCoulId();
+                    AppConfig.LIVEPLAYBACKCLASSID = mVideoEntity.getClassId();
+                    AppConfig.LIVEPLAYBACKTEAMID = mVideoEntity.getTeamId();
+                    AppConfig.LIVEPLAYBACKSTAGE = mVideoEntity.getEdustage();
+                    LivePlayBackAlertDialog verifyCancelAlertDialog = new LivePlayBackAlertDialog();
+                    verifyCancelAlertDialog.initInfo("课件提醒", "老师发布了课件，是否参与互动？");
+                    verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (mQuestionEntity == null) {
+                                if (vPlayer != null) {
+                                    vPlayer.start();
+                                }
+                                return;
+                            }
+                            if ("1".equals(mQuestionEntity.getIsVoice())) {
+                                try {
+                                    showVoiceAnswer(mQuestionEntity);
+                                    if (vPlayer != null) {
+                                        vPlayer.start();
+                                    }
+                                } catch (Exception e) {
+                                    showEnglishH5CoursewarePager();
+                                }
+                            } else {
+                                showEnglishH5CoursewarePager();
+                            }
+                            Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showEnglishH5VoiceAnswer");
+                            mPlayVideoControlHandler.sendMessage(msg);
+//                            showEnglishH5CoursewarePager();
+                        }
+                    });
+                    verifyCancelAlertDialog.setCancelBtnListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+//                            mQuestionEntity.setAnswered(false);
+                            Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 5, 5, mQuestionEntity);
+                            mPlayVideoControlHandler.sendMessage(msg);
+                            if (mQuestionEntity != null) {
+                                seekTo(mQuestionEntity.getvEndTime() * 1000);
+                            }
+                            start();
+                        }
+                    });
+                    verifyCancelAlertDialog.showDialog();
+                    return;
                 }
             }
         }
@@ -2053,6 +2106,14 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                     hasQuestionShow = true;
                     break;
                 }
+            } else if(LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory()){
+                // 在开始时间和结束时间之间
+                if (startTime <= playPosition && playPosition < endTime) {
+//                if (startTime == playPosition) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    break;
+                }
             } else if (LocalCourseConfig.CATEGORY_LEC_ADVERT == videoQuestionEntity.getvCategory()) {
                 // 在开始时间和结束时间之间
                 if (startTime == playPosition) {
@@ -2108,6 +2169,19 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
                 }
                 return;
             } else if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == mQuestionEntity.getvCategory()) {
+                LiveVideoConfig.isMulLiveBack = false;
+                if (mQuestionEntity.getvEndTime() < playPosition) {
+                    if (englishH5CoursewarePager != null) {
+                        englishH5CoursewarePager.submitData();
+                        if (vPlayer != null) {
+                            vPlayer.pause();
+                        }
+                        Loger.i(TAG, "getPlayQuetion:submitData:playPosition=" + playPosition);
+                    }
+                }
+                return;
+            } else if (LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == mQuestionEntity.getvCategory()){
+                LiveVideoConfig.isMulLiveBack = true;
                 if (mQuestionEntity.getvEndTime() < playPosition) {
                     if (englishH5CoursewarePager != null) {
                         englishH5CoursewarePager.submitData();
@@ -2511,7 +2585,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             if (isVoice) {
                 String type;
                 String sourcetype;
-                if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == questionEntity.getvCategory()) {
+                if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == questionEntity.getvCategory() || LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == questionEntity.getvCategory()) {
                     type = questionEntity.getVoiceQuestiontype();
                     sourcetype = "h5ware";
                 } else {
@@ -2535,7 +2609,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         } else if (entity.getResultType() == VideoResultEntity.QUE_RES_TYPE2) {
             if (isVoice) {
                 String type;
-                if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == questionEntity.getvCategory()) {
+                if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == questionEntity.getvCategory() || LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == questionEntity.getvCategory()) {
                     type = questionEntity.getVoiceQuestiontype();
                 } else {
                     type = questionEntity.getvQuestionType();

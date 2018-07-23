@@ -173,6 +173,8 @@ public class LiveVideoConfig {
     public static EnglishH5Entity englishH5Entity;
     /** 小学阶段年级的标识*/
     public static Boolean isPrimary = false;
+    /** 一题多发的直播回放的标识*/
+    public static Boolean isMulLiveBack = false;
     /** 年级阶段的标识*/
     public static String educationstage;
     public static interface SubjectIds {
