@@ -125,7 +125,9 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
     private TeamPkTeamInfoEntity mTeamInfo;
     private String mTeamName;
     private List<AnimInfo> teamInfoAnimList;
-    /**半透明遮罩背景 进入时间点*/
+    /**
+     * 半透明遮罩背景 进入时间点
+     */
     private static final float FRACTION_BG_MASK_FADE_IN = 0.4f;
 
     private List<TeamItemAnimInfo> teamItemAnimInfoList;
@@ -363,7 +365,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
                 int top = 0;
                 int bottom = 0;
                 if (itemPosition >= spanCount) {
-                    top = SizeUtils.Dp2Px(mContext,10);
+                    top = SizeUtils.Dp2Px(mContext, 10);
                 }
                 outRect.set(left, top, right, bottom);
             }
@@ -460,7 +462,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
 
     private void bgMaskFadeIn() {
         Loger.e("TeamPkTeamSelectPager", "=====>bgMaskFadeIn called:");
-        if(ivBgMask.getVisibility() != View.VISIBLE){
+        if (ivBgMask.getVisibility() != View.VISIBLE) {
             ivBgMask.setVisibility(View.VISIBLE);
             AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.
                     loadAnimation(mContext, R.anim.anim_livevido_teampk_bg_mask);
@@ -690,7 +692,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         lavTeamSelectAnimView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                if(animation.getAnimatedFraction() > FRACTION_BG_MASK_FADE_IN && !bgHasFadeIn){
+                if (animation.getAnimatedFraction() > FRACTION_BG_MASK_FADE_IN && !bgHasFadeIn) {
                     bgHasFadeIn = true;
                     ivBgMask.setVisibility(View.VISIBLE);
                 }
@@ -718,8 +720,8 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
                 case ANIMTYPE_TEAM_SELECTED:
                     playCheering();
                     break;
-                 default:
-                     break;
+                default:
+                    break;
             }
         }
 
@@ -855,10 +857,10 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
                 int top = 0;
                 int bottom = 0;
                 if (itemPosition >= spanCount) {
-                    top = getTopGap(teamsRecyclerView,spanCount);
-                    top = top <0?0:top;
+                    top = getTopGap(teamsRecyclerView, spanCount);
+                    top = top < 0 ? 0 : top;
                 }
-                Loger.e("cksdd","top:"+top);
+                Loger.e("cksdd", "top:" + top);
                 outRect.set(left, top, right, bottom);
             }
         });
@@ -963,27 +965,30 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         }
         int adapterPosition = mTeamIndex % teamAdapter.getItemCount();
         RecyclerView.ViewHolder viewHolder = teamsRecyclerView.findViewHolderForAdapterPosition(adapterPosition);
-        if (teamItemAnimInfoList.size() >= teamAdapter.getItemCount()) {
-            TeamItemAnimInfo animInfo = teamItemAnimInfoList.get(adapterPosition);
-            animInfo.mUpdateListener.reset();
-            ((ObjectAnimator) animInfo.mAnimatorSet.getChildAnimations().get(0))
-                    .addUpdateListener(animInfo.mUpdateListener);
-            animInfo.mAnimatorSet.start();
-        } else {
-            AnimatorSet itemAnimatorSet;
-            ObjectAnimator scaleXAnimator = ObjectAnimator.ofFloat(viewHolder.itemView
-                    , "scaleX", 1.0f, 1.50f, 1.0f);
-            ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(viewHolder.itemView
-                    , "scaleY", 1.0f, 1.5f, 1.0f);
+        if (viewHolder != null) {
+            if (teamItemAnimInfoList.size() >= teamAdapter.getItemCount()) {
+                TeamItemAnimInfo animInfo = teamItemAnimInfoList.get(adapterPosition);
+                animInfo.mUpdateListener.reset();
+                ((ObjectAnimator) animInfo.mAnimatorSet.getChildAnimations().get(0))
+                        .addUpdateListener(animInfo.mUpdateListener);
+                animInfo.mAnimatorSet.start();
+            } else {
+                AnimatorSet itemAnimatorSet;
+                ObjectAnimator scaleXAnimator = ObjectAnimator.ofFloat(viewHolder.itemView
+                        , "scaleX", 1.0f, 1.50f, 1.0f);
+                ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(viewHolder.itemView
+                        , "scaleY", 1.0f, 1.5f, 1.0f);
 
-            itemAnimatorSet = new AnimatorSet();
-            itemAnimatorSet.playTogether(scaleXAnimator, scaleYAnimator);
-            itemAnimatorSet.setDuration(MARQUEE_ANIM_DURATION);
-            itemAnimatorSet.start();
-            ItemAnimUpdateListener listener = new ItemAnimUpdateListener();
-            scaleXAnimator.addUpdateListener(listener);
-            TeamItemAnimInfo itemAnimInfo = new TeamItemAnimInfo(adapterPosition, itemAnimatorSet, listener);
-            teamItemAnimInfoList.add(itemAnimInfo);
+                itemAnimatorSet = new AnimatorSet();
+                itemAnimatorSet.playTogether(scaleXAnimator, scaleYAnimator);
+                itemAnimatorSet.setDuration(MARQUEE_ANIM_DURATION);
+                itemAnimatorSet.start();
+                ItemAnimUpdateListener listener = new ItemAnimUpdateListener();
+                scaleXAnimator.addUpdateListener(listener);
+                TeamItemAnimInfo itemAnimInfo = new TeamItemAnimInfo(adapterPosition, itemAnimatorSet, listener);
+                teamItemAnimInfoList.add(itemAnimInfo);
+            }
+
         }
     }
 
