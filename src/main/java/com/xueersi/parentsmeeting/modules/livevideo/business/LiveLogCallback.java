@@ -9,6 +9,11 @@ import org.xutils.xutils.x;
 
 import java.io.File;
 
+/**
+ * 直播日志重传
+ *
+ * @author linyuqiang
+ */
 public class LiveLogCallback implements Callback.CommonCallback<File> {
     private Handler mHandler = new Handler(Looper.getMainLooper());
     RequestParams params;
@@ -17,16 +22,18 @@ public class LiveLogCallback implements Callback.CommonCallback<File> {
 
     @Override
     public void onError(Throwable throwable, boolean b) {
-        if (params != null) {
+        if (params != null && tyrCount < 20) {
+            long delayMillis = tyrCount * 1500;
+            if (tyrCount > 15) {
+                delayMillis = 15 * 1500;
+            }
+            tyrCount++;
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     x.http().get(params, liveLogCallback);
                 }
-            }, tyrCount * 2000);
-            if (tyrCount < 15) {
-                tyrCount++;
-            }
+            }, delayMillis);
         }
     }
 
