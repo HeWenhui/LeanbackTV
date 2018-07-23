@@ -28,6 +28,7 @@ import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoPointEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -93,7 +94,7 @@ public class LiveRemarkBll {
     private RelativeLayout rlMask;
     private CommonAdapter mAdapter;
     private TextureView mTextureView;
-    private MediaController mController;
+    private MediaController2 mController;
     private AbstractBusinessDataCallBack mCallBack;
     private String liveId;
     private int markNum = 0;
@@ -320,7 +321,7 @@ public class LiveRemarkBll {
         }
     }
 
-    public void setController(MediaController controller) {
+    public void setController(MediaController2 controller) {
         mController = controller;
     }
 

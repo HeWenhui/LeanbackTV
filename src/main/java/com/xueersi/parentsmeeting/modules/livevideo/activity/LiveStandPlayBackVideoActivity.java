@@ -289,6 +289,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         // 设置当前是否为横屏
         final LiveStandPlaybackMediaController mMediaController = new LiveStandPlaybackMediaController(this, this);
         this.mMediaController = mMediaController;
+        rl_course_video_live_controller_content.removeAllViews();
         rl_course_video_live_controller_content.addView(mMediaController, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 //        if (mLiveRemarkBll == null || mLiveRemarkBll.getList() == null || mLiveRemarkBll.getList().size() == 0) {
 //            mMediaController.getTitleRightBtn().setVisibility(View.GONE);

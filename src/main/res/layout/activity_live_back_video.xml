@@ -22,7 +22,7 @@
 
             <!-- 播放器 -->
 
-            <com.xueersi.parentsmeeting.modules.videoplayer.media.VideoView
+            <com.xueersi.parentsmeeting.module.videoplayer.media.VideoView
                 android:id="@id/vv_course_video_video"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -310,12 +310,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <!-- 互动题显示的界面位置 -->
     <RelativeLayout
-        android:id="@id/rl_course_video_live_redpackage_content"
+        android:id="@id/rl_course_video_record_question_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+    <!-- 直播讲座 竖屏时显示更多课程的位置 -->
+    <RelativeLayout
+        android:id="@+id/rl_livevideo_playback"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </RelativeLayout>
+
     <!-- 直播回放 互动题显示的界面位置 -->
-    <com.xueersi.parentsmeeting.modules.livevideo.widget.LiveRelativeLayout
+    <RelativeLayout
         android:id="@id/rl_course_video_live_question_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -325,11 +337,5 @@
     <RelativeLayout
         android:id="@id/live_play_back_bottom"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <ViewStub
-        android:id="@id/vs_live_stand_update"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout="@layout/activity_video_live_stand_check" />
+        android:layout_height="match_parent"></RelativeLayout>
 </RelativeLayout>

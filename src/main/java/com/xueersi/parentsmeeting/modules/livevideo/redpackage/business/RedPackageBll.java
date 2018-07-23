@@ -8,12 +8,14 @@ import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -97,7 +99,11 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
 
     private void onGetPackage(VideoResultEntity entity) {
         rlRedpacketContent.removeAllViews();
-        initRedPacketResult(entity.getGoldNum());
+        if (entity.getResultType() == 0) {
+            initRedPacketOtherResult();
+        } else {
+            initRedPacketResult(entity.getGoldNum());
+        }
     }
 
     private void onGetPackageFailure(int operateId) {
@@ -260,6 +266,35 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
             Animation animation = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_light_rotate);
             ivRedpackageLight.startAnimation(animation);
         }
+    }
+
+
+    /**
+     * 以获取过红包
+     */
+    private void initRedPacketOtherResult() {
+        View popupWindow_view = activity.getLayoutInflater().inflate(R.layout.pop_question_redpacket_other, null, false);
+        initQuestionAnswerReslut(popupWindow_view);
+    }
+
+    /**
+     * 创建互动题作答，抢红包结果提示PopupWindow
+     */
+    protected void initQuestionAnswerReslut(final View popupWindow_view) {
+        rlRedpacketContent.addView(popupWindow_view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        popupWindow_view.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                rlRedpacketContent.removeView(popupWindow_view);
+            }
+        });
+        mVPlayVideoControlHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                rlRedpacketContent.removeView(popupWindow_view);
+            }
+        }, 3000);
     }
 
     public void postDelayedIfNotFinish(Runnable r, long delayMillis) {

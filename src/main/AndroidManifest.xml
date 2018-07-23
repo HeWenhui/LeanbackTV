@@ -45,6 +45,14 @@
             android:process=":livevideo"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
+        <activity
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivityBase"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:process=":livevideo"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
         <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
