@@ -509,6 +509,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
         mWebPath = mVideoEntity.getVideoPath();
         totalFrameStat = new TotalFrameStat(this, false);
         totalFrameStat.setvPlayer(vPlayer);
+        totalFrameStat.setChannelname(mVideoEntity.getLiveId());
 //        if (CourseInfoLiveActivity.isTest) {
 //            mWebPath = "http://r01.xesimg.com/stream/tmp/2016/11/30/1480481513276687694567.mp4";
 //        }

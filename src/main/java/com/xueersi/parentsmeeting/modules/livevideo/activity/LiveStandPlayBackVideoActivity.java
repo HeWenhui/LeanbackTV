@@ -440,6 +440,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         mWebPath = mVideoEntity.getVideoPath();
         totalFrameStat = new TotalFrameStat(this, false);
         totalFrameStat.setvPlayer(vPlayer);
+        totalFrameStat.setChannelname(mVideoEntity.getLiveId());
         Map<String, String> mParams = new HashMap<>();
         mParams.put("logtype", "initData");
         mParams.put("mSectionName", "" + mSectionName);
