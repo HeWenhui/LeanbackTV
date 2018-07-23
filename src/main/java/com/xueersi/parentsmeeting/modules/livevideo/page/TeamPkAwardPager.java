@@ -35,6 +35,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieImageAsset;
 import com.airbnb.lottie.OnCompositionLoadedListener;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
@@ -44,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CoinAwardDisplayer;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamMemberGridlayoutManager;
@@ -642,12 +644,18 @@ public class TeamPkAwardPager extends BasePager {
                     .asBitmap(new SingleConfig.BitmapListener() {
                         @Override
                         public void onSuccess(Drawable drawable) {
-                            Bitmap resultBitmap = ((BitmapDrawable) drawable).getBitmap();
-                            Bitmap circleBitmap = scaleBitmap(resultBitmap, Math.min(resultBitmap.getWidth(),
-                                    resultBitmap.getHeight()) / 2);
-                            ivHead.setImageBitmap(circleBitmap);
+                            Bitmap resultBitmap = null;
+                            if(drawable instanceof  BitmapDrawable){
+                                resultBitmap = ((BitmapDrawable) drawable).getBitmap();
+                            }else if(drawable instanceof GifDrawable){
+                                resultBitmap = ((GifDrawable)drawable).getFirstFrame();
+                            }
+                            if(resultBitmap != null){
+                                Bitmap circleBitmap = scaleBitmap(resultBitmap, Math.min(resultBitmap.getWidth(),
+                                        resultBitmap.getHeight()) / 2);
+                                ivHead.setImageBitmap(circleBitmap);
+                            }
                         }
-
                         @Override
                         public void onFail() {
                         }

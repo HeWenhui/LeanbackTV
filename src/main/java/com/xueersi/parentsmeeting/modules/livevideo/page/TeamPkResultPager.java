@@ -28,6 +28,7 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
@@ -50,10 +51,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-*战队 pk 结果页
-*@author chekun
-*created  at 2018/4/17 16:15
-*/
+ *战队 pk 结果页
+ *@author chekun
+ *created  at 2018/4/17 16:15
+ */
 public class TeamPkResultPager extends BasePager {
     private static final String TAG = "TeamPkResultPager";
     private LottieAnimationView lottieAnimationView;
@@ -408,12 +409,18 @@ public class TeamPkResultPager extends BasePager {
                     () {
                 @Override
                 public void onSuccess(Drawable drawable) {
-                    Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                    Bitmap resultBitmap = scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap
-                            .getHeight()) / 2);
-                    ivHead.setImageBitmap(resultBitmap);
+                    Bitmap headBitmap = null;
+                    if(drawable instanceof  BitmapDrawable){
+                        headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                    }else if(drawable instanceof GifDrawable){
+                        headBitmap = ((GifDrawable)drawable).getFirstFrame();
+                    }
+                    if(headBitmap != null){
+                        Bitmap resultBitmap = scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap
+                                .getHeight()) / 2);
+                        ivHead.setImageBitmap(resultBitmap);
+                    }
                 }
-
                 @Override
                 public void onFail() {
                 }
