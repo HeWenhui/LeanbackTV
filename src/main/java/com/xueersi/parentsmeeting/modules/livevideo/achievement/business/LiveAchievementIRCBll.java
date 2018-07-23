@@ -34,7 +34,8 @@ import okhttp3.Call;
  * Created by linyuqiang on 2018/7/5.
  * 本场成就和语音能量条
  */
-public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, LiveAchievementHttp, EnglishSpeekHttp, AudioRequest {
+public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, LiveAchievementHttp,
+        EnglishSpeekHttp, AudioRequest {
     StarInteractAction starAction;
     EnglishSpeekAction englishSpeekAction;
     boolean audioRequest = false;
@@ -67,7 +68,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                             getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack() {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                    StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount(responseEntity);
+                                    StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount
+                                            (responseEntity);
                                     mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
                                     mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
                                     if (starAction != null) {
@@ -87,7 +89,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         @Override
         public void initAchievement(String mode) {
             if (LiveAchievementIRCBll.this.starAction == null) {
-                LiveAchievementBll starBll = new LiveAchievementBll(activity, mLiveType, mGetInfo.getStarCount(), mGetInfo.getGoldCount(), true);
+                LiveAchievementBll starBll = new LiveAchievementBll(activity, mLiveType, mGetInfo.getStarCount(),
+                        mGetInfo.getGoldCount(), true);
                 starBll.setLiveBll(LiveAchievementIRCBll.this);
                 starBll.setLiveAndBackDebug(mLiveBll);
                 starBll.initView(mRootView);
@@ -103,7 +106,9 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     LiveAchievementIRCBll.this.englishSpeekAction = englishSpeekBll;
                 }
             }
-            LiveAchievementIRCBll.this.englishSpeekAction.onModeChange(mode, audioRequest);
+            if (LiveAchievementIRCBll.this.englishSpeekAction != null) {
+                LiveAchievementIRCBll.this.englishSpeekAction.onModeChange(mode, audioRequest);
+            }
         }
     }
 
@@ -119,7 +124,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 talLanguage = englishSpeekAction.getTalLanguage();
             }
             if (LiveTopic.MODE_CLASS.equals(mode)) {
-                LiveStandAchievementBll starBll = new LiveStandAchievementBll(activity, mLiveType, mGetInfo.getStarCount(), mGetInfo.getGoldCount(), true);
+                LiveStandAchievementBll starBll = new LiveStandAchievementBll(activity, mLiveType, mGetInfo
+                        .getStarCount(), mGetInfo.getGoldCount(), true);
                 starBll.setLiveBll(LiveAchievementIRCBll.this);
                 starBll.setLiveAndBackDebug(mLiveBll);
                 starBll.initView(mRootView);
@@ -137,7 +143,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 }
 
             } else {
-                LiveAchievementBll starBll = new LiveAchievementBll(activity, mLiveType, mGetInfo.getStarCount(), mGetInfo.getGoldCount(), true);
+                LiveAchievementBll starBll = new LiveAchievementBll(activity, mLiveType, mGetInfo.getStarCount(),
+                        mGetInfo.getGoldCount(), true);
                 starBll.setLiveBll(LiveAchievementIRCBll.this);
                 starBll.setLiveAndBackDebug(mLiveBll);
                 starBll.initView(mRootView);
@@ -168,7 +175,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             });
         }
     }
- 
+
     @Override
     public void onDestory() {
         super.onDestory();
@@ -184,7 +191,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     }
 
     @Override
-    public void setStuStarCount(final long reTryTime, final String starId, final AbstractBusinessDataCallBack callBack) {
+    public void setStuStarCount(final long reTryTime, final String starId, final AbstractBusinessDataCallBack
+            callBack) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         getHttpManager().setStuStarCount(mLiveType, enstuId, mLiveId, starId, new HttpCallBack() {
 
@@ -215,10 +223,12 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     }
 
     @Override
-    public void setTotalOpeningLength(final long reTryTime, final String duration, final String speakingNum, final String speakingLen, final float x, final float y) {
+    public void setTotalOpeningLength(final long reTryTime, final String duration, final String speakingNum, final
+    String speakingLen, final float x, final float y) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String classId = mGetInfo.getStudentLiveInfo().getClassId();
-        getHttpManager().setTotalOpeningLength(enstuId, mLiveBll.getCourseId(), mLiveId, classId, duration, speakingNum, speakingLen,
+        getHttpManager().setTotalOpeningLength(enstuId, mLiveBll.getCourseId(), mLiveId, classId, duration,
+                speakingNum, speakingLen,
                 new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -393,14 +403,14 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 case XESCODE.XCR_ROOM_DB_PRAISE: {
                     if (englishSpeekAction != null) {
                         int answer = object.getInt("answer");
-                        englishSpeekAction.praise(answer);
+                        englishSpeekAction.praise(answer, mGetInfo);
                     }
                     break;
                 }
                 case XESCODE.XCR_ROOM_DB_REMIND: {
                     if (englishSpeekAction != null) {
                         int answer = object.getInt("answer");
-                        englishSpeekAction.remind(answer);
+                        englishSpeekAction.remind(answer, mGetInfo);
                     }
                     break;
                 }
