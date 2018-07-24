@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoFragment;
@@ -218,20 +219,34 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     @Override
     protected VideoFragment getFragment() {
-        return new LiveVideoPlayFragment();
+        LiveVideoPlayFragment liveVideoPlayFragment = new LiveVideoPlayFragment();
+        liveVideoPlayFragment.liveFragmentBase = this;
+        return liveVideoPlayFragment;
     }
 
-    protected class LiveVideoPlayFragment extends VideoFragment {
+    @Override
+    protected void restoreFragment(VideoFragment videoFragment) {
+        LiveVideoPlayFragment liveVideoPlayFragment = (LiveVideoPlayFragment) videoFragment;
+        liveVideoPlayFragment.liveFragmentBase = this;
+    }
+
+    public static class LiveVideoPlayFragment extends VideoFragment {
+        private final String TAG = "LiveVideoPlayFragment";
+        LiveFragmentBase liveFragmentBase;
+
+        public LiveVideoPlayFragment() {
+            Loger.d(TAG, "LiveVideoPlayFragment");
+        }
 
         @Override
         protected void onPlayOpenStart() {
-            setFirstBackgroundVisible(View.VISIBLE);
-            mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
+            liveFragmentBase.setFirstBackgroundVisible(View.VISIBLE);
+            liveFragmentBase.mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
         }
 
         @Override
         protected void resultFailed(final int arg1, final int arg2) {
-            postDelayedIfNotFinish(new Runnable() {
+            liveFragmentBase.postDelayedIfNotFinish(new Runnable() {
 
                 @Override
                 public void run() {
@@ -239,7 +254,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                         @Override
                         public void run() {
                             synchronized (mIjkLock) {
-                                onFail(arg1, arg2);
+                                liveFragmentBase.onFail(arg1, arg2);
                             }
                         }
                     }.start();
@@ -249,11 +264,11 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
         @Override
         protected void onPlayOpenSuccess() {
-            TextView tvFail = (TextView) mContentView.findViewById(R.id.tv_course_video_loading_fail);
+            TextView tvFail = (TextView) liveFragmentBase.mContentView.findViewById(R.id.tv_course_video_loading_fail);
             if (tvFail != null) {
                 tvFail.setVisibility(View.INVISIBLE);
             }
-            setFirstBackgroundVisible(View.GONE);
+            liveFragmentBase.setFirstBackgroundVisible(View.GONE);
 //            if (mGetInfo != null && mGetInfo.getIsShowMarkPoint().equals("1")) {
 //                if (liveRemarkBll == null) {
 //                    liveRemarkBll = new LiveRemarkBll(activity, vPlayer);
@@ -282,7 +297,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
         @Override
         protected void playComplete() {
-            postDelayedIfNotFinish(new Runnable() {
+            liveFragmentBase.postDelayedIfNotFinish(new Runnable() {
 
                 @Override
                 public void run() {
@@ -290,7 +305,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                         @Override
                         public void run() {
                             synchronized (mIjkLock) {
-                                onFail(0, 0);
+                                liveFragmentBase.onFail(0, 0);
                             }
                         }
                     }.start();
@@ -300,19 +315,19 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
         @Override
         protected void onPlayError() {
-            liveVideoAction.onPlayError();
+            liveFragmentBase.liveVideoAction.onPlayError();
         }
 
         @Override
         public void onTitleShow(boolean show) {
-            for (LiveMediaController.MediaPlayerControl control : mediaPlayerControls) {
+            for (LiveMediaController.MediaPlayerControl control : liveFragmentBase.mediaPlayerControls) {
                 control.onTitleShow(show);
             }
         }
 
         @Override
         protected PlayerService.VPlayerListener getWrapListener() {
-            return mLiveVideoBll.getPlayListener();
+            return liveFragmentBase.mLiveVideoBll.getPlayListener();
         }
 
     }

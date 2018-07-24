@@ -78,6 +78,10 @@
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
         <service
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.service.LiveService"
+            android:process=":livedaemon" />
+
+        <service
             android:name="ren.yale.android.cachewebviewlib.CachePreLoadService"
             android:process=":livevideo" />
     </application>

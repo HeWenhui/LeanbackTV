@@ -349,9 +349,14 @@ public class LiveVideoFragmentBase extends Fragment {
         rlContent.addView(videoBackgroundRefresh);
         tvVideoLoadingText = (TextView) mContentView.findViewById(R.id.tv_course_video_loading_tip); // 加载进度文字框
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        VideoFragment fragment = getFragment();
+        VideoFragment fragment = (VideoFragment) getChildFragmentManager().findFragmentByTag("VideoFragment");
+        if (fragment == null) {
+            fragment = getFragment();
+            transaction.add(R.id.rl_live_video_frag, fragment, "VideoFragment");
+        } else {
+            restoreFragment(fragment);
+        }
         fragment.setOnVideoCreate(videoCreate);
-        transaction.add(R.id.rl_live_video_frag, fragment, "VideoFragment");
         videoFragment = fragment;
         transaction.commit();
         logger.d("loadView:frag=" + ((ViewGroup) mContentView.findViewById(R.id.rl_live_video_frag)).getChildCount());
@@ -369,6 +374,10 @@ public class LiveVideoFragmentBase extends Fragment {
 
     protected VideoFragment getFragment() {
         return new VideoFragment();
+    }
+
+    protected void restoreFragment(VideoFragment videoFragment) {
+
     }
 
     /** 加载旋转屏时相关布局 */

@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import com.xueersi.lib.log.FileLogger;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.service.LiveService;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoFragment;
 import com.xueersi.ui.dataload.DataLoadManager;
 
@@ -47,6 +49,9 @@ public class LiveVideoActivityBase extends XesActivity {
         // 注册事件
         EventBus.getDefault().register(this);
         loadView(R.layout.activity_video_live_frag);
+        Intent intent = new Intent(this, LiveService.class);
+        intent.putExtra("livepid", android.os.Process.myPid());
+        startService(intent);
     }
 
     @Override
@@ -96,6 +101,8 @@ public class LiveVideoActivityBase extends XesActivity {
             return;
         // 注销事件
         EventBus.getDefault().unregister(this);
+        Intent intent = new Intent(this, LiveService.class);
+        stopService(intent);
     }
 
     @Override
@@ -126,22 +133,20 @@ public class LiveVideoActivityBase extends XesActivity {
     protected void loadView(int id) {
         setContentView(id);
         getWindow().setBackgroundDrawable(null);
-        liveVideoFragmentBase = getFragment();
-        if (liveVideoFragmentBase != null) {
+        liveVideoFragmentBase = (LiveVideoFragmentBase) getFragmentManager().findFragmentByTag("liveVideo");
+        if (liveVideoFragmentBase == null) {
+            liveVideoFragmentBase = getFragment();
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.rl_course_video_contentview, liveVideoFragmentBase, "liveVideo");
             fragmentTransaction.commit();
+        } else {
+            restoreFragment(liveVideoFragmentBase);
         }
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // 使屏幕保持长亮
     }
 
-    protected void addLiveVideoFragment(LiveVideoFragmentBase base) {
-        liveVideoFragmentBase = base;
-        if (base != null) {
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.rl_course_video_contentview, base, "liveVideo");
-            fragmentTransaction.commit();
-        }
+    protected void restoreFragment(LiveVideoFragmentBase liveVideoFragmentBase) {
+
     }
 
     protected LiveVideoFragmentBase getFragment() {
