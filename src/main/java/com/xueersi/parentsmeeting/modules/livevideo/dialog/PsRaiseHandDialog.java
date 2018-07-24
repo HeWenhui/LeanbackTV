@@ -1,9 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.dialog;
 
+import android.content.Context;
 import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
+import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.xesalib.view.alertdialog.BaseAlertDialog;
 
@@ -12,6 +14,9 @@ import com.xueersi.xesalib.view.alertdialog.BaseAlertDialog;
  */
 
 public class PsRaiseHandDialog extends BaseAlertDialog {
+    public PsRaiseHandDialog(Context context, BaseApplication application) {
+        super(context, application, false);
+    }
     private TextView tip;
     @Override
     protected View initDialogLayout(int i) {
@@ -20,7 +25,7 @@ public class PsRaiseHandDialog extends BaseAlertDialog {
         return view;
     }
     public void setRaiseHandsCount(int count) {
-        tip.setText(count + "人");
+        tip.setText("当前举手人数:" + count + "人");
     }
 
     public void showDialog() {
