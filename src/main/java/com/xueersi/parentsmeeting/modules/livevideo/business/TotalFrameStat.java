@@ -165,9 +165,6 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                             fps = ijkMediaPlayer.getVideoOutputFramesPerSecond();
                         }
                         long disaplyCount = ijkMediaPlayer.getDisaplyCount();
-                        if (fistDisaplyCount == 0) {
-                            fistDisaplyCount = disaplyCount;
-                        }
                         if (frames.isEmpty()) {
                             frameStart = System.currentTimeMillis();
                         }
