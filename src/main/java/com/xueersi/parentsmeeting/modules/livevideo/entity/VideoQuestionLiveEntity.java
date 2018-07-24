@@ -50,6 +50,13 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     public String multiRolePlay;
     /** 不为空是role play */
     public String roles = "";
+    public int examSubmit;
+    /** 插入视频的时间点，秒为单位 */
+    private int vQuestionInsretTime;
+    /** 结束时间 */
+    private int vEndTime;
+    /** 测试题日期 */
+    private String answerDay;
 
     public VideoQuestionLiveEntity() {
     }
@@ -116,5 +123,29 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     public void setUrl(String url) {
         englishH5Entity.setUrl(url);
+    }
+
+    public int getvQuestionInsretTime() {
+        return vQuestionInsretTime;
+    }
+
+    public void setvQuestionInsretTime(int vQuestionInsretTime) {
+        this.vQuestionInsretTime = vQuestionInsretTime;
+    }
+
+    public int getvEndTime() {
+        return vEndTime;
+    }
+
+    public void setvEndTime(int vEndTime) {
+        this.vEndTime = vEndTime;
+    }
+
+    public String getAnswerDay() {
+        return answerDay;
+    }
+
+    public void setAnswerDay(String answerDay) {
+        this.answerDay = answerDay;
     }
 }

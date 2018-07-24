@@ -41,7 +41,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author linyuqiang
- * Created by linyuqiang on 2016/9/23.
+ *         Created by linyuqiang on 2016/9/23.
  */
 public class RedPackageBll implements RedPackageAction, Handler.Callback {
     private static final String TAG = "RedPackageBll";
@@ -134,7 +134,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
         rlRedpacketContent.removeAllViews();
         View view = null;
         //小英
-        if (mGetInfo.getIsArts() == 1 && (mGetInfo.getGrade() > 1 && mGetInfo.getGrade() < 65)) {
+        if (mGetInfo != null && mGetInfo.getIsArts() == 1 && (mGetInfo.getGrade() > 1 && mGetInfo.getGrade() < 65)) {
             artsRedPackagePager = new ArtsRedPackagePager(activity);
             view = artsRedPackagePager.getRootView();
             //小英红包打开红包按钮的监听器

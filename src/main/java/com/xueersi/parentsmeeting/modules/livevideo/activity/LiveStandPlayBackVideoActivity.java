@@ -263,7 +263,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         super.onConfigurationChanged(newConfig);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlQuestionContent.getLayoutParams();
         Loger.d(TAG, "onConfigurationChanged:mIsLand=" + mIsLand);
-        if (mIsLand) {
+        if (mIsLand.get()) {
             lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
             lp.addRule(RelativeLayout.BELOW, 0);
         } else {
@@ -755,7 +755,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
     /** 扫描是否有需要弹出的互动题 */
     public void scanQuestion(long position) {
 
-        if (!mIsLand || vPlayer == null || !vPlayer.isPlaying()) {
+        if (!mIsLand.get() || vPlayer == null || !vPlayer.isPlaying()) {
             // 如果不为横屏，没有正在播放，或正在显示互动题都退出扫描
             return;
         }

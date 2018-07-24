@@ -188,7 +188,6 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
     /** 视频节对象 */
     VideoLivePlayBackEntity mVideoEntity;
     String beforeAttach;
-
     /** 是否显示移动网络提示 */
     private boolean mIsShowMobileAlert = true;
     /** 是否显示无网络提示 */
@@ -314,7 +313,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
         super.onConfigurationChanged(newConfig);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlQuestionContent.getLayoutParams();
         Loger.d(TAG, "onConfigurationChanged:mIsLand=" + mIsLand);
-        if (mIsLand) {
+        if (mIsLand.get()) {
             lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
             lp.addRule(RelativeLayout.BELOW, 0);
             if (mPopupWindows != null) {
@@ -521,6 +520,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
         mWebPath = mVideoEntity.getVideoPath();
         liveBackBll = new LiveBackBll(this, mVideoEntity);
         liveBackBll.setStuCourId(stuCourId);
+        liveBackBll.setvPlayer(vPlayer);
 //        if (CourseInfoLiveActivity.isTest) {
 //            mWebPath = "http://r01.xesimg.com/stream/tmp/2016/11/30/1480481513276687694567.mp4";
 //        }
@@ -560,7 +560,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
         addBusiness(this);
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
         for (LiveBackBaseBll businessBll : businessBlls) {
-            businessBll.initViewF(rlQuestionContent, new AtomicBoolean(mIsLand));
+            businessBll.initViewF(rlQuestionContent, mIsLand);
         }
         if (islocal) {
             // 互动题播放地址
@@ -797,7 +797,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
         VideoQuestionEntity oldQuestionEntity = mQuestionEntity;
         mQuestionEntity = videoQuestionEntity;
         mQuestionEntity.setClick(true);
-        showQuestion(oldQuestionEntity);
+//        showQuestion(oldQuestionEntity);
         liveBackBll.onOnPointClick(videoQuestionEntity, position);
     }
 
@@ -811,41 +811,41 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
     /** 扫描是否有需要弹出的互动题 */
     public void scanQuestion(long position) {
 
-        if (!mIsLand || vPlayer == null || !vPlayer.isPlaying()) {
+        if (!mIsLand.get() || vPlayer == null || !vPlayer.isPlaying()) {
             // 如果不为横屏，没有正在播放，或正在显示互动题都退出扫描
             return;
         }
         liveBackBll.scanQuestion(position);
         // 互动题结束，隐藏互动题
-        if (mQuestionEntity != null && mQuestionEntity.getvEndTime() != 0
-                && mQuestionEntity.getvEndTime() == TimeUtils.gennerSecond(position)) {
-            // 如果是互动题，则提示时间结束
-            if (LocalCourseConfig.CATEGORY_QUESTION == mQuestionEntity.getvCategory()
-                    && !mQuestionEntity.isAnswered()) {
-                XESToastUtils.showToast(this, "答题时间结束...");
-                Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 1, 1, mQuestionEntity);
-                mPlayVideoControlHandler.sendMessage(msg);
-                if (voiceAnswerPager != null) {
-                    if (voiceAnswerPager.getBaseVideoQuestionEntity().getvQuestionID().equals(mQuestionEntity.getvQuestionID())) {
-                        Loger.d(TAG, "scanQuestion:stopVoiceAnswerPager1");
-                        voiceAnswerPager.setEnd();
-                        voiceAnswerPager.stopPlayer();
-                        voiceAnswerPager = null;
+//        if (mQuestionEntity != null && mQuestionEntity.getvEndTime() != 0
+//                && mQuestionEntity.getvEndTime() == TimeUtils.gennerSecond(position)) {
+//            // 如果是互动题，则提示时间结束
+//            if (LocalCourseConfig.CATEGORY_QUESTION == mQuestionEntity.getvCategory()
+//                    && !mQuestionEntity.isAnswered()) {
+//                XESToastUtils.showToast(this, "答题时间结束...");
+//                Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 1, 1, mQuestionEntity);
+//                mPlayVideoControlHandler.sendMessage(msg);
+//                if (voiceAnswerPager != null) {
+//                    if (voiceAnswerPager.getBaseVideoQuestionEntity().getvQuestionID().equals(mQuestionEntity.getvQuestionID())) {
+//                        Loger.d(TAG, "scanQuestion:stopVoiceAnswerPager1");
+//                        voiceAnswerPager.setEnd();
+//                        voiceAnswerPager.stopPlayer();
 //                        voiceAnswerPager = null;
-                    }
-                }
-            }
-        }
-        VideoQuestionEntity oldQuestionEntity = mQuestionEntity;
-        getPlayQuetion(TimeUtils.gennerSecond(position));
-        if (mQuestionEntity != null && voiceAnswerPager != null) {
-            if (!voiceAnswerPager.getBaseVideoQuestionEntity().getvQuestionID().equals(mQuestionEntity.getvQuestionID())) {
-                Loger.d(TAG, "scanQuestion:stopVoiceAnswerPager2");
-                voiceAnswerPager.setEnd();
-                stopVoiceAnswerPager();
-            }
-        }
-        showQuestion(oldQuestionEntity);
+////                        voiceAnswerPager = null;
+//                    }
+//                }
+//            }
+//        }
+//        VideoQuestionEntity oldQuestionEntity = mQuestionEntity;
+//        getPlayQuetion(TimeUtils.gennerSecond(position));
+//        if (mQuestionEntity != null && voiceAnswerPager != null) {
+//            if (!voiceAnswerPager.getBaseVideoQuestionEntity().getvQuestionID().equals(mQuestionEntity.getvQuestionID())) {
+//                Loger.d(TAG, "scanQuestion:stopVoiceAnswerPager2");
+//                voiceAnswerPager.setEnd();
+//                stopVoiceAnswerPager();
+//            }
+//        }
+//        showQuestion(oldQuestionEntity);
     }
 
     private void showQuestion(VideoQuestionEntity oldQuestionEntity) {
@@ -1503,8 +1503,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
     /** 显示选择题 */
     public BaseLiveQuestionPager showMulitSelectQuestion(VideoQuestionEntity mQuestionEntity) {
         QuestionMulitSelectLivePager questionSelectPager = new QuestionMulitSelectLivePager(LivePlayBackVideoActivity
-                .this,
-                mQuestionEntity);
+                .this, mQuestionEntity);
         questionSelectPager.setPutQuestion(new PutQuestion() {
             @Override
             public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
@@ -1522,8 +1521,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
     /** 显示主观题 */
     private void showSubjectiveQuestion() {
         QuestionSubjectivePager questionSelectPager = new QuestionSubjectivePager(LivePlayBackVideoActivity
-                .this,
-                mQuestionEntity);
+                .this, mQuestionEntity);
         questionSelectPager.setPutQuestion(new PutQuestion() {
             @Override
             public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
@@ -1910,7 +1908,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mIsLand) {
+                if (mIsLand.get()) {
                     if (mPopupWindows != null) {
                         mPopupWindows.dismiss();
                         mPopupWindows = null;
@@ -2714,7 +2712,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(MiniEvent event) {
         if ("Order".equals(event.getMin())) {
-            if (mIsLand) {
+            if (mIsLand.get()) {
                 final String courseId = event.getCourseId();
                 final String classId = event.getClassId();
                 changeLOrP();

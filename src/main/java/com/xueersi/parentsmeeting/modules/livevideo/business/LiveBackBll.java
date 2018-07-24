@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.util.SparseArray;
 
 import com.xueersi.common.business.AppBll;
@@ -11,12 +12,16 @@ import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.TimeUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +42,7 @@ public class LiveBackBll implements LiveAndBackDebug {
     /** 从哪个页面跳转 */
     String where;
     int isArts;
+    int mLiveType;
     /** 区分文理appid */
     String appID = UmsConstants.LIVE_APP_ID_BACK;
     private LiveVideoSAConfig liveVideoSAConfig;
@@ -56,14 +62,33 @@ public class LiveBackBll implements LiveAndBackDebug {
     private AtomicBoolean mIsLand = new AtomicBoolean(true);
     private LivePlayBackHttpManager mCourseHttpManager;
     private LivePlayBackHttpResponseParser mCourseHttpResponseParser;
+    /** 本地视频 */
+    boolean islocal;
+    private int pattern = 1;
 
     public LiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
         this.activity = activity;
         this.mVideoEntity = mVideoEntity;
-        isArts = activity.getIntent().getIntExtra("isArts", 0);
-        if ("PublicLiveDetailActivity".equals(where)) {
+        ProxUtil.getProxUtil().put(activity, LiveAndBackDebug.class, this);
+        Intent intent = activity.getIntent();
+        isArts = intent.getIntExtra("isArts", 0);
+        islocal = intent.getBooleanExtra("islocal", false);
+        pattern = intent.getIntExtra("pattern", 0);
+        if ("LivePlayBackActivity".equals(where)) {//直播辅导
+            mLiveType = LiveVideoConfig.LIVE_TYPE_TUTORIAL;
+        } else if ("PublicLiveDetailActivity".equals(where)) {//公开直播
+            mLiveType = LiveVideoConfig.LIVE_TYPE_LECTURE;
             appID = UmsConstants.OPERAT_APP_ID;
         } else {
+            if (islocal) {
+                if (mVideoEntity.getvLivePlayBackType() == LocalCourseConfig.LIVE_PLAY_RECORD) {//直播辅导下载
+                    mLiveType = LiveVideoConfig.LIVE_TYPE_TUTORIAL;
+                } else {//直播课下载
+                    mLiveType = LiveVideoConfig.LIVE_TYPE_LIVE;
+                }
+            } else {
+                mLiveType = LiveVideoConfig.LIVE_TYPE_LIVE;
+            }
             if (isArts == 1) {
                 appID = UmsConstants.ARTS_APP_ID_BACK;
                 IS_SCIENCE = false;
@@ -74,9 +99,26 @@ public class LiveBackBll implements LiveAndBackDebug {
                 liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
             }
         }
+
         mCourseHttpManager = new LivePlayBackHttpManager(activity);
         mCourseHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         mCourseHttpResponseParser = new LivePlayBackHttpResponseParser();
+    }
+
+    public int getLiveType() {
+        return mLiveType;
+    }
+
+    public int getPattern() {
+        return pattern;
+    }
+
+    public void setvPlayer(PlayerService vPlayer) {
+        this.vPlayer = vPlayer;
+    }
+
+    public PlayerService getvPlayer() {
+        return vPlayer;
     }
 
     public void setStuCourId(String stuCourId) {
@@ -95,8 +137,32 @@ public class LiveBackBll implements LiveAndBackDebug {
     }
 
     public void onCreate() {
+        LiveGetInfo liveGetInfo = new LiveGetInfo(null);
+        liveGetInfo.setId(mVideoEntity.getLiveId());
+        liveGetInfo.setUname(AppBll.getInstance().getAppInfoEntity().getChildName());
+        liveGetInfo.setStuId(stuCourId);
+        if (liveVideoSAConfig != null) {
+            liveGetInfo.setSubjectiveTestAnswerResult(liveVideoSAConfig.inner.subjectiveTestAnswerResult);
+        }
+        liveGetInfo.setTestPaperUrl("http://live.xueersi.com/Live/getMultiTestPaper");
+        liveGetInfo.setIs_show_ranks("0");
+        liveGetInfo.setLiveType(mLiveType);
+        MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
+        if (!StringUtils.isEmpty(mMyInfo.getEnglishName())) {
+            liveGetInfo.setEn_name(mMyInfo.getEnglishName());
+        } else if (!StringUtils.isEmpty(mMyInfo.getRealName())) {
+            liveGetInfo.setStuName(mMyInfo.getRealName());
+        } else if (!StringUtils.isEmpty(mMyInfo.getNickName())) {
+            liveGetInfo.setNickname(mMyInfo.getNickName());
+        }
+        if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+            LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = new LiveGetInfo.StudentLiveInfoEntity();
+            studentLiveInfo.setLearning_stage(mVideoEntity.getLearning_stage());
+            liveGetInfo.setStudentLiveInfo(studentLiveInfo);
+        }
+        liveGetInfo.setPattern(pattern);
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
-            liveBackBaseBll.onCreateF(mVideoEntity, businessShareParamMap);
+            liveBackBaseBll.onCreateF(mVideoEntity, liveGetInfo, businessShareParamMap);
         }
     }
 
@@ -116,7 +182,10 @@ public class LiveBackBll implements LiveAndBackDebug {
         return mCourseHttpResponseParser;
     }
 
-    //    private Handler mPlayVideoControlHandler = new Handler() {
+    public LiveVideoSAConfig getLiveVideoSAConfig() {
+        return liveVideoSAConfig;
+    }
+//    private Handler mPlayVideoControlHandler = new Handler() {
 //        @Override
 //        public void handleMessage(Message msg) {
 //            switch (msg.what) {

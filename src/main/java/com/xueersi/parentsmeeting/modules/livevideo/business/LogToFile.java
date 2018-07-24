@@ -70,9 +70,10 @@ public class LogToFile {
             if (auditClassLiveBll != null) {
                 auditClassLiveBll.getOnloadLogs(TAG, TAG + "**" + message);
             } else {
-                liveBll2.getOnloadLogs(TAG, TAG + "**" + message);
+                if (liveBll2 != null) {
+                    liveBll2.getOnloadLogs(TAG, TAG + "**" + message);
+                }
             }
-            ;
         }
 //        if (BuildConfig.DEBUG) {
 //            new Thread(new WriteThread(message)).start();

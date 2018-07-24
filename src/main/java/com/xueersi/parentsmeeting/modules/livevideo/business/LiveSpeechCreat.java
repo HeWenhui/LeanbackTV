@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.content.Context;
 import android.widget.RelativeLayout;
 
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -19,6 +20,11 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
  */
 
 public class LiveSpeechCreat implements BaseSpeechCreat {
+    boolean isLive;
+
+    public LiveSpeechCreat(boolean isLive) {
+        this.isLive = isLive;
+    }
 
     @Override
     public void receiveRolePlay(VideoQuestionLiveEntity videoQuestionLiveEntity) {
@@ -26,13 +32,21 @@ public class LiveSpeechCreat implements BaseSpeechCreat {
     }
 
     @Override
-    public BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String testId, String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String learning_stage) {
-        SpeechAssAutoPager speechAssAutoPager =
-                new SpeechAssAutoPager(context, liveid, testId, nonce,
-                        content, (int) time, haveAnswer, learning_stage, speechEvalAction);
-        int screenWidth = ScreenUtils.getScreenWidth();
-        int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
-        lp.rightMargin = wradio;
+    public BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String nonce, VideoQuestionLiveEntity videoQuestionLiveEntity, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String learning_stage) {
+        SpeechAssAutoPager speechAssAutoPager;
+        if (isLive) {
+            speechAssAutoPager =
+                    new SpeechAssAutoPager(context, liveid, videoQuestionLiveEntity.id, nonce,
+                            videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time, haveAnswer, learning_stage, speechEvalAction);
+            int screenWidth = ScreenUtils.getScreenWidth();
+            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
+            lp.rightMargin = wradio;
+        } else {
+            speechAssAutoPager = new SpeechAssAutoPager(context,
+                    liveid, videoQuestionLiveEntity.id,
+                    "", videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time,
+                    videoQuestionLiveEntity.getvEndTime() - videoQuestionLiveEntity.getvQuestionInsretTime(), learning_stage, speechEvalAction);
+        }
         return speechAssAutoPager;
     }
 

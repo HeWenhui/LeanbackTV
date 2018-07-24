@@ -55,7 +55,7 @@ public class RedPackagePlayBackBll extends LiveBackBaseBll {
     @Override
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, final VideoQuestionEntity questionEntity) {
         if (redPackageAction == null) {
-            RedPackageBll redPackageBll = new RedPackageBll(activity);
+            RedPackageBll redPackageBll = new RedPackageBll(activity, null);
             redPackageBll.setVSectionID(mVideoEntity.getSectionId());
             redPackageBll.initView(mRootView);
             redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {

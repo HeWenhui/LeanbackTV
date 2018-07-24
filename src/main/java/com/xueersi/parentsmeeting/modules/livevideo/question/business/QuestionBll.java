@@ -21,7 +21,6 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -221,7 +220,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         this.videoCachedDuration = videoCachedDuration;
     }
 
-    public void setUserName(LiveGetInfo liveGetInfo) {
+    public void setLiveGetInfo(LiveGetInfo liveGetInfo) {
         this.liveGetInfo = liveGetInfo;
     }
 
@@ -334,7 +333,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 if (keyBordAction == null) {
                     keyBordAction = ProxUtil.getProxUtil().get(activity, KeyBordAction.class);
                 }
-                keyBordAction.hideInput();
+                if (keyBordAction != null) {
+                    keyBordAction.hideInput();
+                }
             }
             break;
             case NO_QUESTION: {
@@ -554,7 +555,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             }
                         });
                     }
-                    String speechEvalResultUrl = liveGetInfo.getSpeechEvalUrl();
 //                    speechAssessmentPager = new SpeechAssessmentPager(activity, QuestionBll.this, speechEvalUrl,
 // liveGetInfo.getStuId(), liveGetInfo.getId(), id);
 //                    speechAssessmentPager = new SpeechAssessmentPager(activity, true, liveGetInfo.getId(),
@@ -571,8 +571,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             learning_stage = studentLiveInfo.getLearning_stage();
                         }
                         BaseSpeechAssessmentPager speechAssAutoPager = baseSpeechCreat.createSpeech(activity,
-                                liveGetInfo.getId(), id, videoQuestionLiveEntity.nonce,
-                                videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time,
+                                liveGetInfo.getId(), videoQuestionLiveEntity.nonce,
+                                videoQuestionLiveEntity,
                                 haveAnswer, QuestionBll.
                                         this, lp, liveGetInfo, learning_stage);
                         speechAssessmentPager = speechAssAutoPager;
@@ -915,11 +915,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
             }
         }
-    }
-
-    @Override
-    public void understand(final String nonce) {
-
     }
 
     @Override
@@ -1452,7 +1447,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         if (keyBordAction == null) {
             keyBordAction = ProxUtil.getProxUtil().get(activity, KeyBordAction.class);
         }
-        keyBordAction.showInput();
+        if (keyBordAction != null) {
+            keyBordAction.showInput();
+        }
         if (delay) {
             postDelayedIfNotFinish(new Runnable() {
 

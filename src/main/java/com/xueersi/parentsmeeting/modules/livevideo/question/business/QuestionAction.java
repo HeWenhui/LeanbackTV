@@ -28,9 +28,6 @@ public interface QuestionAction {
     /** 结束互动题 */
     void onStopQuestion(String ptype, String nonce);
 
-    /** 懂了吗 */
-    void understand(String nonce);
-
     /** 考试开始 */
     void onExamStart(String liveid, String num, String nonce);
 

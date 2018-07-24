@@ -9,8 +9,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.StandSpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.StandSpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 
@@ -18,27 +18,27 @@ import java.util.Map;
 
 /**
  * Created by lingyuqiang on 2018/4/7.
- * 站立直播的语音答题
+ * 站立直播的语音答题-回放
  */
-public class LiveStandSpeechCreat implements BaseSpeechCreat {
+public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
     LiveBll liveBll;
-    QuestionIRCBll questionIRCBll;
+    QuestionPlayBackBll questionIRCBll;
     LiveAndBackDebug liveAndBackDebug;
 
     @Deprecated
-    public LiveStandSpeechCreat(LiveBll liveBll) {
+    public LiveBackStandSpeechCreat(LiveBll liveBll) {
         this.liveBll = liveBll;
         liveAndBackDebug = liveBll;
     }
 
-    public LiveStandSpeechCreat(QuestionIRCBll questionIRCBll, LiveAndBackDebug liveAndBackDebug) {
+    public LiveBackStandSpeechCreat(QuestionPlayBackBll questionIRCBll, LiveAndBackDebug liveAndBackDebug) {
         this.questionIRCBll = questionIRCBll;
         this.liveAndBackDebug = liveAndBackDebug;
     }
 
     @Override
     public void receiveRolePlay(VideoQuestionLiveEntity videoQuestionLiveEntity) {
-        RolePlayStandLog.sno2(liveAndBackDebug, videoQuestionLiveEntity.id);
+
     }
 
     @Override
@@ -46,9 +46,11 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
                                                   boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String learning_stage) {
         SpeechStandLog.sno2(liveAndBackDebug, videoQuestionLiveEntity.id, nonce);
         speechEvalAction = new LiveStandSpeechEvalActionImpl(speechEvalAction);
-        StandSpeechAssAutoPager speechAssAutoPager =
-                new StandSpeechAssAutoPager(context, liveid, videoQuestionLiveEntity.id, nonce,
-                        videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time, haveAnswer, speechEvalAction, getInfo.getStandLiveName(), getInfo.getHeadImgPath(), learning_stage);
+        StandSpeechAssAutoPager speechAssAutoPager = new StandSpeechAssAutoPager(context,
+                liveid, videoQuestionLiveEntity.id,
+                "", videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time,
+                videoQuestionLiveEntity.getvEndTime() - videoQuestionLiveEntity.getvQuestionInsretTime(),
+                speechEvalAction, getInfo.getStandLiveName(), getInfo.getHeadImgPath(), learning_stage);
         return speechAssAutoPager;
     }
 
@@ -81,13 +83,6 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
 
         @Override
         public long getRequestTime() {
-            try {
-                String requestTime = questionIRCBll.getRequestTime();
-                long time = Long.parseLong(requestTime);
-                return time * 1000;
-            } catch (Exception e) {
-
-            }
             return 3000;
         }
 
@@ -108,10 +103,7 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
 
         @Override
         public void getSpeechEvalAnswerTeamStatus(String testId, AbstractBusinessDataCallBack callBack) {
-            String requestTime = questionIRCBll.getRequestTime();
-            if (!"-1".equals(requestTime)) {
-                questionIRCBll.getSpeechEvalAnswerTeamStatus(testId, callBack);
-            }
+
         }
 
         @Override
@@ -137,9 +129,6 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         @Override
         public void onSpeechSuccess(String num) {
             action.onSpeechSuccess(num);
-            questionIRCBll.getStuGoldCount();
-            // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
-            // EventBusUtil.post(new UpdateAchievementEvent(liveBll.getLiveId()));
         }
 
         @Override

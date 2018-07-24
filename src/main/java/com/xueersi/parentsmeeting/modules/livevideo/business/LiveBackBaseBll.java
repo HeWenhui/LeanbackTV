@@ -11,6 +11,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
 
@@ -23,23 +24,27 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LiveBackBaseBll extends BaseBll {
     protected Logger logger = LoggerFactory.getLogger(TAG);
-    LiveBackBll liveBackBll;
+    protected LiveBackBll liveBackBll;
     protected Activity activity;
     protected RelativeLayout mRootView;
     /** 视频节对象 */
     protected VideoLivePlayBackEntity mVideoEntity;
-    private AtomicBoolean mIsLand;
+    protected LiveGetInfo liveGetInfo;
+    protected AtomicBoolean mIsLand;
     protected Handler mHandler = new Handler(Looper.getMainLooper());
+    protected final int mLiveType;
 
     public LiveBackBaseBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity);
         this.activity = activity;
         this.liveBackBll = liveBackBll;
+        mLiveType = liveBackBll.getLiveType();
     }
 
-    public final void onCreateF(VideoLivePlayBackEntity mVideoEntity, HashMap<String, Object> businessShareParamMap) {
+    public final void onCreateF(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
         this.mVideoEntity = mVideoEntity;
-        onCreate(mVideoEntity, businessShareParamMap);
+        this.liveGetInfo = liveGetInfo;
+        onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
     }
 
     public final void initViewF(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
@@ -52,7 +57,7 @@ public class LiveBackBaseBll extends BaseBll {
 
     }
 
-    public void onCreate(VideoLivePlayBackEntity mVideoEntity, HashMap<String, Object> businessShareParamMap) {
+    public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
 
     }
 

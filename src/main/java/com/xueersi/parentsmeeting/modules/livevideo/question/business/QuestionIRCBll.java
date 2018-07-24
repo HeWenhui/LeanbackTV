@@ -72,6 +72,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (keyboardShowingReg != null) {
             keyboardShowingReg.addKeyboardShowing(mQuestionAction);
         }
+        mQuestionAction.setLiveType(mLiveType);
     }
 
     @Override
@@ -82,14 +83,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onLiveInited(LiveGetInfo data) {
         super.onLiveInited(data);
-        mQuestionAction.setUserName(data);
+        mQuestionAction.setLiveGetInfo(data);
         if (data.getPattern() == 2) {
             mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl()));
             mQuestionAction.setBaseSpeechCreat(new LiveStandSpeechCreat(this, mLiveBll));
             mQuestionAction.setSpeechEndAction(new StandSpeechTop3Bll(this, mLiveBll));
         } else {
             mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl()));
-            mQuestionAction.setBaseSpeechCreat(new LiveSpeechCreat());
+            mQuestionAction.setBaseSpeechCreat(new LiveSpeechCreat(true));
         }
         if (1 == data.getIsEnglish()) {
             mIse = new SpeechEvaluatorUtils(true);
@@ -265,25 +266,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         UpdateAchievement updateAchievement = getInstance(UpdateAchievement.class);
         if (updateAchievement != null) {
             updateAchievement.getStuGoldCount();
-        }
-    }
-
-    @Override
-    public void understand(boolean understand, String nonce) {
-        if (mLiveBll.getMainTeacherStr() != null) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("type", "" + XESCODE.UNDERSTANDS);
-                jsonObject.put("understand", understand);
-                jsonObject.put("nonce", nonce);
-                mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
-                mLogtf.d("understand ok");
-            } catch (Exception e) {
-                // Loger.e(TAG, "understand", e);
-                mLogtf.e("understand", e);
-            }
-        } else {
-            mLogtf.d("understand mMainTeacherStr=null");
         }
     }
 

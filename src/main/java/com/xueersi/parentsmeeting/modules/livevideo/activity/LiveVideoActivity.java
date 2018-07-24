@@ -450,7 +450,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         questionBll.setLiveType(liveType);
         questionBll.initData();
         questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(questionBll.new LiveQuestionSwitchImpl()));
-        questionBll.setBaseSpeechCreat(new LiveSpeechCreat());
+        questionBll.setBaseSpeechCreat(new LiveSpeechCreat(true));
         englishH5CoursewareBll.setShareDataManager(mShareDataManager);
         englishH5CoursewareBll.setLiveType(liveType);
         englishH5CoursewareBll.setVSectionID(mVSectionID);
@@ -1055,7 +1055,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         }
         liveMessageBll.setLiveGetInfo(getInfo);
         //rollCallBll.onLiveInit(liveType, getInfo);
-        questionBll.setUserName(getInfo);
+        questionBll.setLiveGetInfo(getInfo);
         videoChatBll.onLiveInit(getInfo);
         Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
     }

@@ -907,7 +907,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
         }
         liveMessageBll.setLiveGetInfo(getInfo);
         //rollCallBll.onLiveInit(liveType, getInfo);
-        questionBll.setUserName(getInfo);
+        questionBll.setLiveGetInfo(getInfo);
 //        if (AppConfig.DEBUG) {
 //            LecAdvertEntity lecAdvertEntity = new LecAdvertEntity();
 //            lecAdvertAction.start(lecAdvertEntity);

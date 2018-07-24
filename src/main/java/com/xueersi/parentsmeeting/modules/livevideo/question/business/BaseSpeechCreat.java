@@ -21,8 +21,8 @@ public interface BaseSpeechCreat {
     void receiveRolePlay(final VideoQuestionLiveEntity videoQuestionLiveEntity);
 
     /** 创建原生语音评测 */
-    BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String testId,
-                                           String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String learning_stage);
+    BaseSpeechAssessmentPager createSpeech(Context context, String liveid,
+                                           String nonce, VideoQuestionLiveEntity videoQuestionLiveEntity, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String learning_stage);
 
     /** 创建roleplay */
     BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId,

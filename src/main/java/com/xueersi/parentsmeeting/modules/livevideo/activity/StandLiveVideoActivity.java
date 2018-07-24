@@ -1095,7 +1095,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         }
         liveMessageBll.setLiveGetInfo(getInfo);
         //rollCallBll.onLiveInit(liveType, getInfo);
-        questionBll.setUserName(getInfo);
+        questionBll.setLiveGetInfo(getInfo);
         videoChatBll.onLiveInit(getInfo);
         redPackageBll.setUserName(getInfo.getStandLiveName());
         redPackageBll.setHeadUrl(getInfo.getHeadImgPath());
@@ -1462,43 +1462,43 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                 } else {
                     mLiveBll.dns_resolve_stream(entity, mServer, mGetInfo.getChannelname(), new
                             AbstractBusinessDataCallBack() {
-                        @Override
-                        public void onDataSucess(Object... objData) {
-                            if (finalEntity != lastPlayserverEntity) {
-                                return;
-                            }
-                            String provide = (String) objData[0];
-                            String url;
-                            if ("wangsu".equals(provide)) {
-                                url = objData[1] + "&username=" + mGetInfo.getUname() + "&cfrom=android";
-                                playNewVideo(Uri.parse(url), mGetInfo.getName());
-                            } else if ("ali".equals(provide)) {
-                                url = (String) objData[1];
-                                StringBuilder stringBuilder = new StringBuilder(url);
-                                addBody("Sucess", stringBuilder);
-                                url = stringBuilder + "&username=" + mGetInfo.getUname();
-                                playNewVideo(Uri.parse(url), mGetInfo.getName());
-                            } else {
-                                return;
-                            }
-                            StableLogHashMap stableLogHashMap = new StableLogHashMap("glsb3rdDnsReply");
-                            stableLogHashMap.put("message", "" + url);
-                            stableLogHashMap.put("activity", mContext.getClass().getSimpleName());
-                            Loger.e(mContext, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData(), true);
-                        }
+                                @Override
+                                public void onDataSucess(Object... objData) {
+                                    if (finalEntity != lastPlayserverEntity) {
+                                        return;
+                                    }
+                                    String provide = (String) objData[0];
+                                    String url;
+                                    if ("wangsu".equals(provide)) {
+                                        url = objData[1] + "&username=" + mGetInfo.getUname() + "&cfrom=android";
+                                        playNewVideo(Uri.parse(url), mGetInfo.getName());
+                                    } else if ("ali".equals(provide)) {
+                                        url = (String) objData[1];
+                                        StringBuilder stringBuilder = new StringBuilder(url);
+                                        addBody("Sucess", stringBuilder);
+                                        url = stringBuilder + "&username=" + mGetInfo.getUname();
+                                        playNewVideo(Uri.parse(url), mGetInfo.getName());
+                                    } else {
+                                        return;
+                                    }
+                                    StableLogHashMap stableLogHashMap = new StableLogHashMap("glsb3rdDnsReply");
+                                    stableLogHashMap.put("message", "" + url);
+                                    stableLogHashMap.put("activity", mContext.getClass().getSimpleName());
+                                    Loger.e(mContext, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData(), true);
+                                }
 
-                        @Override
-                        public void onDataFail(int errStatus, String failMsg) {
-                            if (finalEntity != lastPlayserverEntity) {
-                                return;
-                            }
-                            String url = "rtmp://" + finalEntity.getAddress() + "/" + mServer.getAppname() + "/" +
-                                    mGetInfo.getChannelname();
-                            StringBuilder stringBuilder = new StringBuilder(url);
-                            addBody("Fail", stringBuilder);
-                            playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
-                        }
-                    });
+                                @Override
+                                public void onDataFail(int errStatus, String failMsg) {
+                                    if (finalEntity != lastPlayserverEntity) {
+                                        return;
+                                    }
+                                    String url = "rtmp://" + finalEntity.getAddress() + "/" + mServer.getAppname() + "/" +
+                                            mGetInfo.getChannelname();
+                                    StringBuilder stringBuilder = new StringBuilder(url);
+                                    addBody("Fail", stringBuilder);
+                                    playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
+                                }
+                            });
                     return;
                 }
             }

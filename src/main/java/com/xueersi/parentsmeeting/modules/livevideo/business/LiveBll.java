@@ -1439,15 +1439,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                         }
                     }
                     break;
-                    case XESCODE.UNDERSTANDT:
-                        msg += "UNDERSTANDT";
-                        if ("off".equals(voiceChatStatus)) {//接麦懂了么无效
-                            if (mQuestionAction != null) {
-                                String nonce = object.optString("nonce");
-                                mQuestionAction.understand(nonce);
-                            }
-                        }
-                        break;
                     case XESCODE.OPENBARRAGE: {
                         boolean open = object.getBoolean("open");
                         msg += open ? "OPENBARRAGE" : "CLOSEBARRAGE";

@@ -10,8 +10,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 public interface QuestionHttp {
     void getStuGoldCount();
 
-    void understand(boolean isUnderstand, String nonce);
-
     void sendRankMessage(int rankStuReconnectMessage);
 
     void getQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity1, AbstractBusinessDataCallBack abstractBusinessDataCallBack);
