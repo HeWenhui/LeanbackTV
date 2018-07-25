@@ -33,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
+import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
@@ -270,7 +271,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
 
     @Override
     public void start() {
-        Loger.d(TAG, "start:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",mode=" + mode);
+        mLogtf.d("start:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",mode=" + mode);
         if (isDestory) {
             return;
         }
@@ -278,7 +279,6 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
             return;
         }
         try {
-            isAudioStart = true;
             talLanguage.start(new LanguageListener() {
                 ValueAnimator lastValueAnimator;
 
@@ -458,8 +458,10 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
                     }
                 }
             });
-        } catch (IOException e) {
-            Loger.e(TAG, "start", e);
+            isAudioStart = true;
+        } catch (Exception e) {
+            mLogtf.e("start", e);
+            XESToastUtils.showToast(activity, "能量条启动失败，打开录音权限或者关闭其他录音程序");
         }
     }
 
