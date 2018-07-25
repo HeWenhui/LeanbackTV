@@ -1,8 +1,10 @@
 package com.xueersi.parentsmeeting.modules.livevideo.dialog;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.base.BaseApplication;
@@ -25,6 +27,12 @@ public class RedPacketAlertDialog extends BaseAlertDialog {
     @Override
     protected View initDialogLayout(int type) {
         View view = mInflater.inflate(R.layout.dialog_red_packet_view, null);
+        ImageView imageView = view.findViewById(R.id.iv_livevideo_redpackage_monkey);
+        try {
+            Drawable drawable = mContext.getResources().getDrawable(R.drawable.bg_livevideo_redpackage_monkey);
+            imageView.setBackground(drawable);
+        } catch (Exception e) {
+        }
         btnRedPacket = (Button) view.findViewById(R.id.bt_livevideo_redpackage_cofirm);
         btnRedPacket.setOnClickListener(new View.OnClickListener() {
             @Override
