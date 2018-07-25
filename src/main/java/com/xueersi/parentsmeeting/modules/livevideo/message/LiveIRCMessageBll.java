@@ -104,6 +104,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Override
     public void onCreate(HashMap<String, Object> data) {
         super.onCreate(data);
+        mLiveTopic = mLiveBll.getLiveTopic();
         mLiveAutoNoticeBll = getInstance(LiveAutoNoticeIRCBll.class);
         mVideoAction = getInstance(VideoAction.class);
         mHttpResponseParser = mLiveBll.getHttpResponseParser();
@@ -136,10 +137,6 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     public void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
         mRoomAction.setLiveBll(new LiveIRCState());
         mRoomAction.setLiveMediaControllerBottom(baseLiveMediaControllerBottom);
-    }
-
-    public void setLiveTopic(LiveTopic mLiveTopic) {
-        this.mLiveTopic = mLiveTopic;
     }
 
     @Override
@@ -503,7 +500,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         }
         liveTopic.setDisable(forbidSendMsg);
         if (mRoomAction != null) {
-            mRoomAction.onOpenbarrage(mLiveTopic.getMainRoomstatus().isOpenbarrage(), false);
+            mRoomAction.onOpenbarrage(liveTopic.getMainRoomstatus().isOpenbarrage(), false);
             mRoomAction.onDisable(forbidSendMsg, false);
             if (LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
                 mRoomAction.onopenchat(liveTopic.getMainRoomstatus().isOpenchat(), LiveTopic.MODE_CLASS,
