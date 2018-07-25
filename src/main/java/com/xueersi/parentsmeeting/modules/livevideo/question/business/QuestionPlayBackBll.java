@@ -21,11 +21,13 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoViewActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
+import com.xueersi.parentsmeeting.modules.livevideo.business.VideoPlayAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoQuestionAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
@@ -33,9 +35,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SubjectResultX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dataload.DataLoadEntity;
+import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONObject;
 
@@ -69,6 +74,20 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             questionBll.setBaseSpeechCreat(new LiveSpeechCreat(false));
         }
         questionBll.setLiveBll(this);
+        LiveBackExamQuestionCreat liveBackExamQuestionCreat = new LiveBackExamQuestionCreat();
+        liveBackExamQuestionCreat.setLiveGetInfo(liveGetInfo);
+        int isArts = (int) liveBackBll.getBusinessShareParam("isArts");
+        liveBackExamQuestionCreat.setIS_SCIENCE(isArts != 1);
+        liveBackExamQuestionCreat.setExamStop(new BaseExamQuestionInter.ExamStop() {
+            @Override
+            public void stopExam(VideoQuestionLiveEntity mQuestionEntity) {
+                questionBll.stopExam(mQuestionEntity.getvQuestionID());
+                VideoPlayAction videoPlayAction = ProxUtil.getProxUtil().get(activity, VideoPlayAction.class);
+                videoPlayAction.seekTo(mQuestionEntity.getvEndTime() * 1000);
+                videoPlayAction.start();
+            }
+        });
+        questionBll.setBaseExamQuestionCreat(liveBackExamQuestionCreat);
     }
 
 
@@ -83,7 +102,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     }
 
     @Override
-    public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity) {
+    public void showQuestion(VideoQuestionEntity oldQuestionEntity, final VideoQuestionEntity questionEntity) {
         mRootView.setVisibility(View.VISIBLE);
         questionBll.initView(mRootView, mIsLand.get());
         int vCategory = questionEntity.getvCategory();
@@ -101,7 +120,37 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 videoQuestionLiveEntity.examSubmit = questionEntity.getvEndTime() - questionEntity.getvQuestionInsretTime();
                 videoQuestionLiveEntity.srcType = questionEntity.getSrcType();
                 videoQuestionLiveEntity.setAnswerDay(questionEntity.getAnswerDay());
+                videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
+                videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
                 questionBll.showQuestion(videoQuestionLiveEntity);
+            }
+            break;
+            case LocalCourseConfig.CATEGORY_EXAM: {
+                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(), false,
+                        VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
+                verifyCancelAlertDialog.initInfo("测试提醒", "老师发布了一套测试题，是否现在开始答题？");
+                verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                        if (vPlayer != null) {
+//                            vPlayer.start();
+//                        }
+                        VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                        videoQuestionLiveEntity.id = questionEntity.getvQuestionID();
+                        videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
+                        videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
+                        questionBll.onExamStart(mVideoEntity.getLiveId(), videoQuestionLiveEntity);
+                    }
+                });
+                verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        VideoPlayAction videoPlayAction = ProxUtil.getProxUtil().get(activity, VideoPlayAction.class);
+                        videoPlayAction.seekTo(questionEntity.getvEndTime() * 1000);
+                        videoPlayAction.start();
+                    }
+                });
+                verifyCancelAlertDialog.showDialog();
             }
             break;
             default:

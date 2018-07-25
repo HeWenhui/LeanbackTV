@@ -24,6 +24,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -34,6 +36,7 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -47,7 +50,7 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
  * Created by linyuqiang on 2016/11/28.
  * 直播试卷答题页面
  */
-public class ExamQuestionX5Pager extends BasePager implements BaseExamQuestionInter {
+public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuestionInter {
     private String EXAM_URL = "http://live.xueersi.com/LiveExam/examPaper";
     String examQuestionEventId = LiveVideoConfig.LIVE_H5_EXAM;
     private Button btSubjectClose;
@@ -57,6 +60,7 @@ public class ExamQuestionX5Pager extends BasePager implements BaseExamQuestionIn
     private QuestionBll questionBll;
     private String liveid;
     private String num;
+    VideoQuestionLiveEntity videoQuestionLiveEntity;
     private LogToFile logToFile;
     /** 用户名称 */
     private String stuName;
@@ -68,7 +72,6 @@ public class ExamQuestionX5Pager extends BasePager implements BaseExamQuestionIn
     /** 是不是考试结束 */
     private boolean isEnd = false;
     String jsExamSubmitAll = "javascript:examSubmitAll()";
-    private LiveAndBackDebug mLiveBll;
     private String isShowRankList;
     boolean IS_SCIENCE;
     String stuCouId;
@@ -76,18 +79,18 @@ public class ExamQuestionX5Pager extends BasePager implements BaseExamQuestionIn
     private int mGoldNum;
     private int mEnergyNum;
 
-    public ExamQuestionX5Pager(Context context, LiveAndBackDebug liveBll, QuestionBll questionBll, String stuId
-            , String stuName, String liveid, String num, String nonce, String isShowRankList, boolean IS_SCIENCE, String stuCouId, int isTeamPkRoom) {
+    public ExamQuestionX5Pager(Context context, QuestionBll questionBll, String stuId
+            , String stuName, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, String isShowRankList, boolean IS_SCIENCE, String stuCouId, int isTeamPkRoom) {
         super(context);
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
-        mLiveBll = liveBll;
         this.questionBll = questionBll;
         this.stuId = stuId;
         this.stuName = stuName;
         this.liveid = liveid;
-        this.num = num;
-        this.nonce = nonce;
+        this.videoQuestionLiveEntity = videoQuestionLiveEntity;
+        this.num = videoQuestionLiveEntity.id;
+        this.nonce = videoQuestionLiveEntity.nonce;
         this.IS_SCIENCE = IS_SCIENCE;
         this.stuCouId = stuCouId;
         logToFile.i("ExamQuestionPager:liveid=" + liveid + ",num=" + num);
@@ -226,7 +229,7 @@ public class ExamQuestionX5Pager extends BasePager implements BaseExamQuestionIn
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "examEnd");
         mData.put("examid", num);
-        mLiveBll.umsAgentDebugSys(examQuestionEventId, mData);
+        umsAgentDebugSys(examQuestionEventId, mData);
     }
 
     @Override
@@ -296,7 +299,7 @@ public class ExamQuestionX5Pager extends BasePager implements BaseExamQuestionIn
             mData.put("examid", num);
             mData.put("status", "success");
             mData.put("loadurl", url);
-            mLiveBll.umsAgentDebugSys(examQuestionEventId, mData);
+            umsAgentDebugSys(examQuestionEventId, mData);
 //            super.onPageFinished(view, url);
         }
 
@@ -326,7 +329,7 @@ public class ExamQuestionX5Pager extends BasePager implements BaseExamQuestionIn
             mData.put("status", "fail");
             mData.put("msg", description);
             mData.put("loadurl", failingUrl);
-            mLiveBll.umsAgentDebugSys(examQuestionEventId, mData);
+            umsAgentDebugSys(examQuestionEventId, mData);
         }
 
         @Override
@@ -352,7 +355,7 @@ public class ExamQuestionX5Pager extends BasePager implements BaseExamQuestionIn
                 mData.put("logtype", "examClose");
                 mData.put("examid", num);
                 mData.put("closetype", "clickWebCloseButton");
-                mLiveBll.umsAgentDebugSys(examQuestionEventId, mData);
+                umsAgentDebugSys(examQuestionEventId, mData);
             } else {
                 if (url.contains("xueersi.com")) {
                     view.loadUrl(url);
@@ -388,7 +391,6 @@ public class ExamQuestionX5Pager extends BasePager implements BaseExamQuestionIn
                     e.printStackTrace();
                 }
             }
-
             return true;
         }
     }

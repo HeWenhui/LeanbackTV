@@ -50,6 +50,7 @@ import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.BaseVoiceAnswerCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertPagerClose;
@@ -1089,10 +1090,12 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                 if (rlQuestionContent != null && mQuestionEntity != null) {
                     Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showExam");
                     mPlayVideoControlHandler.sendMessage(msg);
+                    VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                    videoQuestionLiveEntity.id = mQuestionEntity.getvQuestionID();
                     examQuestionPlaybackPager = new ExamQuestionX5PlaybackPager(LiveStandPlayBackVideoActivity.this,
-                            mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), IS_SCIENCE, stuCourId, new BaseExamQuestionInter.ExamStop() {
+                            mVideoEntity.getLiveId(), videoQuestionLiveEntity, IS_SCIENCE, stuCourId, new BaseExamQuestionInter.ExamStop() {
                         @Override
-                        public void stopExam() {
+                        public void stopExam(VideoQuestionLiveEntity videoQuestionLiveEntity) {
                             LiveStandPlayBackVideoActivity.this.stopExam();
                         }
                     });

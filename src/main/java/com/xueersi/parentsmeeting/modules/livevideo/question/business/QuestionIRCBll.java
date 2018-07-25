@@ -84,6 +84,15 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void onLiveInited(LiveGetInfo data) {
         super.onLiveInited(data);
         mQuestionAction.setLiveGetInfo(data);
+        LiveExamQuestionCreat liveExamQuestionCreat = new LiveExamQuestionCreat();
+        int isArts = (int) mLiveBll.getBusinessShareParam("isArts");
+        liveExamQuestionCreat.setIS_SCIENCE(isArts != 1);
+        liveExamQuestionCreat.setLiveGetInfo(data);
+        if (mAnswerRankBll != null) {
+            liveExamQuestionCreat.setmAnswerRankBll(mAnswerRankBll.getAnswerRankBll());
+        }
+        liveExamQuestionCreat.setQuestionHttp(this);
+        mQuestionAction.setBaseExamQuestionCreat(liveExamQuestionCreat);
         if (data.getPattern() == 2) {
             mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl()));
             mQuestionAction.setBaseSpeechCreat(new LiveStandSpeechCreat(this, mLiveBll));
@@ -128,7 +137,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (mainRoomstatus.isHaveExam() && mQuestionAction != null) {
             if ("on".equals(mainRoomstatus.getExamStatus())) {
                 String num = mainRoomstatus.getExamNum();
-                mQuestionAction.onExamStart(mLiveId, num, "");
+                VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                videoQuestionLiveEntity.id = num;
+                mQuestionAction.onExamStart(mLiveId, videoQuestionLiveEntity);
                 if (mAnswerRankBll != null) {
                     mAnswerRankBll.setTestId(num);
                 }
@@ -157,7 +168,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onNotice(JSONObject object, int type) {
         switch (type) {
-            case XESCODE.SENDQUESTION:
+            case XESCODE.SENDQUESTION: {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                 videoQuestionLiveEntity.type = object.optString("ptype");
                 videoQuestionLiveEntity.id = object.optString("id");
@@ -199,7 +210,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                                 "SENDQUESTION");
                     }
                 }
-                break;
+            }
+            break;
             case XESCODE.STOPQUESTION:
                 mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(null);
                 if (mQuestionAction != null) {
@@ -219,7 +231,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if (mQuestionAction != null) {
                     String num = object.optString("num", "0");
                     String nonce = object.optString("nonce");
-                    mQuestionAction.onExamStart(mLiveId, num, nonce);
+                    VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                    videoQuestionLiveEntity.id = num;
+                    videoQuestionLiveEntity.nonce = nonce;
+                    mQuestionAction.onExamStart(mLiveId, videoQuestionLiveEntity);
                     if (mQuestionAction instanceof QuestionBll) {
                         ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(false);
                         Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: EXAM_START");

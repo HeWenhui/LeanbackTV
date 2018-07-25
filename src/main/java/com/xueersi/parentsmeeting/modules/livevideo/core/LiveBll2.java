@@ -26,6 +26,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.business.AllLiveBasePagerInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCMessage;
@@ -43,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
@@ -64,7 +66,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author chekun
  *         created  at 2018/6/20 10:32
  */
-public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
+public class LiveBll2 extends BaseBll implements LiveAndBackDebug, AllLiveBasePagerInter {
     Logger logger = LoggerFactory.getLogger("LiveBll2");
     /** 需处理 topic 业务集合 */
     private List<TopicAction> mTopicActions = new ArrayList<>();
@@ -74,6 +76,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     private List<MessageAction> mMessageActions = new ArrayList<>();
     /** 所有业务bll 集合 */
     private List<LiveBaseBll> businessBlls = new ArrayList<>();
+    ArrayList<LiveBasePager> liveBasePagers = new ArrayList<>();
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private LiveIRCMessageBll liveIRCMessageBll;
     private final int mLiveType;
@@ -123,6 +126,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             mLiveTopic.setMode(liveGetInfo.getMode());
         }
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
+        ProxUtil.getProxUtil().put(context, AllLiveBasePagerInter.class, this);
     }
 
     public LiveBll2(Context context, String vSectionID, int type, int form) {
@@ -887,6 +891,10 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         }
     }
 
+    public boolean onUserBackPressed() {
+        return false;
+    }
+
     /**
      * activity  onDestroy
      */
@@ -894,6 +902,11 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.onDestory();
         }
+        ArrayList<LiveBasePager> tempLiveBasePagers = new ArrayList<>(liveBasePagers);
+        for (LiveBasePager basePager : tempLiveBasePagers) {
+            basePager.onDestroy();
+        }
+        liveBasePagers.clear();
         businessShareParamMap.clear();
         businessBlls.clear();
         mNoticeActionMap.clear();
@@ -955,6 +968,18 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     }
 
     /**
+     * 各模块 调用此方法 暴露自己需要和其他模块共享的参数
+     *
+     * @param key
+     * @param value
+     */
+    public void removeBusinessShareParam(String key) {
+        synchronized (businessShareParamMap) {
+            businessShareParamMap.remove(key);
+        }
+    }
+
+    /**
      * 各模块调用此方法  查找其他模块暴露的 参数信息
      *
      * @param key
@@ -966,4 +991,13 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         }
     }
 
+    @Override
+    public void addLiveBasePager(LiveBasePager liveBasePager) {
+        liveBasePagers.add(liveBasePager);
+    }
+
+    @Override
+    public void removeLiveBasePager(LiveBasePager liveBasePager) {
+        liveBasePagers.remove(liveBasePager);
+    }
 }

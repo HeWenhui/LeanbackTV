@@ -1062,7 +1062,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                     if (mainRoomstatus.isHaveExam() && mQuestionAction != null) {
                         if ("on".equals(mainRoomstatus.getExamStatus())) {
                             String num = mainRoomstatus.getExamNum();
-                            mQuestionAction.onExamStart(mLiveId, num, "");
+                            VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                            videoQuestionLiveEntity.id = num;
+                            mQuestionAction.onExamStart(mLiveId, videoQuestionLiveEntity);
                             if (mAnswerRankBll != null) {
                                 mAnswerRankBll.setTestId(num);
                             }
@@ -1606,7 +1608,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                         if (mQuestionAction != null) {
                             String num = object.optString("num", "0");
                             String nonce = object.optString("nonce");
-                            mQuestionAction.onExamStart(mLiveId, num, nonce);
+                            VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                            videoQuestionLiveEntity.id = num;
+                            videoQuestionLiveEntity.nonce = nonce;
+                            mQuestionAction.onExamStart(mLiveId, videoQuestionLiveEntity);
                             if (mAnswerRankBll != null) {
                                 mAnswerRankBll.setTestId(num);
                             }

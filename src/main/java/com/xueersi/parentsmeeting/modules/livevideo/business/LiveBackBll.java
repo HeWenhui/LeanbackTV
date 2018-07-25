@@ -21,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
@@ -32,9 +33,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by lyqai on 2018/7/17.
  */
-public class LiveBackBll implements LiveAndBackDebug {
+public class LiveBackBll implements LiveAndBackDebug, AllLiveBasePagerInter {
     private String TAG = "LiveBackBll";
     Activity activity;
+    ArrayList<LiveBasePager> liveBasePagers = new ArrayList<>();
     /** 购课id */
     protected String stuCourId;
     /** 视频节对象 */
@@ -70,6 +72,7 @@ public class LiveBackBll implements LiveAndBackDebug {
         this.activity = activity;
         this.mVideoEntity = mVideoEntity;
         ProxUtil.getProxUtil().put(activity, LiveAndBackDebug.class, this);
+        ProxUtil.getProxUtil().put(activity, AllLiveBasePagerInter.class, this);
         Intent intent = activity.getIntent();
         isArts = intent.getIntExtra("isArts", 0);
         islocal = intent.getBooleanExtra("islocal", false);
@@ -99,7 +102,7 @@ public class LiveBackBll implements LiveAndBackDebug {
                 liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
             }
         }
-
+        addBusinessShareParam("isArts", isArts);
         mCourseHttpManager = new LivePlayBackHttpManager(activity);
         mCourseHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         mCourseHttpResponseParser = new LivePlayBackHttpResponseParser();
@@ -230,7 +233,7 @@ public class LiveBackBll implements LiveAndBackDebug {
                 liveBackBaseBll.onQuestionEnd(oldQuestionEntity);
             }
         }
-        if (mQuestionEntity != null && mQuestionEntity.isAnswered()) {
+        if (mQuestionEntity != null && oldQuestionEntity != mQuestionEntity && mQuestionEntity.isAnswered()) {
             showQuestion(oldQuestionEntity);
         }
     }
@@ -401,6 +404,42 @@ public class LiveBackBll implements LiveAndBackDebug {
         }
     }
 
+    /**
+     * 各模块 调用此方法 暴露自己需要和其他模块共享的参数
+     *
+     * @param key
+     * @param value
+     */
+    public void addBusinessShareParam(String key, Object value) {
+        synchronized (businessShareParamMap) {
+            businessShareParamMap.put(key, value);
+        }
+    }
+
+    /**
+     * 各模块 调用此方法 暴露自己需要和其他模块共享的参数
+     *
+     * @param key
+     * @param value
+     */
+    public void removeBusinessShareParam(String key) {
+        synchronized (businessShareParamMap) {
+            businessShareParamMap.remove(key);
+        }
+    }
+
+    /**
+     * 各模块调用此方法  查找其他模块暴露的 参数信息
+     *
+     * @param key
+     * @return
+     */
+    public Object getBusinessShareParam(String key) {
+        synchronized (businessShareParamMap) {
+            return businessShareParamMap.get(key);
+        }
+    }
+
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
         MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
@@ -452,4 +491,13 @@ public class LiveBackBll implements LiveAndBackDebug {
         UmsAgentManager.umsAgentOtherBusiness(activity, appID, UmsConstants.uploadShow, mData);
     }
 
+    @Override
+    public void addLiveBasePager(LiveBasePager liveBasePager) {
+        liveBasePagers.add(liveBasePager);
+    }
+
+    @Override
+    public void removeLiveBasePager(LiveBasePager liveBasePager) {
+        liveBasePagers.remove(liveBasePager);
+    }
 }

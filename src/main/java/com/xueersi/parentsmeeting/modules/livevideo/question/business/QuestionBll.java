@@ -97,7 +97,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private VideoQuestionLiveEntity videoQuestionLiveEntity;
     private LogToFile mLogtf;
     private Activity activity;
-    private QuestionHttp mLiveBll;
+    private QuestionHttp questionHttp;
     private LiveAndBackDebug liveAndBackDebug;
     private LiveTopic mLiveTopic;
     private BasePager curQuestionView;
@@ -151,6 +151,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private BaseQuestionWebInter questionWebPager;
     /** 试卷页面 */
     private BaseExamQuestionInter examQuestionPager;
+    private BaseExamQuestionCreat baseExamQuestionCreat;
     /** 语音评测页面 */
     private BaseSpeechAssessmentPager speechAssessmentPager;
     /** 语音评测页面,用户点击返回暂存 */
@@ -196,7 +197,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     }
 
     public void setLiveBll(QuestionHttp mLiveBll) {
-        this.mLiveBll = mLiveBll;
+        this.questionHttp = mLiveBll;
     }
 
     public void setLiveAutoNoticeBll(LiveAutoNoticeBll liveAutoNoticeBll) {
@@ -416,7 +417,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         }
                         if (mAnswerRankBll != null) {
                             mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>(), XESCODE.STOPQUESTION);
-                            mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
+                            questionHttp.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                         }
                         hasQuestion = true;
                     }
@@ -717,7 +718,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             postDelayedIfNotFinish(new Runnable() {
                 @Override
                 public void run() {
-                    mLiveBll.getStuGoldCount();
+                    questionHttp.getStuGoldCount();
 
                     // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
                     //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
@@ -918,31 +919,22 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     }
 
     @Override
-    public void onExamStart(final String liveid, final String num, final String nonce) {
+    public void onExamStart(final String liveid, final VideoQuestionLiveEntity videoQuestionLiveEntity) {
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (examQuestionPager != null && num.equals(examQuestionPager.getNum())) {
+                if (examQuestionPager != null && videoQuestionLiveEntity.id.equals(examQuestionPager.getNum())) {
                     return;
                 }
                 hasExam = true;
-                if (mAnswerRankBll != null) {
-                    mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>(), XESCODE.EXAM_STOP);
-                    mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
-                }
-                if (mExamAndBool.contains(num)) {
+                if (mExamAndBool.contains(videoQuestionLiveEntity.id)) {
                     return;
                 }
                 Map<String, String> mData = new HashMap<>();
                 mData.put("logtype", "receiveExam");
-                mData.put("examid", num);
+                mData.put("examid", videoQuestionLiveEntity.id);
                 umsAgentDebugSys(examQuestionEventId, mData);
-                if (liveAndBackDebug == null) {
-                    liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
-                }
-                examQuestionPager = new ExamQuestionX5Pager(activity, liveAndBackDebug, QuestionBll.this, liveGetInfo.getStuId
-                        (), liveGetInfo.getUname(), liveid, num, nonce, mAnswerRankBll == null ? "0" : mAnswerRankBll
-                        .getIsShow(), IS_SCIENCE, stuCouId, 0);
+                examQuestionPager = baseExamQuestionCreat.creatBaseExamQuestion(activity, QuestionBll.this, liveid, videoQuestionLiveEntity);
                 rlQuestionContent.addView(examQuestionPager.getRootView());
                 setHaveExam(true);
                 activity.getWindow().getDecorView().requestLayout();
@@ -1121,8 +1113,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mLiveBll.getStuGoldCount();
-
+        questionHttp.getStuGoldCount();
         // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
         //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
 
@@ -1148,7 +1139,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         } else {
             subjectResultPager = null;
         }
-        mLiveBll.getStuGoldCount();
+        questionHttp.getStuGoldCount();
 
         // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
         //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
@@ -1192,7 +1183,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 setHaveSpeech(false);
             }
         }
-        mLiveBll.getStuGoldCount();
+        questionHttp.getStuGoldCount();
 
         // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
         //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
@@ -1215,7 +1206,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void speechIsAnswered(String num, SpeechIsAnswered isAnswered) {
-        mLiveBll.speechEval42IsAnswered(mVSectionID, num, isAnswered);
+        questionHttp.speechEval42IsAnswered(mVSectionID, num, isAnswered);
     }
 
     private void setHaveExam(boolean haveExam) {
@@ -1256,7 +1247,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
         @Override
         public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity2, String result) {
-            mLiveBll.liveSubmitTestAnswer((VideoQuestionLiveEntity) videoQuestionLiveEntity2, mVSectionID, result,
+            questionHttp.liveSubmitTestAnswer((VideoQuestionLiveEntity) videoQuestionLiveEntity2, mVSectionID, result,
                     false, false, new QuestionSwitch.OnAnswerReslut() {
                         @Override
                         public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
@@ -1273,6 +1264,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     public void setBaseVoiceAnswerCreat(BaseVoiceAnswerCreat baseVoiceAnswerCreat) {
         this.baseVoiceAnswerCreat = baseVoiceAnswerCreat;
+    }
+
+    public void setBaseExamQuestionCreat(BaseExamQuestionCreat baseExamQuestionCreat) {
+        this.baseExamQuestionCreat = baseExamQuestionCreat;
     }
 
     private void showVoiceAnswer(final VideoQuestionLiveEntity videoQuestionLiveEntity) {
@@ -1617,18 +1612,18 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void getSpeechEval(String id, OnSpeechEval onSpeechEval) {
-        mLiveBll.getSpeechEval(id, onSpeechEval);
+        questionHttp.getSpeechEval(id, onSpeechEval);
     }
 
     @Override
     public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, OnSpeechEval
             onSpeechEval) {
-        mLiveBll.sendSpeechEvalResult(id, stuAnswer, times, entranceTime, onSpeechEval);
+        questionHttp.sendSpeechEvalResult(id, stuAnswer, times, entranceTime, onSpeechEval);
     }
 
     @Override
     public void sendSpeechEvalResult2(String id, String stuAnswer, OnSpeechEval onSpeechEval) {
-        mLiveBll.sendSpeechEvalResult2(id, stuAnswer, onSpeechEval);
+        questionHttp.sendSpeechEvalResult2(id, stuAnswer, onSpeechEval);
     }
 
     public void onPause() {
@@ -1742,7 +1737,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     public void onSubmit(int type, boolean isForceSubmit) {
         submitTime = System.currentTimeMillis();
-        mLiveBll.sendRankMessage(XESCODE.RANK_STU_MESSAGE);
+        questionHttp.sendRankMessage(XESCODE.RANK_STU_MESSAGE);
         if (isForceSubmit) {
             getFullMarkList(type, 3000);
             getAutoNotice(1);
@@ -1863,7 +1858,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             if (!"-1".equals(liveGetInfo.getRequestTime())) {
                 final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity)
                         videoQuestionLiveEntity;
-                mLiveBll.getTestAnswerTeamStatus(videoQuestionLiveEntity1, callBack);
+                questionHttp.getTestAnswerTeamStatus(videoQuestionLiveEntity1, callBack);
             }
         }
 
@@ -1917,7 +1912,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         @Override
         public void getQuestion(BaseVideoQuestionEntity baseQuestionEntity, final OnQuestionGet onQuestionGet) {
             final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) baseQuestionEntity;
-            mLiveBll.getQuestion(videoQuestionLiveEntity1, new AbstractBusinessDataCallBack() {
+            questionHttp.getQuestion(videoQuestionLiveEntity1, new AbstractBusinessDataCallBack() {
 
                 @Override
                 public void onDataSucess(Object... objData) {
@@ -1938,7 +1933,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 //                testAnswer = result + ":" + sorce;
                 testAnswer = result;
             }
-            mLiveBll.liveSubmitTestAnswer(videoQuestionLiveEntity1, mVSectionID, testAnswer, true, isRight,
+            questionHttp.liveSubmitTestAnswer(videoQuestionLiveEntity1, mVSectionID, testAnswer, true, isRight,
                     answerReslut);
         }
 

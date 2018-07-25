@@ -54,6 +54,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.PutQuestion;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
@@ -986,10 +987,12 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             public void run() {
                 if (rlQuestionContent != null && mQuestionEntity != null) {
                     mPlayVideoControlHandler.sendEmptyMessage(SHOW_QUESTION);
-                    examQuestionPlaybackPager = new ExamQuestionX5PlaybackPager(ExperienceLiveVideoActivity.this, mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(),
+                    VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                    videoQuestionLiveEntity.id = mQuestionEntity.getvQuestionID();
+                    examQuestionPlaybackPager = new ExamQuestionX5PlaybackPager(ExperienceLiveVideoActivity.this, mVideoEntity.getLiveId(), videoQuestionLiveEntity,
                             false, "", new BaseExamQuestionInter.ExamStop() {
                         @Override
-                        public void stopExam() {
+                        public void stopExam( VideoQuestionLiveEntity videoQuestionLiveEntity) {
 
                         }
                     });

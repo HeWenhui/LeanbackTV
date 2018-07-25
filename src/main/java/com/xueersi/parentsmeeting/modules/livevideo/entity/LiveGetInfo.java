@@ -39,6 +39,8 @@ public class LiveGetInfo {
      * 用户Id
      */
     private String stuId;
+    /** 用户购课Id */
+    private String stuCouId;
     /**
      * 用户拼音，现阶段取用户名
      */
@@ -298,7 +300,7 @@ public class LiveGetInfo {
         this.is_show_ranks = is_show_ranks;
     }
 
-    public void setIsSeniorOfHighSchool(int isSeniorOfHighSchool){
+    public void setIsSeniorOfHighSchool(int isSeniorOfHighSchool) {
         this.isSeniorOfHighSchool = isSeniorOfHighSchool;
     }
 
@@ -316,6 +318,14 @@ public class LiveGetInfo {
 
     public void setStuId(String stuId) {
         this.stuId = stuId;
+    }
+
+    public String getStuCouId() {
+        return stuCouId;
+    }
+
+    public void setStuCouId(String stuCouId) {
+        this.stuCouId = stuCouId;
     }
 
     public void setUname(String uname) {

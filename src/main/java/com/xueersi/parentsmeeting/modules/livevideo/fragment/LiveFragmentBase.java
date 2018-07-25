@@ -155,6 +155,14 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     }
 
+    @Override
+    protected void onUserBackPressed() {
+        boolean userBackPressed = mLiveBll.onUserBackPressed();
+        if (!userBackPressed) {
+            super.onUserBackPressed();
+        }
+    }
+
     private void addOnGlobalLayoutListener() {
         final View contentView = activity.findViewById(android.R.id.content);
         contentView.postDelayed(new Runnable() {

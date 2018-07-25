@@ -29,7 +29,7 @@ public interface QuestionAction {
     void onStopQuestion(String ptype, String nonce);
 
     /** 考试开始 */
-    void onExamStart(String liveid, String num, String nonce);
+    void onExamStart(String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity);
 
     /** 考试结束 */
     void onExamStop();

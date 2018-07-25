@@ -80,10 +80,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.VideoPlayAction;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertPlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertPagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackagePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
@@ -159,7 +164,7 @@ import static com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile.li
 @SuppressLint("HandlerLeak")
 @SuppressWarnings("unchecked")
 public class LivePlayBackVideoActivity extends VideoViewActivity implements LivePlaybackMediaController.OnPointClick,
-        SpeechEvalAction, BaseQuestionWebInter.StopWebQuestion, LiveAndBackDebug, ActivityChangeLand {
+        SpeechEvalAction, BaseQuestionWebInter.StopWebQuestion, LiveAndBackDebug, ActivityChangeLand, VideoPlayAction {
 
     String TAG = "LivePlayBackVideoActivityLog";
 
@@ -557,6 +562,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
                 }
             });
         }
+        ProxUtil.getProxUtil().put(this, VideoPlayAction.class, this);
         addBusiness(this);
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
         for (LiveBackBaseBll businessBll : businessBlls) {
@@ -646,6 +652,9 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
         liveBackBll.addBusinessBll(questionPlayBackBll);
         RedPackagePlayBackBll redPackagePlayBackBll = new RedPackagePlayBackBll(activity, liveBackBll);
         liveBackBll.addBusinessBll(redPackagePlayBackBll);
+        liveBackBll.addBusinessBll(new EnglishH5PlayBackBll(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new NBH5PlayBackBll(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new LecAdvertPlayBackBll(activity, liveBackBll));
         liveBackBll.onCreate();
     }
 
@@ -1146,10 +1155,12 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
                 if (rlQuestionContent != null && mQuestionEntity != null) {
                     Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showExam");
                     mPlayVideoControlHandler.sendMessage(msg);
+                    VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                    videoQuestionLiveEntity.id = mQuestionEntity.getvQuestionID();
                     examQuestionPlaybackPager = new ExamQuestionX5PlaybackPager(LivePlayBackVideoActivity.this,
-                            mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), IS_SCIENCE, stuCourId, new BaseExamQuestionInter.ExamStop() {
+                            mVideoEntity.getLiveId(), videoQuestionLiveEntity, IS_SCIENCE, stuCourId, new BaseExamQuestionInter.ExamStop() {
                         @Override
-                        public void stopExam() {
+                        public void stopExam(VideoQuestionLiveEntity videoQuestionLiveEntity) {
                             LivePlayBackVideoActivity.this.stopExam();
                         }
                     });

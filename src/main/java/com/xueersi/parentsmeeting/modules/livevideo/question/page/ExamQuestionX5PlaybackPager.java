@@ -22,7 +22,10 @@ import com.xueersi.common.entity.AppInfoEntity;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -38,12 +41,13 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
  * Created by linyuqiang on 2018/6/6.
  * 直播回放试卷答题页面
  */
-public class ExamQuestionX5PlaybackPager extends BasePager implements BaseExamQuestionInter {
+public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseExamQuestionInter {
     private String TAG = "ExamQuestionPlaybackPager";
     private Button btSubjectClose;
     private Button bt_livevideo_subject_calljs;
     private WebView wvSubjectWeb;
     private String liveid;
+    VideoQuestionLiveEntity mQuestionEntity;
     private String num;
     ExamStop examStop;
     private View errorView;
@@ -55,12 +59,13 @@ public class ExamQuestionX5PlaybackPager extends BasePager implements BaseExamQu
     boolean IS_SCIENCE;
     String stuCouId;
 
-    public ExamQuestionX5PlaybackPager(Context context, String liveid, String num, boolean IS_SCIENCE, String stuCouId, ExamStop examStop) {
+    public ExamQuestionX5PlaybackPager(Context context, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, boolean IS_SCIENCE, String stuCouId, ExamStop examStop) {
         super(context);
         this.examStop = examStop;
         this.liveid = liveid;
         this.IS_SCIENCE = IS_SCIENCE;
-        this.num = num;
+        this.mQuestionEntity = videoQuestionLiveEntity;
+        this.num = mQuestionEntity.getvQuestionID();
         this.stuCouId = stuCouId;
         initData();
     }
@@ -99,7 +104,7 @@ public class ExamQuestionX5PlaybackPager extends BasePager implements BaseExamQu
             public void onClick(View v) {
                 ViewGroup group = (ViewGroup) mView.getParent();
                 group.removeView(mView);
-                examStop.stopExam();
+                examStop.stopExam(mQuestionEntity);
             }
         });
         bt_livevideo_subject_calljs.setOnClickListener(new View.OnClickListener() {
@@ -253,7 +258,7 @@ public class ExamQuestionX5PlaybackPager extends BasePager implements BaseExamQu
                 ViewGroup group = (ViewGroup) mView.getParent();
                 if (group != null) {
                     group.removeView(mView);
-                    examStop.stopExam();
+                    examStop.stopExam(mQuestionEntity);
                 }
                 Loger.i(TAG, "shouldOverrideUrlLoading:stopExam");
             } else {

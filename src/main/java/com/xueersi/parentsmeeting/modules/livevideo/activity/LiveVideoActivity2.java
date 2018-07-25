@@ -94,6 +94,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             if (mode2 != null) {
                 mode = mode2;
             }
+            mLiveBll.addBusinessShareParam("isArts", isArts);
             createLiveVideoAction();
             liveVideoAction.setFirstParam(LiveVideoPoint.getInstance());
             long before = System.currentTimeMillis();
@@ -133,8 +134,8 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
     /**
      * 添加 直播间内 所需的功能模块
-     *  @param activity
      *
+     * @param activity
      */
     private void addBusiness(Activity activity) {
         //是文科

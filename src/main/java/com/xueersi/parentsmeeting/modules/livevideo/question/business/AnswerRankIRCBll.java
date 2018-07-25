@@ -30,6 +30,10 @@ public class AnswerRankIRCBll extends LiveBaseBll implements NoticeAction {
         mAnswerRankBll.initView(bottomContent);
     }
 
+    public AnswerRankBll getAnswerRankBll() {
+        return mAnswerRankBll;
+    }
+
     @Override
     public void onNotice(JSONObject object, int type) {
         switch (type) {
