@@ -145,8 +145,14 @@ public class LiveRemarkBll {
                 if (mPlayerService.getPlayer() == null) {
                     return;
                 }
-                long tcpSpeed = ((IjkMediaPlayer) mPlayerService.getPlayer()).getTcpSpeed();
-                float vdfps = ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoDecodeFramesPerSecond();
+                long tcpSpeed;
+                float vdfps;
+                try {
+                    tcpSpeed = ((IjkMediaPlayer) mPlayerService.getPlayer()).getTcpSpeed();
+                    vdfps = ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoDecodeFramesPerSecond();
+                } catch (Exception e) {
+                    return;
+                }
                 if (mLiveMediaControllerBottom == null) {
                     return;
                 }
@@ -186,19 +192,20 @@ public class LiveRemarkBll {
         mTimer.schedule(task, 1000, 1000);
         mCloudUploadBusiness = new XesCloudUploadBusiness(mContext);
     }
-    private void setVideoOffset(long time){
-        if(mPlayerService.getPlayer()==null){
+
+    private void setVideoOffset(long time) {
+        if (mPlayerService.getPlayer() == null) {
             return;
         }
         FrameInfo frameInfo = ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo();
-        if(time==0) {
+        if (time == 0) {
             offSet = System.currentTimeMillis() / 1000 + sysTimeOffset - frameInfo.pkt / 1000;
-        }else{
-            offSet=time-frameInfo.pkt / 1000;
+        } else {
+            offSet = time - frameInfo.pkt / 1000;
         }
         Loger.i(TAG, "nowtime  " + frameInfo.nowTime + "   dts     " + frameInfo.pkt_dts
                 + "   pkt   " + frameInfo.pkt + "  cache:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration()
-        +" systime:"+(System.currentTimeMillis() / 1000 + sysTimeOffset)+"   nettime:"+time);
+                + " systime:" + (System.currentTimeMillis() / 1000 + sysTimeOffset) + "   nettime:" + time);
         //setBtEnable(true);
         setVideoReady(true);
         mTimer.cancel();
@@ -258,7 +265,7 @@ public class LiveRemarkBll {
 
     public void markFail() {
         XESToastUtils.showToast(mContext, "标记失败");
-        umsAgentMark(false,0,0,0);
+        umsAgentMark(false, 0, 0, 0);
         isMarking = false;
     }
 
@@ -267,24 +274,25 @@ public class LiveRemarkBll {
             mLiveMediaControllerBottom.getBtMark().setVisibility(View.GONE);
         }
     }
-    private void setIsCounting(boolean counting){
-        isCounting=counting;
-        setBtEnable(!isCounting&&isClassReady && isVideoReady && !isOnChat);
+
+    private void setIsCounting(boolean counting) {
+        isCounting = counting;
+        setBtEnable(!isCounting && isClassReady && isVideoReady && !isOnChat);
     }
 
     public void setVideoReady(boolean videoReady) {
         isVideoReady = videoReady;
-        setBtEnable(!isCounting&&isClassReady && isVideoReady && !isOnChat);
+        setBtEnable(!isCounting && isClassReady && isVideoReady && !isOnChat);
     }
 
     public void setClassReady(boolean classReady) {
         isClassReady = classReady;
-        setBtEnable(!isCounting&&isClassReady && isVideoReady && !isOnChat);
+        setBtEnable(!isCounting && isClassReady && isVideoReady && !isOnChat);
     }
 
     public void setOnChat(boolean onChat) {
         isOnChat = onChat;
-        setBtEnable(!isCounting&&isClassReady && isVideoReady && !isOnChat);
+        setBtEnable(!isCounting && isClassReady && isVideoReady && !isOnChat);
     }
 
     public void setBottom(RelativeLayout bottom) {
@@ -343,7 +351,7 @@ public class LiveRemarkBll {
         try {
             final long pkt = ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo().pkt / 1000;
             final long cache = ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration() / 1000;
-            final long time = pkt - cache + offSet-8;
+            final long time = pkt - cache + offSet - 8;
             Loger.i(TAG, "frameTime:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo().pkt / 1000);
             Loger.i(TAG, "cacheTime:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration() / 1000);
             Loger.i(TAG, "offset:" + offSet + "  time:" + time + "   sysTime:" + System.currentTimeMillis());
@@ -366,7 +374,7 @@ public class LiveRemarkBll {
                             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                                 XESToastUtils.showToast(mContext, "标记成功");
                                 isMarking = false;
-                                umsAgentMark(true,pkt,cache,offSet);
+                                umsAgentMark(true, pkt, cache, offSet);
                                 startCountDown();
                             }
 
@@ -563,8 +571,8 @@ public class LiveRemarkBll {
     }
 
     public void setBtEnable(final boolean enable) {
-        Loger.i(TAG,"setBtEnable  "+"video:"+isVideoReady+"   class:"+isClassReady
-        +"   onchat:"+isOnChat);
+        Loger.i(TAG, "setBtEnable  " + "video:" + isVideoReady + "   class:" + isClassReady
+                + "   onchat:" + isOnChat);
         if (mLiveMediaControllerBottom == null) {
             return;
         }
@@ -693,8 +701,8 @@ public class LiveRemarkBll {
             root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mPlayerService.seekTo((mEntity.getRelativeTime() <0?0:mEntity.getRelativeTime()) * 1000);
-                    umsAgentPlay(mEntity.getType(),mEntity.getRelativeTime());
+                    mPlayerService.seekTo((mEntity.getRelativeTime() < 0 ? 0 : mEntity.getRelativeTime()) * 1000);
+                    umsAgentPlay(mEntity.getType(), mEntity.getRelativeTime());
                     if (LiveRemarkBll.this.mCallBack != null) {
                         LiveRemarkBll.this.mCallBack.onDataSucess();
                     }
@@ -769,15 +777,15 @@ public class LiveRemarkBll {
         }
     }
 
-    private void umsAgentMark(boolean success,long pkt,long cache,long offSet) {
+    private void umsAgentMark(boolean success, long pkt, long cache, long offSet) {
         HashMap<String, String> map = new HashMap<>();
         map.put("logtype", "clickMark");
         map.put("ex", success ? "Y" : "N");
-        if(success){
-            map.put("pkt",pkt+"");
-            map.put("cache",cache+"");
-            map.put("offset",offSet+"");
-            map.put("systime",(System.currentTimeMillis()/1000+sysTimeOffset)+"");
+        if (success) {
+            map.put("pkt", pkt + "");
+            map.put("cache", cache + "");
+            map.put("offset", offSet + "");
+            map.put("systime", (System.currentTimeMillis() / 1000 + sysTimeOffset) + "");
         }
         mLiveAndBackDebug.umsAgentDebugInter("live_mark", map);
     }
@@ -788,10 +796,10 @@ public class LiveRemarkBll {
         mLiveAndBackDebug.umsAgentDebugInter("replay_mark", map);
     }
 
-    private void umsAgentPlay(int type,long time) {
+    private void umsAgentPlay(int type, long time) {
         HashMap<String, String> map = new HashMap<>();
         map.put("logtype", "clickMarkPlay");
-        map.put("time",time+"");
+        map.put("time", time + "");
         String markType = "";
         switch (type) {
             case CATEGORY_QUESTION:
@@ -820,8 +828,9 @@ public class LiveRemarkBll {
         map.put("logtype", "clickMarkDelete");
         mLiveAndBackDebug.umsAgentDebugInter("replay_mark", map);
     }
-    public void onPause(){
-        if(mTimer!=null){
+
+    public void onPause() {
+        if (mTimer != null) {
             mTimer.cancel();
         }
         setVideoReady(false);

@@ -31,6 +31,7 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
+import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerOtherItem;
@@ -374,7 +375,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         final HashMap<String, String> assetFolders = new HashMap<String, String>();
         civMatchHead.setBorderWidth(SizeUtils.Dp2Px(mContext, 3));
         civMatchHead.setBorderColor(Color.WHITE);
-        ImageLoader.with(mContext).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg()).into(civMatchHead);
+        ImageLoader.with(BaseApplication.getContext()).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg()).into(civMatchHead);
 
         rlMatchPager.setVisibility(View.VISIBLE);
         rlMatchLottie.setVisibility(View.VISIBLE);
@@ -910,13 +911,13 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     public void recoverListScrollAndCancelDZ() {
         //恢复listview可滑动
         mIsListViewUnSroll = false;
-        if(rlResult != null){
+        if (rlResult != null) {
             rlResult.setVisibility(View.GONE);
         }
-        if(lvReadList != null){
+        if (lvReadList != null) {
             lvReadList.setUnScroll(mIsListViewUnSroll);//恢复列表滑动
         }
-        if(mRolePlayBll != null){
+        if (mRolePlayBll != null) {
             mRolePlayBll.cancelDZ();//取消点赞
         }
 
@@ -951,7 +952,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
      * 结束RolePlayer
      */
     private void endRolePlayer() {
-        if(mEntity == null){
+        if (mEntity == null) {
             Loger.i("RolePlayerDemoTest", "roleplay界面的数据已经销毁，不再向下执行");
             return;
         }
@@ -1274,7 +1275,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     private SpannableString getCountDownTime() {
         long countTime = 3000;//默认三秒
         boolean isFu = false;
-        if(mEntity != null){
+        if (mEntity != null) {
             if (mEntity.getCountDownSecond() < 0) {
                 isFu = true;
                 countTime = Math.abs(mEntity.getCountDownSecond());
@@ -1282,7 +1283,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
                 countTime = mEntity.getCountDownSecond();
             }
         }
-        
+
         long min = countTime / 60;
         long sec = countTime % 60;
         long hour = min / 60;
