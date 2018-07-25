@@ -84,13 +84,7 @@ public class LiveLazyBllCreat {
 
         if (praiseListBll == null) {
             praiseListBll = new PraiseListBll(liveVideoActivity);
-            praiselistContent.post(new Runnable() {
-                @Override
-                public void run() {
-                    praiseListBll.initView(praiselistContent);
-
-                }
-            });
+            praiseListBll.initView(praiselistContent);
             praiseListBll.setLiveBll(liveBll);
             liveBll.setPraiseListAction(praiseListBll);
         }
