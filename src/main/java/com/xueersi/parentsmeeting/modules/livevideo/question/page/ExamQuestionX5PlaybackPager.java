@@ -23,6 +23,7 @@ import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
 import com.xueersi.parentsmeeting.logerhelper.LogerTag;
 import com.xueersi.parentsmeeting.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
@@ -215,8 +216,12 @@ public class ExamQuestionX5PlaybackPager extends BasePager implements BaseExamQu
         }
     }
 
-    public class MyWebViewClient extends WebViewClient {
+    public class MyWebViewClient extends ErrorWebViewClient {
         String failingUrl;
+
+        public MyWebViewClient() {
+            super(TAG);
+        }
 
         @Override
         public void onPageFinished(WebView view, String url) {
