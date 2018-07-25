@@ -839,7 +839,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             Loger.i(LiveAutoNoticeBll.class.getSimpleName(), "question end");
             hasQuestion = false;
         }
-        if ("4".equals(ptype)) {
+        if (LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(ptype)) {
             return;
         }
         if (videoQuestionLiveEntity == null) {
@@ -1292,7 +1292,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         removeQuestionViews();
         BaseVoiceAnswerPager voiceAnswerPager2 =
                 baseVoiceAnswerCreat.create(activity, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity
-                        .type, rlQuestionContent, mIse, this);
+                        .type, rlQuestionContent, mIse);
 
 //        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 //                ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -1642,7 +1642,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
-    @Override
     public void umsAgentDebugSys(String eventId, final Map<String, String> mData) {
         if (liveAndBackDebug == null) {
             liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
@@ -1650,7 +1649,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         liveAndBackDebug.umsAgentDebugSys(eventId, mData);
     }
 
-    @Override
     public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
         if (liveAndBackDebug == null) {
             liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
@@ -1658,7 +1656,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         liveAndBackDebug.umsAgentDebugInter(eventId, mData);
     }
 
-    @Override
     public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
         if (liveAndBackDebug == null) {
             liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);

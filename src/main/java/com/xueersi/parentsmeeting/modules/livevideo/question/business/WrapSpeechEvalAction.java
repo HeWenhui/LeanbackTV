@@ -1,0 +1,51 @@
+package com.xueersi.parentsmeeting.modules.livevideo.question.business;
+
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
+
+/**
+ * Created by lyqai on 2018/7/25.
+ */
+
+public class WrapSpeechEvalAction implements SpeechEvalAction {
+    protected SpeechEvalAction speechEvalAction;
+    protected VideoQuestionLiveEntity videoQuestionLiveEntity;
+
+    public void setSpeechEvalAction(SpeechEvalAction speechEvalAction) {
+        this.speechEvalAction = speechEvalAction;
+    }
+
+    public void setVideoQuestionLiveEntity(VideoQuestionLiveEntity videoQuestionLiveEntity) {
+        this.videoQuestionLiveEntity = videoQuestionLiveEntity;
+    }
+
+    @Override
+    public void getSpeechEval(String id, OnSpeechEval onSpeechEval) {
+        speechEvalAction.getSpeechEval(id, onSpeechEval);
+    }
+
+    @Override
+    public void stopSpeech(BaseSpeechAssessmentPager pager, String num) {
+        speechEvalAction.stopSpeech(pager, num);
+    }
+
+    @Override
+    public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, OnSpeechEval onSpeechEval) {
+        speechEvalAction.sendSpeechEvalResult(id, stuAnswer, times, entranceTime, onSpeechEval);
+    }
+
+    @Override
+    public void sendSpeechEvalResult2(String id, String stuAnswer, OnSpeechEval onSpeechEval) {
+        speechEvalAction.sendSpeechEvalResult2(id, stuAnswer, onSpeechEval);
+    }
+
+    @Override
+    public void onSpeechSuccess(String num) {
+        speechEvalAction.onSpeechSuccess(num);
+    }
+
+    @Override
+    public void speechIsAnswered(String num, SpeechIsAnswered isAnswered) {
+        speechEvalAction.speechIsAnswered(num, isAnswered);
+    }
+}

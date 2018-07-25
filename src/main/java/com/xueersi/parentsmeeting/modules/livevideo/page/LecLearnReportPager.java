@@ -17,12 +17,11 @@ import java.io.File;
 /**
  * @author linyuqiang 学习报告
  */
-public class LecLearnReportPager extends BasePager {
+public class LecLearnReportPager extends LiveBasePager {
     String TAG = "LecLearnReportPager";
     LearnReportEntity reportEntity;
     LiveBll liveBll;
     LecLearnReportBll learnReportBll;
-    private LogToFile logToFile;
     TextView tv_livelec_dialog_xxsc_text;
     TextView tv_livelec_dialog_zhengquelv_text;
     TextView tv_livelec_dialog_zhengquelv_text2;
@@ -44,8 +43,6 @@ public class LecLearnReportPager extends BasePager {
 //        }
         this.reportEntity = reportEntity;
         this.learnReportBll = learnReportBll;
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
         initData();
     }
 

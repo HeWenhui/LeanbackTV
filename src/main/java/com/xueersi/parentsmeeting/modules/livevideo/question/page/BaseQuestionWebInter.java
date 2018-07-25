@@ -22,7 +22,5 @@ public interface BaseQuestionWebInter {
 
     interface StopWebQuestion {
         void stopWebQuestion(BasePager pager, String testId);
-
-        void umsAgentDebugSys(String eventId, final Map<String, String> mData);
     }
 }

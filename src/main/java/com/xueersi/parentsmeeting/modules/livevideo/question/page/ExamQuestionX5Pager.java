@@ -61,7 +61,6 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
     private String liveid;
     private String num;
     VideoQuestionLiveEntity videoQuestionLiveEntity;
-    private LogToFile logToFile;
     /** 用户名称 */
     private String stuName;
     /** 用户Id */
@@ -82,8 +81,6 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
     public ExamQuestionX5Pager(Context context, QuestionBll questionBll, String stuId
             , String stuName, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, String isShowRankList, boolean IS_SCIENCE, String stuCouId, int isTeamPkRoom) {
         super(context);
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
         this.questionBll = questionBll;
         this.stuId = stuId;
         this.stuName = stuName;
@@ -93,7 +90,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         this.nonce = videoQuestionLiveEntity.nonce;
         this.IS_SCIENCE = IS_SCIENCE;
         this.stuCouId = stuCouId;
-        logToFile.i("ExamQuestionPager:liveid=" + liveid + ",num=" + num);
+        mLogtf.i("ExamQuestionPager:liveid=" + liveid + ",num=" + num);
         this.isShowRankList = isShowRankList;
         this.isTeamPkRoom = isTeamPkRoom;
         initData();
@@ -285,10 +282,10 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            logToFile.i("onPageFinished:url=" + url + ",failingUrl=" + failingUrl + ",isEnd=" + isEnd);
+            mLogtf.i("onPageFinished:url=" + url + ",failingUrl=" + failingUrl + ",isEnd=" + isEnd);
             if (isEnd && url.equals(examUrl)) {
                 wvSubjectWeb.loadUrl(jsExamSubmitAll);
-                logToFile.i("onPageFinished:examSubmitAll");
+                mLogtf.i("onPageFinished:examSubmitAll");
             }
             if (failingUrl == null) {
                 wvSubjectWeb.setVisibility(View.VISIBLE);
@@ -307,7 +304,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             this.failingUrl = null;
             if (!url.equals(examUrl)) {
-                logToFile.i("onPageStarted:setInitialScale");
+                mLogtf.i("onPageStarted:setInitialScale");
                 int scale = ScreenUtils.getScreenWidth() * 100 / 878;
                 wvSubjectWeb.setInitialScale(scale);
             }
@@ -319,7 +316,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
             this.failingUrl = failingUrl;
             Loger.d(mContext, LogerTag.DEBUG_WEBVIEW_ERROR, TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
                     "&&," + description, true);
-            logToFile.i("onReceivedError:failingUrl=" + failingUrl + ",errorCode=" + errorCode);
+            mLogtf.i("onReceivedError:failingUrl=" + failingUrl + ",errorCode=" + errorCode);
 //            super.onReceivedError(view, errorCode, description, failingUrl);
             wvSubjectWeb.setVisibility(View.INVISIBLE);
             errorView.setVisibility(View.VISIBLE);
@@ -342,9 +339,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
                 }
                 return false;
             }
-            logToFile.i("shouldOverrideUrlLoading:url=" + url);
-
-
+            mLogtf.i("shouldOverrideUrlLoading:url=" + url);
             if ("xueersi://livevideo/examPaper/close".equals(url) || url.contains("baidu.com")) {
                 ViewGroup group = (ViewGroup) mView.getParent();
                 if (group != null) {
@@ -361,8 +356,6 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
                     view.loadUrl(url);
                 }
             }
-
-
             if (url.contains(TeamPkBll.TEAMPK_URL_FIFTE)) {
                 try {
                     int startIndex = url.indexOf("goldNum=") + "goldNum=".length();

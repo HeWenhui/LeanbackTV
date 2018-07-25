@@ -99,7 +99,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             mQuestionAction.setSpeechEndAction(new StandSpeechTop3Bll(this, mLiveBll));
         } else {
             mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl()));
-            mQuestionAction.setBaseSpeechCreat(new LiveSpeechCreat(true));
+            mQuestionAction.setBaseSpeechCreat(new LiveSpeechCreat());
         }
         if (1 == data.getIsEnglish()) {
             mIse = new SpeechEvaluatorUtils(true);

@@ -7,7 +7,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAsse
  * Created by linyuqiang on 2017/2/28.
  * 语言评测得到试题和停止
  */
-public interface SpeechEvalAction extends LiveAndBackDebug {
+public interface SpeechEvalAction {
 
     /**
      * @param id           试题id

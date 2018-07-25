@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.widget.TextView;
 
-import com.xueersi.common.base.BasePager;
 import com.xueersi.common.event.MiniEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertPagerClose;
@@ -22,7 +21,7 @@ import org.greenrobot.eventbus.EventBus;
  * Created by linyuqiang on 2018/1/15.
  * 广告
  */
-public class LecAdvertPager extends BasePager {
+public class LecAdvertPager extends LiveBasePager {
     private View step1;
     private View step2;
     private View step3;

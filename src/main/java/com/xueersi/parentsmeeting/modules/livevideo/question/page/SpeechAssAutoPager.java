@@ -32,7 +32,6 @@ import com.tal.speech.speechrecognizer.TalSpeech;
 import com.umeng.analytics.MobclickAgent;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -102,8 +101,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     private SpeechEvalAction speechEvalAction;
     private SpeechEvaluatorInter speechEvaluatorInter;
     /** 在线语音失败次数 */
-    int onLineError = 0;
-    private LogToFile logToFile;
+    int onLineError = 0; 
     private long entranceTime;
     /** 是不是已经开始 */
     private boolean isSpeechStart = false;
@@ -142,14 +140,12 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
     public SpeechAssAutoPager(Context context, String liveid, String testId,
                               String nonce, String content, int time, boolean haveAnswer, String learning_stage, SpeechEvalAction speechEvalAction) {
-        super(context);
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        super(context); 
         this.isLive = true;
         this.id = testId;
         this.nonce = nonce;
         this.speechEvalAction = speechEvalAction;
-        logToFile.i("SpeechAssessmentPager:id=" + id);
+        mLogtf.i("SpeechAssessmentPager:id=" + id);
         startProgColor = context.getResources().getColor(R.color.COLOR_6462A2);
         progColor = 0;
         this.haveAnswer = haveAnswer;
@@ -167,19 +163,17 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mData.put("testid", id);
         mData.put("answer", content);
         mData.put("answertime", "" + time);
-        speechEvalAction.umsAgentDebugPv(eventId, mData);
+        umsAgentDebugPv(eventId, mData);
     }
 
     public SpeechAssAutoPager(Context context, String liveid, String testId,
                               String nonce, String content, int time, int examSubmit, String learning_stage, SpeechEvalAction speechEvalAction) {
         super(context);
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
         this.isLive = false;
         this.id = testId;
         this.nonce = nonce;
         this.speechEvalAction = speechEvalAction;
-        logToFile.i("SpeechAssessmentPager:id=" + id);
+        mLogtf.i("SpeechAssessmentPager:id=" + id);
         startProgColor = context.getResources().getColor(R.color.COLOR_6462A2);
         progColor = 0;
 //        content = "You are very good,You are very good";
@@ -196,7 +190,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mData.put("testid", id);
         mData.put("answer", content);
         mData.put("answertime", "" + time);
-        speechEvalAction.umsAgentDebugPv(eventId, mData);
+        umsAgentDebugPv(eventId, mData);
     }
 
     public String getId() {
@@ -376,7 +370,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mData.put("logtype", "startRecord");
         mData.put("testid", id);
         mData.put("islive", "" + isLive);
-        speechEvalAction.umsAgentDebugInter(eventId, mData);
+        umsAgentDebugInter(eventId, mData);
         speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, learning_stage, new EvaluatorListener() {
             int lastVolume = 0;
 
@@ -396,7 +390,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     mData.put("logtype", "voiceTestClose");
                     mData.put("islive", "" + isLive);
                     mData.put("testid", "" + id);
-                    speechEvalAction.umsAgentDebugInter(eventId, mData);
+                    umsAgentDebugInter(eventId, mData);
                     onEvaluatorSuccess(resultEntity, this);
 
 //                    resultEntity.setStatus(ResultEntity.ERROR);
@@ -603,15 +597,15 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             int wordChangeColor = wordChangeColor(score, lstPhonemeScore);
             if (wordChangeColor != 0) {
                 if (speechEvaluatorInter == null) {
-                    logToFile.d("onEvaluatorSuccess:Inter=null,sid=" + resultEntity.getSid() + ",score=" + score + ",error=" + content + "-" + nbest);
+                    mLogtf.d("onEvaluatorSuccess:Inter=null,sid=" + resultEntity.getSid() + ",score=" + score + ",error=" + content + "-" + nbest);
                 } else {
-                    logToFile.d("onEvaluatorSuccess:Inter=" + speechEvaluatorInter.getClass().getSimpleName() + ",sid=" + resultEntity.getSid() + ",score=" + score + ",error=" + content + "-" + nbest);
+                    mLogtf.d("onEvaluatorSuccess:Inter=" + speechEvaluatorInter.getClass().getSimpleName() + ",sid=" + resultEntity.getSid() + ",score=" + score + ",error=" + content + "-" + nbest);
                 }
             }
         } catch (Exception e) {
             MobclickAgent.reportError(mContext, new Error(content + "-" + nbest, e));
         }
-        logToFile.d("onEvaluatorSuccess:content=" + content + ",sid=" + resultEntity.getSid() + ",score=" + score + ",haveAnswer=" + haveAnswer + ",nbest=" + nbest);
+        mLogtf.d("onEvaluatorSuccess:content=" + content + ",sid=" + resultEntity.getSid() + ",score=" + score + ",haveAnswer=" + haveAnswer + ",nbest=" + nbest);
         if (haveAnswer) {
             onSpeechEvalSuccess(resultEntity, 0);
         } else {
@@ -748,11 +742,11 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         } else {
             mData.put("state", isEnd ? "endPublish" : "autoSubmit");
         }
-        speechEvalAction.umsAgentDebugPv(eventId, mData);
+        umsAgentDebugPv(eventId, mData);
     }
 
     private void onEvaluatorError(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {
-        logToFile.d("onResult:ERROR:ErrorNo=" + resultEntity.getErrorNo() + ",isEnd=" + isEnd + ",isOfflineFail=" + SpeechEvaluatorUtils.isOfflineFail());
+        mLogtf.d("onResult:ERROR:ErrorNo=" + resultEntity.getErrorNo() + ",isEnd=" + isEnd + ",isOfflineFail=" + SpeechEvaluatorUtils.isOfflineFail());
         tvSpeectevalError.removeCallbacks(autoUploadRunnable);
         ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_error);
         errorSetVisible();
@@ -842,7 +836,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }
             }
             if (count90 <= 3) {
-                logToFile.d("onEvaluatorIng:nbest=" + nbest);
+                mLogtf.d("onEvaluatorIng:nbest=" + nbest);
                 return;
             }
             Point90 point90_6 = null;
@@ -941,7 +935,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //                ivSpeectevalEncourage.setImageResource(R.drawable.bg_livevideo_speecteval_encourage90);
                 tvSpeectevalEncourage.setText("Perfect!");
                 rlSpeectevalEncourage.postDelayed(encourageRun, 3000);
-                logToFile.d("onEvaluatorIng(perfect):nbest=" + nbest);
+                mLogtf.d("onEvaluatorIng(perfect):nbest=" + nbest);
             } else if (!point90_3s.isEmpty()) {
                 for (int i = 0; i < point90_3s.size(); i++) {
                     Point90 point901 = point90_3s.get(i);
@@ -955,7 +949,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //                ivSpeectevalEncourage.setImageResource(R.drawable.bg_livevideo_speecteval_encourage60);
                 tvSpeectevalEncourage.setText("Great!");
                 rlSpeectevalEncourage.postDelayed(encourageRun, 3000);
-                logToFile.d("onEvaluatorIng(great):nbest=" + nbest);
+                mLogtf.d("onEvaluatorIng(great):nbest=" + nbest);
             }
             Loger.d(TAG, "onEvaluatorIng:count90=" + count90 + ",point90WordArrayList=" + point90WordArrayList.size() + ",point90_6s=" + point90_6s.size() + ",point90_3s=" + point90_3s.size() + ",nbest=" + nbest);
         }
@@ -1062,7 +1056,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     public void examSubmitAll() {
         isEnd = true;
         ViewGroup group = (ViewGroup) mView.getParent();
-        logToFile.d("examSubmitAll:mIse=" + (mIse != null) + ",Success=" + speechSuccess + ",group=" + (group == null));
+        mLogtf.d("examSubmitAll:mIse=" + (mIse != null) + ",Success=" + speechSuccess + ",group=" + (group == null));
         if (group == null) {
             return;
         }

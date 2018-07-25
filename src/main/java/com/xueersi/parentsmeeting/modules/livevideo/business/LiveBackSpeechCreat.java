@@ -3,24 +3,26 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.content.Context;
 import android.widget.RelativeLayout;
 
+import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.BaseSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.WrapSpeechEvalAction;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 
 /**
  * Created by linyuqiang on 2018/4/7.
- * 直播的语音评测创建
+ * 直播回放的语音评测创建
  */
-public class LiveSpeechCreat implements BaseSpeechCreat {
+public class LiveBackSpeechCreat implements BaseSpeechCreat {
+    WrapSpeechEvalAction wrapSpeechEvalAction;
 
-    public LiveSpeechCreat() {
+    public LiveBackSpeechCreat() {
     }
 
     @Override
@@ -28,24 +30,29 @@ public class LiveSpeechCreat implements BaseSpeechCreat {
 
     }
 
+    public void setSpeechEvalAction(WrapSpeechEvalAction speechEvalAction) {
+        this.wrapSpeechEvalAction = speechEvalAction;
+    }
 
     @Override
     public BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String nonce, VideoQuestionLiveEntity videoQuestionLiveEntity, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String learning_stage) {
-        SpeechAssAutoPager speechAssAutoPager =
-                new SpeechAssAutoPager(context, liveid, videoQuestionLiveEntity.id, nonce,
-                        videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time, haveAnswer, learning_stage, speechEvalAction);
-        int screenWidth = ScreenUtils.getScreenWidth();
-        int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
-        lp.rightMargin = wradio;
+        wrapSpeechEvalAction.setSpeechEvalAction(speechEvalAction);
+        wrapSpeechEvalAction.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
+        SpeechAssAutoPager speechAssAutoPager = new SpeechAssAutoPager(context,
+                liveid, videoQuestionLiveEntity.id,
+                "", videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time,
+                videoQuestionLiveEntity.getvEndTime() - videoQuestionLiveEntity.getvQuestionInsretTime(), learning_stage, wrapSpeechEvalAction);
         return speechAssAutoPager;
     }
 
     @Override
     public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId,
                                                     SpeechEvalAction speechEvalAction, String stuCouId) {
+        wrapSpeechEvalAction.setSpeechEvalAction(speechEvalAction);
+        wrapSpeechEvalAction.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
         SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
                 liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false);
+                true, videoQuestionLiveEntity.nonce, wrapSpeechEvalAction, stuCouId, false);
         return speechAssessmentPager;
     }
 

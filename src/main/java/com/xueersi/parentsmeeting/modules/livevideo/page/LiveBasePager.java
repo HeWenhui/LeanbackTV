@@ -19,10 +19,10 @@ import java.util.Map;
  * Created by linyuqiang on 2018/7/5.
  * 直播基础pager
  */
-public class LiveBasePager extends BasePager implements LiveAndBackDebug {
+public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     protected LogToFile mLogtf;
-    private LiveAndBackDebug mLiveBll;
+    protected LiveAndBackDebug mLiveBll;
 
     public LiveBasePager(Context context) {
         super(context);
@@ -36,6 +36,21 @@ public class LiveBasePager extends BasePager implements LiveAndBackDebug {
      */
     public LiveBasePager(Context context, boolean isNewView) {
         super(context, isNewView);
+    }
+
+    /***
+     * 构造函数
+     *
+     * @param context   上下文对象
+     * @param obj       模型实体
+     * @param isNewView 是否初始化布局
+     */
+    public LiveBasePager(Context context, T obj, boolean isNewView) {
+        init(context);
+        mEntity = obj;
+        if (isNewView) {
+            mView = initView();
+        }
     }
 
     @Override

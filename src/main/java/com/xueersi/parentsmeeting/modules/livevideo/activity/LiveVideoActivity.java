@@ -450,7 +450,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         questionBll.setLiveType(liveType);
         questionBll.initData();
         questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(questionBll.new LiveQuestionSwitchImpl()));
-        questionBll.setBaseSpeechCreat(new LiveSpeechCreat(true));
+        questionBll.setBaseSpeechCreat(new LiveSpeechCreat());
         englishH5CoursewareBll.setShareDataManager(mShareDataManager);
         englishH5CoursewareBll.setLiveType(liveType);
         englishH5CoursewareBll.setVSectionID(mVSectionID);

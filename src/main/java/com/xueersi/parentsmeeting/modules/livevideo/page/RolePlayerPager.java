@@ -30,7 +30,6 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
-import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerSelfItem;
@@ -71,7 +70,7 @@ import io.agora.rtc.RtcEngine;
  * Created by zouhao on 2018/3/29.
  */
 
-public class RolePlayerPager extends BasePager<RolePlayerEntity> {
+public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
 
     /**
      * 匹配页默认停留时间

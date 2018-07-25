@@ -12,6 +12,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.Top3FrameAnim;
@@ -24,20 +25,17 @@ import java.util.HashMap;
  * Created by linyuqiang on 2018/4/10.
  * 语音评测top3
  */
-public class StandSpeechTop3Pager extends BasePager {
+public class StandSpeechTop3Pager extends LiveBasePager {
     private ImageView iv_livevideo_speecteval_result_top3;
     private Top3FrameAnim top3FrameAnim;
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
     private HashMap<String, Bitmap> stuHeadBitmap = new HashMap<>();
     private GoldTeamStatus entity;
     private String id;
-    LogToFile logToFile;
 
     public StandSpeechTop3Pager(Context context, GoldTeamStatus entity) {
         super(context);
         this.entity = entity;
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
     }
 
     @Override
@@ -58,7 +56,7 @@ public class StandSpeechTop3Pager extends BasePager {
 
     @Override
     public void initData() {
-        logToFile.d("initData:id=" + id + "," + entity.getStudents().size());
+        mLogtf.d("initData:id=" + id + "," + entity.getStudents().size());
         top3FrameAnim = new Top3FrameAnim(mContext, iv_livevideo_speecteval_result_top3, stuHeadBitmap, frameAnimations);
         top3FrameAnim.setGold(false);
         top3FrameAnim.start(new FrameAnimation.AnimationListener() {

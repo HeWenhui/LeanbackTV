@@ -21,13 +21,11 @@ import java.util.Map;
  * 站立直播的语音答题
  */
 public class LiveStandSpeechCreat implements BaseSpeechCreat {
-    LiveBll liveBll;
     QuestionIRCBll questionIRCBll;
     LiveAndBackDebug liveAndBackDebug;
 
     @Deprecated
     public LiveStandSpeechCreat(LiveBll liveBll) {
-        this.liveBll = liveBll;
         liveAndBackDebug = liveBll;
     }
 
@@ -89,21 +87,6 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
 
             }
             return 3000;
-        }
-
-        @Override
-        public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-            action.umsAgentDebugSys(eventId, mData);
-        }
-
-        @Override
-        public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-            action.umsAgentDebugInter(eventId, mData);
-        }
-
-        @Override
-        public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
-            action.umsAgentDebugPv(eventId, mData);
         }
 
         @Override

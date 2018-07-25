@@ -9,7 +9,7 @@ import com.xueersi.common.speech.SpeechEvaluatorUtils;
 /**
  * Created by linyuqiang on 2018/4/3.
  */
-public abstract class BaseVoiceAnswerPager extends BasePager {
+public abstract class BaseVoiceAnswerPager extends LiveBasePager {
 
     public BaseVoiceAnswerPager(Context context) {
         super(context);

@@ -17,7 +17,6 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.common.base.BaseApplication;
-import com.xueersi.common.base.BasePager;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -29,7 +28,7 @@ import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
  * Created by linyuqiang on 2017/3/25
  * 直播基本的WebView，增加刷新
  */
-public abstract class BaseWebviewX5Pager extends BasePager {
+public abstract class BaseWebviewX5Pager extends LiveBasePager {
     protected WebView wvSubjectWeb;
     private TextView tv_error_center_refresh_tip;
     private TextView tv_data_loading_tip;

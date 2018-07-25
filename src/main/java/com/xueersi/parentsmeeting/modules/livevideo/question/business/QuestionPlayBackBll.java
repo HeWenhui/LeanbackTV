@@ -1,42 +1,30 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
-import android.content.Context;
-import android.os.Message;
 import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.common.logerhelper.MobEnumUtil;
-import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.media.VideoViewActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoPlayAction;
-import com.xueersi.parentsmeeting.modules.livevideo.business.VideoQuestionAction;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.SubjectResultX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dataload.DataLoadEntity;
@@ -48,9 +36,9 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/7/17.
+ * Created by linyuqiang on 2018/7/17.
+ * 互动题回放
  */
-
 public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp {
     QuestionBll questionBll;
 
@@ -71,7 +59,17 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             questionBll.setBaseSpeechCreat(new LiveBackStandSpeechCreat(this, liveBackBll));
         } else {
             questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(questionBll.new LiveQuestionSwitchImpl()));
-            questionBll.setBaseSpeechCreat(new LiveSpeechCreat(false));
+            LiveBackSpeechCreat liveBackSpeechCreat = new LiveBackSpeechCreat();
+            liveBackSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction() {
+                @Override
+                public void stopSpeech(BaseSpeechAssessmentPager pager, String num) {
+                    super.stopSpeech(pager, num);
+                    VideoPlayAction videoPlayAction = ProxUtil.getProxUtil().get(activity, VideoPlayAction.class);
+                    videoPlayAction.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
+                    videoPlayAction.start();
+                }
+            });
+            questionBll.setBaseSpeechCreat(liveBackSpeechCreat);
         }
         questionBll.setLiveBll(this);
         LiveBackExamQuestionCreat liveBackExamQuestionCreat = new LiveBackExamQuestionCreat();
@@ -99,6 +97,26 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     @Override
     public int[] getCategorys() {
         return new int[]{LocalCourseConfig.CATEGORY_QUESTION, LocalCourseConfig.CATEGORY_EXAM};
+    }
+
+    @Override
+    public void onQuestionEnd(VideoQuestionEntity questionEntity) {
+        super.onQuestionEnd(questionEntity);
+        int vCategory = questionEntity.getvCategory();
+        switch (vCategory) {
+            case LocalCourseConfig.CATEGORY_QUESTION: {
+                questionBll.onStopQuestion(questionEntity.getvQuestionType(), "");
+                if (LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(questionEntity.getvQuestionType())) {
+                    VideoPlayAction videoPlayAction = ProxUtil.getProxUtil().get(activity, VideoPlayAction.class);
+                    videoPlayAction.pause();
+                }
+            }
+            break;
+            case LocalCourseConfig.CATEGORY_EXAM: {
+                questionBll.onExamStop();
+            }
+            break;
+        }
     }
 
     @Override

@@ -21,13 +21,11 @@ import java.util.Map;
  * 站立直播的语音答题-回放
  */
 public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
-    LiveBll liveBll;
     QuestionPlayBackBll questionIRCBll;
     LiveAndBackDebug liveAndBackDebug;
 
     @Deprecated
     public LiveBackStandSpeechCreat(LiveBll liveBll) {
-        this.liveBll = liveBll;
         liveAndBackDebug = liveBll;
     }
 
@@ -84,21 +82,6 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
         @Override
         public long getRequestTime() {
             return 3000;
-        }
-
-        @Override
-        public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-            action.umsAgentDebugSys(eventId, mData);
-        }
-
-        @Override
-        public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-            action.umsAgentDebugInter(eventId, mData);
-        }
-
-        @Override
-        public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
-            action.umsAgentDebugPv(eventId, mData);
         }
 
         @Override

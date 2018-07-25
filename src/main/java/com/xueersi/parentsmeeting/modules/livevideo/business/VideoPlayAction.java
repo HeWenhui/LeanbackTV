@@ -8,4 +8,6 @@ public interface VideoPlayAction {
     void seekTo(long pos);
 
     void start();
+
+    void pause();
 }

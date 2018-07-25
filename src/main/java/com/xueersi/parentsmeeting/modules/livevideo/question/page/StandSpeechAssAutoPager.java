@@ -40,6 +40,7 @@ import com.tal.speech.speechrecognizer.TalSpeech;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.StandLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.LiveStandSpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
@@ -130,7 +131,6 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     private SpeechEvaluatorInter speechEvaluatorInter;
     /** 在线语音失败次数 */
     int onLineError = 0;
-    private LogToFile logToFile;
     private long entranceTime;
     /** 是不是已经开始 */
     private boolean isSpeechStart = false;
@@ -180,13 +180,11 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     public StandSpeechAssAutoPager(Context context, String liveid, String testId,
                                    String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, String userName, String headUrl, String learning_stage) {
         super(context);
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
         this.isLive = true;
         this.id = testId;
         this.nonce = nonce;
         this.speechEvalAction = speechEvalAction;
-        logToFile.i("SpeechAssessmentPager:id=" + id);
+        mLogtf.i("SpeechAssessmentPager:id=" + id);
         startProgColor = context.getResources().getColor(R.color.COLOR_6462A2);
         progColor = 0;
         this.haveAnswer = haveAnswer;
@@ -206,20 +204,18 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mData.put("testid", id);
         mData.put("answer", content);
         mData.put("answertime", "" + time);
-        speechEvalAction.umsAgentDebugPv(eventId, mData);
+        umsAgentDebugPv(eventId, mData);
     }
 
     /** 语音答题回放 */
     public StandSpeechAssAutoPager(Context context, String liveid, String testId,
                                    String nonce, String content, int time, int examSubmit, SpeechEvalAction speechEvalAction, String userName, String headUrl, String learning_stage) {
         super(context);
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
         this.isLive = false;
         this.id = testId;
         this.nonce = nonce;
         this.speechEvalAction = speechEvalAction;
-        logToFile.i("SpeechAssessmentPager:id=" + id);
+        mLogtf.i("SpeechAssessmentPager:id=" + id);
         startProgColor = context.getResources().getColor(R.color.COLOR_6462A2);
         progColor = 0;
 //        content = "You are very good,You are very good";
@@ -238,7 +234,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mData.put("testid", id);
         mData.put("answer", content);
         mData.put("answertime", "" + time);
-        speechEvalAction.umsAgentDebugPv(eventId, mData);
+        umsAgentDebugPv(eventId, mData);
     }
 
     public String getId() {
@@ -361,7 +357,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                             ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
                             if (!teamStatus && !students.isEmpty()) {
                                 teamStatus = true;
-                                SpeechStandLog.sno4(speechEvalAction, id);
+                                SpeechStandLog.sno4(StandSpeechAssAutoPager.this, id);
                             }
                             long delayMillis = liveStandSpeechEvalAction.getRequestTime();
                             int addCount = 0;
@@ -471,7 +467,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             @Override
             public void onDeny(String permission, int position) {
                 isSpeechError = true;
-                SpeechStandLog.sno3(speechEvalAction, id, false);
+                SpeechStandLog.sno3(StandSpeechAssAutoPager.this, id, false);
             }
 
             @Override
@@ -489,7 +485,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
      */
     private void startVoice() {
         isSpeechStart = true;
-        SpeechStandLog.sno3(speechEvalAction, id, true);
+        SpeechStandLog.sno3(this, id, true);
         setAudioRequest();
         FrameAnimation frameAnimation1 = createFromAees(file1, false);
         frameAnimations.add(frameAnimation1);
@@ -525,7 +521,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mData.put("logtype", "startRecord");
         mData.put("testid", id);
         mData.put("islive", "" + isLive);
-        speechEvalAction.umsAgentDebugInter(eventId, mData);
+        umsAgentDebugInter(eventId, mData);
         speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, learning_stage, new EvaluatorListener() {
             int lastVolume = 0;
 
@@ -545,7 +541,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     mData.put("logtype", "voiceTestClose");
                     mData.put("islive", "" + isLive);
                     mData.put("testid", "" + id);
-                    speechEvalAction.umsAgentDebugInter(eventId, mData);
+                    umsAgentDebugInter(eventId, mData);
                     onEvaluatorSuccess(resultEntity, this);
 
 //                    resultEntity.setStatus(ResultEntity.ERROR);
@@ -655,7 +651,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 nbest += ",";
             }
         }
-        logToFile.d("onEvaluatorSuccess:content=" + content + ",sid=" + resultEntity.getSid() + ",score=" + score + ",haveAnswer=" + haveAnswer + ",nbest=" + nbest);
+        mLogtf.d("onEvaluatorSuccess:content=" + content + ",sid=" + resultEntity.getSid() + ",score=" + score + ",haveAnswer=" + haveAnswer + ",nbest=" + nbest);
         if (haveAnswer) {
             onSpeechEvalSuccess(resultEntity, 0);
         } else {
@@ -944,11 +940,11 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         } else {
             state = isEnd ? "endPublish" : "autoSubmit";
         }
-        SpeechStandLog.sno5(speechEvalAction, id, state, gold, progress, score, resultEntity.getSpeechDuration());
+        SpeechStandLog.sno5(this, id, state, gold, progress, score, resultEntity.getSpeechDuration());
     }
 
     private void onEvaluatorError(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {
-        logToFile.d("onResult:ERROR:ErrorNo=" + resultEntity.getErrorNo() + ",isEnd=" + isEnd + ",isOfflineFail=" + SpeechEvaluatorUtils.isOfflineFail());
+        mLogtf.d("onResult:ERROR:ErrorNo=" + resultEntity.getErrorNo() + ",isEnd=" + isEnd + ",isOfflineFail=" + SpeechEvaluatorUtils.isOfflineFail());
         tvSpeectevalTip.removeCallbacks(autoUploadRunnable);
         errorSetVisible();
         if (resultEntity.getErrorNo() == ResultCode.MUTE_AUDIO || resultEntity.getErrorNo() == ResultCode
@@ -1249,7 +1245,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     public void examSubmitAll() {
         isEnd = true;
         ViewGroup group = (ViewGroup) mView.getParent();
-        logToFile.d("examSubmitAll:mIse=" + (mIse != null) + ",Success=" + speechSuccess + ",group=" + (group == null));
+        mLogtf.d("examSubmitAll:mIse=" + (mIse != null) + ",Success=" + speechSuccess + ",group=" + (group == null));
         if (group == null) {
             return;
         }

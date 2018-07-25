@@ -28,5 +28,5 @@ public interface BaseSpeechCreat {
     BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId,
                                              SpeechEvalAction speechEvalAction, String stuCouId);
 
-    void setViewLayoutParams(BaseSpeechAssessmentPager baseVoiceAnswerPager, int rightMargin);
+    void setViewLayoutParams(BaseSpeechAssessmentPager baseSpeechAssessmentPager, int rightMargin);
 }
