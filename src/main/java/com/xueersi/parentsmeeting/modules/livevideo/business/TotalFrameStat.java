@@ -190,7 +190,18 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                             Loger.d(TAG, "handleMessage:fps=" + (disaplyCount - fistDisaplyCount) / 10);
                             ArrayList<Float> framesPsTenTemp = new ArrayList<Float>(framesPsTen);
                             framesPsTen.clear();
-                            xescdnLogHeart(framesPsTenTemp, (float) (((double) (disaplyCount - fistDisaplyCount)) * 1000 / (System.currentTimeMillis() - frame10Start)));
+                            long bufferduration = 0;
+                            float bitrate = 0f;
+                            try {
+                                if (vPlayer.isInitialized()) {
+                                    bufferduration = ijkMediaPlayer.getVideoCachedDuration();
+                                    bitrate = ijkMediaPlayer.getTcpSpeed();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            float averagefps = (float) (((double) (disaplyCount - fistDisaplyCount)) * 1000 / (System.currentTimeMillis() - frame10Start));
+                            xescdnLogHeart(framesPsTenTemp, averagefps, bufferduration, bitrate);
                             fistDisaplyCount = disaplyCount;
                         }
                         lastDisaplyCount = disaplyCount;
@@ -362,7 +373,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         return remoteIp;
     }
 
-    private void xescdnLogHeart(final ArrayList<Float> framesPsTen, final float averagefps) {
+    private void xescdnLogHeart(final ArrayList<Float> framesPsTen, final float averagefps, final long bufferduration, final float bitrate) {
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -382,12 +393,12 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                 }
                 float averagefps2 = totalfps / 10f;
                 Loger.d(TAG, "xescdnLogHeart:averagefps=" + averagefps + "," + averagefps2);
-                xescdnLogHeart(defaultKey, averagefps, averagefps2);
+                xescdnLogHeart(defaultKey, averagefps, averagefps2, bufferduration, bitrate);
             }
         });
     }
 
-    private void xescdnLogHeart(HashMap<String, String> defaultKey, float averagefps, float averagefps2) {
+    private void xescdnLogHeart(HashMap<String, String> defaultKey, float averagefps, float averagefps2, long bufferduration, float bitrate) {
         defaultKey.put("dataType", "603");
         defaultKey.put("traceId", "" + UUID.randomUUID());
         String remoteIp = getRemoteIp();
@@ -398,21 +409,6 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
             if (lastPlayserverEntity != null) {
                 dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
                 dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
-            }
-            framesPsTen.clear();
-            long bufferduration = 0;
-            float bitrate = 0f;
-            try {
-                if (vPlayer.isInitialized()) {
-                    bufferduration = vPlayer.getPlayer().getVideoCachedDuration();
-                    if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
-                        IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
-                        bitrate = ijkMediaPlayer.getTcpSpeed();
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
             }
             dataJson.put("bufferduration", "" + bufferduration);
             dataJson.put("averagefps", "" + averagefps);
@@ -469,7 +465,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                                 httpRequestParams.setWriteAndreadTimeOut(10);
                                 baseHttpBusiness.baseSendPostNoBusinessJson(logurl, httpRequestParams, callback);
                             }
-                        }, retryInt.decrementAndGet() * 1000);
+                        }, retryInt.incrementAndGet() * 1000);
                     }
                 }
 

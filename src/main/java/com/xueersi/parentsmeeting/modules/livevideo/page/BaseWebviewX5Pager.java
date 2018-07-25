@@ -3,7 +3,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Environment;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,9 +21,12 @@ import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.logerhelper.LogerTag;
 import com.xueersi.parentsmeeting.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
+
+import java.io.File;
 
 /**
  * Created by linyuqiang on 2017/3/25
@@ -34,9 +39,12 @@ public abstract class BaseWebviewX5Pager extends BasePager {
     protected View errorView;
     private String errorTip;
     private String loadTip;
+    protected LogToFile mLogtf;
 
     public BaseWebviewX5Pager(Context context) {
         super(context);
+        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+                + ".txt"));
     }
 
     protected void initWebView() {
@@ -52,7 +60,16 @@ public abstract class BaseWebviewX5Pager extends BasePager {
                 View loadView = mView.findViewById(R.id.rl_livevideo_subject_loading);
                 loadView.setVisibility(View.VISIBLE);
                 ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
-                ((AnimationDrawable) ivLoading.getBackground()).stop();
+                try {
+                    Drawable drawable = ivLoading.getBackground();
+                    if (drawable instanceof AnimationDrawable) {
+                        ((AnimationDrawable) drawable).stop();
+                    }
+                } catch (Exception e) {
+                    if (mLogtf != null) {
+                        mLogtf.e("btn_error_refresh", e);
+                    }
+                }
                 wvSubjectWeb.reload();
             }
         });
@@ -64,7 +81,15 @@ public abstract class BaseWebviewX5Pager extends BasePager {
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
         wvSubjectWeb.setWebViewClient(new MyWebViewClient());
         ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
-        ((AnimationDrawable) ivLoading.getBackground()).start();
+        try {
+            Drawable drawable = mContext.getResources().getDrawable(R.drawable.animlst_app_loading);
+            ivLoading.setBackground(drawable);
+            ((AnimationDrawable) drawable).start();
+        } catch (Exception e) {
+            if (mLogtf != null) {
+                mLogtf.e("initData", e);
+            }
+        }
     }
 
     @android.webkit.JavascriptInterface
@@ -106,7 +131,16 @@ public abstract class BaseWebviewX5Pager extends BasePager {
                 View loadView = mView.findViewById(R.id.rl_livevideo_subject_loading);
                 if (loadView != null) {
                     ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
-                    ((AnimationDrawable) ivLoading.getBackground()).stop();
+                    try {
+                        Drawable drawable = ivLoading.getBackground();
+                        if (drawable instanceof AnimationDrawable) {
+                            ((AnimationDrawable) drawable).stop();
+                        }
+                    } catch (Exception e) {
+                        if (mLogtf != null) {
+                            mLogtf.e("onProgressChanged", e);
+                        }
+                    }
                     loadView.setVisibility(View.GONE);
 //                    ViewGroup group = (ViewGroup) loadView.getParent();
 //                    group.removeView(loadView);
