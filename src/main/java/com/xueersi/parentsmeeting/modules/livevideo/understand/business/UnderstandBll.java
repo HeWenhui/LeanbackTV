@@ -1,10 +1,14 @@
 package com.xueersi.parentsmeeting.modules.livevideo.understand.business;
 
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -14,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 
@@ -36,14 +41,18 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
     private LogToFile mLogtf;
     /** 当前是否正在显示懂了吗 */
     private boolean mIsShowUnderstand = false;
-
+    //是否是小英
+    private boolean isSmallEnglish = true;
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
+    //显示懂了吗的布局
+    View underatandView = null;
 
     public UnderstandBll(Activity activity, LiveAndBackDebug liveAndBackDebug) {
         this.activity = activity;
         this.liveAndBackDebug = liveAndBackDebug;
-        mLogtf = new LogToFile(activity, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(activity, TAG, new File(Environment.getExternalStorageDirectory(),
+                "parentsmeeting/log/" + TAG
+                        + ".txt"));
         mLogtf.clear();
     }
 
@@ -56,7 +65,7 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
     }
 
     public void initView(RelativeLayout bottomContent, boolean isLand) {
-
+        rlQuestionContent = bottomContent;
     }
 
     @Override
@@ -68,35 +77,47 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
 
             @Override
             public void run() {
-                final View underatandView = activity.getLayoutInflater().inflate(R.layout.layout_livevideo_understand,
-                        rlQuestionContent,
-                        false);
-                ((TextView) underatandView.findViewById(R.id.tv_livevideo_under_user)).setText(mGetInfo.getStuName
-                        () + " 你好");
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) underatandView.getLayoutParams();
-                params.addRule(RelativeLayout.CENTER_IN_PARENT);
-                rlQuestionContent.addView(underatandView, params);
-                View.OnClickListener listener = new View.OnClickListener() {
 
-                    @Override
-                    public void onClick(View v) {
-                        boolean isUnderstand = v.getId() == R.id.tv_livevideo_understand_understand;
-                        mLogtf.d("understand:isUnderstand=" + isUnderstand);
-                        String nonce = "" + StableLogHashMap.creatNonce();
-                        understandHttp.understand(isUnderstand, nonce);
-                        mIsShowUnderstand = false;
-                        Map<String, String> mData = new HashMap<>();
-                        mData.put("logtype", "sendUnderstand");
-                        mData.put("answerType", isUnderstand ? "1" : "0");
-                        mData.put("expect", "1");
-                        mData.put("nonce", "" + nonce);
-                        mData.put("sno", "3");
-                        mData.put("stable", "1");
-                        liveAndBackDebug.umsAgentDebugInter(understandEventId, mData);
+                RelativeLayout.LayoutParams params = null;
+                //如果是小英
+                if (!isSmallEnglish) {
+                    underatandView = activity.getLayoutInflater().inflate(R.layout.layout_livevideo_understand,
+                            rlQuestionContent, false);
+                    underatandView.findViewById(R.id.tv_livevideo_understand_donotunderstand).setOnClickListener
+                            (listener);
+                    underatandView.findViewById(R.id.tv_livevideo_understand_understand).setOnClickListener(listener);
+                    ((TextView) underatandView.findViewById(R.id.tv_livevideo_under_user)).setText(mGetInfo.getStuName
+                            () + " 你好");
+                    params = (RelativeLayout.LayoutParams) underatandView.getLayoutParams();
+                    if (params == null) {
+                        params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                                RelativeLayout.LayoutParams.MATCH_PARENT);
                     }
-                };
-                activity.findViewById(R.id.tv_livevideo_understand_donotunderstand).setOnClickListener(listener);
-                activity.findViewById(R.id.tv_livevideo_understand_understand).setOnClickListener(listener);
+                    params.addRule(RelativeLayout.CENTER_IN_PARENT);
+
+                } else {
+                    underatandView = View.inflate(activity, R.layout.layout_livevideo_small_english_understand, null);
+                    underatandView.findViewById(R.id.iv_livevideo_small_english_understand).setOnClickListener
+                            (smallEnglishListener);
+                    underatandView.findViewById(R.id.iv_livevideo_small_english_no_understand).setOnClickListener
+                            (smallEnglishListener);
+                    underatandView.findViewById(R.id.iv_livevideo_small_english_close).setOnClickListener
+                            (smallEnglishCloseListener);
+
+                    params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                            .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                    LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+
+                    Drawable drawable = activity.getResources().getDrawable(R.drawable
+                            .bg_livevideo_small_english_understand_board);
+                    int draweight = drawable.getIntrinsicWidth();
+
+                    params.leftMargin = (liveVideoPoint.x3 - liveVideoPoint.x2 - draweight) / 2;
+
+                    params.addRule(RelativeLayout.CENTER_VERTICAL);
+                }
+                rlQuestionContent.addView(underatandView, params);
+
                 postDelayedIfNotFinish(new Runnable() {
                     @Override
                     public void run() {
@@ -121,6 +142,58 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
         };
         mVPlayVideoControlHandler.post(runnable);
         mIsShowUnderstand = true;
+    }
+
+    View.OnClickListener listener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            boolean isUnderstand = v.getId() == R.id.tv_livevideo_understand_understand;
+            mLogtf.d("understand:isUnderstand=" + isUnderstand);
+            String nonce = "" + StableLogHashMap.creatNonce();
+            understandHttp.understand(isUnderstand, nonce);
+            mIsShowUnderstand = false;
+            Map<String, String> mData = new HashMap<>();
+            mData.put("logtype", "sendUnderstand");
+            mData.put("answerType", isUnderstand ? "1" : "0");
+            mData.put("expect", "1");
+            mData.put("nonce", "" + nonce);
+            mData.put("sno", "3");
+            mData.put("stable", "1");
+            liveAndBackDebug.umsAgentDebugInter(understandEventId, mData);
+        }
+    };
+    View.OnClickListener smallEnglishListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            boolean isUnderstand = v.getId() == R.id.iv_livevideo_small_english_understand;
+            mLogtf.d("understand:isUnderstand=" + isUnderstand);
+            String nonce = "" + StableLogHashMap.creatNonce();
+            understandHttp.understand(isUnderstand, nonce);
+            mIsShowUnderstand = false;
+            Map<String, String> mData = new HashMap<>();
+            mData.put("logtype", "sendUnderstand");
+            mData.put("answerType", isUnderstand ? "1" : "0");
+            mData.put("expect", "1");
+            mData.put("nonce", "" + nonce);
+            mData.put("sno", "3");
+            mData.put("stable", "1");
+            liveAndBackDebug.umsAgentDebugInter(understandEventId, mData);
+
+            removeView(rlQuestionContent, underatandView);
+        }
+    };
+    private View.OnClickListener smallEnglishCloseListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            removeView(rlQuestionContent, underatandView);
+        }
+    };
+
+    private void removeView(ViewGroup viewParent, View view) {
+        if (view != null && viewParent != null && view.getParent() == viewParent) {
+            viewParent.removeView(view);
+        }
     }
 
     /**
