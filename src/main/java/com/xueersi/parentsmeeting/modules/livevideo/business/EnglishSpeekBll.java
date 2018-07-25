@@ -290,7 +290,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
 
                 @Override
                 public void onError(ResultEntity result) {
-                    Loger.d(TAG, "onError:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",result=" + result);
+                    mLogtf.d("onError:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",result=" + result.getErrorNo());
                     isDestory = true;
                     isDestory2 = true;
                     rl_livevideo_english_speak_content.setVisibility(View.INVISIBLE);
@@ -518,7 +518,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
         }
         talAsrJni.LangIDSetParam(1);
         int AssessInitial = talAsrJni.LangIDInitial(s_language.getPath());
-        Loger.d(TAG, "initLanuage:AssessInitial=" + AssessInitial);
+        mLogtf.d("initLanuage:AssessInitial=" + AssessInitial);
         return AssessInitial == 0;
     }
 

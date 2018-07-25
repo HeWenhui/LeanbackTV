@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
+import com.xueersi.xesalib.utils.app.XESToastUtils;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
@@ -304,7 +305,6 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
             return;
         }
         try {
-            isAudioStart = true;
             talLanguage.start(new LanguageListener() {
                 ValueAnimator lastValueAnimator;
 
@@ -316,7 +316,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
 
                 @Override
                 public void onError(ResultEntity result) {
-                    Loger.d(TAG, "onError:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",result=" + result);
+                    mLogtf.d("onError:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",result=" + result.getErrorNo());
                     isDestory = true;
                     isDestory2 = true;
 //                    rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
@@ -475,8 +475,10 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
                     }
                 }
             });
-        } catch (IOException e) {
-            Loger.e(TAG, "start", e);
+            isAudioStart = true;
+        } catch (Exception e) {
+            mLogtf.e("start", e);
+            XESToastUtils.showToast(activity, "能量条启动失败，打开录音权限或者关闭其他录音程序");
         }
     }
 
@@ -533,7 +535,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
         }
         talAsrJni.LangIDSetParam(1);
         int AssessInitial = talAsrJni.LangIDInitial(s_language.getPath());
-        Loger.d(TAG, "initLanuage:AssessInitial=" + AssessInitial);
+        mLogtf.d("initLanuage:AssessInitial=" + AssessInitial);
         return AssessInitial == 0;
     }
 
