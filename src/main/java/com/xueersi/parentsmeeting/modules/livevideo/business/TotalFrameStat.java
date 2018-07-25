@@ -318,6 +318,8 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         Loger.d(TAG, "onBufferComplete:isInitialized=" + vPlayer.isInitialized());
     }
 
+    String oldCipdispatch = "";
+
     public void liveGetPlayServer(long delay, int code, String cipdispatch, StringBuilder ipsb, String url) {
         Loger.d(TAG, "liveGetPlayServer:delay=" + delay + ",ipsb=" + ipsb.toString());
         HashMap<String, String> defaultKey = new HashMap<>();
@@ -328,6 +330,11 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("sip", "" + ipsb);
         defaultKey.put("url", "" + url);
         JSONObject dataJson = new JSONObject();
+        if (StringUtils.isEmpty(cipdispatch)) {
+            cipdispatch = oldCipdispatch;
+        } else {
+            oldCipdispatch = cipdispatch;
+        }
         try {
             dataJson.put("cipdispatch", "" + cipdispatch);
         } catch (JSONException e) {
@@ -392,16 +399,21 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                 dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
                 dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
             }
+            framesPsTen.clear();
             long bufferduration = 0;
             float bitrate = 0f;
-            if (vPlayer.isInitialized()) {
-                bufferduration = vPlayer.getPlayer().getVideoCachedDuration();
-                if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
-                    IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
-                    bitrate = ijkMediaPlayer.getTcpSpeed();
+            try {
+                if (vPlayer.isInitialized()) {
+                    bufferduration = vPlayer.getPlayer().getVideoCachedDuration();
+                    if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
+                        IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
+                        bitrate = ijkMediaPlayer.getTcpSpeed();
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
             }
-            framesPsTen.clear();
             dataJson.put("bufferduration", "" + bufferduration);
             dataJson.put("averagefps", "" + averagefps);
             dataJson.put("averagefps2", "" + averagefps2);

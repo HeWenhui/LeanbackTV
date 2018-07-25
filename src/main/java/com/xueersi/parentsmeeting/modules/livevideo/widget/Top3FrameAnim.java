@@ -216,7 +216,10 @@ public class Top3FrameAnim {
         try {
             inputStream = FrameAnimation.getInputStream(mContext, file);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            Loger.d(TAG, "initTeamRankHeadAndGold:file=" + file);
+            logToFile.d("initTeamRankHeadAndGold:file=" + file + ",bitmap=" + (bitmap == null));
+            if (bitmap == null) {
+                return null;
+            }
             bitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
             Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             canvasBitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
@@ -392,7 +395,7 @@ public class Top3FrameAnim {
             return canvasBitmap;
         } catch (IOException e) {
             e.printStackTrace();
-            Loger.e(TAG, "initTeamRankHeadAndGold", e);
+            logToFile.e("initTeamRankHeadAndGold", e);
         } finally {
             if (inputStream != null) {
                 try {
