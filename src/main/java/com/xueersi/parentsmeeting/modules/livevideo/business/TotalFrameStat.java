@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService;
 import com.xueersi.xesalib.umsagent.DeviceInfo;
 import com.xueersi.xesalib.utils.app.DeviceUtils;
 import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.xesalib.utils.network.NetWorkHelper;
 import com.xueersi.xesalib.utils.string.StringUtils;
 
 import org.json.JSONException;
@@ -391,6 +392,28 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                     Float f = framesPsTen.get(i);
                     totalfps += f;
                 }
+                int net = 0;
+                try {
+                    String strNetworkType = NetWorkHelper.getNetworkType(activity);
+                    if (NetWorkHelper.NETWORK_TYPE_2G.equals(strNetworkType)) {
+                        net = 1;
+                    } else if (NetWorkHelper.NETWORK_TYPE_3G.equals(strNetworkType)) {
+                        net = 2;
+                    } else if (NetWorkHelper.NETWORK_TYPE_4G.equals(strNetworkType)) {
+                        net = 3;
+                    } else if (NetWorkHelper.NETWORK_TYPE_WIFI.equals(strNetworkType)) {
+                        net = 5;
+                    } else {
+                        if (!StringUtils.isEmpty(strNetworkType)) {
+                            net = 10;
+                            Loger.d(BaseApplication.getContext(), TAG, "getNetworkType:strNetworkType=" + strNetworkType, true);
+                        }
+                    }
+                } catch (Exception e) {
+                    net = -1024;
+                    Loger.e(BaseApplication.getContext(), TAG, "getNetworkType", e, true);
+                }
+                defaultKey.put("net", "" + net);
                 float averagefps2 = totalfps / 10f;
                 Loger.d(TAG, "xescdnLogHeart:averagefps=" + averagefps + "," + averagefps2);
                 xescdnLogHeart(defaultKey, averagefps, averagefps2, bufferduration, bitrate);
