@@ -5,38 +5,37 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@id/rl_livevideo_arts_redpackage_unopen"
+        android:id="@id/rl_livevideo_small_english_redpackage_unopen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:visibility="gone">
 
         <ImageView
-            android:id="@id/iv_livevideo_arts_redpackage_board"
+            android:id="@id/iv_livevideo_small_english_redpackage_board"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/bg_livevideo_arts_redppackage_board" />
+            android:src="@drawable/bg_livevideo_small_english_redppackage_board" />
 
         <ImageView
-            android:id="@id/iv_livevideo_arts_redpackage_open"
+            android:id="@id/iv_livevideo_small_english_redpackage_open"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="50dp"
-            android:src="@drawable/shellwindow_redpaper_open_btn_nor" />
+            android:src="@drawable/bg_livevideo_small_english_redpaper_open_btn_nor" />
+
         <ImageView
-            android:id="@id/iv_livevideo_arts_redpackage_close"
+            android:id="@id/iv_livevideo_small_english_redpackage_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="320dp"
             android:layout_marginTop="0dp"
-            android:src="@drawable/bg_livevideo_small_english_close_btn_nor" />
+            android:src="@drawable/selector_livevideo_small_english_close" />
     </RelativeLayout>
 
-
-
     <RelativeLayout
-        android:id="@id/rl_livevideo_arts_redpackage_open"
+        android:id="@id/rl_livevideo_small_english_redpackage_open"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp">
@@ -44,17 +43,17 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/bg_livevideo_arts_redpackage_board_open" />
+            android:src="@drawable/bg_livevideo_small_english_redpackage_board_open" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="75dp"
             android:layout_marginTop="170dp"
-            android:src="@drawable/bg_livevideo_arts_redpackage_img" />
+            android:src="@drawable/bg_livevideo_small_english_redpackage" />
 
         <TextView
-            android:id="@id/tv_livevidoe_arts_redpackage_money"
+            android:id="@id/tv_livevidoe_small_english_redpackage_money"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="160dp"
@@ -63,12 +62,13 @@
             android:textColor="@color/COLOR_FFDB2A"
             android:textSize="30sp"
             android:textStyle="bold" />
+
         <ImageView
-            android:id="@id/iv_livevideo_arts_open_redpackage_close"
+            android:id="@id/iv_livevideo_small_english_open_redpackage_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="320dp"
             android:layout_marginTop="0dp"
-            android:src="@drawable/bg_livevideo_small_english_close_btn_nor"/>
+            android:src="@drawable/selector_livevideo_small_english_close" />
     </RelativeLayout>
 </RelativeLayout>

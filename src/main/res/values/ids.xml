@@ -709,11 +709,14 @@
     <!--alpha001新加的文科举麦的弹窗-->
     <item name="iv_livevideo_arts_raise_hand" type="id" />
     <!--小英组内-->
-    <item name="iv_livevideo_arts_rank_mygroup" type="id" />
+    <item name="iv_livevideo_small_english_rank_mygroup" type="id" />
+    <item name="btn_livevideo_small_english_rank_mygroup" type="id" />
     <!--小英小组-->
-    <item name="rl_livevideo_arts_rank_groups" type="id" />
+    <item name="iv_livevideo_small_english_rank_groups" type="id" />
+    <item name="btn_livevideo_small_english_rank_groups" type="id" />
     <!--小英班级-->
-    <item name="rl_livevideo_arts_rank_class" type="id" />
+    <item name="btn_livevideo_small_english_rank_class" type="id" />
+    <item name="iv_livevideo_small_english_rank_class" type="id" />
 
     <item name="iv_live_video_small_english_sign_background" type="id" />
     <item name="tv_livevideo_small_english_sign_user_name" type="id" />
@@ -721,13 +724,13 @@
     <!--小英签到-->
     <item name="tv_livevideo_small_english_sign_start_sign" type="id" />
 
-    <item name="iv_livevideo_arts_redpackage_close" type="id" />
-    <item name="iv_livevideo_arts_redpackage_open" type="id" />
-    <item name="iv_livevideo_arts_redpackage_board" type="id" />
-    <item name="rl_livevideo_arts_redpackage_unopen" type="id" />
-    <item name="rl_livevideo_arts_redpackage_open" type="id" />
-    <item name="tv_livevidoe_arts_redpackage_money" type="id" />
-    <item name="iv_livevideo_arts_open_redpackage_close" type="id" />
+    <item name="iv_livevideo_small_english_redpackage_close" type="id" />
+    <item name="iv_livevideo_small_english_redpackage_open" type="id" />
+    <item name="iv_livevideo_small_english_redpackage_board" type="id" />
+    <item name="rl_livevideo_small_english_redpackage_unopen" type="id" />
+    <item name="rl_livevideo_small_english_redpackage_open" type="id" />
+    <item name="tv_livevidoe_small_english_redpackage_money" type="id" />
+    <item name="iv_livevideo_small_english_open_redpackage_close" type="id" />
     <item name="iv_livevideo_small_english_no_understand" type="id" />
     <item name="iv_livevideo_small_english_understand" type="id" />
     <item name="iv_livevideo_small_english_close" type="id" />

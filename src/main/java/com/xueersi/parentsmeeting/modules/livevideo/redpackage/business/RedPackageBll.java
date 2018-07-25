@@ -8,14 +8,12 @@ import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -33,7 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.ArtsRedPackagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.SmallEnglishRedPackagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.io.File;
@@ -41,7 +39,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author linyuqiang
- *         Created by linyuqiang on 2016/9/23.
+ * Created by linyuqiang on 2016/9/23.
  */
 public class RedPackageBll implements RedPackageAction, Handler.Callback {
     private static final String TAG = "RedPackageBll";
@@ -51,7 +49,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
     private ReceiveGold receiveGold;
     LiveHttpResponseParser mHttpResponseParser = null;
 
-    ArtsRedPackagePager artsRedPackagePager;
+    SmallEnglishRedPackagePager artsRedPackagePager;
     private LiveGetInfo mGetInfo;
     /**
      * 直播id
@@ -61,6 +59,8 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
      * 红包的布局
      */
     private RelativeLayout rlRedpacketContent;
+
+    private boolean isSmallEnglish = true;
 
     public RedPackageBll(Activity activity, LiveGetInfo liveGetInfo) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -134,11 +134,11 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
         rlRedpacketContent.removeAllViews();
         View view = null;
         //小英
-        if (mGetInfo != null && mGetInfo.getIsArts() == 1 && (mGetInfo.getGrade() > 1 && mGetInfo.getGrade() < 65)) {
-            artsRedPackagePager = new ArtsRedPackagePager(activity);
+        if (isSmallEnglish) {
+            artsRedPackagePager = new SmallEnglishRedPackagePager(activity);
             view = artsRedPackagePager.getRootView();
             //小英红包打开红包按钮的监听器
-            artsRedPackagePager.setRedPackageTouchListenr(new ArtsRedPackagePager.RedPackageTouchListenr() {
+            artsRedPackagePager.setRedPackageTouchListenr(new SmallEnglishRedPackagePager.RedPackageTouchListenr() {
                 @Override
                 public void openRedPackage() {
                     sendReceiveGold(operateId, mVSectionID);
@@ -172,8 +172,8 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
     }
 
     //小英红包页面取消红包的监听器
-    private ArtsRedPackagePager.CancelRedPackageTouchListener cancelRedPackageTouchListener = new ArtsRedPackagePager
-            .CancelRedPackageTouchListener() {
+    private SmallEnglishRedPackagePager.CancelRedPackageTouchListener cancelRedPackageTouchListener
+            = new SmallEnglishRedPackagePager.CancelRedPackageTouchListener() {
         @Override
         public void cancelRedPackage() {
             rlRedpacketContent.removeAllViews();
@@ -211,12 +211,11 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
      */
     private void initRedPacketResult(int goldNum) {
         //小英
-        if (mGetInfo.getIsArts() == 1 && (mGetInfo.getGrade() > 1 && mGetInfo.getGrade() < 65)) {
+        if (isSmallEnglish) {
             artsRedPackagePager.updateStatus(String.valueOf(goldNum));
             if (artsRedPackagePager.getCancelRedPackageTouchListener() == null) {
                 artsRedPackagePager.setCancelRedPackageTouchListener(cancelRedPackageTouchListener);
             }
-
         } else {
             String msg = "+" + goldNum + "金币";
             View view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_success, rlRedpacketContent,
@@ -238,6 +237,8 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
             });
             final TextView tvAutoclose = (TextView) view.findViewById(R.id.tv_livevideo_redpackage_autoclose);
             final AtomicInteger count = new AtomicInteger(3);
+
+
             postDelayedIfNotFinish(new Runnable() {
                 @Override
                 public void run() {
@@ -273,7 +274,8 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
      * 以获取过红包
      */
     private void initRedPacketOtherResult() {
-        View popupWindow_view = activity.getLayoutInflater().inflate(R.layout.pop_question_redpacket_other, null, false);
+        View popupWindow_view = activity.getLayoutInflater().inflate(R.layout.pop_question_redpacket_other, null,
+                false);
         initQuestionAnswerReslut(popupWindow_view);
     }
 
@@ -281,7 +283,8 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
      * 创建互动题作答，抢红包结果提示PopupWindow
      */
     protected void initQuestionAnswerReslut(final View popupWindow_view) {
-        rlRedpacketContent.addView(popupWindow_view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        rlRedpacketContent.addView(popupWindow_view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
+                .MATCH_PARENT);
         popupWindow_view.setOnClickListener(new View.OnClickListener() {
 
             @Override

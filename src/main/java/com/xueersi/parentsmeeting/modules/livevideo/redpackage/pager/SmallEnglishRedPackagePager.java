@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,7 +14,7 @@ import android.widget.TextView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
-public class ArtsRedPackagePager extends BasePager {
+public class SmallEnglishRedPackagePager extends BasePager {
     //待领取红包的布局
     private RelativeLayout rlArtsUnopenRed;
     //已经领取的红包的布局
@@ -36,7 +35,7 @@ public class ArtsRedPackagePager extends BasePager {
     //是否需要再执行一次动画
     private boolean isRepeat = true;
 
-    public ArtsRedPackagePager(Context context) {
+    public SmallEnglishRedPackagePager(Context context) {
         super(context);
         initListener();
     }
@@ -52,15 +51,15 @@ public class ArtsRedPackagePager extends BasePager {
     @Override
     public View initView() {
 
-        View view = View.inflate(mContext, R.layout.layout_livevideo_arts_redpackage, null);
-        rlArtsUnopenRed = view.findViewById(R.id.rl_livevideo_arts_redpackage_unopen);
-//        ivArtsBoard = view.findViewById(R.id.iv_livevideo_arts_redpackage_board);
-        ivArtsOpen = view.findViewById(R.id.iv_livevideo_arts_redpackage_open);
-        ivClose = view.findViewById(R.id.iv_livevideo_arts_redpackage_close);
+        View view = View.inflate(mContext, R.layout.layout_livevideo_small_english_redpackage, null);
+        rlArtsUnopenRed = view.findViewById(R.id.rl_livevideo_small_english_redpackage_unopen);
+//        ivArtsBoard = view.findViewById(R.id.iv_livevideo_small_english_redpackage_board);
+        ivArtsOpen = view.findViewById(R.id.iv_livevideo_small_english_redpackage_open);
+        ivClose = view.findViewById(R.id.iv_livevideo_small_english_redpackage_close);
 
-        rlArtsOpenRed = view.findViewById(R.id.rl_livevideo_arts_redpackage_open);
-        tvArtsOpenRedMoney = view.findViewById(R.id.tv_livevidoe_arts_redpackage_money);
-        ivOpenClose = view.findViewById(R.id.iv_livevideo_arts_open_redpackage_close);
+        rlArtsOpenRed = view.findViewById(R.id.rl_livevideo_small_english_redpackage_open);
+        tvArtsOpenRedMoney = view.findViewById(R.id.tv_livevidoe_small_english_redpackage_money);
+        ivOpenClose = view.findViewById(R.id.iv_livevideo_small_english_open_redpackage_close);
 
         return view;
     }
