@@ -480,7 +480,7 @@ public class VideoChatBll implements VideoChatAction {
 
     @Override
     public void onJoin(final String onmic, final String openhands, final String room, boolean classmateChange, final
-    ArrayList<ClassmateEntity> classmateEntities, final String from, final int isArts, final int grade) {
+    ArrayList<ClassmateEntity> classmateEntities, final String from) {
         Log.e("VideoChatBill", onmic + " " + openhands + " " + room + " " + classmateChange + " " + from);
         boolean contain = false;
         onMic = onmic;
