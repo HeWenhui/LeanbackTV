@@ -76,7 +76,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         //测试卷
         LiveBackExamQuestionCreat liveBackExamQuestionCreat = new LiveBackExamQuestionCreat();
         liveBackExamQuestionCreat.setLiveGetInfo(liveGetInfo);
-        int isArts = (int) liveBackBll.getBusinessShareParam("isArts");
+        int isArts = liveBackBll.getIsArts();
         liveBackExamQuestionCreat.setIS_SCIENCE(isArts != 1);
         liveBackExamQuestionCreat.setExamStop(new LiveBackExamStop(activity, questionBll));
         questionBll.setBaseExamQuestionCreat(liveBackExamQuestionCreat);

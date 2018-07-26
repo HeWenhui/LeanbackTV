@@ -103,7 +103,6 @@ public class LiveBackBll implements LiveAndBackDebug, AllLiveBasePagerInter {
                 liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
             }
         }
-        addBusinessShareParam("isArts", isArts);
         mCourseHttpManager = new LivePlayBackHttpManager(activity);
         mCourseHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         mCourseHttpResponseParser = new LivePlayBackHttpResponseParser();
@@ -115,6 +114,10 @@ public class LiveBackBll implements LiveAndBackDebug, AllLiveBasePagerInter {
 
     public int getPattern() {
         return pattern;
+    }
+
+    public int getIsArts() {
+        return isArts;
     }
 
     public void setvPlayer(PlayerService vPlayer) {

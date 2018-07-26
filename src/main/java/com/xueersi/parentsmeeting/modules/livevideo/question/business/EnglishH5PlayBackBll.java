@@ -74,7 +74,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(wrapQuestionSwitch));
         }
         LiveBackBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new LiveBackBaseEnglishH5CoursewareCreat();
-        int isArts = (int) liveBackBll.getBusinessShareParam("isArts");
+        int isArts = liveBackBll.getIsArts();
         liveBaseEnglishH5CoursewareCreat.setIS_SCIENCE(isArts != 1);
         liveBaseEnglishH5CoursewareCreat.setWrapOnH5ResultClose(new WrapOnH5ResultClose(activity));
         englishH5CoursewareBll.setBaseEnglishH5CoursewareCreat(liveBaseEnglishH5CoursewareCreat);
