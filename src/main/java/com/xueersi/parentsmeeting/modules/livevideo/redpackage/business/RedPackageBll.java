@@ -138,7 +138,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
             artsRedPackagePager = new SmallEnglishRedPackagePager(activity);
             view = artsRedPackagePager.getRootView();
             //小英红包打开红包按钮的监听器
-            artsRedPackagePager.setRedPackageTouchListenr(new SmallEnglishRedPackagePager.RedPackageTouchListenr() {
+            artsRedPackagePager.setRedPackageOpenListenr(new SmallEnglishRedPackagePager.RedPackageOpenListenr() {
                 @Override
                 public void openRedPackage() {
                     sendReceiveGold(operateId, mVSectionID);
