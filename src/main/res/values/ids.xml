@@ -707,7 +707,7 @@
 
     <item name="tv_teampk_pkstate_adversary" type="id" />
     <!--alpha001新加的文科举麦的弹窗-->
-    <item name="iv_livevideo_arts_raise_hand" type="id" />
+    <item name="iv_livevideo_small_english_raise_hand" type="id" />
     <!--小英组内-->
     <item name="iv_livevideo_small_english_rank_mygroup" type="id" />
     <item name="btn_livevideo_small_english_rank_mygroup" type="id" />
@@ -735,4 +735,6 @@
     <item name="iv_livevideo_small_english_understand" type="id" />
     <item name="iv_livevideo_small_english_close" type="id" />
     <item name="iv_small_english_sign_close" type="id" />
+    <item name="tv_livevideo_small_english_online_people_num" type="id" />
+    <item name="lv_livevideo_small_english_live_message" type="id" />
 </resources>
