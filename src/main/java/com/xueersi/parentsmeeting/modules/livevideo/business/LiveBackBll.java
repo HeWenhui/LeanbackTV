@@ -22,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
@@ -489,6 +490,16 @@ public class LiveBackBll implements LiveAndBackDebug, AllLiveBasePagerInter {
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
         UmsAgentManager.umsAgentOtherBusiness(activity, appID, UmsConstants.uploadShow, mData);
+    }
+
+    public boolean onUserBackPressed() {
+        Loger.d(TAG, "onUserBackPressed:liveBasePagers=" + liveBasePagers.size());
+        ArrayList<LiveBasePager> liveBasePagersTemp = new ArrayList<>(liveBasePagers);
+        for (int i = liveBasePagersTemp.size() - 1; i >= 0; i--) {
+            LiveBasePager liveBasePager = liveBasePagersTemp.get(i);
+            Loger.d(TAG, "onUserBackPressed:liveBasePager=" + liveBasePager);
+        }
+        return false;
     }
 
     @Override

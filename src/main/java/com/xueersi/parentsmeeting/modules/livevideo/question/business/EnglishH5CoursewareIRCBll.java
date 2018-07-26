@@ -73,6 +73,15 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         } else {
             englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(englishH5CoursewareBll.new LiveQuestionSwitchImpl()));
         }
+        LiveBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new LiveBaseEnglishH5CoursewareCreat();
+        int isArts = (int) mLiveBll.getBusinessShareParam("isArts");
+        liveBaseEnglishH5CoursewareCreat.setIS_SCIENCE(isArts != 1);
+        if (isArts != 1) {
+            if (mAnswerRankBll != null) {
+                liveBaseEnglishH5CoursewareCreat.setmAnswerRankBll(mAnswerRankBll.getAnswerRankBll());
+            }
+        }
+        englishH5CoursewareBll.setBaseEnglishH5CoursewareCreat(liveBaseEnglishH5CoursewareCreat);
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             EnglishH5Cache englishH5Cache = new EnglishH5Cache(activity, null, mLiveId);
             englishH5Cache.setHttpManager(mLiveBll.getHttpManager());

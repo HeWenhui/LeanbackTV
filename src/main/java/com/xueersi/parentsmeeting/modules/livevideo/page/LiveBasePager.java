@@ -108,4 +108,8 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
         }
         mLiveBll.umsAgentDebugPv(eventId, mData);
     }
+
+    public boolean onUserBackPressed() {
+        return true;
+    }
 }

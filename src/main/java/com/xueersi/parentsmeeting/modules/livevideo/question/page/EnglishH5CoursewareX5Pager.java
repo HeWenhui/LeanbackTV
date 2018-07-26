@@ -47,7 +47,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private boolean isPlayBack;
     private File cacheFile;
     private String liveId;
-    private LiveAndBackDebug liveAndBackDebug;
     private EnglishH5CoursewareBll mEnglishH5CoursewareBll;
     private String isShowRanks;
     private RelativeLayout rlLivevideoSubjectWeb;
@@ -61,14 +60,13 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         mEnglishH5CoursewareBll = englishH5CoursewareBll;
     }
 
-    public EnglishH5CoursewareX5Pager(Context context, boolean isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity, final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose, LiveAndBackDebug liveAndBackDebug, String isShowRanks, boolean IS_SCIENCE) {
+    public EnglishH5CoursewareX5Pager(Context context, boolean isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity, final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose, String isShowRanks, boolean IS_SCIENCE) {
         super(context);
         this.liveId = liveId;
         this.englishH5Entity = englishH5Entity;
         this.url = englishH5Entity.getUrl();
         this.isPlayBack = isPlayBack;
         this.onClose = onClose;
-        this.liveAndBackDebug = liveAndBackDebug;
         this.id = id;
         this.courseware_type = courseware_type;
         this.nonce = nonce;
@@ -93,6 +91,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     @Override
     public void destroy() {
         wvSubjectWeb.destroy();
+        onDestroy();
     }
 
     @Override
@@ -119,7 +118,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         StableLogHashMap logHashMap = new StableLogHashMap("coursewareEnd");
         logHashMap.put("coursewareid", id);
         logHashMap.put("coursewaretype", courseware_type);
-        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
+        umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
     @Override
@@ -132,7 +131,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         logHashMap.put("coursewaretype", courseware_type);
         logHashMap.put("status", "success");
         logHashMap.put("loadurl", url);
-        liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
+        umsAgentDebugSys(eventId, logHashMap.getData());
     }
 
     @Override
@@ -144,7 +143,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         logHashMap.put("status", "fail");
         logHashMap.put("loadurl", url);
         logHashMap.put("msg", description);
-        liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
+        umsAgentDebugSys(eventId, logHashMap.getData());
     }
 
     @Override
@@ -154,7 +153,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         logHashMap.put("coursewaretype", courseware_type);
         logHashMap.put("closetype", "clickBackButton");
         logHashMap.put("isFinish", "" + isFinish);
-        liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
+        umsAgentDebugSys(eventId, logHashMap.getData());
     }
 
     @Override
@@ -180,7 +179,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             logHashMap.put("coursewareid", id);
             logHashMap.put("coursewaretype", courseware_type);
             logHashMap.put("closetype", "clickWebCloseButton");
-            liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
+            umsAgentDebugSys(eventId, logHashMap.getData());
             return true;
         }
         if (url.contains("https://submit.com")) {

@@ -1197,7 +1197,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                             stopEnglishH5Exam();
                         }
 
-                    }, this, "0", IS_SCIENCE);
+                    }, "0", IS_SCIENCE);
             rlQuestionContent.removeAllViews();
             rlQuestionContent.addView(englishH5CoursewarePager.getRootView(), new LayoutParams(LayoutParams
                     .MATCH_PARENT,

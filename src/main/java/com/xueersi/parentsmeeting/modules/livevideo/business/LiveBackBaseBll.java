@@ -14,6 +14,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -79,5 +80,17 @@ public class LiveBackBaseBll extends BaseBll {
 
     public LivePlayBackHttpResponseParser getCourseHttpResponseParser() {
         return liveBackBll.getCourseHttpResponseParser();
+    }
+
+    public <T> T getInstance(Class<T> clazz) {
+        return ProxUtil.getProxUtil().get(mContext, clazz);
+    }
+
+    public <T> T removeInstance(Class<T> clazz) {
+        return ProxUtil.getProxUtil().remove(mContext, clazz);
+    }
+
+    public <T> void putInstance(Class<T> clazz, T object) {
+        ProxUtil.getProxUtil().put(mContext, clazz, object);
     }
 }

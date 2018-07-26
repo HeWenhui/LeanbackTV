@@ -10,6 +10,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -79,7 +80,7 @@ public class LecAdvertPlayBackBll extends LiveBackBaseBll {
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        VideoPlayAction videoPlayAction = ProxUtil.getProxUtil().get(activity, VideoPlayAction.class);
+                        LiveMediaController.MediaPlayerControl videoPlayAction = getInstance(LiveMediaController.MediaPlayerControl.class);
                         videoPlayAction.seekTo(questionEntity.getvEndTime() * 1000);
                         videoPlayAction.start();
                     }

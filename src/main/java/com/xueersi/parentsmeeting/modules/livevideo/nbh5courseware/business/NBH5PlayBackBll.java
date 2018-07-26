@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoPlayAction;
@@ -66,7 +67,7 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        VideoPlayAction videoPlayAction = ProxUtil.getProxUtil().get(activity, VideoPlayAction.class);
+                        MediaPlayerControl videoPlayAction = getInstance(MediaPlayerControl.class);
                         videoPlayAction.seekTo(questionEntity.getvEndTime() * 1000);
                         videoPlayAction.start();
                     }

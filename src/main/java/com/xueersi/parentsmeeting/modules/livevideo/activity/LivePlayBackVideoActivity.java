@@ -70,6 +70,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoViewActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -557,7 +558,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
                 }
             });
         }
-        ProxUtil.getProxUtil().put(this, VideoPlayAction.class, this);
+        ProxUtil.getProxUtil().put(this, MediaPlayerControl.class, this);
         addBusiness(this);
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
         for (LiveBackBaseBll businessBll : businessBlls) {
@@ -1241,7 +1242,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
                             stopEnglishH5Exam();
                         }
 
-                    }, this, "0", IS_SCIENCE);
+                    }, "0", IS_SCIENCE);
             rlQuestionContent.removeAllViews();
             rlQuestionContent.addView(englishH5CoursewarePager.getRootView(), new LayoutParams(LayoutParams
                     .MATCH_PARENT,
@@ -2227,91 +2228,95 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
 
     @Override
     protected void onUserBackPressed() {
-        OnClickListener onClickListener;
-        if (examQuestionPlaybackPager != null) {
-            onClickListener = new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    stopExam();
-                }
-            };
-        } else if (speechQuestionPlaybackPager != null) {
-            onClickListener = new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        speechQuestionPlaybackPager.stopPlayer();
-                        speechQuestionPlaybackPager.jsExamSubmit();
-                        stopSpeech(speechQuestionPlaybackPager, speechQuestionPlaybackPager.getId());
-                    } catch (Exception e) {
-
-                    }
-                }
-            };
-        } else if (h5CoursewarePager != null) {
-            onClickListener = new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    stopH5Exam();
-                }
-            };
-        } else if (englishH5CoursewarePager != null) {
-            onClickListener = new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    stopEnglishH5Exam();
-                }
-            };
-        } else if (questionWebPager != null) {
-            onClickListener = new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    stopWebQuestion(questionWebPager.getBasePager(), questionWebPager.getTestId());
-                }
-            };
-        } else if (subjectResultPager != null) {
-            onClickListener = new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    rlQuestionContent.removeView(subjectResultPager.getRootView());
-                    subjectResultPager = null;
-                    mIsShowQuestion = false;
-                    if (vPlayer != null) {
-                        vPlayer.start();
-                    }
-                    beforeAttach = "onUserBack:subjectResultPager";
-                    attachMediaController();
-                }
-            };
-        } else if (voiceAnswerPager != null) {
-            onClickListener = new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (voiceAnswerPager != null) {
-                        voiceAnswerPager.onUserBack();
-                        VideoQuestionEntity questionEntity = (VideoQuestionEntity) voiceAnswerPager.getBaseVideoQuestionEntity();
-                        questionEntity.setAnswered(true);
-                        rlQuestionContent.removeView(voiceAnswerPager.getRootView());
-                        voiceAnswerPager = null;
-                        Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 16, 16, mQuestionEntity);
-                        mPlayVideoControlHandler.sendMessage(msg);
-                        if (vPlayer != null) {
-                            vPlayer.start();
-                        }
-                    }
-                    attachMediaController();
-                }
-            };
-        } else {
+        boolean userBackPressed = liveBackBll.onUserBackPressed();
+        if (!userBackPressed) {
             super.onUserBackPressed();
-            return;
         }
-        VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(this, (BaseApplication) BaseApplication
-                .getContext(), false,
-                VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
-        cancelDialog.setVerifyBtnListener(onClickListener);
-        cancelDialog.setCancelShowText("取消").setVerifyShowText("确定").initInfo("您正在答题，是否结束作答？",
-                VerifyCancelAlertDialog.CANCEL_SELECTED).showDialog();
+//        OnClickListener onClickListener;
+//        if (examQuestionPlaybackPager != null) {
+//            onClickListener = new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    stopExam();
+//                }
+//            };
+//        } else if (speechQuestionPlaybackPager != null) {
+//            onClickListener = new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    try {
+//                        speechQuestionPlaybackPager.stopPlayer();
+//                        speechQuestionPlaybackPager.jsExamSubmit();
+//                        stopSpeech(speechQuestionPlaybackPager, speechQuestionPlaybackPager.getId());
+//                    } catch (Exception e) {
+//
+//                    }
+//                }
+//            };
+//        } else if (h5CoursewarePager != null) {
+//            onClickListener = new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    stopH5Exam();
+//                }
+//            };
+//        } else if (englishH5CoursewarePager != null) {
+//            onClickListener = new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    stopEnglishH5Exam();
+//                }
+//            };
+//        } else if (questionWebPager != null) {
+//            onClickListener = new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    stopWebQuestion(questionWebPager.getBasePager(), questionWebPager.getTestId());
+//                }
+//            };
+//        } else if (subjectResultPager != null) {
+//            onClickListener = new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    rlQuestionContent.removeView(subjectResultPager.getRootView());
+//                    subjectResultPager = null;
+//                    mIsShowQuestion = false;
+//                    if (vPlayer != null) {
+//                        vPlayer.start();
+//                    }
+//                    beforeAttach = "onUserBack:subjectResultPager";
+//                    attachMediaController();
+//                }
+//            };
+//        } else if (voiceAnswerPager != null) {
+//            onClickListener = new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (voiceAnswerPager != null) {
+//                        voiceAnswerPager.onUserBack();
+//                        VideoQuestionEntity questionEntity = (VideoQuestionEntity) voiceAnswerPager.getBaseVideoQuestionEntity();
+//                        questionEntity.setAnswered(true);
+//                        rlQuestionContent.removeView(voiceAnswerPager.getRootView());
+//                        voiceAnswerPager = null;
+//                        Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 16, 16, mQuestionEntity);
+//                        mPlayVideoControlHandler.sendMessage(msg);
+//                        if (vPlayer != null) {
+//                            vPlayer.start();
+//                        }
+//                    }
+//                    attachMediaController();
+//                }
+//            };
+//        } else {
+//            super.onUserBackPressed();
+//            return;
+//        }
+//        VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(this, (BaseApplication) BaseApplication
+//                .getContext(), false,
+//                VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+//        cancelDialog.setVerifyBtnListener(onClickListener);
+//        cancelDialog.setCancelShowText("取消").setVerifyShowText("确定").initInfo("您正在答题，是否结束作答？",
+//                VerifyCancelAlertDialog.CANCEL_SELECTED).showDialog();
     }
 
     @Override

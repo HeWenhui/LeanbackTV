@@ -88,8 +88,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         int isArts = (int) mLiveBll.getBusinessShareParam("isArts");
         liveExamQuestionCreat.setIS_SCIENCE(isArts != 1);
         liveExamQuestionCreat.setLiveGetInfo(data);
-        if (mAnswerRankBll != null) {
-            liveExamQuestionCreat.setmAnswerRankBll(mAnswerRankBll.getAnswerRankBll());
+        if (isArts != 1) {
+            if (mAnswerRankBll != null) {
+                liveExamQuestionCreat.setmAnswerRankBll(mAnswerRankBll.getAnswerRankBll());
+            }
         }
         liveExamQuestionCreat.setQuestionHttp(this);
         mQuestionAction.setBaseExamQuestionCreat(liveExamQuestionCreat);
