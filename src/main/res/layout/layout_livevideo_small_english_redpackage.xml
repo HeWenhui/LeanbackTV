@@ -8,8 +8,7 @@
         android:id="@id/rl_livevideo_small_english_redpackage_unopen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:visibility="gone">
+        android:layout_marginTop="30dp">
 
         <ImageView
             android:id="@id/iv_livevideo_small_english_redpackage_board"
@@ -21,8 +20,8 @@
             android:id="@id/iv_livevideo_small_english_redpackage_open"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="50dp"
+
+            android:layout_marginTop="75dp"
             android:src="@drawable/bg_livevideo_small_english_redpaper_open_btn_nor" />
 
         <ImageView
@@ -38,7 +37,8 @@
         android:id="@id/rl_livevideo_small_english_redpackage_open"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp">
+        android:layout_marginTop="30dp"
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="wrap_content"

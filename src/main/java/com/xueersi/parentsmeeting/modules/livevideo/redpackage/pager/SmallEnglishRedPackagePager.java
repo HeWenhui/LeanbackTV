@@ -27,7 +27,7 @@ public class SmallEnglishRedPackagePager extends BasePager {
     //已经领取的红包的金额
     private TextView tvArtsOpenRedMoney;
     //打开红包的监听器
-    private RedPackageTouchListenr RedPackageTouchListenr;
+    private RedPackageOpenListenr redPackageOpenListenr;
     //关闭红包的监听器
     private CancelRedPackageTouchListener cancelRedPackageTouchListener;
     //打开红包后的关闭按钮
@@ -40,8 +40,8 @@ public class SmallEnglishRedPackagePager extends BasePager {
         initListener();
     }
 
-    public void setRedPackageTouchListenr(RedPackageTouchListenr RedPackageTouchListenr) {
-        this.RedPackageTouchListenr = RedPackageTouchListenr;
+    public void setRedPackageOpenListenr(RedPackageOpenListenr RedPackageOpenListenr) {
+        this.redPackageOpenListenr = RedPackageOpenListenr;
     }
 
     public void setCancelRedPackageTouchListener(CancelRedPackageTouchListener cancelRedPackageTouchListener) {
@@ -67,38 +67,35 @@ public class SmallEnglishRedPackagePager extends BasePager {
     @Override
     public void initListener() {
         super.initListener();
-        ivArtsOpen.setOnTouchListener(openTouchListener);
-        ivClose.setOnTouchListener(closeTouchListener);
-        ivOpenClose.setOnTouchListener(openCloseTouchListener);
+        ivArtsOpen.setOnClickListener(openListener);
+        ivClose.setOnClickListener(closeTouchListener);
+        ivOpenClose.setOnClickListener(openCloseTouchListener);
 
     }
 
-    private View.OnTouchListener openTouchListener = new View.OnTouchListener() {
+    private View.OnClickListener openListener = new View.OnClickListener() {
         @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            if (RedPackageTouchListenr != null) {
-                RedPackageTouchListenr.openRedPackage();
+        public void onClick(View v) {
+            if (redPackageOpenListenr != null) {
+                redPackageOpenListenr.openRedPackage();
             }
-            return false;
         }
     };
-    private View.OnTouchListener closeTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
+    private View.OnClickListener closeTouchListener = new View.OnClickListener() {
+        public void onClick(View v) {
             if (cancelRedPackageTouchListener != null) {
                 cancelRedPackageTouchListener.cancelRedPackage();
             }
-            return false;
         }
+
     };
 
-    private View.OnTouchListener openCloseTouchListener = new View.OnTouchListener() {
+    private View.OnClickListener openCloseTouchListener = new View.OnClickListener() {
         @Override
-        public boolean onTouch(View v, MotionEvent event) {
+        public void onClick(View v) {
             if (cancelRedPackageTouchListener != null) {
                 cancelRedPackageTouchListener.cancelRedPackage();
             }
-            return false;
         }
     };
 
@@ -143,7 +140,7 @@ public class SmallEnglishRedPackagePager extends BasePager {
         }
     }
 
-    public interface RedPackageTouchListenr {
+    public interface RedPackageOpenListenr {
         void openRedPackage();
     }
 
