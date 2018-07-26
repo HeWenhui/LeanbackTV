@@ -89,6 +89,7 @@ public class IRCTalkConf {
                 break;
             }
         }
+        netWorkType = NetWorkHelper.getNetWorkState(BaseApplication.getContext());
         if (baseHost == null) {
             baseHost = "chatgslb.xescdn.com";
         }
@@ -137,7 +138,7 @@ public class IRCTalkConf {
                 }
                 handler.removeMessages(GET_SERVER);
                 JSONArray jsonArray = (JSONArray) responseEntity.getJsonObject();
-                Loger.d(TAG, "onPmSuccess:jsonObject=" + jsonArray);
+                mLogtf.d("onPmSuccess:jsonObject=" + jsonArray);
                 List<LiveGetInfo.NewTalkConfEntity> mNewTalkConf = new ArrayList<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     try {
@@ -162,34 +163,31 @@ public class IRCTalkConf {
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                Loger.e(TAG, "onPmFailure:msg=" + msg);
+                mLogtf.e("onPmFailure:msg=" + msg, error);
                 if (callBack != this) {
                     return;
                 }
-                if (netWorkType != NetWorkHelper.NO_NETWORK) {
-                    StableLogHashMap stableLogHashMap = new StableLogHashMap();
-                    stableLogHashMap.put("gslburl", url);
-                    stableLogHashMap.put("errmsg", msg);
-                    stableLogHashMap.put("ip", getHostIP());
-                    Loger.d(BaseApplication.getContext(), eventId, stableLogHashMap.getData(), true);
-                }
+                StableLogHashMap stableLogHashMap = new StableLogHashMap();
+                stableLogHashMap.put("gslburl", url);
+                stableLogHashMap.put("errmsg", msg);
+                stableLogHashMap.put("ip", getHostIP());
+                stableLogHashMap.put("netWorkType", "" + netWorkType);
+                Loger.d(BaseApplication.getContext(), eventId, stableLogHashMap.getData(), true);
                 reTry();
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                Loger.d(TAG, "onPmError:responseEntity=" + responseEntity.getErrorMsg());
+                mLogtf.d("onPmError:responseEntity=" + responseEntity.getErrorMsg());
                 if (callBack != this) {
                     return;
                 }
-                if (netWorkType != NetWorkHelper.NO_NETWORK) {
-                    StableLogHashMap stableLogHashMap = new StableLogHashMap();
-                    stableLogHashMap.put("gslburl", url);
-                    stableLogHashMap.put("errmsg", responseEntity.getErrorMsg());
-                    stableLogHashMap.put("ip", getHostIP());
-                    Loger.d(BaseApplication.getContext(), eventId, stableLogHashMap.getData(), true);
-                }
+                StableLogHashMap stableLogHashMap = new StableLogHashMap();
+                stableLogHashMap.put("gslburl", url);
+                stableLogHashMap.put("errmsg", responseEntity.getErrorMsg());
+                stableLogHashMap.put("ip", getHostIP());
+                Loger.d(BaseApplication.getContext(), eventId, stableLogHashMap.getData(), true);
                 reTry();
             }
 
