@@ -24,6 +24,7 @@ import com.tal.speech.language.LanguageEncodeThread;
 import com.tal.speech.language.LanguageListener;
 import com.tal.speech.language.TalLanguage;
 import com.tal.speech.speechrecognizer.ResultEntity;
+import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -110,7 +111,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
             loadSuccess = true;
         } catch (Throwable e) {
             loadSuccess = false;
-            Loger.e("EnglishSpeekBll", "loadLibrary", e);
+            Loger.e(BaseApplication.getContext(), "EnglishSpeekBll", "loadLibrary", e, true);
         }
     }
 
@@ -160,6 +161,7 @@ public class EnglishSpeekBll implements EnglishSpeekAction {
 
     public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage) {
         if (!loadSuccess) {
+            mLogtf.d("initView:loadSuccess=false");
             return false;
         }
         long before = System.currentTimeMillis();
