@@ -142,14 +142,14 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
                     voiceChatStatus = mainRoomstatus.getOpenhands();
                     videoChatAction.onJoin(mainRoomstatus.getOnmic(), mainRoomstatus.getOpenhands(),
                             mainRoomstatus.getRoom(), mainRoomstatus.isClassmateChange(), mainRoomstatus
-                                    .getClassmateEntities(), "t", mGetInfo.getIsArts(), mGetInfo.getGrade());
+                                    .getClassmateEntities(), "t");
                 } else {
                     LiveTopic.RoomStatusEntity coachRoomstatus = liveTopic.getCoachRoomstatus();
                     coachRoomstatus = liveTopic.getCoachRoomstatus();
                     voiceChatStatus = coachRoomstatus.getOpenhands();
                     videoChatAction.onJoin(coachRoomstatus.getOnmic(), coachRoomstatus.getOpenhands(),
                             coachRoomstatus.getRoom(), coachRoomstatus.isClassmateChange(), coachRoomstatus
-                                    .getClassmateEntities(), "f", mGetInfo.getIsArts(), mGetInfo.getGrade());
+                                    .getClassmateEntities(), "f");
                 }
                 if (!oldVoiceChatStatus.equals(voiceChatStatus)) {
                     for (int i = 0; i < chatStatusChanges.size(); i++) {
