@@ -71,14 +71,16 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
             videoChatBll.onLiveInit(getInfo);
             videoChatAction = videoChatBll;
             if (baseLiveMediaControllerBottom instanceof LiveStandMediaControllerBottom) {
-                LiveStandMediaControllerBottom liveStandMediaControllerBottom = (LiveStandMediaControllerBottom) baseLiveMediaControllerBottom;
+                LiveStandMediaControllerBottom liveStandMediaControllerBottom = (LiveStandMediaControllerBottom)
+                        baseLiveMediaControllerBottom;
                 liveStandMediaControllerBottom.addOnViewChange(onViewChange);
             }
             putInstance(VideoChatEvent.class, this);
         }
     }
 
-    private LiveStandMediaControllerBottom.OnViewChange onViewChange = new LiveStandMediaControllerBottom.OnViewChange() {
+    private LiveStandMediaControllerBottom.OnViewChange onViewChange = new LiveStandMediaControllerBottom
+            .OnViewChange() {
         @Override
         public void onViewChange(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
             videoChatAction.setControllerBottom(baseLiveMediaControllerBottom);
@@ -140,14 +142,14 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
                     voiceChatStatus = mainRoomstatus.getOpenhands();
                     videoChatAction.onJoin(mainRoomstatus.getOnmic(), mainRoomstatus.getOpenhands(),
                             mainRoomstatus.getRoom(), mainRoomstatus.isClassmateChange(), mainRoomstatus
-                                    .getClassmateEntities(), "t");
+                                    .getClassmateEntities(), "t", mGetInfo.getIsArts(), mGetInfo.getGrade());
                 } else {
                     LiveTopic.RoomStatusEntity coachRoomstatus = liveTopic.getCoachRoomstatus();
                     coachRoomstatus = liveTopic.getCoachRoomstatus();
                     voiceChatStatus = coachRoomstatus.getOpenhands();
                     videoChatAction.onJoin(coachRoomstatus.getOnmic(), coachRoomstatus.getOpenhands(),
                             coachRoomstatus.getRoom(), coachRoomstatus.isClassmateChange(), coachRoomstatus
-                                    .getClassmateEntities(), "f");
+                                    .getClassmateEntities(), "f", mGetInfo.getIsArts(), mGetInfo.getGrade());
                 }
                 if (!oldVoiceChatStatus.equals(voiceChatStatus)) {
                     for (int i = 0; i < chatStatusChanges.size(); i++) {
@@ -266,7 +268,8 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
 
     @Override
     public int[] getNoticeFilter() {
-        return new int[]{XESCODE.RAISE_HAND, XESCODE.RAISE_HAND_SELF, XESCODE.REQUEST_ACCEPT, XESCODE.START_MICRO, XESCODE.ST_MICRO, XESCODE.RAISE_HAND_COUNT};
+        return new int[]{XESCODE.RAISE_HAND, XESCODE.RAISE_HAND_SELF, XESCODE.REQUEST_ACCEPT, XESCODE.START_MICRO,
+                XESCODE.ST_MICRO, XESCODE.RAISE_HAND_COUNT};
     }
 
     @Override
