@@ -1,7 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
+import android.content.Context;
+
+import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 /**
  * Created by lyqai on 2018/7/26.
@@ -10,6 +14,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5C
 public class WrapOnH5ResultClose implements EnglishH5CoursewareBll.OnH5ResultClose {
     EnglishH5CoursewareBll.OnH5ResultClose onH5ResultClose;
     VideoQuestionLiveEntity videoQuestionH5Entity;
+    Context context;
+
+    public WrapOnH5ResultClose(Context context) {
+        this.context = context;
+    }
 
     public void setOnH5ResultClose(EnglishH5CoursewareBll.OnH5ResultClose onH5ResultClose) {
         this.onH5ResultClose = onH5ResultClose;
@@ -22,5 +31,10 @@ public class WrapOnH5ResultClose implements EnglishH5CoursewareBll.OnH5ResultClo
     @Override
     public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager) {
         onH5ResultClose.onH5ResultClose(baseEnglishH5CoursewarePager);
+        MediaPlayerControl videoPlayAction = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
+        if (videoPlayAction != null) {
+            videoPlayAction.seekTo(videoQuestionH5Entity.getvEndTime() * 1000);
+            videoPlayAction.start();
+        }
     }
 }

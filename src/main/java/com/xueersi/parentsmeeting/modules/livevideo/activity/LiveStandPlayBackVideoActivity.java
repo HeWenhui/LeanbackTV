@@ -1328,7 +1328,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         rlQuestionContent.removeAllViews();
         rlQuestionContent.setVisibility(View.VISIBLE);
         VoiceAnswerStandLog.sno2(this, videoQuestionLiveEntity);
-        voiceAnswerPager = new VoiceAnswerStandPager(this, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.getVoiceQuestiontype(), questionSwitch, this, headUrl, showName);
+        voiceAnswerPager = new VoiceAnswerStandPager(this, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.getVoiceQuestiontype(), questionSwitch, headUrl, showName);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT);
         rlQuestionContent.addView(voiceAnswerPager.getRootView(), params);

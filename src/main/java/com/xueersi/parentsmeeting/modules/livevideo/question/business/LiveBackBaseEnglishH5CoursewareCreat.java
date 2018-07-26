@@ -8,11 +8,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5C
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.EnglishH5CoursewareX5Pager;
 
 /**
- * Created by lyqai on 2018/7/26.
+ * Created by linyuqiang on 2018/7/26.
+ * 直播回放的英语课件创建
  */
-
 public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5CoursewareCreat {
-    WrapOnH5ResultClose wrapOnH5ResultClose;
+    private WrapOnH5ResultClose wrapOnH5ResultClose;
     private boolean IS_SCIENCE;
 
     public void setIS_SCIENCE(boolean IS_SCIENCE) {

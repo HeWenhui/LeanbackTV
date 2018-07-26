@@ -206,9 +206,6 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
 //    /** 统一的加载动画 */
 //    private LoadingDialog mProgressDialog;
 
-    /** 红包弹窗 */
-    private RedPacketAlertDialog mRedPacketDialog;
-
     /** 互动题 */
     private VideoQuestionEntity mQuestionEntity;
     /** 互动题为空的异常 */
@@ -487,8 +484,6 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
 
     /** 竖屏时填充视频列表布局 */
     protected void initData() {
-        BaseApplication baseApplication = (BaseApplication) getApplication();
-        mRedPacketDialog = new RedPacketAlertDialog(this, baseApplication, false);
         stuCourId = mVideoEntity.getStuCourseId();
         lectureLivePlayBackBll = new LectureLivePlayBackBll(LivePlayBackVideoActivity.this, stuCourId);
         mVideoType = MobEnumUtil.VIDEO_LIVEPLAYBACK;
@@ -529,14 +524,14 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
 //            mWebPath = "http://r01.xesimg.com/stream/tmp/2016/11/30/1480481513276687694567.mp4";
 //        }
         if (mVideoEntity != null && mVideoEntity.getIsAllowMarkpoint() == 1) {
-            mLiveRemarkBll = new LiveRemarkBll(this, vPlayer);
-            mLiveRemarkBll.setBottom(bottom);
-            mLiveRemarkBll.setLiveAndBackDebug(this);
-            mLiveRemarkBll.setHttpManager(new LiveHttpManager(mContext));
-            mLiveRemarkBll.setList(mVideoEntity.getLstPoint());
-            mLiveRemarkBll.setLiveId(mVideoEntity.getLiveId());
+            LiveRemarkBll liveRemarkBll = new LiveRemarkBll(this, vPlayer);
+            liveRemarkBll.setBottom(bottom);
+            liveRemarkBll.setLiveAndBackDebug(this);
+            liveRemarkBll.setHttpManager(new LiveHttpManager(mContext));
+            liveRemarkBll.setList(mVideoEntity.getLstPoint());
+            liveRemarkBll.setLiveId(mVideoEntity.getLiveId());
             //mLiveRemarkBll.showBtMark();
-            mLiveRemarkBll.getMarkPoints(mVideoEntity.getLiveId(), new AbstractBusinessDataCallBack() {
+            liveRemarkBll.getMarkPoints(mVideoEntity.getLiveId(), new AbstractBusinessDataCallBack() {
                 @Override
                 public void onDataSucess(Object... objData) {
                     if (mMediaController != null) {
@@ -551,7 +546,8 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
                     }
                 }
             });
-            mLiveRemarkBll.setCallBack(new AbstractBusinessDataCallBack() {
+            mLiveRemarkBll = liveRemarkBll;
+            liveRemarkBll.setCallBack(new AbstractBusinessDataCallBack() {
                 @Override
                 public void onDataSucess(Object... objData) {
                     attachMediaController();
@@ -1032,7 +1028,6 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
     public void redPacketHide() {
         mRedPacketId = "";
         mIsShowRedpacket = false;
-        mRedPacketDialog.cancelDialog();
     }
 
     /** 显示互动题 */
@@ -2606,53 +2601,17 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
 
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        mData.put("uid", userInfoEntity.getStuId());
-        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
-        mData.put("courseid", mVideoEntity.getCourseId());
-        mData.put("liveid", mVideoEntity.getLiveId());
-        if ("PublicLiveDetailActivity".equals(where)) {
-            mData.put("livetype", "" + 2);
-        } else {
-            mData.put("livetype", "" + 3);
-        }
-        mData.put("clits", "" + System.currentTimeMillis());
-//        Loger.d(mContext, eventId, mData, true);
-        UmsAgentManager.umsAgentDebug(this, appID, eventId, mData);
+        liveBackBll.umsAgentDebugSys(eventId, mData);
     }
 
     @Override
     public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        mData.put("uid", userInfoEntity.getStuId());
-        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
-        mData.put("courseid", mVideoEntity.getCourseId());
-        mData.put("liveid", mVideoEntity.getLiveId());
-        if ("PublicLiveDetailActivity".equals(where)) {
-            mData.put("livetype", "" + 2);
-        } else {
-            mData.put("livetype", "" + 3);
-        }
-        mData.put("eventid", "" + eventId);
-        mData.put("clits", "" + System.currentTimeMillis());
-        UmsAgentManager.umsAgentOtherBusiness(this, appID, UmsConstants.uploadBehavior, mData);
+        liveBackBll.umsAgentDebugInter(eventId, mData);
     }
 
     @Override
     public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        mData.put("uid", userInfoEntity.getStuId());
-        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
-        mData.put("courseid", mVideoEntity.getCourseId());
-        mData.put("liveid", mVideoEntity.getLiveId());
-        if ("PublicLiveDetailActivity".equals(where)) {
-            mData.put("livetype", "" + 2);
-        } else {
-            mData.put("livetype", "" + 3);
-        }
-        mData.put("eventid", "" + eventId);
-        mData.put("clits", "" + System.currentTimeMillis());
-        UmsAgentManager.umsAgentOtherBusiness(this, appID, UmsConstants.uploadShow, mData);
+        liveBackBll.umsAgentDebugPv(eventId, mData);
     }
 
     @Override

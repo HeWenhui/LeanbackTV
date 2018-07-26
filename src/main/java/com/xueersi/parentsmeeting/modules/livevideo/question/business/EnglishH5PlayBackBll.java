@@ -62,47 +62,21 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         englishH5CoursewareBll.setVSectionID(mVideoEntity.getLiveId());
         englishH5CoursewareBll.setLiveBll(new EnglishH5CoursewareImpl());
         if (liveBackBll.getPattern() == 2) {
+            //语音答题
             LiveAndBackDebug liveAndBackDebug = getInstance(LiveAndBackDebug.class);
-            englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveStandVoiceAnswerCreat(activity, liveAndBackDebug, englishH5CoursewareBll.new LiveStandQuestionSwitchImpl(), liveGetInfo.getHeadImgPath(), liveGetInfo.getStandLiveName()) {
-                @Override
-                public boolean onAnswerReslut(Context context, AnswerRightResultVoice questionBll, BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
-                    MediaPlayerControl videoPlayAction = getInstance(MediaPlayerControl.class);
-                    if (videoPlayAction != null) {
-                        VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
-                        videoPlayAction.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
-                        videoPlayAction.start();
-                    }
-                    return super.onAnswerReslut(context, questionBll, baseVoiceAnswerPager, baseVideoQuestionEntity, entity);
-                }
-            });
+            LiveBackStandVoiceAnswerCreat liveStandVoiceAnswerCreat = new LiveBackStandVoiceAnswerCreat(activity, englishH5CoursewareBll.new LiveStandQuestionSwitchImpl(), liveBackBll);
+            liveStandVoiceAnswerCreat.setUserName(liveGetInfo.getStandLiveName());
+            liveStandVoiceAnswerCreat.setHeadUrl(liveGetInfo.getHeadImgPath());
+            englishH5CoursewareBll.setBaseVoiceAnswerCreat(liveStandVoiceAnswerCreat);
         } else {
-            englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(englishH5CoursewareBll.new LiveQuestionSwitchImpl()) {
-                @Override
-                public boolean onAnswerReslut(Context context, AnswerRightResultVoice questionBll, BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
-                    MediaPlayerControl videoPlayAction = getInstance(MediaPlayerControl.class);
-                    if (videoPlayAction != null) {
-                        VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
-                        videoPlayAction.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
-                        videoPlayAction.start();
-                    }
-                    return super.onAnswerReslut(context, questionBll, baseVoiceAnswerPager, baseVideoQuestionEntity, entity);
-                }
-            });
+            //语音答题
+            WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, englishH5CoursewareBll.new LiveQuestionSwitchImpl());
+            englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(wrapQuestionSwitch));
         }
         LiveBackBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new LiveBackBaseEnglishH5CoursewareCreat();
         int isArts = (int) liveBackBll.getBusinessShareParam("isArts");
         liveBaseEnglishH5CoursewareCreat.setIS_SCIENCE(isArts != 1);
-        liveBaseEnglishH5CoursewareCreat.setWrapOnH5ResultClose(new WrapOnH5ResultClose() {
-            @Override
-            public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager) {
-                super.onH5ResultClose(baseEnglishH5CoursewarePager);
-                MediaPlayerControl videoPlayAction = getInstance(MediaPlayerControl.class);
-                if (videoPlayAction != null) {
-                    videoPlayAction.seekTo(videoQuestionH5Entity.getvEndTime() * 1000);
-                    videoPlayAction.start();
-                }
-            }
-        });
+        liveBaseEnglishH5CoursewareCreat.setWrapOnH5ResultClose(new WrapOnH5ResultClose(activity));
         englishH5CoursewareBll.setBaseEnglishH5CoursewareCreat(liveBaseEnglishH5CoursewareCreat);
     }
 
