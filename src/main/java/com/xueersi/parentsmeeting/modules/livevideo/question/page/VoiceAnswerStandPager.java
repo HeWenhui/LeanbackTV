@@ -115,7 +115,6 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     /** 答题切换 */
     ImageView ivVoiceansSwitch;
     QuestionSwitch questionSwitch;
-    LiveAndBackDebug liveAndBackDebug;
     /** 语音保存位置-目录 */
     File dir;
     /** 语音保存位置 */
@@ -153,11 +152,10 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     String file4 = "live_stand/frame_anim/voice_answer/4_switch";
     LiveSoundPool liveSoundPool;
 
-    public VoiceAnswerStandPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch, LiveAndBackDebug liveAndBackDebug, String headUrl, String userName) {
+    public VoiceAnswerStandPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch, String headUrl, String userName) {
         super(context);
         this.baseVideoQuestionEntity = baseVideoQuestionEntity;
         this.questionSwitch = questionSwitch;
-        this.liveAndBackDebug = liveAndBackDebug;
         this.type = type;
         this.assess_ref = assess_ref;
         this.headUrl = headUrl;
@@ -235,7 +233,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
             @Override
             public void onDeny(String permission, int position) {
                 isSpeechError = true;
-                VoiceAnswerStandLog.sno3(liveAndBackDebug, baseVideoQuestionEntity.getvQuestionID(), false);
+                VoiceAnswerStandLog.sno3(VoiceAnswerStandPager.this, baseVideoQuestionEntity.getvQuestionID(), false);
             }
 
             @Override
@@ -276,7 +274,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 });
             }
         });
-        VoiceAnswerStandLog.sno3(liveAndBackDebug, baseVideoQuestionEntity.getvQuestionID(), true);
+        VoiceAnswerStandLog.sno3(VoiceAnswerStandPager.this, baseVideoQuestionEntity.getvQuestionID(), true);
         startEvaluator();
         switchFrameAnimation =
                 FrameAnimation.createFromAees(mContext, ivVoiceansSwitch, file3, 50, true);
@@ -299,7 +297,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                             ArrayList<GoldTeamStatus.Student> students = entity.getStudents();
                             if (!teamStatus && !students.isEmpty()) {
                                 teamStatus = true;
-                                VoiceAnswerStandLog.sno4(liveAndBackDebug, baseVideoQuestionEntity.getvQuestionID());
+                                VoiceAnswerStandLog.sno4(VoiceAnswerStandPager.this, baseVideoQuestionEntity.getvQuestionID());
                             }
                             long delayMillis = liveStandQuestionSwitch.getRequestTime();
                             int addCount = 0;
@@ -448,7 +446,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
             public void onClick(View v) {
                 ivVoiceansSwitch.setClickable(false);
                 StandLiveMethod.onClickVoice(liveSoundPool);
-                VoiceAnswerStandLog.sno7(liveAndBackDebug, baseVideoQuestionEntity.getvQuestionID(), "" + (System.currentTimeMillis() - entranceTime) / 1000);
+                VoiceAnswerStandLog.sno7(VoiceAnswerStandPager.this, baseVideoQuestionEntity.getvQuestionID(), "" + (System.currentTimeMillis() - entranceTime) / 1000);
                 FrameAnimation frameAnimation1 =
                         FrameAnimation.createFromAees(mContext, v, file4, 50, false);
                 if (frameAnimation1 != null) {
@@ -1002,7 +1000,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         teamOnCompositionLoadedListener.isMe = true;
         LottieComposition.Factory.fromAssetFileName(mContext, path, teamOnCompositionLoadedListener);
         lavLivevideoVoiceansTeamMine.setTag(teamOnCompositionLoadedListener);
-        VoiceAnswerStandLog.sno5(liveAndBackDebug, baseVideoQuestionEntity.getvQuestionID(), isEnd ? "endPublish" : "autoSubmit", entity.getGoldNum(), isRight, speechDuration);
+        VoiceAnswerStandLog.sno5(VoiceAnswerStandPager.this, baseVideoQuestionEntity.getvQuestionID(), isEnd ? "endPublish" : "autoSubmit", entity.getGoldNum(), isRight, speechDuration);
     }
 
     class TeamOnCompositionLoadedListener implements OnCompositionLoadedListener {

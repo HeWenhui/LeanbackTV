@@ -88,6 +88,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         int isArts = (int) mLiveBll.getBusinessShareParam("isArts");
         liveExamQuestionCreat.setIS_SCIENCE(isArts != 1);
         liveExamQuestionCreat.setLiveGetInfo(data);
+        liveExamQuestionCreat.setQuestionBll(mQuestionAction);
         if (isArts != 1) {
             if (mAnswerRankBll != null) {
                 liveExamQuestionCreat.setmAnswerRankBll(mAnswerRankBll.getAnswerRankBll());
@@ -95,6 +96,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
         liveExamQuestionCreat.setQuestionHttp(this);
         mQuestionAction.setBaseExamQuestionCreat(liveExamQuestionCreat);
+        LiveSubjectResultCreat baseSubjectResultCreat = new LiveSubjectResultCreat();
+        baseSubjectResultCreat.setLiveGetInfo(data);
+        mQuestionAction.setBaseSubjectResultCreat(baseSubjectResultCreat);
         if (data.getPattern() == 2) {
             mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl()));
             mQuestionAction.setBaseSpeechCreat(new LiveStandSpeechCreat(this, mLiveBll));

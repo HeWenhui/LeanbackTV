@@ -10,5 +10,5 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuesti
  * 创建课前测
  */
 public interface BaseExamQuestionCreat {
-    public BaseExamQuestionInter creatBaseExamQuestion(Activity activity, QuestionBll questionBll, final String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity);
+    public BaseExamQuestionInter creatBaseExamQuestion(Activity activity, final String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity);
 }

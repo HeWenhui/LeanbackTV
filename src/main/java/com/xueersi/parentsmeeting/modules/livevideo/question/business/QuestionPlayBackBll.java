@@ -6,6 +6,7 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
+import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.http.HttpCallBack;
@@ -55,38 +56,35 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         questionBll.setVSectionID(mVideoEntity.getLiveId());
         questionBll.setShareDataManager(mShareDataManager);
         questionBll.setLiveGetInfo(liveGetInfo);
+        questionBll.setLiveBll(this);
+        //站立直播
         if (liveBackBll.getPattern() == 2) {
-            questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(questionBll.new LiveQuestionSwitchImpl()));
+            //语音答题
+            WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new LiveQuestionSwitchImpl());
+            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch));
+            //语音评测
             questionBll.setBaseSpeechCreat(new LiveBackStandSpeechCreat(this, liveBackBll));
         } else {
-            questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(questionBll.new LiveQuestionSwitchImpl()));
+            //语音答题
+            WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new LiveQuestionSwitchImpl());
+            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch));
+            //语音评测
             LiveBackSpeechCreat liveBackSpeechCreat = new LiveBackSpeechCreat();
-            liveBackSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction() {
-                @Override
-                public void stopSpeech(BaseSpeechAssessmentPager pager, String num) {
-                    super.stopSpeech(pager, num);
-                    MediaPlayerControl videoPlayAction = getInstance(MediaPlayerControl.class);
-                    videoPlayAction.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
-                    videoPlayAction.start();
-                }
-            });
+            liveBackSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction(activity));
             questionBll.setBaseSpeechCreat(liveBackSpeechCreat);
         }
-        questionBll.setLiveBll(this);
+        //测试卷
         LiveBackExamQuestionCreat liveBackExamQuestionCreat = new LiveBackExamQuestionCreat();
         liveBackExamQuestionCreat.setLiveGetInfo(liveGetInfo);
-        int isArts = (int) liveBackBll.getBusinessShareParam("isArts");
+        int isArts = liveBackBll.getIsArts();
         liveBackExamQuestionCreat.setIS_SCIENCE(isArts != 1);
-        liveBackExamQuestionCreat.setExamStop(new BaseExamQuestionInter.ExamStop() {
-            @Override
-            public void stopExam(VideoQuestionLiveEntity mQuestionEntity) {
-                questionBll.stopExam(mQuestionEntity.getvQuestionID());
-                MediaPlayerControl videoPlayAction = getInstance(MediaPlayerControl.class);
-                videoPlayAction.seekTo(mQuestionEntity.getvEndTime() * 1000);
-                videoPlayAction.start();
-            }
-        });
+        liveBackExamQuestionCreat.setExamStop(new LiveBackExamStop(activity, questionBll));
         questionBll.setBaseExamQuestionCreat(liveBackExamQuestionCreat);
+        //主观题结果页
+        LiveBackSubjectResultCreat liveBackSubjectResultCreat = new LiveBackSubjectResultCreat();
+        liveBackSubjectResultCreat.setLiveGetInfo(liveGetInfo);
+        liveBackSubjectResultCreat.setWrapQuestionWebStop(new WrapQuestionWebStop(activity));
+        questionBll.setBaseSubjectResultCreat(liveBackSubjectResultCreat);
     }
 
 

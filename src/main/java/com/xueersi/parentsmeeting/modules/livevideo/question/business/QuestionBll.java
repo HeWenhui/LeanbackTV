@@ -52,7 +52,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionSubjec
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5Pager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.SubjectResultX5Pager;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
@@ -161,6 +160,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private SpeechEndAction speechEndAction;
     /** 语文主观题 */
     private BaseSubjectResultInter subjectResultPager;
+    private BaseSubjectResultCreat baseSubjectResultCreat;
     boolean isLand;
     private KeyBordAction keyBordAction;
     /** 是不是在显示互动题,结果页或者语音评测top3 */
@@ -664,10 +664,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 String url = liveGetInfo.getSubjectiveTestAnswerResult() + "?stuId=" + liveGetInfo.getStuId() +
                         "&testId=" + videoQuestionLiveEntity.getvQuestionID();
                 Loger.d(TAG, "showQuestion:url=" + url);
-                subjectResultPager = new SubjectResultX5Pager(activity, this,
+                baseSubjectResultCreat.creat(activity, this,
                         liveGetInfo.getSubjectiveTestAnswerResult(),
-                        liveGetInfo.getStuId(), liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
-                        stuCouId);
+                        liveGetInfo.getStuId(), liveGetInfo.getId(), videoQuestionLiveEntity, stuCouId);
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
                         .MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
@@ -934,7 +933,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mData.put("logtype", "receiveExam");
                 mData.put("examid", videoQuestionLiveEntity.id);
                 umsAgentDebugSys(examQuestionEventId, mData);
-                examQuestionPager = baseExamQuestionCreat.creatBaseExamQuestion(activity, QuestionBll.this, liveid, videoQuestionLiveEntity);
+                examQuestionPager = baseExamQuestionCreat.creatBaseExamQuestion(activity, liveid, videoQuestionLiveEntity);
                 rlQuestionContent.addView(examQuestionPager.getRootView());
                 setHaveExam(true);
                 activity.getWindow().getDecorView().requestLayout();
@@ -1268,6 +1267,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     public void setBaseExamQuestionCreat(BaseExamQuestionCreat baseExamQuestionCreat) {
         this.baseExamQuestionCreat = baseExamQuestionCreat;
+    }
+
+    public void setBaseSubjectResultCreat(BaseSubjectResultCreat baseSubjectResultCreat) {
+        this.baseSubjectResultCreat = baseSubjectResultCreat;
     }
 
     private void showVoiceAnswer(final VideoQuestionLiveEntity videoQuestionLiveEntity) {

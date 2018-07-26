@@ -20,6 +20,7 @@ public class LiveExamQuestionCreat implements BaseExamQuestionCreat {
     private LiveGetInfo liveGetInfo;
     private AnswerRankBll mAnswerRankBll;
     QuestionHttp questionHttp;
+    QuestionBll questionBll;
 
     public void setIS_SCIENCE(boolean IS_SCIENCE) {
         this.IS_SCIENCE = IS_SCIENCE;
@@ -33,18 +34,22 @@ public class LiveExamQuestionCreat implements BaseExamQuestionCreat {
         this.mAnswerRankBll = mAnswerRankBll;
     }
 
+    public void setQuestionBll(QuestionBll questionBll) {
+        this.questionBll = questionBll;
+    }
+
     public void setQuestionHttp(QuestionHttp questionHttp) {
         this.questionHttp = questionHttp;
     }
 
     @Override
-    public BaseExamQuestionInter creatBaseExamQuestion(Activity activity, QuestionBll questionBll, final String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity) {
+    public BaseExamQuestionInter creatBaseExamQuestion(Activity activity, final String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity) {
         if (mAnswerRankBll != null) {
             mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>(), XESCODE.EXAM_STOP);
             questionHttp.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
         }
         BaseExamQuestionInter examQuestionPager = new ExamQuestionX5Pager(activity, questionBll, liveGetInfo.getStuId
-                (), liveGetInfo.getUname(), liveid, videoQuestionLiveEntity , mAnswerRankBll == null ? "0" : mAnswerRankBll
+                (), liveGetInfo.getUname(), liveid, videoQuestionLiveEntity, mAnswerRankBll == null ? "0" : mAnswerRankBll
                 .getIsShow(), IS_SCIENCE, liveGetInfo.getStuCouId(), 0);
         return examQuestionPager;
     }

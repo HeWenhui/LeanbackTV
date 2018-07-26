@@ -83,7 +83,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                                        RelativeLayout rlQuestionContent, SpeechEvaluatorUtils mIse) {
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
         VoiceAnswerStandLog.sno2(this.liveAndBackDebug, videoQuestionLiveEntity);
-        VoiceAnswerStandPager voiceAnswerPager2 = new VoiceAnswerStandPager(activity, baseVideoQuestionEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch, liveAndBackDebug, headUrl, userName);
+        VoiceAnswerStandPager voiceAnswerPager2 = new VoiceAnswerStandPager(activity, baseVideoQuestionEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch, headUrl, userName);
         voiceAnswerPager2.setIse(mIse);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
