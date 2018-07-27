@@ -167,10 +167,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                         }
                         long disaplyCount = ijkMediaPlayer.getDisaplyCount();
                         if (frames.isEmpty()) {
-                            frameStart = System.currentTimeMillis();
-                        }
-                        if (framesPsTen.isEmpty()) {
-                            frame10Start = System.currentTimeMillis();
+                            frameStart = System.currentTimeMillis() - 1000;
                         }
                         framesPs.add(fps);
                         framesPsTen.add(fps);
@@ -188,7 +185,6 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                         }
                         Loger.d(TAG, "handleMessage:fps=" + fps + ",disaplyCount=" + disaplyCount + "," + (disaplyCount - lastDisaplyCount));
                         if (framesPsTen.size() == 10) {
-                            Loger.d(TAG, "handleMessage:fps=" + (disaplyCount - fistDisaplyCount) / 10);
                             ArrayList<Float> framesPsTenTemp = new ArrayList<Float>(framesPsTen);
                             framesPsTen.clear();
                             long bufferduration = 0;
@@ -201,9 +197,12 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            float averagefps = (float) (((double) (disaplyCount - fistDisaplyCount)) * 1000 / (System.currentTimeMillis() - frame10Start));
+                            long time = System.currentTimeMillis() - frame10Start;
+                            Loger.d(TAG, "handleMessage:fps=" + (disaplyCount - fistDisaplyCount) / 10 + ",time=" + time);
+                            float averagefps = (float) (((double) (disaplyCount - fistDisaplyCount)) * 1000 / time);
                             xescdnLogHeart(framesPsTenTemp, averagefps, bufferduration, bitrate);
                             fistDisaplyCount = disaplyCount;
+                            frame10Start = System.currentTimeMillis();
                         }
                         lastDisaplyCount = disaplyCount;
 //                        if (lastFps != 0) {
@@ -289,6 +288,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     public void onOpenSuccess() {
         super.onOpenSuccess();
         lastDisaplyCount = fistDisaplyCount = 0;
+        frame10Start = System.currentTimeMillis();
         handler.sendEmptyMessageDelayed(1, 1000);
         long openTime = (System.currentTimeMillis() - openStart);
         getFps();
