@@ -3,42 +3,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_height="137dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/transparent_80">
+        android:background="#2B1D1A"
+        android:alpha="0.92">
 
         <TextView
             android:id="@id/tv_livevideo_speechbul_title"
-            style="@style/text_font12_ffffff_style"
+            style="@style/text_font16_ffffff_style"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="18dp"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="45dp"
             android:text="语音录入中（15字以内）" />
 
         <ImageView
             android:id="@id/tv_livevideo_speechbul_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/tv_livevideo_speechbul_title"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:src="@drawable/cy_main_guanbi_icon_normal" />
+            android:src="@drawable/cy_main_guanbibai_icon_normal" />
 
         <com.xueersi.parentsmeeting.widget.VolumeWaveView
             android:id="@id/vwv_livevideo_speechbul_wave"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_livevideo_speechbul_close"
-            android:layout_marginTop="12dp" />
+            android:layout_height="20dp"
+            android:layout_below="@id/tv_livevideo_speechbul_title"
+            android:layout_marginTop="35dp"
+            android:layout_marginLeft="48dp"
+            android:layout_marginRight="48dp"/>
 
         <LinearLayout
             android:id="@id/ll_livevideo_speechbul_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_livevideo_speechbul_close"
+            android:layout_below="@id/tv_livevideo_speechbul_title"
             android:visibility="gone">
 
             <EditText
@@ -65,5 +68,11 @@
         </LinearLayout>
 
     </RelativeLayout>
+
+    <master.flame.danmaku.danmaku.ui.widget.DanmakuView
+        android:id="@id/dv_livevideo_speechbul_danmaku"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="17dp"/>
 
 </RelativeLayout>

@@ -18,7 +18,7 @@ import org.json.JSONObject;
 public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction, NoticeAction{
     SpeechBulletScreenAction speechBulletScreenAction;
 
-    public SpeechBulletScreenIRCBll(Activity context, LiveBll2 liveBll, RelativeLayout rootView) {
+    public SpeechBulletScreenIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
     }
 

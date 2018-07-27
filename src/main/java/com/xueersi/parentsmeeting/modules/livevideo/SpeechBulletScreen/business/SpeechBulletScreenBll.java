@@ -56,7 +56,7 @@ public class SpeechBulletScreenBll implements SpeechBulletScreenAction, Handler.
 
     @Override
     public void onStartSpeechBulletScreen() {
-        mWeakHandler.post(new Runnable() {
+        mWeakHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mSpeechBulPager = new SpeechBulletScreenPager(activity,SpeechBulletScreenBll.this);
@@ -64,7 +64,7 @@ public class SpeechBulletScreenBll implements SpeechBulletScreenAction, Handler.
                 rlSpeechBulContent.addView(mSpeechBulPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 rlSpeechBulContent.setVisibility(View.VISIBLE);
             }
-        });
+        },1000);
     }
 
     @Override
