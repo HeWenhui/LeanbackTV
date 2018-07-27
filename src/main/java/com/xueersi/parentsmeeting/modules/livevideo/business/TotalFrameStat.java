@@ -74,10 +74,14 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     private BaseHttpBusiness baseHttpBusiness;
     /** 视频开始播放时间 */
     private long openStart;
+    /** 视频播放成功时间 */
+    private long openSuccess;
+    private long onNativeInvoke;
     private String logurl = LiveVideoConfig.URL_CDN_LOG;
     private String userId;
     /** 当前播放的视频地址 */
     private Uri mUri;
+    static HashMap<Uri, String> sipMap = new HashMap<>();
     private String sip;
     private String versionName;
     /** cpu名字 */
@@ -264,7 +268,6 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     @Override
     public void onOpenStart() {
         super.onOpenStart();
-        sip = "";
         framesPsTen.clear();
         handler.removeMessages(1);
         openStart = System.currentTimeMillis();
@@ -276,7 +279,11 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                 public boolean onNativeInvoke(int what, Bundle args) {
                     Loger.d(TAG, "onOpenStart:what=" + what + "," + mUri + ",args=" + args);
                     if (what == CTRL_DID_TCP_OPEN) {
-                        sip = args.getString("ip", "");
+                        onNativeInvoke = System.currentTimeMillis();
+                        sip = args.getString("ip", "0.0.0.0");
+                        sipMap.put(mUri, sip);
+                        long openTime = (System.currentTimeMillis() - openSuccess);
+                        Loger.d(TAG, "onOpenStart:what=" + what + "," + mUri + ",openTime=" + openTime);
                     }
                     return false;
                 }
@@ -287,10 +294,14 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     @Override
     public void onOpenSuccess() {
         super.onOpenSuccess();
+        sip = sipMap.get(mUri);
         lastDisaplyCount = fistDisaplyCount = 0;
         frame10Start = System.currentTimeMillis();
+        openSuccess = System.currentTimeMillis();
         handler.sendEmptyMessageDelayed(1, 1000);
         long openTime = (System.currentTimeMillis() - openStart);
+        long onNativeInvokeTime = (System.currentTimeMillis() - onNativeInvoke);
+        Loger.d(TAG, "onOpenSuccess:openTime=" + openTime + ",Invoke=" + onNativeInvokeTime + ",sipMap=" + sipMap.size() + ",sip=" + sip);
         getFps();
         HashMap<String, String> defaultKey = new HashMap<>();
         defaultKey.put("dataType", "600");
