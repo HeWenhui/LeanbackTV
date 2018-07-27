@@ -211,6 +211,10 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, AllLiveBasePa
         return mIsLand;
     }
 
+    public String getStuName() {
+        return mGetInfo.getStuName();
+    }
+
     public void setmIsLand(AtomicBoolean mIsLand) {
         this.mIsLand = mIsLand;
     }

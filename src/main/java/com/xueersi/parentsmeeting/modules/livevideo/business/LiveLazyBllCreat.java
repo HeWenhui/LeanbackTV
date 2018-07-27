@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.app.Activity;
 import android.widget.RelativeLayout;
 
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListAction;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRankBll;
@@ -97,7 +99,7 @@ public class LiveLazyBllCreat {
 
                 }
             });
-            praiseListBll.setLiveBll(liveBll);
+            //praiseListBll.setLiveBll(liveBll);
             liveBll.setPraiseListAction(praiseListBll);
         }
         return praiseListBll;

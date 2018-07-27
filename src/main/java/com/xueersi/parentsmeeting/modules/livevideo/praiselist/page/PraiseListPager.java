@@ -1,38 +1,34 @@
-package com.xueersi.parentsmeeting.modules.livevideo.page;
+package com.xueersi.parentsmeeting.modules.livevideo.praiselist.page;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.os.Environment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideo.business.PraiseListBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTextView;
 import com.xueersi.ui.adapter.RCommonAdapter;
 import com.xueersi.ui.adapter.RItemViewInterface;
@@ -40,8 +36,8 @@ import com.xueersi.ui.adapter.ViewHolder;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.SizeUtils;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -58,9 +54,9 @@ public class PraiseListPager extends LiveBasePager {
     private ThumbsUpListEntity thumbsUpListEntity;
     private ProgressListEntity progressListEntity;
     private LiveVideoActivity videoActivity;
-    private LiveBll liveBll;
     private PraiseListBll mPraiseListBll;
     private WeakHandler weakHandler;
+    private PraiseListIRCBll liveBll;
 
     /** 表扬榜单 */
     private RecyclerView rvPraiseList;
@@ -128,7 +124,7 @@ public class PraiseListPager extends LiveBasePager {
     private int soundThumbsUp = 0;
 
 
-    public PraiseListPager(Context context, HonorListEntity honorListEntity, LiveBll liveBll, PraiseListBll mPraiseListBll, WeakHandler mVPlayVideoControlHandler) {
+    public PraiseListPager(Context context, HonorListEntity honorListEntity, PraiseListIRCBll liveBll, PraiseListBll mPraiseListBll, WeakHandler mVPlayVideoControlHandler) {
         super(context);
         mPraiseListType = PRAISE_LIST_TYPE_HONOR;
         videoActivity = (LiveVideoActivity) context;
@@ -139,7 +135,7 @@ public class PraiseListPager extends LiveBasePager {
         initData();
     }
 
-    public PraiseListPager(Context context, ThumbsUpListEntity thumbsUpListEntity, LiveBll liveBll, PraiseListBll mPraiseListBll, WeakHandler mVPlayVideoControlHandler) {
+    public PraiseListPager(Context context, ThumbsUpListEntity thumbsUpListEntity, PraiseListIRCBll liveBll, PraiseListBll mPraiseListBll, WeakHandler mVPlayVideoControlHandler) {
         super(context);
         mPraiseListType = PRAISE_LIST_TYPE_THUMBS_UP;
         videoActivity = (LiveVideoActivity) context;
@@ -150,7 +146,7 @@ public class PraiseListPager extends LiveBasePager {
         initData();
     }
 
-    public PraiseListPager(Context context, ProgressListEntity progressListEntity, LiveBll liveBll, PraiseListBll mPraiseListBll, WeakHandler mVPlayVideoControlHandler) {
+    public PraiseListPager(Context context, ProgressListEntity progressListEntity, PraiseListIRCBll liveBll, PraiseListBll mPraiseListBll, WeakHandler mVPlayVideoControlHandler) {
         super(context);
         mPraiseListType = PRAISE_LIST_TYPE_PROGRESS;
         videoActivity = (LiveVideoActivity) context;
@@ -672,7 +668,15 @@ public class PraiseListPager extends LiveBasePager {
         btnThumbsUp.setVisibility(View.GONE);
         Toast.makeText(videoActivity, "你真棒！谢谢你的点赞", Toast.LENGTH_SHORT).show();
         liveBll.sendThumbsUp();
-        mPraiseListBll.umsAgentDebug2(mPraiseListType);
+
+        StableLogHashMap logHashMap = new StableLogHashMap("praisePraiseList");
+        logHashMap.put("listtype",mPraiseListType+"");
+        logHashMap.put("stable","2");
+        logHashMap.put("expect","1");
+        logHashMap.put("sno","5");
+        logHashMap.put("ex","Y");
+        umsAgentDebugInter(LiveVideoConfig.LIVE_PRAISE_LIST, logHashMap.getData());
+
     }
 
     public void setThumbsUpBtnEnabled(boolean enabled) {

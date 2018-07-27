@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.English
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
@@ -65,7 +66,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.H5CoursewareAction;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
-import com.xueersi.parentsmeeting.modules.livevideo.page.PraiseListPager;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
