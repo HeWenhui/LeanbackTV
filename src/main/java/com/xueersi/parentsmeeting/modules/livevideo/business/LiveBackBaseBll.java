@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.RelativeLayout;
@@ -70,7 +69,7 @@ public class LiveBackBaseBll extends BaseBll {
 
     }
 
-    public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity) {
+    public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll.ShowQuestion showQuestion) {
 
     }
 

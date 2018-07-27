@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.MediaControllerBottom
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 我的课程中看课的控制栏，完成指定业务 1、竖屏时上方系统栏永远只显示左上角的箭头，没有背景 2、竖屏时单击只对下方控制栏起作用
@@ -38,14 +39,25 @@ public class LivePlaybackMediaController extends MediaController2 {
     private RelativeLayout rlKeyPoints;
     private RelativeLayout rlKeytip;
     Activity activity;
+    boolean mIsLand;
 
-    public LivePlaybackMediaController(Context context, MediaPlayerControl player) {
+    public LivePlaybackMediaController(Context context, MediaPlayerControl player, boolean mIsLand) {
         super(context, player);
+        this.mIsLand = mIsLand;
         activity = (Activity) context;
         mediaControllerBottom = new MediaControllerBottom2(context, this, player);
         rlKeyPoints = (RelativeLayout) mediaControllerBottom.findViewById(R.id.rl_video_mediacontroller_keypoints);
         rlKeytip = (RelativeLayout) mediaControllerBottom.findViewById(R.id.rl_video_mediacontroller_keytip);
         setControllerBottom(mediaControllerBottom);
+    }
+
+    public void onAttach(boolean isLand) {
+        if (isLand != mIsLand) {
+            mIsLand = isLand;
+            removeAllViews(); // 清除所有内部控件
+            inflateLayout(); // 加载控制器布局
+            findViewItems(); // 初始化控制器上的控制部件
+        }
     }
 
     /**

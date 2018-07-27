@@ -80,6 +80,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoPlayAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
@@ -160,7 +161,7 @@ import static com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile.li
 @SuppressLint("HandlerLeak")
 @SuppressWarnings("unchecked")
 public class LivePlayBackVideoActivity extends VideoViewActivity implements LivePlaybackMediaController.OnPointClick,
-        SpeechEvalAction, BaseQuestionWebInter.StopWebQuestion, LiveAndBackDebug, ActivityChangeLand, VideoPlayAction {
+        SpeechEvalAction, BaseQuestionWebInter.StopWebQuestion, LiveAndBackDebug, ActivityChangeLand, VideoPlayAction, MediaControllerAction {
 
     String TAG = "LivePlayBackVideoActivityLog";
 
@@ -170,6 +171,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
     }
 
     private RelativeLayout rl_course_video_live_controller_content;
+    LivePlaybackMediaController mPlayBackMediaController;
     /** 互动题的布局 */
     private RelativeLayout rlQuestionContent;
     /** 更多课程广告的布局 */
@@ -341,7 +343,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
 
     /** 初始化互动题和竖屏时下方的列表布局 */
     @Override
-    protected void attachMediaController() {
+    public void attachMediaController() {
         Loger.d(TAG, "attachMediaController:beforeAttach=" + beforeAttach);
         if (resultFailed) {
             Loger.d(TAG, "attachMediaController:resultFailed");
@@ -355,45 +357,58 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
             mLiveRemarkBll.hideMarkPoints();
         }
         // 设置当前是否为横屏
-        final LivePlaybackMediaController mMediaController = new LivePlaybackMediaController(this, this);
-        this.mMediaController = mMediaController;
-        rl_course_video_live_controller_content.removeAllViews();
-        rl_course_video_live_controller_content.addView(mMediaController, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        if (mLiveRemarkBll == null || mVideoEntity.getIsAllowMarkpoint() != 1) {
-            mMediaController.getTitleRightBtn().setVisibility(View.GONE);
+        if (mPlayBackMediaController == null) {
+            mPlayBackMediaController = new LivePlaybackMediaController(this, this, mIsLand.get());
+            this.mMediaController = mPlayBackMediaController;
+            rl_course_video_live_controller_content.removeAllViews();
+            rl_course_video_live_controller_content.addView(mMediaController, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+            if (mLiveRemarkBll == null || mVideoEntity.getIsAllowMarkpoint() != 1) {
+                mMediaController.getTitleRightBtn().setVisibility(View.GONE);
+            } else {
+                mMediaController.getTitleRightBtn().setVisibility(View.VISIBLE);
+                mMediaController.getTitleRightBtn().setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mLiveRemarkBll.setController(mMediaController);
+                        mLiveRemarkBll.showMarkPoints();
+                    }
+                });
+            }
+            mMediaController.setAnchorView(videoView.getRootView());
+            // 设置播放器横竖屏切换按钮不显示
+            mMediaController.setAutoOrientation(false);
+            // 播放下一个按钮不显示
+            mMediaController.setPlayNextVisable(false);
+            // 设置速度按钮显示
+            mMediaController.setSetSpeedVisable(true);
         } else {
-            mMediaController.getTitleRightBtn().setVisibility(View.VISIBLE);
-            mMediaController.getTitleRightBtn().setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mLiveRemarkBll.setController(mMediaController);
-                    mLiveRemarkBll.showMarkPoints();
-                }
-            });
+            mPlayBackMediaController.onAttach(mIsLand.get());
+            rl_course_video_live_controller_content.removeAllViews();
+            rl_course_video_live_controller_content.addView(mMediaController, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         }
-        mMediaController.setAnchorView(videoView.getRootView());
-        // 设置播放器横竖屏切换按钮不显示
-        mMediaController.setAutoOrientation(false);
-        // 播放下一个按钮不显示
-        mMediaController.setPlayNextVisable(false);
-        // 设置速度按钮显示
-        mMediaController.setSetSpeedVisable(true);
         setFileName(); // 设置视频显示名称
-        showLongMediaController();
-        if (mIsShowQuestion || mIsShowRedpacket || mIsShowDialog) {
+        if (liveBackBll.isShowQuestion()) {
             mMediaController.release();
             Loger.d(TAG, "attachMediaController:release:mIsShowQuestion=" + mIsShowQuestion + "," + mIsShowRedpacket
                     + "," + mIsShowDialog);
+        } else {
+            showLongMediaController();
         }
         List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
         if (lstVideoQuestion == null || lstVideoQuestion.size() == 0) {
             return;
         }
         if (mVideoEntity.getIsAllowMarkpoint() != 1) {
-            mMediaController.setVideoQuestions("playback" + mVideoEntity.getvLivePlayBackType() + "-", lstVideoQuestion,
+            mPlayBackMediaController.setVideoQuestions("playback" + mVideoEntity.getvLivePlayBackType() + "-", lstVideoQuestion,
                     vPlayer.getDuration());
         }
+    }
 
+    @Override
+    public void release() {
+        if (mMediaController != null) {
+            mMediaController.release();
+        }
     }
 
     @Override
@@ -514,6 +529,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
         setmSendPlayVideoTime(mVideoEntity.getvCourseSendPlayVideoTime());
         // 播放视频
         mWebPath = mVideoEntity.getVideoPath();
+        ProxUtil.getProxUtil().put(this, MediaControllerAction.class, this);
         liveBackBll = new LiveBackBll(this, mVideoEntity);
         liveBackBll.setStuCourId(stuCourId);
         liveBackBll.setvPlayer(vPlayer);

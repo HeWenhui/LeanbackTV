@@ -6,7 +6,6 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
-import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.http.HttpCallBack;
@@ -20,15 +19,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackSpeechCreat;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
-import com.xueersi.parentsmeeting.modules.livevideo.business.VideoPlayAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dataload.DataLoadEntity;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -100,13 +94,12 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 
     @Override
     public void onQuestionEnd(VideoQuestionEntity questionEntity) {
-        super.onQuestionEnd(questionEntity);
         int vCategory = questionEntity.getvCategory();
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_QUESTION: {
                 questionBll.onStopQuestion(questionEntity.getvQuestionType(), "");
                 if (LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(questionEntity.getvQuestionType())) {
-                    MediaPlayerControl videoPlayAction = ProxUtil.getProxUtil().get(activity, MediaPlayerControl.class);
+                    MediaPlayerControl videoPlayAction = getInstance(MediaPlayerControl.class);
                     videoPlayAction.pause();
                 }
             }
@@ -119,7 +112,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     }
 
     @Override
-    public void showQuestion(VideoQuestionEntity oldQuestionEntity, final VideoQuestionEntity questionEntity) {
+    public void showQuestion(VideoQuestionEntity oldQuestionEntity, final VideoQuestionEntity questionEntity, final LiveBackBll.ShowQuestion showQuestion) {
         mRootView.setVisibility(View.VISIBLE);
         questionBll.initView(mRootView, mIsLand.get());
         int vCategory = questionEntity.getvCategory();
@@ -140,6 +133,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
                 videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
                 questionBll.showQuestion(videoQuestionLiveEntity);
+                showQuestion.onShow(true);
             }
             break;
             case LocalCourseConfig.CATEGORY_EXAM: {
@@ -157,6 +151,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
                         videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
                         questionBll.onExamStart(mVideoEntity.getLiveId(), videoQuestionLiveEntity);
+                        showQuestion.onShow(true);
                     }
                 });
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
@@ -165,6 +160,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         MediaPlayerControl videoPlayAction = getInstance(MediaPlayerControl.class);
                         videoPlayAction.seekTo(questionEntity.getvEndTime() * 1000);
                         videoPlayAction.start();
+                        showQuestion.onShow(false);
                     }
                 });
                 verifyCancelAlertDialog.showDialog();
