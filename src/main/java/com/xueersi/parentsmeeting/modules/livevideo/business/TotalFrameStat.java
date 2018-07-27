@@ -196,7 +196,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                             try {
                                 if (vPlayer.isInitialized()) {
                                     bufferduration = ijkMediaPlayer.getVideoCachedDuration();
-                                    bitrate = ijkMediaPlayer.getTcpSpeed();
+                                    bitrate = ijkMediaPlayer.getTcpSpeed() * 8 / 1000;
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
