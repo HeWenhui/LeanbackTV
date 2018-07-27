@@ -26,11 +26,13 @@ import com.xueersi.parentsmeeting.cloud.config.XesCloudConfig;
 import com.xueersi.parentsmeeting.cloud.entity.CloudUploadEntity;
 import com.xueersi.parentsmeeting.cloud.entity.XesCloudResult;
 import com.xueersi.parentsmeeting.cloud.listener.XesStsUploadListener;
+import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.entity.VideoPointEntity;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoView;
@@ -71,6 +73,7 @@ import static com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig.
 import static com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig.CATEGORY_H5COURSE_WARE;
 import static com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig.CATEGORY_QUESTION;
 import static com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig.CATEGORY_REDPACKET;
+import static com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig.NEWTYPE_ONE;
 
 /**
  * Created by Tang on 2018/3/5.
@@ -306,6 +309,7 @@ public class LiveRemarkBll {
     public void setList(List<VideoPointEntity> list) {
         mList = list;
         setEntityNum(mList);
+        setNewEntityNum(mList);
     }
 
 
@@ -638,6 +642,36 @@ public class LiveRemarkBll {
         }
     }
 
+    private void setNewEntityNum(List<VideoPointEntity> lst) {
+        if (lst == null || lst.size() == 0) {
+            return;
+        }
+        questionNum = 0;
+        redPackNum = 0;
+        examNum = 0;
+        englishH5Num = 0;
+        markNum = 0;
+        for (VideoPointEntity entity : lst) {
+            switch (entity.getNewType()) {
+                case "1":
+                case "6":
+                    entity.setNumone(++questionNum);
+                    break;
+                case "2":
+                case "3":
+                case "4":
+                    entity.setNumtwo(++examNum);
+                    break;
+                case "5":
+                case "10":
+                    entity.setNumthree(++englishH5Num);
+                    break;
+                default:
+                    entity.setNum(++markNum);
+            }
+        }
+    }
+
 
     private class PointListItem implements AdapterItemInterface<VideoPointEntity> {
         private ImageView ivShot;
@@ -734,38 +768,76 @@ public class LiveRemarkBll {
 
             StringBuilder sb = new StringBuilder();
             ivShot.setScaleType(ImageView.ScaleType.CENTER);
-            switch (entity.getType()) {
-                case CATEGORY_QUESTION:
-                    sb.append("互动题");
-                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f0773c);
-                    ivShot.setImageResource(R.drawable.bg_live_mark_question);
-                    break;
-                case CATEGORY_REDPACKET:
+            if(AppConfig.isMulLiveBack){
+                switch (entity.getNewType()){
+                    case "1":
+                    case "6":
+                        sb.append("互动题");
+                        sb.append(entity.getNumone());
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f0773c);
+                        ivShot.setImageResource(R.drawable.bg_live_mark_question);
+                        break;
+                    case "2":
+                    case "3":
+                    case "4":
+                        sb.append("测试卷");
+                        sb.append(entity.getNumtwo());
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_green);
+                        ivShot.setImageResource(R.drawable.bg_live_video_mark_exam);
+                        break;
+                    case "5":
+                    case "10":
+                        sb.append("互动游戏");
+                        sb.append(entity.getNumthree());
+                        vSig.setBackgroundResource(R.drawable.shape_blue_corners);
+                        ivShot.setImageResource(R.drawable.bg_live_video_mark_courceware);
+                        break;
+
+                }
+                if(CATEGORY_REDPACKET == entity.getType()){
                     sb.append("红包");
                     vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
                     ivShot.setImageResource(R.drawable.bg_live_mark_redpack);
-                    break;
-                case CATEGORY_EXAM:
-                    sb.append("测试卷");
-                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_green);
-                    ivShot.setImageResource(R.drawable.bg_live_video_mark_exam);
-                    break;
-                case CATEGORY_H5COURSE_WARE:
-                case CATEGORY_ENGLISH_H5COURSE_WARE:
-                    sb.append("互动课件");
-                    vSig.setBackgroundResource(R.drawable.shape_blue_corners);
-                    ivShot.setImageResource(R.drawable.bg_live_video_mark_courceware);
-                    break;
-                default:
-                    ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
-                    vDelete.setVisibility(View.VISIBLE);
-                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
-                    ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
-                    sb.append("疑问点");
+                    sb.append(entity.getNum());
+                    tvText.setText(sb.toString());
+                }
+//                sb.append(entity.getNum());
+                tvText.setText(sb.toString());
+
+            } else {
+                switch (entity.getType()) {
+                    case CATEGORY_QUESTION:
+                        sb.append("互动题");
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f0773c);
+                        ivShot.setImageResource(R.drawable.bg_live_mark_question);
+                        break;
+                    case CATEGORY_REDPACKET:
+                        sb.append("红包");
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
+                        ivShot.setImageResource(R.drawable.bg_live_mark_redpack);
+                        break;
+                    case CATEGORY_EXAM:
+                        sb.append("测试卷");
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_green);
+                        ivShot.setImageResource(R.drawable.bg_live_video_mark_exam);
+                        break;
+                    case CATEGORY_H5COURSE_WARE:
+                    case CATEGORY_ENGLISH_H5COURSE_WARE:
+                        sb.append("互动课件");
+                        vSig.setBackgroundResource(R.drawable.shape_blue_corners);
+                        ivShot.setImageResource(R.drawable.bg_live_video_mark_courceware);
+                        break;
+                    default:
+                        ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
+                        vDelete.setVisibility(View.VISIBLE);
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
+                        ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
+                        sb.append("疑问点");
+                }
+                sb.append(entity.getNum());
+                tvText.setText(sb.toString());
+                //tvText.setText("疑问点" + (i + 1));
             }
-            sb.append(entity.getNum());
-            tvText.setText(sb.toString());
-            //tvText.setText("疑问点" + (i + 1));
         }
     }
 
