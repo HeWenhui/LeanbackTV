@@ -526,7 +526,11 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
         // 统计视频播放key
         mVisitTimeKey = mVideoEntity.getVisitTimeKey();
         // 播放器统计时长发送间隔
-        setmSendPlayVideoTime(mVideoEntity.getvCourseSendPlayVideoTime());
+        if (isArts == 1) {
+            setmSendPlayVideoTime(LiveVideoConfig.LIVE_HB_TIME);
+        } else {
+            setmSendPlayVideoTime(mVideoEntity.getvCourseSendPlayVideoTime());
+        }
         // 播放视频
         mWebPath = mVideoEntity.getVideoPath();
         ProxUtil.getProxUtil().put(this, MediaControllerAction.class, this);
@@ -711,8 +715,6 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
                     "mIsShowQuestion=" + mIsShowQuestion);
 //            showQuestion(mQuestionEntity);
         }
-        // 心跳时间的上传
-        mHandler.postDelayed(mPlayDuration, mPlayTime);
     }
 
     @Override
@@ -802,18 +804,6 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
             super.sendPlayVideo();
         }
     }
-
-    /** 播放时长，1分钟统计 */
-    private Runnable mPlayDuration = new Runnable() {
-        @Override
-        public void run() {
-            if (!isFinishing()) {
-                // 上传心跳时间
-                lectureLivePlayBackBll.uploadPlaybackVideoPlayTime(Integer.parseInt(mVideoEntity.getLiveId()), 60L);
-                mHandler.postDelayed(this, mPlayTime);
-            }
-        }
-    };
 
     /** 视频播放进度实时获取 */
     @Override

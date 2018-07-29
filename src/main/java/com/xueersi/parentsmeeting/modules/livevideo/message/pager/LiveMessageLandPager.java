@@ -620,7 +620,9 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (disable) {
-                    XESToastUtils.showToast(mContext, "你被老师禁言了");
+                    if (fromNotice) {
+                        XESToastUtils.showToast(mContext, "你被老师禁言了");
+                    }
                     btMesOpen.setAlpha(0.4f);
                     btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_open);
                 } else {

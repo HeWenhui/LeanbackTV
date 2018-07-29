@@ -297,30 +297,35 @@ public class TeamPkProgressBar extends View {
         animRunning = true;
         canceled = false;
         mProgress += progress;
-        float endBound = progressRect.width() * getProgress() / getMaxProgress();
-        if (anim != null) {
-            anim.cancel();
-            anim = null;
-        }
-        anim = new ProgressAnim(getProgressRightBound(), endBound);
-        anim.setAnimListener(new ProgressAnim.ProgressAnimListener() {
-            @Override
-            public void onAnimFinish() {
-                animRunning = false;
-                if (mCacheProgress != -1) {
-                    postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            setProgress(mCacheProgress);
-                            mCacheProgress = -1;
-                            invalidate();
-                           // Loger.e("8888","=====onAnimFinish 99999 called:");
-                        }
-                    },100);
-                }
+        if (progressRect == null) {
+            setProgress(mProgress);
+        } else {
+            animRunning = true;
+            canceled = false;
+            float endBound = progressRect.width() * getProgress() / getMaxProgress();
+            if (anim != null) {
+                anim.cancel();
+                anim = null;
             }
-        });
-        invalidate();
+            anim = new ProgressAnim(getProgressRightBound(), endBound);
+            anim.setAnimListener(new ProgressAnim.ProgressAnimListener() {
+                @Override
+                public void onAnimFinish() {
+                    animRunning = false;
+                    if (mCacheProgress != -1) {
+                        postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                setProgress(mCacheProgress);
+                                mCacheProgress = -1;
+                                invalidate();
+                            }
+                        }, 100);
+                    }
+                }
+            });
+            invalidate();
+        }
     }
 
     /**

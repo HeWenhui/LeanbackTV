@@ -789,16 +789,6 @@ public class LectureLivePlayBackBll extends BaseBll {
                 });
     }
 
-    // 回放式体验课的心跳时间
-    public void uploadPlaybackVideoPlayTime(int liveId, Long hbtime){
-        mCourseHttpManager.uploadPlaybackPlayTime(liveId, hbtime, new HttpCallBack(false) {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Loger.e("Duncan", "uploadplaybacktime:" + responseEntity.getJsonObject());
-            }
-        });
-    }
-
     public void sendLiveCourseVisitTime(final String stuCouId, final String liveId, final int hbTime, final Handler handler, final long delayMillis) {
         MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         mCourseHttpManager.sendLiveCourseVisitTime(myUserInfoEntity.getEnstuId(), stuCouId, liveId, hbTime, new HttpCallBack(false) {

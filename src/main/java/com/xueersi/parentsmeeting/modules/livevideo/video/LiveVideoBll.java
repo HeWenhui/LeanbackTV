@@ -449,6 +449,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 stopPlay();
                 return;
             }
+            lastPlayTime = System.currentTimeMillis();
             reportPlayStarTime = System.currentTimeMillis();
             openSuccess = true;
             mHandler.removeCallbacks(mOpenTimeOutRun);
@@ -534,6 +535,10 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
         @Override
         public void run() {
+            if (isInitialized()) {
+                vPlayer.releaseSurface();
+                vPlayer.stop();
+            }
             long openTimeOut = System.currentTimeMillis() - openStartTime;
             mLogtf.d("openTimeOut:progress=" + vPlayer.getBufferProgress() + ",openTimeOut=" + openTimeOut);
             liveGetPlayServer.liveGetPlayServer(false);
@@ -547,6 +552,10 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
         @Override
         public void run() {
+            if (isInitialized()) {
+                vPlayer.releaseSurface();
+                vPlayer.stop();
+            }
             long openTime = System.currentTimeMillis() - openStartTime;
             if (openTime > 40000) {
                 liveVideoReportBll.streamReport(LiveVideoReportBll.MegId.MEGID_12107, mGetInfo.getChannelname(), openTime);
@@ -743,7 +752,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                                         String ip = ipArray.getString(0);
                                         String url = "rtmp://" + ip + "/" + host + "/" + mServer.getAppname() + "/" +
                                                 mGetInfo.getChannelname();
-                                        playserverEntity.setIpAddress(host);
+                                        playserverEntity.setIpAddress(ip);
                                         dataCallBack.onDataSucess(provide, url);
                                         mLogtf.d("dns_resolve_stream:ip_gslb_addr=" + playserverEntity
                                                 .getIp_gslb_addr() + ",ip=" + ip);

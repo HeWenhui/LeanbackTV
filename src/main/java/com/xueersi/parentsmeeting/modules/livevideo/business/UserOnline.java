@@ -24,7 +24,7 @@ import java.io.File;
  */
 public class UserOnline {
     private LiveGetInfo mGetInfo;
-    private int mHbTime = 300, mHbCount = 0;
+    private int mHbTime = LiveVideoConfig.LIVE_HB_TIME, mHbCount = 0;
     private LiveHttpManager mHttpManager;
     private String mCurrentDutyId;
     private int mLiveType;

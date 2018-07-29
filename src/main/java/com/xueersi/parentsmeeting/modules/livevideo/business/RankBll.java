@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
@@ -111,6 +112,10 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                 if (relativeLayout.getVisibility() == View.VISIBLE) {
                     relativeLayout.startAnimation(mAnimSlideOut);
                 } else {
+                    if (mGetInfo == null) {
+                        XESToastUtils.showToast(activity, "请稍等");
+                        return;
+                    }
                     String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
                     String classId = "";
                     if (mGetInfo.getStudentLiveInfo() != null) {

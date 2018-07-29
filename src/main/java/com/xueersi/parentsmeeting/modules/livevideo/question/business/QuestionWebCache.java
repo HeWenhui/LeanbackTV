@@ -44,5 +44,11 @@ public class QuestionWebCache {
             return super.shouldInterceptRequest(view, url);
         }
 
+        @Override
+        public void onPageFinished(WebView webView, String s) {
+            super.onPageFinished(webView, s);
+            webView.destroy();
+            Loger.d(TAG, "onPageFinished:s=" + s);
+        }
     }
 }

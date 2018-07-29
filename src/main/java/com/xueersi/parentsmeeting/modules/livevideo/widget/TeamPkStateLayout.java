@@ -100,16 +100,18 @@ public class TeamPkStateLayout extends FrameLayout {
         this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                try {
-                    addPkStatBar();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    TeamPkStateLayout.this.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    TeamPkStateLayout.this.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                Loger.e("0008","===========>:onGlobalLayout"+TeamPkStateLayout.this.getMeasuredWidth());
+                if(TeamPkStateLayout.this.getMeasuredWidth() > 0){
+                    try {
+                        addPkStatBar();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        TeamPkStateLayout.this.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    } else {
+                        TeamPkStateLayout.this.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
                 }
             }
         });

@@ -90,7 +90,6 @@ public abstract class PircBot implements ReplyConstants {
     private static final int OP_REMOVE = 2;
     private static final int VOICE_ADD = 3;
     private static final int VOICE_REMOVE = 4;
-    private int index = 1;
 
     /**
      * Constructs a PircBot with the default settings. Your own constructors in
@@ -229,15 +228,8 @@ public abstract class PircBot implements ReplyConstants {
 
 //        String NICKKey = "NXICK";
 //        OutputHandler.sendRawLine(this, bwriter, "NXICK " + nick);
-        String NICKKey;
-        if (index % 3 == 0) {
-            NICKKey = "NICK";
-            OutputHandler.sendRawLine(this, bwriter, "NICK " + nick);
-        } else {
-            NICKKey = "NXICK";
-            OutputHandler.sendRawLine(this, bwriter, "NXICK " + nick);
-        }
-        index++;
+        String NICKKey = "NXICK";
+        OutputHandler.sendRawLine(this, bwriter, "NXICK " + nick);
         OutputHandler.sendRawLine(this, bwriter, "USER " + this.getLogin() + " 8 * :" + this.getVersion());
 
         _inputThread = new InputThread(this, _socket, breader, bwriter);
@@ -489,7 +481,7 @@ public abstract class PircBot implements ReplyConstants {
      */
     public final void sendNotice(String target, String notice) {
         _outputhandler.add("NOTICE " + target + " :" + notice);
-        Loger.i("====notice send  ","NOTICE " + target + " :" + notice);
+        Loger.i("====notice send  ", "NOTICE " + target + " :" + notice);
     }
 
     /**

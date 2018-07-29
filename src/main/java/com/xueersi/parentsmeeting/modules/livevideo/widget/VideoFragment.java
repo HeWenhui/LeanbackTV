@@ -568,7 +568,6 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
 //                        tvVideoLoadingText.setText(getString(R.string.video_layout_buffering_progress,
 //                                vPlayer.getBufferProgress()));
                         vPlayerHandler.sendEmptyMessageDelayed(BUFFER_PROGRESS, 1000);
-                        stopPlayer();
                     }
                     break;
                 case BUFFER_COMPLETE:

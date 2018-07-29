@@ -320,7 +320,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                         } else {
                             //暂时去掉3秒发言，信息提示
 //                                addMessage("提示", LiveMessageEntity.MESSAGE_TIP, "3秒后才能再次发言，要认真听课哦!");
-                            XESToastUtils.showToast(mContext, ((SEND_MSG_INTERVAL - System.currentTimeMillis() + lastSendMsg) / 1000) + "秒后才能再次发言，要认真听课哦!");
+                            long timeDelay = (SEND_MSG_INTERVAL - System.currentTimeMillis() + lastSendMsg) / 1000;
+                            timeDelay = timeDelay <= 0 ? 1 : timeDelay;
+                            XESToastUtils.showToast(mContext, timeDelay + "秒后才能再次发言，要认真听课哦!");
                         }
                     } else {
                         XESToastUtils.showToast(mContext, "老师未开启聊天");
@@ -999,7 +1001,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (disable) {
-                    XESToastUtils.showToast(mContext, "你被老师禁言了");
+                    if (fromNotice) {
+                        XESToastUtils.showToast(mContext, "你被老师禁言了");
+                    }
                     btMesOpen.setAlpha(0.4f);
                     btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_open);
                 } else {
@@ -1282,6 +1286,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         this.otherMessageAdapter = otherMessageAdapter;
     }
 
+    @Override
     public void onGetMyGoldDataEvent(String goldNum) {
         this.goldNum = goldNum;
         tvMessageGold.setText(goldNum);
@@ -1294,5 +1299,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     // 03.16 模拟显示聊天人数
     public void showPeopleCount(int num) {
         tvMessageCount.setText(num + "人正在上课");
+    }
+
+    // 隐藏锁屏按钮
+
+    public void hideclock() {
+        cbMessageClock.setVisibility(View.GONE);
     }
 }
