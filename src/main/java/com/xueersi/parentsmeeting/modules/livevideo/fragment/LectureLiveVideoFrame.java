@@ -178,7 +178,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
         if (mHaveStop) {
             mHaveStop = false;
             setFirstBackgroundVisible(View.VISIBLE);
-            new Thread() {
+            liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     synchronized (mIjkLock) {
@@ -190,7 +190,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                         });
                     }
                 }
-            }.start();
+            });
         }
         if (mLiveBll != null) {
             mLiveBll.onResume();
@@ -201,7 +201,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
     public void onPause() {
         super.onPause();
         mHaveStop = true;
-        new Thread() {
+        liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 synchronized (mIjkLock) {
@@ -216,7 +216,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                     isPlay = false;
                 }
             }
-        }.start();
+        });
     }
 
     @Override

@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -102,7 +103,8 @@ public class LiveVideoAction implements VideoAction {
     }
 
     public void rePlay(boolean modechange) {
-        new Thread() {
+        LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
+        liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 boolean isPresent = mLiveBll.isPresent();
@@ -122,7 +124,7 @@ public class LiveVideoAction implements VideoAction {
                     });
                 }
             }
-        }.start();
+        });
     }
 
     public void onFail(int arg1, final int arg2) {

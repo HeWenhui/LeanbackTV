@@ -281,7 +281,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             }
             if (!onPauseNotStopVideo) {
                 setFirstBackgroundVisible(View.VISIBLE);
-                new Thread() {
+                liveThreadPoolExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
                         synchronized (mIjkLock) {
@@ -293,7 +293,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                             });
                         }
                     }
-                }.start();
+                });
             }
             onPauseNotStopVideo = false;
         }
@@ -311,7 +311,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             return;
         }
         if (!onPauseNotStopVideo) {
-            new Thread() {
+            liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     synchronized (mIjkLock) {
@@ -326,7 +326,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                         isPlay = false;
                     }
                 }
-            }.start();
+            });
         }
     }
 
@@ -337,7 +337,6 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             mLiveBll.onStop();
         }
     }
-
 
     int count = 0;
 

@@ -82,6 +82,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     /** Activity暂停过，执行onStop */
     protected boolean mHaveStop = false;
     protected ArrayList<LiveMediaController.MediaPlayerControl> mediaPlayerControls = new ArrayList<>();
+    protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -258,14 +259,15 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
                 @Override
                 public void run() {
-                    new Thread() {
+                    LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
+                    liveThreadPoolExecutor.execute(new Runnable() {
                         @Override
                         public void run() {
                             synchronized (mIjkLock) {
                                 liveFragmentBase.onFail(arg1, arg2);
                             }
                         }
-                    }.start();
+                    });
                 }
             }, 1200);
         }
@@ -309,14 +311,15 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
                 @Override
                 public void run() {
-                    new Thread() {
+                    LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
+                    liveThreadPoolExecutor.execute(new Runnable() {
                         @Override
                         public void run() {
                             synchronized (mIjkLock) {
                                 liveFragmentBase.onFail(0, 0);
                             }
                         }
-                    }.start();
+                    });
                 }
             }, 200);
         }
@@ -406,14 +409,15 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
             @Override
             public void run() {
-                new Thread() {
+                LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
+                liveThreadPoolExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
                         synchronized (mIjkLock) {
                             onFail(arg1, arg2);
                         }
                     }
-                }.start();
+                });
             }
         }, 1200);
     }

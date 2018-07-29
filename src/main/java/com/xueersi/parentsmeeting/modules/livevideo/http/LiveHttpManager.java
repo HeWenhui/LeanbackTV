@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoti
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 
@@ -112,7 +113,8 @@ public class LiveHttpManager extends BaseHttpBusiness {
     public Callback.Cancelable liveGetPlayServer(final StringBuilder ipsb, final String url2, final CommonRequestCallBack<String>
             requestCallBack) {
         final HttpURLConnectionCancelable cancelable = new HttpURLConnectionCancelable();
-        new Thread("liveGetPlayServer:" + getTimes) {
+        LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
+        liveThreadPoolExecutor.execute(new Runnable() {
             Handler handler = new Handler(Looper.getMainLooper());
 
             @Override
@@ -183,7 +185,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
                     }
                 }
             }
-        }.start();
+        });
         return cancelable;
     }
 
@@ -197,14 +199,16 @@ public class LiveHttpManager extends BaseHttpBusiness {
         public void cancel() {
             isCancel = true;
             if (connection != null) {
-                new Thread() {
+                LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
+                liveThreadPoolExecutor.execute(new Runnable() {
+                    @Override
                     public void run() {
                         connection.disconnect();
                         if (callback != null) {
                             callback.onCancelled(new CancelledException("disconnect"));
                         }
                     }
-                }.start();
+                });
             } else {
                 if (callback != null) {
                     callback.onCancelled(new CancelledException("connection == null"));

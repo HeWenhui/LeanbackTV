@@ -485,12 +485,12 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
         super.initData();
         mPageDataLoadEntity = new PageDataLoadEntity(mView, R.id.ll_all_content, DataErrorManager.IMG_TIP_BUTTON)
                 .setWebErrorTip(R.string.web_error_tip_default).setDataIsEmptyTip("暂无更多课程").setOverrideBackgroundColor();
-        new Thread() {
+        liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 OtherModulesEnter.requestGoldTotal(mContext);
             }
-        }.start();
+        });
         ivExpressionCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

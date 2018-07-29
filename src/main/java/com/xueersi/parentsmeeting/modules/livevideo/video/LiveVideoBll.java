@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
@@ -93,6 +94,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
     private LiveVideoReportBll liveVideoReportBll;
     private VideoAction mVideoAction;
     private int mLiveType;
+    protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
     public LiveVideoBll(Activity activity, LiveBll2 liveBll, int liveType) {
         this.activity = activity;
@@ -608,7 +610,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         public void run() {
             mHandler.removeCallbacks(this);
             if (isPlay && !activity.isFinishing()) {
-                new Thread() {
+                liveThreadPoolExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
                         long videoCachedDuration = vPlayer.getVideoCachedDuration();
@@ -626,7 +628,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                             }
                         }
                     }
-                }.start();
+                });
                 //Loger.i(TAG, "onOpenSuccess:videoCachedDuration=" + videoCachedDuration);
             }
         }

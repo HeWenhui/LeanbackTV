@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONException;
@@ -58,6 +59,7 @@ public class LiveGetPlayServer {
     LiveHttpManager mHttpManager;
     LiveHttpResponseParser mHttpResponseParser;
     private Handler mHandler = new Handler(Looper.getMainLooper());
+    LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
     LiveGetPlayServer(Activity context, LiveBll2 liveBll, int mLiveType, LiveGetInfo mGetInfo, LiveTopic liveTopic) {
         this.context = context;
@@ -94,7 +96,7 @@ public class LiveGetPlayServer {
      * @param modechange
      */
     public void liveGetPlayServer(boolean modechange) {
-        new Thread() {
+        liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 boolean isPresent = liveBll.isPresent();
@@ -103,7 +105,7 @@ public class LiveGetPlayServer {
                     mVideoAction.onTeacherNotPresent(true);
                 }
             }
-        }.start();
+        });
         liveGetPlayServer(mLiveTopic.getMode(), modechange);
     }
 

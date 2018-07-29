@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusE
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
@@ -176,6 +177,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     /** 学生是不是流畅模式 */
     AtomicBoolean fluentMode = new AtomicBoolean(false);
     static int times = -1;
+    LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         times++;
@@ -527,7 +529,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 return;
             }
             setFirstBackgroundVisible(View.VISIBLE);
-            new Thread() {
+            liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     synchronized (mIjkLock) {
@@ -557,7 +559,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                         }
                     }
                 }
-            }.start();
+            });
         }
     }
 
@@ -571,7 +573,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         if (startRemote.get()) {
             return;
         }
-        new Thread() {
+        liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 synchronized (mIjkLock) {
@@ -585,7 +587,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                     xv_livevideo_student.stop2();
                 }
             }
-        }.start();
+        });
     }
 
     @Override
@@ -599,14 +601,14 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
             @Override
             public void run() {
-                new Thread() {
+                liveThreadPoolExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
                         synchronized (mIjkLock) {
                             onFail(arg1, arg2);
                         }
                     }
-                }.start();
+                });
             }
         }, 1200);
     }
@@ -617,14 +619,14 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
             @Override
             public void run() {
-                new Thread() {
+                liveThreadPoolExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
                         synchronized (mIjkLock) {
                             onFail(0, 0);
                         }
                     }
-                }.start();
+                });
             }
         }, 200);
     }
@@ -731,7 +733,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         public void run() {
             mHandler.removeCallbacks(this);
             if (isPlay && !isFinishing()) {
-                new Thread() {
+                liveThreadPoolExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
                         videoCachedDuration = vPlayer.getVideoCachedDuration();
@@ -741,7 +743,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                             mLiveBll.streamReport(AuditClassLiveBll.MegId.MEGID_12130, mGetInfo.getChannelname(), -1);
                         }
                     }
-                }.start();
+                });
                 //Loger.i(TAG, "onOpenSuccess:videoCachedDuration=" + videoCachedDuration);
             }
         }
@@ -1051,7 +1053,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 return;
             }
         }
-        new Thread() {
+        liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 boolean isPresent = mLiveBll.isPresent();
@@ -1071,7 +1073,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                     });
                 }
             }
-        }.start();
+        });
         String url;
         String msg = "rePlay:";
         if (mServer == null) {
@@ -1496,6 +1498,12 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         AppBll.getInstance().unRegisterAppEvent(this);
         xv_livevideo_student.onDestroy();
         super.onDestroy();
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                LiveThreadPoolExecutor.destory();
+            }
+        });
     }
 
     /**

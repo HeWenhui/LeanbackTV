@@ -123,7 +123,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     public LiveGetInfo getInfo;
     /** 聊天线程池 */
     protected ThreadPoolExecutor pool;
-    LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
+    protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     protected Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public BaseLiveMessagePager(Context context) {

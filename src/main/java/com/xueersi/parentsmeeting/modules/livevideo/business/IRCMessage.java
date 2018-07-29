@@ -8,6 +8,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 
@@ -46,10 +47,9 @@ public class IRCMessage {
     private int netWorkType;
     /** 调度是不是在无网络下失败 */
     private boolean connectError = false;
-    /** 和服务器的ping，线程池 */
-    private ThreadPoolExecutor pingPool;
     /** 是不是获得过用户列表 */
     private boolean onUserList = false;
+    LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
     public IRCMessage(int netWorkType, String channel, String login, String nickname) {
         this.netWorkType = netWorkType;
@@ -59,14 +59,6 @@ public class IRCMessage {
                 + ".txt"));
         mLogtf.clear();
         mLogtf.d("IRCMessage:channel=" + channel + ",login=" + login + ",nickname=" + nickname);
-        pingPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
-        pingPool.setRejectedExecutionHandler(new RejectedExecutionHandler() {
-
-            @Override
-            public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-
-            }
-        });
     }
 
     /**
@@ -98,12 +90,12 @@ public class IRCMessage {
             mLogtf.d("onNetWorkChange:connectError=" + connectError);
             if (connectError) {
                 connectError = false;
-                new Thread() {
+                liveThreadPoolExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
                         connect("onNetWorkChange");
                     }
-                }.start();
+                });
             }
         }
         if (ircTalkConf != null) {
@@ -249,16 +241,17 @@ public class IRCMessage {
                 }
                 mHandler.removeCallbacks(mPingRunnable);
                 if (!isQuitting) {
-                    new Thread() {
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
                         public void run() {
-                            try {
-                                Thread.sleep(2000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            IRCMessage.this.connect("onDisconnect");
+                            liveThreadPoolExecutor.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    IRCMessage.this.connect("onDisconnect");
+                                }
+                            });
                         }
-                    }.start();
+                    }, 2000);
                 }
             }
 
@@ -325,12 +318,12 @@ public class IRCMessage {
         boolean getserver = ircTalkConf.getserver(businessDataCallBack);
         if (!getserver) {
             ircTalkConf = null;
-            new Thread() {
+            liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     connect("create");
                 }
-            }.start();
+            });
         }
     }
 
@@ -394,17 +387,20 @@ public class IRCMessage {
                 mNewTalkConf.remove(index);
             }
             mLogtf.d("connect:method=" + method + ",connectError=" + connectError + ",netWorkType=" + netWorkType + ",conf=" + (ircTalkConf == null));
-            new Thread() {
+            mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    if (mIsDestory) {
+                        return;
                     }
-                    connect("connect2");
+                    liveThreadPoolExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            connect("connect2");
+                        }
+                    });
                 }
-            }.start();
+            }, 2000);
         }
     }
 
@@ -441,12 +437,12 @@ public class IRCMessage {
         @Override
         public void onDataSucess(Object... objData) {
             mNewTalkConf = (List<NewTalkConfEntity>) objData[0];
-            new Thread() {
+            liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     connect("onDataSucess");
                 }
-            }.start();
+            });
         }
     };
 
@@ -495,7 +491,6 @@ public class IRCMessage {
     /** 播放器销毁 */
     public void destory() {
         mIsDestory = true;
-        pingPool.shutdownNow();
         mHandler.removeCallbacks(mPingRunnable);
         mHandler.removeCallbacks(mTimeoutRunnable);
         new Thread() {
@@ -530,7 +525,7 @@ public class IRCMessage {
 
         @Override
         public void run() {
-            pingPool.execute(new Runnable() {
+            liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     if (mIsDestory) {
@@ -551,27 +546,31 @@ public class IRCMessage {
 
         @Override
         public void run() {
-            new Thread() {
+            if (mIsDestory) {
+                return;
+            }
+            mHandler.postDelayed(new Runnable() {
+                @Override
                 public void run() {
                     if (mIsDestory) {
                         return;
                     }
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    IRCConnection old = mConnection;
-                    mConnection = new IRCConnection(privMsg);
-                    mConnection.setCallback(old.getCallback());
-                    old.setCallback(null);
-                    old.disconnect();
-                    if (mIRCCallback != null) {
-                        mIRCCallback.onDisconnect(old, false);
-                    }
-                    connect("mTimeoutRunnable");
+                    liveThreadPoolExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            IRCConnection old = mConnection;
+                            mConnection = new IRCConnection(privMsg);
+                            mConnection.setCallback(old.getCallback());
+                            old.setCallback(null);
+                            old.disconnect();
+                            if (mIRCCallback != null) {
+                                mIRCCallback.onDisconnect(old, false);
+                            }
+                            connect("mTimeoutRunnable");
+                        }
+                    });
                 }
-            }.start();
+            }, 2000);
         }
     };
 }

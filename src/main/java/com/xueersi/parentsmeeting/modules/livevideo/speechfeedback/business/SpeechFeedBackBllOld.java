@@ -14,6 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
@@ -46,6 +47,7 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
     private AudioRecord mAudioRecord = null;
     /** 原始录音数据 */
     private short[] mPCMBuffer;
+    protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
     private void initAudioRecorder() throws IOException {
         mBufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLING_RATE,
@@ -84,7 +86,7 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
         }
         Loger.d(TAG, "start:roomId=" + roomId);
         isStart = true;
-        new Thread() {
+        liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -117,7 +119,7 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
                     Loger.e(TAG, "initAudioRecorder", e);
                 }
             }
-        }.start();
+        });
     }
 
     @Override

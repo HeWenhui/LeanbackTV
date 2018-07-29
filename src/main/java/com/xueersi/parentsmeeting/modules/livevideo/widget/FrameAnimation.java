@@ -340,7 +340,7 @@ public class FrameAnimation {
                         play(i + 1);
                     }
                 } else {
-                    Thread thread = new Thread() {
+                    Runnable thread = new Runnable() {
                         @Override
                         public void run() {
                             if (destory) {

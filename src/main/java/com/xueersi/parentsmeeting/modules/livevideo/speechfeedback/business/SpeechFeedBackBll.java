@@ -35,6 +35,7 @@ import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.analytics.umsagent.DeviceInfo;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -88,6 +89,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
     private String roomId;
     private long joinTime;
     long startTime;
+    protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
     private void initAudioRecorder() throws IOException {
         mBufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLING_RATE,
@@ -192,7 +194,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                 bottomContent.addView(speechFeedBackPager.getRootView(), params);
             }
         });
-        new Thread() {
+        liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -275,7 +277,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                     Loger.e(TAG, "initAudioRecorder", e);
                 }
             }
-        }.start();
+        });
     }
 
     private AGEventHandler agEventHandler = new AGEventHandler() {
