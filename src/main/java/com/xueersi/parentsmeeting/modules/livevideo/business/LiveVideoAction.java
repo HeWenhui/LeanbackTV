@@ -168,6 +168,7 @@ public class LiveVideoAction implements VideoAction {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                mLogtf.d("onTeacherNotPresent:First=" + rlFirstBackgroundView.getVisibility());
                 if (rlFirstBackgroundView.getVisibility() == View.GONE) {
                     ivTeacherNotpresent.setVisibility(View.GONE);
                 } else {

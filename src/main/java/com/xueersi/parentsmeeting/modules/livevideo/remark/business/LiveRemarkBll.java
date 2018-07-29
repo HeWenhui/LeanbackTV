@@ -141,8 +141,14 @@ public class LiveRemarkBll {
                 if (mPlayerService.getPlayer() == null) {
                     return;
                 }
-                long tcpSpeed = ((IjkMediaPlayer) mPlayerService.getPlayer()).getTcpSpeed();
-                float vdfps = ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoDecodeFramesPerSecond();
+                long tcpSpeed;
+                float vdfps;
+                try {
+                    tcpSpeed = ((IjkMediaPlayer) mPlayerService.getPlayer()).getTcpSpeed();
+                    vdfps = ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoDecodeFramesPerSecond();
+                } catch (Exception e) {
+                    return;
+                }
                 if (mLiveMediaControllerBottom == null) {
                     return;
                 }

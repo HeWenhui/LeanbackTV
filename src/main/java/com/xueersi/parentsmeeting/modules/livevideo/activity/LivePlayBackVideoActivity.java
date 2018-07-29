@@ -787,6 +787,22 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
         return super.getVideoKey();
     }
 
+    @Override
+    protected void sendPlayVideo() {
+        if (isArts == 1) {
+            // 如果观看视频时间等于或大于统计数则发送
+            if (mPlayVideoTime >= mSendPlayVideoTime) {
+                String liveId = mVideoEntity.getLiveId();
+                // 发送观看视频时间
+                lectureLivePlayBackBll.sendLiveCourseVisitTime(stuCourId, liveId, mSendPlayVideoTime, sendPlayVideoHandler, 1000);
+                // 时长初始化
+                mPlayVideoTime = 0;
+            }
+        } else {
+            super.sendPlayVideo();
+        }
+    }
+
     /** 播放时长，1分钟统计 */
     private Runnable mPlayDuration = new Runnable() {
         @Override

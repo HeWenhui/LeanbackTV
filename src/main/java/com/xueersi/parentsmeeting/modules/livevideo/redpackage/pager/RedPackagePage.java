@@ -25,7 +25,9 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
@@ -48,7 +50,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author lyqai
  * @date 2018/3/21
  */
-public class RedPackagePage extends BasePager {
+public class RedPackagePage extends LiveBasePager {
     private int operateId;
     private RedPackagePageAction redPackageAction;
     private ArrayList<GoldTeamStatus.Student> addStudents = new ArrayList<>();
@@ -154,7 +156,7 @@ public class RedPackagePage extends BasePager {
         ImageLoader.with(mContext).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
             @Override
             public void onSuccess(Drawable drawable) {
-                headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                headBitmap = GlideDrawableUtil.getBitmap(drawable, mLogtf, "initData", headUrl);
                 if (top3FrameAnim != null) {
                     top3FrameAnim.setHeadBitmap(headBitmap);
                 }
@@ -506,8 +508,7 @@ public class RedPackagePage extends BasePager {
                             ImageLoader.with(mContext).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
                                 @Override
                                 public void onSuccess(Drawable drawable) {
-                                    Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                                    RedPackagePage.this.headBitmap = headBitmap;
+                                    headBitmap = GlideDrawableUtil.getBitmap(drawable, mLogtf, "initData", headUrl);
                                     btframeAnimation1.removeBitmapCache(file);
                                 }
 

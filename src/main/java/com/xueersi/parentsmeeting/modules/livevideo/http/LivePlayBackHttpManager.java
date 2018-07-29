@@ -311,4 +311,24 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("hbTime", hbTime.toString());
         sendPost(LiveVideoConfig.URL_PLAYBACKPLAYTIME, params, callBack);
     }
+
+    /**
+     * 直播回放视频播放访问时长接口
+     *
+     * @param enStuId
+     * @param stuCouId
+     * @param liveid
+     * @param hbTime
+     */
+    public void sendLiveCourseVisitTime(String enStuId, String stuCouId, String liveid, int hbTime, HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("enstuId", enStuId);
+        params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("liveId", liveid);
+        params.addBodyParam("hbTime", "" + hbTime);
+        params.addBodyParam("systemName", "android");
+        params.addBodyParam("fromType", "4");
+        params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
+        sendPost(liveVideoSAConfigInner.URL_LIVE_VISITTIME, params, httpCallBack);
+    }
 }

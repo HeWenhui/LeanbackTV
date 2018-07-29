@@ -43,6 +43,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
@@ -51,6 +52,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 
 import org.json.JSONObject;
 import org.xutils.xutils.common.Callback;
+import org.xutils.xutils.http.RequestParams;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -816,30 +818,10 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, AllLiveBasePa
             UmsAgent.onEvent(mContext, LogerTag.DEBUG_VIDEO_LIVEMSG, LogerTag.DEBUG_VIDEO_LIVEMSG, 0, str);
             return;
         }
-        mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mLiveId, mGetInfo.getUname(), enstuId,
-                mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, new Callback.CommonCallback<File>() {
-
-                    @Override
-                    public void onSuccess(File o) {
-                        //Loger.i(TAG, "getOnloadLogs:onSuccess");
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable, boolean b) {
-                        //Loger.i(TAG, "getOnloadLogs:onError", throwable);
-                    }
-
-                    @Override
-                    public void onCancelled(CancelledException e) {
-                        //Loger.i(TAG, "getOnloadLogs:onCancelled");
-                    }
-
-                    @Override
-                    public void onFinished() {
-                        //Loger.i(TAG, "getOnloadLogs:onFinished");
-                    }
-
-                });
+        LiveLogCallback liveLogCallback = new LiveLogCallback();
+        RequestParams params = mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mLiveId, mGetInfo.getUname(), enstuId,
+                mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, liveLogCallback);
+        liveLogCallback.setParams(params);
     }
 
     /**

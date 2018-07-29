@@ -15,17 +15,16 @@ import com.tencent.smtt.export.external.interfaces.JsResult;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
-import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.entity.AppInfoEntity;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -198,7 +197,7 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
             if (mLevel == ConsoleMessage.MessageLevel.ERROR || mLevel == ConsoleMessage.MessageLevel.WARNING) {
                 isRequst = true;
             }
-            UmsAgentUtil.webConsoleMessage(mContext, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
+            UmsAgentUtil.webConsoleMessage(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
             return super.onConsoleMessage(consoleMessage);
         }
 
@@ -217,8 +216,12 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
         }
     }
 
-    public class MyWebViewClient extends WebViewClient {
+    public class MyWebViewClient extends ErrorWebViewClient {
         String failingUrl;
+
+        public MyWebViewClient() {
+            super(TAG);
+        }
 
         @Override
         public void onPageFinished(WebView view, String url) {

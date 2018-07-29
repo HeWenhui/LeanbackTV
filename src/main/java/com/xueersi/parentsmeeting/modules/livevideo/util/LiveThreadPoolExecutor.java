@@ -46,8 +46,8 @@ public class LiveThreadPoolExecutor {
     }
 
     public void execute(Runnable command) {
-        Loger.d(TAG, "execute:r=" + command + "," + (pingPool == null));
         if (pingPool == null) {
+            Loger.d(TAG, "execute:r=" + command);
             return;
         }
         pingPool.execute(command);

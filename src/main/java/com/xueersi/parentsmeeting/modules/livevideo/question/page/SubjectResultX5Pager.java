@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
-import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -14,17 +13,14 @@ import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
-import com.xueersi.common.base.BasePager;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -155,7 +151,7 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
             if (mLevel == ConsoleMessage.MessageLevel.ERROR || mLevel == ConsoleMessage.MessageLevel.WARNING) {
                 isRequst = true;
             }
-            UmsAgentUtil.webConsoleMessage(mContext, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
+            UmsAgentUtil.webConsoleMessage(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
             return super.onConsoleMessage(consoleMessage);
         }
 

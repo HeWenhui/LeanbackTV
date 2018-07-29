@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,6 @@ import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
@@ -35,7 +33,6 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -235,7 +232,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             if (mLevel == ConsoleMessage.MessageLevel.ERROR || mLevel == ConsoleMessage.MessageLevel.WARNING) {
                 isRequst = true;
             }
-            UmsAgentUtil.webConsoleMessage(mContext, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
+            UmsAgentUtil.webConsoleMessage(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
             return super.onConsoleMessage(consoleMessage);
         }
 

@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.redpackage.business;
 
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -147,6 +148,13 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
             artsRedPackagePager.setCancelRedPackageTouchListener(cancelRedPackageTouchListener);
         } else {
             view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_view, rlRedpacketContent, false);
+            ImageView imageView = view.findViewById(R.id.iv_livevideo_redpackage_monkey);
+            try {
+                Drawable drawable = activity.getResources().getDrawable(R.drawable.bg_livevideo_redpackage_monkey);
+                imageView.setBackground(drawable);
+            } catch (Exception e) {
+                mLogtf.e("showRedPacket:operateId=" + operateId, e);
+            }
             view.setBackgroundColor(ContextCompat.getColor(activity, R.color.mediacontroller_bg));
             view.setTag(operateId);
             Button btnRedPacket = view.findViewById(R.id.bt_livevideo_redpackage_cofirm);

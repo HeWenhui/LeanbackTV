@@ -38,6 +38,7 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.TalSpeech;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.StandLiveVideoActivity;
@@ -49,6 +50,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 import com.xueersi.common.util.FontCache;
+import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.util.TextStrokeUtil;
@@ -304,10 +306,10 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        ImageLoader.with(mContext).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
+        ImageLoader.with(BaseApplication.getContext()).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
             @Override
             public void onSuccess(Drawable drawable) {
-                headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                headBitmap = GlideDrawableUtil.getBitmap(drawable, mLogtf, "initData", headUrl);
             }
 
             @Override
@@ -329,6 +331,12 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     group.removeView(rgivLivevideoStandReadygo);
                 }
                 rgivLivevideoStandReadygo.destory();
+                if (mContext instanceof Activity) {
+                    Activity activity = (Activity) mContext;
+                    if (activity.isFinishing()) {
+                        return;
+                    }
+                }
                 afterReadyGo();
             }
 
@@ -739,7 +747,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                             ImageLoader.with(mContext).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
                                 @Override
                                 public void onSuccess(Drawable drawable) {
-                                    Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                                    Bitmap headBitmap = GlideDrawableUtil.getBitmap(drawable, mLogtf, "updateHead", headUrl);
                                     StandSpeechAssAutoPager.this.headBitmap = headBitmap;
                                     frameAnimation.removeBitmapCache(file);
                                 }
@@ -1320,7 +1328,10 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 ImageLoader.with(mContext).load(student.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
                     @Override
                     public void onSuccess(Drawable drawable) {
-                        Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                        Bitmap headBitmap = GlideDrawableUtil.getBitmap(drawable, mLogtf, "updateHead", student.getAvatar_path());
+                        if (headBitmap == null) {
+                            return;
+                        }
                         InputStream inputStream = null;
                         try {
                             inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_2.png");

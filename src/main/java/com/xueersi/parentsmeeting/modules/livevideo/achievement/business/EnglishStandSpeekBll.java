@@ -25,6 +25,8 @@ import com.tal.speech.language.LanguageEncodeThread;
 import com.tal.speech.language.LanguageListener;
 import com.tal.speech.language.TalLanguage;
 import com.tal.speech.speechrecognizer.ResultEntity;
+import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
@@ -57,10 +59,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by lyqai on 2017/10/31.
  */
-public class EnglishStandSpeekBll implements EnglishSpeekAction {
+public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements EnglishSpeekAction {
     static int staticInt = 0;
     String TAG = "EnglishSpeekBll" + staticInt++;
-    static boolean loadSuccess = false;
     private Activity activity;
     private EnglishSpeekHttp liveBll;
     private LiveAndBackDebug liveAndBackDebug;
@@ -106,18 +107,6 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
     int tips;
     AudioRequest.OnAudioRequest onAudioRequest;
     LogToFile mLogtf;
-
-    static {
-        try {
-            Loger.i("EnglishSpeekBll", "loadLibrary");
-            System.loadLibrary(SpeechEvaluatorUtils.TAL_ASSESS_LIB);
-            Loger.i("EnglishSpeekBll", "loadLibrary ok");
-            loadSuccess = true;
-        } catch (Throwable e) {
-            loadSuccess = false;
-            Loger.e("EnglishSpeekBll", "loadLibrary", e);
-        }
-    }
 
     public EnglishStandSpeekBll(Activity activity) {
         this.activity = activity;
@@ -166,6 +155,7 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
 
     public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage) {
         if (!loadSuccess) {
+            mLogtf.d("initView:loadSuccess=false");
             return false;
         }
         long before = System.currentTimeMillis();
@@ -312,7 +302,6 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
             return;
         }
         try {
-            isAudioStart = true;
             talLanguage.start(new LanguageListener() {
                 ValueAnimator lastValueAnimator;
 
@@ -483,8 +472,10 @@ public class EnglishStandSpeekBll implements EnglishSpeekAction {
                     }
                 }
             });
-        } catch (IOException e) {
-            Loger.e(TAG, "start", e);
+            isAudioStart = true;
+        } catch (Exception e) {
+            mLogtf.e("start", e);
+            XESToastUtils.showToast(activity, "能量条启动失败，打开录音权限或者关闭其他录音程序");
         }
     }
 

@@ -150,7 +150,8 @@ public class LiveVideoSAConfig {
         public String URL_TEMPK_STUPKRESULT = HTTP_HOST + "/LiveCourse/stuPKResult";
         /** 贡献之星结果 */
         public String URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR = HTTP_HOST + "/LiveCourse/teamEnergyNumAndContributionStar";
-
+        /** 直播回放的用户在线心跳 */
+        public String URL_LIVE_VISITTIME = HTTP_HOST + "/LiveCourse/visitTime";
 
     }
 

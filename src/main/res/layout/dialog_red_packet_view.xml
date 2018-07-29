@@ -59,8 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_livevideo_redpackage_subtitle"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="73dp"
-            android:background="@drawable/bg_livevideo_redpackage_monkey" />
+            android:layout_marginTop="73dp" />
 
         <Button
             android:id="@id/bt_livevideo_redpackage_cofirm"

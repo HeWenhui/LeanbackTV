@@ -229,10 +229,12 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         tvSpeectevalError = (TextView) view.findViewById(R.id.tv_livevideo_speecteval_error);
         tv_livevideo_speecteval_countdown = (TextView) view.findViewById(R.id.tv_livevideo_speecteval_countdown);
         Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.bg_live_star_result_bg);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) spStarResult.getLayoutParams();
-        lp.width = bitmap.getWidth();
-        lp.height = bitmap.getHeight();
-        spStarResult.setLayoutParams(lp);
+        if (bitmap != null) {
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) spStarResult.getLayoutParams();
+            lp.width = bitmap.getWidth();
+            lp.height = bitmap.getHeight();
+            spStarResult.setLayoutParams(lp);
+        }
         return view;
     }
 

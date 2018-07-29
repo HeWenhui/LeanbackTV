@@ -123,6 +123,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -139,7 +140,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements LivePlaybackMediaController.OnPointClick,
         SpeechEvalAction, BaseQuestionWebInter.StopWebQuestion, LiveAndBackDebug, ActivityChangeLand, BaseVoiceAnswerCreat.AnswerRightResultVoice {
 
-    String TAG = "LivePlayBackVideoActivityLog";
+    String TAG = "LiveStandPlayBackVideoActivity";
 
     {
         /** 布局默认资源 */
@@ -212,6 +213,8 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 
     /** 红包id */
     private String mRedPacketId;
+    /** 预加载成功 */
+    private boolean loadSuc = false;
     /** 播放路径名 */
     private String mWebPath;
     /** 节名称 */
@@ -432,9 +435,14 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         // 统计视频播放key
         mVisitTimeKey = mVideoEntity.getVisitTimeKey();
         // 播放器统计时长发送间隔
-        setmSendPlayVideoTime(mVideoEntity.getvCourseSendPlayVideoTime());
+        setmSendPlayVideoTime(LiveVideoConfig.LIVE_HB_TIME);
         // 播放视频
         mWebPath = mVideoEntity.getVideoPath();
+        Map<String, String> mParams = new HashMap<>();
+        mParams.put("logtype", "initData");
+        mParams.put("mSectionName", "" + mSectionName);
+        mParams.put("mWebPath", "" + mWebPath);
+        Loger.d(this, TAG, mParams, true);
 //        if (CourseInfoLiveActivity.isTest) {
 //            mWebPath = "http://r01.xesimg.com/stream/tmp/2016/11/30/1480481513276687694567.mp4";
 //        }
@@ -479,36 +487,20 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                     ViewGroup group = (ViewGroup) vsLiveStandUpdate.getParent();
                     group.removeView(vsLiveStandUpdate);
                 }
+                Map<String, String> mParams = new HashMap<>();
+                mParams.put("logtype", "check_onDataSucess");
+                mParams.put("isFinishing", "" + isFinishing());
+                Loger.d(LiveStandPlayBackVideoActivity.this, TAG, mParams, true);
                 if (isFinishing()) {
                     return;
                 }
+                loadSuc = true;
                 afterLoad();
             }
         });
     }
 
     private void afterLoad() {
-        if (islocal) {
-            // 互动题播放地址
-            playNewVideo(Uri.parse(mWebPath), mSectionName);
-        } else {
-            getWindow().getDecorView().getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver
-                    .OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    getWindow().getDecorView().getViewTreeObserver().removeOnPreDrawListener(this);
-                    if (AppBll.getInstance(LiveStandPlayBackVideoActivity.this).isNetWorkAlert()) {
-                        // 互动题播放地址
-                        AppBll.getInstance(mBaseApplication);
-                        playNewVideo(Uri.parse(mWebPath), mSectionName);
-                    } else {
-                        mIsShowNoWifiAlert = false;
-                        AppBll.getInstance(mBaseApplication);
-                    }
-                    return false;
-                }
-            });
-        }
 //            if (AppConfig.DEBUG) {
 //                List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
 //                VideoQuestionEntity videoQuestionEntity = new VideoQuestionEntity();
@@ -550,7 +542,34 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         liveStandVoiceAnswerCreat = new LiveStandVoiceAnswerCreat(this, questionSwitch, this);
         liveStandVoiceAnswerCreat.setUserName(showName);
         liveStandVoiceAnswerCreat.setHeadUrl(headUrl);
+        Map<String, String> mParams = new HashMap<>();
+        mParams.put("logtype", "afterLoad");
+        mParams.put("islocal", "" + islocal);
+        mParams.put("headUrl", "" + headUrl);
+        Loger.d(LiveStandPlayBackVideoActivity.this, TAG, mParams, true);
         ProxUtil.getProxUtil().put(this, ActivityChangeLand.class, this);
+        if (islocal) {
+            // 互动题播放地址
+            playNewVideo(Uri.parse(mWebPath), mSectionName);
+        } else {
+            getWindow().getDecorView().getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver
+                    .OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    getWindow().getDecorView().getViewTreeObserver().removeOnPreDrawListener(this);
+                    if (AppBll.getInstance(LiveStandPlayBackVideoActivity.this).isNetWorkAlert()) {
+                        // 互动题播放地址
+                        AppBll.getInstance(mBaseApplication);
+                        playNewVideo(Uri.parse(mWebPath), mSectionName);
+                    } else {
+                        mIsShowNoWifiAlert = false;
+                        AppBll.getInstance(mBaseApplication);
+                    }
+                    return false;
+                }
+            });
+        }
+
         if (AppConfig.DEBUG) {
 
 //                mRedPacketId = "2";
@@ -594,7 +613,6 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //                });
 //                redPackageStandBll.onReadPackage(Integer.parseInt(mRedPacketId));
         }
-
 //        lectureLivePlayBackBll.getExperienceMsgs(mVideoEntity.getLiveId(), mVideoEntity.getClassId(), 0L, new ExperienceLiveVideoActivity.GetExperienceLiveMsgs() {
 //
 //            @Override
@@ -726,6 +744,18 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
             }
         }
         return super.getVideoKey();
+    }
+
+    @Override
+    protected void sendPlayVideo() {
+        // 如果观看视频时间等于或大于统计数则发送
+        if (mPlayVideoTime >= mSendPlayVideoTime) {
+            String liveId = mVideoEntity.getLiveId();
+            // 发送观看视频时间
+            lectureLivePlayBackBll.sendLiveCourseVisitTime(stuCourId, liveId, mSendPlayVideoTime, sendPlayVideoHandler, 1000);
+            // 时长初始化
+            mPlayVideoTime = 0;
+        }
     }
 
     /** 视频播放进度实时获取 */
@@ -1705,9 +1735,15 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                 EventBus.getDefault().post(new AppEvent.NowMobileEvent());
             }
         } else if (event.netWorkType == NetWorkHelper.WIFI_STATE) {
-            if (!mIsShowNoWifiAlert) {
-                mIsShowNoWifiAlert = true;
-                playNewVideo(Uri.parse(mWebPath), mSectionName);
+            Map<String, String> mParams = new HashMap<>();
+            mParams.put("logtype", "onEvent");
+            mParams.put("loadSuc", "" + loadSuc);
+            Loger.d(LiveStandPlayBackVideoActivity.this, TAG, mParams, true);
+            if (loadSuc) {
+                if (!mIsShowNoWifiAlert) {
+                    mIsShowNoWifiAlert = true;
+                    playNewVideo(Uri.parse(mWebPath), mSectionName);
+                }
             }
         }
     }
@@ -2684,6 +2720,9 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
     public void stopEnglishH5Exam() {
         Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 12, 12, mQuestionEntity);
         mPlayVideoControlHandler.sendMessage(msg);
+        if (englishH5CoursewarePager != null) {
+            englishH5CoursewarePager.destroy();
+        }
         englishH5CoursewarePager = null;
         if (mQuestionEntity != null && mIsShowQuestion) {
             seekTo(mQuestionEntity.getvEndTime() * 1000);

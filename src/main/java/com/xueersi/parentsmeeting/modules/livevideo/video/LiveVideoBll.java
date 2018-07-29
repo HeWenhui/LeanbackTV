@@ -100,7 +100,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         this.mLiveType = liveType;
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
-        totalFrameStat = new TotalFrameStat(activity);
+        totalFrameStat = new TotalFrameStat(activity, true);
         liveVideoReportBll = new LiveVideoReportBll(activity, liveBll);
         liveVideoReportBll.setTotalFrameStat(totalFrameStat);
         mPlayStatistics.add(liveVideoReportBll.getVideoListener());

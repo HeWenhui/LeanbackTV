@@ -35,6 +35,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieImageAsset;
 import com.airbnb.lottie.OnCompositionLoadedListener;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -640,10 +641,17 @@ public class TeamPkAwardPager extends BasePager {
                     .asBitmap(new SingleConfig.BitmapListener() {
                         @Override
                         public void onSuccess(Drawable drawable) {
-                            Bitmap resultBitmap = ((BitmapDrawable) drawable).getBitmap();
-                            Bitmap circleBitmap = scaleBitmap(resultBitmap, Math.min(resultBitmap.getWidth(),
-                                    resultBitmap.getHeight()) / 2);
-                            ivHead.setImageBitmap(circleBitmap);
+                            Bitmap resultBitmap = null;
+                            if(drawable instanceof  BitmapDrawable){
+                                resultBitmap = ((BitmapDrawable) drawable).getBitmap();
+                            }else if(drawable instanceof GifDrawable){
+                                resultBitmap = ((GifDrawable)drawable).getFirstFrame();
+                            }
+                            if(resultBitmap != null){
+                                Bitmap circleBitmap = scaleBitmap(resultBitmap, Math.min(resultBitmap.getWidth(),
+                                        resultBitmap.getHeight()) / 2);
+                                ivHead.setImageBitmap(circleBitmap);
+                            }
                         }
 
                         @Override

@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
@@ -36,7 +38,7 @@ import java.util.Random;
  * Created by linyuqiang on 2018/5/1.
  * 站立直播红包组内战况布局
  */
-public class RedPackageTeamPage extends BasePager {
+public class RedPackageTeamPage extends LiveBasePager {
     private ArrayList<GoldTeamStatus.Student> addStudents = new ArrayList<>();
     private HashMap<String, Bitmap> stuHeadBitmap = new HashMap<>();
     ArrayList<GoldTeamStatus.Student> students;
@@ -394,7 +396,10 @@ public class RedPackageTeamPage extends BasePager {
                             ImageLoader.with(mContext).load(entity.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
                                 @Override
                                 public void onSuccess(Drawable drawable) {
-                                    Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                                    Bitmap headBitmap = GlideDrawableUtil.getBitmap(drawable, mLogtf, "initTeamHeadAndGold", entity.getAvatar_path());
+                                    if (headBitmap == null) {
+                                        return;
+                                    }
                                     if (isMe) {
                                         RedPackageTeamPage.this.headBitmap = headBitmap;
                                     }

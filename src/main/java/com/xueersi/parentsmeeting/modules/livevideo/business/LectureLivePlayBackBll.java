@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -793,6 +795,39 @@ public class LectureLivePlayBackBll extends BaseBll {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 Loger.e("Duncan", "uploadplaybacktime:" + responseEntity.getJsonObject());
+            }
+        });
+    }
+
+    public void sendLiveCourseVisitTime(final String stuCouId, final String liveId, final int hbTime, final Handler handler, final long delayMillis) {
+        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        mCourseHttpManager.sendLiveCourseVisitTime(myUserInfoEntity.getEnstuId(), stuCouId, liveId, hbTime, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                Loger.d(TAG, "onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                Loger.d(TAG, "onPmError:errorMsg=" + responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                if ((mContext instanceof Activity) && ((Activity) mContext).isFinishing()) {
+                    return;
+                }
+                if (delayMillis > 12000) {
+                    return;
+                }
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        sendLiveCourseVisitTime(stuCouId, liveId, hbTime, handler, delayMillis + 2000);
+                    }
+                }, delayMillis);
             }
         });
     }

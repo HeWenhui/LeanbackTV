@@ -567,6 +567,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
     @Override
     public void removeBaseVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager2) {
+        logToFile.d("removeBaseVoiceAnswerPager:pager=" + voiceAnswerPager2);
         if (voiceAnswerPager2 == voiceAnswerPager) {
             if (voiceAnswerPager.isEnd()) {
                 voiceAnswerPager2.onDestroy();
@@ -810,7 +811,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
         @Override
         public void onAnswerTimeOutError(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
-            baseVoiceAnswerCreat.onAnswerReslut(context, EnglishH5CoursewareBll.this, voiceAnswerPager, baseVideoQuestionEntity, entity);
+            logToFile.d("onAnswerTimeOutError:question=" + baseVideoQuestionEntity + ",pager=" + (voiceAnswerPager == null));
+            if (voiceAnswerPager != null) {
+                baseVoiceAnswerCreat.onAnswerReslut(context, EnglishH5CoursewareBll.this, voiceAnswerPager, baseVideoQuestionEntity, entity);
+            }
         }
 
         @Override
@@ -882,6 +886,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
                 @Override
                 public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+                    logToFile.d("liveSubmitTestH5Answer:question=" + baseVideoQuestionEntity + ",pager=" + (voiceAnswerPager == null));
                     answerReslut.onAnswerReslut(baseVideoQuestionEntity, entity);
                     if (entity != null) {
                         if (entity.getIsAnswer() == 1) {

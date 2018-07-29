@@ -30,6 +30,7 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerSelfItem;
@@ -373,7 +374,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         final HashMap<String, String> assetFolders = new HashMap<String, String>();
         civMatchHead.setBorderWidth(SizeUtils.Dp2Px(mContext, 3));
         civMatchHead.setBorderColor(Color.WHITE);
-        ImageLoader.with(mContext).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg()).into(civMatchHead);
+        ImageLoader.with(BaseApplication.getContext()).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg()).into(civMatchHead);
 
         rlMatchPager.setVisibility(View.VISIBLE);
         rlMatchLottie.setVisibility(View.VISIBLE);

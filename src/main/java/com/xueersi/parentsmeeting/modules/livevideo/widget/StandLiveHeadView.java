@@ -10,17 +10,22 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -37,12 +42,15 @@ public class StandLiveHeadView extends LottieAnimationView {
     LiveMessageEntity entity;
     LiveMessageEntity lastEntity;
     boolean isSystem = false;
+    private LogToFile logToFile;
 
     public StandLiveHeadView(Context context, AttributeSet attrs) {
         super(context, attrs);
         paint = new Paint();
         paint.setTextSize(24);
         paint.setColor(Color.WHITE);
+        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
+                + ".txt"));
     }
 
     public LiveMessageEntity getEntity() {
@@ -166,11 +174,14 @@ public class StandLiveHeadView extends LottieAnimationView {
             updateHead(headBitmap);
         }
         final String finalHeadUrl = headUrl;
-        ImageLoader.with(getContext()).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
+        ImageLoader.with(BaseApplication.getContext()).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
             @Override
             public void onSuccess(Drawable drawable) {
                 if (("" + headUrl).equals(finalHeadUrl)) {
-                    Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                    Bitmap headBitmap = GlideDrawableUtil.getBitmap(drawable, logToFile, "updateHeadUrl", finalHeadUrl);
+                    if (headBitmap == null) {
+                        return;
+                    }
                     updateHead(headBitmap);
                 } else {
                     Loger.d(TAG, "updateHeadUrl2:headUrl=" + headUrl + ",finalHeadUrl=" + finalHeadUrl);

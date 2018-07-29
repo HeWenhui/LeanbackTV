@@ -963,27 +963,30 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         }
         int adapterPosition = mTeamIndex % teamAdapter.getItemCount();
         RecyclerView.ViewHolder viewHolder = teamsRecyclerView.findViewHolderForAdapterPosition(adapterPosition);
-        if (teamItemAnimInfoList.size() >= teamAdapter.getItemCount()) {
-            TeamItemAnimInfo animInfo = teamItemAnimInfoList.get(adapterPosition);
-            animInfo.mUpdateListener.reset();
-            ((ObjectAnimator) animInfo.mAnimatorSet.getChildAnimations().get(0))
-                    .addUpdateListener(animInfo.mUpdateListener);
-            animInfo.mAnimatorSet.start();
-        } else {
-            AnimatorSet itemAnimatorSet;
-            ObjectAnimator scaleXAnimator = ObjectAnimator.ofFloat(viewHolder.itemView
-                    , "scaleX", 1.0f, 1.50f, 1.0f);
-            ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(viewHolder.itemView
-                    , "scaleY", 1.0f, 1.5f, 1.0f);
+        if (viewHolder != null) {
+            if (teamItemAnimInfoList.size() >= teamAdapter.getItemCount()) {
+                TeamItemAnimInfo animInfo = teamItemAnimInfoList.get(adapterPosition);
+                animInfo.mUpdateListener.reset();
+                ((ObjectAnimator) animInfo.mAnimatorSet.getChildAnimations().get(0))
+                        .addUpdateListener(animInfo.mUpdateListener);
+                animInfo.mAnimatorSet.start();
+            } else {
+                AnimatorSet itemAnimatorSet;
+                ObjectAnimator scaleXAnimator = ObjectAnimator.ofFloat(viewHolder.itemView
+                        , "scaleX", 1.0f, 1.50f, 1.0f);
+                ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(viewHolder.itemView
+                        , "scaleY", 1.0f, 1.5f, 1.0f);
 
-            itemAnimatorSet = new AnimatorSet();
-            itemAnimatorSet.playTogether(scaleXAnimator, scaleYAnimator);
-            itemAnimatorSet.setDuration(MARQUEE_ANIM_DURATION);
-            itemAnimatorSet.start();
-            ItemAnimUpdateListener listener = new ItemAnimUpdateListener();
-            scaleXAnimator.addUpdateListener(listener);
-            TeamItemAnimInfo itemAnimInfo = new TeamItemAnimInfo(adapterPosition, itemAnimatorSet, listener);
-            teamItemAnimInfoList.add(itemAnimInfo);
+                itemAnimatorSet = new AnimatorSet();
+                itemAnimatorSet.playTogether(scaleXAnimator, scaleYAnimator);
+                itemAnimatorSet.setDuration(MARQUEE_ANIM_DURATION);
+                itemAnimatorSet.start();
+                ItemAnimUpdateListener listener = new ItemAnimUpdateListener();
+                scaleXAnimator.addUpdateListener(listener);
+                TeamItemAnimInfo itemAnimInfo = new TeamItemAnimInfo(adapterPosition, itemAnimatorSet, listener);
+                teamItemAnimInfoList.add(itemAnimInfo);
+            }
+
         }
     }
 
