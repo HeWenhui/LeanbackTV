@@ -21,6 +21,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -36,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.KeyBordAction;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
@@ -56,6 +58,8 @@ import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.StandSpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -84,7 +88,7 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
  * Created by linyuqiang on 2016/9/23.
  */
 public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEvalAction, BaseQuestionWebInter
-        .StopWebQuestion, BaseVoiceAnswerCreat.AnswerRightResultVoice, QuestionStatic, QuestionShowReg, KeyboardUtil.OnKeyboardShowingListener {
+        .StopWebQuestion, BaseVoiceAnswerCreat.AnswerRightResultVoice, QuestionStatic, QuestionShowReg, KeyboardUtil.OnKeyboardShowingListener, LivePagerBack {
     private String TAG = "QuestionBll";
     private SpeechEvaluatorUtils mIse;
     private LiveVideoSAConfig liveVideoSAConfig;
@@ -1008,6 +1012,62 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }, 6000);
             }
         }
+    }
+
+    @Override
+    public void onBack(final LiveBasePager liveBasePager) {
+        VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(activity, (BaseApplication)
+                BaseApplication.getContext(), false,
+                VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+        cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (liveBasePager instanceof BaseSpeechAssessmentPager) {
+                    rlQuestionContent.removeView(speechAssessmentPager.getRootView());
+                    mQueAndBool.add("" + speechAssessmentPager.getId());
+                    onPause();
+                    if (speechAssessmentPager != null) {
+                        speechAssessmentPager.jsExamSubmit();
+                    }
+                    speechAssessmentPagerUserBack = speechAssessmentPager;
+                    setHaveSpeech(false);
+                    if (speechAssessmentPagerUserBack != null && speechEndAction != null) {
+                        final String num = speechAssessmentPagerUserBack.getId();
+                        speechEndAction.onStopSpeech(speechAssessmentPagerUserBack, speechAssessmentPagerUserBack
+                                .getId(), new SpeechEndAction.OnTop3End() {
+                            @Override
+                            public void onShowEnd() {
+                                mLogtf.d("onBack:onShowEnd=" + num + ",isAnaswer=" + isAnaswer + ",UserBack=" + (speechAssessmentPagerUserBack == null));
+                                speechAssessmentPagerUserBack = null;
+                                if (!isAnaswer) {
+                                    onQuestionShow(false, "stopSpeech:onShowEnd");
+                                }
+                            }
+                        });
+                    }
+                } else if (liveBasePager instanceof BaseExamQuestionInter) {
+                    if (examQuestionPager != null) {
+                        rlQuestionContent.removeView(examQuestionPager.getRootView());
+                        examQuestionPager.onDestroy();
+                        mExamAndBool.add("" + examQuestionPager.getNum());
+                        Map<String, String> mData = new HashMap<>();
+                        mData.put("logtype", "examClose");
+                        mData.put("examid", examQuestionPager.getNum());
+                        mData.put("closetype", "clickBackButton");
+                        umsAgentDebugSys(examQuestionEventId, mData);
+                        setHaveExam(false);
+                    }
+                }
+            }
+        });
+        cancelDialog.setCancelBtnListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLogtf.d("onBack:Cancel");
+            }
+        });
+        cancelDialog.setCancelShowText("取消").setVerifyShowText("确定").initInfo("您正在答题，是否结束作答？",
+                VerifyCancelAlertDialog.CANCEL_SELECTED).showDialog();
     }
 
     public boolean onBack() {

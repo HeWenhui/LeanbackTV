@@ -276,6 +276,7 @@ public class LiveVideoFragmentBase extends Fragment {
      * 用户点击返回，判断是不是程序崩溃
      */
     protected void onUserBackPressed() {
+//        activity.onBackPressed();
         activity.finish(LiveVideoConfig.VIDEO_CANCLE);
     }
 

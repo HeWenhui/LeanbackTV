@@ -22,6 +22,7 @@ import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
@@ -58,7 +59,7 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
     boolean IS_SCIENCE;
     String stuCouId;
 
-    public ExamQuestionX5PlaybackPager(Context context, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, boolean IS_SCIENCE, String stuCouId, ExamStop examStop) {
+    public ExamQuestionX5PlaybackPager(Context context, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, boolean IS_SCIENCE, String stuCouId, ExamStop examStop, LivePagerBack livePagerBack) {
         super(context);
         this.examStop = examStop;
         this.liveid = liveid;
@@ -66,6 +67,7 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
         this.mQuestionEntity = videoQuestionLiveEntity;
         this.num = mQuestionEntity.getvQuestionID();
         this.stuCouId = stuCouId;
+        this.livePagerBack = livePagerBack;
         initData();
     }
 

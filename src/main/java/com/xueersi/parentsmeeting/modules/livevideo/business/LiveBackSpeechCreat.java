@@ -3,8 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.content.Context;
 import android.widget.RelativeLayout;
 
-import com.xueersi.lib.framework.utils.ScreenUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.BaseSpeechCreat;
@@ -21,8 +20,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
  */
 public class LiveBackSpeechCreat implements BaseSpeechCreat {
     WrapSpeechEvalAction wrapSpeechEvalAction;
+    LivePagerBack livePagerBack;
 
-    public LiveBackSpeechCreat() {
+    public LiveBackSpeechCreat(LivePagerBack livePagerBack) {
+        this.livePagerBack = livePagerBack;
     }
 
     @Override
@@ -41,7 +42,7 @@ public class LiveBackSpeechCreat implements BaseSpeechCreat {
         SpeechAssAutoPager speechAssAutoPager = new SpeechAssAutoPager(context,
                 liveid, videoQuestionLiveEntity.id,
                 "", videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time,
-                videoQuestionLiveEntity.getvEndTime() - videoQuestionLiveEntity.getvQuestionInsretTime(), learning_stage, wrapSpeechEvalAction);
+                videoQuestionLiveEntity.getvEndTime() - videoQuestionLiveEntity.getvQuestionInsretTime(), learning_stage, wrapSpeechEvalAction, livePagerBack);
         return speechAssAutoPager;
     }
 
@@ -52,7 +53,7 @@ public class LiveBackSpeechCreat implements BaseSpeechCreat {
         wrapSpeechEvalAction.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
         SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
                 liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                true, videoQuestionLiveEntity.nonce, wrapSpeechEvalAction, stuCouId, false);
+                true, videoQuestionLiveEntity.nonce, wrapSpeechEvalAction, stuCouId, false, livePagerBack);
         return speechAssessmentPager;
     }
 

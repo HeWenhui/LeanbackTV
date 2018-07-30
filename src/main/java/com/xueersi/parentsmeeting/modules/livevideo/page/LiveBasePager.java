@@ -10,6 +10,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AllLiveBasePagerInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.io.File;
@@ -23,6 +24,7 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     protected LogToFile mLogtf;
     protected LiveAndBackDebug mLiveBll;
+    protected LivePagerBack livePagerBack;
 
     public LiveBasePager(Context context) {
         super(context);
@@ -110,6 +112,10 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     }
 
     public boolean onUserBackPressed() {
-        return true;
+        if (livePagerBack != null) {
+            livePagerBack.onBack(this);
+            return true;
+        }
+        return false;
     }
 }

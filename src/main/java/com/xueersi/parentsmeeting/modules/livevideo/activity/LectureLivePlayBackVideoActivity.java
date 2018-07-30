@@ -929,7 +929,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                         public void stopExam(VideoQuestionLiveEntity mQuestionEntity) {
                             LectureLivePlayBackVideoActivity.this.stopExam();
                         }
-                    });
+                    }, null);
                     rlQuestionContent.removeAllViews();
                     rlQuestionContent.addView(examQuestionPlaybackPager.getRootView(), new LayoutParams(LayoutParams.MATCH_PARENT,
                             LayoutParams.WRAP_CONTENT));

@@ -450,7 +450,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         questionBll.setLiveType(liveType);
         questionBll.initData();
         questionBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(questionBll.new LiveQuestionSwitchImpl()));
-        questionBll.setBaseSpeechCreat(new LiveSpeechCreat());
+        questionBll.setBaseSpeechCreat(new LiveSpeechCreat(null));
         englishH5CoursewareBll.setShareDataManager(mShareDataManager);
         englishH5CoursewareBll.setLiveType(liveType);
         englishH5CoursewareBll.setVSectionID(mVSectionID);
@@ -1013,7 +1013,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             starBll.initView(bottomContent);
             mLiveBll.setStarAction(starBll);
             //能量条
-            EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(this,mGetInfo);
+            EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(this, mGetInfo);
             boolean initView = englishSpeekBll.initView(bottomContent, mGetInfo.getMode(), null);
             if (initView) {
                 englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());

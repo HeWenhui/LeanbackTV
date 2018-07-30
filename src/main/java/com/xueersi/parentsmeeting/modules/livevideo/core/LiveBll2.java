@@ -68,7 +68,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author chekun
  *         created  at 2018/6/20 10:32
  */
-public class LiveBll2 extends BaseBll implements LiveAndBackDebug, AllLiveBasePagerInter {
+public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     Logger logger = LoggerFactory.getLogger("LiveBll2");
     /** 需处理 topic 业务集合 */
     private List<TopicAction> mTopicActions = new ArrayList<>();
@@ -78,8 +78,8 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, AllLiveBasePa
     private List<MessageAction> mMessageActions = new ArrayList<>();
     /** 所有业务bll 集合 */
     private List<LiveBaseBll> businessBlls = new ArrayList<>();
-    ArrayList<LiveBasePager> liveBasePagers = new ArrayList<>();
     private Handler mHandler = new Handler(Looper.getMainLooper());
+    private AllLiveBasePagerIml allLiveBasePagerIml;
     private LiveIRCMessageBll liveIRCMessageBll;
     private final int mLiveType;
     private LogToFile mLogtf;
@@ -128,7 +128,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, AllLiveBasePa
             mLiveTopic.setMode(liveGetInfo.getMode());
         }
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
-        ProxUtil.getProxUtil().put(context, AllLiveBasePagerInter.class, this);
+        allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 
     public LiveBll2(Context context, String vSectionID, int type, int form) {
@@ -147,6 +147,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, AllLiveBasePa
             mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         }
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
+        allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 
     public LiveBll2(Context context, String vSectionID, String currentDutyId, int type, int form) {
@@ -348,6 +349,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, AllLiveBasePa
             onLiveFailure("服务器异常", null);
             return;
         }
+        getInfo.setStuCouId(mStuCouId);
         if (mGetInfo.getIsArts() == 1) {
             appID = UmsConstants.ARTS_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
@@ -878,7 +880,8 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, AllLiveBasePa
     }
 
     public boolean onUserBackPressed() {
-        return false;
+        boolean onUserBackPressed = allLiveBasePagerIml.onUserBackPressed();
+        return onUserBackPressed;
     }
 
     /**
@@ -888,11 +891,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, AllLiveBasePa
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.onDestory();
         }
-        ArrayList<LiveBasePager> tempLiveBasePagers = new ArrayList<>(liveBasePagers);
-        for (LiveBasePager basePager : tempLiveBasePagers) {
-            basePager.onDestroy();
-        }
-        liveBasePagers.clear();
+        allLiveBasePagerIml.onDestory();
         businessShareParamMap.clear();
         businessBlls.clear();
         mNoticeActionMap.clear();
@@ -977,13 +976,4 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, AllLiveBasePa
         }
     }
 
-    @Override
-    public void addLiveBasePager(LiveBasePager liveBasePager) {
-        liveBasePagers.add(liveBasePager);
-    }
-
-    @Override
-    public void removeLiveBasePager(LiveBasePager liveBasePager) {
-        liveBasePagers.remove(liveBasePager);
-    }
 }
