@@ -112,8 +112,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     LogToFile mLogtf;
     //用来判断是否是小英
     private LiveGetInfo liveGetInfo;
-
-    boolean isSmallEnglish = true;
+    boolean isSmallEnglish = false;
 
     public EnglishSpeekBll(Activity activity, LiveGetInfo liveGetInfo) {
         this.activity = activity;
@@ -124,6 +123,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
             mLogtf.d("EnglishSpeekBll:isDestory2=true");
         }
         isDestory2 = false;
+        isSmallEnglish = liveGetInfo.getSmallEnglish();
     }
 
     public void setLiveBll(EnglishSpeekHttp liveBll) {
