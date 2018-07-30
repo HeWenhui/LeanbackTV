@@ -107,6 +107,13 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             //getInfo.setIsShowMarkPoint("0");
             getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
             try {
+                //小英萌萌哒皮肤专用
+                if (data.has("useMMD")) {
+                    getInfo.setSmallEnglish(data.get("useMMD").equals("1"));
+                } else {
+                    getInfo.setSmallEnglish(false);
+                }
+
                 getInfo.setGrade(Integer.parseInt(data.optString("gradeIds").split(",")[0]));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -288,7 +295,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setStuLinkMicNum(data.optInt("stuLinkMicNum", 0));
             getInfo.setTestPaperUrl(data.optString("testPaperUrl", "http://live.xueersi.com/Live/getMultiTestPaper"));
             getInfo.setBlockChinese(data.optInt("blockChinese", 0) == 1);
-            getInfo.setSubjectiveTestAnswerResult(data.optString("getSubjectiveTestResultUrl", "https://live.xueersi.com/Live/subjectiveTestAnswerResult/" + getInfo.getId()));
+            getInfo.setSubjectiveTestAnswerResult(data.optString("getSubjectiveTestResultUrl", "https://live.xueersi" +
+                    ".com/Live/subjectiveTestAnswerResult/" + getInfo.getId()));
             LiveGetInfo.TotalOpeningLength totalOpeningLength = new LiveGetInfo.TotalOpeningLength();
             Object getTotalOpeningLengthObj = data.opt("getTotalOpeningLength");
             if (getTotalOpeningLengthObj instanceof JSONObject) {
@@ -1506,8 +1514,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     }
 
     /*
-    * 解析更多课程的数据
-    * */
+     * 解析更多课程的数据
+     * */
     public MoreChoice parseMoreChoice(ResponseEntity responseEntity) {
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         MoreChoice moreChoice = new MoreChoice();
