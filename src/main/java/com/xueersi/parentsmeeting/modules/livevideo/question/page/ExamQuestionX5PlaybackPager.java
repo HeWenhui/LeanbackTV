@@ -103,9 +103,7 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ViewGroup group = (ViewGroup) mView.getParent();
-                group.removeView(mView);
-                examStop.stopExam(mQuestionEntity);
+                examStop.stopExam(ExamQuestionX5PlaybackPager.this, mQuestionEntity);
             }
         });
         bt_livevideo_subject_calljs.setOnClickListener(new View.OnClickListener() {
@@ -260,11 +258,7 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             if ("xueersi://livevideo/examPaper/close".equals(url) || "http://baidu.com/".equals(url)) {
-                ViewGroup group = (ViewGroup) mView.getParent();
-                if (group != null) {
-                    group.removeView(mView);
-                    examStop.stopExam(mQuestionEntity);
-                }
+                examStop.stopExam(ExamQuestionX5PlaybackPager.this, mQuestionEntity);
                 Loger.i(TAG, "shouldOverrideUrlLoading:stopExam");
             } else {
                 if (url.contains("xueersi.com")) {

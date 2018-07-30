@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SlowHorizontalScrollView;
@@ -119,7 +120,8 @@ public class AnswerRankBll {
         mContext = context;
         mLiveBll = liveBll;
         mLst = new ArrayList<>();
-        setVideoLayout(getScreenParam(), ScreenUtils.getScreenHeight());
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+        setVideoLayout(liveVideoPoint);
     }
 
     public void initView(RelativeLayout bottomContent) {
@@ -401,6 +403,52 @@ public class AnswerRankBll {
         return tv;
     }
 
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        int screenWidth = getScreenParam();
+        displayHeight = liveVideoPoint.screenHeight;
+        displayWidth = screenWidth;
+        int screenHeight = ScreenUtils.getScreenHeight();
+        int topMargin = 0, bottomMargin = 0;
+        wradio = liveVideoPoint.getRightMargin();
+        if (displayWidth - wradio == videoWidth) {
+            return;
+        } else {
+            videoWidth = displayWidth - wradio;
+        }
+
+        if (rlFullMarkList != null) {
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(videoWidth, displayHeight);
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            if (llRankList != null) {
+                params.addRule(RelativeLayout.LEFT_OF, llRankList.getId());
+            }
+            rlFullMarkList.setLayoutParams(params);
+            setLinearParam();
+            final SlowHorizontalScrollView sv = (SlowHorizontalScrollView) rlFullMarkList.findViewById(R.id.sv_live_full_mark_list);
+            rlFullMarkList.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (sv != null && sv.getScrollX() > 500) {
+                        sv.scrollTo(videoWidth, 0);
+                    }
+                }
+            }, 50);
+        }
+        topMargin = liveVideoPoint.screenHeight - liveVideoPoint.y3;
+        bottomMargin = (screenHeight - displayHeight) / 2;
+
+        if (llRankList != null) {
+            bottomContent.setPadding(0, 0, 0, bottomMargin);
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) llRankList.getLayoutParams();
+            params.width = wradio;
+            params.height = topMargin;
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            params.setMargins(0, 0, 0, bottomMargin);
+            llRankList.setLayoutParams(params);
+        }
+        setTrophyParam();
+    }
 
     /**
      * 播放器区域变化时更新视图
@@ -606,10 +654,7 @@ public class AnswerRankBll {
     }
 
     private int getScreenParam() {
-        final View contentView = ((Activity) mContext).findViewById(android.R.id.content);
-        final View actionBarOverlayLayout = (View) contentView.getParent();
-        Rect r = new Rect();
-        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
-        return (r.right - r.left);
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+        return liveVideoPoint.screenWidth;
     }
 }

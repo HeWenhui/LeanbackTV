@@ -20,6 +20,8 @@ public interface BaseQuestionWebInter {
 
     BasePager getBasePager();
 
+    void onDestroy();
+
     interface StopWebQuestion {
         void stopWebQuestion(BasePager pager, String testId);
     }
