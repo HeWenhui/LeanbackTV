@@ -740,4 +740,14 @@
     <item name="iv_small_english_sign_close" type="id" />
     <item name="tv_livevideo_small_english_online_people_num" type="id" />
     <item name="lv_livevideo_small_english_live_message" type="id" />
+    <item name="rl_livevideo_small_english_message_panelcontent" type="id" />
+    <item name="rl_livevideo_small_english_message_panelroot" type="id" />
+    <item name="rl_livevideo_small_english_message_content2" type="id" />
+    <item name="bt_livevideo_small_english_message_send" type="id" />
+    <item name="et_livevideo_small_english_message_content" type="id" />
+    <item name="bt_livevideo_small_english_message_express" type="id" />
+    <item name="dv_livevideo_small_english_message_danmaku" type="id" />
+    <item name="rl_livevideo_small_english_redpackage_open_animotion" type="id" />
+    <item name="iv_livevideo_small_english_english_speek" type="id" />
+    <item name="rl_livevideo_english_speek_remind_or_praise" type="id" />
 </resources>

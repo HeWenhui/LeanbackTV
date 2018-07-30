@@ -4,6 +4,7 @@
     android:layout_height="wrap_content">
 
     <RelativeLayout
+        android:id="@id/rl_livevideo_english_speek_remind_or_praise"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
@@ -11,7 +12,8 @@
         <ImageView
             android:id="@id/iv_livevideo_english_praise"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:src="@drawable/bg_livevideo_english_speek_praise" />
 
         <TextView
             android:id="@id/tv_livevideo_english_praise"
@@ -24,4 +26,10 @@
             android:text="a" />
     </RelativeLayout>
 
+    <ImageView
+        android:id="@id/iv_livevideo_small_english_english_speek"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/bg_small_english_livevideo_english_speek_praise"
+        android:visibility="gone" />
 </RelativeLayout>
