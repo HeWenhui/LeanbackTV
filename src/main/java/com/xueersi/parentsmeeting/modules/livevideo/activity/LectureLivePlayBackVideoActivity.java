@@ -926,8 +926,10 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                     examQuestionPlaybackPager = new ExamQuestionX5PlaybackPager(LectureLivePlayBackVideoActivity.this, mVideoEntity.getLiveId(), videoQuestionLiveEntity,
                             false, "", new BaseExamQuestionInter.ExamStop() {
                         @Override
-                        public void stopExam(VideoQuestionLiveEntity mQuestionEntity) {
+                        public void stopExam(BaseExamQuestionInter baseExamQuestionInter, VideoQuestionLiveEntity mQuestionEntity) {
                             LectureLivePlayBackVideoActivity.this.stopExam();
+                            rlQuestionContent.removeView(baseExamQuestionInter.getRootView());
+                            baseExamQuestionInter.onDestroy();
                         }
                     }, null);
                     rlQuestionContent.removeAllViews();

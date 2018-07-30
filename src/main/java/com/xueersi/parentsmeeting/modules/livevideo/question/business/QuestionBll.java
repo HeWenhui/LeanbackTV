@@ -58,8 +58,6 @@ import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.StandSpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -479,11 +477,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 .getvQuestionID())) {
                             return;
                         }
-                        questionWebPager = new QuestionWebX5Pager(activity, QuestionBll.this, liveGetInfo
+                        QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, QuestionBll.this, liveGetInfo
                                 .getTestPaperUrl(), liveGetInfo.getStuId(), liveGetInfo.getUname(),
                                 liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
                                 videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks(), IS_SCIENCE, stuCouId);
+                        questionWebPager.setLivePagerBack(QuestionBll.this);
                         rlQuestionContent.addView(questionWebPager.getRootView());
+                        QuestionBll.this.questionWebPager = questionWebPager;
                         setHaveWebQuestion(true);
                     }
                 });
@@ -559,7 +559,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 }
                             }
                         });
-                    }else {
+                    } else {
                         if (voiceAnswerPager != null) {
                             voiceAnswerPager.setAudioRequest();
                         }
@@ -1007,6 +1007,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 setHaveWebQuestion(false);
                             }
                             if (pager instanceof ExamQuestionX5Pager) {
+                                pager.onDestroy();
                                 setHaveExam(false);
                             }
                             rlQuestionContent.removeView(pager.getRootView());
@@ -1061,6 +1062,18 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         umsAgentDebugSys(examQuestionEventId, mData);
                         setHaveExam(false);
                     }
+                } else if (liveBasePager instanceof BaseQuestionWebInter) {
+                    if (questionWebPager != null) {
+                        questionWebPager.onDestroy();
+                        rlQuestionContent.removeView(questionWebPager.getRootView());
+                        mQueAndBool.add("" + questionWebPager.getTestId());
+                        Map<String, String> mData = new HashMap<>();
+                        mData.put("testid", "" + questionWebPager.getTestId());
+                        mData.put("closetype", "clickBackButton");
+                        mData.put("logtype", "interactTestClose");
+                        umsAgentDebugSys(questionEventId, mData);
+                        setHaveWebQuestion(false);
+                    }
                 }
             }
         });
@@ -1075,97 +1088,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     }
 
     public boolean onBack() {
-        final boolean haveExam = isHaveExam;
-        final boolean haveSpeech = isHaveSpeech;
-        final boolean haveWebQuestion = isHaveWebQuestion;
-        boolean canback = haveExam || haveSpeech || haveWebQuestion || subjectResultPager != null || voiceAnswerPager
-                != null;
-        mLogtf.d("onBack:haveExam=" + haveExam + ",haveSpeech=" + haveSpeech + ",canback=" + canback);
-        if (canback) {
-            VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(activity, (BaseApplication)
-                    BaseApplication.getContext(), false,
-                    VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
-            cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (examQuestionPager != null) {
-                        rlQuestionContent.removeView(examQuestionPager.getRootView());
-                        mExamAndBool.add("" + examQuestionPager.getNum());
-                        Map<String, String> mData = new HashMap<>();
-                        mData.put("logtype", "examClose");
-                        mData.put("examid", examQuestionPager.getNum());
-                        mData.put("closetype", "clickBackButton");
-                        umsAgentDebugSys(examQuestionEventId, mData);
-                    }
-                    if (speechAssessmentPager != null) {
-                        rlQuestionContent.removeView(speechAssessmentPager.getRootView());
-                        mQueAndBool.add("" + speechAssessmentPager.getId());
-                        onPause();
-                        if (speechAssessmentPager != null) {
-                            speechAssessmentPager.jsExamSubmit();
-                        }
-                    }
-                    if (questionWebPager != null) {
-                        rlQuestionContent.removeView(questionWebPager.getRootView());
-                        mQueAndBool.add("" + questionWebPager.getTestId());
-                        Map<String, String> mData = new HashMap<>();
-                        mData.put("testid", "" + questionWebPager.getTestId());
-                        mData.put("closetype", "clickBackButton");
-                        mData.put("logtype", "interactTestClose");
-                        umsAgentDebugSys(questionEventId, mData);
-                    }
-                    if (subjectResultPager != null) {
-                        rlQuestionContent.removeView(subjectResultPager.getRootView());
-                        subjectResultPager = null;
-                    }
-                    if (voiceAnswerPager != null) {
-                        voiceAnswerPager.onUserBack();
-                        rlQuestionContent.removeView(voiceAnswerPager.getRootView());
-                        voiceAnswerPager = null;
-                        AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
-                        if (audioRequest != null) {
-                            audioRequest.release();
-                        }
-                    }
-                    mLogtf.d("onBack:Verify");
-                    if (haveExam) {
-                        setHaveExam(false);
-                    } else if (haveSpeech) {
-                        speechAssessmentPagerUserBack = speechAssessmentPager;
-                        setHaveSpeech(false);
-                        if (speechAssessmentPagerUserBack != null && speechEndAction != null) {
-                            final String num = speechAssessmentPagerUserBack.getId();
-                            speechEndAction.onStopSpeech(speechAssessmentPagerUserBack, speechAssessmentPagerUserBack
-                                    .getId(), new SpeechEndAction.OnTop3End() {
-                                @Override
-                                public void onShowEnd() {
-                                    mLogtf.d("onBack:onShowEnd=" + num + ",isAnaswer=" + isAnaswer + ",UserBack=" + (speechAssessmentPagerUserBack == null));
-                                    speechAssessmentPagerUserBack = null;
-                                    if (!isAnaswer) {
-                                        onQuestionShow(false, "stopSpeech:onShowEnd");
-                                    }
-                                }
-                            });
-                        }
-                    } else {
-                        setHaveWebQuestion(false);
-                    }
-                }
-            });
-            cancelDialog.setCancelBtnListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mLogtf.d("onBack:Cancel");
-                }
-            });
-            cancelDialog.setCancelShowText("取消").setVerifyShowText("确定").initInfo("您正在答题，是否结束作答？",
-                    VerifyCancelAlertDialog.CANCEL_SELECTED).showDialog();
-        }
-        return canback;
+        return false;
     }
 
-    public void stopExam(String num) {
+    public void stopExam(String num, BaseExamQuestionInter baseExamQuestionInter) {
         mExamAndBool.add("" + num);
+        rlQuestionContent.removeView(baseExamQuestionInter.getRootView());
+        baseExamQuestionInter.onDestroy();
         setHaveExam(false);
         try {
             JSONObject object = new JSONObject();
@@ -1177,15 +1106,15 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             e.printStackTrace();
         }
         questionHttp.getStuGoldCount();
-        // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
-        //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
-
     }
 
     @Override
     public void stopWebQuestion(BasePager pager, String testId) {
         if (pager instanceof BaseQuestionWebInter) {
             mQueAndBool.add("" + testId);
+            if (questionWebPager != null) {
+                questionWebPager.onDestroy();
+            }
             setHaveWebQuestion(false);
             JSONObject object = new JSONObject();
             try {
@@ -1839,6 +1768,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             if (questionWebPager != null) {
                                 if (curQuestionView == questionWebPager) {
                                     Loger.i("======questionbll  cur==ques");
+                                    questionWebPager.onDestroy();
                                     rlQuestionContent.removeView(questionWebPager.getRootView());
                                     questionWebPager = null;
                                     curQuestionView = null;
@@ -1855,6 +1785,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             if (examQuestionPager != null) {
                                 if (curQuestionView == examQuestionPager) {
                                     Loger.i("======questionbll  cur==exa");
+                                    examQuestionPager.onDestroy();
                                     rlQuestionContent.removeView(examQuestionPager.getRootView());
                                     examQuestionPager = null;
                                     curQuestionView = null;

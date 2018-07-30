@@ -124,9 +124,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ViewGroup group = (ViewGroup) mView.getParent();
-                group.removeView(mView);
-                questionBll.stopExam(num);
+                questionBll.stopExam(num, ExamQuestionX5Pager.this);
             }
         });
         bt_livevideo_subject_calljs.setOnClickListener(new View.OnClickListener() {
@@ -341,11 +339,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
             }
             mLogtf.i("shouldOverrideUrlLoading:url=" + url);
             if ("xueersi://livevideo/examPaper/close".equals(url) || url.contains("baidu.com")) {
-                ViewGroup group = (ViewGroup) mView.getParent();
-                if (group != null) {
-                    group.removeView(mView);
-                }
-                questionBll.stopExam(num);
+                questionBll.stopExam(num, ExamQuestionX5Pager.this);
                 Map<String, String> mData = new HashMap<>();
                 mData.put("logtype", "examClose");
                 mData.put("examid", num);

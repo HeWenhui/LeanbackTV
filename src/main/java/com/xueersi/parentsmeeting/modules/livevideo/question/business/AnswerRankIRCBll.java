@@ -7,6 +7,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 
 import org.json.JSONObject;
 
@@ -76,6 +77,13 @@ public class AnswerRankIRCBll extends LiveBaseBll implements NoticeAction {
     public void setType(String type) {
         if (mAnswerRankBll != null) {
             mAnswerRankBll.setType(type);
+        }
+    }
+
+    @Override
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        if (mAnswerRankBll != null) {
+            mAnswerRankBll.setVideoLayout(liveVideoPoint);
         }
     }
 }

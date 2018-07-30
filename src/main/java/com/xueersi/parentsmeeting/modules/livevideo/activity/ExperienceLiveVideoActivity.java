@@ -992,8 +992,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                     examQuestionPlaybackPager = new ExamQuestionX5PlaybackPager(ExperienceLiveVideoActivity.this, mVideoEntity.getLiveId(), videoQuestionLiveEntity,
                             false, "", new BaseExamQuestionInter.ExamStop() {
                         @Override
-                        public void stopExam( VideoQuestionLiveEntity videoQuestionLiveEntity) {
-
+                        public void stopExam(BaseExamQuestionInter baseExamQuestionInter, VideoQuestionLiveEntity videoQuestionLiveEntity) {
+                            rlQuestionContent.removeView(baseExamQuestionInter.getRootView());
+                            baseExamQuestionInter.onDestroy();
                         }
                     }, null);
                     rlQuestionContent.removeAllViews();
@@ -1491,7 +1492,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         super.resultFailed(arg1, arg2);
         resultFailed = true;
         mIsShowQuestion = mIsShowRedpacket = false;
-        Loger.d(this,TAG, "liveId=" + mVideoEntity.getLiveId() + "," +
-                "url=" + Uri.parse(mWebPath),true);
+        Loger.d(this, TAG, "liveId=" + mVideoEntity.getLiveId() + "," +
+                "url=" + Uri.parse(mWebPath), true);
     }
 }
