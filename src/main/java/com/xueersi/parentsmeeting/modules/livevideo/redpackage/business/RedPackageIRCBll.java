@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
     private RedPackageAction redPackageAction;
-    private String voiceChatStatus;
+    private String voiceChatStatus = VideoChatIRCBll.DEFULT_VOICE_CHAT_STATE;
 
     public RedPackageIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -89,7 +89,7 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
             });
             redPackageAction = redPackageStandBll;
         } else {
-            RedPackageBll redPackageBll = new RedPackageBll(activity,mGetInfo);
+            RedPackageBll redPackageBll = new RedPackageBll(activity, mGetInfo, true);
             redPackageBll.setVSectionID(mLiveId);
             redPackageBll.initView(mRootView);
             redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {
@@ -202,6 +202,7 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
     public void onNotice(JSONObject data, int type) {
         switch (type) {
             case XESCODE.READPACAGE:
+                mLogtf.d("onNotice:voiceChatStatus=" + voiceChatStatus);
                 if (VideoChatIRCBll.DEFULT_VOICE_CHAT_STATE.equals(voiceChatStatus) && redPackageAction != null) {
                     redPackageAction.onReadPackage(data.optInt("id"), null);
                 }
