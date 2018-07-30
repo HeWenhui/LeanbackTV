@@ -421,24 +421,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                         return;
                     }
                     mIsShowUserSign = true;
-                    if (!isSmallEnglish) {
-                        mClassSignPager = new ClassSignPager(activity, RollCallBll.this, classSignEntity);
-                    } else {
-                        smallEnglishClassSignPager = new SmallEnglishClassSignPager(activity, classSignEntity);
-                        smallEnglishClassSignPager.setSmallEnglishClassSign(new SmallEnglishClassSignPager
-                                .SmallEnglishClassSign() {
-                            @Override
-                            public void close() {
-                                stopRollCall();
-                            }
-
-                            @Override
-                            public void sign(HttpCallBack httpCallBack) {
-                                userSign(classSignEntity, httpCallBack);
-                            }
-                        });
-                    }
-
+                    mClassSignPager = new ClassSignPager(activity, RollCallBll.this, classSignEntity);
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                             .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                     params.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -447,7 +430,6 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                     activity.getWindow().getDecorView().invalidate();
                 }
             }, autoShowSignDelay);
-
 
             //自动签到 到上课时间自动关闭签到面板
             if (autoCloseSignTask != null) {
