@@ -162,6 +162,10 @@ public class VideoChatBll implements VideoChatAction {
 
     public void onLiveInit(LiveGetInfo getInfo) {
         this.getInfo = getInfo;
+        if (getInfo != null) {
+            isSmallEnglish = getInfo.getSmallEnglish();
+        }
+
         boolean allowLinkMic = getInfo.isAllowLinkMic();
         if (allowLinkMic) {
 //            new Thread() {
@@ -413,7 +417,7 @@ public class VideoChatBll implements VideoChatAction {
                             smallEnglishDialog = new SmallEnglishMicTipDialog(activity);
 //                            dialog.setText("点击举手参与\n语音互动吧!");
                             smallEnglishDialog.setText("已举手，现在有" + raiseHandCount + "位小朋友在排队哦~");
-                            smallEnglishDialog.showDialog();
+                            smallEnglishDialog.showDialogAutoClose(3000);
                             if ("on".equals(onMic)) {
                                 final SmallEnglishMicTipDialog finalSmallEnglishMicTipDialog = smallEnglishDialog;
                                 bottomContent.postDelayed(new Runnable() {
@@ -689,7 +693,7 @@ public class VideoChatBll implements VideoChatAction {
                                                 smallEnglishDialog = new SmallEnglishMicTipDialog(activity);
                                                 smallEnglishDialog.setText("已举手，现在有" + raiseHandCount + "位\n" +
                                                         "小朋友在排队哦~");
-                                                smallEnglishDialog.showDialog();
+                                                smallEnglishDialog.showDialogAutoClose(3000);
                                             }
                                             btRaiseHands.setBackgroundResource(R.drawable
                                                     .bg_livevideo_voicechat_raise_hands_check);

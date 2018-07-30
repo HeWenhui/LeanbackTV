@@ -54,7 +54,7 @@ public class RollCallIRCBll extends LiveBaseBll implements NoticeAction, RollCal
                     //开始上课  结束签到相关逻辑
                     rollCallBll.forceCloseRollCall();
                     break;
-                case XESCODE.ROLLCALL:
+                case XESCODE.ROLLCALL://点名
 
                     rollCallBll.onRollCall(false);
                     if (mGetInfo.getStudentLiveInfo().getSignStatus() != Config.SIGN_STATE_CODE_SIGNED) {
@@ -66,7 +66,7 @@ public class RollCallIRCBll extends LiveBaseBll implements NoticeAction, RollCal
                         rollCallBll.onRollCall(classSignEntity);
                     }
                     break;
-                case XESCODE.STOPROLLCALL:
+                case XESCODE.STOPROLLCALL://结束点名
 
                     rollCallBll.onRollCall(true);
                     //noinspection AlibabaUndefineMagicConstant
@@ -81,7 +81,7 @@ public class RollCallIRCBll extends LiveBaseBll implements NoticeAction, RollCal
                     }
                     break;
 
-                case XESCODE.CLASS_MATEROLLCALL:
+                case XESCODE.CLASS_MATEROLLCALL://其他学生点名
 
                     if (RollCallBll.IS_SHOW_CLASSMATE_SIGN) {
                         List<String> headImgUrl = mGetInfo.getHeadImgUrl();
@@ -129,7 +129,8 @@ public class RollCallIRCBll extends LiveBaseBll implements NoticeAction, RollCal
     }
 
     @Override
-    public void userSign(String enstuId, String liveId, String classId, String teacherId, HttpCallBack requestCallBack) {
+    public void userSign(String enstuId, String liveId, String classId, String teacherId, HttpCallBack
+            requestCallBack) {
         getHttpManager().userSign(enstuId, liveId, classId, teacherId, requestCallBack);
     }
 
