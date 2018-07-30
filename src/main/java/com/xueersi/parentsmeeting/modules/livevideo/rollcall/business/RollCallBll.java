@@ -502,6 +502,9 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
         this.mRootView = rootView;
         Loger.e("RollCallBll", "======>onLiveInited called:" + data + ":" + mRootView);
         mGetInfo = data;
+        if (mGetInfo != null) {
+            isSmallEnglish = mGetInfo.getSmallEnglish();
+        }
         initView(mRootView);
         classSignStop.setTraning(LiveTopic.MODE_TRANING.equals(data.getLiveTopic().getMode()));
 

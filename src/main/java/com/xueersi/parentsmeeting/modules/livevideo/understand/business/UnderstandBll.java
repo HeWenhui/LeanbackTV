@@ -58,6 +58,9 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
 
     public void setGetInfo(LiveGetInfo mGetInfo) {
         this.mGetInfo = mGetInfo;
+        if (mGetInfo != null) {
+            isSmallEnglish = mGetInfo.getSmallEnglish();
+        }
     }
 
     public void setUnderstandHttp(UnderstandHttp understandHttp) {
