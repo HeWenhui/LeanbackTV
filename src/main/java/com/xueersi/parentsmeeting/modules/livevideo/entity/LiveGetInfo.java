@@ -219,6 +219,8 @@ public class LiveGetInfo {
     private String testPaperUrl;
     private boolean blockChinese;
     private String subjectiveTestAnswerResult;
+    //是否是小英
+    private boolean smallEnglish;
     /**
      * 当前的直播模式
      */
@@ -259,6 +261,13 @@ public class LiveGetInfo {
      */
     private int isSeniorOfHighSchool;
 
+    public void setSmallEnglish(boolean smallEnglish) {
+        this.smallEnglish = smallEnglish;
+    }
+
+    public boolean getSmallEnglish() {
+        return smallEnglish;
+    }
 
     public int getGrade() {
         return grade;
