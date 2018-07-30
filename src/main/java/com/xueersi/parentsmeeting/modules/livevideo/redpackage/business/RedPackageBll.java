@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author linyuqiang
- * Created by linyuqiang on 2016/9/23.
+ *         Created by linyuqiang on 2016/9/23.
  */
 public class RedPackageBll implements RedPackageAction, Handler.Callback {
     private static final String TAG = "RedPackageBll";
@@ -60,14 +60,15 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
      * 红包的布局
      */
     private RelativeLayout rlRedpacketContent;
-
+    boolean isLive;
     private boolean isSmallEnglish = true;
 
-    public RedPackageBll(Activity activity, LiveGetInfo liveGetInfo) {
+    public RedPackageBll(Activity activity, LiveGetInfo liveGetInfo, boolean isLive) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
         this.activity = activity;
+        this.isLive = isLive;
         this.mGetInfo = liveGetInfo;
     }
 
@@ -100,7 +101,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
 
     private void onGetPackage(VideoResultEntity entity) {
         rlRedpacketContent.removeAllViews();
-        if (entity.getResultType() == 0) {
+        if (!isLive && entity.getResultType() == 0) {
             initRedPacketOtherResult();
         } else {
             initRedPacketResult(entity.getGoldNum());
