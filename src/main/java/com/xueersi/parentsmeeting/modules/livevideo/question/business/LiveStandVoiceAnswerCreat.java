@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerStandPager;
@@ -54,6 +55,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     private String headUrl;
     private String userName;
     private LiveAndBackDebug liveAndBackDebug;
+    LivePagerBack livePagerBack;
     Context context;
 
     public LiveStandVoiceAnswerCreat(Context context, QuestionSwitch questionSwitch, LiveAndBackDebug liveAndBackDebug) {
@@ -68,6 +70,10 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         this.questionSwitch = questionSwitch;
         this.headUrl = headUrl;
         this.userName = userName;
+    }
+
+    public void setLivePagerBack(LivePagerBack livePagerBack) {
+        this.livePagerBack = livePagerBack;
     }
 
     public void setHeadUrl(String headUrl) {
@@ -85,6 +91,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         VoiceAnswerStandLog.sno2(this.liveAndBackDebug, videoQuestionLiveEntity);
         VoiceAnswerStandPager voiceAnswerPager2 = new VoiceAnswerStandPager(activity, baseVideoQuestionEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch, headUrl, userName);
         voiceAnswerPager2.setIse(mIse);
+        voiceAnswerPager2.setLivePagerBack(livePagerBack);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         rlQuestionContent.addView(voiceAnswerPager2.getRootView(), params);

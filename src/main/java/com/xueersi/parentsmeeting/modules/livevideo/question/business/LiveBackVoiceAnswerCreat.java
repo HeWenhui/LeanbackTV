@@ -7,17 +7,14 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 
 import org.json.JSONObject;
 
@@ -32,9 +29,11 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
 public class LiveBackVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     private WrapQuestionSwitch questionSwitch;
     Logger logger = LoggerFactory.getLogger("LiveBackVoiceAnswerCreat");
+    LivePagerBack livePagerBack;
 
-    public LiveBackVoiceAnswerCreat(WrapQuestionSwitch questionSwitch) {
+    public LiveBackVoiceAnswerCreat(WrapQuestionSwitch questionSwitch, LivePagerBack livePagerBack) {
         this.questionSwitch = questionSwitch;
+        this.livePagerBack = livePagerBack;
     }
 
     @Override
@@ -44,6 +43,7 @@ public class LiveBackVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         questionSwitch.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
         VoiceAnswerPager voiceAnswerPager2 = new VoiceAnswerPager(activity, baseVideoQuestionEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch);
         voiceAnswerPager2.setIse(mIse);
+        voiceAnswerPager2.setLivePagerBack(livePagerBack);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         rlQuestionContent.addView(voiceAnswerPager2.getRootView(), params);

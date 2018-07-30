@@ -559,6 +559,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 }
                             }
                         });
+                    }else {
+                        if (voiceAnswerPager != null) {
+                            voiceAnswerPager.setAudioRequest();
+                        }
                     }
 //                    speechAssessmentPager = new SpeechAssessmentPager(activity, QuestionBll.this, speechEvalUrl,
 // liveGetInfo.getStuId(), liveGetInfo.getId(), id);
@@ -1375,6 +1379,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     }
                 }
             });
+        } else {
+            if (voiceAnswerPager != null) {
+                voiceAnswerPager.setAudioRequest();
+            }
         }
     }
 

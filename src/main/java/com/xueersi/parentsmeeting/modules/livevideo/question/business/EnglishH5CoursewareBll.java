@@ -23,6 +23,7 @@ import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
@@ -35,6 +36,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.EnglishH5CoursewareX5Pager;
@@ -62,7 +64,7 @@ import java.util.Map;
  * Created by linyuqiang on 2017/3/25.
  * 英语h5课件业务类
  */
-public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAndBackDebug, BaseVoiceAnswerCreat.AnswerRightResultVoice {
+public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAndBackDebug, BaseVoiceAnswerCreat.AnswerRightResultVoice, LivePagerBack {
     String TAG = "EnglishH5CoursewareBll";
     String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
     String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
@@ -190,6 +192,59 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onBack(LiveBasePager liveBasePager) {
+        if (liveBasePager instanceof BaseEnglishH5CoursewarePager) {
+            if (h5CoursewarePager != null) {
+                if (h5CoursewarePager.isFinish()) {
+                    h5CoursewarePager.close();
+                    onQuestionShow(false);
+                } else {
+                    VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(context, (BaseApplication)
+                            BaseApplication.getContext(), false,
+                            VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+                    cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (h5CoursewarePager != null) {
+                                mH5AndBool.add(h5CoursewarePager.getUrl());
+                                h5CoursewarePager.onBack();
+                                h5CoursewarePager.destroy();
+                                bottomContent.removeView(h5CoursewarePager.getRootView());
+                                h5CoursewarePager = null;
+                                WebViewRequest webViewRequest = ProxUtil.getProxUtil().get(context, WebViewRequest.class);
+                                if (webViewRequest != null) {
+                                    webViewRequest.releaseWebView();
+                                }
+                            }
+                        }
+                    });
+                    cancelDialog.setCancelShowText("取消").setVerifyShowText("确定").initInfo("您正在答题，是否结束作答？",
+                            VerifyCancelAlertDialog.CANCEL_SELECTED).showDialog();
+                }
+            }
+        } else if (liveBasePager instanceof BaseVoiceAnswerPager) {
+            if (voiceAnswerPager != null) {
+                VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(context, (BaseApplication)
+                        BaseApplication.getContext(), false,
+                        VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+                cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (voiceAnswerPager != null) {
+                            voiceAnswerPager.onUserBack();
+                            VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) voiceAnswerPager.getBaseVideoQuestionEntity();
+                            mH5AndBool.add(videoQuestionLiveEntity.getUrl());
+                            stopVoiceAnswerPager();
+                        }
+                    }
+                });
+                cancelDialog.setCancelShowText("取消").setVerifyShowText("确定").initInfo("您正在答题，是否结束作答？",
+                        VerifyCancelAlertDialog.CANCEL_SELECTED).showDialog();
+            }
         }
     }
 
@@ -497,6 +552,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     }
                 }
             });
+        } else {
+            if (voiceAnswerPager != null) {
+                voiceAnswerPager.setAudioRequest();
+            }
         }
     }
 

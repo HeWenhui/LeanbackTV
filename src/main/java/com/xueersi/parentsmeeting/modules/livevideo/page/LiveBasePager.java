@@ -55,6 +55,10 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
         }
     }
 
+    public void setLivePagerBack(LivePagerBack livePagerBack) {
+        this.livePagerBack = livePagerBack;
+    }
+
     @Override
     protected void init(Context context) {
         super.init(context);

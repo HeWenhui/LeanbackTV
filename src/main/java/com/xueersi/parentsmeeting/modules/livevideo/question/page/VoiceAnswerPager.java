@@ -60,7 +60,6 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
     /** 答题切换 */
     TextView tvVoiceansSwitch;
     QuestionSwitch questionSwitch;
-    LiveAndBackDebug liveAndBackDebug;
     /** 语音保存位置-目录 */
     File dir;
     /** 语音保存位置 */
@@ -88,7 +87,6 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
         super(context);
         this.baseVideoQuestionEntity = baseVideoQuestionEntity;
         this.questionSwitch = questionSwitch;
-        this.liveAndBackDebug = liveAndBackDebug;
         this.type = type;
         this.assess_ref = assess_ref;
         if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
@@ -160,7 +158,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                 logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
                 logHashMap.put("sourcetype", sourcetype).put("clicktime", "" + (System.currentTimeMillis() - entranceTime) / 1000);
                 logHashMap.addExY().addExpect("1").addSno("6").addStable("2");
-                liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
+                umsAgentDebugInter(eventId, logHashMap.getData());
                 switchQuestion();
             }
         });
@@ -461,7 +459,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                         logHashMap.put("submittype", isEnd ? "force" : "active");
                         logHashMap.put("sourcetype", sourcetype).put("stuanswer", isRight ? "Y" : "N");
                         logHashMap.addExY().addExpect("1").addSno("4").addNonce("" + nonce).addStable("1");
-                        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
+                        umsAgentDebugInter(eventId, logHashMap.getData());
                         baseVideoQuestionEntity.nonce = nonce;
                         questionSwitch.onPutQuestionResult(baseVideoQuestionEntity, answer, option, 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
                             @Override
@@ -470,7 +468,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                                     entity.setYourAnswer(option);
                                     entity.setStandardAnswer(answer);
                                     String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
-                                    VoiceAnswerLog.sno5(liveAndBackDebug, sourcetype, baseVideoQuestionEntity.getvQuestionID(), baseVideoQuestionEntity.nonce);
+                                    VoiceAnswerLog.sno5(VoiceAnswerPager.this, sourcetype, baseVideoQuestionEntity.getvQuestionID(), baseVideoQuestionEntity.nonce);
                                 }
                             }
 
@@ -562,7 +560,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                 logHashMap.put("stuanswer", isRight ? "Y" : "N");
                 logHashMap.addExY().addExpect("1").addSno("4").addNonce("" + nonce).addStable("1");
                 baseVideoQuestionEntity.nonce = nonce;
-                liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
+                umsAgentDebugInter(eventId, logHashMap.getData());
                 try {
                     JSONArray options = assess_ref.getJSONArray("options");
                     JSONObject jsonObject = options.getJSONObject(0);
@@ -577,7 +575,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                             if (entity != null) {
                                 entity.setStandardAnswer(answer);
                                 String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
-                                VoiceAnswerLog.sno5(liveAndBackDebug, sourcetype, baseVideoQuestionEntity.getvQuestionID(), baseVideoQuestionEntity.nonce);
+                                VoiceAnswerLog.sno5(VoiceAnswerPager.this, sourcetype, baseVideoQuestionEntity.getvQuestionID(), baseVideoQuestionEntity.nonce);
                             }
                         }
 

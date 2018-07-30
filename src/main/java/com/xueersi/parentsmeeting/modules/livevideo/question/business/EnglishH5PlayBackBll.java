@@ -48,11 +48,12 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             LiveBackStandVoiceAnswerCreat liveStandVoiceAnswerCreat = new LiveBackStandVoiceAnswerCreat(activity, englishH5CoursewareBll.new LiveStandQuestionSwitchImpl(), liveBackBll);
             liveStandVoiceAnswerCreat.setUserName(liveGetInfo.getStandLiveName());
             liveStandVoiceAnswerCreat.setHeadUrl(liveGetInfo.getHeadImgPath());
+            liveStandVoiceAnswerCreat.setLivePagerBack(englishH5CoursewareBll);
             englishH5CoursewareBll.setBaseVoiceAnswerCreat(liveStandVoiceAnswerCreat);
         } else {
             //语音答题
             WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, englishH5CoursewareBll.new LiveQuestionSwitchImpl());
-            englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(wrapQuestionSwitch));
+            englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(wrapQuestionSwitch, englishH5CoursewareBll));
         }
         LiveBackBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new LiveBackBaseEnglishH5CoursewareCreat();
         int isArts = liveBackBll.getIsArts();
