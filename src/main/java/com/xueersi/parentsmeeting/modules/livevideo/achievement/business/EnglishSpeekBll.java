@@ -194,7 +194,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                 .OnClickListener() {
             @Override
             public void onClick(View v) {
-                XesPermission.checkPermission(activity, new PermissionCallback() {
+                boolean have = XesPermission.checkPermission(activity, new PermissionCallback() {
 
                     @Override
                     public void onFinish() {
@@ -219,6 +219,17 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                         start();
                     }
                 }, PermissionConfig.PERMISSION_CODE_AUDIO);
+                if (have) {
+                    if (!initLanuage()) {
+                        return;
+                    }
+                    talAsrJni.LangIDReset(0);
+                    rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+                    rl_livevideo_english_speak_error.setVisibility(View.GONE);
+                    isDestory = false;
+                    isDestory2 = false;
+                    start();
+                }
 //                Intent intent = new Intent();
 //                intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
 //                intent.setData(Uri.fromParts("package", activity.getPackageName(), null));

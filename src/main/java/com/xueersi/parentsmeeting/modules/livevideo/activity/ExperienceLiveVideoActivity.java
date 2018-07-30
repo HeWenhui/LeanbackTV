@@ -995,7 +995,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                         public void stopExam( VideoQuestionLiveEntity videoQuestionLiveEntity) {
 
                         }
-                    });
+                    }, null);
                     rlQuestionContent.removeAllViews();
                     rlQuestionContent.addView(examQuestionPlaybackPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT));

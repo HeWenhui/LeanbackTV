@@ -39,7 +39,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.AppBll;
@@ -98,7 +97,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSw
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.dialog.RedPacketAlertDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -1176,7 +1174,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
                         public void stopExam(VideoQuestionLiveEntity videoQuestionLiveEntity) {
                             LivePlayBackVideoActivity.this.stopExam();
                         }
-                    });
+                    }, null);
                     rlQuestionContent.removeAllViews();
                     rlQuestionContent.addView(examQuestionPlaybackPager.getRootView(), new LayoutParams(LayoutParams
                             .MATCH_PARENT,
@@ -1207,14 +1205,14 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
                         speechQuestionPlaybackPager = new SpeechAssAutoPager(LivePlayBackVideoActivity.this,
                                 mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(),
                                 "", mQuestionEntity.getSpeechContent(), mQuestionEntity.getEstimatedTime(),
-                                mQuestionEntity.getvEndTime() - mQuestionEntity.getvQuestionInsretTime(), learning_stage, LivePlayBackVideoActivity.this);
+                                mQuestionEntity.getvEndTime() - mQuestionEntity.getvQuestionInsretTime(), learning_stage, LivePlayBackVideoActivity.this, null);
 //                        int screenWidth = ScreenUtils.getScreenWidth();
 //                        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
 //                        lp.rightMargin = wradio;
                     } else {
                         speechQuestionPlaybackPager = new SpeechAssessmentWebX5Pager(LivePlayBackVideoActivity.this,
                                 mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), userInfoEntity.getStuId(),
-                                false, "", LivePlayBackVideoActivity.this, stuCourId, IS_SCIENCE);
+                                false, "", LivePlayBackVideoActivity.this, stuCourId, IS_SCIENCE, null);
                     }
                     speechQuestionPlaybackPager.initData();
                     rlQuestionContent.removeAllViews();
@@ -2348,6 +2346,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
 
             }
         }
+        liveBackBll.onDestory();
         unregisterReceiver(receiver);
         ProxUtil.getProxUtil().clear();
     }
@@ -2816,6 +2815,5 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
         totalnum.setText(LiveVideoConfig.MORE_COURSE + "");
 
     }
-
 
 }

@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.AllLiveBasePagerIml;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
@@ -35,10 +36,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by lyqai on 2018/7/17.
  */
-public class LiveBackBll implements LiveAndBackDebug, AllLiveBasePagerInter {
+public class LiveBackBll implements LiveAndBackDebug {
     private String TAG = "LiveBackBll";
     Activity activity;
-    ArrayList<LiveBasePager> liveBasePagers = new ArrayList<>();
+    private AllLiveBasePagerIml allLiveBasePagerIml;
     /** 购课id */
     protected String stuCourId;
     /** 视频节对象 */
@@ -76,7 +77,6 @@ public class LiveBackBll implements LiveAndBackDebug, AllLiveBasePagerInter {
         this.activity = activity;
         this.mVideoEntity = mVideoEntity;
         ProxUtil.getProxUtil().put(activity, LiveAndBackDebug.class, this);
-        ProxUtil.getProxUtil().put(activity, AllLiveBasePagerInter.class, this);
         Intent intent = activity.getIntent();
         isArts = intent.getIntExtra("isArts", 0);
         islocal = intent.getBooleanExtra("islocal", false);
@@ -109,6 +109,7 @@ public class LiveBackBll implements LiveAndBackDebug, AllLiveBasePagerInter {
         mCourseHttpManager = new LivePlayBackHttpManager(activity);
         mCourseHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         mCourseHttpResponseParser = new LivePlayBackHttpResponseParser();
+        allLiveBasePagerIml = new AllLiveBasePagerIml(activity);
     }
 
     public int getLiveType() {
@@ -431,26 +432,21 @@ public class LiveBackBll implements LiveAndBackDebug, AllLiveBasePagerInter {
     }
 
     public boolean onUserBackPressed() {
-        Loger.d(TAG, "onUserBackPressed:liveBasePagers=" + liveBasePagers.size());
-        ArrayList<LiveBasePager> liveBasePagersTemp = new ArrayList<>(liveBasePagers);
-        for (int i = liveBasePagersTemp.size() - 1; i >= 0; i--) {
-            LiveBasePager liveBasePager = liveBasePagersTemp.get(i);
-            Loger.d(TAG, "onUserBackPressed:liveBasePager=" + liveBasePager);
-        }
-        return false;
+        boolean onUserBackPressed = allLiveBasePagerIml.onUserBackPressed();
+        return onUserBackPressed;
     }
 
     public boolean isShowQuestion() {
         return mIsShowQuestion;
     }
 
-    @Override
-    public void addLiveBasePager(LiveBasePager liveBasePager) {
-        liveBasePagers.add(liveBasePager);
+    public void onDestory() {
+        for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
+            businessBll.onDestory();
+        }
+        allLiveBasePagerIml.onDestory();
+        businessShareParamMap.clear();
+        liveBackBaseBlls.clear();
     }
 
-    @Override
-    public void removeLiveBasePager(LiveBasePager liveBasePager) {
-        liveBasePagers.remove(liveBasePager);
-    }
 }

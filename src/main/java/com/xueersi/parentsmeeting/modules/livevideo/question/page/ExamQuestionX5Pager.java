@@ -77,6 +77,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
             , String stuName, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, String isShowRankList, boolean IS_SCIENCE, String stuCouId, int isTeamPkRoom) {
         super(context);
         this.questionBll = questionBll;
+        this.livePagerBack = questionBll;
         this.stuId = stuId;
         this.stuName = stuName;
         this.liveid = liveid;
@@ -385,5 +386,12 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
             }
             return true;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        wvSubjectWeb.stopLoading();
+        wvSubjectWeb.destroy();
     }
 }

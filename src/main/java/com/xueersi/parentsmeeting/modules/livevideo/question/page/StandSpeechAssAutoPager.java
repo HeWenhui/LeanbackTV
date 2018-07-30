@@ -41,9 +41,8 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.StandLiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.LiveStandSpeechEvalAction;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -180,7 +179,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
     /** 语音答题直播 */
     public StandSpeechAssAutoPager(Context context, String liveid, String testId,
-                                   String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, String userName, String headUrl, String learning_stage) {
+                                   String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, String userName, String headUrl, String learning_stage, LivePagerBack livePagerBack) {
         super(context);
         this.isLive = true;
         this.id = testId;
@@ -199,6 +198,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         this.userName = StandLiveTextView.getShortName(userName);
         this.headUrl = headUrl;
         entranceTime = System.currentTimeMillis();
+        this.livePagerBack = livePagerBack;
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "receiveVoiceTest");
         mData.put("live", "" + isLive);

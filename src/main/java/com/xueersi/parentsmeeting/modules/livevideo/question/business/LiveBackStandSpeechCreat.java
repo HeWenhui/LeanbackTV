@@ -6,6 +6,7 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
@@ -14,8 +15,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.StandSpeechAss
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 
-import java.util.Map;
-
 /**
  * Created by lingyuqiang on 2018/4/7.
  * 站立直播的语音答题-回放
@@ -23,15 +22,17 @@ import java.util.Map;
 public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
     QuestionPlayBackBll questionIRCBll;
     LiveAndBackDebug liveAndBackDebug;
+    LivePagerBack livePagerBack;
 
     @Deprecated
     public LiveBackStandSpeechCreat(LiveBll liveBll) {
         liveAndBackDebug = liveBll;
     }
 
-    public LiveBackStandSpeechCreat(QuestionPlayBackBll questionIRCBll, LiveAndBackDebug liveAndBackDebug) {
+    public LiveBackStandSpeechCreat(QuestionPlayBackBll questionIRCBll, LiveAndBackDebug liveAndBackDebug, LivePagerBack livePagerBack) {
         this.questionIRCBll = questionIRCBll;
         this.liveAndBackDebug = liveAndBackDebug;
+        this.livePagerBack = livePagerBack;
     }
 
     @Override
@@ -57,7 +58,7 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
                                                     SpeechEvalAction speechEvalAction, String stuCouId) {
         SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
                 liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false);
+                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
         speechAssessmentPager.setStandingLive(true);
         RolePlayStandLog.sno3(liveAndBackDebug, testId);
         return speechAssessmentPager;
@@ -118,5 +119,6 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
         public void speechIsAnswered(String num, SpeechIsAnswered isAnswered) {
             action.speechIsAnswered(num, isAnswered);
         }
+
     }
 }

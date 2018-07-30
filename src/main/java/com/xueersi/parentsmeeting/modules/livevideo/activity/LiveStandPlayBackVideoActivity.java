@@ -1128,7 +1128,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                         public void stopExam(VideoQuestionLiveEntity videoQuestionLiveEntity) {
                             LiveStandPlayBackVideoActivity.this.stopExam();
                         }
-                    });
+                    }, null);
                     rlQuestionContent.removeAllViews();
                     rlQuestionContent.addView(examQuestionPlaybackPager.getRootView(), new LayoutParams(LayoutParams
                             .MATCH_PARENT,
@@ -1175,7 +1175,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                     } else {
                         SpeechAssessmentWebX5Pager speechAssessmentWebPager = new SpeechAssessmentWebX5Pager(LiveStandPlayBackVideoActivity.this,
                                 mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), userInfoEntity.getStuId(),
-                                false, "", LiveStandPlayBackVideoActivity.this, stuCourId, IS_SCIENCE);
+                                false, "", LiveStandPlayBackVideoActivity.this, stuCourId, IS_SCIENCE, null);
                         speechAssessmentWebPager.setStandingLive(true);
                         speechQuestionPlaybackPager = speechAssessmentWebPager;
                         RolePlayStandLog.sno3(LiveStandPlayBackVideoActivity.this, mQuestionEntity.getvQuestionID());
@@ -2872,4 +2872,5 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
             }
         }
     }
+
 }

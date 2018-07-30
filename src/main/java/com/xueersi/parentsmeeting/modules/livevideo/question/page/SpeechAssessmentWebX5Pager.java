@@ -27,6 +27,7 @@ import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayerListening;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
@@ -116,7 +117,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
 
     public SpeechAssessmentWebX5Pager(Context context, String liveid, String testId, String stuId, boolean isLive,
                                       String nonce,
-                                      SpeechEvalAction speechEvalAction, String stuCouId, boolean IS_SCIENCE) {
+                                      SpeechEvalAction speechEvalAction, String stuCouId, boolean IS_SCIENCE, LivePagerBack livePagerBack) {
         super(context);
         this.stuId = stuId;
         this.liveid = liveid;
@@ -126,6 +127,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         this.speechEvalAction = speechEvalAction;
         this.stuCouId = stuCouId;
         this.IS_SCIENCE = IS_SCIENCE;
+        this.livePagerBack = livePagerBack;
         dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/liveSpeech/");
         if (!dir.exists()) {
             dir.mkdirs();

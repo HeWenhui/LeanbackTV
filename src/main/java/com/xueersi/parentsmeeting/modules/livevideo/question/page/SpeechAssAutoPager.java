@@ -32,6 +32,7 @@ import com.tal.speech.speechrecognizer.TalSpeech;
 import com.umeng.analytics.MobclickAgent;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -101,7 +102,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     private SpeechEvalAction speechEvalAction;
     private SpeechEvaluatorInter speechEvaluatorInter;
     /** 在线语音失败次数 */
-    int onLineError = 0; 
+    int onLineError = 0;
     private long entranceTime;
     /** 是不是已经开始 */
     private boolean isSpeechStart = false;
@@ -139,8 +140,8 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     String learning_stage;
 
     public SpeechAssAutoPager(Context context, String liveid, String testId,
-                              String nonce, String content, int time, boolean haveAnswer, String learning_stage, SpeechEvalAction speechEvalAction) {
-        super(context); 
+                              String nonce, String content, int time, boolean haveAnswer, String learning_stage, SpeechEvalAction speechEvalAction, LivePagerBack livePagerBack) {
+        super(context);
         this.isLive = true;
         this.id = testId;
         this.nonce = nonce;
@@ -156,6 +157,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         this.content = content;
         this.time = time;
         entranceTime = System.currentTimeMillis();
+        this.livePagerBack = livePagerBack;
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "receiveVoiceTest");
         mData.put("live", "" + isLive);
@@ -167,7 +169,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     public SpeechAssAutoPager(Context context, String liveid, String testId,
-                              String nonce, String content, int time, int examSubmit, String learning_stage, SpeechEvalAction speechEvalAction) {
+                              String nonce, String content, int time, int examSubmit, String learning_stage, SpeechEvalAction speechEvalAction, LivePagerBack livePagerBack) {
         super(context);
         this.isLive = false;
         this.id = testId;

@@ -6,6 +6,7 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
@@ -14,8 +15,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessme
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 
-import java.util.Map;
-
 /**
  * Created by lingyuqiang on 2018/4/7.
  * 站立直播的语音答题
@@ -23,15 +22,17 @@ import java.util.Map;
 public class LiveStandSpeechCreat implements BaseSpeechCreat {
     QuestionIRCBll questionIRCBll;
     LiveAndBackDebug liveAndBackDebug;
+    LivePagerBack livePagerBack;
 
     @Deprecated
     public LiveStandSpeechCreat(LiveBll liveBll) {
         liveAndBackDebug = liveBll;
     }
 
-    public LiveStandSpeechCreat(QuestionIRCBll questionIRCBll, LiveAndBackDebug liveAndBackDebug) {
+    public LiveStandSpeechCreat(QuestionIRCBll questionIRCBll, LiveAndBackDebug liveAndBackDebug, LivePagerBack livePagerBack) {
         this.questionIRCBll = questionIRCBll;
         this.liveAndBackDebug = liveAndBackDebug;
+        this.livePagerBack = livePagerBack;
     }
 
     @Override
@@ -46,7 +47,7 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         speechEvalAction = new LiveStandSpeechEvalActionImpl(speechEvalAction);
         StandSpeechAssAutoPager speechAssAutoPager =
                 new StandSpeechAssAutoPager(context, liveid, videoQuestionLiveEntity.id, nonce,
-                        videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time, haveAnswer, speechEvalAction, getInfo.getStandLiveName(), getInfo.getHeadImgPath(), learning_stage);
+                        videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time, haveAnswer, speechEvalAction, getInfo.getStandLiveName(), getInfo.getHeadImgPath(), learning_stage, livePagerBack);
         return speechAssAutoPager;
     }
 
@@ -55,7 +56,7 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
                                                     SpeechEvalAction speechEvalAction, String stuCouId) {
         SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
                 liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false);
+                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
         speechAssessmentPager.setStandingLive(true);
         RolePlayStandLog.sno3(liveAndBackDebug, testId);
         return speechAssessmentPager;
@@ -121,13 +122,12 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         public void onSpeechSuccess(String num) {
             action.onSpeechSuccess(num);
             questionIRCBll.getStuGoldCount();
-            // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
-            // EventBusUtil.post(new UpdateAchievementEvent(liveBll.getLiveId()));
         }
 
         @Override
         public void speechIsAnswered(String num, SpeechIsAnswered isAnswered) {
             action.speechIsAnswered(num, isAnswered);
         }
+
     }
 }

@@ -81,6 +81,13 @@ public class LiveBackBaseBll extends BaseBll {
         return liveBackBll.getCourseHttpResponseParser();
     }
 
+    /**
+     * activity onDestory
+     */
+    public void onDestory() {
+
+    }
+
     public <T> T getInstance(Class<T> clazz) {
         return ProxUtil.getProxUtil().get(mContext, clazz);
     }

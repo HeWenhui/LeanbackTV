@@ -57,13 +57,13 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new LiveQuestionSwitchImpl());
             questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch));
             //语音评测
-            questionBll.setBaseSpeechCreat(new LiveBackStandSpeechCreat(this, liveBackBll));
+            questionBll.setBaseSpeechCreat(new LiveBackStandSpeechCreat(this, liveBackBll, questionBll));
         } else {
             //语音答题
             WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new LiveQuestionSwitchImpl());
             questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch));
             //语音评测
-            LiveBackSpeechCreat liveBackSpeechCreat = new LiveBackSpeechCreat();
+            LiveBackSpeechCreat liveBackSpeechCreat = new LiveBackSpeechCreat(questionBll);
             liveBackSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction(activity));
             questionBll.setBaseSpeechCreat(liveBackSpeechCreat);
         }
@@ -72,6 +72,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         liveBackExamQuestionCreat.setLiveGetInfo(liveGetInfo);
         int isArts = liveBackBll.getIsArts();
         liveBackExamQuestionCreat.setIS_SCIENCE(isArts != 1);
+        liveBackExamQuestionCreat.setLivePagerBack(questionBll);
         liveBackExamQuestionCreat.setExamStop(new LiveBackExamStop(activity, questionBll));
         questionBll.setBaseExamQuestionCreat(liveBackExamQuestionCreat);
         //主观题结果页
