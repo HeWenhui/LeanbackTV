@@ -42,6 +42,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         englishH5CoursewareBll.setLiveType(mLiveType);
         englishH5CoursewareBll.setVSectionID(mVideoEntity.getLiveId());
         englishH5CoursewareBll.setLiveBll(new EnglishH5CoursewareImpl());
+        englishH5CoursewareBll.setGetInfo(liveGetInfo);
         if (liveBackBll.getPattern() == 2) {
             //语音答题
             LiveAndBackDebug liveAndBackDebug = getInstance(LiveAndBackDebug.class);
