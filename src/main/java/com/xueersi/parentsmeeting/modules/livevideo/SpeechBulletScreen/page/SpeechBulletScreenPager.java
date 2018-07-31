@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.page;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -26,6 +27,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tal.speech.speechrecognizer.EvaluatorListener;
@@ -58,6 +60,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
+import cn.dreamtobe.kpswitch.util.KeyboardUtil;
+import cn.dreamtobe.kpswitch.widget.KPSwitchPanelLinearLayout;
 import master.flame.danmaku.danmaku.controller.DrawHandler;
 import master.flame.danmaku.danmaku.controller.IDanmakuView;
 import master.flame.danmaku.danmaku.danmaku.loader.ILoader;
@@ -97,8 +102,16 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
     TextView tvSpeechbulRepeat;
     /** 发送按钮 */
     TextView tvSpeechbulSend;
-    /** 语音评测结果-布局 */
-    LinearLayout llSpeechbulContent;
+    /** 输入布局 */
+    RelativeLayout rlSpeechbulInput;
+    /** 底部布局 */
+    RelativeLayout rlSpeechbulBottomContent;
+
+    RelativeLayout root;
+    View mCloseView;
+
+    // 面板View
+//    private KPSwitchPanelLinearLayout mPanelLayout;
 
     private WeakHandler mWeakHandler = new WeakHandler(Looper.getMainLooper(), new Handler.Callback() {
         @Override
@@ -141,27 +154,30 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
         tvSpeechbulCount = (TextView) view.findViewById(R.id.tv_livevideo_speechbul_count);
         tvSpeechbulRepeat = (TextView) view.findViewById(R.id.tv_livevideo_speechbul_repeat);
         tvSpeechbulSend = (TextView) view.findViewById(R.id.tv_livevideo_speechbul_send);
-        llSpeechbulContent = (LinearLayout) view.findViewById(R.id.ll_livevideo_speechbul_content);
+        rlSpeechbulInput = (RelativeLayout) view.findViewById(R.id.rl_livevideo_speechbul_input);
+        rlSpeechbulBottomContent = view.findViewById(R.id.rl_livevideo_speechbul_bottom_content);
         dvSpeechbulDanmaku =  view.findViewById(R.id.dv_livevideo_speechbul_danmaku);
+        root = view.findViewById(R.id.rl_livevideo_speechbul_root);
         int colors[] = {0x19FFA63C, 0x32FFA63C, 0x64FFC12C, 0x96FFC12C, 0xFFFFA200};
         vwvSpeechbulWave.setColors(colors);
         vwvSpeechbulWave.setBackColor(Color.TRANSPARENT);
+//        mPanelLayout = view.findViewById(R.id.rl_livevideo_speechbul_panelroot);
         return view;
     }
 
     @Override
     public void initData() {
         Log.d(TAG,"initData()");
-        mWeakHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                vwvSpeechbulWave.start();
-                if (mSpeechEvaluatorUtils == null) {
-                    mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(false);
-                }
-                startEvaluator();
-            }
-        });
+//        mWeakHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                vwvSpeechbulWave.start();
+//                if (mSpeechEvaluatorUtils == null) {
+//                    mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(false);
+//                }
+//                startEvaluator();
+//            }
+//        });
         XesPermission.checkPermission(mContext, new PermissionCallback() {
             /**
              * 结束
@@ -187,8 +203,8 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
                 Log.d(TAG, "onGuarantee()");
             }
         }, PermissionConfig.PERMISSION_CODE_AUDIO);
-        setSize(mContext);
-        initDanmaku();
+//        setSize(mContext);
+//        initDanmaku();
     }
     /**
      * 随机生成一些弹幕内容以供测试
@@ -220,8 +236,28 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
             @Override
             public void onClick(View view) {
                 Log.d(TAG,"onClick: ivSpeechbulClose");
-                speechBulletScreenBll.onCloseSpeechBulletScreen();
-                stopEvaluator();
+                Activity activity = (Activity)mContext;
+                mCloseView = activity.getLayoutInflater().inflate(R.layout.dialog_livevideo_speechbul_close,
+                        root,
+                        false);
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mCloseView.getLayoutParams();
+                params.addRule(RelativeLayout.CENTER_IN_PARENT);
+                root.addView(mCloseView, params);
+                mCloseView.findViewById(R.id.iv_livevideo_speechbul_close_cancel).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        root.removeView(mCloseView);
+                    }
+                });
+
+                mCloseView.findViewById(R.id.iv_livevideo_speechbul_close_confim).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        root.removeView(mCloseView);
+                        root.removeView(rlSpeechbulBottomContent);
+                        stopEvaluator();
+                    }
+                });
             }
         });
         //编辑话语
@@ -229,6 +265,7 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
             @Override
             public void onClick(View view) {
                 Log.d(TAG,"onClick: etSpeechbulWords");
+//                KPSwitchConflictUtil.showKeyboard(mPanelLayout, etSpeechbulWords);
             }
         });
         //重新开启语音评测
@@ -238,7 +275,7 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
                 Log.d(TAG,"onClick: tvSpeechbulRepeat");
                 vwvSpeechbulWave.setVisibility(View.VISIBLE);
                 tvSpeechbulTitle.setVisibility(View.VISIBLE);
-                llSpeechbulContent.setVisibility(View.GONE);
+                rlSpeechbulInput.setVisibility(View.GONE);
                 startEvaluator();
             }
         });
@@ -249,6 +286,39 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
                 Log.d(TAG,"onClick: tvSpeechbulSend");
             }
         });
+
+//       mWeakHandler.postDelayed(new Runnable() {
+//           @Override
+//           public void run() {
+//               /**
+//                * 这个Util主要是监控键盘的状态: 显示与否 以及 键盘的高度
+//                * 这里也有提供给外界监听 键盘显示/隐藏 的监听器，具体参看
+//                * 这个接口 {@Link KeyboardUtil#attach(Activity, IPanelHeightTarget, OnKeyboardShowingListener)}
+//                */
+//               KeyboardUtil.attach((Activity) mContext, mPanelLayout, new KeyboardUtil.OnKeyboardShowingListener() {
+//                   @Override
+//                   public void onKeyboardShowing(boolean isShowing) {
+//
+//                   }
+//               });
+//
+//               /**
+//                * 这个Util主要是协助处理一些面板与键盘相关的事件。
+//                * 这个方法主要是对一些相关事件进行注册，如切换面板与键盘等，具体参看源码，比较简单。
+//                * 里面还提供了一些已经处理了冲突的工具方法: 显示面板；显示键盘；键盘面板切换；隐藏键盘与面板；
+//                *
+//                * @param panelRoot 面板的布局。
+//                * @param switchPanelKeyboardBtn 用于触发切换面板与键盘的按钮。
+//                * @param focusView 键盘弹起时会给这个View focus，收回时这个View会失去focus，通常是发送的EditText。
+//                */
+//               KPSwitchConflictUtil.attach(mPanelLayout, etSpeechbulWords, new KPSwitchConflictUtil.SwitchClickListener() {
+//                   @Override
+//                   public void onClickSwitch(boolean switchToPanel) {
+//
+//                   }
+//               });
+//           }
+//       },10);
     }
 
     /**
@@ -339,7 +409,7 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
                 mSpeechEvaluatorUtils.cancel();
                 vwvSpeechbulWave.setVisibility(View.GONE);
                 tvSpeechbulTitle.setVisibility(View.GONE);
-                llSpeechbulContent.setVisibility(View.VISIBLE);
+                rlSpeechbulInput.setVisibility(View.VISIBLE);
                 etSpeechbulWords.setText(content);
                 tvSpeechbulCount.setText(getChineseCharNumber(content)+"/15");
             }
@@ -403,14 +473,10 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
     }
 
     private static final long ADD_DANMU_TIME = 2000;
-
-    private int   BITMAP_WIDTH    = 34;//头像的大小
-    private int   BITMAP_HEIGHT   = 34;
+    private int   BITMAP_WIDTH    = 34;//头像的宽度
+    private int   BITMAP_HEIGHT   = 34;//头像的高度
     private float DANMU_TEXT_SIZE = 14;//弹幕字体的大小
-
-    //这两个用来控制两行弹幕之间的间距
-    private int DANMU_PADDING       = 11;
-    private int DANMU_PADDING_INNER = 0;
+    private int DANMU_PADDING       = 11;//控制两行弹幕之间的间距
     private int DANMU_RADIUS        = 16;//圆角半径
 
     /**
@@ -423,7 +489,6 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
         DANMU_RADIUS = SizeUtils.Dp2Px(context, DANMU_RADIUS);
         DANMU_TEXT_SIZE = SizeUtils.Dp2Px(context, DANMU_TEXT_SIZE);
     }
-
 
     /** 同学献花提示 */
     public String[] flowsTips = {"老师真赞", "老师太棒了", "老师辛苦了"};
@@ -586,6 +651,9 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager {
         }
     }
 
+    /**
+     * 垂直方向居中对齐的ImageSpan
+     */
     public class VerticalImageSpan extends ImageSpan {
 
         public VerticalImageSpan(Drawable drawable) {

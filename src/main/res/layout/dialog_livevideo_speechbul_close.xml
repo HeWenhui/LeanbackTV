@@ -1,0 +1,64 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mediacontroller_bg">
+
+    <ImageView
+        android:id="@+id/iv_livevideo_speechbul_close_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/livevideo_alertview_heibanbeijing_img_normal"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/iv_livevideo_speechbul_close_bg"
+        android:layout_alignLeft="@id/iv_livevideo_speechbul_close_bg"
+        android:layout_alignRight="@id/iv_livevideo_speechbul_close_bg"
+        android:layout_alignTop="@id/iv_livevideo_speechbul_close_bg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFFFF"
+            android:textSize="22sp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="68dp"
+            android:text="确认关闭语音弹幕？"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFFFF"
+            android:textSize="16sp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="102dp"
+            android:text="关闭后将不会再显示该弹层"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="61dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/iv_livevideo_speechbul_close_cancel"
+                android:background="@drawable/livevideo_alertview_quxiao_icon_normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/iv_livevideo_speechbul_close_confim"
+                android:background="@drawable/livevideo_alertview_queding_icon_normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+</RelativeLayout>
