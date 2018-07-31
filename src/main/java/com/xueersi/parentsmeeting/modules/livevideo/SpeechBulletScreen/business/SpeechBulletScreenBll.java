@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business
 
 import android.app.Activity;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
@@ -22,7 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 
 public class SpeechBulletScreenBll implements SpeechBulletScreenAction, Handler.Callback {
     public static final String TAG = "SpeechBulletScreenBll";
-    private WeakHandler mWeakHandler = new WeakHandler(this);
+    private WeakHandler mWeakHandler = new WeakHandler(Looper.getMainLooper(),this);
     private LiveHttpResponseParser mLiveHttpResponseParser = null;
     private Activity activity;
     private LiveBll2 mLiveBll;
