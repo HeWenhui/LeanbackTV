@@ -22,7 +22,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackSpeechCreat
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dataload.DataLoadEntity;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -213,6 +215,9 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                             if (liveBackBll.getvPlayer() != null) {
                                 liveBackBll.getvPlayer().pause();
                             }
+                        } else {
+                            MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction.class);
+                            mediaControllerAction.attachMediaController();
                         }
                     }
 

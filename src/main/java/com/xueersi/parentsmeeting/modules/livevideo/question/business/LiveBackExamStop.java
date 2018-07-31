@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -23,6 +24,8 @@ public class LiveBackExamStop implements BaseExamQuestionInter.ExamStop {
     @Override
     public void stopExam(BaseExamQuestionInter baseExamQuestionInter, VideoQuestionLiveEntity mQuestionEntity) {
         questionBll.stopExam(mQuestionEntity.getvQuestionID(), baseExamQuestionInter);
+        MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(context, MediaControllerAction.class);
+        mediaControllerAction.attachMediaController();
         MediaPlayerControl videoPlayAction = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
         videoPlayAction.seekTo(mQuestionEntity.getvEndTime() * 1000);
         videoPlayAction.start();

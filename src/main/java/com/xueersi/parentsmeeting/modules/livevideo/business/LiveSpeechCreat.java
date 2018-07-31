@@ -6,6 +6,7 @@ import android.widget.RelativeLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssAutoPager;
@@ -38,9 +39,8 @@ public class LiveSpeechCreat implements BaseSpeechCreat {
         SpeechAssAutoPager speechAssAutoPager =
                 new SpeechAssAutoPager(context, liveid, videoQuestionLiveEntity.id, nonce,
                         videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time, haveAnswer, learning_stage, speechEvalAction, livePagerBack);
-        int screenWidth = ScreenUtils.getScreenWidth();
-        int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
-        lp.rightMargin = wradio;
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+        lp.rightMargin = liveVideoPoint.getRightMargin();
         return speechAssAutoPager;
     }
 
@@ -49,7 +49,7 @@ public class LiveSpeechCreat implements BaseSpeechCreat {
                                                     SpeechEvalAction speechEvalAction, String stuCouId) {
         SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
                 liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false,livePagerBack );
+                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
         return speechAssessmentPager;
     }
 

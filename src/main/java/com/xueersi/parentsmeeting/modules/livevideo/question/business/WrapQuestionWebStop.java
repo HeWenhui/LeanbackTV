@@ -5,6 +5,7 @@ import android.content.Context;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -32,6 +33,8 @@ public class WrapQuestionWebStop implements BaseQuestionWebInter.StopWebQuestion
     @Override
     public void stopWebQuestion(BasePager pager, String testId) {
         stopWebQuestion.stopWebQuestion(pager, testId);
+        MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(context, MediaControllerAction.class);
+        mediaControllerAction.attachMediaController();
         MediaPlayerControl videoPlayAction = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
         videoPlayAction.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
         videoPlayAction.start();

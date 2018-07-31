@@ -7,6 +7,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -27,6 +28,8 @@ public class LiveBackStandVoiceAnswerCreat extends LiveStandVoiceAnswerCreat{
             videoPlayAction.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
             videoPlayAction.start();
         }
+        MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(context, MediaControllerAction.class);
+        mediaControllerAction.attachMediaController();
         return super.onAnswerReslut(context, questionBll, baseVoiceAnswerPager, baseVideoQuestionEntity, entity);
     }
 }

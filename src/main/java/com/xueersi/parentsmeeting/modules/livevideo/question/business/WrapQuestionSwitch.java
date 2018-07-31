@@ -58,6 +58,8 @@ public class WrapQuestionSwitch implements QuestionSwitch {
     @Override
     public void stopSpeech(BaseVoiceAnswerPager answerPager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
         questionSwitch.stopSpeech(answerPager, baseVideoQuestionEntity);
+        MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(context, MediaControllerAction.class);
+        mediaControllerAction.attachMediaController();
         MediaPlayerControl videoPlayAction = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
         videoPlayAction.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
         videoPlayAction.start();
