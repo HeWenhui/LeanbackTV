@@ -103,6 +103,16 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     private AtomicBoolean mIsLand;
     private static String Tag = "LiveBll2";
 
+    /**
+     * 直播的
+     *
+     * @param context
+     * @param vStuCourseID 购课id
+     * @param courseId     课程id
+     * @param vSectionID   场次id
+     * @param form         来源
+     * @param liveGetInfo
+     */
     public LiveBll2(Context context, String vStuCourseID, String courseId, String vSectionID, int form, LiveGetInfo
             liveGetInfo) {
         super(context);
@@ -135,9 +145,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
      * 讲座的
      *
      * @param context
-     * @param vSectionID
+     * @param vSectionID  场次id
      * @param type
-     * @param form
+     * @param form        来源
      * @param liveGetInfo
      */
     public LiveBll2(Context context, String vSectionID, int type, int form, LiveGetInfo liveGetInfo) {
@@ -157,13 +167,20 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         } else {
             mLiveTopic = new LiveTopic();
         }
-        if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
-            mLiveTopic.setMode(LiveTopic.MODE_CLASS);
-        }
+        mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
         allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 
+    /**
+     * 辅导的
+     *
+     * @param context
+     * @param vSectionID    场次id
+     * @param currentDutyId
+     * @param type
+     * @param form          来源
+     */
     public LiveBll2(Context context, String vSectionID, String currentDutyId, int type, int form) {
         super(context);
 
@@ -183,6 +200,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         }
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
+        allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 
     public String getLiveId() {
