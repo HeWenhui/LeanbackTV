@@ -55,7 +55,7 @@ public class LiveVideoAction implements VideoAction {
     /** 连接老师加载-辅导 */
     private final String coachTeacherLoad = "正在连接辅导老师，请耐心等候";
     /** 直播类型 */
-    private int liveType;
+    protected int liveType;
     protected LiveGetInfo mGetInfo;
     private LiveBll2 mLiveBll;
     protected LogToFile mLogtf;
@@ -63,6 +63,7 @@ public class LiveVideoAction implements VideoAction {
     public LiveVideoAction(Activity activity, LiveBll2 mLiveBll, RelativeLayout mContentView) {
         this.activity = activity;
         this.mLiveBll = mLiveBll;
+        liveType = mLiveBll.getLiveType();
         this.mContentView = mContentView;
         rlFirstBackgroundView = mContentView.findViewById(R.id.rl_course_video_first_backgroud);
         ivTeacherNotpresent = mContentView.findViewById(R.id.iv_course_video_teacher_notpresent);
@@ -114,6 +115,7 @@ public class LiveVideoAction implements VideoAction {
                         @Override
                         public void run() {
                             if (tvLoadingHint != null) {
+                                mLogtf.d("rePlay:liveType=" + liveType + ",mode=" + mGetInfo.getLiveTopic().getMode());
                                 if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
                                     tvLoadingHint.setText(mainTeacherLoad);
                                 } else {
