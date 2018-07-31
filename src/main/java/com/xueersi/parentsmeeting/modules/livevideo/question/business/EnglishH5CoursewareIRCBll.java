@@ -84,6 +84,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             }
         }
         liveBaseEnglishH5CoursewareCreat.setLivePagerBack(englishH5CoursewareBll);
+        englishH5CoursewareBll.setGetInfo(getInfo);
         englishH5CoursewareBll.setBaseEnglishH5CoursewareCreat(liveBaseEnglishH5CoursewareCreat);
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             EnglishH5Cache englishH5Cache = new EnglishH5Cache(activity, null, mLiveId);
