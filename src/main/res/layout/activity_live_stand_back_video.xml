@@ -22,7 +22,7 @@
 
             <!-- 播放器 -->
 
-            <com.xueersi.parentsmeeting.modules.videoplayer.media.VideoView
+            <com.xueersi.parentsmeeting.module.videoplayer.media.VideoView
                 android:id="@id/vv_course_video_video"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
