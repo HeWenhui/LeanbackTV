@@ -565,6 +565,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         rl_heart.setOnClickListener(listener);
         rl_cup.setOnClickListener(listener);
         rl_ice.setOnClickListener(listener);
+        close.setOnClickListener(listener);
 //        rl_heart.setOnClickListener(new ON);
 //        flowerSend.setText(commonAction.getFlowerSendText());
         flowerSend.setOnClickListener(new View

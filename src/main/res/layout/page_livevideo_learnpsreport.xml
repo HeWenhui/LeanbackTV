@@ -251,7 +251,7 @@
                         android:layout_alignBottom="@id/rb_livevideo_evaluate_star3"
                         android:layout_alignTop="@id/rb_livevideo_evaluate_star3"
                         android:gravity="center_vertical"
-                        android:text="老师精神状态"
+                        android:text="老师速度把握"
                         android:textColor="#7D553F"
                         android:textSize="13sp"/>
 

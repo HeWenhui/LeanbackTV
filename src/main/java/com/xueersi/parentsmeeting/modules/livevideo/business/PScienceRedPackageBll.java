@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -164,13 +165,17 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
         String msg = goldNum + "";
         View view = activity.getLayoutInflater().inflate(R.layout.dialog_primary_redpacket_success, rlRedpacketContent, false);
         view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
-        SpannableString msp = new SpannableString(msg);
-        float screenDensity = ScreenUtils.getScreenDensity();
-        // 字体
-        msp.setSpan(new AbsoluteSizeSpan((int) (50 * screenDensity)), 0, msg.length(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        SpannableString msp = new SpannableString(msg);
+//        float screenDensity = ScreenUtils.getScreenDensity();
+//        // 字体
+//        msp.setSpan(new AbsoluteSizeSpan((int) (50 * screenDensity)), 0, msg.length(),
+//                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        // 将字体文件保存在assets/fonts/目录下，在程序中通过如下方式实例化自定义字体：
+        Typeface typeFace = Typeface.createFromAsset(activity.getAssets(),"fangzhengcuyuan.ttf");
         TextView tvGoldHint = (TextView) view.findViewById(R.id.tv_livevideo_redpackage_gold);
-        tvGoldHint.setText(msp);
+        // 应用字体
+        tvGoldHint.setTypeface(typeFace);
+        tvGoldHint.setText(msg);
         rlRedpacketContent.addView(view);
         final TextView tvAutoclose = (TextView) view.findViewById(R.id.tv_livevideo_redpackage_autoclose);
         final AtomicInteger count = new AtomicInteger(3);

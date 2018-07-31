@@ -7,7 +7,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@drawable/livevideo_ps_vote_complex"/>
+        android:background="@drawable/livevideo_primarygiftbg"/>
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
         android:layout_alignLeft="@id/iv_livevide_psvoteresult_bg"
         android:layout_alignRight="@id/iv_livevide_psvoteresult_bg"
         android:layout_alignTop="@id/iv_livevide_psvoteresult_bg"
-        android:paddingBottom="22dp">
+        android:paddingBottom="20dp">
 
         <LinearLayout
             android:id="@+id/ll_livevideo_vote_ps_result_content"
@@ -31,11 +31,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
             android:src="@drawable/understandclose"/>
 
     </RelativeLayout>
-
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="-15dp"
+        android:background="@drawable/liveboardpsbg">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/liveboardpsresult"/>
+    </RelativeLayout>
 
 </RelativeLayout>

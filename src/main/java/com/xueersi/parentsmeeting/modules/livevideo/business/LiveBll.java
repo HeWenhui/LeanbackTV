@@ -1490,7 +1490,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     break;
                     case XESCODE.UNDERSTANDT:
                         msg += "UNDERSTANDT";
-                        // 测试待放开
+                        // 测试待放开 07.31
                         if ("off".equals(voiceChatStatus)) {//接麦懂了么无效
                             if (mQuestionAction != null) {
                                 String nonce = object.optString("nonce");

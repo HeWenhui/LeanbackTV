@@ -52,6 +52,9 @@ public class LiveVoteBll implements LiveVoteAction {
     int answer;
     // 选项资源的图片
     public int[] pschoices = {R.drawable.livevideo_votechoice_psa, R.drawable.livevideo_votechoice_psb, R.drawable.livevideo_votechoice_psc,R.drawable.livevideo_votechoice_psd,R.drawable.livevideo_votechoice_pse,R.drawable.livevideo_votechoice_psf};
+    private Button mBtn_livevideo_vote_item;
+    private LinearLayout mIl_livevideo_vote_ps_choice;
+
     public LiveVoteBll(Context context) {
         this.context = context;
     }
@@ -207,41 +210,42 @@ public class LiveVoteBll implements LiveVoteAction {
                 contentView = new RelativeLayout(context);
                 contentView.addView(view);
                 bottomContent.addView(contentView);
-                LinearLayout il_livevideo_vote_ps_choice = (LinearLayout) view.findViewById(R.id.il_livevideo_vote_ps_choice);
+                mIl_livevideo_vote_ps_choice = (LinearLayout) view.findViewById(R.id.il_livevideo_vote_ps_choice);
                 final LinearLayout ll_statistics = (LinearLayout) view.findViewById(R.id.ll_statistics);
                 final ImageView progress = (ImageView) view.findViewById(R.id.iv_psprogress);
                 ll_statistics.setVisibility(View.GONE);
-                int choiceNum = voteEntity.getChoiceNum();
+               final int choiceNum = voteEntity.getChoiceNum();
                 for (int i = 0; i < choiceNum; i++) {
                     final int answer = i + 1;
-                    View convertView = LayoutInflater.from(context).inflate(R.layout.item_livevideo_vote_ps_select, il_livevideo_vote_ps_choice, false);
+                    final int j = i + 1;
+                    View convertView = LayoutInflater.from(context).inflate(R.layout.item_livevideo_vote_ps_select, mIl_livevideo_vote_ps_choice, false);
                     if( i > 3){
                         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                         if (i != choiceNum - 1) {
                             lp.rightMargin = (int) (25 * ScreenUtils.getScreenDensity());
                             lp.topMargin = (int) (25 * ScreenUtils.getScreenDensity());
                         }
-                        il_livevideo_vote_ps_choice.setOrientation(LinearLayout.VERTICAL);
-                        il_livevideo_vote_ps_choice.addView(convertView, lp);
+                        mIl_livevideo_vote_ps_choice.setOrientation(LinearLayout.VERTICAL);
+                        mIl_livevideo_vote_ps_choice.addView(convertView, lp);
                     } else {
                         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                         if (i != choiceNum - 1) {
                             lp.rightMargin = (int) (25 * ScreenUtils.getScreenDensity());
                         }
-                        il_livevideo_vote_ps_choice.setOrientation(LinearLayout.HORIZONTAL);
-                        il_livevideo_vote_ps_choice.addView(convertView, lp);
+                        mIl_livevideo_vote_ps_choice.setOrientation(LinearLayout.HORIZONTAL);
+                        mIl_livevideo_vote_ps_choice.addView(convertView, lp);
                     }
-                    Button btn_livevideo_vote_item = (Button) convertView.findViewById(R.id.btn_livevideo_vote_ps_item);
+                    mBtn_livevideo_vote_item = (Button) convertView.findViewById(R.id.btn_livevideo_vote_ps_item);
                     if (voteEntity.getChoiceType() == 1) {
-                        btn_livevideo_vote_item.setBackgroundResource(pschoices[i]);
+                        mBtn_livevideo_vote_item.setBackgroundResource(pschoices[i]);
                     } else {
                         if (i == 0) {
-                            btn_livevideo_vote_item.setBackgroundResource(R.drawable.livevideo_votechoice_psyes);
+                            mBtn_livevideo_vote_item.setBackgroundResource(R.drawable.livevideo_votechoice_psyes);
                         } else {
-                            btn_livevideo_vote_item.setBackgroundResource(R.drawable.livevideo_votechoice_psno);
+                            mBtn_livevideo_vote_item.setBackgroundResource(R.drawable.livevideo_votechoice_psno);
                         }
                     }
-                    btn_livevideo_vote_item.setOnClickListener(new View.OnClickListener() {
+                    mBtn_livevideo_vote_item.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             ll_statistics.setVisibility(View.VISIBLE);
@@ -259,8 +263,59 @@ public class LiveVoteBll implements LiveVoteAction {
                                     bottomContent.removeView(contentView);
                                     contentView = null;
                                 }
-                            }, 4000);
+                            }, 20000);
                             LiveVoteBll.this.answer = answer;
+                            // 未被选中的选项背景色改变
+                            mIl_livevideo_vote_ps_choice.removeAllViews();
+                            for(int i = 0 ; i < choiceNum ; i++){
+                                //
+                                View convertView = LayoutInflater.from(context).inflate(R.layout.item_livevideo_vote_ps_select, mIl_livevideo_vote_ps_choice, false);
+                                if( i > 3){
+                                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                    if (i != choiceNum - 1) {
+                                        lp.rightMargin = (int) (25 * ScreenUtils.getScreenDensity());
+                                        lp.topMargin = (int) (25 * ScreenUtils.getScreenDensity());
+                                    }
+                                    mIl_livevideo_vote_ps_choice.setOrientation(LinearLayout.VERTICAL);
+                                    mIl_livevideo_vote_ps_choice.addView(convertView, lp);
+                                } else {
+                                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                    if (i != choiceNum - 1) {
+                                        lp.rightMargin = (int) (25 * ScreenUtils.getScreenDensity());
+                                    }
+                                    mIl_livevideo_vote_ps_choice.setOrientation(LinearLayout.HORIZONTAL);
+                                    mIl_livevideo_vote_ps_choice.addView(convertView, lp);
+                                }
+                                mBtn_livevideo_vote_item = (Button) convertView.findViewById(R.id.btn_livevideo_vote_ps_item);
+                                if (voteEntity.getChoiceType() == 1) {
+                                    if(i+1 == j){
+                                        mBtn_livevideo_vote_item.setBackgroundResource(pschoices[i]);
+                                    }else{
+                                        mBtn_livevideo_vote_item.setBackgroundResource(pschoices[i]);
+                                        mBtn_livevideo_vote_item.setAlpha(0.6f);
+                                    }
+
+                                } else {
+                                    if (i == 0) {
+                                        if(i+1 == j){
+                                            mBtn_livevideo_vote_item.setBackgroundResource(R.drawable.livevideo_votechoice_psyes);
+                                        }else{
+                                            mBtn_livevideo_vote_item.setBackgroundResource(R.drawable.livevideo_votechoice_psyes);
+                                            mBtn_livevideo_vote_item.setAlpha(0.6f);
+                                        }
+
+                                    } else {
+                                        if(i+1 == j){
+                                            mBtn_livevideo_vote_item.setBackgroundResource(R.drawable.livevideo_votechoice_psno);
+                                        }else{
+                                            mBtn_livevideo_vote_item.setBackgroundResource(R.drawable.livevideo_votechoice_psno);
+                                            mBtn_livevideo_vote_item.setAlpha(0.6f);
+                                        }
+
+                                    }
+                                }
+                                //
+                            }
                             idAndAnswer.put(voteEntity, answer);
                             String nonce = "" + StableLogHashMap.creatNonce();
                             liveBll.sendVote(answer, nonce);
@@ -271,6 +326,8 @@ public class LiveVoteBll implements LiveVoteAction {
                             umsAgentDebug2(eventId, logHashMap.getData());
                         }
                     });
+
+
                     view.findViewById(R.id.iv_livevideo_votepschoice_close).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -282,9 +339,19 @@ public class LiveVoteBll implements LiveVoteAction {
                     logHashMap.put("voteid", "" + voteEntity.getChoiceId());
                     logHashMap.addSno("4").addExY().addNonce("" + voteEntity.getNonce()).addStable("1");
                     umsAgentDebug3(eventId, logHashMap.getData());
+
                 }
             }
+
         });
+    }
+
+    private void conVertColor() {
+        mBtn_livevideo_vote_item.setAlpha(0.6f);
+    }
+
+    private void conVertColors() {
+        mBtn_livevideo_vote_item.setAlpha(1f);
     }
 
     private void showChoice(final LiveTopic.VoteEntity voteEntity) {
@@ -476,7 +543,7 @@ public class LiveVoteBll implements LiveVoteAction {
                         float oldProgress = (finalNewProgress) * fraction;
 //                        pb_livevideo_vote_result_item.setProgress((int) oldProgress);
                         ViewGroup.LayoutParams params = livevideo_psvote_result_item.getLayoutParams();
-                        params.height = dp2px(context,142) * ((int)rado);
+                        params.height = dp2px(context,(int)(142 * (rado/100))-10);
                         params.width = dp2px(context,18);
                         livevideo_psvote_result_item.setLayoutParams(params);
 //                        livevideo_psvote_result_item.setMaxHeight(248*(int)(finalNewProgress/voteEntity.getTotal()));
@@ -488,7 +555,11 @@ public class LiveVoteBll implements LiveVoteAction {
             } else {
 //                pb_livevideo_vote_result_item.setProgress(newProgress);
                 ViewGroup.LayoutParams params = livevideo_psvote_result_item.getLayoutParams();
-                params.height = dp2px(context,142) * ((int)rado);
+                if(rado > 0){
+                    params.height = dp2px(context,(int)(142 * (rado/100))-10);
+                }else{
+                    params.height = dp2px(context,(int)(142 * (rado/100)));
+                }
                 params.width = dp2px(context,18);
                 livevideo_psvote_result_item.setLayoutParams(params);
 //                livevideo_psvote_result_item.setMaxHeight(248*(int)(newProgress/voteEntity.getTotal()));

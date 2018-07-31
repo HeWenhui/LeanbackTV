@@ -20,21 +20,21 @@
             android:id="@+id/ll_detail_message"
             android:layout_centerInParent="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <ImageView
                 android:id="@+id/iv_livevideo_redpackage_cofirm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="14dp"
+                android:layout_marginBottom="24dp"
                 android:layout_gravity="bottom"
                 android:background="@drawable/addgoldcoin"
                 />
             <TextView
                 android:id="@id/tv_livevideo_redpackage_gold"
                 android:text="8"
-                android:textSize="60sp"
+                android:textSize="90sp"
                 android:textColor="#E54563"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -43,14 +43,14 @@
                 android:layout_height="wrap_content"
                 android:text="金币"
                 android:textColor="#E54563"
-                android:textSize="10sp"/>
+                android:textSize="15sp"/>
         </LinearLayout>
         <TextView
             android:layout_below="@+id/ll_detail_message"
             android:id="@id/tv_livevideo_redpackage_autoclose"
             android:layout_centerHorizontal="true"
             android:text="3秒钟后自动关闭"
-            android:textSize="9sp"
+            android:textSize="14sp"
             android:textColor="#E54536"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
