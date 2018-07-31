@@ -26,7 +26,6 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
-import com.xueersi.parentsmeeting.modules.livevideo.business.AllLiveBasePagerInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCMessage;
@@ -45,13 +44,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
-import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 
 import org.json.JSONObject;
-import org.xutils.xutils.common.Callback;
 import org.xutils.xutils.http.RequestParams;
 
 import java.io.File;
@@ -529,7 +526,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
                 if (noticeActions != null && noticeActions.size() > 0) {
                     for (NoticeAction noticeAction : noticeActions) {
-                        noticeAction.onNotice(object, mtype);
+                        noticeAction.onNotice(sourceNick, target, object, mtype);
                     }
                 }
             } catch (Exception e) {

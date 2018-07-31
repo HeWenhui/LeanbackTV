@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business;
 
 import android.app.Activity;
-import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -39,7 +38,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
     }
 
     @Override
-    public void onNotice(JSONObject data, int type) {
+    public void onNotice(String sourceNick, String target, JSONObject data, int type) {
 
 
     }

@@ -36,7 +36,7 @@ public class AnswerRankIRCBll extends LiveBaseBll implements NoticeAction {
     }
 
     @Override
-    public void onNotice(JSONObject object, int type) {
+    public void onNotice(String sourceNick, String target, JSONObject object, int type) {
         switch (type) {
             case XESCODE.STOPQUESTION:
                 setNonce(object.optString("nonce"));

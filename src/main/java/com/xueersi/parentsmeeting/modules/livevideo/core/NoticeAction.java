@@ -1,7 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.core;
 
-import com.alibaba.fastjson.JSON;
-
 import org.json.JSONObject;
 
 /**
@@ -13,10 +11,12 @@ public interface NoticeAction {
 
     /**
      * notice消息
+     * @param sourceNick
+     * @param target
      * @param data   notice 数据
      * @param type  消息类型
      */
-   void onNotice(JSONObject data,int type);
+   void onNotice(String sourceNick, String target, JSONObject data, int type);
 
 
     /**

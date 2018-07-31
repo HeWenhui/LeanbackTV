@@ -119,7 +119,7 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
     };
 
     @Override
-    public void onNotice(JSONObject data, int type) {
+    public void onNotice(String sourceNick, String target, JSONObject data, int type) {
 
         switch (type) {
             case XESCODE.TEACHER_PRAISE:
