@@ -202,8 +202,15 @@ public class LiveBackBll implements LiveAndBackDebug {
     /** 扫描是否有需要弹出的互动题 */
     public void scanQuestion(long position) {
         VideoQuestionEntity oldQuestionEntity = mQuestionEntity;
+        int playPosition = TimeUtils.gennerSecond(position);
         mQuestionEntity = getPlayQuetion(TimeUtils.gennerSecond(position));
         if (oldQuestionEntity != null && oldQuestionEntity != mQuestionEntity) {
+            if (oldQuestionEntity.isClick()) {
+                if (playPosition < oldQuestionEntity.getvEndTime()) {
+                    mQuestionEntity = oldQuestionEntity;
+                    return;
+                }
+            }
             LiveBackBaseBll liveBackBaseBll = array.get(oldQuestionEntity.getvCategory());
             mIsShowQuestion = false;
             if (liveBackBaseBll != null) {
@@ -212,7 +219,7 @@ public class LiveBackBll implements LiveAndBackDebug {
             MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction.class);
             mediaControllerAction.attachMediaController();
         }
-        if (mQuestionEntity != null && oldQuestionEntity != mQuestionEntity && mQuestionEntity.isAnswered()) {
+        if (mQuestionEntity != null && oldQuestionEntity != mQuestionEntity && !mQuestionEntity.isAnswered()) {
             mQuestionEntity.setAnswered(true);
             showQuestion(oldQuestionEntity, showQuestion);
         }

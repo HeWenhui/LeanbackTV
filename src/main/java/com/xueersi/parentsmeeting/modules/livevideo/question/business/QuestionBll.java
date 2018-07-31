@@ -1034,6 +1034,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     if (speechAssessmentPager != null) {
                         speechAssessmentPager.jsExamSubmit();
                     }
+                    if (speechAssessmentPager != null) {
+                        speechAssessmentPager.onDestroy();
+                    }
                     speechAssessmentPagerUserBack = speechAssessmentPager;
                     setHaveSpeech(false);
                     if (speechAssessmentPagerUserBack != null && speechEndAction != null) {
@@ -1142,6 +1145,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         Loger.d(TAG, "stopSpeech:num=" + num + ",isAnaswer=" + isAnaswer);
         mQueAndBool.add("" + num);
         if (speechAssessmentPager != null) {
+            speechAssessmentPager.onDestroy();
             rlQuestionContent.removeView(speechAssessmentPager.getRootView());
             if (speechAssessmentPager instanceof SpeechAssAutoPager) {
                 JSONObject object = new JSONObject();
@@ -1634,6 +1638,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     private void stopVoiceAnswerPager() {
         voiceAnswerPager.stopPlayer();
+        voiceAnswerPager.onDestroy();
         rlQuestionContent.removeView(voiceAnswerPager.getRootView());
         voiceAnswerPager = null;
         AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);

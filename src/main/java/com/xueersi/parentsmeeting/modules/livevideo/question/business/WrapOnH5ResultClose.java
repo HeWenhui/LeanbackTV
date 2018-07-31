@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -36,5 +37,7 @@ public class WrapOnH5ResultClose implements EnglishH5CoursewareBll.OnH5ResultClo
             videoPlayAction.seekTo(videoQuestionH5Entity.getvEndTime() * 1000);
             videoPlayAction.start();
         }
+        MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(context, MediaControllerAction.class);
+        mediaControllerAction.attachMediaController();
     }
 }
