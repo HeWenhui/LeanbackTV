@@ -147,7 +147,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     }
 
     @Override
-    public void onNotice(JSONObject object, int type) {
+    public void onNotice(String sourceNick, String target, JSONObject object, int type) {
         switch (type) {
             case XESCODE.ENGLISH_H5_COURSEWARE:
                 try {

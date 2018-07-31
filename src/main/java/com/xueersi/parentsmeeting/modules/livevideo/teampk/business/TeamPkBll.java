@@ -923,7 +923,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
 
     @Override
-    public void onNotice(JSONObject data, int type) {
+    public void onNotice(String sourceNick, String target, JSONObject data, int type) {
 
         Loger.e("TeamPkBll", "=======>onNotice :" + type);
 

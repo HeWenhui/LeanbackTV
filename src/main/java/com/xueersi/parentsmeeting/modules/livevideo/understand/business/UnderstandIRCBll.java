@@ -25,7 +25,7 @@ public class UnderstandIRCBll extends LiveBaseBll implements NoticeAction {
     }
 
     @Override
-    public void onNotice(final JSONObject object, int type) {
+    public void onNotice(String sourceNick, String target, final JSONObject object, int type) {
         switch (type) {
             case XESCODE.UNDERSTANDT:
                 mHandler.post(new Runnable() {

@@ -411,7 +411,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     }
 
     @Override
-    public void onNotice(JSONObject object, int type) {
+    public void onNotice(String sourceNick, String target, JSONObject object, int type) {
         String msg = "onNotice";
         switch (type) {
             case XESCODE.OPENBARRAGE: {
@@ -477,6 +477,34 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 }
             }
             break;
+            case XESCODE.TEACHER_MESSAGE:
+                try {
+                    if (mRoomAction != null) {
+                        String name;
+                        if (sourceNick.startsWith("t")) {
+                            name = "主讲老师";
+                            String teacherImg = "";
+                            try {
+                                teacherImg = mGetInfo.getMainTeacherInfo().getTeacherImg();
+                            } catch (Exception e) {
+
+                            }
+                            mRoomAction.onMessage(target, sourceNick, "", "", object.getString("msg"), teacherImg);
+                        } else {
+                            name = "辅导老师";
+                            String teamId = mGetInfo.getStudentLiveInfo().getTeamId();
+                            String to = object.optString("to", "All");
+                            if ("All".equals(to) || teamId.equals(to)) {
+                                String teacherIMG = mGetInfo.getTeacherIMG();
+                                mRoomAction.onMessage(target, sourceNick, "", "", object.getString("msg"),
+                                        teacherIMG);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    loger.e("TEACHER_MESSAGE", e);
+                }
+                break;
             default:
                 break;
         }
@@ -485,7 +513,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Override
     public int[] getNoticeFilter() {
         return new int[]{
-                XESCODE.OPENBARRAGE, XESCODE.GAG, XESCODE.OPENCHAT
+                XESCODE.OPENBARRAGE, XESCODE.GAG, XESCODE.OPENCHAT, XESCODE.TEACHER_MESSAGE
         };
     }
 

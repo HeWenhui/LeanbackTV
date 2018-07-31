@@ -161,7 +161,7 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
     }
 
     @Override
-    public void onNotice(JSONObject object, int type) {
+    public void onNotice(String sourceNick, String target, JSONObject object, int type) {
         String msg = "onNotice";
         switch (type) {
             case XESCODE.RAISE_HAND: {

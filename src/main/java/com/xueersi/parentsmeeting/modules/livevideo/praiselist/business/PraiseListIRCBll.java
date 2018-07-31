@@ -17,7 +17,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
@@ -49,7 +48,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction,TopicA
     }
 
     @Override
-    public void onNotice(JSONObject data, int type) {
+    public void onNotice(String sourceNick, String target, JSONObject data, int type) {
         switch (type) {
             case XESCODE.XCR_ROOM_AGREE_OPEN: {
                 if (mPraiseListAction == null) {

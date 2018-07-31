@@ -53,7 +53,7 @@ public class LecLearnReportIRCBll extends LiveBaseBll implements NoticeAction, L
     }
 
     @Override
-    public void onNotice(JSONObject data, int type) {
+    public void onNotice(String sourceNick, String target, JSONObject data, int type) {
         switch (type) {
             case XESCODE.LEC_LEARNREPORT: {
                 if (learnReportBll == null) {

@@ -337,7 +337,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     }
 
     @Override
-    public void onNotice(JSONObject object, int type) {
+    public void onNotice(String sourceNick, String target, JSONObject object, int type) {
         try {
             switch (type) {
                 case XESCODE.ROOM_STAR_OPEN:

@@ -31,7 +31,7 @@ public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdv
     }
 
     @Override
-    public void onNotice(final JSONObject object, int type) {
+    public void onNotice(String sourceNick, String target, final JSONObject object, int type) {
         switch (type) {
             case XESCODE.LEC_ADVERT: {
                 if (lecAdvertAction == null) {

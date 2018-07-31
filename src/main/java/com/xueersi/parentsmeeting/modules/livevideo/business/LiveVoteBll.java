@@ -357,7 +357,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
     private static final String VOTE_STATE_OFF = "off";
 
     @Override
-    public void onNotice(JSONObject data, int type) {
+    public void onNotice(String sourceNick, String target, JSONObject data, int type) {
         Loger.e("LiveVoteBll", "=====>onNotice =:" + type);
         try {
             switch (type) {

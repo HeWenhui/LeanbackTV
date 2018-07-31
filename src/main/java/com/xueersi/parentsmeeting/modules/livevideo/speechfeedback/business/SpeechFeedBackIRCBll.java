@@ -99,7 +99,7 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackH
     }
 
     @Override
-    public void onNotice(final JSONObject object, int type) {
+    public void onNotice(String sourceNick, String target, final JSONObject object, int type) {
         String msg = "onNotice";
         switch (type) {
             case XESCODE.SPEECH_FEEDBACK: {

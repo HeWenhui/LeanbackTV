@@ -47,7 +47,7 @@ public class LearnReportIRCBll extends LiveBaseBll implements NoticeAction {
     }
 
     @Override
-    public void onNotice(JSONObject data, int type) {
+    public void onNotice(String sourceNick, String target, JSONObject data, int type) {
         switch (type) {
             case XESCODE.LEARNREPORT: {
                 getLearnReport(2, 1000);
