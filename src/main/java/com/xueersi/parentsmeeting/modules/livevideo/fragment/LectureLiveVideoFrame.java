@@ -127,7 +127,8 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
         }
         from = intent.getIntExtra(ENTER_ROOM_FROM, 0);
         XesMobAgent.enterLiveRoomFrom(from);
-        mLiveBll = new LiveBll2(activity, mVSectionID, liveType, from);
+        LiveGetInfo mGetInfo = LiveVideoLoadActivity.getInfos.get(liveType + "-" + mVSectionID);
+        mLiveBll = new LiveBll2(activity, mVSectionID, liveType, from, mGetInfo);
         ProxUtil.getProxUtil().put(activity, LiveBll2.class, mLiveBll);
         return true;
     }

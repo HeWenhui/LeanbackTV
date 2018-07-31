@@ -93,7 +93,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     private LiveHttpResponseParser mHttpResponseParser;
     /** 网络类型 */
     private int netWorkType;
-    private final LiveTopic mLiveTopic = new LiveTopic();
+    private final LiveTopic mLiveTopic;
     /** 校准系统时间 */
     private long sysTimeOffset;
     private final String ROOM_MIDDLE = "L";
@@ -122,13 +122,25 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (liveGetInfo != null) {
+            mLiveTopic = liveGetInfo.getLiveTopic();
             mLiveTopic.setMode(liveGetInfo.getMode());
+        } else {
+            mLiveTopic = new LiveTopic();
         }
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
         allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 
-    public LiveBll2(Context context, String vSectionID, int type, int form) {
+    /**
+     * 讲座的
+     *
+     * @param context
+     * @param vSectionID
+     * @param type
+     * @param form
+     * @param liveGetInfo
+     */
+    public LiveBll2(Context context, String vSectionID, int type, int form, LiveGetInfo liveGetInfo) {
         super(context);
         this.mLiveId = vSectionID;
         this.mLiveType = type;
@@ -140,6 +152,11 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 + ".txt"));
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
+        if (liveGetInfo != null) {
+            mLiveTopic = liveGetInfo.getLiveTopic();
+        } else {
+            mLiveTopic = new LiveTopic();
+        }
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
             mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         }
@@ -161,6 +178,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 + ".txt"));
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
+        mLiveTopic = new LiveTopic();
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
             mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         }

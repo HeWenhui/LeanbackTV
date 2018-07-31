@@ -81,7 +81,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     finish();
                 }
             });
-        } else {
+        } else if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             final String vStuCourseID = intent.getStringExtra("vStuCourseID");
             String courseId = intent.getStringExtra("courseId");
             httpManager.addBodyParam("stuCouId", vStuCourseID);
