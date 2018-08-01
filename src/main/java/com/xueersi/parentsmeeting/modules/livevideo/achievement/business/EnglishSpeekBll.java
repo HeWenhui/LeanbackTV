@@ -710,7 +710,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                     if (isSmallEnglish) {
                         rlRemindOrPraise.setVisibility(View.GONE);
                         ivSmallEnglish.setVisibility(View.VISIBLE);
-                        tv_livevideo_english_prog.setVisibility(View.GONE);
+                        tv_livevideo_english_praise.setVisibility(View.GONE);
                         ivSmallEnglish.setImageResource(R.drawable.bg_small_english_livevideo_english_speek_praise);
 //                        ivSmallEnglish.setBackground(activity.getResources().getDrawable(R.color.COLOR_000000));
                         //让弹窗居中显示

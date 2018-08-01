@@ -45,9 +45,8 @@
             android:id="@id/rl_livevideo_english_stat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@id/tv_livevideo_english_prog"
+            android:layout_alignBottom="@id/tv_livevideo_english_time"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="5dp"
             android:layout_marginRight="5dp">
 
             <ImageView
