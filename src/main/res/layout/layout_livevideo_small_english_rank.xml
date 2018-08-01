@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#cc000000"
+    android:visibility="gone">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/play_achievement_board1">
+
+        <ImageView
+            android:id="@id/iv_livevideo_small_english_rank_mygroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/play_achievement_grouponline_btn" />
+
+        <ImageView
+            android:id="@id/iv_livevideo_small_english_rank_groups"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/play_achievement_teams_btn"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@id/iv_livevideo_small_english_rank_class"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/play_achievement_class_btn"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@id/btn_livevideo_small_english_rank_mygroup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:alpha="0" />
+
+        <Button
+            android:id="@id/btn_livevideo_small_english_rank_groups"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:alpha="0" />
+
+        <Button
+            android:id="@id/btn_livevideo_small_english_rank_class"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:alpha="0" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="25dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/play_achievement_board2" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="40dp">
+
+        <TextView
+            style="@style/text_font12_ffffff_style"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="排名" />
+
+        <TextView
+            android:id="@id/tv_livevideo_rank_subtitle_mid"
+            style="@style/text_font12_ffffff_style"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="学员" />
+
+        <TextView
+            style="@style/text_font12_ffffff_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="正确率" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@id/lv_livevideo_rank_list"
+        style="@style/listview_common_style"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="75dp"
+        android:divider="@color/transparent"
+        android:dividerHeight="10dp" />
+</RelativeLayout>

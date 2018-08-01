@@ -1,11 +1,13 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,6 +36,7 @@ import com.xueersi.ui.adapter.CommonAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by lyqai on 2017/9/20.
@@ -43,7 +46,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     Logger logger = LoggerFactory.getLogger("RankBll");
     LiveMediaController mMediaController;
     BaseLiveMediaControllerBottom liveMediaControllerBottom;
-    Button rl_livevideo_common_rank;
+    Button rl_livevideo_common_rank;//排名
     View relativeLayout;
     /** 动画出现 */
     private Animation mAnimSlideIn;
@@ -54,6 +57,8 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     ListView lv_livevideo_rank_list;
     int colorYellow;
     int colorWhite;
+
+    private Boolean isSmallEnglish = false;
 
     public RankBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -88,15 +93,18 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     public void onCreate(HashMap<String, Object> data) {
         super.onCreate(data);
         mMediaController = (LiveMediaController) data.get("mMediaController");
-        BaseLiveMediaControllerBottom controllerBottom = (BaseLiveMediaControllerBottom) data.get("liveMediaControllerBottom");
+        BaseLiveMediaControllerBottom controllerBottom = (BaseLiveMediaControllerBottom) data.get
+                ("liveMediaControllerBottom");
         setLiveMediaController(mMediaController, controllerBottom);
     }
 
-    public void setLiveMediaController(final LiveMediaController mMediaController, BaseLiveMediaControllerBottom liveMediaControllerBottom) {
+    public void setLiveMediaController(final LiveMediaController mMediaController, BaseLiveMediaControllerBottom
+            liveMediaControllerBottom) {
         this.mMediaController = mMediaController;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
         if (liveMediaControllerBottom instanceof LiveStandMediaControllerBottom) {
-            LiveStandMediaControllerBottom liveStandMediaControllerBottom = (LiveStandMediaControllerBottom) liveMediaControllerBottom;
+            LiveStandMediaControllerBottom liveStandMediaControllerBottom = (LiveStandMediaControllerBottom)
+                    liveMediaControllerBottom;
             liveStandMediaControllerBottom.addOnViewChange(onViewChange);
         }
         rl_livevideo_common_rank = (Button) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_rank);
@@ -148,7 +156,8 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
         });
     }
 
-    private LiveStandMediaControllerBottom.OnViewChange onViewChange = new LiveStandMediaControllerBottom.OnViewChange() {
+    private LiveStandMediaControllerBottom.OnViewChange onViewChange = new LiveStandMediaControllerBottom
+            .OnViewChange() {
         @Override
         public void onViewChange(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
             setLiveMediaController(mMediaController, baseLiveMediaControllerBottom);
@@ -184,13 +193,17 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
 
     public void setGetInfo(LiveGetInfo getInfo) {
         this.mGetInfo = getInfo;
+        if (mGetInfo != null) {
+            isSmallEnglish = mGetInfo.getSmallEnglish();
+        }
     }
 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         initView(mRootView);
-        BaseLiveMediaControllerBottom.RegMediaChildViewClick regMediaChildViewClick = ProxUtil.getProxUtil().get(activity, BaseLiveMediaControllerBottom.RegMediaChildViewClick.class);
+        BaseLiveMediaControllerBottom.RegMediaChildViewClick regMediaChildViewClick = ProxUtil.getProxUtil().get
+                (activity, BaseLiveMediaControllerBottom.RegMediaChildViewClick.class);
         if (regMediaChildViewClick != null) {
             regMediaChildViewClick.regMediaViewClick(this);
         }
@@ -203,28 +216,125 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
         });
     }
 
+    private List<RankEntity> mArtsRankEntities = null;
+    private CommonAdapter<RankEntity> mArtsGroupCommonAdapter = new CommonAdapter<RankEntity>(mArtsRankEntities) {
+        @Override
+        public AdapterItemInterface<RankEntity> getItemView(Object type) {
+            return new RankItem(colorYellow, colorWhite);
+        }
+    };
+
     public void initView(final RelativeLayout bottomContent) {
-        relativeLayout = LayoutInflater.from(activity).inflate(R.layout.layout_livevodeo_rank, bottomContent, false);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-//        relativeLayout.setBackgroundColor(liveVideoActivity.getResources().getColor(R.color.translucent_black));
-        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        bottomContent.addView(relativeLayout, lp);
-        setVideoLayout();
-        //小组
-        View rl_livevideo_rank_mygroup = relativeLayout.findViewById(R.id.rl_livevideo_rank_mygroup);
-        final TextView tv_livevideo_rank_mygroup = (TextView) relativeLayout.findViewById(R.id.tv_livevideo_rank_mygroup);
-        final View v_livevideo_rank_mygroup = relativeLayout.findViewById(R.id.v_livevideo_rank_mygroup);
-        //组内
-        View rl_livevideo_rank_groups = relativeLayout.findViewById(R.id.rl_livevideo_rank_groups);
-        final TextView tv_livevideo_rank_groups = (TextView) relativeLayout.findViewById(R.id.tv_livevideo_rank_groups);
-        final View v_livevideo_rank_groups = relativeLayout.findViewById(R.id.v_livevideo_rank_groups);
-        //班级
-        View rl_livevideo_rank_class = relativeLayout.findViewById(R.id.rl_livevideo_rank_class);
-        final TextView tv_livevideo_rank_class = (TextView) relativeLayout.findViewById(R.id.tv_livevideo_rank_class);
-        final View v_livevideo_rank_class = relativeLayout.findViewById(R.id.v_livevideo_rank_class);
-        //下面标题中间的字
-        final TextView tv_livevideo_rank_subtitle_mid = (TextView) relativeLayout.findViewById(R.id.tv_livevideo_rank_subtitle_mid);
-        lv_livevideo_rank_list = (ListView) relativeLayout.findViewById(R.id.lv_livevideo_rank_list);
+        //小英
+        Log.i("testRankBll", mGetInfo.getGrade() + " " + mGetInfo.getIsArts());
+        if (mGetInfo != null) {
+            for (String sub : mGetInfo.getSubjectIds()) {
+                if (sub.equals("3")) {
+                    isSmallEnglish = true;
+                    break;
+                }
+            }
+        }
+        if (isSmallEnglish) {
+//            Log.i("testRankBll", mGetInfo.getGrade() + " " + mGetInfo.getIsArts());
+            relativeLayout = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_small_english_rank,
+                    bottomContent, false);
+            //小组
+            final ImageView ivMyGroup = relativeLayout.findViewById(R.id.iv_livevideo_small_english_rank_mygroup);
+            //组内
+            final ImageView ivGroups = relativeLayout.findViewById(R.id.iv_livevideo_small_english_rank_groups);
+            //班级
+            final ImageView ivClass = relativeLayout.findViewById(R.id.iv_livevideo_small_english_rank_class);
+            //标题下面的字
+            final TextView ivRankId = relativeLayout.findViewById(R.id.tv_livevideo_rank_subtitle_mid);
+            Button btnMyGroup = relativeLayout.findViewById(R.id.btn_livevideo_small_english_rank_mygroup);
+            Button btnGroups = relativeLayout.findViewById(R.id.btn_livevideo_small_english_rank_groups);
+            Button btnClass = relativeLayout.findViewById(R.id.btn_livevideo_small_english_rank_class);
+            //展现排行榜的listview
+            lv_livevideo_rank_list = relativeLayout.findViewById(R.id.lv_livevideo_rank_list);
+            btnMyGroup.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ivMyGroup.setVisibility(View.VISIBLE);
+                    ivGroups.setVisibility(View.GONE);
+                    ivClass.setVisibility(View.GONE);
+                    ivRankId.setText("学员");
+                    if (allRankEntity == null) {
+                        return;
+                    }
+
+                    mArtsRankEntities = allRankEntity.getMyRankEntityMyTeam().getRankEntities();
+                    mArtsGroupCommonAdapter.updateData(mArtsRankEntities);//一定要先更新在
+                    if (lv_livevideo_rank_list.getAdapter() == null || lv_livevideo_rank_list.getAdapter() !=
+                            mArtsGroupCommonAdapter) {
+                        lv_livevideo_rank_list.setAdapter(mArtsGroupCommonAdapter);
+                    }
+                }
+            });
+
+            btnGroups.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ivMyGroup.setVisibility(View.GONE);
+                    ivGroups.setVisibility(View.VISIBLE);
+                    ivClass.setVisibility(View.GONE);
+                    ivRankId.setText("学员");
+                    if (allRankEntity == null) {
+                        return;
+                    }
+                    mArtsRankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
+                    mArtsGroupCommonAdapter.updateData(mArtsRankEntities);
+                    if (lv_livevideo_rank_list.getAdapter() == null || lv_livevideo_rank_list.getAdapter() !=
+                            mArtsGroupCommonAdapter) {
+                        lv_livevideo_rank_list.setAdapter(mArtsGroupCommonAdapter);
+                    }
+                }
+            });
+
+            btnClass.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ivMyGroup.setVisibility(View.GONE);
+                    ivGroups.setVisibility(View.GONE);
+                    ivClass.setVisibility(View.VISIBLE);
+                    ivRankId.setText("班级");
+                    if (allRankEntity == null) {
+                        return;
+                    }
+                    mArtsRankEntities = allRankEntity.getMyRankEntityClass().getRankEntities();
+                    mArtsGroupCommonAdapter.updateData(mArtsRankEntities);
+                    if (lv_livevideo_rank_list.getAdapter() == null || lv_livevideo_rank_list.getAdapter() !=
+                            mArtsGroupCommonAdapter) {
+                        lv_livevideo_rank_list.setAdapter(mArtsGroupCommonAdapter);
+                    }
+                }
+            });
+        } else {
+            relativeLayout = LayoutInflater.from(activity).inflate(R.layout.layout_livevodeo_rank, bottomContent,
+                    false);
+
+            //小组
+            View rl_livevideo_rank_mygroup = relativeLayout.findViewById(R.id.rl_livevideo_rank_mygroup);
+            final TextView tv_livevideo_rank_mygroup = (TextView) relativeLayout.findViewById(R.id
+                    .tv_livevideo_rank_mygroup);
+            final View v_livevideo_rank_mygroup = relativeLayout.findViewById(R.id.v_livevideo_rank_mygroup);
+            //组内
+            View rl_livevideo_rank_groups = relativeLayout.findViewById(R.id.rl_livevideo_rank_groups);
+            final TextView tv_livevideo_rank_groups = (TextView) relativeLayout.findViewById(R.id
+                    .tv_livevideo_rank_groups);
+
+            final View v_livevideo_rank_groups = relativeLayout.findViewById(R.id.v_livevideo_rank_groups);
+            //班级
+            View rl_livevideo_rank_class = relativeLayout.findViewById(R.id.rl_livevideo_rank_class);
+            final TextView tv_livevideo_rank_class = (TextView) relativeLayout.findViewById(R.id
+                    .tv_livevideo_rank_class);
+            final View v_livevideo_rank_class = relativeLayout.findViewById(R.id.v_livevideo_rank_class);
+            //下面标题中间的字
+            final TextView tv_livevideo_rank_subtitle_mid = (TextView) relativeLayout.findViewById(R.id
+                    .tv_livevideo_rank_subtitle_mid);
+            lv_livevideo_rank_list = relativeLayout.findViewById(R.id.lv_livevideo_rank_list);
+
+
 //        ArrayList<RankEntity> rankEntities = new ArrayList<>();
 //        for (int i = 0; i < 10; i++) {
 //            RankEntity rankEntity = new RankEntity();
@@ -233,77 +343,85 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
 //            rankEntity.setRate((100 - i) + "%");
 //            rankEntities.add(rankEntity);
 //        }
-        final int COLOR_F13232 = activity.getResources().getColor(R.color.COLOR_F13232);
-        final int white = activity.getResources().getColor(R.color.white);
-        rl_livevideo_rank_mygroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                index = 1;
-                tv_livevideo_rank_subtitle_mid.setText("学员");
-                v_livevideo_rank_mygroup.setVisibility(View.VISIBLE);
-                tv_livevideo_rank_mygroup.setTextColor(COLOR_F13232);
-                v_livevideo_rank_groups.setVisibility(View.GONE);
-                tv_livevideo_rank_groups.setTextColor(white);
-                v_livevideo_rank_class.setVisibility(View.GONE);
-                tv_livevideo_rank_class.setTextColor(white);
-                if (allRankEntity == null) {
-                    return;
-                }
-                ArrayList<RankEntity> rankEntities = allRankEntity.getMyRankEntityMyTeam().getRankEntities();
-                lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
-                    @Override
-                    public AdapterItemInterface<RankEntity> getItemView(Object type) {
-                        return new RankItem(colorYellow, colorWhite);
+            final int COLOR_F13232 = activity.getResources().getColor(R.color.COLOR_F13232);
+            final int white = activity.getResources().getColor(R.color.white);
+            rl_livevideo_rank_mygroup.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    index = 1;
+                    tv_livevideo_rank_subtitle_mid.setText("学员");
+                    v_livevideo_rank_mygroup.setVisibility(View.VISIBLE);
+                    tv_livevideo_rank_mygroup.setTextColor(COLOR_F13232);
+                    v_livevideo_rank_groups.setVisibility(View.GONE);
+                    tv_livevideo_rank_groups.setTextColor(white);
+                    v_livevideo_rank_class.setVisibility(View.GONE);
+                    tv_livevideo_rank_class.setTextColor(white);
+                    if (allRankEntity == null) {
+                        return;
                     }
-                });
-            }
-        });
-        rl_livevideo_rank_groups.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                index = 2;
-                tv_livevideo_rank_subtitle_mid.setText("组别");
-                v_livevideo_rank_mygroup.setVisibility(View.GONE);
-                tv_livevideo_rank_mygroup.setTextColor(white);
-                v_livevideo_rank_groups.setVisibility(View.VISIBLE);
-                tv_livevideo_rank_groups.setTextColor(COLOR_F13232);
-                v_livevideo_rank_class.setVisibility(View.GONE);
-                tv_livevideo_rank_class.setTextColor(white);
-                if (allRankEntity == null) {
-                    return;
+                    ArrayList<RankEntity> rankEntities = allRankEntity.getMyRankEntityMyTeam().getRankEntities();
+                    lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
+                        @Override
+                        public AdapterItemInterface<RankEntity> getItemView(Object type) {
+                            return new RankItem(colorYellow, colorWhite);
+                        }
+                    });
                 }
-                ArrayList<RankEntity> rankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
-                lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
-                    @Override
-                    public AdapterItemInterface<RankEntity> getItemView(Object type) {
-                        return new RankItem(colorYellow, colorWhite);
+            });
+            rl_livevideo_rank_groups.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    index = 2;
+                    tv_livevideo_rank_subtitle_mid.setText("组别");
+                    v_livevideo_rank_mygroup.setVisibility(View.GONE);
+                    tv_livevideo_rank_mygroup.setTextColor(white);
+                    v_livevideo_rank_groups.setVisibility(View.VISIBLE);
+                    tv_livevideo_rank_groups.setTextColor(COLOR_F13232);
+                    v_livevideo_rank_class.setVisibility(View.GONE);
+                    tv_livevideo_rank_class.setTextColor(white);
+                    if (allRankEntity == null) {
+                        return;
                     }
-                });
-            }
-        });
-        rl_livevideo_rank_class.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                index = 3;
-                tv_livevideo_rank_subtitle_mid.setText("班级");
-                v_livevideo_rank_mygroup.setVisibility(View.GONE);
-                tv_livevideo_rank_mygroup.setTextColor(white);
-                v_livevideo_rank_groups.setVisibility(View.GONE);
-                tv_livevideo_rank_groups.setTextColor(white);
-                v_livevideo_rank_class.setVisibility(View.VISIBLE);
-                tv_livevideo_rank_class.setTextColor(COLOR_F13232);
-                if (allRankEntity == null) {
-                    return;
+                    ArrayList<RankEntity> rankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
+                    lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
+                        @Override
+                        public AdapterItemInterface<RankEntity> getItemView(Object type) {
+                            return new RankItem(colorYellow, colorWhite);
+                        }
+                    });
                 }
-                ArrayList<RankEntity> rankEntities = allRankEntity.getMyRankEntityClass().getRankEntities();
-                lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
-                    @Override
-                    public AdapterItemInterface<RankEntity> getItemView(Object type) {
-                        return new RankItem(colorYellow, colorWhite);
+            });
+            rl_livevideo_rank_class.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    index = 3;
+                    tv_livevideo_rank_subtitle_mid.setText("班级");
+                    v_livevideo_rank_mygroup.setVisibility(View.GONE);
+                    tv_livevideo_rank_mygroup.setTextColor(white);
+                    v_livevideo_rank_groups.setVisibility(View.GONE);
+                    tv_livevideo_rank_groups.setTextColor(white);
+                    v_livevideo_rank_class.setVisibility(View.VISIBLE);
+                    tv_livevideo_rank_class.setTextColor(COLOR_F13232);
+                    if (allRankEntity == null) {
+                        return;
                     }
-                });
-            }
-        });
+                    ArrayList<RankEntity> rankEntities = allRankEntity.getMyRankEntityClass().getRankEntities();
+                    lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
+                        @Override
+                        public AdapterItemInterface<RankEntity> getItemView(Object type) {
+                            return new RankItem(colorYellow, colorWhite);
+                        }
+                    });
+                }
+            });
+        }
+        //把该布局加到排行榜的右边
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT);
+//        relativeLayout.setBackgroundColor(liveVideoActivity.getResources().getColor(R.color.translucent_black));
+        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        bottomContent.addView(relativeLayout, lp);
+        setVideoLayout();
     }
 
     public boolean onBack() {
@@ -315,7 +433,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     }
 
     public void onTitleShow(boolean show) {
-        if (relativeLayout != null && relativeLayout.getVisibility() == View.VISIBLE) {
+        if (relativeLayout != null && relativeLayout.getVisibility() == View.VISIBLE && mAnimSlideOut != null) {
             relativeLayout.startAnimation(mAnimSlideOut);
         }
     }

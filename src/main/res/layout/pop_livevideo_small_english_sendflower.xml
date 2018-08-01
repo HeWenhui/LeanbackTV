@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.xueersi.ui.widget.ZoomerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerInParent="true"
+    app:designHeight="750px"
+    app:designWidth="1000px">
+
+    <ImageView
+        android:layout_width="976px"
+        android:layout_height="750px"
+        android:src="@drawable/shellwindow_sendflower_board" />
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_english_sendflower_cancel"
+        android:layout_width="70px"
+        android:layout_height="70px"
+        android:layout_marginLeft="805px"
+        android:layout_marginTop="110px"
+        android:src="@drawable/selector_livevideo_small_english_close" />
+
+    <TextView
+        android:layout_width="130px"
+        android:layout_height="50px"
+        android:layout_marginLeft="400px"
+        android:layout_marginTop="190px"
+        android:text="金币余额:"
+        android:textColor="@color/COLOR_C03321"
+        android:textSize="11sp" />
+
+    <TextView
+        android:id="@+id/tv_livevideo_small_english_sendflower_balance"
+        android:layout_width="2000px"
+        android:layout_height="50px"
+        android:layout_marginLeft="530px"
+        android:layout_marginTop="190px"
+        android:gravity="left"
+        android:text="123"
+        android:textColor="@color/COLOR_C03321"
+        android:textSize="11sp" />
+
+    <com.xueersi.ui.widget.ZoomerLayout
+        android:id="@+id/zl_livevideo_small_english_oneflower"
+        android:layout_width="150px"
+        android:layout_height="200px"
+        android:layout_marginLeft="260px"
+        android:layout_marginTop="260px"
+        app:designHeight="200px"
+        app:designWidth="150px">
+
+
+        <ImageView
+            android:id="@+id/iv_livevideo_small_english_sendflower_oneflower_square"
+            android:layout_width="150px"
+            android:layout_height="150px"
+            android:clickable="false"
+            android:src="@drawable/shellwindow_sendflower_square_btn_nor" />
+
+        <ImageView
+            android:layout_width="150px"
+            android:layout_height="150px"
+            android:clickable="false"
+            android:src="@drawable/shellwindow_sendflower_oneflower_img" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_small_english_sendflower_oneflower_tick"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:clickable="false"
+            android:src="@drawable/shellwindow_sendflower_tick_img"
+            android:visibility="gone" />
+
+        <Button
+            android:layout_width="120px"
+            android:layout_height="40px"
+            android:layout_marginLeft="10px"
+            android:layout_marginTop="145px"
+            android:background="@drawable/shellwindow_sendflower_idol_img"
+            android:clickable="false"
+            android:gravity="right"
+            android:text="10金币"
+            android:textColor="@color/COLOR_ECF4FF"
+            android:textSize="10sp" />
+    </com.xueersi.ui.widget.ZoomerLayout>
+
+    <com.xueersi.ui.widget.ZoomerLayout
+        android:id="@+id/zl_livevideo_small_english_threeflower"
+        android:layout_width="150px"
+        android:layout_height="200px"
+        android:layout_marginLeft="430px"
+        android:layout_marginTop="260px"
+        app:designHeight="200px"
+        app:designWidth="150px">
+
+        <ImageView
+            android:id="@+id/iv_livevideo_small_english_sendflower_threeflower_square"
+            android:layout_width="150px"
+            android:layout_height="150px"
+            android:clickable="false"
+            android:src="@drawable/shellwindow_sendflower_square_btn_nor" />
+
+        <ImageView
+            android:layout_width="150px"
+            android:layout_height="150px"
+            android:clickable="false"
+            android:src="@drawable/shellwindow_sendflower_threeflowers_img" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_small_english_sendflower_threeflower_tick"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:clickable="false"
+            android:src="@drawable/shellwindow_sendflower_tick_img"
+            android:visibility="gone" />
+
+        <Button
+            android:layout_width="120px"
+            android:layout_height="40px"
+            android:layout_marginLeft="10px"
+            android:layout_marginTop="145px"
+            android:background="@drawable/shellwindow_sendflower_idol_img"
+            android:clickable="false"
+            android:gravity="right"
+            android:text="50金币"
+            android:textColor="@color/COLOR_ECF4FF"
+            android:textSize="10sp" />
+    </com.xueersi.ui.widget.ZoomerLayout>
+
+
+    <com.xueersi.ui.widget.ZoomerLayout
+        android:id="@+id/zl_livevideo_small_english_fiveflower"
+        android:layout_width="150px"
+        android:layout_height="200px"
+        android:layout_marginLeft="600px"
+        android:layout_marginTop="260px"
+        app:designHeight="200px"
+        app:designWidth="150px">
+
+        <ImageView
+            android:id="@+id/iv_livevideo_small_english_sendflower_fiveflower_square"
+            android:layout_width="150px"
+            android:layout_height="150px"
+            android:clickable="false"
+            android:src="@drawable/shellwindow_sendflower_square_btn_nor" />
+
+        <ImageView
+            android:layout_width="150px"
+            android:layout_height="150px"
+            android:clickable="false"
+            android:src="@drawable/shellwindow_sendflower_fiveflowers_img" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_small_english_sendflower_fiveflower_tick"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:clickable="false"
+            android:src="@drawable/shellwindow_sendflower_tick_img"
+            android:visibility="gone" />
+
+        <Button
+            android:layout_width="120px"
+            android:layout_height="40px"
+            android:layout_marginLeft="10px"
+            android:layout_marginTop="145px"
+            android:background="@drawable/shellwindow_sendflower_idol_img"
+            android:clickable="false"
+            android:gravity="right"
+            android:text="100金币"
+            android:textColor="@color/COLOR_ECF4FF"
+            android:textSize="10sp" />
+
+    </com.xueersi.ui.widget.ZoomerLayout>
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_english_sendflower_send"
+        android:layout_width="220px"
+        android:layout_height="60px"
+        android:layout_marginLeft="390px"
+        android:layout_marginTop="480px"
+        android:src="@drawable/selector_livevideo_small_english_sendflower_send_btn" />
+    <!--<RelativeLayout-->
+    <!--android:layout_width="126px"-->
+    <!--android:layout_height="194px">-->
+
+    <!--<ImageView-->
+    <!--android:layout_width="137px"-->
+    <!--android:layout_height="135px"-->
+    <!--android:layout_marginLeft="262px"-->
+    <!--android:layout_marginTop="266px"-->
+    <!--android:src="@mipmap/shellwindow_giveflower_square_btn_nor" />-->
+
+    <!--<ImageView-->
+    <!--android:layout_width="126px"-->
+    <!--android:layout_height="126px"-->
+    <!--android:layout_marginLeft="270px"-->
+    <!--android:layout_marginTop="275px"-->
+    <!--android:src="@mipmap/shellwindow_giveflower_oneflower_img" />-->
+    <!--</RelativeLayout>-->
+</com.xueersi.ui.widget.ZoomerLayout>

@@ -84,9 +84,11 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     /** 同学献花提示 */
     public String[] flowsTips = {"老师真赞", "老师太棒了", "老师辛苦了"};
     /** 同学献花花的资源 */
-    public int[] flowsDrawTips = {R.drawable.bg_livevideo_flower_small, R.drawable.bg_livevideo_flower_middle, R.drawable.bg_livevideo_flower_big};
+    public int[] flowsDrawTips = {R.drawable.bg_livevideo_flower_small, R.drawable.bg_livevideo_flower_middle, R
+            .drawable.bg_livevideo_flower_big};
     /** 同学献花花的资源,小，弹幕和聊天中用 */
-    public int[] flowsDrawLittleTips = {R.drawable.bg_livevideo_flower_small2, R.drawable.bg_livevideo_flower_middle2, R.drawable.bg_livevideo_flower_big2,};
+    public int[] flowsDrawLittleTips = {R.drawable.bg_livevideo_flower_small2, R.drawable
+            .bg_livevideo_flower_middle2, R.drawable.bg_livevideo_flower_big2,};
     /** 同学献花,小中大 */
     public static final int FLOWERS_SMALL = 2, FLOWERS_MIDDLE = 3, FLOWERS_BIG = 4;
     /** 献花字体颜色 */
@@ -125,6 +127,10 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     protected ThreadPoolExecutor pool;
     protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     protected Handler mainHandler = new Handler(Looper.getMainLooper());
+    //小英的献花
+    public final static int SMALL_ENGLISH = 1;
+    //其他部分的献花
+    public final static int OTHER_FLOWER = 2;
 
     public BaseLiveMessagePager(Context context) {
         super(context);
@@ -172,24 +178,28 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
 
     @Override
     public void initData() {
-        mExpressionView = new ExpressionView(mContext, mView.findViewById(R.id.layout_chat_expression), etMessageContent, new LiveExPressionEditData()) {
+        mExpressionView = new ExpressionView(mContext, mView.findViewById(R.id.layout_chat_expression),
+                etMessageContent, new LiveExPressionEditData()) {
             @Override
             public void clickGridItem(int position, int catogaryId, String expressionId,
                                       int exPressionUrl, String exPressionName, int exPressionGifUrl, int bottomId) {
-                onExpressionClick(position, catogaryId, expressionId, exPressionUrl, exPressionName, exPressionGifUrl, bottomId);
+                onExpressionClick(position, catogaryId, expressionId, exPressionUrl, exPressionName,
+                        exPressionGifUrl, bottomId);
                 int length = etMessageContent.getText().length();
                 if (length + exPressionName.length() <= 40) {
                     Bitmap bitmap11 = BitmapFactory.decodeResource(mContext.getResources(), exPressionUrl);
                     ImageSpan imageSpan11 = new VerticalImageSpan(mContext, Bitmap.createScaledBitmap(bitmap11,
                             (int) etMessageContent.getTextSize(), (int) etMessageContent.getTextSize(), true));
                     SpannableString spannableString11 = new SpannableString(exPressionName);
-                    spannableString11.setSpan(imageSpan11, 0, exPressionName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannableString11.setSpan(imageSpan11, 0, exPressionName.length(), Spannable
+                            .SPAN_EXCLUSIVE_EXCLUSIVE);
                     etMessageContent.getEditableText().insert(etMessageContent.getSelectionStart(), spannableString11);
                 }
             }
         };
         // 加载表情布局适配器
-        ExpressionListAdapter mExpressionListAdapter = new ExpressionListAdapter(mContext, mExpressionView.getExpressionAllInfoList(), mExpressionView) {
+        ExpressionListAdapter mExpressionListAdapter = new ExpressionListAdapter(mContext, mExpressionView
+                .getExpressionAllInfoList(), mExpressionView) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 final ExpressionAllInfoEntity mCustomData = datas.get(position);
@@ -277,7 +287,8 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
         overlappingEnablePair.put(BaseDanmaku.TYPE_SCROLL_RL, true);
         overlappingEnablePair.put(BaseDanmaku.TYPE_FIX_TOP, true);
         mDanmakuContext = DanmakuContext.create();
-        mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDuplicateMergingEnabled(false).setScrollSpeedFactor(1.2f).setScaleTextSize(1.2f)
+        mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDuplicateMergingEnabled(false)
+                .setScrollSpeedFactor(1.2f).setScaleTextSize(1.2f)
                 .setCacheStuffer(new SpannedCacheStuffer(), mCacheStufferAdapter) // 图文混排使用SpannedCacheStuffer
 //                .setCacheStuffer(new BackgroundCacheStuffer())  // 绘制背景使用BackgroundCacheStuffer
                 .setMaximumLines(maxLinesPair)
@@ -345,6 +356,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
 
     }
 
+
     public void setIrcState(IRCState ircState) {
         this.ircState = ircState;
     }
@@ -388,13 +400,15 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
                     public void run() {
                         Drawable drawable;
                         if (danmaku.text instanceof TypeSpannableStringBuilder) {
-                            TypeSpannableStringBuilder spannableStringBuilder = (TypeSpannableStringBuilder) danmaku.text;
+                            TypeSpannableStringBuilder spannableStringBuilder = (TypeSpannableStringBuilder) danmaku
+                                    .text;
 //                            Loger.i(TAG, "prepareDrawing:ftype=" + spannableStringBuilder.ftype);
                             switch (spannableStringBuilder.ftype) {
                                 case FLOWERS_SMALL:
                                 case FLOWERS_MIDDLE:
                                 case FLOWERS_BIG:
-                                    drawable = mContext.getResources().getDrawable(flowsDrawLittleTips[spannableStringBuilder.ftype - 2]);
+                                    drawable = mContext.getResources().getDrawable
+                                            (flowsDrawLittleTips[spannableStringBuilder.ftype - 2]);
                                     break;
                                 default:
                                     drawable = mContext.getResources().getDrawable(R.drawable.ic_app_xueersi_desktop);
@@ -407,8 +421,10 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
                             drawable.setBounds(0, 0, 100, 100);
                             SpannableStringBuilder spannable;
                             if (danmaku.text instanceof TypeSpannableStringBuilder) {
-                                TypeSpannableStringBuilder typeSpannableStringBuilder = (TypeSpannableStringBuilder) danmaku.text;
-                                spannable = createSpannable(typeSpannableStringBuilder.ftype, typeSpannableStringBuilder.name, drawable);
+                                TypeSpannableStringBuilder typeSpannableStringBuilder = (TypeSpannableStringBuilder)
+                                        danmaku.text;
+                                spannable = createSpannable(typeSpannableStringBuilder.ftype,
+                                        typeSpannableStringBuilder.name, drawable);
                             } else {
                                 String msg = danmaku.text.toString();
                                 if (msg.length() > 0) {
@@ -469,6 +485,49 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
         danmaku.textSize = 25f * (mParser.getDisplayer().getDensity() - 0.6f);
         danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
 //        danmaku.underlineColor = Color.GREEN;
+
+        dvMessageDanmaku.addDanmaku(danmaku);
+    }
+
+    public void addSmallEnglishDanmaKuFlowers(final int ftype, final String name) {
+        if (mDanmakuContext == null) {
+            mView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    addSmallEnglishDanmaKuFlowers(ftype, name);
+                }
+            }, 20);
+            return;
+        }
+
+        BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
+        if (danmaku == null || dvMessageDanmaku == null) {
+            return;
+        }
+        Drawable drawable;
+        switch (ftype) {
+            case FLOWERS_SMALL:
+            case FLOWERS_MIDDLE:
+            case FLOWERS_BIG:
+                drawable = mContext.getResources().getDrawable(flowsDrawLittleTips[ftype - 2]);
+                danmaku.textColor = flowsDrawColors[ftype - 2];
+                break;
+            default:
+                drawable = mContext.getResources().getDrawable(R.drawable.ic_launcher);
+                danmaku.textColor = Color.BLUE;
+                break;
+        }
+        drawable.setBounds(0, 0, 100, 100);
+        SpannableStringBuilder spannable = createSpannable(ftype, name, drawable);
+        danmaku.text = spannable;
+        danmaku.padding = 5;
+        danmaku.priority = 1;  // 一定会显示, 一般用于本机发送的弹幕
+        danmaku.isLive = false;
+        danmaku.time = dvMessageDanmaku.getCurrentTime() + 1200;
+        danmaku.textSize = 25f * (mParser.getDisplayer().getDensity() - 0.6f);
+        danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
+//        danmaku.underlineColor = Color.GREEN;
+
         dvMessageDanmaku.addDanmaku(danmaku);
     }
 
@@ -482,12 +541,15 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
                 tip = flowsTips[ftype - 2];
                 break;
         }
+
         String msg = name + ":" + tip + ",献上";
         TypeSpannableStringBuilder spannableStringBuilder = new TypeSpannableStringBuilder(msg, name, ftype);
         spannableStringBuilder.append(msg);
         ImageSpan span = new ImageSpan(drawable);//ImageSpan.ALIGN_BOTTOM);
-        spannableStringBuilder.setSpan(span, msg.length(), spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-//        spannableStringBuilder.setSpan(new BackgroundColorSpan(Color.parseColor("#8A2233B1")), 0, spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        spannableStringBuilder.setSpan(span, msg.length(), spannableStringBuilder.length(), Spannable
+                .SPAN_INCLUSIVE_EXCLUSIVE);
+//        spannableStringBuilder.setSpan(new BackgroundColorSpan(Color.parseColor("#8A2233B1")), 0,
+// spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         return spannableStringBuilder;
     }
 

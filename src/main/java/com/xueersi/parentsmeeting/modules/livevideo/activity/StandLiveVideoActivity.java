@@ -1139,8 +1139,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
             }
 
         } else {
-            LiveAchievementBll starBll = new LiveAchievementBll(this, liveType, mGetInfo.getStarCount(), mGetInfo
-                    .getGoldCount(), mIsLand);
+            LiveAchievementBll starBll = new LiveAchievementBll(this, liveType, mGetInfo, mIsLand);
             starBll.setLiveBll(mLiveBll);
             starBll.initView(bottomContent);
             starAction = starBll;

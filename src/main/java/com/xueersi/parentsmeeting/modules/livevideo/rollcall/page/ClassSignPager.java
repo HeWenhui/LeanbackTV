@@ -58,12 +58,12 @@ public class ClassSignPager extends BasePager {
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevodeo_sign, null);
-        rlSignStatus1 = (RelativeLayout) mView.findViewById(R.id.rl_livevideo_sign_status1);
-        rlSignStatus2 = (RelativeLayout) mView.findViewById(R.id.rl_livevideo_sign_status2);
-        tvSignName = (TextView) mView.findViewById(R.id.tv_livevideo_sign_name);
-        btLearnreportCheck = (Button) mView.findViewById(R.id.bt_livevideo_learnreport_check);
-        ivSignStatus = (ImageView) mView.findViewById(R.id.iv_livevideo_sign_status);
-        tvSignStatus = (TextView) mView.findViewById(R.id.tv_livevideo_sign_status);
+        rlSignStatus1 = mView.findViewById(R.id.rl_livevideo_sign_status1);
+        rlSignStatus2 = mView.findViewById(R.id.rl_livevideo_sign_status2);
+        tvSignName = mView.findViewById(R.id.tv_livevideo_sign_name);
+        btLearnreportCheck = mView.findViewById(R.id.bt_livevideo_learnreport_check);
+        ivSignStatus = mView.findViewById(R.id.iv_livevideo_sign_status);
+        tvSignStatus = mView.findViewById(R.id.tv_livevideo_sign_status);
         return mView;
     }
 
@@ -80,7 +80,6 @@ public class ClassSignPager extends BasePager {
         btLearnreportCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 rollCallBll.userSign(classSignEntity, new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
@@ -116,10 +115,10 @@ public class ClassSignPager extends BasePager {
             rlSignStatus1.setVisibility(View.VISIBLE);
             rlSignStatus2.setVisibility(View.GONE);
             return;
-        } else if (status == Config.SIGN_STATE_CODE_SIGNED) {
+        } else if (status == Config.SIGN_STATE_CODE_SIGNED) {//已签到
             tvSignStatus.setText(bttips[0]);
             ivSignStatus.setImageResource(R.drawable.bg_livevideo_sign_suc);
-        } else {
+        } else {//签到失败
             tvSignStatus.setText(bttips[1]);
             ivSignStatus.setImageResource(R.drawable.bg_web_request_error);
         }

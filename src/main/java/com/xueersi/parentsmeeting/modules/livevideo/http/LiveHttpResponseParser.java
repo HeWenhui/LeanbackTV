@@ -109,7 +109,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             try {
                 //小英萌萌哒皮肤专用
                 if (data.has("useMMD")) {
-                    getInfo.setSmallEnglish(data.get("useMMD").equals("1"));
+                    getInfo.setSmallEnglish((String.valueOf(data.optString("useMMD"))).equals("1"));
                 } else {
                     getInfo.setSmallEnglish(false);
                 }

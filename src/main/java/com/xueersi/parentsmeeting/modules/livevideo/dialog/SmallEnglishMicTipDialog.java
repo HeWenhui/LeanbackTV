@@ -36,7 +36,7 @@ public class SmallEnglishMicTipDialog extends BaseAlertDialog {
         tvArtsMic = view.findViewById(R.id.iv_livevideo_small_english_raise_hand);
 
 //        LiveVideoConfig
-//        LiveVideoPoint
+//        LiveVideoPointN
         return view;
     }
 

@@ -212,8 +212,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     }
 
     @Override
-    public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String message) {
-        Loger.e("LiveBll", "=====> onPrivateMessage:" + sender + ":" + login + ":" + hostname + ":" + target + ":" + message);
+    public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String
+            message) {
+        Loger.e("LiveBll", "=====> onPrivateMessage:" + sender + ":" + login + ":" + hostname + ":" + target + ":" +
+                message);
         if (!"T".equals(message) && haveTeam) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
             String teamId = studentLiveInfo.getTeamId();
@@ -386,7 +388,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     }
 
     @Override
-    public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
+    public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String
+            recipientNick, String reason) {
         mLogtf.d("onKick:target=" + target + ",kickerNick=" + kickerNick + ",kickerLogin=" + kickerLogin
                 + ",kickerHostname=" + kickerHostname + ",reason=" + reason);
         if (mRoomAction != null) {
@@ -554,6 +557,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mRoomAction.initView(bottomContent, mIsLand.get());
     }
 
+    //发送聊天消息所需要的IRCState
     class LiveIRCState implements IRCState {
 
         @Override
@@ -617,34 +621,35 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         public void praiseTeacher(String ftype, String educationStage, final HttpCallBack callBack) {
             String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
             String teacherId = mGetInfo.getMainTeacherInfo().getTeacherId();
-            mHttpManager.praiseTeacher(mLiveType, enstuId, mLiveId, teacherId, ftype, educationStage, new HttpCallBack() {
+            mHttpManager.praiseTeacher(mLiveType, enstuId, mLiveId, teacherId, ftype, educationStage, new
+                    HttpCallBack() {
 
-                @Override
-                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                    mLogtf.d("praiseTeacher:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
-                    if (responseEntity.getJsonObject() instanceof JSONObject) {
-                        try {
-                            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                            sendFlowerMessage(jsonObject.getInt("type"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            mLogtf.d("praiseTeacher:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+                            if (responseEntity.getJsonObject() instanceof JSONObject) {
+                                try {
+                                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                                    sendFlowerMessage(jsonObject.getInt("type"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                callBack.onPmSuccess(responseEntity);
+                            }
                         }
-                        callBack.onPmSuccess(responseEntity);
-                    }
-                }
 
-                @Override
-                public void onPmFailure(Throwable error, String msg) {
-                    mLogtf.d("onPmFailure:msg=" + msg);
-                    callBack.onPmFailure(error, msg);
-                }
+                        @Override
+                        public void onPmFailure(Throwable error, String msg) {
+                            mLogtf.d("onPmFailure:msg=" + msg);
+                            callBack.onPmFailure(error, msg);
+                        }
 
-                @Override
-                public void onPmError(ResponseEntity responseEntity) {
-                    mLogtf.d("praiseTeacher:onPmFailure:responseEntity=" + responseEntity.getErrorMsg());
-                    callBack.onPmError(responseEntity);
-                }
-            });
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            mLogtf.d("praiseTeacher:onPmFailure:responseEntity=" + responseEntity.getErrorMsg());
+                            callBack.onPmError(responseEntity);
+                        }
+                    });
         }
 
         @Override

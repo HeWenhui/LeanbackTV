@@ -71,7 +71,8 @@ public class IRCTalkConf {
         }
     };
 
-    public IRCTalkConf(LiveGetInfo liveGetInfo, int mLiveType, BaseHttpBusiness baseHttpBusiness, ArrayList<TalkConfHost> hosts) {
+    public IRCTalkConf(LiveGetInfo liveGetInfo, int mLiveType, BaseHttpBusiness baseHttpBusiness,
+                       ArrayList<TalkConfHost> hosts) {
         this.liveId = liveGetInfo.getId();
         this.mLiveType = mLiveType;
         this.baseHttpBusiness = baseHttpBusiness;
@@ -153,7 +154,7 @@ public class IRCTalkConf {
                     }
                 }
                 if (!mIsDestory) {
-                    businessDataCallBack.onDataSucess(mNewTalkConf);
+                    businessDataCallBack.onDataSucess(mNewTalkConf);//回调IRCMessage中businessDataCallBack的onDataSucess方法
                 }
 //                if (callBack != this) {
 //                    return;

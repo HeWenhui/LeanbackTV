@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_centerInParent="true">
 
     <RelativeLayout
         android:id="@id/rl_livevideo_small_english_redpackage_unopen"
@@ -20,15 +20,14 @@
             android:id="@id/iv_livevideo_small_english_redpackage_open"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
-            android:layout_marginTop="75dp"
+            android:layout_marginTop="70dp"
             android:src="@drawable/bg_livevideo_small_english_redpaper_open_btn_nor" />
 
         <ImageView
             android:id="@id/iv_livevideo_small_english_redpackage_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="320dp"
+            android:layout_marginLeft="300dp"
             android:layout_marginTop="0dp"
             android:src="@drawable/selector_livevideo_small_english_close" />
     </RelativeLayout>
@@ -45,23 +44,29 @@
             android:layout_height="wrap_content"
             android:src="@drawable/bg_livevideo_small_english_redpackage_board_open" />
 
-        <ImageView
+        <RelativeLayout
+            android:id="@id/rl_livevideo_small_english_redpackage_open_animotion"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="75dp"
-            android:layout_marginTop="170dp"
-            android:src="@drawable/bg_livevideo_small_english_redpackage" />
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@id/tv_livevidoe_small_english_redpackage_money"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="160dp"
-            android:layout_marginTop="210dp"
-            android:text="+6"
-            android:textColor="@color/COLOR_FFDB2A"
-            android:textSize="30sp"
-            android:textStyle="bold" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="75dp"
+                android:layout_marginTop="170dp"
+                android:src="@drawable/bg_livevideo_small_english_redpackage" />
+
+            <TextView
+                android:id="@id/tv_livevidoe_small_english_redpackage_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="160dp"
+                android:layout_marginTop="210dp"
+                android:text="+6"
+                android:textColor="@color/COLOR_FFDB2A"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
 
         <ImageView
             android:id="@id/iv_livevideo_small_english_open_redpackage_close"

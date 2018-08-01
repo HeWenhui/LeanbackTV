@@ -3,7 +3,9 @@
     <style name="ProgressBar_live_english" parent="@android:style/Widget.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/layerlst_livevideo_english_prog</item>
     </style>
-
+    <style name="Small_english_ProgressBar_live_english" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/layerlst_livevideo_small_english_english_prog</item>
+    </style>
     <style name="ProgressBar_live_speech" parent="@android:style/Widget.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/layerlst_livevideo_speech_prog</item>
     </style>

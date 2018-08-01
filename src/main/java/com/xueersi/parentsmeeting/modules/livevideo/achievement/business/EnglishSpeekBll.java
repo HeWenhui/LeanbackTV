@@ -117,6 +117,9 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     public EnglishSpeekBll(Activity activity, LiveGetInfo liveGetInfo) {
         this.activity = activity;
         this.liveGetInfo = liveGetInfo;
+        if (liveGetInfo != null) {
+            isSmallEnglish = liveGetInfo.getSmallEnglish();
+        }
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         if (isDestory2) {
@@ -186,8 +189,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                     .layout_livevideo_english_speek, myView, false);
         } else {
             layout_livevideo_stat_gold = LayoutInflater.from(activity).inflate(R.layout
-                            .layout_livevideo_small_english_english_speek
-                    , myView, false);
+                    .layout_livevideo_small_english_english_speek, myView, false);
         }
         myView.addView(layout_livevideo_stat_gold);
         rl_livevideo_english_speak_content = layout_livevideo_stat_gold.findViewById(R.id
@@ -281,13 +283,13 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     private void setFirstTip() {
         final ViewGroup rl_livevideo_info = (ViewGroup) activity.findViewById(R.id.rl_livevideo_info);
         final View english_speek_tip;
-        if (!isSmallEnglish) {
-            english_speek_tip = LayoutInflater.from(activity).inflate(R.layout
-                    .layout_livevideo_english_speek_tip, rl_livevideo_info, false);
-        } else {
-            english_speek_tip = LayoutInflater.from(activity).inflate(R.layout
-                    .layout_livevideo_small_english_english_speek, rl_livevideo_info, false);
-        }
+//        if (!isSmallEnglish) {
+        english_speek_tip = LayoutInflater.from(activity).inflate(R.layout
+                .layout_livevideo_english_speek_tip, rl_livevideo_info, false);
+//        } else {
+//            english_speek_tip = LayoutInflater.from(activity).inflate(R.layout
+//                    .layout_livevideo_small_english_english_speek, rl_livevideo_info, false);
+//        }
         rl_livevideo_info.addView(english_speek_tip);
         english_speek_tip.findViewById(R.id.bt_livevideo_english_tip_ok).setOnClickListener(new View.OnClickListener() {
             @Override

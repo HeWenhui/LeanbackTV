@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.redpackage.business;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.os.Handler;
@@ -29,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
@@ -138,6 +140,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
         mLogtf.d("showRedPacket:operateId=" + operateId);
         rlRedpacketContent.removeAllViews();
         View view = null;
+        RelativeLayout.LayoutParams params = null;
         //小英
         if (isSmallEnglish) {
             artsRedPackagePager = new SmallEnglishRedPackagePager(activity);
@@ -150,6 +153,12 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
                 }
             });
             artsRedPackagePager.setCancelRedPackageTouchListener(cancelRedPackageTouchListener);
+            params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
+                    .MATCH_PARENT);
+            LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+            Drawable drawable = activity.getResources().getDrawable(R.drawable
+                    .bg_livevideo_small_english_redppackage_board);
+            params.leftMargin = (liveVideoPoint.x3 - liveVideoPoint.x2 - drawable.getIntrinsicWidth()) / 2;
         } else {
             view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_view, rlRedpacketContent, false);
             ImageView imageView = view.findViewById(R.id.iv_livevideo_redpackage_monkey);
@@ -174,9 +183,10 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
                     rlRedpacketContent.removeAllViews();
                 }
             });
+            params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout
+                    .LayoutParams.MATCH_PARENT);
         }
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
-                .LayoutParams.MATCH_PARENT);
+
         rlRedpacketContent.addView(view, params);
 
         activity.getWindow().getDecorView().requestLayout();
@@ -228,6 +238,16 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
             if (artsRedPackagePager.getCancelRedPackageTouchListener() == null) {
                 artsRedPackagePager.setCancelRedPackageTouchListener(cancelRedPackageTouchListener);
             }
+            postDelayedIfNotFinish(new Runnable() {
+                @Override
+                public void run() {
+                    // 更新 本场成就
+                    UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(activity, UpdateAchievement.class);
+                    if (updateAchievement != null) {
+                        updateAchievement.getStuGoldCount();
+                    }
+                }
+            }, 2900);
         } else {
             String msg = "+" + goldNum + "金币";
             View view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_success, rlRedpacketContent,

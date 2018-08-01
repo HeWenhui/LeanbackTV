@@ -134,8 +134,10 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     private View mFloatView;
     private PopupWindow mPopupWindow;
 
-    public LiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener, LiveAndBackDebug ums, BaseLiveMediaControllerBottom
-            liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
+    public LiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
+                            LiveAndBackDebug ums, BaseLiveMediaControllerBottom
+            liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity>
+                                    otherLiveMessageEntities) {
         super(context);
         liveVideoActivity = (Activity) context;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
@@ -188,6 +190,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         params.width = liveVideoPoint.getRightMargin();
         params.topMargin = liveVideoPoint.y3;
         logger.setLogMethod(false);
+        setVideoLayout(LiveVideoPoint.getInstance());
         logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
         return mView;
     }
@@ -221,29 +224,34 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 int[] location = new int[2];
                 v.getLocationOnScreen(location);
                 //在控件上方显示
-                Loger.i(TAG, "onClick:Width=" + rlLivevideoCommonWord.getWidth() + ",Height=" + rlLivevideoCommonWord.getHeight());
+                Loger.i(TAG, "onClick:Width=" + rlLivevideoCommonWord.getWidth() + ",Height=" + rlLivevideoCommonWord
+                        .getHeight());
                 rlLivevideoCommonWord.setVisibility(View.VISIBLE);
-//                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_common_word.getLayoutParams();
+//                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_common_word
+// .getLayoutParams();
 //                int left = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
 //                if (lp.leftMargin == left) {
 //                    return;
 //                }
 //                lp.leftMargin = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
 //                rl_livevideo_common_word.setLayoutParams(lp);
-//                rl_livevideo_common_word.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+//                rl_livevideo_common_word.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver
+// .OnPreDrawListener() {
 //                    @Override
 //                    public boolean onPreDraw() {
 //                        rl_livevideo_common_word.getViewTreeObserver().removeOnPreDrawListener(this);
 //                        int[] location = new int[2];
 //                        v.getLocationOnScreen(location);
-//                        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_common_word.getLayoutParams();
+//                        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_common_word
+// .getLayoutParams();
 //                        int left = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
 //                        if (lp.leftMargin == left) {
 //                            return false;
 //                        }
 //                        lp.leftMargin = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
 //                        rl_livevideo_common_word.setLayoutParams(lp);
-//                        Loger.i(TAG, "onClick2:Width=" + rl_livevideo_common_word.getWidth() + ",Height=" + rlLivevideoCommonWord.getHeight());
+//                        Loger.i(TAG, "onClick2:Width=" + rl_livevideo_common_word.getWidth() + ",Height=" +
+// rlLivevideoCommonWord.getHeight());
 //                        return true;
 //                    }
 //                });
@@ -483,12 +491,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         if (getInfo != null) {
             String educationStage = getInfo.getEducationStage();
             initFlower(educationStage);
-            liveThreadPoolExecutor.execute(new Runnable() {
+            new Thread() {
                 @Override
                 public void run() {
                     OtherModulesEnter.requestGoldTotal(mContext);
                 }
-            });
+            }.start();
         }
     }
 
@@ -525,7 +533,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     } else {
                         //暂时去掉3秒发言，信息提示
 //                                addMessage("提示", LiveMessageEntity.MESSAGE_TIP, "3秒后才能再次发言，要认真听课哦!");
-                        XESToastUtils.showToast(mContext, ((SEND_MSG_INTERVAL - System.currentTimeMillis() + lastSendMsg) / 1000) + "秒后才能再次发言，要认真听课哦!");
+                        XESToastUtils.showToast(mContext, ((SEND_MSG_INTERVAL - System.currentTimeMillis() +
+                                lastSendMsg) / 1000) + "秒后才能再次发言，要认真听课哦!");
                     }
                 } else {
                     XESToastUtils.showToast(mContext, "老师未开启聊天");
@@ -543,7 +552,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         long before = System.currentTimeMillis();
         final ArrayList<FlowerEntity> flowerEntities = new ArrayList<>();
         //1 2小学
-        if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationStage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationStage)) {
+        if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationStage) || LiveVideoConfig.EDUCATION_STAGE_2.equals
+                (educationStage)) {
             commonAction = new GiftDisable();
             flowsDrawTips[0] = R.drawable.bg_livevideo_heart_small;
             flowsDrawTips[1] = R.drawable.bg_livevideo_tea_middle;
@@ -560,7 +570,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             flowerEntities.add(new FlowerEntity(FLOWERS_MIDDLE, flowsDrawTips[1], "暖心茉莉茶", 50));
             flowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "冰淇淋", 100));
             //3 4初高中
-        } else if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationStage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationStage)) {
+        } else if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationStage) || LiveVideoConfig
+                .EDUCATION_STAGE_4.equals(educationStage)) {
             commonAction = new GiftDisable();
             flowsDrawTips[0] = R.drawable.bg_livevideo_sugar_small;
             flowsDrawTips[1] = R.drawable.bg_livevideo_flower_3_4_middle;
@@ -595,7 +606,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         });
         tvMessageGold = (TextView) flowerContentView.findViewById(R.id.tv_livevideo_message_gold);
         tvMessageGoldLable = (TextView) flowerContentView.findViewById(R.id.tv_livevideo_message_gold_lable);
-        final LinearLayout llMessageFlower = (LinearLayout) flowerContentView.findViewById(R.id.ll_livevideo_message_flower);
+        final LinearLayout llMessageFlower = (LinearLayout) flowerContentView.findViewById(R.id
+                .ll_livevideo_message_flower);
         final LayoutInflater factory = LayoutInflater.from(mContext);
         final CompoundButtonGroup group = new CompoundButtonGroup();
         Loger.i(TAG, "initFlower:time1=" + (System.currentTimeMillis() - before));
@@ -696,6 +708,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         before = System.currentTimeMillis();
     }
 
+    @Override
     public void onTitleShow(boolean show) {
         if (rlMessageContent.getVisibility() != View.GONE) {
             InputMethodManager mInputMethodManager = (InputMethodManager) mContext.getSystemService(Context
@@ -706,6 +719,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         switchFSPanelLinearLayout.setVisibility(View.GONE);
     }
 
+    @Override
     public void closeChat(final boolean close) {
         mView.post(new Runnable() {
             @Override
@@ -767,6 +781,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         }
     }
 
+    @Override
     public void setVideoWidthAndHeight(int width, int height) {
         final View contentView = liveVideoActivity.findViewById(android.R.id.content);
         final View actionBarOverlayLayout = (View) contentView.getParent();
@@ -817,6 +832,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     /** 聊天开始连接 */
+    @Override
     public void onStartConnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -849,13 +865,15 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     /** 聊天连上 */
+    @Override
     public void onConnect() {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT, "");
 //                if (BuildConfig.DEBUG) {
-//                    addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, getInfo.getTeacherId() + "_" + getInfo.getId());
+//                    addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, getInfo.getTeacherId() + "_" + getInfo
+// .getId());
 //                }
                 if (!isRegister) {
                     ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_offline);
@@ -871,6 +889,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     /** 聊天进入房间 */
+    @Override
     public void onRegister() {
         mainHandler.post(new Runnable() {
             @Override
@@ -882,6 +901,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     /** 聊天断开 */
+    @Override
     public void onDisconnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -996,6 +1016,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     /** 被禁言 */
+    @Override
     public void onDisable(final boolean disable, final boolean fromNotice) {
         mainHandler.post(new Runnable() {
             @Override
@@ -1023,6 +1044,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     /** 关闭开启聊天 */
+    @Override
     public void onopenchat(final boolean openchat, final String mode, final boolean fromNotice) {
         mainHandler.post(new Runnable() {
             @Override
@@ -1077,6 +1099,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     /** 关闭开启弹幕 */
+    @Override
     public void onOpenbarrage(final boolean openbarrage, final boolean fromNotice) {
         mainHandler.post(new Runnable() {
             @Override
@@ -1191,8 +1214,10 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             TypeSpannableStringBuilder spannableStringBuilder = new TypeSpannableStringBuilder(msg, name, ftype);
             spannableStringBuilder.append(msg);
             ImageSpan span = new ImageSpan(drawable);//ImageSpan.ALIGN_BOTTOM);
-            spannableStringBuilder.setSpan(span, msg.length(), spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-//        spannableStringBuilder.setSpan(new BackgroundColorSpan(Color.parseColor("#8A2233B1")), 0, spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableStringBuilder.setSpan(span, msg.length(), spannableStringBuilder.length(), Spannable
+                    .SPAN_INCLUSIVE_EXCLUSIVE);
+//        spannableStringBuilder.setSpan(new BackgroundColorSpan(Color.parseColor("#8A2233B1")), 0,
+// spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             return spannableStringBuilder;
         }
 
@@ -1257,7 +1282,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                         if (messageAdapter != null) {
                             messageAdapter.notifyDataSetChanged();
                         } else {
-                            Loger.e(BaseApplication.getContext(), TAG, "" + mContext + "," + sender + "," + type, e, true);
+                            Loger.e(BaseApplication.getContext(), TAG, "" + mContext + "," + sender + "," + type, e,
+                                    true);
                         }
                         if (!isTouch) {
                             lvMessage.setSelection(lvMessage.getCount() - 1);

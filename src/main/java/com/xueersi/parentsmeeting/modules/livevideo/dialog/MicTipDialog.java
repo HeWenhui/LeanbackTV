@@ -84,6 +84,7 @@ public class MicTipDialog extends BaseAlertDialog {
         return oldStatus != status;
     }
 
+    @Override
     public void showDialog() {
         super.showDialog(false, false);
         Handler handler = new Handler();

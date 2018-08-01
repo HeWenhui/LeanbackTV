@@ -111,17 +111,17 @@ public class SmallEnglishRedPackagePager extends BasePager {
         rlArtsUnopenRed.setVisibility(View.GONE);
         rlArtsOpenRed.setVisibility(View.VISIBLE);
         tvArtsOpenRedMoney.setText("+" + goldNum);
-        rlArtsOpenRed.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                //执行一次后就不再执行
-                if (isRepeat) {
-                    startAnimotor(rlArtsOpenRed);
-                    isRepeat = false;
-                }
-
-            }
-        });
+//        rlArtsOpenRed.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//            @Override
+//            public void onGlobalLayout() {
+//                //执行一次后就不再执行
+//                if (isRepeat) {
+//                    startAnimotor(rlArtsOpenRed);
+//                    isRepeat = false;
+//                }
+//
+//            }
+//        });
 
     }
 

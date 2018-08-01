@@ -89,8 +89,10 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         @Override
         public void initAchievement(String mode) {
             if (LiveAchievementIRCBll.this.starAction == null) {
-                LiveAchievementBll starBll = new LiveAchievementBll(activity, mLiveType, mGetInfo.getStarCount(),
-                        mGetInfo.getGoldCount(), true);
+                LiveAchievementBll starBll = new LiveAchievementBll(activity, mLiveType, mGetInfo,//mGetInfo
+                        // .getStarCount(),
+                        //mGetInfo.getGoldCount(),
+                        true);
                 starBll.setLiveBll(LiveAchievementIRCBll.this);
                 starBll.setLiveAndBackDebug(mLiveBll);
                 starBll.initView(mRootView);
@@ -143,8 +145,10 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 }
 
             } else {
-                LiveAchievementBll starBll = new LiveAchievementBll(activity, mLiveType, mGetInfo.getStarCount(),
-                        mGetInfo.getGoldCount(), true);
+                LiveAchievementBll starBll = new LiveAchievementBll(activity, mLiveType, mGetInfo// mGetInfo
+                        // .getStarCount(),
+                        //mGetInfo.getGoldCount()
+                        , true);
                 starBll.setLiveBll(LiveAchievementIRCBll.this);
                 starBll.setLiveAndBackDebug(mLiveBll);
                 starBll.initView(mRootView);

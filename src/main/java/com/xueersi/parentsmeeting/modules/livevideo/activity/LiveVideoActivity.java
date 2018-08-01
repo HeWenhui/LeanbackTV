@@ -1008,7 +1008,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         //本场成就
         if (1 == getInfo.getIsAllowStar()) {
 //            starBll = new StarInteractBll(this, liveType, getInfo.getStarCount(), mIsLand);
-            starBll = new LiveAchievementBll(this, liveType, getInfo.getStarCount(), getInfo.getGoldCount(), mIsLand);
+            starBll = new LiveAchievementBll(this, liveType, getInfo, mIsLand);
             starBll.setLiveBll(mLiveBll);
             starBll.initView(bottomContent);
             mLiveBll.setStarAction(starBll);

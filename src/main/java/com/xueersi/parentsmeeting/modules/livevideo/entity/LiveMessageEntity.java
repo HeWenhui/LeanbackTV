@@ -20,10 +20,15 @@ public class LiveMessageEntity {
     private boolean playAnimation;
     private StandLiveHeadView standLiveHeadView;
     private String headUrl;
+    //自己
     public static final int MESSAGE_MINE = 0;
+    //教师
     public static final int MESSAGE_TEACHER = 1;
+    //同班同学
     public static final int MESSAGE_CLASS = 2;
+    //系统提示
     public static final int MESSAGE_TIP = 3;
+    //献花
     public static final int MESSAGE_FLOWERS = 4;
 
     public LiveMessageEntity(String sender, int type, CharSequence text) {
