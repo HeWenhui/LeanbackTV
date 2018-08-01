@@ -21,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAch
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
@@ -53,6 +54,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControll
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 直播
@@ -81,7 +83,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
     protected BaseLiveMediaControllerBottom liveMediaControllerBottom;
 
     /** onPause状态不暂停视频 */
-    boolean onPauseNotStopVideo = false;
+    PauseNotStopVideoIml pauseNotStopVideoIml;
     private LiveIRCMessageBll liveIRCMessageBll;
     protected String mode = LiveTopic.MODE_TRANING;
 
@@ -246,6 +248,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         mLiveBll.addBusinessShareParam("videoView", videoView);
         mLiveBll.addBusinessShareParam("mMediaController", mMediaController);
         mLiveBll.addBusinessShareParam("liveMediaControllerBottom", liveMediaControllerBottom);
+        pauseNotStopVideoIml = new PauseNotStopVideoIml(activity);
     }
 
     /**
@@ -279,7 +282,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
             if (videoChatEvent != null && videoChatEvent.getStartRemote().get()) {
                 return;
             }
-            if (!onPauseNotStopVideo) {
+            if (!pauseNotStopVideoIml.getPause()) {
                 setFirstBackgroundVisible(View.VISIBLE);
                 liveThreadPoolExecutor.execute(new Runnable() {
                     @Override
@@ -295,7 +298,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
                     }
                 });
             }
-            onPauseNotStopVideo = false;
+            pauseNotStopVideoIml.setPause(false);
         }
         if (mLiveBll != null) {
             mLiveBll.onResume();
@@ -310,7 +313,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
         if (videoChatEvent != null && videoChatEvent.getStartRemote().get()) {
             return;
         }
-        if (!onPauseNotStopVideo) {
+        if (!pauseNotStopVideoIml.getPause()) {
             liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {

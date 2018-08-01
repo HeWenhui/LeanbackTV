@@ -1,11 +1,13 @@
 package com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.event.AppEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -15,6 +17,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.LecAdvertLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
@@ -33,7 +37,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
     LiveAndBackDebug liveAndBackDebug;
     String liveid;
 
-    public LecAdvertBll(Context context) {
+    public LecAdvertBll(Activity context) {
         this.context = context;
         liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
     }
@@ -112,7 +116,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                             liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
                             return;
                         }
-                        lecAdvertager = new LecAdvertPager(context, lecAdvertEntity, LecAdvertBll.this, liveid, liveAndBackDebug);
+                        lecAdvertager = new LecAdvertPager(context, lecAdvertEntity, LecAdvertBll.this, liveid);
                         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                         bottomContent.addView(lecAdvertager.getRootView(), lp);
                         lecAdvertager.initStep1();
@@ -161,4 +165,5 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
     public void onPaySuccess(LecAdvertEntity lecAdvertEntity) {
         Loger.d(TAG, "onPaySuccess:lecAdvertEntity=" + lecAdvertEntity.course_id);
     }
+
 }

@@ -1274,7 +1274,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                     public void onPaySuccess(LecAdvertEntity lecAdvertEntity) {
 
                     }
-                }, mVideoEntity.getLiveId(), LiveStandPlayBackVideoActivity.this);
+                }, mVideoEntity.getLiveId());
                 rlQuestionContent.removeAllViews();
                 rlQuestionContent.addView(lecAdvertPager.getRootView(), new LayoutParams
                         (LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));

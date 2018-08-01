@@ -1,17 +1,29 @@
 package com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business;
 
 import android.app.Activity;
+import android.content.res.Configuration;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoViewActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -20,22 +32,36 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by linyuqiang on 2018/7/18.
  * 直播回放讲座
  */
-public class LecAdvertPlayBackBll extends LiveBackBaseBll {
-    LecAdvertBll lecAdvertAction;
+public class LecAdvertPlayBackBll extends LiveBackBaseBll implements LecBackAdvertHttp {
+    LecBackAdvertBll lecAdvertAction;
 
     public LecAdvertPlayBackBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
+        lecAdvertAction = new LecBackAdvertBll(activity);
     }
 
     @Override
     public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
-
+        lecAdvertAction.setmVideoEntity(mVideoEntity);
+        lecAdvertAction.setLecBackAdvertHttp(this);
     }
-
 
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
+        lecAdvertAction.initView(bottomContent, mIsLand);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        lecAdvertAction.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    protected void onRestart() {
+        if (lecAdvertAction != null) {
+            lecAdvertAction.onRestart();
+        }
     }
 
     @Override
@@ -49,27 +75,8 @@ public class LecAdvertPlayBackBll extends LiveBackBaseBll {
         int vCategory = questionEntity.getvCategory();
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_LEC_ADVERT: {
-                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(), false,
-                        VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
-                verifyCancelAlertDialog.initInfo("测试提醒", "老师发布了一套测试题，是否现在开始答题？");
-                verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        if (vPlayer != null) {
-//                            vPlayer.start();
-//                        }
-
-                    }
-                });
-                verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        LiveMediaController.MediaPlayerControl videoPlayAction = getInstance(LiveMediaController.MediaPlayerControl.class);
-                        videoPlayAction.seekTo(questionEntity.getvEndTime() * 1000);
-                        videoPlayAction.start();
-                    }
-                });
-                verifyCancelAlertDialog.showDialog();
+                lecAdvertAction.showLecAdvertPager(questionEntity);
+                showQuestion.onShow(true);
             }
             break;
             default:
@@ -77,4 +84,44 @@ public class LecAdvertPlayBackBll extends LiveBackBaseBll {
         }
     }
 
+    @Override
+    public void getAdOnLL(String liveId, final LecAdvertEntity lecAdvertEntity, final AbstractBusinessDataCallBack callBack) {
+        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        getCourseHttpManager().getAdOnLL(enstuId, liveId, lecAdvertEntity.course_id, new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                int isLearn = jsonObject.optInt("isLearn", 0);
+                lecAdvertEntity.isLearn = isLearn;
+                if (isLearn == 0) {
+                    lecAdvertEntity.limit = jsonObject.optString("limit");
+                    lecAdvertEntity.signUpUrl = jsonObject.optString("signUpUrl");
+                    lecAdvertEntity.saleName = jsonObject.optString("saleName");
+                    lecAdvertEntity.courseId = jsonObject.optString("courseId");
+                    lecAdvertEntity.classId = jsonObject.optString("classId");
+                }
+                callBack.onDataSucess();
+            }
+        });
+    }
+
+    @Override
+    public void getMoreCourseChoices(String liveid, final AbstractBusinessDataCallBack getDataCallBack) {
+        getCourseHttpManager().getMoreCourseChoices(liveid, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                Log.e("Duncan", "playbackresponseEntity:" + responseEntity);
+                MoreChoice choiceEntity = JsonUtil.getEntityFromJson(responseEntity.getJsonObject().toString(), MoreChoice.class);
+                if (choiceEntity != null) {
+                    getDataCallBack.onDataSucess(choiceEntity);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        lecAdvertAction.onDestory();
+    }
 }

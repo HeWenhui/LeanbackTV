@@ -21,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.*;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecLiveVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -51,6 +52,8 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
     RelativeLayout bottomContent;
     private PopupWindow mPopupWindows;
     LecLiveVideoAction lecLiveVideoAction;
+    /** onPause状态不暂停视频 */
+    PauseNotStopVideoIml pauseNotStopVideoIml;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -74,6 +77,8 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
         mMediaController.setControllerTop(baseLiveMediaControllerTop);
         setMediaControllerBottomParam();
         videoFragment.setIsAutoOrientation(true);
+        pauseNotStopVideoIml = new PauseNotStopVideoIml(activity);
+        mLiveBll.addBusinessShareParam("videoView", videoView);
     }
 
     @Override
@@ -178,20 +183,23 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
         super.onResume();
         if (mHaveStop) {
             mHaveStop = false;
-            setFirstBackgroundVisible(View.VISIBLE);
-            liveThreadPoolExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    synchronized (mIjkLock) {
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                rePlay(false);
-                            }
-                        });
+            if (!pauseNotStopVideoIml.getPause()) {
+                setFirstBackgroundVisible(View.VISIBLE);
+                liveThreadPoolExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        synchronized (mIjkLock) {
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    rePlay(false);
+                                }
+                            });
+                        }
                     }
-                }
-            });
+                });
+            }
+            pauseNotStopVideoIml.setPause(false);
         }
         if (mLiveBll != null) {
             mLiveBll.onResume();
@@ -202,22 +210,27 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
     public void onPause() {
         super.onPause();
         mHaveStop = true;
-        liveThreadPoolExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                synchronized (mIjkLock) {
-                    if (isInitialized()) {
-                        if (openSuccess) {
-                            mLiveVideoBll.stopPlayDuration();
-                            Loger.d(TAG, "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
+        if (!pauseNotStopVideoIml.getPause()) {
+            liveThreadPoolExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    synchronized (mIjkLock) {
+                        if (isInitialized()) {
+                            if (openSuccess) {
+                                mLiveVideoBll.stopPlayDuration();
+                                Loger.d(TAG, "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
+                            }
+                            vPlayer.releaseSurface();
+                            vPlayer.stop();
                         }
-                        vPlayer.releaseSurface();
-                        vPlayer.stop();
+                        isPlay = false;
                     }
-                    isPlay = false;
                 }
-            }
-        });
+            });
+        }
+        if (mLiveBll != null) {
+            mLiveBll.onPause();
+        }
     }
 
     @Override
@@ -241,6 +254,11 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
             logger.d("onConfigurationChanged:videoView2=" + lp.width + "," + lp.height);
         }
         changeLandAndPort();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     /**

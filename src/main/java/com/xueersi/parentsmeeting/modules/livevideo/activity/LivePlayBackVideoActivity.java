@@ -309,6 +309,10 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
+        for (LiveBackBaseBll businessBll : businessBlls) {
+            businessBll.onConfigurationChanged(newConfig);
+        }
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlQuestionContent.getLayoutParams();
         Loger.d(TAG, "onConfigurationChanged:mIsLand=" + mIsLand);
         if (mIsLand.get()) {
@@ -573,6 +577,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
             });
         }
         ProxUtil.getProxUtil().put(this, MediaPlayerControl.class, this);
+        ProxUtil.getProxUtil().put(this, ActivityChangeLand.class, this);
         addBusiness(this);
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
         for (LiveBackBaseBll businessBll : businessBlls) {
@@ -1304,7 +1309,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
                     public void onPaySuccess(LecAdvertEntity lecAdvertEntity) {
 
                     }
-                }, mVideoEntity.getLiveId(), LivePlayBackVideoActivity.this);
+                }, mVideoEntity.getLiveId());
                 rlQuestionContent.removeAllViews();
                 rlQuestionContent.addView(lecAdvertPager.getRootView(), new LayoutParams
                         (LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -2762,6 +2767,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
     @Override
     protected void onRestart() {
         super.onRestart();
+        liveBackBll.onRestart();
         if (picinpic) {
             ViewGroup parents = (ViewGroup) videoView.getParent();
             if (parents != null) {
