@@ -5,13 +5,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/rl_livevideo_Speechbul_panelcontent"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true">-->
+
+        <!--<cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout-->
+            <!--android:id="@+id/rl_livevideo_speechbul_panelroot"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/panel_height"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:visibility="gone" >-->
+
+        <!--</cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout>-->
+    <!--</RelativeLayout>-->
+
     <RelativeLayout
         android:id="@id/rl_livevideo_speechbul_bottom_content"
         android:layout_width="match_parent"
         android:layout_height="137dp"
         android:layout_alignParentBottom="true"
-        android:background="#2B1D1A"
-        android:alpha="0.92">
+        android:alpha="0.92"
+        android:background="#FF2B1D1A">
 
         <TextView
             android:id="@id/tv_livevideo_speechbul_title"
@@ -21,7 +38,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="45dp"
             android:text="语音录入中（15字以内）"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <ImageView
             android:id="@id/tv_livevideo_speechbul_close"
@@ -36,75 +53,62 @@
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:layout_below="@id/tv_livevideo_speechbul_title"
-            android:layout_marginTop="35dp"
             android:layout_marginLeft="48dp"
             android:layout_marginRight="48dp"
-            android:visibility="gone"/>
+            android:layout_marginTop="35dp"
+            android:visibility="gone" />
 
-        <!--<cn.dreamtobe.kpswitch.widget.KPSwitchPanelLinearLayout-->
-            <!--android:id="@+id/rl_livevideo_speechbul_panelroot"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="@dimen/panel_height"-->
-            <!--android:layout_below="@id/rv_livevideo_speechbul_root"-->
-            <!--android:visibility="gone">-->
-            <!--&lt;!&ndash; 面板内容 &ndash;&gt;-->
-            <!--...-->
-        <!--</cn.dreamtobe.kpswitch.widget.KPSwitchPanelLinearLayout>-->
+
         <RelativeLayout
             android:id="@id/rl_livevideo_speechbul_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="35dp"
+            android:layout_below="@id/tv_livevideo_speechbul_title"
             android:layout_marginLeft="65dp"
             android:layout_marginRight="65dp"
-            android:layout_below="@id/tv_livevideo_speechbul_title">
+            android:layout_marginTop="35dp">
 
             <EditText
                 android:id="@id/et_livevideo_speechbul_words"
+                style="@style/text_font14_ffffff_style"
                 android:layout_width="match_parent"
                 android:layout_height="41dp"
-                style="@style/text_font14_ffffff_style"
                 android:layout_toLeftOf="@id/tv_livevideo_speechbul_send"
-                android:paddingLeft="21dp"
-                android:gravity="center_vertical"
                 android:background="@drawable/shape_livevideo_speechbul_words_bg"
-                android:imeOptions="flagNoFullscreen|flagNoExtractUi"
+                android:gravity="center_vertical"
+                android:imeOptions="flagNoFullscreen"
+                android:paddingLeft="21dp"
                 android:singleLine="true"
-                android:text="白日依山尽，黄河入河流"/>
+                android:text="白日依山尽，黄河入河流" />
+
             <TextView
                 android:id="@id/tv_livevideo_speechbul_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/tv_livevideo_speechbul_send"
-                android:gravity="center"
+                style="@style/text_font13_ffffff_style"
+                android:layout_width="75dp"
+                android:layout_height="41dp"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="12dp"
-                style="@style/text_font13_ffffff_style"
-                android:text="10/15"/>
-            <TextView
+                android:layout_toLeftOf="@id/tv_livevideo_speechbul_send"
+                android:gravity="center"
+                android:text="10/15" />
+
+            <ImageView
                 android:id="@id/tv_livevideo_speechbul_send"
                 android:layout_width="75dp"
                 android:layout_height="41dp"
-                android:gravity="center"
-                style="@style/text_font17_ffffff_style"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/shape_livevideo_speechbul_send_bg"
-                android:text="发送" />
+                android:gravity="center"
+                android:src="@drawable/selector_livevideo_speechbul_send" />
         </RelativeLayout>
-        <TextView
+
+        <ImageView
             android:id="@id/tv_livevideo_speechbul_repeat"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:gravity="center"
+            android:layout_width="87dp"
+            android:layout_height="37dp"
+            android:layout_below="@id/rl_livevideo_speechbul_input"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
-            android:paddingLeft="19dp"
-            android:paddingRight="19dp"
-            android:background="@drawable/shape_livevideo_speechbul_repeat_bg"
-            android:layout_below="@id/rl_livevideo_speechbul_input"
-            android:textColor="#FFFFFF"
-            android:textSize="15sp"
-            android:text="重说"/>
+            android:src="@drawable/selector_livevideo_speechbul_repeat" />
 
     </RelativeLayout>
 
