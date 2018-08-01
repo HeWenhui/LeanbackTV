@@ -103,6 +103,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setsTime(data.optLong("stime"));
             getInfo.seteTime(data.optLong("etime"));
             getInfo.setNowTime(data.getDouble("nowTime"));
+            if(1 == data.getInt("isPrimarySchool")){
+                LiveVideoConfig.isPrimary = true;
+            }else{
+                LiveVideoConfig.isPrimary = false;
+            }
             //getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));\
             if (data.has("isAllowTeamPk")) {
                 getInfo.setIsAllowTeamPk(data.getString("isAllowTeamPk"));

@@ -2563,11 +2563,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         } else {
             appID = UmsConstants.LIVE_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
-            if (mGetInfo.getGrade() > 1 || mGetInfo.getGrade() < 65) {
-                LiveVideoConfig.isPrimary = true;
-            } else {
-                LiveVideoConfig.isPrimary = false;
-            }
+//            if (mGetInfo.getGrade() > 1 || mGetInfo.getGrade() < 65) {
+//                LiveVideoConfig.isPrimary = true;
+//            } else {
+//                LiveVideoConfig.isPrimary = false;
+//            }
         }
         LiveVideoConfig.educationstage = mGetInfo.getEducationStage();
         if (mLiveType == LIVE_TYPE_LIVE) {

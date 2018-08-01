@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -131,6 +132,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     private String termId;
     private View mFloatView;
     private PopupWindow mPopupWindow;
+    private int index;
 
     public LiveMessagePager(Context context, QuestionBll questionBll, LiveAndBackDebug ums, BaseLiveMediaControllerBottom
             liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
@@ -547,16 +549,19 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     ice.setVisibility(View.GONE);
                     cup.setVisibility(View.GONE);
                     heart.setVisibility(View.VISIBLE);
+                    index = 0 ;
                 } else if (v.getId() == R.id.rl_cup) {
                     flowerContentView.setTag(flowerEntities.get(1));
                     ice.setVisibility(View.GONE);
                     cup.setVisibility(View.VISIBLE);
                     heart.setVisibility(View.GONE);
+                    index = 1;
                 } else if (v.getId() == R.id.rl_ice) {
                     flowerContentView.setTag(flowerEntities.get(2));
                     ice.setVisibility(View.VISIBLE);
                     cup.setVisibility(View.GONE);
                     heart.setVisibility(View.GONE);
+                    index = 2;
                 } else if (v.getId() == R.id.iv_livevideo_present_close) {
                     mFlowerWindow.dismiss();
                 }
@@ -597,7 +602,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                                             }
                                         }
                                     }
-                                    addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
+                                    if(LiveVideoConfig.isPrimary){
+//                                        addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
+                                        liveBll.getLiveAutoNoticeBll().showGiftSuccessNotice(getTips(index), getHeard(index));
+                                    }else{
+                                        addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
+                                    }
                                     mView.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
@@ -1406,4 +1416,18 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     public void hideclock() {
         cbMessageClock.setVisibility(View.GONE);
     }
+
+    public Drawable getHeard(int type){
+        Drawable drawable;
+        drawable = mContext.getResources().getDrawable(flowsDrawLittleTips[type]);
+        return drawable;
+    }
+
+    public String getTips(int type){
+        StringBuffer tip =  new StringBuffer();
+        tip.append(getInfo.getStuName());
+        tip.append(flowsTips[type]);
+        return tip.toString();
+    }
+
 }
