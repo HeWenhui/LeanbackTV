@@ -238,6 +238,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
             if (artsRedPackagePager.getCancelRedPackageTouchListener() == null) {
                 artsRedPackagePager.setCancelRedPackageTouchListener(cancelRedPackageTouchListener);
             }
+            rlRedpacketContent.addView(artsRedPackagePager.getRootView());
             postDelayedIfNotFinish(new Runnable() {
                 @Override
                 public void run() {
