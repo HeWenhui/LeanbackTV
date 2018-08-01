@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.SizeUtils;
@@ -94,7 +95,11 @@ public class TeamPkStateLayout extends FrameLayout {
 
 
     private void initView() {
-        LayoutInflater.from(getContext()).inflate(R.layout.team_pk_state_layout, this);
+        if(LiveVideoConfig.isPrimary){
+            LayoutInflater.from(getContext()).inflate(R.layout.team_pspk_state_layout, this);
+        } else {
+            LayoutInflater.from(getContext()).inflate(R.layout.team_pk_state_layout, this);
+        }
         pkProgressBar = findViewById(R.id.tpb_teampk_pkstate_energy_bar);
         tvMyTeamEnergy = findViewById(R.id.tv_teampk_pkstate_myteam_energy);
         tvOtherTeamEnergy = findViewById(R.id.tv_teampk_pkstate_otherteam_energy);

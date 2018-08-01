@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
@@ -447,20 +448,42 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                                 color = nameColors[0];
                                 break;
                         }
-                        CharacterStyle characterStyle = new ForegroundColorSpan(color);
-                        spanttt.setSpan(characterStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                        if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
-                            tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
-                            tvMessageItem.setText(entity.getText());
-                            urlClick(tvMessageItem);
-                            CharSequence text = tvMessageItem.getText();
-                            tvMessageItem.setText(spanttt);
-                            tvMessageItem.append(text);
+                        if(LiveVideoConfig.isPrimary){
+                            CharacterStyle characterStyle = new ForegroundColorSpan(color);
+                            spanttt.setSpan(characterStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                            // 将字体文件保存在assets/fonts/目录下，在程序中通过如下方式实例化自定义字体：
+                            Typeface typeFace = Typeface.createFromAsset(liveVideoActivity.getAssets(),"fangzhengcuyuan.ttf");
+                            // 应用字体
+                            tvMessageItem.setTypeface(typeFace);
+                            if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
+                                tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
+                                tvMessageItem.setText(entity.getText());
+                                urlClick(tvMessageItem);
+                                CharSequence text = tvMessageItem.getText();
+                                tvMessageItem.setText(spanttt);
+                                tvMessageItem.append(text);
+                            } else {
+                                tvMessageItem.setAutoLinkMask(0);
+                                tvMessageItem.setText(spanttt);
+                                tvMessageItem.append(entity.getText());
+                            }
                         } else {
-                            tvMessageItem.setAutoLinkMask(0);
-                            tvMessageItem.setText(spanttt);
-                            tvMessageItem.append(entity.getText());
+                            CharacterStyle characterStyle = new ForegroundColorSpan(color);
+                            spanttt.setSpan(characterStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                            if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
+                                tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
+                                tvMessageItem.setText(entity.getText());
+                                urlClick(tvMessageItem);
+                                CharSequence text = tvMessageItem.getText();
+                                tvMessageItem.setText(spanttt);
+                                tvMessageItem.append(text);
+                            } else {
+                                tvMessageItem.setAutoLinkMask(0);
+                                tvMessageItem.setText(spanttt);
+                                tvMessageItem.append(entity.getText());
+                            }
                         }
+
                     }
                 };
             }
