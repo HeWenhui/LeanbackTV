@@ -18,6 +18,8 @@
         android:layout_marginTop="100dp"
         android:gravity="center"
         android:text=""
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textColor="@color/COLOR_9A4A19"
         android:textSize="14sp" />
 
