@@ -279,4 +279,9 @@ public class LiveBackVideoFragment extends LiveVideoFragmentBase implements Acti
                 ImageLoader.with(activity).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
         }
     }
+
+    @Override
+    public void changeLOrP() {
+        videoFragment.changeLOrP();
+    }
 }

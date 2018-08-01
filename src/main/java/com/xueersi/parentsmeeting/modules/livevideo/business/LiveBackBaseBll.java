@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.RelativeLayout;
@@ -57,6 +58,10 @@ public class LiveBackBaseBll extends BaseBll {
 
     }
 
+    public void onConfigurationChanged(Configuration newConfig) {
+
+    }
+
     public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
 
     }
@@ -79,6 +84,10 @@ public class LiveBackBaseBll extends BaseBll {
 
     public LivePlayBackHttpResponseParser getCourseHttpResponseParser() {
         return liveBackBll.getCourseHttpResponseParser();
+    }
+
+    protected void onRestart() {
+
     }
 
     /**

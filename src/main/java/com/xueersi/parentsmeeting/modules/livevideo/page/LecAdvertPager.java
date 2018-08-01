@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.xueersi.common.event.MiniEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertPagerClose;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,16 +31,14 @@ public class LecAdvertPager extends LiveBasePager {
     private int step = 1;
     LecAdvertEntity lecAdvertEntity;
     String liveid;
-    LiveAndBackDebug liveAndBackDebug;
     private Activity mActivity;
 
-    public LecAdvertPager(Context context, LecAdvertEntity lecAdvertEntity, LecAdvertPagerClose lecAdvertBll, String liveid, LiveAndBackDebug liveAndBackDebug) {
+    public LecAdvertPager(Context context, LecAdvertEntity lecAdvertEntity, LecAdvertPagerClose lecAdvertBll, String liveid) {
         super(context);
         this.mActivity = (Activity) context;
         this.lecAdvertBll = lecAdvertBll;
         this.lecAdvertEntity = lecAdvertEntity;
         this.liveid = liveid;
-        this.liveAndBackDebug = liveAndBackDebug;
         initData();
     }
 

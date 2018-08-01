@@ -10,4 +10,6 @@ public interface ActivityChangeLand {
     void setAutoOrientation(boolean isAutoOrientation);
 
     void setRequestedOrientation(int requestedOrientation);
+
+    void changeLOrP();
 }

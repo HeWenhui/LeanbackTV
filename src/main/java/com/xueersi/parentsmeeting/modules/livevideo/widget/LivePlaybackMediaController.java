@@ -39,7 +39,9 @@ public class LivePlaybackMediaController extends MediaController2 {
     private RelativeLayout rlKeyPoints;
     private RelativeLayout rlKeytip;
     Activity activity;
-    boolean mIsLand;
+    boolean mIsLand = true;
+    private View landView;
+    private View portView;
 
     public LivePlaybackMediaController(Context context, MediaPlayerControl player, boolean mIsLand) {
         super(context, player);
@@ -49,6 +51,24 @@ public class LivePlaybackMediaController extends MediaController2 {
         rlKeyPoints = (RelativeLayout) mediaControllerBottom.findViewById(R.id.rl_video_mediacontroller_keypoints);
         rlKeytip = (RelativeLayout) mediaControllerBottom.findViewById(R.id.rl_video_mediacontroller_keytip);
         setControllerBottom(mediaControllerBottom);
+    }
+
+    @Override
+    protected View inflateLayout() {
+        View view;
+        if (mIsLand) {
+            if (landView == null) {
+                landView = LayoutInflater.from(getContext()).inflate(R.layout.pop_mediacontroller, this, false);
+            }
+            view = landView;
+        } else {
+            if (portView == null) {
+                portView = LayoutInflater.from(getContext()).inflate(R.layout.pop_mediacontroller, this, false);
+            }
+            view = portView;
+        }
+        addView(view);
+        return view;
     }
 
     public void onAttach(boolean isLand) {

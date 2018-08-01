@@ -21,18 +21,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 
 public class NBH5PlayBackBll extends LiveBackBaseBll {
-
+    H5CoursewareBll h5CoursewareBll;
 
     public NBH5PlayBackBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
-
     }
 
     @Override
     public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
 
     }
-
 
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
@@ -42,6 +40,13 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
     @Override
     public int[] getCategorys() {
         return new int[]{LocalCourseConfig.CATEGORY_H5COURSE_WARE};
+    }
+
+    @Override
+    public void onQuestionEnd(VideoQuestionEntity questionEntity) {
+        if (h5CoursewareBll != null) {
+            h5CoursewareBll.onH5Courseware(questionEntity.getH5Play_url(), "off");
+        }
     }
 
     @Override
@@ -59,7 +64,11 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
 //                        if (vPlayer != null) {
 //                            vPlayer.start();
 //                        }
-
+                        if (h5CoursewareBll == null) {
+                            h5CoursewareBll = new H5CoursewareBll(mContext);
+                            h5CoursewareBll.initView(mRootView);
+                        }
+                        h5CoursewareBll.onH5Courseware(questionEntity.getH5Play_url(), "on");
                     }
                 });
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {

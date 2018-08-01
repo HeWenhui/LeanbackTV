@@ -447,6 +447,12 @@ public class LiveBackBll implements LiveAndBackDebug {
         return mIsShowQuestion;
     }
 
+    public void onRestart() {
+        for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
+            businessBll.onRestart();
+        }
+    }
+
     public void onDestory() {
         for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
             businessBll.onDestory();
