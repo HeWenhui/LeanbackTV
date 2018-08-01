@@ -22,11 +22,11 @@ public class LiveBackStandVoiceAnswerCreat extends LiveStandVoiceAnswerCreat{
 
     @Override
     public boolean onAnswerReslut(Context context, AnswerRightResultVoice questionBll, BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
-        MediaPlayerControl videoPlayAction = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
-        if (videoPlayAction != null) {
+        MediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
+        if (mediaPlayerControl != null) {
             VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
-            videoPlayAction.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
-            videoPlayAction.start();
+            mediaPlayerControl.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
+            mediaPlayerControl.start();
         }
         MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(context, MediaControllerAction.class);
         mediaControllerAction.attachMediaController();

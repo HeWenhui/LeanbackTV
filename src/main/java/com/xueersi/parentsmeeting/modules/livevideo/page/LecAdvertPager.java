@@ -56,7 +56,7 @@ public class LecAdvertPager extends LiveBasePager {
         step1.findViewById(R.id.iv_livelec_advert_step1_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                lecAdvertBll.close();
+                lecAdvertBll.close(true);
                 EventBus.getDefault().post(new MiniEvent("Advertisement","","",""));
             }
         });
@@ -80,7 +80,7 @@ public class LecAdvertPager extends LiveBasePager {
 //                LecAdvertLog.sno5(lecAdvertEntity, liveAndBackDebug);
                 // 04.09 直接跳转到订单支付页面
                 EventBus.getDefault().post(new MiniEvent("Order",lecAdvertEntity.courseId,lecAdvertEntity.classId,lecAdvertEntity.id));
-                lecAdvertBll.close();
+                lecAdvertBll.close(false);
             }
         });
     }

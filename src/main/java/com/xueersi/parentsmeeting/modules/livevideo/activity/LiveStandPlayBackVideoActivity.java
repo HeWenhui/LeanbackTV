@@ -1260,7 +1260,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                 lecAdvertPager = new LecAdvertPager(LiveStandPlayBackVideoActivity.this, lecAdvertEntity, new LecAdvertPagerClose() {
 
                     @Override
-                    public void close() {
+                    public void close(boolean land) {
                         if (lecAdvertPager != null) {
                             rlQuestionContent.removeView(lecAdvertPager.getRootView());
                         }

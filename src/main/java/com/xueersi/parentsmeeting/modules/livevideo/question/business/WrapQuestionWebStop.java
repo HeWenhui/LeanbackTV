@@ -35,8 +35,8 @@ public class WrapQuestionWebStop implements BaseQuestionWebInter.StopWebQuestion
         stopWebQuestion.stopWebQuestion(pager, testId);
         MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(context, MediaControllerAction.class);
         mediaControllerAction.attachMediaController();
-        MediaPlayerControl videoPlayAction = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
-        videoPlayAction.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
-        videoPlayAction.start();
+        MediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
+        mediaPlayerControl.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
+        mediaPlayerControl.start();
     }
 }

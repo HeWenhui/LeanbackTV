@@ -26,8 +26,8 @@ public class LiveBackExamStop implements BaseExamQuestionInter.ExamStop {
         questionBll.stopExam(mQuestionEntity.getvQuestionID(), baseExamQuestionInter);
         MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(context, MediaControllerAction.class);
         mediaControllerAction.attachMediaController();
-        MediaPlayerControl videoPlayAction = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
-        videoPlayAction.seekTo(mQuestionEntity.getvEndTime() * 1000);
-        videoPlayAction.start();
+        MediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
+        mediaPlayerControl.seekTo(mQuestionEntity.getvEndTime() * 1000);
+        mediaPlayerControl.start();
     }
 }

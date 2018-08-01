@@ -74,9 +74,9 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl videoPlayAction = getInstance(MediaPlayerControl.class);
-                        videoPlayAction.seekTo(questionEntity.getvEndTime() * 1000);
-                        videoPlayAction.start();
+                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
+                        mediaPlayerControl.start();
                     }
                 });
                 verifyCancelAlertDialog.showDialog();

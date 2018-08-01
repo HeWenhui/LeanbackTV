@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Handler;
 import android.os.Looper;
@@ -87,6 +88,14 @@ public class LiveBackBaseBll extends BaseBll {
     }
 
     protected void onRestart() {
+
+    }
+
+    protected void onStop() {
+
+    }
+
+    protected void onNewIntent(Intent intent) {
 
     }
 

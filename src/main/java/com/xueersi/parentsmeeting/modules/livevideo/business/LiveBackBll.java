@@ -453,6 +453,18 @@ public class LiveBackBll implements LiveAndBackDebug {
         }
     }
 
+    public void onStop() {
+        for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
+            businessBll.onStop();
+        }
+    }
+
+    public void onNewIntent(Intent intent) {
+        for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
+            businessBll.onNewIntent(intent);
+        }
+    }
+
     public void onDestory() {
         for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
             businessBll.onDestory();

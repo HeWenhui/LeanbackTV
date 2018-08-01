@@ -90,9 +90,9 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         int vCategory = questionEntity.getvCategory();
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE: {
-                MediaPlayerControl videoPlayAction = getInstance(MediaPlayerControl.class);
-                if (videoPlayAction != null) {
-                    videoPlayAction.pause();
+                MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                if (mediaPlayerControl != null) {
+                    mediaPlayerControl.pause();
                 }
                 questionEntity.setAnswered(true);
                 VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(), false,
@@ -101,9 +101,9 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                 verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl videoPlayAction = getInstance(MediaPlayerControl.class);
-                        if (videoPlayAction != null) {
-                            videoPlayAction.start();
+                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        if (mediaPlayerControl != null) {
+                            mediaPlayerControl.start();
                         }
                         VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity);
                         englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
@@ -113,9 +113,9 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl videoPlayAction = getInstance(MediaPlayerControl.class);
-                        videoPlayAction.seekTo(questionEntity.getvEndTime() * 1000);
-                        videoPlayAction.start();
+                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
+                        mediaPlayerControl.start();
                         showQuestion.onShow(false);
                     }
                 });

@@ -37,9 +37,9 @@ public class WrapSpeechEvalAction implements SpeechEvalAction {
     @Override
     public void stopSpeech(BaseSpeechAssessmentPager pager, String num) {
         speechEvalAction.stopSpeech(pager, num);
-        MediaPlayerControl videoPlayAction = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
-        videoPlayAction.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
-        videoPlayAction.start();
+        MediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
+        mediaPlayerControl.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
+        mediaPlayerControl.start();
     }
 
     @Override

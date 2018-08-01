@@ -19,6 +19,11 @@ public class PauseNotStopVideoIml implements PauseNotStopVideoInter {
         ProxUtil.getProxUtil().put(activity, PauseNotStopVideoInter.class, this);
     }
 
+    public PauseNotStopVideoIml(Activity activity, AtomicBoolean onPauseNotStopVideo) {
+        ProxUtil.getProxUtil().put(activity, PauseNotStopVideoInter.class, this);
+        this.onPauseNotStopVideo = onPauseNotStopVideo;
+    }
+
     @Override
     public void setPause(boolean pause) {
         onPauseNotStopVideo.set(pause);

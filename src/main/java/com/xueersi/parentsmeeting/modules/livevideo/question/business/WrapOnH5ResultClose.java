@@ -32,10 +32,10 @@ public class WrapOnH5ResultClose implements EnglishH5CoursewareBll.OnH5ResultClo
     @Override
     public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager) {
         onH5ResultClose.onH5ResultClose(baseEnglishH5CoursewarePager);
-        MediaPlayerControl videoPlayAction = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
-        if (videoPlayAction != null) {
-            videoPlayAction.seekTo(videoQuestionH5Entity.getvEndTime() * 1000);
-            videoPlayAction.start();
+        MediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
+        if (mediaPlayerControl != null) {
+            mediaPlayerControl.seekTo(videoQuestionH5Entity.getvEndTime() * 1000);
+            mediaPlayerControl.start();
         }
         MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(context, MediaControllerAction.class);
         mediaControllerAction.attachMediaController();

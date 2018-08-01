@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoViewActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
@@ -34,34 +36,50 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class LecAdvertPlayBackBll extends LiveBackBaseBll implements LecBackAdvertHttp {
     LecBackAdvertBll lecAdvertAction;
+    LecBackAdvertPopBll lecBackAdvertPopBll;
 
     public LecAdvertPlayBackBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
         lecAdvertAction = new LecBackAdvertBll(activity);
+        lecBackAdvertPopBll = new LecBackAdvertPopBll(activity);
+        lecAdvertAction.setLecBackAdvertPopBll(lecBackAdvertPopBll);
     }
 
     @Override
     public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
         lecAdvertAction.setmVideoEntity(mVideoEntity);
         lecAdvertAction.setLecBackAdvertHttp(this);
+        lecBackAdvertPopBll.setmVideoEntity(mVideoEntity);
+        lecBackAdvertPopBll.setLecBackAdvertHttp(this);
+        VideoView videoView = (VideoView) businessShareParamMap.get("videoView");
+        lecBackAdvertPopBll.setVideoView(videoView);
     }
 
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
         lecAdvertAction.initView(bottomContent, mIsLand);
+        lecBackAdvertPopBll.initView(bottomContent, mIsLand);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        lecAdvertAction.onConfigurationChanged(newConfig);
+        lecBackAdvertPopBll.onConfigurationChanged(newConfig);
     }
 
     @Override
     protected void onRestart() {
-        if (lecAdvertAction != null) {
-            lecAdvertAction.onRestart();
-        }
+        lecBackAdvertPopBll.onRestart();
+    }
+
+    @Override
+    protected void onStop() {
+        lecBackAdvertPopBll.onStop();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        lecBackAdvertPopBll.onNewIntent(intent);
     }
 
     @Override
@@ -76,7 +94,6 @@ public class LecAdvertPlayBackBll extends LiveBackBaseBll implements LecBackAdve
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_LEC_ADVERT: {
                 lecAdvertAction.showLecAdvertPager(questionEntity);
-                showQuestion.onShow(true);
             }
             break;
             default:
@@ -123,5 +140,6 @@ public class LecAdvertPlayBackBll extends LiveBackBaseBll implements LecBackAdve
     public void onDestory() {
         super.onDestory();
         lecAdvertAction.onDestory();
+        lecBackAdvertPopBll.onDestory();
     }
 }

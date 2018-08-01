@@ -1,6 +1,10 @@
 package com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -25,7 +29,11 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.item.MoreChoiceItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
+import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
@@ -35,6 +43,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
+import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 
 import org.greenrobot.eventbus.EventBus;
@@ -44,8 +53,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile.liveBll;
 
 /**
  * Created by linyuqiang on 2018/1/15.
@@ -76,10 +83,13 @@ public class LecBackAdvertPopBll {
     protected VideoView videoView;
     private View mFloatView;
     private PopupWindow mPopupWindows;
+    private BroadcastReceiver receiver;
+    LiveAndBackDebug liveAndBackDebug;
 
     public LecBackAdvertPopBll(Activity activity) {
         this.activity = activity;
         EventBus.getDefault().register(this);
+        liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
     }
 
     public void setmVideoEntity(VideoLivePlayBackEntity mVideoEntity) {
@@ -107,6 +117,30 @@ public class LecBackAdvertPopBll {
                 activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             }
         });
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("refreshadvertisementlist");
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // 04.12 弹出广告的时候，需要刷新广告列表
+                lecBackAdvertHttp.getMoreCourseChoices(mVideoEntity.getLiveId(), getDataCallBack);
+            }
+        };
+        activity.registerReceiver(receiver, intentFilter);
+        // 04.04 更多课程的数据加载
+        if (mCourseAdapter == null) {
+            mCourseAdapter = new CommonAdapter<MoreChoice.Choice>(mChoices) {
+                @Override
+                public AdapterItemInterface<MoreChoice.Choice> getItemView(Object type) {
+                    MoreChoiceItem morelistItem = new MoreChoiceItem(activity, mData);
+                    return morelistItem;
+                }
+            };
+            mMorecourse.setAdapter(mCourseAdapter);
+        }
+        // 04.12 第一次进入的时候，就去请求回放的所有广告信息
+        lecBackAdvertHttp.getMoreCourseChoices(mVideoEntity.getLiveId(), getDataCallBack);
     }
 
     public void setVideoView(VideoView videoView) {
@@ -140,6 +174,7 @@ public class LecBackAdvertPopBll {
             lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
             lp.addRule(RelativeLayout.BELOW, 0);
             if (mPopupWindows != null) {
+                mPopupWindows.dismiss();
                 mPopupWindows = null;
             }
             if (LiveVideoConfig.MORE_COURSE > 0) {
@@ -185,6 +220,7 @@ public class LecBackAdvertPopBll {
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(MiniEvent event) {
+        Loger.d("onEvent:mIsLand=" + mIsLand.get());
         if ("Order".equals(event.getMin())) {
             if (mIsLand.get()) {
                 final String courseId = event.getCourseId();
@@ -206,7 +242,7 @@ public class LecBackAdvertPopBll {
             logHashMap.put("adsid", "" + event.getAdId());
             logHashMap.addSno("5").addStable("2");
             logHashMap.put("extra", "点击了立即报名");
-            liveBll.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
+            liveAndBackDebug.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
             LiveVideoConfig.LECTUREADID = event.getAdId();
         }
         if ("ConfirmClick".equals(event.getMin())) {
@@ -215,7 +251,7 @@ public class LecBackAdvertPopBll {
             logHashMap.put("adsid", "" + LiveVideoConfig.LECTUREADID);
             logHashMap.addSno("6").addStable("2");
             logHashMap.put("extra", "点击了立即支付");
-            liveBll.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
+            liveAndBackDebug.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
         }
         if ("OrderPaySuccess".equals(event.getMin())) {
             // 添加用户购买成功的日志
@@ -224,7 +260,7 @@ public class LecBackAdvertPopBll {
             logHashMap.addSno("7").addStable("2");
             logHashMap.put("orderid", event.getCourseId());
             logHashMap.put("extra", "用户支付成功");
-            liveBll.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
+            liveAndBackDebug.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
         }
     }
 
@@ -240,12 +276,13 @@ public class LecBackAdvertPopBll {
             //开启悬浮窗
             OtherModulesEnter.intentToOrderConfirmActivity(activity, courseId + "-" + classId, 100, "LectureLiveVideoActivity");
             FloatWindowManager.addView(activity, videoView, 2);
-            AppConfig.LECTURELIVEBACK = false;
+            PauseNotStopVideoInter pauseNotStopVideoIml = ProxUtil.getProxUtil().get(activity, PauseNotStopVideoInter.class);
+            pauseNotStopVideoIml.setPause(true);
             picinpic = true;
         }
     }
 
-    protected void onRestart() {
+    void onRestart() {
         if (picinpic) {
             ViewGroup parents = (ViewGroup) videoView.getParent();
             if (parents != null) {
@@ -259,7 +296,24 @@ public class LecBackAdvertPopBll {
         }
     }
 
+    void onStop() {
+        PauseNotStopVideoInter pauseNotStopVideoIml = ProxUtil.getProxUtil().get(activity, PauseNotStopVideoInter.class);
+        pauseNotStopVideoIml.setPause(false);
+    }
+
+    void onNewIntent(Intent intent) {
+        ViewGroup parents = (ViewGroup) videoView.getParent();
+        if (parents != null) {
+            parents.removeView(videoView);
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+            mParent.addView(videoView, params);
+        }
+    }
+
     void onDestory() {
+        activity.unregisterReceiver(receiver);
         EventBus.getDefault().unregister(this);
     }
 

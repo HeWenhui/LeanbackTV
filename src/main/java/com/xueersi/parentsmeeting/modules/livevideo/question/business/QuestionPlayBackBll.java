@@ -84,7 +84,6 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         questionBll.setBaseSubjectResultCreat(liveBackSubjectResultCreat);
     }
 
-
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
@@ -102,8 +101,8 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             case LocalCourseConfig.CATEGORY_QUESTION: {
                 questionBll.onStopQuestion(questionEntity.getvQuestionType(), "");
                 if (LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(questionEntity.getvQuestionType())) {
-                    MediaPlayerControl videoPlayAction = getInstance(MediaPlayerControl.class);
-                    videoPlayAction.pause();
+                    MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                    mediaPlayerControl.pause();
                 }
             }
             break;
@@ -160,9 +159,9 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl videoPlayAction = getInstance(MediaPlayerControl.class);
-                        videoPlayAction.seekTo(questionEntity.getvEndTime() * 1000);
-                        videoPlayAction.start();
+                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
+                        mediaPlayerControl.start();
                         showQuestion.onShow(false);
                     }
                 });
