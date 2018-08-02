@@ -12,6 +12,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
@@ -68,6 +69,51 @@ public class RedPackagePlayBackBll extends LiveBackBaseBll {
                 redPackageStandBll.setUserName(showName);
                 redPackageStandBll.setHeadUrl(headUrl);
                 redPackageStandBll.initView(mRootView);
+                redPackageStandBll.setReceiveGold(new RedPackageAction.ReceiveGoldStand() {
+                    @Override
+                    public void getReceiveGoldTeamStatus(int operateId, AbstractBusinessDataCallBack callBack) {
+
+                    }
+
+                    @Override
+                    public void getReceiveGoldTeamRank(int operateId, AbstractBusinessDataCallBack callBack) {
+
+                    }
+
+                    @Override
+                    public void onReceiveGold() {
+
+                    }
+
+                    @Override
+                    public void sendReceiveGold(int operateId, String liveId, final AbstractBusinessDataCallBack callBack) {
+                        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+                        // 网络加载数据
+                        getCourseHttpManager().getLivePlayRedPacket(myUserInfoEntity.getEnstuId(), "" + operateId, liveId,
+                                new HttpCallBack(false) {
+
+                                    @Override
+                                    public void onPmSuccess(ResponseEntity responseEntity) {
+                                        VideoResultEntity entity = getCourseHttpResponseParser()
+                                                .redPacketParseParser(responseEntity);
+                                        callBack.onDataSucess(entity);
+//                        EventBus.getDefault().post(new PlaybackVideoEvent.OnGetRedPacket(entity));
+                                    }
+
+                                    @Override
+                                    public void onPmFailure(Throwable error, String msg) {
+                                        XESToastUtils.showToast(mContext, msg);
+                                        callBack.onDataFail(0, msg);
+                                    }
+
+                                    @Override
+                                    public void onPmError(ResponseEntity responseEntity) {
+                                        XESToastUtils.showToast(mContext, responseEntity.getErrorMsg());
+                                        callBack.onDataFail(1, responseEntity.getErrorMsg());
+                                    }
+                                });
+                    }
+                });
             } else {
                 RedPackageBll redPackageBll = new RedPackageBll(activity, null, false);
                 redPackageBll.setVSectionID(mVideoEntity.getSectionId());
