@@ -88,7 +88,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     {
         /** 布局默认资源 */
-        mLayoutVideo = R.layout.activity_live_back_video;
+        mLayoutVideo = R.layout.frag_live_back_video;
     }
 
     private RelativeLayout rl_course_video_live_controller_content;
@@ -101,14 +101,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     private RelativeLayout rlFirstBackgroundView;
     /** 是不是播放失败 */
     boolean resultFailed = false;
-    /** 当前是否正在显示互动题 */
-    private boolean mIsShowQuestion = false;
-    /** 当前是否正在显示红包 */
-    private boolean mIsShowRedpacket = false;
-    /** 当前是否正在显示对话框 */
-    private boolean mIsShowDialog = false;
-    /** 是不是点击返回键或者点周围,取消互动题,而没有使用getPopupWindow */
-    boolean mIsBackDismiss = true;
     /** 视频节对象 */
     VideoLivePlayBackEntity mVideoEntity;
     String beforeAttach;
@@ -118,24 +110,15 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     private boolean mIsShowNoWifiAlert = true;
     /** 我的课程业务层 */
     LectureLivePlayBackBll lectureLivePlayBackBll;
-    /** 互动题 */
-    private VideoQuestionEntity mQuestionEntity;
     /** 讲座购课广告的页面 */
     private LecAdvertPager lecAdvertPager;
     /** onPause状态不暂停视频 */
     PauseNotStopVideoIml pauseNotStopVideoIml;
-    /** 播放时长定时任务(心跳) */
-    private final long mPlayTime = 60000;
 
     /** 播放路径名 */
     private String mWebPath;
     /** 节名称 */
     private String mSectionName;
-    /** 显示互动题 */
-    private static final int SHOW_QUESTION = 0;
-    /** 没有互动题 */
-    private static final int NO_QUESTION = 1;
-    boolean pausePlay = false;
     /** 加载视频提示 */
     private ImageView ivLoading;
     private TextView tvLoadingContent;
@@ -255,8 +238,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         setFileName(); // 设置视频显示名称
         if (liveBackBll.isShowQuestion()) {
             mMediaController.release();
-            Loger.d(TAG, "attachMediaController:release:mIsShowQuestion=" + mIsShowQuestion + "," + mIsShowRedpacket
-                    + "," + mIsShowDialog);
+            Loger.d(TAG, "attachMediaController:release:isShowQuestion");
         } else {
             showLongMediaController();
         }
@@ -288,22 +270,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 errorInfo.setText("(" + videoKey + ")" + " 回放未生成");
             }
         }
-        if (rlQuestionContent != null) {
-            if (lecAdvertPager == null) {
-                rlQuestionContent.setVisibility(View.GONE);
-            }
-//            if (subjectResultPager != null) {
-//                for (int i = 0; i < rlQuestionContent.getChildCount(); i++) {
-//                    View child = rlQuestionContent.getChildAt(0);
-//                    if (child != subjectResultPager.getRootView()) {
-//                        rlQuestionContent.removeViewAt(i);
-//                        i--;
-//                    }
-//                }
-//            } else {
-//                rlQuestionContent.removeAllViews();
-//            }
-        }
+        rlQuestionContent.setVisibility(View.GONE);
     }
 
     /** 加载旋转屏时相关布局 */
@@ -446,7 +413,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 }
             });
         }
-        ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
     }
 
     private void addBusiness(Activity activity) {
@@ -457,58 +423,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         liveBackBll.addBusinessBll(new NBH5PlayBackBll(activity, liveBackBll));
         liveBackBll.addBusinessBll(new LecAdvertPlayBackBll(activity, liveBackBll));
         liveBackBll.onCreate();
-    }
-
-    @Override
-    protected LiveBackPlayVideoFragment getFragment() {
-        LiveVideoPlayFragment liveVideoPlayFragment = new LiveVideoPlayFragment();
-        liveVideoPlayFragment.liveBackVideoFragment = this;
-        return liveVideoPlayFragment;
-    }
-
-    @Override
-    protected void restoreFragment(LiveBackPlayVideoFragment videoFragment) {
-        LiveVideoPlayFragment liveVideoPlayFragment = (LiveVideoPlayFragment) videoFragment;
-        liveVideoPlayFragment.liveBackVideoFragment = this;
-    }
-
-    public static class LiveVideoPlayFragment extends LiveBackPlayVideoFragment {
-        LiveBackVideoFragment liveBackVideoFragment;
-
-        @Override
-        public void pause() {
-            super.pause();
-            liveBackVideoFragment.pausePlay = true;
-        }
-
-        @Override
-        protected void onPlayOpenStart() {
-            super.onPlayOpenStart();
-            liveBackVideoFragment.onPlayOpenStart();
-        }
-
-        @Override
-        public void setSpeed(float speed) {
-            super.setSpeed(speed);
-            liveBackVideoFragment.setSpeed(speed);
-        }
-
-        @Override
-        public void onPlayOpenSuccess() {
-            super.onPlayOpenSuccess();
-            liveBackVideoFragment.onPlayOpenSuccess();
-        }
-
-        @Override
-        protected void resultFailed(int arg1, int arg2) {
-            liveBackVideoFragment.resultFailed(arg1, arg2);
-        }
-
-        @Override
-        protected void playingPosition(long currentPosition, long duration) {
-            super.playingPosition(currentPosition, duration);
-            liveBackVideoFragment.playingPosition(currentPosition, duration);
-        }
     }
 
     @Override
@@ -524,14 +438,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         super.onPause();
     }
 
-    @Override
-    protected boolean shouldSendPlayVideo() {
-        if (mIsShowQuestion) {
-            return true;
-        }
-        return super.shouldSendPlayVideo();
-    }
-
     protected void onPlayOpenStart() {
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(View.VISIBLE);
@@ -543,11 +449,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             rlFirstBackgroundView.setVisibility(View.GONE);
         }
         attachMediaController();
-        if (mQuestionEntity != null) {
-            Loger.d(TAG, "onPlayOpenSuccess:showQuestion:isAnswered=" + mQuestionEntity.isAnswered() + "," +
-                    "mIsShowQuestion=" + mIsShowQuestion);
-//            showQuestion(mQuestionEntity);
-        }
     }
 
     public void setSpeed(float speed) {
@@ -580,7 +481,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     protected void resultFailed(int arg1, int arg2) {
         super.resultFailed(arg1, arg2);
         resultFailed = true;
-        mIsShowQuestion = mIsShowRedpacket = false;
         Loger.d(TAG, "resultFailed:arg2=" + arg2);
         if (arg2 != 0 && mVideoEntity != null) {
             if ("LivePlayBackActivity".equals(where)) {//直播辅导
@@ -778,9 +678,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (AppBll.getInstance(activity).isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
             Loger.d(TAG, "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
-            if (rlQuestionContent.getChildCount() > 0) {
-                rlQuestionContent.setVisibility(View.VISIBLE);
-            }
+            rlQuestionContent.setVisibility(View.VISIBLE);
             playNewVideo(Uri.parse(mWebPath), mSectionName);
         }
 //        if (AppBll.getInstance(this).isNetWorkAlert()) {
@@ -810,7 +708,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     }
 
     /** 重新打开播放器的监听 */
-    protected void onRestart() {
+    public void onRestart() {
         liveBackBll.onRestart();
     }
 

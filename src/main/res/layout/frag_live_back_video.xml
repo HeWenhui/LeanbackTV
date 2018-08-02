@@ -12,57 +12,10 @@
         android:background="@color/COLOR_000000">
 
         <!-- 存放播放器的布局 -->
-
-        <com.xueersi.parentsmeeting.module.videoplayer.media.CenterLayout
-            android:id="@id/cl_course_video_root"
+        <RelativeLayout
+            android:id="@id/rl_live_video_frag"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:background="@color/COLOR_000000">
-
-            <!-- 播放器 -->
-
-            <com.xueersi.parentsmeeting.module.videoplayer.media.VideoView
-                android:id="@id/vv_course_video_video"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                android:saveEnabled="true" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <RelativeLayout
-                    android:id="@id/rl_course_video_loading"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:visibility="gone">
-
-                    <ProgressBar
-                        android:id="@id/probar_course_video_loading_progress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:indeterminateDrawable="@drawable/animlst_video_loading" />
-
-                    <TextView
-                        android:id="@id/tv_course_video_loading_tip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/probar_course_video_loading_progress"
-                        android:layout_centerHorizontal="true"
-                        android:paddingTop="7.0dip"
-                        android:text="@string/video_layout_loading"
-                        android:textColor="@android:color/white"
-                        android:textSize="20.0sp"
-                        android:visibility="gone" />
-                </RelativeLayout>
-            </RelativeLayout>
-        </com.xueersi.parentsmeeting.module.videoplayer.media.CenterLayout>
+            android:layout_height="match_parent" />
 
         <RelativeLayout
             android:id="@id/rl_course_video_first_backgroud"
@@ -330,7 +283,7 @@
     <RelativeLayout
         android:id="@id/rl_course_video_live_question_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:visibility="gone" />
 

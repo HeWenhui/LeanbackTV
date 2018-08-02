@@ -24,6 +24,15 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
         }
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (liveVideoFragmentBase instanceof LiveBackVideoFragment) {
+            LiveBackVideoFragment liveBackVideoFragment = (LiveBackVideoFragment) liveVideoFragmentBase;
+            liveBackVideoFragment.onRestart();
+        }
+    }
+
     /**
      * 跳转到播放器
      *

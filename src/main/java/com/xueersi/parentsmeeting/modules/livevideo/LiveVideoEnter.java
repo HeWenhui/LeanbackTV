@@ -332,6 +332,7 @@ public class LiveVideoEnter {
             LiveStandPlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
         } else {
             com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+//            com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
         }
         return true;
     }

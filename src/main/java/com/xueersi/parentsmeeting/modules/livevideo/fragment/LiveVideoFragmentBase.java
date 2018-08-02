@@ -45,7 +45,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
-
 /***
  * 视频播放主界面
  *
@@ -63,84 +62,48 @@ public class LiveVideoFragmentBase extends Fragment {
     public static final int RESULT_FAILED = -7;
     /** 所在的Activity是否已经onCreated */
     private boolean mCreated = false;
-
     /** 当前界面是否横屏 */
     protected AtomicBoolean mIsLand = new AtomicBoolean(false);
-
-    /** 是否点击了横竖屏切换按钮 */
-    private boolean mClick = false;
-
-    /** 点击进入横屏 */
-    private boolean mClickLand = true;
-
-    /** 点击进入竖屏 */
-    private boolean mClickPort = true;
-
-
-    /** 系统状态栏高度 */
-    private int mStatusBarHeight = 0;
-
     /** 播放器的屏幕高 */
     private int mPortVideoHeight = 0;
-
     /** 当前播放进度 */
     protected long mCurrentPosition;
     /** 视频总时长 */
     protected long mDuration;
-
     /** 播放器界面的模式 */
     protected int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
     protected VideoFragment videoFragment;
-
     /** 放播放器的 io.vov.vitamio.widget.CenterLayout */
     protected ViewGroup viewRoot;
-
     /** 播放器的VideoView com.xueersi.parentsmeeting.player.media.VideoView */
     protected VideoView videoView;
-
     /** 播放器父布局 */
     protected RelativeLayout rlContent;
-
     /** 播放器播放失败时的提供可刷新操作的背景 */
     protected View videoBackgroundRefresh;
-
     /** 重新刷新 */
     private Button btnVideoRefresh;
-
     /** 刷新页面的回退按钮 */
     private ImageView ivBack;
-
     /** 加载中动画的加载文字 */
     private TextView tvVideoLoadingText;
-
     /** 播放器的控制对象 */
     protected LiveMediaController mMediaController;
-
     /** 播放器核心服务 */
     protected PlayerService vPlayer;
     /** 是否可以自动横竖屏转换 */
     protected boolean mIsAutoOrientation = true;
-
     /** 是否可以播放视频 */
     protected boolean mIsPlayerEnable = true;
-
     /** 播放器统计时长 */
     private double mUMPlayVideoTime;
-
     /** 视频类型 */
     protected String mVideoType = MobEnumUtil.VIDEO_RECORDED;
-
     /** 是否可以播放当前视频 */
     protected boolean mIsEnalbePlayer = true;
-
     // region 解锁、屏幕点亮、耳麦拔插广播
-
     /** 是否完成了当前视频的播放 */
     private boolean mCloseComplete = false;
-
-    // endregion
-
-
     String video;
     float leftVolume = VP.DEFAULT_STEREO_VOLUME, rightVolume = VP.DEFAULT_STEREO_VOLUME;
 
@@ -152,7 +115,6 @@ public class LiveVideoFragmentBase extends Fragment {
         activity = (BaseActivity) getActivity();
         sendPlayVideoHandler.sendEmptyMessageDelayed(1, 1000);
         mIsLand.set(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
-        mClick = false;
         mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
 //        mPortVideoHeight = (int) LiveVideoConfig.VIDEO_HEIGHT;
         logger.d("onCreate:mPortVideoHeight=" + mPortVideoHeight);
@@ -190,7 +152,6 @@ public class LiveVideoFragmentBase extends Fragment {
     public void onStart() {
         super.onStart();
     }
-
 
     @Override
     public void onResume() {
@@ -244,7 +205,6 @@ public class LiveVideoFragmentBase extends Fragment {
         loadLandOrPortView(); // 重新加载界面
         if (isInitialized()) {
             setVideoLayout(); // 设置播放器VideoView的布局样式
-
             if (mIsLand.get()) {
                 if (mMediaController != null) {
                     mMediaController.showSystemUi(false);
@@ -280,18 +240,6 @@ public class LiveVideoFragmentBase extends Fragment {
         activity.finish(LiveVideoConfig.VIDEO_CANCLE);
     }
 
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        Loger.i(TAG, "onKeyDown:keyCode=" + event.getKeyCode());
-//        return super.onKeyDown(keyCode, event);
-//    }
-//
-//    @Override
-//    public boolean dispatchKeyEvent(KeyEvent event) {
-//        Loger.i(TAG, "dispatchKeyEvent:keyCode=" + event.getKeyCode());
-//        return super.dispatchKeyEvent(event);
-//    }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         if (outState != null) {
@@ -300,8 +248,6 @@ public class LiveVideoFragmentBase extends Fragment {
             super.onSaveInstanceState(outState);
         }
     }
-
-    // endregion
 
     // region 播放管理业务
     protected RelativeLayout mContentView;
@@ -417,9 +363,7 @@ public class LiveVideoFragmentBase extends Fragment {
             errorInfo.setVisibility(View.GONE);
         }
         videoBackgroundRefresh.getLayoutParams().height = LayoutParams.MATCH_PARENT;
-
     }
-
 
     /** 播放一个新的视频 */
     protected void playNewVideo(Uri uri, String displayName) {
@@ -537,21 +481,11 @@ public class LiveVideoFragmentBase extends Fragment {
         }
     };
 
-    // endregion
-
-    // endregion
-
-    // region 播放器的控制界面间接调用的事件
-
-
-    // endregion
-
     /** 统计观看视频时长 */
     @SuppressLint("HandlerLeak")
     private Handler sendPlayVideoHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-
             // 视频初始化完成，视频正在播放,统计观看时长
             if (isInitialized() && vPlayer != null && vPlayer.isPlaying()) {
                 mUMPlayVideoTime++;
@@ -564,7 +498,6 @@ public class LiveVideoFragmentBase extends Fragment {
 
     private void umPlayVideoTime() {
         double videoPlayTime = 1;
-
         if (mUMPlayVideoTime > 10) {
             if (MobEnumUtil.VIDEO_RECORDED.equals(mVideoType)) {
                 videoPlayTime = Math.floor(mUMPlayVideoTime / 10);

@@ -217,28 +217,16 @@ public class LiveBackPlayVideoFragment extends Fragment implements VideoView.Sur
     public void onResume() {
         logger.d("onResume");
         super.onResume();
-        mIsPlayerEnable = true;
-        if (isInitialized()) {
-            KeyguardManager keyguardManager = (KeyguardManager) activity.getSystemService(Activity.KEYGUARD_SERVICE);
-            if (!keyguardManager.inKeyguardRestrictedInputMode()) {
-                // 如果当前并不是锁屏状态，则开始播放
-                if (mIsShowMediaController) {
-                    startPlayer();
-                }
-            }
-        } else {
-            if (mCloseComplete) {
-                // 如果当前没有初始化，并且是已经播放完毕的状态则重新打开播放
-                playNewVideo();
-            }
-        }
     }
 
     @Override
     public void onPause() {
         logger.d("onPause");
-        mIsPlayerEnable = false;
         super.onPause();
+    }
+
+    public void setIsPlayerEnable(boolean mIsPlayerEnable) {
+        this.mIsPlayerEnable = mIsPlayerEnable;
     }
 
     /** 解锁广播 */
@@ -384,6 +372,7 @@ public class LiveBackPlayVideoFragment extends Fragment implements VideoView.Sur
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+        mIsLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         if (isInitialized()) {
             setVideoLayout(); // 设置播放器VideoView的布局样式
             if (mIsLand) {

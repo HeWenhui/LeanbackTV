@@ -83,7 +83,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         this.nonce = nonce;
         this.isShowRanks = isShowRanks;
         this.stuCouId = stuCouId;
-        mLogtf.i("ExamQuestionPager:liveid=" + liveid + ",testId=" + testId);
+        mLogtf.i("QuestionWebX5Pager:liveid=" + liveid + ",testId=" + testId);
         initData();
     }
 

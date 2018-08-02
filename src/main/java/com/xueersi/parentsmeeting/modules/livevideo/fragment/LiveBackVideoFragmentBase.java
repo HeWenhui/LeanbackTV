@@ -59,7 +59,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
-
 /***
  * 视频播放主界面
  *
@@ -74,136 +73,77 @@ public class LiveBackVideoFragmentBase extends Fragment {
     /** 播放器可刷新布局 */
     protected int mLayoutBackgroundRefresh = R.layout.layout_video_resfresh;
     LiveBackPlayVideoFragment liveBackPlayVideoFragment;
-    /** 视频加载失败的标识码 */
-    public static final int RESULT_FAILED = -7;
     /** 所在的Activity是否已经onCreated */
     private boolean mCreated = false;
     /** 视频的名称，用于显示在播放器上面的信息栏 */
     private String mDisplayName;
     /** 是否从头开始播放 */
     private boolean mFromStart = true;
-    /** 是否使用硬解码，如当是本地采集的视频 */
-    private boolean mIsHWCodec = false;
-    /** 播放服务是否已连接 */
-    private boolean mServiceConnected = false;
-    /** 播放器的Surface是否创建 */
-    private boolean mSurfaceCreated = false;
+    protected boolean pausePlay = false;
     /** 当前界面是否横屏 */
     protected AtomicBoolean mIsLand = new AtomicBoolean(false);
-    /** 当前界面方向-上方 */
-    protected static final int DIRECTION_UP = 0;
-    /** 当前界面方向-手机左侧抬起 */
-    protected static final int DIRECTION_LEFT = 1;
-    /** 当前界面方向-手机右侧抬起 */
-    protected static final int DIRECTION_RIGHT = 2;
-    /** 当前界面方向-下方-暂时没有 */
-    protected static final int DIRECTION_DOWN = 3;
-    /** 当前界面方向 */
-    protected int mDirection = DIRECTION_UP;
     /** 是否显示控制栏 */
     protected boolean mIsShowMediaController = true;
-
-    /** 是否点击了横竖屏切换按钮 */
-    private boolean mClick = false;
-
-    /** 点击进入横屏 */
-    private boolean mClickLand = true;
-
-    /** 点击进入竖屏 */
-    private boolean mClickPort = true;
-
     /** 当前视频是否播放到了结尾 */
     protected boolean mIsEnd = false;
-
-    /** 系统状态栏高度 */
-    private int mStatusBarHeight = 0;
-
     /** 播放器的屏幕高 */
     protected int mPortVideoHeight = 0;
-
     /** 进度缓存的追加KEY值 */
     protected String mShareKey = "";
-
     /** 当前播放进度 */
     protected long mCurrentPosition;
     /** 视频总时长 */
     protected long mDuration;
-
-    /** 开始播放的起始点位 */
-    private long mStartPos;
     /** 播放器界面的模式 */
     private int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
-
     /** 放播放器的 io.vov.vitamio.widget.CenterLayout */
     private View viewRoot;
-
     /** 播放器的VideoView com.xueersi.parentsmeeting.player.media.VideoView */
     protected VideoView videoView;
-
     /** 播放器父布局 */
     protected RelativeLayout rlContent;
-
     /** 加载中动画Loading */
     private View videoLoadingLayout;
-
     /** 播放器播放失败时的提供可刷新操作的背景 */
     protected View videoBackgroundRefresh;
-
     /** 重新刷新 */
     private Button btnVideoRefresh;
-
     /** 刷新页面的回退按钮 */
     private ImageView ivBack;
-
     /** 加载中动画的加载文字 */
     private TextView tvVideoLoadingText;
-
     /** 当前播放的视频地址 */
     protected Uri mUri;
-
     /** 播放器的控制对象 */
     protected MediaController2 mMediaController;
-
     /** 播放器核心服务 */
     protected PlayerService vPlayer;
     /** onPause状态不暂停视频 */
     protected AtomicBoolean onPauseNotStopVideo = new AtomicBoolean(false);
-
     /** 是否可以自动横竖屏转换 */
     private boolean mIsAutoOrientation = true;
-
-    /** 是否可以播放视频 */
-    protected boolean mIsPlayerEnable = true;
-
     /** 业务层 */
     protected VideoBll bllVideo;
-
     /** 播放器统计时长 */
     protected long mPlayVideoTime = 0;
-
     /** 播放器统计时长 */
     private double mUMPlayVideoTime;
-
     /** 播放器统计时长发送间隔 */
     protected int mSendPlayVideoTime = 180;
-
     /** 视频进度 */
     private String mLastVideoPositionKey;
-
     /** 统计视频播放key */
     protected String mVisitTimeKey;
     /** 购课id */
     protected String stuCourId;
     /** 视频类型 */
     protected String mVideoType = MobEnumUtil.VIDEO_RECORDED;
-
     /** 是否完成了一系列的系统广播 */
     private boolean mReceiverRegistered = false;
     /** 是否是正在播放时插拔耳机 */
     private boolean mHeadsetPlaying = false;
     /** 是否完成了当前视频的播放 */
     private boolean mCloseComplete = false;
-
     /** 播放器请求 */
     public static final int VIDEO_REQUEST = 210;
     /** 播放器用户返回 */
@@ -211,11 +151,6 @@ public class LiveBackVideoFragmentBase extends Fragment {
     /** 播放器java崩溃 */
     public static final int VIDEO_CRASH = 1200;
     protected float mySpeed = 1.0f;
-
-    // endregion
-
-    // region 播放业务Handler
-    private AtomicBoolean mOpened = new AtomicBoolean(Boolean.FALSE); // 线程安全的Boolean值
     /** 同步锁 */
     private Object mOpenLock = new Object();
     /** 准备打开播放文件 */
@@ -263,10 +198,6 @@ public class LiveBackVideoFragmentBase extends Fragment {
         bllVideo = new VideoBll(activity);
         sendPlayVideoHandler.sendEmptyMessageDelayed(1, 1000);
         mIsLand.set(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
-        if (mIsLand.get()) {
-            mDirection = DIRECTION_RIGHT;
-        }
-        mClick = false;
         mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
         BaseApplication baseApplication = (BaseApplication) activity.getApplication();
         baseApplication.addActivty(activity);
@@ -312,7 +243,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         AudioPlayer.requestAudioFocus(activity);
 
         // 设置视频可播放
-        mIsPlayerEnable = true;
+        liveBackPlayVideoFragment.setIsPlayerEnable(true);
         if (!mCreated)
             return;
         if (isInitialized()) {
@@ -337,8 +268,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         super.onPause();
         AudioPlayer.abandAudioFocus(activity);
         XesMobAgent.userMarkVideoDestory(MobEnumUtil.MARK_VIDEO_ONPAUSE);
-        // 设置视频不可播放
-        mIsPlayerEnable = false;
+        liveBackPlayVideoFragment.setIsPlayerEnable(false);
         if (!mCreated)
             return;
         if (isInitialized()) {
@@ -349,8 +279,11 @@ public class LiveBackVideoFragmentBase extends Fragment {
                 savePosition();
             }
             if (vPlayer != null && vPlayer.isPlaying() && !onPauseNotStopVideo.get()) {
+                liveBackPlayVideoFragment.setIsPlayerEnable(false);
                 // 暂停播放
                 stopPlayer();
+            } else {
+                liveBackPlayVideoFragment.setIsPlayerEnable(true);
             }
         }
     }
@@ -503,11 +436,59 @@ public class LiveBackVideoFragmentBase extends Fragment {
     }
 
     protected LiveBackPlayVideoFragment getFragment() {
-        return new LiveBackPlayVideoFragment();
+        LiveVideoPlayFragmentBase liveVideoPlayFragment = new LiveVideoPlayFragmentBase();
+        liveVideoPlayFragment.liveBackVideoFragment = this;
+        return liveVideoPlayFragment;
     }
 
     protected void restoreFragment(LiveBackPlayVideoFragment videoFragment) {
+        LiveVideoPlayFragmentBase liveVideoPlayFragment = (LiveVideoPlayFragmentBase) videoFragment;
+        liveVideoPlayFragment.liveBackVideoFragment = this;
+    }
 
+    public static class LiveVideoPlayFragmentBase extends LiveBackPlayVideoFragment {
+        LiveBackVideoFragmentBase liveBackVideoFragment;
+
+        @Override
+        public void pause() {
+            super.pause();
+            liveBackVideoFragment.pausePlay = true;
+        }
+
+        @Override
+        protected void onPlayOpenStart() {
+            super.onPlayOpenStart();
+            liveBackVideoFragment.onPlayOpenStart();
+        }
+
+        @Override
+        public void setSpeed(float speed) {
+            super.setSpeed(speed);
+            liveBackVideoFragment.setSpeed(speed);
+        }
+
+        @Override
+        public void onPlayOpenSuccess() {
+            super.onPlayOpenSuccess();
+            liveBackVideoFragment.onPlayOpenSuccess();
+        }
+
+        @Override
+        protected void resultFailed(int arg1, int arg2) {
+            liveBackVideoFragment.resultFailed(arg1, arg2);
+        }
+
+        @Override
+        protected void playingPosition(long currentPosition, long duration) {
+            super.playingPosition(currentPosition, duration);
+            liveBackVideoFragment.playingPosition(currentPosition, duration);
+        }
+
+        @Override
+        protected void resultComplete() {
+            super.resultComplete();
+            mIsEnd = true;
+        }
     }
 
     LiveOnVideoCreate videoCreate = new LiveOnVideoCreate();
@@ -661,6 +642,21 @@ public class LiveBackVideoFragmentBase extends Fragment {
      */
     protected void setAutoOrientation(boolean isAutoOrientation) {
         mIsAutoOrientation = isAutoOrientation;
+        if (liveBackPlayVideoFragment != null) {
+            liveBackPlayVideoFragment.setIsAutoOrientation(isAutoOrientation);
+        }
+    }
+
+    protected void setSpeed(float speed) {
+        mySpeed = speed;
+    }
+
+    protected void onPlayOpenStart() {
+
+    }
+
+    protected void onPlayOpenSuccess() {
+
     }
 
     /** 视频正常播放完毕退出时调用，非加载失败 */
