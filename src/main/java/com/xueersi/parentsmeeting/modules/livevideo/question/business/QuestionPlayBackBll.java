@@ -215,8 +215,8 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                                 liveBackBll.getvPlayer().pause();
                             }
                         } else {
-                            MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction.class);
-                            mediaControllerAction.attachMediaController();
+                            LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(activity, LiveBackBll.ShowQuestion.class);
+                            showQuestion.onShow(false);
                         }
                     }
 

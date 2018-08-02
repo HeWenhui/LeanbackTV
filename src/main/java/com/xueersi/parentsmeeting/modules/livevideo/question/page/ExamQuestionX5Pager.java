@@ -86,7 +86,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         this.nonce = videoQuestionLiveEntity.nonce;
         this.IS_SCIENCE = IS_SCIENCE;
         this.stuCouId = stuCouId;
-        mLogtf.i("ExamQuestionPager:liveid=" + liveid + ",num=" + num);
+        mLogtf.i("ExamQuestionX5Pager:liveid=" + liveid + ",num=" + num);
         this.isShowRankList = isShowRankList;
         this.isTeamPkRoom = isTeamPkRoom;
         initData();

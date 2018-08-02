@@ -42,6 +42,7 @@ public class LivePlaybackMediaController extends MediaController2 {
     boolean mIsLand = true;
     private View landView;
     private View portView;
+    OnPointClick onPointClick;
 
     public LivePlaybackMediaController(Context context, MediaPlayerControl player, boolean mIsLand) {
         super(context, player);
@@ -53,23 +54,26 @@ public class LivePlaybackMediaController extends MediaController2 {
         setControllerBottom(mediaControllerBottom);
     }
 
-    @Override
-    protected View inflateLayout() {
-        View view;
-        if (mIsLand) {
-            if (landView == null) {
-                landView = LayoutInflater.from(getContext()).inflate(R.layout.pop_mediacontroller, this, false);
-            }
-            view = landView;
-        } else {
-            if (portView == null) {
-                portView = LayoutInflater.from(getContext()).inflate(R.layout.pop_mediacontroller, this, false);
-            }
-            view = portView;
-        }
-        addView(view);
-        return view;
+    public void setOnPointClick(OnPointClick onPointClick) {
+        this.onPointClick = onPointClick;
     }
+//    @Override
+//    protected View inflateLayout() {
+//        View view;
+//        if (mIsLand) {
+//            if (landView == null) {
+//                landView = LayoutInflater.from(getContext()).inflate(R.layout.pop_mediacontroller, this, false);
+//            }
+//            view = landView;
+//        } else {
+//            if (portView == null) {
+//                portView = LayoutInflater.from(getContext()).inflate(R.layout.pop_mediacontroller, this, false);
+//            }
+//            view = portView;
+//        }
+//        addView(view);
+//        return view;
+//    }
 
     public void onAttach(boolean isLand) {
         if (isLand != mIsLand) {
@@ -296,6 +300,10 @@ public class LivePlaybackMediaController extends MediaController2 {
                 if (context instanceof OnPointClick) {
                     OnPointClick onPointClick = (OnPointClick) context;
                     onPointClick.onOnPointClick(videoQuestionEntity, insretTime * 1000);
+                } else {
+                    if (onPointClick != null) {
+                        onPointClick.onOnPointClick(videoQuestionEntity, insretTime * 1000);
+                    }
                 }
                 mPlayer.seekTo(insretTime * 1000);
             }
