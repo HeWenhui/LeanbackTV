@@ -156,6 +156,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         mHandler = new Handler();
         // 请求相应数据
         initData();
+        initBll();
     }
 
     @Nullable
@@ -343,16 +344,54 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         }
         // 播放视频
         mWebPath = mVideoEntity.getVideoPath();
-        ProxUtil.getProxUtil().put(activity, MediaControllerAction.class, this);
         liveBackBll = new LiveBackBll(activity, mVideoEntity);
         liveBackBll.setStuCourId(stuCourId);
         liveBackBll.setvPlayer(vPlayer);
-//        if (CourseInfoLiveActivity.isTest) {
-//            mWebPath = "http://r01.xesimg.com/stream/tmp/2016/11/30/1480481513276687694567.mp4";
-//        }
-//        if (AppConfig.DEBUG) {
-//            mWebPath = "http://r01.xesimg.com/stream/tmp/2016/11/30/1480481513276687694567.mp4";
-//        }
+    }
+
+    protected void initBll() {
+        ProxUtil.getProxUtil().put(activity, MediaControllerAction.class, this);
+        ProxUtil.getProxUtil().put(activity, MediaPlayerControl.class, liveBackPlayVideoFragment);
+        ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
+        initBusiness();
+        if (islocal) {
+            // 互动题播放地址
+            playNewVideo(Uri.parse(mWebPath), mSectionName);
+        } else {
+            activity.getWindow().getDecorView().getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver
+                    .OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    activity.getWindow().getDecorView().getViewTreeObserver().removeOnPreDrawListener(this);
+                    if (AppBll.getInstance(activity).isNetWorkAlert()) {
+                        // 互动题播放地址
+                        AppBll.getInstance(activity.getApplication());
+                        playNewVideo(Uri.parse(mWebPath), mSectionName);
+                    } else {
+                        mIsShowNoWifiAlert = false;
+                        AppBll.getInstance(activity.getApplication());
+                    }
+                    return false;
+                }
+            });
+        }
+    }
+
+    protected void initBusiness() {
+        liveBackBll.addBusinessShareParam("videoView", videoView);
+        pauseNotStopVideoIml = new PauseNotStopVideoIml(activity, onPauseNotStopVideo);
+        addBusiness(activity);
+        liveBackBll.onCreate();
+        List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
+        for (LiveBackBaseBll businessBll : businessBlls) {
+            businessBll.initViewF(rlQuestionContent, mIsLand);
+        }
+    }
+
+    protected void initLiveRemarkBll() {
+        if (isArts == 1 || "PublicLiveDetailActivity".equals(where)) {
+            return;
+        }
         if (mVideoEntity != null && mVideoEntity.getIsAllowMarkpoint() == 1) {
             LiveRemarkBll liveRemarkBll = new LiveRemarkBll(activity, vPlayer);
             liveRemarkBll.setBottom(bottom);
@@ -383,46 +422,15 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 }
             });
         }
-        ProxUtil.getProxUtil().put(activity, MediaPlayerControl.class, liveBackPlayVideoFragment);
-        ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
-        liveBackBll.addBusinessShareParam("videoView", videoView);
-        pauseNotStopVideoIml = new PauseNotStopVideoIml(activity, onPauseNotStopVideo);
-        addBusiness(activity);
-        List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
-        for (LiveBackBaseBll businessBll : businessBlls) {
-            businessBll.initViewF(rlQuestionContent, mIsLand);
-        }
-        if (islocal) {
-            // 互动题播放地址
-            playNewVideo(Uri.parse(mWebPath), mSectionName);
-        } else {
-            activity.getWindow().getDecorView().getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver
-                    .OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    activity.getWindow().getDecorView().getViewTreeObserver().removeOnPreDrawListener(this);
-                    if (AppBll.getInstance(activity).isNetWorkAlert()) {
-                        // 互动题播放地址
-                        AppBll.getInstance(activity.getApplication());
-                        playNewVideo(Uri.parse(mWebPath), mSectionName);
-                    } else {
-                        mIsShowNoWifiAlert = false;
-                        AppBll.getInstance(activity.getApplication());
-                    }
-                    return false;
-                }
-            });
-        }
     }
 
-    private void addBusiness(Activity activity) {
+    protected void addBusiness(Activity activity) {
         liveBackBll.addBusinessBll(new QuestionPlayBackBll(activity, liveBackBll));
         RedPackagePlayBackBll redPackagePlayBackBll = new RedPackagePlayBackBll(activity, liveBackBll);
         liveBackBll.addBusinessBll(redPackagePlayBackBll);
         liveBackBll.addBusinessBll(new EnglishH5PlayBackBll(activity, liveBackBll));
         liveBackBll.addBusinessBll(new NBH5PlayBackBll(activity, liveBackBll));
-        liveBackBll.addBusinessBll(new LecAdvertPlayBackBll(activity, liveBackBll));
-        liveBackBll.onCreate();
+        initLiveRemarkBll();
     }
 
     @Override
@@ -701,10 +709,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
                 ImageLoader.with(activity).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
         }
-    }
-
-    protected void onNewIntent(Intent intent) {
-        liveBackBll.onNewIntent(intent);
     }
 
     /** 重新打开播放器的监听 */

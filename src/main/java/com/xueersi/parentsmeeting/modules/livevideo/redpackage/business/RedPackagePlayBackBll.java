@@ -12,22 +12,34 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
 import com.xueersi.ui.dataload.DataLoadEntity;
+
+import java.util.HashMap;
 
 /**
  * Created by linyuqiang on 2018/7/17.
  */
 public class RedPackagePlayBackBll extends LiveBackBaseBll {
-    RedPackageBll redPackageAction;
+    RedPackageAction redPackageAction;
+    int pattern = 0;
 
     public RedPackagePlayBackBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
+    }
+
+    @Override
+    public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
+        super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
+        pattern = liveGetInfo.getPattern();
     }
 
     @Override
@@ -38,16 +50,36 @@ public class RedPackagePlayBackBll extends LiveBackBaseBll {
     @Override
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, final VideoQuestionEntity questionEntity, LiveBackBll.ShowQuestion showQuestion) {
         if (redPackageAction == null) {
-            RedPackageBll redPackageBll = new RedPackageBll(activity, null, false);
-            redPackageBll.setVSectionID(mVideoEntity.getSectionId());
-            redPackageBll.initView(mRootView);
-            redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {
-                @Override
-                public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
-                    RedPackagePlayBackBll.this.sendReceiveGold(questionEntity, operateId, liveId, callBack);
+            if (pattern == 2) {
+                String showName = "";
+                String headUrl = "";
+                MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
+                if (!StringUtils.isEmpty(mMyInfo.getEnglishName())) {
+                    showName = mMyInfo.getEnglishName();
+                } else if (!StringUtils.isEmpty(mMyInfo.getRealName())) {
+                    showName = mMyInfo.getRealName();
+                } else if (!StringUtils.isEmpty(mMyInfo.getNickName())) {
+                    showName = mMyInfo.getNickName();
                 }
-            });
-            redPackageAction = redPackageBll;
+                headUrl = mMyInfo.getHeadImg();
+                RedPackageStandBll redPackageStandBll;
+                redPackageStandBll = new RedPackageStandBll(activity, false, liveBackBll);
+                redPackageStandBll.setVSectionID(mVideoEntity.getLiveId());
+                redPackageStandBll.setUserName(showName);
+                redPackageStandBll.setHeadUrl(headUrl);
+                redPackageStandBll.initView(mRootView);
+            } else {
+                RedPackageBll redPackageBll = new RedPackageBll(activity, null, false);
+                redPackageBll.setVSectionID(mVideoEntity.getSectionId());
+                redPackageBll.initView(mRootView);
+                redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {
+                    @Override
+                    public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
+                        RedPackagePlayBackBll.this.sendReceiveGold(questionEntity, operateId, liveId, callBack);
+                    }
+                });
+                redPackageAction = redPackageBll;
+            }
         }
         try {
             mRootView.setVisibility(View.VISIBLE);
