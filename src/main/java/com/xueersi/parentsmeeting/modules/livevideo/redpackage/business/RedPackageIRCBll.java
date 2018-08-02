@@ -92,12 +92,6 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
             redPackageStandBll.setVSectionID(getInfo.getId());
             redPackageStandBll.initView(mRootView);
             redPackageAction = redPackageStandBll;
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    redPackageAction.onReadPackage(2, null);
-                }
-            },2000);
         } else {
             RedPackageBll redPackageBll = new RedPackageBll(activity, mGetInfo, true);
             redPackageBll.setVSectionID(mLiveId);
