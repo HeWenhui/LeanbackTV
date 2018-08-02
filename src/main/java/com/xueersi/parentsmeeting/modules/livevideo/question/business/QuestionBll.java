@@ -84,6 +84,7 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
 
 /**
  * Created by linyuqiang on 2016/9/23.
+ * 互动题bll
  */
 public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEvalAction, BaseQuestionWebInter
         .StopWebQuestion, BaseVoiceAnswerCreat.AnswerRightResultVoice, QuestionStatic, QuestionShowReg, KeyboardUtil.OnKeyboardShowingListener, LivePagerBack {

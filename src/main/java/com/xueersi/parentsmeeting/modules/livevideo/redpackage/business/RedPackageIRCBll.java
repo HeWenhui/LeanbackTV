@@ -87,6 +87,10 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
                     RedPackageIRCBll.this.sendReceiveGold(operateId, liveId, callBack);
                 }
             });
+            redPackageStandBll.setUserName(getInfo.getStandLiveName());
+            redPackageStandBll.setHeadUrl(getInfo.getHeadImgPath());
+            redPackageStandBll.setVSectionID(getInfo.getId());
+            redPackageStandBll.initView(mRootView);
             redPackageAction = redPackageStandBll;
         } else {
             RedPackageBll redPackageBll = new RedPackageBll(activity, mGetInfo, true);

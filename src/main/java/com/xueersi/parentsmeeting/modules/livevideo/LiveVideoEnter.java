@@ -327,13 +327,15 @@ public class LiveVideoEnter {
      * @param bundle
      */
     public static boolean intentTo(Activity context, Bundle bundle, String where) {
+//        bundle.putInt("pattern", 2);
         int pattern = bundle.getInt("pattern", 1);
-        if (pattern == 2) {
-            LiveStandPlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
-        } else {
-            com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
-//            com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
-        }
+//        if (pattern == 2) {
+//            LiveStandPlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+//        } else {
+//            com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+////            com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+//        }
+        com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
         return true;
     }
 

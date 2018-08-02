@@ -12,6 +12,14 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
 
     @Override
     protected LiveBackVideoFragmentBase getFragment() {
+        String where = getIntent().getStringExtra("where");
+        if ("PublicLiveDetailActivity".equals(where)) {
+            return new LecBackVideoFragment();
+        }
+        int pattern = getIntent().getIntExtra("pattern", 0);
+        if (pattern == 2) {
+            return new StandBackVideoFragment();
+        }
         return new LiveBackVideoFragment();
     }
 
@@ -28,8 +36,17 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
     protected void onRestart() {
         super.onRestart();
         if (liveVideoFragmentBase instanceof LiveBackVideoFragment) {
-            LiveBackVideoFragment liveBackVideoFragment = (LiveBackVideoFragment) liveVideoFragmentBase;
-            liveBackVideoFragment.onRestart();
+            LecBackVideoFragment liveVideoFragmentBase = (LecBackVideoFragment) this.liveVideoFragmentBase;
+            liveVideoFragmentBase.onRestart();
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (liveVideoFragmentBase instanceof LecBackVideoFragment) {
+            LecBackVideoFragment lecBackVideoFragment = (LecBackVideoFragment) liveVideoFragmentBase;
+            lecBackVideoFragment.onNewIntent(intent);
         }
     }
 

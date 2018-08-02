@@ -345,12 +345,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                             }
                             mLogtf.d("resultFailed:studentError=" + studentError);
                             if (!studentError.get()) {
-                                if (StringUtils.isEmpty(playUrl)) {
-                                    mLiveBll.liveGetStudentPlayServer();
-                                } else {
-                                    synchronized (mIjkLock2) {
-                                        xv_livevideo_student.playNewVideo(Uri.parse(playUrl), mGetInfo.getName());
-                                    }
+                                synchronized (mIjkLock2) {
+                                    xv_livevideo_student.playNewVideo(Uri.parse(playUrl), mGetInfo.getName());
                                 }
                             }
                         }
