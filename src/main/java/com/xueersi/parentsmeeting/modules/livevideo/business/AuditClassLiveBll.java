@@ -131,8 +131,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     private int netWorkType;
     /** 调度是不是在无网络下失败 */
     private boolean liveGetPlayServerError = false;
-    /** 调度是不是在无网络下失败 */
-    private boolean liveGetStudyPlayServerError = false;
     /** 学生是不是流畅模式 */
     AtomicBoolean fluentMode = new AtomicBoolean(false);
     /** 是不是有分组 */
@@ -354,12 +352,8 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                             mLiveTopic.setMode(mode);
                             liveGetPlayServer(true);
                         }
-                        if (!StringUtils.isEmpty(playUrl)) {
-                            if (mVideoAction != null) {
-                                mVideoAction.onStudentLiveUrl(playUrl);
-                            }
-                        } else {
-                            liveGetStudentPlayServer();
+                        if (mVideoAction != null) {
+                            mVideoAction.onStudentLiveUrl(playUrl);
                         }
                         mLogtf.d("onStudentPrivateMessage:playUrl=" + playUrl);
 
@@ -880,117 +874,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
 
     private long lastGetStudentPlayServer;
 
-    public void liveGetStudentPlayServer() {
-        if (netWorkType == NetWorkHelper.NO_NETWORK) {
-            liveGetStudyPlayServerError = true;
-            return;
-        }
-        liveGetStudyPlayServerError = false;
-        final long before = System.currentTimeMillis();
-        String serverurl;
-        // http://gslb.xueersi.com/xueersi_gslb/live?cmd=live_get_playserver&userid=000041&username=xxxxxx
-        // &channelname=88&remote_ip=116.76.97.244
-        String channelname = "s_" + mGetInfo.getId() + "_" + mGetInfo.getStuId();
-//        channelname = "s_49247_11681";
-        mGetInfo.setStudentChannelname(channelname);
-        serverurl = mGetInfo.getGslbServerUrl() + "?cmd=live_get_playserver&userid=" + mGetInfo.getStuId()
-                + "&username=" + mGetInfo.getUname() + "&channelname=" + mGetInfo.getStudentChannelname();
-        mLogtf.d("liveGetStudentPlayServer:serverurl=" + serverurl);
-        if (mGetStudentPlayServerCancle != null) {
-            mGetStudentPlayServerCancle.cancel();
-            mGetStudentPlayServerCancle = null;
-        }
-        StringBuilder ipsb = new StringBuilder();
-        mGetStudentPlayServerCancle = mHttpManager.liveGetPlayServer(ipsb, serverurl, new CommonRequestCallBack<String>() {
-
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-                if (mIRCMessage != null) {
-//                    mIRCMessage.startVideo();
-                }
-                mLogtf.d("liveGetStudentPlayServer:onError:ex=" + ex + ",isOnCallback=" + isOnCallback);
-                if (ex instanceof HttpException) {
-                    HttpException error = (HttpException) ex;
-                    if (error.getCode() >= 300) {
-                        long time = System.currentTimeMillis() - before;
-                        mLogtf.d("liveGetStudentPlayServer:onError:code=" + error.getCode() + ",time=" + time);
-                        if (time < 15000) {
-                            if (mVideoAction != null && mLiveTopic != null) {
-                                mVideoAction.onStudentLiveStart(null);
-                            }
-                            return;
-                        }
-                    }
-                } else {
-                    mLogtf.e("liveGetStudentPlayServer:onError:isOnCallback=" + isOnCallback, ex);
-                }
-                long now = System.currentTimeMillis();
-                if (now - lastGetStudentPlayServer < 5000) {
-                    postDelayedIfNotFinish(new Runnable() {
-                        @Override
-                        public void run() {
-                            mLogtf.d("liveGetStudentPlayServer:onError retry1");
-                            liveGetStudentPlayServer();
-                        }
-                    }, 1000);
-                } else {
-                    lastGetStudentPlayServer = now;
-                    onLiveFailure("直播调度失败", new Runnable() {
-                        @Override
-                        public void run() {
-                            mLogtf.d("liveGetStudentPlayServer:onError retry2");
-                            liveGetStudentPlayServer();
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onSuccess(String result) {
-//                Loger.i(TAG, "liveGetPlayServer:onSuccess:result=" + result);
-                String s = "liveGetStudentPlayServer:onSuccess";
-                try {
-                    JSONObject object = new JSONObject(result);
-                    PlayServerEntity server = mHttpResponseParser.parsePlayerServer(object);
-                    if (server != null) {
-                        s += ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();
-                        mGetInfo.setSkeyPlayF(server.getRtmpkey());
-//                        mServer = server;
-                        if (mVideoAction != null && mLiveTopic != null) {
-                            mVideoAction.onStudentLiveStart(server);
-                        }
-                    } else {
-                        s += ",server=null";
-                        onLiveFailure("直播调度失败", new Runnable() {
-
-                            @Override
-                            public void run() {
-                                liveGetStudentPlayServer();
-                            }
-                        });
-                    }
-                    mLogtf.d(s);
-                } catch (JSONException e) {
-                    MobAgent.httpResponseParserError(TAG, "liveGetStudentPlayServer", result + "," + e.getMessage());
-                    // Loger.e(TAG, "liveGetPlayServer", e);
-                    mLogtf.e("liveGetStudentPlayServer", e);
-                    onLiveFailure("直播调度失败", new Runnable() {
-
-                        @Override
-                        public void run() {
-                            liveGetStudentPlayServer();
-                        }
-                    });
-                }
-
-            }
-
-            @Override
-            public void onCancelled(CancelledException cex) {
-            }
-
-        });
-    }
 
     /**
      * activity退出
@@ -1301,10 +1184,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             if (liveGetPlayServerError) {
                 liveGetPlayServerError = false;
                 liveGetPlayServer(mLiveTopic.getMode(), false);
-            }
-            if (liveGetStudyPlayServerError) {
-                liveGetStudyPlayServerError = true;
-                liveGetStudentPlayServer();
             }
         }
         if (mIRCMessage != null) {
