@@ -285,7 +285,6 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
                 }
             });
         }
-        mMediaController.setAnchorView(videoView.getRootView());
         // 设置播放器横竖屏切换按钮不显示
         mMediaController.setAutoOrientation(false);
         // 播放下一个按钮不显示
@@ -905,25 +904,6 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
     public void onStop() {
         super.onStop();
         liveBackBll.onStop();
-    }
-
-    private void showPopupwindowboard() {
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mFloatView = inflater.inflate(R.layout.livemessage_jumpboard, null);
-        mPopupWindows = new PopupWindow(mFloatView, 360, 90, false);
-        mPopupWindows.setOutsideTouchable(false);
-        mPopupWindows.showAtLocation(mFloatView, Gravity.BOTTOM | Gravity.LEFT, ScreenUtils.getScreenWidth() - 420, 160);
-        // 03.29 横竖屏的切换
-        mFloatView.findViewById(R.id.switch_orientation).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //判断当前屏幕方向
-                changeLOrP();
-            }
-        });
-        TextView totalnum = (TextView) mFloatView.findViewById(R.id.tv_apply_totalnum);
-        totalnum.setText(LiveVideoConfig.MORE_COURSE + "");
-
     }
 
     @Override

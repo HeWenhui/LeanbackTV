@@ -306,7 +306,6 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
 //                }
 //            });
 //        }
-        mMediaController.setAnchorView(videoView.getRootView());
         // 设置播放器横竖屏切换按钮不显示
         mMediaController.setAutoOrientation(false);
         // 播放下一个按钮不显示

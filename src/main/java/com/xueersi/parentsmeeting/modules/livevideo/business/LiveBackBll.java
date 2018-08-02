@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpRespons
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +37,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by lyqai on 2018/7/17.
  */
-public class LiveBackBll implements LiveAndBackDebug {
+public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick {
     private String TAG = "LiveBackBll";
     Activity activity;
     private AllLiveBasePagerIml allLiveBasePagerIml;
@@ -72,6 +73,7 @@ public class LiveBackBll implements LiveAndBackDebug {
     /** 本地视频 */
     boolean islocal;
     private int pattern = 1;
+    ShowQuestion showQuestion;
 
     public LiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
         this.activity = activity;
@@ -110,6 +112,7 @@ public class LiveBackBll implements LiveAndBackDebug {
         mCourseHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         mCourseHttpResponseParser = new LivePlayBackHttpResponseParser();
         allLiveBasePagerIml = new AllLiveBasePagerIml(activity);
+        showQuestion = new LiveShowQuestion();
     }
 
     public int getLiveType() {
@@ -212,12 +215,10 @@ public class LiveBackBll implements LiveAndBackDebug {
                 }
             }
             LiveBackBaseBll liveBackBaseBll = array.get(oldQuestionEntity.getvCategory());
-            mIsShowQuestion = false;
             if (liveBackBaseBll != null) {
                 liveBackBaseBll.onQuestionEnd(oldQuestionEntity);
             }
-            MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction.class);
-            mediaControllerAction.attachMediaController();
+            showQuestion.onShow(false);
         }
         if (mQuestionEntity != null && oldQuestionEntity != mQuestionEntity && !mQuestionEntity.isAnswered()) {
             mQuestionEntity.setAnswered(true);
@@ -233,7 +234,11 @@ public class LiveBackBll implements LiveAndBackDebug {
         showQuestion(oldQuestionEntity, showQuestion);
     }
 
-    ShowQuestion showQuestion = new ShowQuestion() {
+    class LiveShowQuestion implements ShowQuestion {
+        LiveShowQuestion() {
+            ProxUtil.getProxUtil().put(activity, ShowQuestion.class, this);
+        }
+
         @Override
         public void onShow(boolean isShow) {
             if (isShow) {
@@ -246,7 +251,7 @@ public class LiveBackBll implements LiveAndBackDebug {
                 mediaControllerAction.attachMediaController();
             }
         }
-    };
+    }
 
     /**
      * 获取互动题

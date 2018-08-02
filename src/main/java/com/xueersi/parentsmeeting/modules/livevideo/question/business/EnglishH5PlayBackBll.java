@@ -60,6 +60,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         int isArts = liveBackBll.getIsArts();
         liveBaseEnglishH5CoursewareCreat.setIS_SCIENCE(isArts != 1);
         liveBaseEnglishH5CoursewareCreat.setWrapOnH5ResultClose(new WrapOnH5ResultClose(activity));
+        liveBaseEnglishH5CoursewareCreat.setLivePagerBack(englishH5CoursewareBll);
         englishH5CoursewareBll.setBaseEnglishH5CoursewareCreat(liveBaseEnglishH5CoursewareCreat);
     }
 
