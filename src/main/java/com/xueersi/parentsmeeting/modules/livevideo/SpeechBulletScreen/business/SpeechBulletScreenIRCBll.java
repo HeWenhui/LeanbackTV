@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business
 import android.app.Activity;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
@@ -39,8 +40,19 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-
-
+        switch (type) {
+            case XESCODE.XCR_ROOM_DANMU_OPEN: {
+                if (speechBulletScreenAction == null) {
+                    SpeechBulletScreenBll speechBulletScreenBll = new SpeechBulletScreenBll(activity);
+                    speechBulletScreenBll.initView(mRootView);
+                    speechBulletScreenAction = speechBulletScreenBll;
+                }
+                speechBulletScreenAction.onStartSpeechBulletScreen();
+                break;
+            }
+            default:
+                break;
+        }
     }
 
     @Override

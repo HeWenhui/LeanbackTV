@@ -154,4 +154,10 @@ public interface XESCODE {
     /** 一题多发 TODO */
     int MULTIPLE_H5_COURSEWARE = 251;
 
+    /** 开启/关闭语音弹幕 TODO */
+    int XCR_ROOM_DANMU_OPEN = 260;
+
+    /** 发送语音弹幕 TODO */
+    int XCR_ROOM_DANMU_SEND = 261;
+
 }
