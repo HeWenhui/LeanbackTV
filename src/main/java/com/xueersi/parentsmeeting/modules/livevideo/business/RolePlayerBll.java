@@ -31,6 +31,7 @@ import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -126,7 +127,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         final List<PermissionItem> unList = new ArrayList<>();
 
         List<PermissionItem> unPermissionItems = XesPermission.checkPermissionUnPerList(mContext, new
-                PermissionCallback() {
+                LiveActivityPermissionCallback() {
 
                     @Override
                     public void onFinish() {

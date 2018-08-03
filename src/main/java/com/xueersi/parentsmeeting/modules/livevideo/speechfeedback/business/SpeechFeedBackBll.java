@@ -35,6 +35,7 @@ import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.analytics.umsagent.DeviceInfo;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
@@ -149,7 +150,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         this.roomId = roomId;
         logToFile.d("start:roomId=" + roomId);
         final List<PermissionItem> unList = new ArrayList<>();
-        List<PermissionItem> unList2 = XesPermission.checkPermissionUnPerList(activity, new PermissionCallback() {
+        List<PermissionItem> unList2 = XesPermission.checkPermissionUnPerList(activity, new LiveActivityPermissionCallback() {
             @Override
             public void onFinish() {
 

@@ -956,7 +956,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     private boolean isPresent(String mode) {
         boolean isPresent = true;
         if (mIRCMessage != null && mIRCMessage.onUserList()) {
-            liveIRCMessageBll.isPresent(mode);
+            isPresent = liveIRCMessageBll.isPresent(mode);
         }
         return isPresent;
     }
