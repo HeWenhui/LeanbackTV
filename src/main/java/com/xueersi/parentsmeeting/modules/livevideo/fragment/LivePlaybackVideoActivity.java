@@ -35,7 +35,7 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
     @Override
     protected void onRestart() {
         super.onRestart();
-        if (liveVideoFragmentBase instanceof LiveBackVideoFragment) {
+        if (liveVideoFragmentBase instanceof LecBackVideoFragment) {
             LecBackVideoFragment liveVideoFragmentBase = (LecBackVideoFragment) this.liveVideoFragmentBase;
             liveVideoFragmentBase.onRestart();
         }

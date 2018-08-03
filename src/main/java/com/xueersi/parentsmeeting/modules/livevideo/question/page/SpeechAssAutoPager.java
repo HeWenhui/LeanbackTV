@@ -236,6 +236,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             lp.width = bitmap.getWidth();
             lp.height = bitmap.getHeight();
             spStarResult.setLayoutParams(lp);
+            bitmap.recycle();
         }
         return view;
     }

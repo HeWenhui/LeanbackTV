@@ -54,88 +54,28 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /**
- * @author lyqai
+ * @author linyuqiang
  * @date 2018/6/22
  */
-public class VideoFragment extends Fragment implements VideoView.SurfaceCallback, LiveMediaController.MediaPlayerControl {
-    Logger logger = LoggerFactory.getLogger("VideoFragment");
-    BaseActivity activity;
-    /** 播放器核心服务 */
-    protected PlayerService vPlayer;
-    /** 所在的Activity是否已经onCreated */
-    private boolean mCreated = false;
+public class VideoFragment extends BaseVideoFragment implements VideoView.SurfaceCallback, LiveMediaController.MediaPlayerControl {
     /** 视频的名称，用于显示在播放器上面的信息栏 */
     private String mDisplayName;
-    /** 是否使用硬解码，如当是本地采集的视频 */
-    private boolean mIsHWCodec = false;
     /** 是否从头开始播放 */
     private boolean mFromStart = true;
-    /** 是否可以播放视频 */
-    protected boolean mIsPlayerEnable = true;
     /** 开始播放的起始点位 */
     private long mStartPos;
     /** 当前视频是否播放到了结尾 */
     protected boolean mIsEnd = false;
-    /** 是否完成了当前视频的播放 */
-    private boolean mCloseComplete = false;
-    /** 当前播放的视频地址 */
-    protected Uri mUri;
-    /** 播放器界面的模式 */
-    protected int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
-    /** 放播放器的 io.vov.vitamio.widget.CenterLayout */
-    protected ViewGroup viewRoot;
-    /** 播放器的VideoView com.xueersi.parentsmeeting.player.media.VideoView */
-    protected VideoView videoView;
-    /** 加载中动画的加载文字 */
-    private TextView tvVideoLoadingText;
-    /** 播放器播放失败时的提供可刷新操作的背景 */
-    protected View videoBackgroundRefresh;
-    /** 加载中动画Loading */
-    private View videoLoadingLayout;
 
-    /** 当前播放进度 */
-    protected long mCurrentPosition;
-    /** 视频总时长 */
-    protected long mDuration;
-    /** 播放器统计时长 */
-    private double mUMPlayVideoTime;
-
-    // region 播放业务Handler
-    private AtomicBoolean mOpened = new AtomicBoolean(Boolean.FALSE); // 线程安全的Boolean值
-    /** 播放器的Surface是否创建 */
-    private boolean mSurfaceCreated = false;
-    /** 播放服务是否已连接 */
-    private boolean mServiceConnected = false;
     /** 播放器的控制对象 */
     protected LiveMediaController mMediaController;
-    /** 当前界面是否横屏 */
-    protected boolean mIsLand = false;
-    /** 当前界面方向 */
-    protected int mDirection = VideoOrientationEventListener.DIRECTION_UP;
-    /** 是否可以自动横竖屏转换 */
-    protected boolean mIsAutoOrientation = true;
 
-    /** 是否点击了横竖屏切换按钮 */
-    private boolean mClick = false;
-
-    /** 点击进入横屏 */
-    private boolean mClickLand = true;
-    /** 点击进入竖屏 */
-    private boolean mClickPort = true;
-    /** 监听手机当前旋转角度 */
-    private VideoOrientationEventListener mOrientationEventListener;
     /** 是否完成了一系列的系统广播 */
     private boolean mReceiverRegistered = false;
-    /** 播放器的屏幕高 */
-    private int mPortVideoHeight = 0;
+
     /** 是否显示控制栏 */
     protected boolean mIsShowMediaController = true;
-    ShareDataManager mShareDataManager;
 
-    /** 系统状态栏高度 */
-    private int mStatusBarHeight = 0;
-    float leftVolume = VP.DEFAULT_STEREO_VOLUME, rightVolume = VP.DEFAULT_STEREO_VOLUME;
-    String video = "ijk";
     private OnVideoCreate onVideoCreate;
 
     /**
@@ -153,24 +93,12 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         logger.setLogMethod(false);
-        activity = (BaseActivity) getActivity();
         logger.d("onCreate:activity=" + activity);
-        mShareDataManager = ShareDataManager.getInstance();
-//        mPortVideoHeight = (int) LiveVideoConfig.VIDEO_HEIGHT;
-        mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mIsLand = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-        if (mIsLand) {
-            mDirection = VideoOrientationEventListener.DIRECTION_RIGHT;
-        }
-        mOrientationEventListener = new VideoOrientationEventListener(activity);
-        if (mOrientationEventListener.canDetectOrientation()) {
-            mOrientationEventListener.enable();
-        }
         manageReceivers();
         logger.d("onActivityCreated");
         if (onVideoCreate != null) {
@@ -178,34 +106,8 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
         }
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        logger.d("onCreateView");
-        // 播放器所在的io.vov.vitamio.widget.CenterLayout
-        viewRoot = (ViewGroup) inflater.inflate(R.layout.live_video_center, container, false);
-        videoView = viewRoot.findViewById(R.id.vv_course_video_video); // 播放器的videoView
-        videoView.initialize(activity, this, mIsHWCodec); // 初始化播放器所在的画布
-        tvVideoLoadingText = viewRoot.findViewById(R.id.tv_course_video_loading_tip); // 加载进度文字框
-        videoLoadingLayout = viewRoot.findViewById(R.id.rl_course_video_loading); // 加载进度动画
-        return viewRoot;
-    }
-
     public void setMediaController(LiveMediaController mediaController) {
         this.mMediaController = mediaController;
-    }
-
-    public PlayerService createPlayer() {
-        vPlayer = new PlayerService(activity);
-        vPlayer.onCreate();
-        mServiceConnected = true;
-        if (mSurfaceCreated)
-            // 链接成功后尝试开始播放
-            vPlayerHandler.sendEmptyMessage(OPEN_FILE);
-        // 设置当前是否为横屏
-        setFileName(); // 设置视频显示名称
-        showLongMediaController();
-        return vPlayer;
     }
 
     @Override
@@ -336,19 +238,6 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
         super.onDestroy();
     }
 
-    /** 释放播放器资源 */
-    private void release() {
-        if (vPlayer != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                vPlayer.release();
-                vPlayer.releaseContext();
-            } else {
-                vPlayer.release();
-                vPlayer.releaseContext();
-            }
-        }
-    }
-
     /** 设置视频名称 */
     protected void setFileName() {
         if (mUri != null) {
@@ -395,12 +284,6 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
 //            viewRoot.setLayoutParams(lp);
             LayoutParamsUtil.setViewLayoutParams(viewRoot, lp);
         }
-    }
-
-    /** 设置播放器的界面布局 */
-    protected void setVideoLayout() {
-        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, vPlayer.getVideoWidth(),
-                vPlayer.getVideoHeight(), vPlayer.getVideoAspectRatio());
     }
 
     /** 判断当前为竖屏并且处于播放状态时，显示控制栏 */
@@ -466,203 +349,6 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
         vPlayerHandler.sendEmptyMessage(OPEN_FILE);
     }
 
-    /** 同步锁 */
-    private Object mOpenLock = new Object();
-    /** 准备打开播放文件 */
-    private static final int OPEN_FILE = 0;
-    /** 初始化完播放器准备加载播放文件 */
-    private static final int OPEN_START = 1;
-    /** 缓冲完毕可以播放 */
-    private static final int OPEN_SUCCESS = 2;
-    /** 打开失败 */
-    private static final int OPEN_FAILED = 3;
-    /** 硬解码失败 */
-    private static final int HW_FAILED = 4;
-    /** 初始化播放器的默认参数 */
-    private static final int LOAD_PREFS = 5;
-    /** 缓冲开始 */
-    private static final int BUFFER_START = 11;
-    /** 正在缓冲 */
-    private static final int BUFFER_PROGRESS = 12;
-    /** 缓冲结束 */
-    private static final int BUFFER_COMPLETE = 13;
-    /** 播放时的实时进度 */
-    private static final int ON_PLAYING_POSITION = 14;
-    /** 暂停播放 */
-    private static final int STOP_PLAYER = 15;
-    /** seek完成 */
-    private static final int SEEK_COMPLETE = 16;
-    /** 开始关闭播放器 */
-    private static final int CLOSE_START = 21;
-    /** 已退出播放器 */
-    private static final int CLOSE_COMPLETE = 22;
-
-    Handler.Callback callback = new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            switch (msg.what) {
-                case OPEN_FILE:
-                    // 打开新的视频时长统计初始化
-                    // 准备开始播放指定视频
-                    synchronized (mOpenLock) {
-                        if (!mOpened.get() && vPlayer != null) {
-                            mOpened.set(true);
-                            vPlayer.setVPlayerListener(vPlayerServiceListener);
-                            if (vPlayer.isInitialized())
-                                mUri = vPlayer.getUri();
-
-                            if (videoView != null)
-                                vPlayer.setDisplay(videoView.getHolder());
-                            if (mUri != null)
-                                vPlayer.initialize(mUri, video, 0, vPlayerServiceListener, mIsHWCodec);
-                        }
-                    }
-                    break;
-                case OPEN_START:
-                    // 统计播放器初始化成功
-                    XesMobAgent.userMarkVideoInit();
-                    // 播放器初始化完毕准备开始加载指定视频
-                    tvVideoLoadingText.setText(R.string.video_layout_loading);
-                    onPlayOpenStart();
-                    setVideoLoadingLayoutVisibility(View.VISIBLE);
-                    break;
-                case OPEN_SUCCESS:
-                    // 统计播放开始
-                    XesMobAgent.userMarkVideoPlay();
-                    // 视频加载成功开始初始化一些播放参数，并开始播放和加载控制栏
-                    loadVPlayerPrefs();
-                    onPlayOpenSuccess();
-                    setVideoLoadingLayoutVisibility(View.GONE);
-                    setVideoLayout();
-                    // attachMediaController();
-                    if (!mIsLand) {
-                        mMediaController.showLong();
-                    }
-                    vPlayer.start();
-                    showLongMediaController();
-                    break;
-                case OPEN_FAILED:
-                    // 视频打开失败
-                    int arg1 = msg.arg1, arg2 = msg.arg2;
-                    resultFailed(arg1, arg2);
-                    break;
-                case STOP_PLAYER:
-                    // 暂停播放
-                    stopPlayer();
-                    break;
-                case SEEK_COMPLETE:
-                    // seek完成
-                    onSeekComplete();
-                    break;
-                case BUFFER_START:
-                    // 网络视频缓冲开始
-                    setVideoLoadingLayoutVisibility(View.VISIBLE);
-                    vPlayerHandler.sendEmptyMessageDelayed(BUFFER_PROGRESS, 1000);
-                    break;
-                case BUFFER_PROGRESS:
-                    // 视频缓冲中进行进度更新
-                    if (!vPlayer.isBuffering() || vPlayer.getBufferProgress() >= 100) {
-                        setVideoLoadingLayoutVisibility(View.GONE);
-                    } else {
-                        // 视频缓冲中进行进度更新,tvVideoLoadingText.getVisibility()==View.GONE
-//                        tvVideoLoadingText.setText(getString(R.string.video_layout_buffering_progress,
-//                                vPlayer.getBufferProgress()));
-                        vPlayerHandler.sendEmptyMessageDelayed(BUFFER_PROGRESS, 1000);
-                    }
-                    break;
-                case BUFFER_COMPLETE:
-                    // 缓冲完毕
-                    setVideoLoadingLayoutVisibility(View.GONE);
-                    vPlayerHandler.removeMessages(BUFFER_PROGRESS);
-                    break;
-                case CLOSE_START:
-                    // 开始退出播放
-                    tvVideoLoadingText.setText(R.string.closing_file);
-                    setVideoLoadingLayoutVisibility(View.VISIBLE);
-                    break;
-                case CLOSE_COMPLETE:
-                    // 播放器退出完毕，设置相应Boolean值
-                    mCloseComplete = true;
-                    break;
-                case ON_PLAYING_POSITION:
-                    // 播放中获取实时的进度
-                    long[] arrPosition = (long[]) msg.obj;
-                    if (arrPosition != null && arrPosition.length == 2) {
-                        playingPosition(arrPosition[0], arrPosition[1]);
-                    }
-                    break;
-                case HW_FAILED:
-                    // 硬解码失败,尝试使用软解码初始化播放器
-                    if (videoView != null) {
-                        videoView.setVisibility(View.GONE);
-                        videoView.setVisibility(View.VISIBLE);
-                        videoView.initialize(activity, VideoFragment.this, false);
-                    }
-                    break;
-                case LOAD_PREFS:
-                    // 初始化一些播放器的配置参数
-                    loadVPlayerPrefs();
-                    break;
-                default:
-                    break;
-            }
-            return true;
-        }
-    };
-    private WeakHandler vPlayerHandler = new WeakHandler(callback);
-
-    /** 加载播放器的默认设置参数 */
-    private void loadVPlayerPrefs() {
-        if (!isInitialized())
-            return;
-        // 初始化播放器的参数
-        vPlayer.setBuffer(VP.DEFAULT_BUF_SIZE);
-        if (AppUtils.getAvailMemory(activity) > (long) (1024 * 1024 * 500)) {
-            // 如果当前手机可用运行时内存大于500MB就使用普通清晰度视频，否则使用低清晰度
-            vPlayer.setVideoQuality(MediaPlayer.VIDEOQUALITY_MEDIUM);
-        } else {
-            vPlayer.setVideoQuality(VP.DEFAULT_VIDEO_QUALITY);
-        }
-
-        vPlayer.setDeinterlace(VP.DEFAULT_DEINTERLACE);
-        vPlayer.setVolume(leftVolume, rightVolume);
-        if (videoView != null && isInitialized())
-            setVideoLayout();
-    }
-
-    public void setVolume(float left, float right) {
-        leftVolume = left;
-        rightVolume = right;
-        if (isInitialized()) {
-            vPlayer.setVolume(left, right);
-        }
-    }
-
-    public void setIsAutoOrientation(boolean mIsAutoOrientation) {
-        this.mIsAutoOrientation = mIsAutoOrientation;
-    }
-
-    /** 准备加载新视频 */
-    protected void onPlayOpenStart() {
-
-    }
-
-    /** 视频预加载成功 */
-    protected void onPlayOpenSuccess() {
-
-    }
-
-    /** seek完成 */
-    protected void onSeekComplete() {
-
-    }
-
-    /** 暂停播放 */
-    protected void stopPlayer() {
-        if (isInitialized()) {
-            vPlayer.pause();
-        }
-    }
 
     /** 视频非正常播放完毕，有可能是断网了，也有可能一开始打开失败了 */
     protected void resultFailed(int arg1, int arg2) {
@@ -688,198 +374,6 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
 
     }
 
-    /** 加载缓冲进度动画 */
-    private void setVideoLoadingLayoutVisibility(int visibility) {
-        if (videoLoadingLayout != null) {
-            videoLoadingLayout.setVisibility(visibility);
-        }
-    }
-
-    /***
-     * 正在播放中的实时进度回调
-     *
-     * @param currentPosition 当前播放的进度
-     * @param duration        视频总时长(毫秒)
-     * @author zouhao
-     * @Create at: 2015-6-5 上午11:33:26
-     */
-    protected void playingPosition(long currentPosition, long duration) {
-        this.mCurrentPosition = currentPosition;
-        this.mDuration = duration;
-    }
-
-    /** 播放器核心服务监听 */
-    protected PlayerService.VPlayerListener vPlayerServiceListener = new PlayerService.VPlayerListener() {
-
-        /** 硬解码失败 */
-        @Override
-        public void onHWRenderFailed() {
-            if (Build.VERSION.SDK_INT < 11 && mIsHWCodec) {
-                vPlayerHandler.sendEmptyMessage(HW_FAILED);
-                vPlayerHandler.sendEmptyMessageDelayed(HW_FAILED, 200); // 确保使用软解码初始化成功？？？
-            }
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
-            if (wrapListener != null) {
-                wrapListener.onHWRenderFailed();
-            }
-        }
-
-        /** 开始准备播放 */
-        @Override
-        public void onOpenStart() {
-            vPlayerHandler.sendEmptyMessage(OPEN_START);
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
-            if (wrapListener != null) {
-                wrapListener.onOpenStart();
-            }
-        }
-
-        /** 视频预处理完毕可以随时播放了 */
-        @Override
-        public void onOpenSuccess() {
-            if (mIsPlayerEnable) {
-                mUMPlayVideoTime = 0;
-                vPlayerHandler.sendEmptyMessage(OPEN_SUCCESS);
-            } else {
-                release();
-            }
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
-            if (wrapListener != null) {
-                wrapListener.onOpenSuccess();
-            }
-            if (isInitialized()) {
-                vPlayer.setVolume(leftVolume, rightVolume);
-            }
-        }
-
-        /** 视频打开失败 */
-        @Override
-        public void onOpenFailed(int arg1, int arg2) {
-            vPlayerHandler.sendMessage(vPlayerHandler.obtainMessage(OPEN_FAILED, arg1, arg2));
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
-            if (wrapListener != null) {
-                wrapListener.onOpenFailed(arg1, arg2);
-            }
-        }
-
-        /** 缓冲开始 */
-        @Override
-        public void onBufferStart() {
-            String s = "onBufferStart";
-            vPlayerHandler.sendEmptyMessage(BUFFER_START);
-            if (vPlayer != null) {
-                vPlayer.stopListenPlaying();
-            }
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
-            if (wrapListener != null) {
-                wrapListener.onBufferStart();
-            }
-        }
-
-        /** 缓冲结束 */
-        @Override
-        public void onBufferComplete() {
-            String s = "onBufferComplete";
-            if (mIsPlayerEnable && vPlayer != null)
-                vPlayerHandler.sendEmptyMessage(BUFFER_COMPLETE);
-            if (vPlayer != null) {
-                vPlayer.startListenPlaying();
-            }
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
-            if (wrapListener != null) {
-                wrapListener.onBufferComplete();
-            }
-        }
-
-        @Override
-        public void onSeekComplete() {
-            vPlayerHandler.sendEmptyMessage(SEEK_COMPLETE);
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
-            if (wrapListener != null) {
-                wrapListener.onSeekComplete();
-            }
-        }
-
-        /** 播放完毕 */
-        @Override
-        public void onPlaybackComplete() {
-            playComplete();
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
-            if (wrapListener != null) {
-                wrapListener.onPlaybackComplete();
-            }
-        }
-
-        /** 关闭开始 */
-        @Override
-        public void onCloseStart() {
-            vPlayerHandler.sendEmptyMessage(CLOSE_START);
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
-            if (wrapListener != null) {
-                wrapListener.onCloseStart();
-            }
-        }
-
-        /** 关闭完成 */
-        @Override
-        public void onCloseComplete() {
-            vPlayerHandler.sendEmptyMessage(CLOSE_COMPLETE);
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
-            if (wrapListener != null) {
-                wrapListener.onCloseComplete();
-            }
-        }
-
-        /** 设置VideoView */
-        @Override
-        public void onVideoSizeChanged(int width, int height) {
-            if (videoView != null) {
-                setVideoLayout();
-            }
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
-            if (wrapListener != null) {
-                wrapListener.onVideoSizeChanged(width, height);
-            }
-        }
-
-        /** 下载进度 */
-        @Override
-        public void onDownloadRateChanged(int kbPerSec) {
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
-            if (wrapListener != null) {
-                wrapListener.onDownloadRateChanged(kbPerSec);
-            }
-        }
-
-        /** 实时播放进度 */
-        @Override
-        public void onPlaying(long currentPosition, long duration) {
-            Message msg = Message.obtain();
-            long[] arrLong = {currentPosition, duration};
-            msg.obj = arrLong;
-            msg.what = ON_PLAYING_POSITION;
-            vPlayerHandler.sendMessage(msg);
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
-            if (wrapListener != null) {
-                wrapListener.onPlaying(currentPosition, duration);
-            }
-        }
-
-        /** 播放出现错误 */
-        @Override
-        public void onPlayError() {
-            VideoFragment.this.onPlayError();
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
-            if (wrapListener != null) {
-                wrapListener.onPlayError();
-            }
-        }
-    };
-
-    protected PlayerService.VPlayerListener getWrapListener() {
-        return null;
-    }
-
     /** 当前视频播放完毕 */
     protected void playComplete() {
         if (mDuration == 0 || mCurrentPosition < (mDuration - 5000)) {
@@ -900,50 +394,6 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
     /** 播放下一个视频 */
     protected void startPlayNextVideo() {
 
-    }
-
-    protected void onPlayError() {
-        vPlayerHandler.post(new Runnable() {
-
-            @Override
-            public void run() {
-                Toast.makeText(activity, "播放失败", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    // region 播放器Surface界面回
-
-    @Override
-    public void onSurfaceCreated(SurfaceHolder holder) {
-        mSurfaceCreated = true;
-        if (mServiceConnected)
-            vPlayerHandler.sendEmptyMessage(OPEN_FILE);
-        if (vPlayer != null)
-            vPlayer.setDisplay(holder);
-    }
-
-    @Override
-    public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
-
-    @Override
-    public void onSurfaceDestroyed(SurfaceHolder holder) {
-        if (vPlayer != null && vPlayer.isInitialized()) {
-            if (vPlayer.isPlaying()) {
-                vPlayer.pause();
-                vPlayer.setState(PlayerService.STATE_NEED_RESUME);
-            }
-            vPlayer.releaseSurface();
-            if (mIsPlayerEnable && vPlayer.needResume())
-                vPlayer.start();
-        }
-    }
-
-    /** 播放器是否已经成功初始化完毕处于可以加载资源随时播放的状态 */
-    protected boolean isInitialized() {
-        return (mCreated && vPlayer != null && vPlayer.isInitialized());
     }
 
     /** 控制开始播放视频 */
@@ -987,25 +437,6 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
     }
 
     @Override
-    public boolean isLandSpace() {
-        return mIsLand;
-    }
-
-    @Override
-    public void changeLOrP() {
-        mClick = true;
-        if (!mIsLand) {
-            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            mIsLand = true;
-            mClickLand = false;
-        } else {
-            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            mIsLand = false;
-            mClickPort = false;
-        }
-    }
-
-    @Override
     public long getCurrentPosition() {
         if (isInitialized())
             return vPlayer.getCurrentPosition();
@@ -1025,11 +456,6 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
         if (isInitialized())
             return (int) (vPlayer.getBufferProgress() * 100);
         return 0;
-    }
-
-    @Override
-    public void removeLoadingView() {
-        videoLoadingLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -1056,39 +482,8 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
     }
 
     @Override
-    public int getVideoHeight() {
-        if (mIsLand) {
-            return videoView.mVideoHeight;
-        } else {
-            if (mStatusBarHeight == 0) {
-                Rect frame = new Rect();
-                activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
-                mStatusBarHeight = frame.top;
-            }
-            return mPortVideoHeight;
-            /* return VP.DEFAULT_PORT_HEIGHT; */
-        }
-    }
-
-    @Override
     public void onTitleShow(boolean show) {
 
-    }
-
-    public final void onBackPressed() {
-        // 这里需要写代码，如果是横屏则转换竖屏
-        if (mIsLand) {
-            // 如果是横屏则切换为竖屏
-            if (mIsAutoOrientation) {
-                changeLOrP();
-            } else {
-                onUserBackPressed();
-//                super.onBackPressed();
-            }
-        } else {
-            onUserBackPressed();
-//            super.onBackPressed();
-        }
     }
 
     protected void updateRefreshImage() {
@@ -1101,118 +496,5 @@ public class VideoFragment extends Fragment implements VideoView.SurfaceCallback
         }
     }
 
-    /**
-     * 用户点击返回，判断是不是程序崩溃
-     */
-    protected void onUserBackPressed() {
-        activity.onBackPressed();
-//        activity.finish(LiveVideoConfig.VIDEO_CANCLE);
-    }
 
-    /**
-     * Activity 设置了横竖
-     *
-     * @param requestedOrientation
-     */
-    public void setRequestedOrientation(int requestedOrientation) {
-        mOrientationEventListener.setRequestedOrientation(requestedOrientation, true);
-    }
-
-    class VideoOrientationEventListener extends OrientationEventListener {
-        /** 当前界面方向-上方 */
-        public static final int DIRECTION_UP = 0;
-        /** 当前界面方向-手机左侧抬起 */
-        public static final int DIRECTION_LEFT = 1;
-        /** 当前界面方向-手机右侧抬起 */
-        public static final int DIRECTION_RIGHT = 2;
-        /** 当前界面方向-下方-暂时没有 */
-        public static final int DIRECTION_DOWN = 3;
-
-        public VideoOrientationEventListener(Context context) {
-            super(context);
-        }
-
-        @Override
-        public void onOrientationChanged(int orientation) {
-            if (((orientation >= 0) && (orientation <= 30)) || ((orientation <= 360) && (orientation >= 330))) {
-                if (!mIsAutoOrientation) {
-                    // 不自动旋转屏幕时退出
-                    return;
-                }
-                if (mClick) {
-                    if (mIsLand && !mClickLand) {
-                        return;
-                    } else {
-                        mClickPort = true;
-                        mClick = false;
-                        mIsLand = false;
-                    }
-                } else {
-                    if (mIsLand) {
-                        mDirection = DIRECTION_UP;
-                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, false);
-                        mIsLand = false;
-                        mClick = false;
-                    }
-                }
-            } else if (((orientation >= 230) && (orientation <= 310))) {
-                if (!mIsAutoOrientation && mDirection == DIRECTION_UP) {
-                    // 不自动旋转屏幕,竖屏不能转横屏，但是横屏左右可切换
-                    return;
-                }
-                if (mClick) {
-                    if (!mIsLand && !mClickPort) {
-                        return;
-                    } else {
-                        mClickLand = true;
-                        mClick = false;
-                        mIsLand = true;
-                    }
-                } else {
-                    if (mDirection != DIRECTION_RIGHT) {
-                        mDirection = DIRECTION_RIGHT;
-                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE, false);
-                        mIsLand = true;
-                        mClick = false;
-                    }
-                }
-            } else if (((orientation >= 50) && (orientation <= 130))) {
-                if (!mIsAutoOrientation && mDirection == DIRECTION_UP) {
-                    // 不自动旋转屏幕,竖屏不能转横屏，但是横屏左右可切换
-                    return;
-                }
-                if (mClick) {
-                    if (!mIsLand && !mClickPort) {
-                        return;
-                    } else {
-                        mClickLand = true;
-                        mClick = false;
-                        mIsLand = true;
-                    }
-                } else {
-                    if (mDirection != DIRECTION_LEFT) {
-                        mDirection = DIRECTION_LEFT;
-                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE, false);
-                        mIsLand = true;
-                        mClick = false;
-                    }
-                }
-            }
-        }
-
-        public void setRequestedOrientation(int requestedOrientation, boolean fromActivity) {
-            if (!fromActivity) {
-                activity.setRequestedOrientation(requestedOrientation);
-            }
-            if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-                mDirection = DIRECTION_UP;
-            } else if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                mDirection = DIRECTION_RIGHT;
-            } else if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
-                mDirection = DIRECTION_LEFT;
-            } else if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
-                mDirection = DIRECTION_DOWN;
-            }
-        }
-    }
 }
