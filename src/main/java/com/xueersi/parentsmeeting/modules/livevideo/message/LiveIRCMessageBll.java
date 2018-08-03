@@ -37,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStatusChange;
@@ -123,6 +124,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         QuestionShowReg questionShowReg = getInstance(QuestionShowReg.class);
         if (questionShowReg != null) {
             questionShowReg.registQuestionShow(mRoomAction);
+        }
+        EnglishShowReg englishShowReg = getInstance(EnglishShowReg.class);
+        if (englishShowReg != null) {
+            englishShowReg.registQuestionShow(mRoomAction);
         }
         EventBus.getDefault().register(this);
         RegMediaPlayerControl regMediaPlayerControl = getInstance(RegMediaPlayerControl.class);

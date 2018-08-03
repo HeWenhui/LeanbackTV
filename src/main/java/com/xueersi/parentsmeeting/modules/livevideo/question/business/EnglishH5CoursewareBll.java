@@ -64,7 +64,7 @@ import java.util.Map;
  * Created by linyuqiang on 2017/3/25.
  * 英语h5课件业务类
  */
-public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAndBackDebug, BaseVoiceAnswerCreat.AnswerRightResultVoice, LivePagerBack {
+public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAndBackDebug, BaseVoiceAnswerCreat.AnswerRightResultVoice, LivePagerBack, EnglishShowReg {
     String TAG = "EnglishH5CoursewareBll";
     String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
     String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
@@ -129,6 +129,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 + ".txt"));
         this.context = context;
         liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
+        ProxUtil.getProxUtil().put(context, EnglishShowReg.class, this);
     }
 
     public void initView(RelativeLayout bottomContent) {
@@ -335,9 +336,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 //                }
                 if ("on".equals(status)) {
                     if (!isAnaswer) {
-                        for (QuestionShowAction questionShowAction : questionShowActions) {
-                            onQuestionShow(true);
-                        }
+                        onQuestionShow(true);
                     }
                     isAnaswer = true;
                     if (!"1".equals(videoQuestionLiveEntity.getIsVoice()) || mErrorVoiceQue.contains(videoQuestionLiveEntity.getUrl())) {
