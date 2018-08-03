@@ -55,17 +55,23 @@ public class SmallEnglishMicTipDialog extends BaseAlertDialog {
 //            }
 //        }, 3000);
 //    }
-    public boolean setFail(String text) {
+    public boolean setFail(String text, int seconds) {
         setText(text);
         int oldStatus = status;
         status = FAIL;
+        if (!isDialogShow()) {
+            showDialogAutoClose(3000);
+        }
         return oldStatus != status;
     }
 
-    public boolean setSuccess(String text) {
+    public boolean setSuccess(String text, int seconds) {
         setText(text);
         int oldStatus = status;
         status = SUCCESS;
+        if (!isDialogShow()) {
+            showDialogAutoClose(3000);
+        }
         return oldStatus != status;
     }
 

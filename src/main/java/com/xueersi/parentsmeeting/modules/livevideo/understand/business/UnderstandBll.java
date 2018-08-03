@@ -109,6 +109,7 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
 
                     params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                             .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                    //在中间位置显示
                     LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
 
                     Drawable drawable = activity.getResources().getDrawable(R.drawable
@@ -118,6 +119,9 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                     params.leftMargin = (liveVideoPoint.x3 - liveVideoPoint.x2 - draweight) / 2;
 
                     params.addRule(RelativeLayout.CENTER_VERTICAL);
+                }
+                if (underatandView.getParent() == rlQuestionContent) {
+                    rlQuestionContent.removeView(underatandView);
                 }
                 rlQuestionContent.addView(underatandView, params);
 

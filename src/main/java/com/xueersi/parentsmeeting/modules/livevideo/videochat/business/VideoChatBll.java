@@ -364,6 +364,7 @@ public class VideoChatBll implements VideoChatAction {
         }
     }
 
+    //老师开启举手更能后，手机这边点击举手，会调用这里的已举手1，已举手5也会调用
     View.OnClickListener btRaiseHandsListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -418,6 +419,7 @@ public class VideoChatBll implements VideoChatAction {
                             smallEnglishDialog = new SmallEnglishMicTipDialog(activity);
 //                            dialog.setText("点击举手参与\n语音互动吧!");
                             smallEnglishDialog.setText("已举手，现在有" + raiseHandCount + "位小朋友在排队哦~");
+                            Loger.i(TAG, "已举手1");
                             smallEnglishDialog.showDialogAutoClose(3000);
                             if ("on".equals(onMic)) {
                                 final SmallEnglishMicTipDialog finalSmallEnglishMicTipDialog = smallEnglishDialog;
@@ -519,15 +521,13 @@ public class VideoChatBll implements VideoChatAction {
                 if ("on".equals(onmic)) {
                     btRaiseHands.setAlpha(1.0f);
                     if ("on".equals(oldonmicStatus) && oldContainMe != containMe) {
-                        //如果是小学英语
-//                        BaseAlertDialog dialog = null;
+                        //如果使用小学英语萌萌哒皮肤
                         if (isSmallEnglish) {
                             SmallEnglishMicTipDialog dialog = new SmallEnglishMicTipDialog(activity);
                             if (finalContain) {
-                                dialog.setSuccess("老师补位选中了你!");
+                                dialog.setSuccess("老师补位选中了你!", 3000);
                             } else {
-                                dialog.setFail("你已被移出语音聊天室！\n" +
-                                        "耐心等待下次连麦机会！");
+                                dialog.setFail("你已被移出语音聊天室！耐心等待下次连麦机会！", 3000);
                             }
                             dialog.showDialogAutoClose(3000);
                         } else {
@@ -585,8 +585,7 @@ public class VideoChatBll implements VideoChatAction {
                             if (smallEnglishDialog != null) {
                                 if (smallEnglishDialog != null) {
                                     isFail = true;
-//                                    smallEnglishDialog.setText("本次没有被选中哦，\n下次还有机会");
-                                    boolean set = smallEnglishDialog.setFail("本次没有被选中哦，\n下次还有机会");
+                                    boolean set = smallEnglishDialog.setFail("本次没有被选中哦，\n下次还有机会", 3000);
                                     if (set) {
                                         final SmallEnglishMicTipDialog finalSmallEnglishMicTipDialog =
                                                 smallEnglishDialog;
@@ -692,14 +691,15 @@ public class VideoChatBll implements VideoChatAction {
                                         } else {
                                             if (smallEnglishDialog == null) {
                                                 smallEnglishDialog = new SmallEnglishMicTipDialog(activity);
-                                                smallEnglishDialog.setText("已举手，现在有" + raiseHandCount + "位\n" +
+                                                smallEnglishDialog.setText("已举手，现在有" + raiseHandCount + "位" +
                                                         "小朋友在排队哦~");
+                                                Loger.i(TAG, "已举手2");
                                                 smallEnglishDialog.showDialogAutoClose(3000);
                                             }
                                             btRaiseHands.setBackgroundResource(R.drawable
                                                     .bg_livevideo_voicechat_raise_hands_check);
-                                            boolean set = smallEnglishDialog.setSuccess("你被老师选中啦！\n" +
-                                                    "请等待连麦吧！");
+                                            boolean set = smallEnglishDialog.setSuccess("你被老师选中啦！" +
+                                                    "请等待连麦吧！", 3000);
                                             if (set) {
                                                 isSuccess = true;
                                                 final SmallEnglishMicTipDialog finalSmallEnglishMicTipDialog =
@@ -752,7 +752,7 @@ public class VideoChatBll implements VideoChatAction {
                             } else {
                                 SmallEnglishMicTipDialog smallEnglishMicTipDialog = new SmallEnglishMicTipDialog
                                         (activity);
-                                smallEnglishMicTipDialog.setFail("老师已经结束了这次举手!");
+                                smallEnglishMicTipDialog.setFail("老师已经结束了这次举手!", 3000);
                                 smallEnglishMicTipDialog.showDialogAutoClose(3000);
                             }
                         }
@@ -845,7 +845,7 @@ public class VideoChatBll implements VideoChatAction {
                         micTipDialog.showDialog();
                     } else {
                         SmallEnglishMicTipDialog smallEnglishMicTipDialog = new SmallEnglishMicTipDialog(activity);
-                        smallEnglishMicTipDialog.setFail("老师已经结束了这次举手!");
+                        smallEnglishMicTipDialog.setFail("老师已经结束了这次举手!", 3000);
                         smallEnglishMicTipDialog.showDialogAutoClose(3000);
                     }
                 }
@@ -853,6 +853,7 @@ public class VideoChatBll implements VideoChatAction {
         });
     }
 
+    //老师先打开举麦功能，手机先举麦，退出之后再次进入，直接调用这里的已举手
     @Override
     public void raiseHandStatus(final String status, int num, String from) {
         raiseHandCount = num;
@@ -880,8 +881,9 @@ public class VideoChatBll implements VideoChatAction {
 //                        raiseHandDialog.setRaiseHandsCount(raiseHandCount);
 //                        raiseHandDialog.showDialog();
                         smallEnglishDialog = new SmallEnglishMicTipDialog(activity);
-                        smallEnglishDialog.setText("已举手，现在有" + raiseHandCount + "位\n" +
+                        smallEnglishDialog.setText("已举手，现在有" + raiseHandCount + "位" +
                                 "小朋友在排队哦~");
+                        Loger.i(TAG, "已举手3");
                         smallEnglishDialog.showDialogAutoClose(3000);
 
                     }
@@ -927,13 +929,14 @@ public class VideoChatBll implements VideoChatAction {
                 } else {
                     if (smallEnglishDialog == null) {
                         smallEnglishDialog = new SmallEnglishMicTipDialog(activity);
-                        smallEnglishDialog.setText("已举手，现在有" + raiseHandCount + "位\n" +
+                        smallEnglishDialog.setText("已举手，现在有" + raiseHandCount + "位" +
                                 "小朋友在排队哦~");
                         smallEnglishDialog.showDialogAutoClose(3000);
+                        Loger.i(TAG, "已举手2");
                     }
                     btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands_check);
                     smallEnglishDialog.setSuccess("你被老师选中啦！\n" +
-                            "请等待连麦吧！");
+                            "请等待连麦吧！", 3000);
                     final SmallEnglishMicTipDialog finalSmallEnglishMicTipDialog = smallEnglishDialog;
                     btRaiseHands.postDelayed(new Runnable() {
                         @Override
@@ -992,8 +995,7 @@ public class VideoChatBll implements VideoChatAction {
                             }
                         } else {
                             if (smallEnglishDialog != null) {
-                                smallEnglishDialog.setFail("本次没有被选中哦，\n" +
-                                        "下次还有机会！");
+                                smallEnglishDialog.setFail("本次没有被选中哦，\n下次还有机会！", 3000);
                                 isFail = true;
                                 final SmallEnglishMicTipDialog finalSmallEnglishMicTipDialog = smallEnglishDialog;
                                 btRaiseHands.postDelayed(new Runnable() {
@@ -1028,11 +1030,11 @@ public class VideoChatBll implements VideoChatAction {
                             raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
                             raiseHandDialog.setRaiseHandsCount(raiseHandCount);
                             raiseHandDialog.showDialog();
-                        } else {
-                            smallEnglishDialog = new SmallEnglishMicTipDialog(activity);
-                            smallEnglishDialog.setText("已举手，现在有" + raiseHandCount + "位\n" +
-                                    "小朋友在排队哦~");
-                            smallEnglishDialog.showDialogAutoClose(3000);
+                        } else {//老师先选中你，然后踢走你，再结束上麦，会回调到这里
+//                            smallEnglishDialog = new SmallEnglishMicTipDialog(activity);
+//                            smallEnglishDialog.setText("已举手，现在有" + raiseHandCount + "位小朋友在排队哦~");
+//                            Loger.i(TAG, "已举手4");
+//                            smallEnglishDialog.showDialogAutoClose(3000);
                         }
                     }
                 }
@@ -1040,6 +1042,8 @@ public class VideoChatBll implements VideoChatAction {
         });
     }
 
+    //老师开启举麦功能，学生未举手之前会走这里
+    //老师开启举麦功能，学生点击举手之后，也会走这里
     @Override
     public void raiseHandCount(final int num) {
         this.raiseHandCount = num;
@@ -1052,8 +1056,8 @@ public class VideoChatBll implements VideoChatAction {
                     }
                 } else {//小英
                     if (smallEnglishDialog != null) {
-                        smallEnglishDialog.setText("已举手，现在有" + num + "位\n" +
-                                "小朋友在排队哦~");
+                        smallEnglishDialog.setText("已举手，现在有" + num + "位小朋友在排队哦~");
+                        Loger.i(TAG, "已举手5");
                     }
                 }
             }

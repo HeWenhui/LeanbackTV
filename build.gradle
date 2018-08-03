@@ -13,17 +13,17 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+    compileSdkVersion 27
 }
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-//    compile(rootProject.ext.libraries.ijkplayer) { changing = true }
+    //    compile(rootProject.ext.libraries.ijkplayer) { changing = true }
     implementation(rootProject.ext.xeslibraries.speechrecognizer) { changing = true }
     //    compile project(':lottiexes')
-//    compile('com.xueersi.lib:xeslottie:1.0.1-SNAPSHOT@aar') {
-//        changing = true
-//    }
+    //    compile('com.xueersi.lib:xeslottie:1.0.1-SNAPSHOT@aar') {
+    //        changing = true
+    //    }
     compile 'org.java-websocket:Java-WebSocket:1.3.4'
-
     //ui公共库
     implementation(rootProject.ext.xeslibraries.uicomponent) {
         changing = true
@@ -32,7 +32,7 @@ dependencies {
     implementation(rootProject.ext.xeslibraries.framework) {
         changing = true
     }
-//    implementation project(':library:framework')
+    //    implementation project(':library:framework')
     //统计
     implementation(rootProject.ext.xeslibraries.analytics) {
         changing = true
@@ -55,7 +55,6 @@ dependencies {
     implementation project(':business-base:player')
     implementation project(':business-base:cloud')
     implementation project(':business-base:browser')
-
     implementation rootProject.ext.thirdlibraries.arouterapi
     //
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler

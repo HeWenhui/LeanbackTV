@@ -75,7 +75,7 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
 import master.flame.danmaku.danmaku.danmaku.model.BaseDanmaku;
 import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
 
-public class SmallEnglishLiveMessagePager extends BaseLiveMessagePager {
+public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePager {
     //本组在线人数
     private TextView tvOnlineNum;
     private CommonAdapter<LiveMessageEntity> commonAdapter;
@@ -781,7 +781,7 @@ public class SmallEnglishLiveMessagePager extends BaseLiveMessagePager {
                                                     }
                                                 }
                                             }
-                                            addSmallEnglishDanmaKuFlowers(smallEnglishSendFlowerPager
+                                            addDanmaKuFlowers(smallEnglishSendFlowerPager
                                                     .getWhichFlower(), getInfo.getStuName());
                                             mView.postDelayed(new Runnable() {
                                                 @Override
@@ -1093,12 +1093,12 @@ public class SmallEnglishLiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
-                    tvOnlineNum.setText("(" + peopleCount + ")");
+                    tvOnlineNum.setText("(" + peopleCount + "/" + getInfo.getTeamStuIds().size() + ")");
                 } else {
                     if (ircState.isHaveTeam()) {
-                        tvOnlineNum.setText("(" + peopleCount + ")");
+                        tvOnlineNum.setText("(" + peopleCount + "/" + getInfo.getTeamStuIds().size() + ")");
                     } else {
-                        tvOnlineNum.setText("(" + peopleCount + ")");
+                        tvOnlineNum.setText("(" + peopleCount + "/" + getInfo.getTeamStuIds().size() + ")");
                     }
                 }
             }
@@ -1111,12 +1111,12 @@ public class SmallEnglishLiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
-                    tvOnlineNum.setText("(" + peopleCount + ")");
+                    tvOnlineNum.setText("(" + peopleCount + "/" + getInfo.getTeamStuIds().size() + ")");
                 } else {
                     if (ircState.isHaveTeam()) {
-                        tvOnlineNum.setText("(" + peopleCount + ")");
+                        tvOnlineNum.setText("(" + peopleCount + "/" + getInfo.getTeamStuIds().size() + ")");
                     } else {
-                        tvOnlineNum.setText("(" + peopleCount + ")");
+                        tvOnlineNum.setText("(" + peopleCount + "/" + getInfo.getTeamStuIds().size() + ")");
                     }
                 }
             }
@@ -1142,7 +1142,9 @@ public class SmallEnglishLiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (disable) {
-                    XESToastUtils.showToast(mContext, "你被老师禁言了");
+                    if (fromNotice) {
+                        XESToastUtils.showToast(mContext, "你被老师禁言了");
+                    }
                     btMesOpen.setAlpha(0.4f);
                     btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_open);
                 } else {

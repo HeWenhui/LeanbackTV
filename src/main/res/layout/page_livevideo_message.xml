@@ -114,8 +114,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_above="@id/rl_livevideo_message_panelcontent"
-        android:background="@color/white"
-        android:visibility="gone">
+        android:background="@color/white">
 
         <Button
             android:id="@id/bt_livevideo_message_send"

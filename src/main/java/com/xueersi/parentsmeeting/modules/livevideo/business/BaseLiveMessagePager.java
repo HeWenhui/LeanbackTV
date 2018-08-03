@@ -25,11 +25,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.base.BasePager;
-import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.config.AppConfig;
+import com.xueersi.lib.framework.utils.string.ConstUtils;
+import com.xueersi.lib.framework.utils.string.RegexUtils;
+import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveExPressionEditData;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
@@ -38,15 +41,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.parentsmeeting.widget.expressionView.ExpressionView;
 import com.xueersi.parentsmeeting.widget.expressionView.adapter.ExpressionListAdapter;
 import com.xueersi.parentsmeeting.widget.expressionView.entity.ExpressionAllInfoEntity;
 import com.xueersi.ui.adapter.CommonAdapter;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.lib.framework.utils.string.ConstUtils;
-import com.xueersi.lib.framework.utils.string.RegexUtils;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -83,6 +83,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     protected final static long SEND_MSG_INTERVAL = 5000;
     /** 同学献花提示 */
     public String[] flowsTips = {"老师真赞", "老师太棒了", "老师辛苦了"};
+//    private String[] smallEnglishTips = {"送老师一朵太阳花", "送老师一束太阳花", "送老师一捧太阳花"};
     /** 同学献花花的资源 */
     public int[] flowsDrawTips = {R.drawable.bg_livevideo_flower_small, R.drawable.bg_livevideo_flower_middle, R
             .drawable.bg_livevideo_flower_big};
@@ -131,6 +132,8 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     public final static int SMALL_ENGLISH = 1;
     //其他部分的献花
     public final static int OTHER_FLOWER = 2;
+
+    private boolean isSmallEnglish = false;
 
     public BaseLiveMessagePager(Context context) {
         super(context);
@@ -489,47 +492,53 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
         dvMessageDanmaku.addDanmaku(danmaku);
     }
 
-    public void addSmallEnglishDanmaKuFlowers(final int ftype, final String name) {
-        if (mDanmakuContext == null) {
-            mView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    addSmallEnglishDanmaKuFlowers(ftype, name);
-                }
-            }, 20);
-            return;
-        }
+//    public void addSmallEnglishDanmaKuFlowers(final int ftype, final String name) {
+//        if (mDanmakuContext == null) {
+//            mView.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    addSmallEnglishDanmaKuFlowers(ftype, name);
+//                }
+//            }, 20);
+//            return;
+//        }
+//
+//        BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
+//        if (danmaku == null || dvMessageDanmaku == null) {
+//            return;
+//        }
+//        int[] smallEnglishFlowers = new int[]{R.drawable.bg_livevideo_small_english_sendflower_oneflower_img, R
+//                .drawable.bg_livevideo_small_english_sendflower_threeflowers_img, R.drawable
+//                .bg_livevideo_small_english_sendflower_fiveflowers_img};
+//        Drawable drawable;
+//        switch (ftype) {
+//            case FLOWERS_SMALL:
+//            case FLOWERS_MIDDLE:
+//            case FLOWERS_BIG:
+//                drawable = mContext.getResources().getDrawable(smallEnglishFlowers[ftype - 2]);
+//                danmaku.textColor = R.color.COLOR_FFFFFF;
+//                break;
+//            default:
+//                drawable = mContext.getResources().getDrawable(R.drawable.ic_launcher);
+//                danmaku.textColor = Color.BLUE;
+//                break;
+//        }
+//        drawable.setBounds(0, 0, SizeUtils.Dp2Px(mContext, 60), SizeUtils.Dp2Px(mContext, 60));
+//        SpannableStringBuilder spannable = smallEnglishCreateSpannable(ftype, name, drawable);
+//        danmaku.text = spannable;
+//        danmaku.padding = 13;
+//        danmaku.priority = 1;  // 一定会显示, 一般用于本机发送的弹幕
+//        danmaku.isLive = false;
+//        danmaku.time = dvMessageDanmaku.getCurrentTime() + 1200;
+//        danmaku.textSize = 25f * (mParser.getDisplayer().getDensity() - 0.6f);
+//        danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
+////        danmaku.underlineColor = Color.GREEN;
+//
+//        dvMessageDanmaku.addDanmaku(danmaku);
+//    }
 
-        BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
-        if (danmaku == null || dvMessageDanmaku == null) {
-            return;
-        }
-        Drawable drawable;
-        switch (ftype) {
-            case FLOWERS_SMALL:
-            case FLOWERS_MIDDLE:
-            case FLOWERS_BIG:
-                drawable = mContext.getResources().getDrawable(flowsDrawLittleTips[ftype - 2]);
-                danmaku.textColor = flowsDrawColors[ftype - 2];
-                break;
-            default:
-                drawable = mContext.getResources().getDrawable(R.drawable.ic_launcher);
-                danmaku.textColor = Color.BLUE;
-                break;
-        }
-        drawable.setBounds(0, 0, 100, 100);
-        SpannableStringBuilder spannable = createSpannable(ftype, name, drawable);
-        danmaku.text = spannable;
-        danmaku.padding = 5;
-        danmaku.priority = 1;  // 一定会显示, 一般用于本机发送的弹幕
-        danmaku.isLive = false;
-        danmaku.time = dvMessageDanmaku.getCurrentTime() + 1200;
-        danmaku.textSize = 25f * (mParser.getDisplayer().getDensity() - 0.6f);
-        danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
-//        danmaku.underlineColor = Color.GREEN;
+    //
 
-        dvMessageDanmaku.addDanmaku(danmaku);
-    }
 
     protected SpannableStringBuilder createSpannable(int ftype, String name, Drawable drawable) {
 //        Loger.i(TAG, "createSpannable:name=" + name + ",ftype=" + ftype);

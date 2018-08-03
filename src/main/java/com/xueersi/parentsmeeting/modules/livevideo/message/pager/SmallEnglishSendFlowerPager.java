@@ -195,7 +195,7 @@ public class SmallEnglishSendFlowerPager extends BasePager {
             ivOneFlowerSquare.setImageResource(R.drawable.shellwindow_sendflower_square_btn_click);
             ivOneFlowerTick.setVisibility(View.VISIBLE);
         } else {
-            ivOneFlowerSquare.setImageResource(R.drawable.shellwindow_sendflower_square_btn_nor);
+            ivOneFlowerSquare.setImageResource(R.drawable.bg_livevideo_small_english_sendflower_square_btn_nor);
             ivOneFlowerTick.setVisibility(View.GONE);
         }
     }
@@ -205,7 +205,7 @@ public class SmallEnglishSendFlowerPager extends BasePager {
             ivThreeFlowerSquare.setImageResource(R.drawable.shellwindow_sendflower_square_btn_click);
             ivThreeFlowerTick.setVisibility(View.VISIBLE);
         } else {
-            ivThreeFlowerSquare.setImageResource(R.drawable.shellwindow_sendflower_square_btn_nor);
+            ivThreeFlowerSquare.setImageResource(R.drawable.bg_livevideo_small_english_sendflower_square_btn_nor);
             ivThreeFlowerTick.setVisibility(View.GONE);
         }
     }
@@ -215,7 +215,7 @@ public class SmallEnglishSendFlowerPager extends BasePager {
             ivFiveFlowerSquare.setImageResource(R.drawable.shellwindow_sendflower_square_btn_click);
             ivFiveFlowerTick.setVisibility(View.VISIBLE);
         } else {
-            ivFiveFlowerSquare.setImageResource(R.drawable.shellwindow_sendflower_square_btn_nor);
+            ivFiveFlowerSquare.setImageResource(R.drawable.bg_livevideo_small_english_sendflower_square_btn_nor);
             ivFiveFlowerTick.setVisibility(View.GONE);
         }
     }

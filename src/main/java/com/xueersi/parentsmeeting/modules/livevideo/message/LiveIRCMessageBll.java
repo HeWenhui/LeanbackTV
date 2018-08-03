@@ -121,7 +121,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 }
             });
         }
-        QuestionShowReg2 questionShowReg = getInstance(QuestionShowReg.class);
+        QuestionShowReg questionShowReg = getInstance(QuestionShowReg.class);
         if (questionShowReg != null) {
             questionShowReg.registQuestionShow(mRoomAction);
         }

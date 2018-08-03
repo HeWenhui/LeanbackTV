@@ -55,20 +55,20 @@
             android:layout_width="150px"
             android:layout_height="150px"
             android:clickable="false"
-            android:src="@drawable/shellwindow_sendflower_square_btn_nor" />
+            android:src="@drawable/bg_livevideo_small_english_sendflower_square_btn_nor" />
 
         <ImageView
             android:layout_width="150px"
             android:layout_height="150px"
             android:clickable="false"
-            android:src="@drawable/shellwindow_sendflower_oneflower_img" />
+            android:src="@drawable/bg_livevideo_small_english_sendflower_oneflower_img" />
 
         <ImageView
             android:id="@+id/iv_livevideo_small_english_sendflower_oneflower_tick"
             android:layout_width="100px"
             android:layout_height="100px"
             android:clickable="false"
-            android:src="@drawable/shellwindow_sendflower_tick_img"
+            android:src="@drawable/bg_livevideo_small_english_sendflower_tick"
             android:visibility="gone" />
 
         <Button
@@ -76,7 +76,7 @@
             android:layout_height="40px"
             android:layout_marginLeft="10px"
             android:layout_marginTop="145px"
-            android:background="@drawable/shellwindow_sendflower_idol_img"
+            android:background="@drawable/bg_livevideo_small_english_sendflower_idol_img"
             android:clickable="false"
             android:gravity="right"
             android:text="10金币"
@@ -98,20 +98,20 @@
             android:layout_width="150px"
             android:layout_height="150px"
             android:clickable="false"
-            android:src="@drawable/shellwindow_sendflower_square_btn_nor" />
+            android:src="@drawable/bg_livevideo_small_english_sendflower_square_btn_nor" />
 
         <ImageView
             android:layout_width="150px"
             android:layout_height="150px"
             android:clickable="false"
-            android:src="@drawable/shellwindow_sendflower_threeflowers_img" />
+            android:src="@drawable/bg_livevideo_small_english_sendflower_threeflowers_img" />
 
         <ImageView
             android:id="@+id/iv_livevideo_small_english_sendflower_threeflower_tick"
             android:layout_width="100px"
             android:layout_height="100px"
             android:clickable="false"
-            android:src="@drawable/shellwindow_sendflower_tick_img"
+            android:src="@drawable/bg_livevideo_small_english_sendflower_tick"
             android:visibility="gone" />
 
         <Button
@@ -119,7 +119,7 @@
             android:layout_height="40px"
             android:layout_marginLeft="10px"
             android:layout_marginTop="145px"
-            android:background="@drawable/shellwindow_sendflower_idol_img"
+            android:background="@drawable/bg_livevideo_small_english_sendflower_idol_img"
             android:clickable="false"
             android:gravity="right"
             android:text="50金币"
@@ -142,20 +142,20 @@
             android:layout_width="150px"
             android:layout_height="150px"
             android:clickable="false"
-            android:src="@drawable/shellwindow_sendflower_square_btn_nor" />
+            android:src="@drawable/bg_livevideo_small_english_sendflower_square_btn_nor" />
 
         <ImageView
             android:layout_width="150px"
             android:layout_height="150px"
             android:clickable="false"
-            android:src="@drawable/shellwindow_sendflower_fiveflowers_img" />
+            android:src="@drawable/bg_livevideo_small_english_sendflower_fiveflowers_img" />
 
         <ImageView
             android:id="@+id/iv_livevideo_small_english_sendflower_fiveflower_tick"
             android:layout_width="100px"
             android:layout_height="100px"
             android:clickable="false"
-            android:src="@drawable/shellwindow_sendflower_tick_img"
+            android:src="@drawable/bg_livevideo_small_english_sendflower_tick"
             android:visibility="gone" />
 
         <Button
@@ -163,7 +163,7 @@
             android:layout_height="40px"
             android:layout_marginLeft="10px"
             android:layout_marginTop="145px"
-            android:background="@drawable/shellwindow_sendflower_idol_img"
+            android:background="@drawable/bg_livevideo_small_english_sendflower_idol_img"
             android:clickable="false"
             android:gravity="right"
             android:text="100金币"

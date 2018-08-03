@@ -45,7 +45,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.business.KeyboardObserverReg;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
@@ -63,7 +62,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSt
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.KeyboardPopWindow;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -136,11 +134,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     private View mFloatView;
     private PopupWindow mPopupWindow;
 
-
-    /** 测试用 */
     public LiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                             LiveAndBackDebug ums, BaseLiveMediaControllerBottom
-                                    liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity>
+            liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity>
                                     otherLiveMessageEntities) {
         super(context);
         liveVideoActivity = (Activity) context;
@@ -167,7 +163,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 initData();
             }
         });
-//        ProxUtil.getProxUtil().get(context, KeyboardObserverReg.class).addKeyboardObserver(observer);
     }
 
     @Override
@@ -490,39 +485,18 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         before = System.currentTimeMillis();
     }
 
-//    KeyboardPopWindow.KeyboardObserver observer = new KeyboardPopWindow.KeyboardObserver() {
-//        @Override
-//        public void onKeyboardHeightChanged(int height, int orientation) {
-//            boolean isShowing = height > 100;
-//            Loger.i(TAG, "onKeyboardShowing:isShowing=" + isShowing);
-//            if (!isShowing && switchFSPanelLinearLayout.getVisibility() == View.GONE) {
-//                onTitleShow(true);
-//            }
-//            if (isShowing) {
-//                switchFSPanelLinearLayout.refreshHeight(height);
-//            } else {
-//                switchFSPanelLinearLayout.refreshHeight(0);
-//            }
-//            keyboardShowing = isShowing;
-//            keyboardShowingListener.onKeyboardShowing(isShowing);
-//            if (keyboardShowing) {
-//                btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
-//            }
-//        }
-//    };
-
     @Override
     public void setGetInfo(LiveGetInfo getInfo) {
         super.setGetInfo(getInfo);
         if (getInfo != null) {
             String educationStage = getInfo.getEducationStage();
             initFlower(educationStage);
-            new Thread() {
+            liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     OtherModulesEnter.requestGoldTotal(mContext);
                 }
-            }.start();
+            });
         }
     }
 
@@ -1357,11 +1331,5 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     public void hideclock() {
         cbMessageClock.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-//        ProxUtil.getProxUtil().get(mContext, KeyboardObserverReg.class).removeKeyboardObserver(observer);
     }
 }

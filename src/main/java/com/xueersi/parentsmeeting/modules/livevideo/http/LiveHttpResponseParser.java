@@ -108,8 +108,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
             try {
                 //小英萌萌哒皮肤专用
-                if (data.has("useMMD")) {
-                    getInfo.setSmallEnglish((String.valueOf(data.optString("useMMD"))).equals("1"));
+                if (data.has("useSkin")) {
+                    getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
                 } else {
                     getInfo.setSmallEnglish(false);
                 }
