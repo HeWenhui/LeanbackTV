@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 import android.content.Context;
 import android.os.Environment;
 import android.view.View;
+import android.view.ViewParent;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.log.LoggerFactory;
@@ -120,6 +121,13 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     }
 
     public boolean onUserBackPressed() {
+        if (mView != null) {
+            ViewParent parent = mView.getParent();
+            if (parent == null) {
+                mLogtf.d("onUserBackPressed:parent=null");
+                return false;
+            }
+        }
         if (livePagerBack != null) {
             livePagerBack.onBack(this);
             return true;

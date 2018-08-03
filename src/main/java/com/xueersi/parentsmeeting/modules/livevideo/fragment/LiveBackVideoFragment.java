@@ -64,6 +64,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPacka
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoFragment;
@@ -138,7 +139,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     private PopupWindow mPopupWindows;
     private Handler mHandler;
     private int progress = 0;
-    LiveBackBll liveBackBll;
+    protected LiveBackBll liveBackBll;
+    protected LiveBackVideoBll liveBackVideoBll;
 
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {

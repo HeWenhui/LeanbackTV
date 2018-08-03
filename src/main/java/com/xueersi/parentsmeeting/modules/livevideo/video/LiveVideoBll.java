@@ -30,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoFragment;
 
 import org.json.JSONArray;
@@ -61,7 +62,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
     private PlayServerEntity.PlayserverEntity lastPlayserverEntity;
     private ArrayList<PlayServerEntity.PlayserverEntity> failPlayserverEntity = new ArrayList<>();
     private ArrayList<PlayServerEntity.PlayserverEntity> failFlvPlayserverEntity = new ArrayList<>();
-    private VideoFragment videoFragment;
+    private BaseVideoFragment videoFragment;
     private Activity activity;
     private LiveBll2 mLiveBll;
     private LiveHttpManager mHttpManager;
@@ -166,7 +167,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         liveGetPlayServer.liveGetPlayServer(mode, modechange);
     }
 
-    public void setVideoFragment(VideoFragment videoFragment) {
+    public void setVideoFragment(BaseVideoFragment videoFragment) {
         this.videoFragment = videoFragment;
     }
 

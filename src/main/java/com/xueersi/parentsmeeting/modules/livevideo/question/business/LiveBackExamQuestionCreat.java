@@ -37,7 +37,7 @@ public class LiveBackExamQuestionCreat implements BaseExamQuestionCreat {
     @Override
     public BaseExamQuestionInter creatBaseExamQuestion(Activity activity, final String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity) {
         ExamQuestionX5PlaybackPager examQuestionPlaybackPager = new ExamQuestionX5PlaybackPager(activity,
-                liveid, videoQuestionLiveEntity, IS_SCIENCE, liveGetInfo.getStuCouId(), examStop, null);
+                liveid, videoQuestionLiveEntity, IS_SCIENCE, liveGetInfo.getStuCouId(), examStop, livePagerBack);
         return examQuestionPlaybackPager;
     }
 }
