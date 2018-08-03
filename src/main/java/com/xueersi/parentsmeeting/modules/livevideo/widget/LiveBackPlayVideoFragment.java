@@ -198,6 +198,7 @@ public class LiveBackPlayVideoFragment extends Fragment implements VideoView.Sur
 
     public void setMediaController(MediaController2 mediaController) {
         this.mMediaController = mediaController;
+        mMediaController.setFileName(mDisplayName);
     }
 
     public PlayerService createPlayer() {

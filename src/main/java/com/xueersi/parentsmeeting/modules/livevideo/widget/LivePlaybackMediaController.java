@@ -35,20 +35,24 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class LivePlaybackMediaController extends MediaController2 {
     private String TAG = "LivePlaybackMediaController";
-    public MediaControllerBottom2 mediaControllerBottom;
-    private RelativeLayout rlKeyPoints;
-    private RelativeLayout rlKeytip;
-    Activity activity;
+    protected MediaControllerBottom2 mediaControllerBottom;
+    protected RelativeLayout rlKeyPoints;
+    protected RelativeLayout rlKeytip;
+    protected Activity activity;
     boolean mIsLand = true;
-    private View landView;
-    private View portView;
-    OnPointClick onPointClick;
+    protected View landView;
+    protected View portView;
+    protected OnPointClick onPointClick;
 
     public LivePlaybackMediaController(Context context, MediaPlayerControl player, boolean mIsLand) {
         super(context, player);
         this.mIsLand = mIsLand;
         activity = (Activity) context;
-        mediaControllerBottom = new MediaControllerBottom2(context, this, player);
+        addBottom();
+    }
+
+    protected void addBottom() {
+        mediaControllerBottom = new MediaControllerBottom2(activity, this, mPlayer);
         rlKeyPoints = (RelativeLayout) mediaControllerBottom.findViewById(R.id.rl_video_mediacontroller_keypoints);
         rlKeytip = (RelativeLayout) mediaControllerBottom.findViewById(R.id.rl_video_mediacontroller_keytip);
         setControllerBottom(mediaControllerBottom);

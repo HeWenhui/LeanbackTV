@@ -59,7 +59,9 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new LiveQuestionSwitchImpl());
             questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll));
             //语音评测
-            questionBll.setBaseSpeechCreat(new LiveBackStandSpeechCreat(this, liveBackBll, questionBll));
+            LiveBackStandSpeechCreat liveBackStandSpeechCreat = new LiveBackStandSpeechCreat(this, liveBackBll, questionBll);
+            liveBackStandSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction(activity));
+            questionBll.setBaseSpeechCreat(liveBackStandSpeechCreat);
         } else {
             //语音答题
             WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new LiveQuestionSwitchImpl());
@@ -100,7 +102,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_QUESTION: {
                 questionBll.onStopQuestion(questionEntity.getvQuestionType(), "");
-                if (LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(questionEntity.getvQuestionType())) {
+                if (LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(questionEntity.getvQuestionType())) {
                     MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
                     mediaPlayerControl.pause();
                 }
@@ -134,6 +136,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 videoQuestionLiveEntity.setAnswerDay(questionEntity.getAnswerDay());
                 videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
                 videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
+                videoQuestionLiveEntity.assess_ref = questionEntity.getAssess_ref();
                 questionBll.showQuestion(videoQuestionLiveEntity);
                 showQuestion.onShow(true);
             }

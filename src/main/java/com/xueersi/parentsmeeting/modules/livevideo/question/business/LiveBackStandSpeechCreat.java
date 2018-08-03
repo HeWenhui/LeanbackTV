@@ -23,7 +23,7 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
     QuestionPlayBackBll questionIRCBll;
     LiveAndBackDebug liveAndBackDebug;
     LivePagerBack livePagerBack;
-
+    WrapSpeechEvalAction wrapSpeechEvalAction;
     @Deprecated
     public LiveBackStandSpeechCreat(LiveBll liveBll) {
         liveAndBackDebug = liveBll;
@@ -35,6 +35,10 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
         this.livePagerBack = livePagerBack;
     }
 
+    public void setSpeechEvalAction(WrapSpeechEvalAction wrapSpeechEvalAction) {
+        this.wrapSpeechEvalAction = wrapSpeechEvalAction;
+    }
+
     @Override
     public void receiveRolePlay(VideoQuestionLiveEntity videoQuestionLiveEntity) {
 
@@ -44,7 +48,9 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
     public BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String nonce, VideoQuestionLiveEntity videoQuestionLiveEntity,
                                                   boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String learning_stage) {
         SpeechStandLog.sno2(liveAndBackDebug, videoQuestionLiveEntity.id, nonce);
-        speechEvalAction = new LiveStandSpeechEvalActionImpl(speechEvalAction);
+        wrapSpeechEvalAction.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
+        wrapSpeechEvalAction.setSpeechEvalAction(speechEvalAction);
+        speechEvalAction = new LiveStandSpeechEvalActionImpl(wrapSpeechEvalAction);
         StandSpeechAssAutoPager speechAssAutoPager = new StandSpeechAssAutoPager(context,
                 liveid, videoQuestionLiveEntity.id,
                 "", videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time,
