@@ -128,19 +128,6 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                 rlQuestionContent.getHandler().removeCallbacks(closeRedPackage);
                 rlQuestionContent.addView(understandView, params);
                 rlQuestionContent.postDelayed(closeRedPackage, 10000);//十秒之后关闭
-//                rlQuestionContent.getHandler().removeMessages();
-                postDelayedIfNotFinish(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mIsShowUnderstand) {
-                            Map<String, String> mData = new HashMap<>();
-                            mData.put("logtype", "understandTimeout");
-                            liveAndBackDebug.umsAgentDebugSys(understandEventId, mData);
-                            mIsShowUnderstand = false;
-                        }
-                    }
-                }, 10000);
-
                 activity.getWindow().getDecorView().requestLayout();
                 activity.getWindow().getDecorView().invalidate();
                 Map<String, String> mData = new HashMap<>();
@@ -162,9 +149,14 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
             if (understandView != null && understandView.getParent() != null && understandView.getParent
                     () == rlQuestionContent) {
                 removeView(rlQuestionContent, understandView);
+                Map<String, String> mData = new HashMap<>();
+                mData.put("logtype", "understandTimeout");
+                liveAndBackDebug.umsAgentDebugSys(understandEventId, mData);
+                mIsShowUnderstand = false;
             }
         }
     };//十秒之后自动关闭
+
     View.OnClickListener listener = new View.OnClickListener() {
 
         @Override
@@ -182,6 +174,8 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
             mData.put("sno", "3");
             mData.put("stable", "1");
             liveAndBackDebug.umsAgentDebugInter(understandEventId, mData);
+
+            removeView(rlQuestionContent, understandView);
         }
     };
     View.OnClickListener smallEnglishListener = new View.OnClickListener() {
