@@ -171,6 +171,7 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         } else if (!StringUtils.isEmpty(mMyInfo.getNickName())) {
             liveGetInfo.setNickname(mMyInfo.getNickName());
         }
+        liveGetInfo.setHeadImgPath(mMyInfo.getHeadImg());
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = new LiveGetInfo.StudentLiveInfoEntity();
             studentLiveInfo.setLearning_stage(mVideoEntity.getLearning_stage());

@@ -92,7 +92,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     }
 
     private RelativeLayout rl_course_video_live_controller_content;
-    LivePlaybackMediaController mPlayBackMediaController;
     /** 互动题的布局 */
     private RelativeLayout rlQuestionContent;
     /** 更多课程广告的布局 */
@@ -191,8 +190,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (mLiveRemarkBll != null) {
             mLiveRemarkBll.hideMarkPoints();
         }
-
-        LivePlaybackMediaController mPlayBackMediaController = new LivePlaybackMediaController(activity, liveBackPlayVideoFragment, mIsLand.get());
+        LivePlaybackMediaController mPlayBackMediaController = createLivePlaybackMediaController();
         mPlayBackMediaController.setOnPointClick(liveBackBll);
         this.mMediaController = mPlayBackMediaController;
         liveBackPlayVideoFragment.setMediaController(mMediaController);
@@ -251,6 +249,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             mPlayBackMediaController.setVideoQuestions("playback" + mVideoEntity.getvLivePlayBackType() + "-", lstVideoQuestion,
                     vPlayer.getDuration());
         }
+    }
+
+    protected LivePlaybackMediaController createLivePlaybackMediaController() {
+        LivePlaybackMediaController mPlayBackMediaController = new LivePlaybackMediaController(activity, liveBackPlayVideoFragment, mIsLand.get());
+        return mPlayBackMediaController;
     }
 
     @Override

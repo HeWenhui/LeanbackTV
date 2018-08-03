@@ -7,6 +7,8 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackStandMediaController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +49,12 @@ public class StandBackVideoFragment extends LiveBackVideoFragment {
                 StandBackVideoFragment.super.initBll();
             }
         });
+    }
+
+    @Override
+    protected LivePlaybackMediaController createLivePlaybackMediaController() {
+        LivePlaybackStandMediaController livePlaybackStandMediaController = new LivePlaybackStandMediaController(activity, liveBackPlayVideoFragment, mIsLand.get());
+        return livePlaybackStandMediaController;
     }
 
     @Override
