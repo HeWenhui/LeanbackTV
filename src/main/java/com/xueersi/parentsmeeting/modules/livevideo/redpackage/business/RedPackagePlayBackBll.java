@@ -115,7 +115,7 @@ public class RedPackagePlayBackBll extends LiveBackBaseBll {
                     }
                 });
             } else {
-                RedPackageBll redPackageBll = new RedPackageBll(activity, null, false);
+                RedPackageBll redPackageBll = new RedPackageBll(activity, liveGetInfo, false);
                 redPackageBll.setVSectionID(mVideoEntity.getSectionId());
                 redPackageBll.initView(mRootView);
                 redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {

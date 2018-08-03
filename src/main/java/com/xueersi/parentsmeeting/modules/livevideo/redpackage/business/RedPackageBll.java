@@ -42,7 +42,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author linyuqiang
- * Created by linyuqiang on 2016/9/23.
+ *         Created by linyuqiang on 2016/9/23.
  */
 public class RedPackageBll implements RedPackageAction, Handler.Callback {
     private static final String TAG = "RedPackageBll";
@@ -63,7 +63,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
      */
     private RelativeLayout rlRedpacketContent;
     boolean isLive;
-    private boolean isSmallEnglish = true;
+    private boolean isSmallEnglish = false;
 
     public RedPackageBll(Activity activity, LiveGetInfo liveGetInfo, boolean isLive) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
@@ -105,7 +105,9 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
     }
 
     private void onGetPackage(VideoResultEntity entity) {
-        rlRedpacketContent.removeAllViews();
+        if (!isSmallEnglish) {
+            rlRedpacketContent.removeAllViews();
+        }
         if (!isLive && entity.getResultType() == 0) {
             initRedPacketOtherResult();
         } else {
@@ -153,12 +155,19 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
                 }
             });
             artsRedPackagePager.setCancelRedPackageTouchListener(cancelRedPackageTouchListener);
-            params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
-                    .MATCH_PARENT);
-            LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+
             Drawable drawable = activity.getResources().getDrawable(R.drawable
                     .bg_livevideo_small_english_redppackage_board);
-            params.leftMargin = (liveVideoPoint.x3 - liveVideoPoint.x2 - drawable.getIntrinsicWidth()) / 2;
+            if (isLive) {
+                params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
+                        .MATCH_PARENT);
+                LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+                params.leftMargin = (liveVideoPoint.x3 - liveVideoPoint.x2 - drawable.getIntrinsicWidth()) / 2;
+            } else {
+                params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams
+                        .WRAP_CONTENT);
+                params.addRule(RelativeLayout.CENTER_IN_PARENT);
+            }
         } else {
             view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_view, rlRedpacketContent, false);
             ImageView imageView = view.findViewById(R.id.iv_livevideo_redpackage_monkey);

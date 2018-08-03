@@ -134,6 +134,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 videoQuestionLiveEntity.setAnswerDay(questionEntity.getAnswerDay());
                 videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
                 videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
+                videoQuestionLiveEntity.assess_ref = questionEntity.getAssess_ref();
                 questionBll.showQuestion(videoQuestionLiveEntity);
                 showQuestion.onShow(true);
             }
