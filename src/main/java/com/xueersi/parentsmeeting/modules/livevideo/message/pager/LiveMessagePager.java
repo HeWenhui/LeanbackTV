@@ -517,12 +517,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         if (getInfo != null) {
             String educationStage = getInfo.getEducationStage();
             initFlower(educationStage);
-            new Thread() {
+            liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     OtherModulesEnter.requestGoldTotal(mContext);
                 }
-            }.start();
+            });
         }
     }
 
