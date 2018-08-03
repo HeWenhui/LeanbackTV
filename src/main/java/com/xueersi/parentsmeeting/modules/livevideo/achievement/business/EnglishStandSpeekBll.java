@@ -61,7 +61,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements EnglishSpeekAction {
     static int staticInt = 0;
-    String TAG = "EnglishSpeekBll" + staticInt++;
+    String TAG = "EnglishStandSpeekBll" + staticInt++;
     private Activity activity;
     private EnglishSpeekHttp liveBll;
     private LiveAndBackDebug liveAndBackDebug;
@@ -302,6 +302,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
             return;
         }
         try {
+            isAudioStart = true;
             talLanguage.start(new LanguageListener() {
                 ValueAnimator lastValueAnimator;
 
@@ -313,6 +314,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
 
                 @Override
                 public void onError(ResultEntity result) {
+                    isAudioStart = false;
                     Loger.d(TAG, "onError:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",result=" + result);
                     isDestory = true;
                     isDestory2 = true;
@@ -321,7 +323,6 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
                         onAudioRequest.requestSuccess();
                         onAudioRequest = null;
                     }
-                    isAudioStart = false;
                     talAsrJni.LangIDFree();
                 }
 
@@ -472,8 +473,8 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
                     }
                 }
             });
-            isAudioStart = true;
         } catch (Exception e) {
+            isAudioStart = false;
             mLogtf.e("start", e);
             XESToastUtils.showToast(activity, "能量条启动失败，打开录音权限或者关闭其他录音程序");
         }
