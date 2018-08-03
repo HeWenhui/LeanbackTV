@@ -263,43 +263,43 @@ public class LiveAchievementBll implements StarInteractAction {
         } else {
             tvStarInteractGoldCount.setText("×" + goldCount);
         }
-        if (AppConfig.DEBUG) {
-            ivStarInteractStat.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    starCount++;
-                    if (starCount < 10) {
-                        tvStarInteractCountHind.setText("×0" + starCount);
-                    } else {
-                        tvStarInteractCountHind.setText("×" + starCount);
-                    }
-                    Loger.i(TAG, "onClick:id=" + tvStarInteractCountHind.getId());
-                    AllAnimation allAnimation = onReceiveStat(AnimationType_STAR, 1, "");
-                    allAnimation.setOnAnimationEnd(new OnAnimationEnd() {
-                        @Override
-                        public void onEnd() {
-                            goldCount += 2;
-                            onReceiveStat(AnimationType_GOLD, 2, "");
-                        }
-                    });
-//                    liveBll.getStuGoldCount();
-                }
-            });
-            ivStarInteractGold.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    goldCount++;
-                    if (goldCount < 10) {
-                        tvStarInteractGoldHind.setText("×0" + goldCount);
-                    } else {
-                        tvStarInteractGoldHind.setText("×" + goldCount);
-                    }
-                    Loger.i(TAG, "onClick:id=" + tvStarInteractGoldHind.getId());
-                    onReceiveStat(AnimationType_GOLD, 1, "");
-//                    liveBll.getStuGoldCount();
-                }
-            });
-        }
+//        if (AppConfig.DEBUG) {
+//            ivStarInteractStat.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    starCount++;
+//                    if (starCount < 10) {
+//                        tvStarInteractCountHind.setText("×0" + starCount);
+//                    } else {
+//                        tvStarInteractCountHind.setText("×" + starCount);
+//                    }
+//                    Loger.i(TAG, "onClick:id=" + tvStarInteractCountHind.getId());
+//                    AllAnimation allAnimation = onReceiveStat(AnimationType_STAR, 1, "");
+//                    allAnimation.setOnAnimationEnd(new OnAnimationEnd() {
+//                        @Override
+//                        public void onEnd() {
+//                            goldCount += 2;
+//                            onReceiveStat(AnimationType_GOLD, 2, "");
+//                        }
+//                    });
+////                    liveBll.getStuGoldCount();
+//                }
+//            });
+//            ivStarInteractGold.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    goldCount++;
+//                    if (goldCount < 10) {
+//                        tvStarInteractGoldHind.setText("×0" + goldCount);
+//                    } else {
+//                        tvStarInteractGoldHind.setText("×" + goldCount);
+//                    }
+//                    Loger.i(TAG, "onClick:id=" + tvStarInteractGoldHind.getId());
+//                    onReceiveStat(AnimationType_GOLD, 1, "");
+////                    liveBll.getStuGoldCount();
+//                }
+//            });
+//        }
         View rl_livevideo_starinteract_layout = bottomContent.findViewById(R.id.rl_livevideo_starinteract_layout);
         if (rl_livevideo_starinteract_layout != null) {//移除旧的view
 //            bottomContent.removeView(rl_livevideo_starinteract_layout);

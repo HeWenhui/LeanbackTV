@@ -45,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -206,7 +207,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                 .OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean have = XesPermission.checkPermission(activity, new PermissionCallback() {
+                boolean have = XesPermission.checkPermission(activity, new LiveActivityPermissionCallback() {
 
                     @Override
                     public void onFinish() {

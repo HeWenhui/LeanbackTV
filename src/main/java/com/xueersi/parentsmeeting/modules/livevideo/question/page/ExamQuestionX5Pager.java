@@ -159,11 +159,12 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         mView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
-
+                mLogtf.d("onViewAttachedToWindow");
             }
 
             @Override
             public void onViewDetachedFromWindow(View v) {
+                mLogtf.d("onViewDetachedFromWindow");
                 LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent.H5_TYPE_EXAM, num);
                 if (questionBll != null && questionBll instanceof QuestionBll) {
                     event.setCloseByTeahcer(((QuestionBll) questionBll).isWebViewCloseByTeacher());

@@ -50,6 +50,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.util.TextStrokeUtil;
@@ -465,7 +466,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
      * readygo 以后。检查权限
      */
     private void afterReadyGo() {
-        boolean have = XesPermission.checkPermission(mContext, new PermissionCallback() {
+        boolean have = XesPermission.checkPermission(mContext, new LiveActivityPermissionCallback() {
 
             @Override
             public void onFinish() {
