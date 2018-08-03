@@ -20,7 +20,7 @@
 
         <LinearLayout
             android:id="@+id/il_livevideo_vote_ps_choice"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -50,6 +50,7 @@
             <ImageView
                 android:id="@+id/iv_psprogress"
                 android:background="@drawable/livevideo_psprogress"
+                android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>

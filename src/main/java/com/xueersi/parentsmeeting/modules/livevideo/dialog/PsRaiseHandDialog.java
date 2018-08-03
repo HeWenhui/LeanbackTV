@@ -14,6 +14,7 @@ import com.xueersi.xesalib.view.alertdialog.BaseAlertDialog;
  */
 
 public class PsRaiseHandDialog extends BaseAlertDialog {
+    private RaiseHandGiveup raiseHandGiveup;
     public PsRaiseHandDialog(Context context, BaseApplication application) {
         super(context, application, false);
     }
@@ -28,6 +29,10 @@ public class PsRaiseHandDialog extends BaseAlertDialog {
         tip.setText("当前举手人数:" + count + "人");
     }
 
+    public void setSuccess(){
+        tip.setText("恭喜你！\n 你已经被老师选中，\n请准备一下等待接麦吧");
+    }
+
     public void showDialog() {
         super.showDialog(false, false);
         Handler handler = new Handler();
@@ -37,5 +42,13 @@ public class PsRaiseHandDialog extends BaseAlertDialog {
                 cancelDialog();
             }
         }, 3000);
+    }
+
+    public void setRaiseHandGiveup(RaiseHandGiveup raiseHandGiveup) {
+        this.raiseHandGiveup = raiseHandGiveup;
+    }
+
+    public interface RaiseHandGiveup {
+        void onGiveup();
     }
 }

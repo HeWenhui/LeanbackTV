@@ -35,14 +35,15 @@
                 android:id="@id/tv_livevideo_redpackage_gold"
                 android:text="8"
                 android:textSize="90sp"
-                android:textColor="#E54563"
+                android:textColor="@color/COLOR_REDBAG"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="金币"
-                android:textColor="#E54563"
+                android:textColor="@color/COLOR_REDBAG"
                 android:textSize="15sp"/>
         </LinearLayout>
         <TextView
@@ -51,7 +52,7 @@
             android:layout_centerHorizontal="true"
             android:text="3秒钟后自动关闭"
             android:textSize="14sp"
-            android:textColor="#E54536"
+            android:textColor="@color/COLOR_REDBAG"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <ImageView

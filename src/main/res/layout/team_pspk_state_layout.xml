@@ -3,9 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="67dp"
                 android:background="@color/COLOR_PSPK"
-                android:orientation="vertical"
-                android:paddingLeft="14dp"
-                android:paddingRight="14dp">
+                android:orientation="vertical">
 
     <RelativeLayout
         android:id="@id/rl_teampk_pkstate_container_1"
@@ -19,6 +17,7 @@
             android:layout_centerVertical="true"
             android:text="获得金币"
             android:textColor="@color/COLOR_FFFFFF"
+            android:layout_marginLeft="6dp"
             android:textSize="11sp"
             android:textStyle="bold" />
 
@@ -27,7 +26,7 @@
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_centerVertical="true"
-            android:layout_marginRight="3dp"
+            android:layout_marginRight="6dp"
             android:layout_alignParentRight="true"
             android:src="@drawable/livevideo_tool_golds_img_disable" />
 
@@ -51,8 +50,7 @@
         android:layout_height="1dp"
         android:layout_below="@id/rl_teampk_pkstate_container_1"
         android:layout_marginTop="5dp"
-        android:visibility="gone"
-        android:background="@color/COLOR_979797" />
+        android:background="@color/COLOR_PKDEVIDING" />
 
 
     <RelativeLayout
@@ -69,7 +67,8 @@
             android:layout_height="wrap_content"
             android:text="本队"
             android:textColor="@color/white"
-            android:textSize="11sp"
+            android:layout_marginLeft="7dp"
+            android:textSize="10sp"
             android:textStyle="bold" />
 
         <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
@@ -79,7 +78,7 @@
             android:layout_marginLeft="5dp"
             android:layout_toRightOf="@id/tv_teampk_pkstate_myteam_coin_prefix"
             android:text="0"
-            android:textColor="@color/white"
+            android:textColor="@color/COLOR_PKS"
             android:textSize="11sp"
             android:layout_alignBottom="@id/tv_teampk_pkstate_myteam_coin_prefix"
             />
@@ -90,8 +89,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:text="对手"
+            android:layout_marginRight="7dp"
             android:textColor="@color/white"
-            android:textSize="11sp"
+            android:textSize="10sp"
             android:textStyle="bold" />
 
         <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
@@ -101,7 +101,7 @@
             android:layout_toLeftOf="@id/tv_teampk_pkstate_adversary"
             android:layout_marginRight="5dp"
             android:text="0"
-            android:textColor="@color/white"
+            android:textColor="@color/COLOR_PKO"
             android:textSize="11sp"
             android:layout_alignBottom="@id/tv_teampk_pkstate_adversary"
             />
@@ -113,7 +113,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/rl_teampk_pkstate_container_2"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="3dp"
+        android:background="@drawable/livevideo_pspeaking_energbg"
         app:innerProgressBarHeight="6dp"
         app:sliderHeader="@drawable/livevideo_psenergyname_img_disable" />
 

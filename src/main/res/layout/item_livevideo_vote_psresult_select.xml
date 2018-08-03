@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
@@ -8,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:gravity="center"
+        android:gravity="right"
         android:text="99% 1000人"
         android:textColor="#7D553F"
         android:textSize="13sp" />
@@ -18,7 +19,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:layout_width="20dp"
-        android:layout_height="142dp"
+        android:layout_height="150dp"
         android:gravity="bottom"
         android:layout_above="@id/tv_livevideo_vote_result_item"
         android:layout_below="@id/tv_livevideo_vote_result_count"
@@ -28,9 +29,11 @@
         <ImageView
             android:id="@+id/iv_livevideo_ps_progress"
             android:background="@drawable/livevideo_psvote_indicator"
-            android:layout_centerHorizontal="true"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"/>
+            android:layout_marginBottom="-1dp"
+            android:layout_marginLeft="1.5dp"
+            android:layout_centerInParent="true"
+            android:layout_width="16dp"
+            android:layout_height="wrap_content"/>
     </RelativeLayout>
 
 

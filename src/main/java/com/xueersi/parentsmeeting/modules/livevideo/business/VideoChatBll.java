@@ -350,6 +350,7 @@ public class VideoChatBll implements VideoChatAction {
                         if(LiveVideoConfig.isPrimary){
                             BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
                             PsRaiseHandDialog psHandDialog = new PsRaiseHandDialog(activity, baseApplication);
+                            psHandDialog.setRaiseHandGiveup(raisepsHandGiveup);
                             psHandDialog.setRaiseHandsCount(raiseHandCount);
                             psHandDialog.showDialog();
                         } else {
@@ -411,7 +412,29 @@ public class VideoChatBll implements VideoChatAction {
 
         @Override
         public void onGiveup() {
+//            if(LiveVideoConfig.isPrimary){
+//                btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_pshands);
+//            } else {
+//                btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
+//            }
             btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
+            raisehand = false;
+            liveBll.giveupMicro(from);
+            raiseHandDialog.cancelDialog();
+            raiseHandDialog = null;
+        }
+    };
+
+    private PsRaiseHandDialog.RaiseHandGiveup raisepsHandGiveup = new PsRaiseHandDialog.RaiseHandGiveup() {
+
+        @Override
+        public void onGiveup() {
+//            if(LiveVideoConfig.isPrimary){
+//                btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_pshands);
+//            } else {
+//                btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
+//            }
+            btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_pshands);
             raisehand = false;
             liveBll.giveupMicro(from);
             raiseHandDialog.cancelDialog();
@@ -484,7 +507,11 @@ public class VideoChatBll implements VideoChatAction {
                         btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands_check);
                         startRecord(room, "");
                     } else {
-                        btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
+                        if(LiveVideoConfig.isPrimary){
+                            btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_pshands);
+                        } else {
+                            btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
+                        }
                         if (raiseHandDialog != null) {
                             boolean set = raiseHandDialog.setFail();
                             isFail = true;
@@ -573,6 +600,12 @@ public class VideoChatBll implements VideoChatAction {
                                         }
 
                                         btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands_check);
+                                        if(LiveVideoConfig.isPrimary) {
+                                            BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
+                                            PsRaiseHandDialog dialog = new PsRaiseHandDialog(activity, baseApplication);
+                                            dialog.setSuccess();
+                                            dialog.showDialog();
+                                        }
                                         boolean set = raiseHandDialog.setSuccess();
                                         if (set) {
                                             isSuccess = true;
@@ -590,7 +623,11 @@ public class VideoChatBll implements VideoChatAction {
                                     }
                                 } else {
                                     isSuccess = false;
-                                    btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
+                                    if(LiveVideoConfig.isPrimary){
+                                        btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_pshands);
+                                    } else {
+                                        btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
+                                    }
                                 }
                             }
                         };
@@ -610,7 +647,11 @@ public class VideoChatBll implements VideoChatAction {
                         raisehand = false;
                         isSuccess = false;
                         btRaiseHands.setAlpha(0.4f);
-                        btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
+                        if(LiveVideoConfig.isPrimary){
+                            btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_pshands);
+                        } else {
+                            btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
+                        }
                         if (raiseHandDialog != null) {
                             raiseHandDialog.cancelDialog();
                             raiseHandDialog = null;

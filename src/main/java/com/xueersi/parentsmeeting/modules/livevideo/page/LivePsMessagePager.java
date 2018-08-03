@@ -153,6 +153,10 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
         cbMessageClock = liveMediaControllerBottom.getCbMessageClock();
         lvCommonWord = liveMediaControllerBottom.getLvCommonWord();
 
+//        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
+//        btMsgCommon.setBackgroundResource(R.drawable.bg_livevideo_message_pscommon);
+//        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -388,7 +392,7 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
         }.start();
         btMessageFlowers.setTag("0");
         btMessageFlowers.setAlpha(0.4f);
-        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
         ivExpressionCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -412,7 +416,7 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
 
                     @Override
                     public int getLayoutResId() {
-                        return R.layout.item_livevideo_message;
+                        return R.layout.item_livevideo_psmessage;
                     }
 
                     @Override
@@ -449,6 +453,11 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
                             Typeface typeFace = Typeface.createFromAsset(liveVideoActivity.getAssets(),"fangzhengcuyuan.ttf");
                             // 应用字体
                             tvMessageItem.setTypeface(typeFace);
+                            if(LiveMessageEntity.MESSAGE_MINE == entity.getType()){
+                                tvMessageItem.setTextColor(0xffffffff);
+                            } else {
+                                tvMessageItem.setTextColor(0x7Fffffff);
+                            }
                             if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
                                 tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
                                 tvMessageItem.setText(entity.getText());
@@ -959,17 +968,17 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
                 if (disable) {
                     XESToastUtils.showToast(mContext, "你被老师禁言了");
                     btMesOpen.setAlpha(0.4f);
-                    btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_open);
+                    btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
                 } else {
                     if (fromNotice) {
                         XESToastUtils.showToast(mContext, "老师解除了你的禁言");
                     }
                     if (liveBll.openchat()) {
                         btMesOpen.setAlpha(1.0f);
-                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_open);
+                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
                     } else {
                         btMesOpen.setAlpha(0.4f);
-                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_open);
+                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
                     }
                 }
             }
@@ -983,14 +992,14 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
             public void run() {
                 if (liveBll.isDisable()) {
                     btMesOpen.setAlpha(0.4f);
-                    btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_open);
+                    btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
                 } else {
                     if (openchat) {
                         btMesOpen.setAlpha(1.0f);
-                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_open);
+                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
                     } else {
                         btMesOpen.setAlpha(0.4f);
-                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_open);
+                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
                     }
                     if (fromNotice) {
                         if (LiveTopic.MODE_CLASS.equals(mode)) {
@@ -1015,16 +1024,16 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
                     if (liveBll.isOpenbarrage()) {
                         btMessageFlowers.setTag("1");
                         btMessageFlowers.setAlpha(1.0f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
                     } else {
                         btMessageFlowers.setTag("0");
                         btMessageFlowers.setAlpha(0.4f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
                     }
                 } else {
                     btMessageFlowers.setTag("0");
                     btMessageFlowers.setAlpha(0.4f);
-                    btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+                    btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
                 }
             }
         });
@@ -1042,14 +1051,14 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
                         }
                         btMessageFlowers.setTag("1");
                         btMessageFlowers.setAlpha(1.0f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
                     } else {
                         if (fromNotice) {
                             commonAction.onOpenbarrage(false);
                         }
                         btMessageFlowers.setTag("0");
                         btMessageFlowers.setAlpha(0.4f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
                     }
                 }
             }

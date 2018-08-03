@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController.MediaPlayerControl;
 
@@ -21,7 +22,11 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
 
     /** 播放器的布局界面 */
     public View inflateLayout() {
-        return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this);
+        if (LiveVideoConfig.isPrimary) {
+            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_psbottom, this);
+        } else {
+            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this);
+        }
     }
 
     @Override

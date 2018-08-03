@@ -24,7 +24,9 @@
             android:id="@+id/ll_pslearnreport_firstview"
             android:layout_above="@+id/iv_livevideo_redpackage_cofirm"
             android:layout_centerHorizontal="true"
-            android:layout_width="310dp"
+            android:layout_marginLeft="70dp"
+            android:layout_marginRight="70dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout
                 android:orientation="vertical"
@@ -37,14 +39,14 @@
                     android:background="@drawable/livevideo_palearnreport_learningtime"
                     android:layout_width="49dp"
                     android:layout_height="60dp"/>
-                <TextView
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                     android:layout_marginTop="8dp"
                     android:text="学习时长"
                     android:textSize="14sp"
                     android:textColor="#7D553F"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-                <TextView
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                     android:id="@+id/tv_learningtime"
                     android:textSize="14sp"
                     android:text="5分钟"
@@ -63,14 +65,14 @@
                     android:background="@drawable/livevideo_pslearnreport_yourcorrectrate"
                     android:layout_width="54dp"
                     android:layout_height="65dp"/>
-                <TextView
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                     android:layout_marginTop="8dp"
                     android:text="你的正确率"
                     android:textSize="14sp"
                     android:textColor="#7D553F"
-                    android:layout_width="70dp"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"/>
-                <TextView
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                     android:id="@+id/tv_yourcorrectrate"
                     android:textSize="14sp"
                     android:text="60%"
@@ -89,14 +91,14 @@
                     android:background="@drawable/livevideo_pslearnreport_classcorrectrate"
                     android:layout_width="48dp"
                     android:layout_height="56dp"/>
-                <TextView
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                     android:layout_marginTop="8dp"
                     android:text="班级正确率"
                     android:textSize="14sp"
                     android:textColor="#7D553F"
-                    android:layout_width="70dp"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"/>
-                <TextView
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                     android:id="@+id/tv_classcorrectrate"
                     android:textSize="14sp"
                     android:text="50%"
@@ -115,14 +117,14 @@
                     android:background="@drawable/livevideo_pslearnreport_yourranking"
                     android:layout_width="49dp"
                     android:layout_height="61dp"/>
-                <TextView
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                     android:layout_marginTop="8dp"
                     android:text="你的排名"
                     android:textSize="14sp"
                     android:textColor="#7D553F"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-                <TextView
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                     android:id="@+id/tv_yourranking"
                     android:textSize="14sp"
                     android:text="第4名"
@@ -147,6 +149,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
+            android:layout_marginRight="-6dp"
             android:src="@drawable/understandclose"/>
         <LinearLayout
             android:visibility="gone"
@@ -157,12 +160,12 @@
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-            <TextView
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:text="匿名评价，请选择你的听课感受"
                 android:textColor="#7D553F"
                 android:textSize="20sp"
-                android:layout_width="290dp"
-                android:layout_height="23dp"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
             <LinearLayout
                 android:orientation="vertical"
                 android:gravity="center"
@@ -176,7 +179,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="20dp">
 
-                    <TextView
+                    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                         android:id="@id/tv_livevideo_evaluate_star_tip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -197,7 +200,7 @@
                         hedgehog:starCount="5"
                         hedgehog:starEmpty="@drawable/livevideofeedback_normalstar"
                         hedgehog:starFill="@drawable/livevideofeedback_selectedstar"
-                        hedgehog:starImageMargin="8dp"
+                        hedgehog:starImageMargin="10dp"
                         hedgehog:starImageSize="23dp"/>
 
                 </RelativeLayout>
@@ -210,7 +213,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="15dp">
 
-                    <TextView
+                    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                         android:id="@id/tv_livevideo_evaluate_star_tip2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -231,7 +234,7 @@
                         hedgehog:starCount="5"
                         hedgehog:starEmpty="@drawable/livevideofeedback_normalstar"
                         hedgehog:starFill="@drawable/livevideofeedback_selectedstar"
-                        hedgehog:starImageMargin="8dp"
+                        hedgehog:starImageMargin="10dp"
                         hedgehog:starImageSize="23dp"/>
 
                 </RelativeLayout>
@@ -244,7 +247,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="15dp">
 
-                    <TextView
+                    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                         android:id="@id/tv_livevideo_evaluate_star_tip3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -265,7 +268,7 @@
                         hedgehog:starCount="5"
                         hedgehog:starEmpty="@drawable/livevideofeedback_normalstar"
                         hedgehog:starFill="@drawable/livevideofeedback_selectedstar"
-                        hedgehog:starImageMargin="8dp"
+                        hedgehog:starImageMargin="10dp"
                         hedgehog:starImageSize="23dp"/>
                 </RelativeLayout>
             </LinearLayout>
@@ -278,7 +281,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:background="@drawable/livevideopsreport_submit"
-            android:layout_marginBottom="38dp"
+            android:layout_marginBottom="32dp"
             />
 
     </RelativeLayout>

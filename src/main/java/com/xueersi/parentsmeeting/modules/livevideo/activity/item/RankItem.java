@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
 
@@ -23,7 +24,11 @@ public class RankItem implements AdapterItemInterface<RankEntity> {
 
     @Override
     public int getLayoutResId() {
-        return R.layout.item_livevodeo_rank;
+        if(LiveVideoConfig.isPrimary){
+            return R.layout.item_livevideo_psrank;
+        } else {
+            return R.layout.item_livevodeo_rank;
+        }
     }
 
     @Override

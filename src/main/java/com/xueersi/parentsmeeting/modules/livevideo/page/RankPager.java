@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RankItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
@@ -73,7 +74,11 @@ public class RankPager extends BasePager {
     }
     @Override
     public View initView() {
-        mView = View.inflate(mContext, R.layout.page_livevideo_rank, null);
+        if(LiveVideoConfig.isPrimary){
+            mView = View.inflate(mContext, R.layout.page_livevideo_psrank, null);
+        } else {
+            mView = View.inflate(mContext, R.layout.page_livevideo_rank, null);
+        }
         pagerContent = (LinearLayout)mView.findViewById(R.id.ll_rank_pager);
         //小组
         mRl_livevideo_rank_mygroup = mView.findViewById(R.id.rl_livevideo_rank_mygroup);

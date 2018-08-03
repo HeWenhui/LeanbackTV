@@ -219,13 +219,12 @@ public class LiveVoteBll implements LiveVoteAction {
                     final int answer = i + 1;
                     final int j = i + 1;
                     View convertView = LayoutInflater.from(context).inflate(R.layout.item_livevideo_vote_ps_select, mIl_livevideo_vote_ps_choice, false);
-                    if( i > 3){
+                    if(choiceNum > 5){
                         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                         if (i != choiceNum - 1) {
-                            lp.rightMargin = (int) (25 * ScreenUtils.getScreenDensity());
-                            lp.topMargin = (int) (25 * ScreenUtils.getScreenDensity());
+                            lp.rightMargin = (int) (8 * ScreenUtils.getScreenDensity());
                         }
-                        mIl_livevideo_vote_ps_choice.setOrientation(LinearLayout.VERTICAL);
+                        mIl_livevideo_vote_ps_choice.setOrientation(LinearLayout.HORIZONTAL);
                         mIl_livevideo_vote_ps_choice.addView(convertView, lp);
                     } else {
                         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -268,15 +267,13 @@ public class LiveVoteBll implements LiveVoteAction {
                             // 未被选中的选项背景色改变
                             mIl_livevideo_vote_ps_choice.removeAllViews();
                             for(int i = 0 ; i < choiceNum ; i++){
-                                //
                                 View convertView = LayoutInflater.from(context).inflate(R.layout.item_livevideo_vote_ps_select, mIl_livevideo_vote_ps_choice, false);
-                                if( i > 3){
+                                if(choiceNum > 5){
                                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                                     if (i != choiceNum - 1) {
-                                        lp.rightMargin = (int) (25 * ScreenUtils.getScreenDensity());
-                                        lp.topMargin = (int) (25 * ScreenUtils.getScreenDensity());
+                                        lp.rightMargin = (int) (8 * ScreenUtils.getScreenDensity());
                                     }
-                                    mIl_livevideo_vote_ps_choice.setOrientation(LinearLayout.VERTICAL);
+                                    mIl_livevideo_vote_ps_choice.setOrientation(LinearLayout.HORIZONTAL);
                                     mIl_livevideo_vote_ps_choice.addView(convertView, lp);
                                 } else {
                                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -286,13 +283,14 @@ public class LiveVoteBll implements LiveVoteAction {
                                     mIl_livevideo_vote_ps_choice.setOrientation(LinearLayout.HORIZONTAL);
                                     mIl_livevideo_vote_ps_choice.addView(convertView, lp);
                                 }
+
                                 mBtn_livevideo_vote_item = (Button) convertView.findViewById(R.id.btn_livevideo_vote_ps_item);
                                 if (voteEntity.getChoiceType() == 1) {
                                     if(i+1 == j){
                                         mBtn_livevideo_vote_item.setBackgroundResource(pschoices[i]);
                                     }else{
                                         mBtn_livevideo_vote_item.setBackgroundResource(pschoices[i]);
-                                        mBtn_livevideo_vote_item.setAlpha(0.6f);
+                                        mBtn_livevideo_vote_item.setAlpha(0.2f);
                                     }
 
                                 } else {
@@ -301,7 +299,7 @@ public class LiveVoteBll implements LiveVoteAction {
                                             mBtn_livevideo_vote_item.setBackgroundResource(R.drawable.livevideo_votechoice_psyes);
                                         }else{
                                             mBtn_livevideo_vote_item.setBackgroundResource(R.drawable.livevideo_votechoice_psyes);
-                                            mBtn_livevideo_vote_item.setAlpha(0.6f);
+                                            mBtn_livevideo_vote_item.setAlpha(0.2f);
                                         }
 
                                     } else {
@@ -309,7 +307,7 @@ public class LiveVoteBll implements LiveVoteAction {
                                             mBtn_livevideo_vote_item.setBackgroundResource(R.drawable.livevideo_votechoice_psno);
                                         }else{
                                             mBtn_livevideo_vote_item.setBackgroundResource(R.drawable.livevideo_votechoice_psno);
-                                            mBtn_livevideo_vote_item.setAlpha(0.6f);
+                                            mBtn_livevideo_vote_item.setAlpha(0.2f);
                                         }
 
                                     }
@@ -543,8 +541,8 @@ public class LiveVoteBll implements LiveVoteAction {
                         float oldProgress = (finalNewProgress) * fraction;
 //                        pb_livevideo_vote_result_item.setProgress((int) oldProgress);
                         ViewGroup.LayoutParams params = livevideo_psvote_result_item.getLayoutParams();
-                        params.height = dp2px(context,(int)(142 * (rado/100))-10);
-                        params.width = dp2px(context,18);
+                        params.height = dp2px(context,(int)(150 * (rado/100))-16);
+                        params.width = dp2px(context,14);
                         livevideo_psvote_result_item.setLayoutParams(params);
 //                        livevideo_psvote_result_item.setMaxHeight(248*(int)(finalNewProgress/voteEntity.getTotal()));
 
@@ -556,11 +554,11 @@ public class LiveVoteBll implements LiveVoteAction {
 //                pb_livevideo_vote_result_item.setProgress(newProgress);
                 ViewGroup.LayoutParams params = livevideo_psvote_result_item.getLayoutParams();
                 if(rado > 0){
-                    params.height = dp2px(context,(int)(142 * (rado/100))-10);
+                    params.height = dp2px(context,(int)(150 * (rado/100))-16);
                 }else{
-                    params.height = dp2px(context,(int)(142 * (rado/100)));
+                    params.height = dp2px(context,(int)(150 * (rado/100)));
                 }
-                params.width = dp2px(context,18);
+                params.width = dp2px(context,14);
                 livevideo_psvote_result_item.setLayoutParams(params);
 //                livevideo_psvote_result_item.setMaxHeight(248*(int)(newProgress/voteEntity.getTotal()));
             }

@@ -49,13 +49,14 @@
             android:layout_below="@id/rl_livevideo_message_top"
             android:background="@drawable/livevideo_psboard">
 
-            <TextView
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:id="@id/tv_livevideo_message_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginLeft="18dp"
-                android:textColor="@color/white" />
+                android:textSize="12sp"
+                android:textColor="@color/COLOR_PSONLINECOUNT" />
 
             <ImageView
                 android:id="@id/iv_livevideo_message_online"
@@ -88,8 +89,8 @@
             android:divider="@null"
             android:listSelector="@color/transparent"
             android:dividerHeight="10dp"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="9dp"
             android:paddingTop="10dp"
             android:scrollbars="none" />
 

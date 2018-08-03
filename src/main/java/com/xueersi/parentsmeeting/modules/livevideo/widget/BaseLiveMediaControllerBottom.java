@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.ControllerBottomInter;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController.MediaPlayerControl;
@@ -60,7 +61,9 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
 
     /** 播放器的布局界面 */
     public View inflateLayout() {
+
         return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this);
+
     }
 
     /** 初始化控制界面上的控制部件 */
