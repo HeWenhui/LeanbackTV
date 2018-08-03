@@ -347,6 +347,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
             return;
         }
         try {
+            isAudioStart = true;
             talLanguage.start(new LanguageListener() {
                 ValueAnimator lastValueAnimator;
 
@@ -358,6 +359,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
                 @Override
                 public void onError(ResultEntity result) {
+                    isAudioStart = false;
                     mLogtf.d("onError:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",result=" + result
                             .getErrorNo());
                     isDestory = true;
@@ -368,7 +370,6 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                         onAudioRequest.requestSuccess();
                         onAudioRequest = null;
                     }
-                    isAudioStart = false;
                     talAsrJni.LangIDFree();
                 }
 
@@ -534,8 +535,8 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                     }
                 }
             });
-            isAudioStart = true;
         } catch (Exception e) {
+            isAudioStart = false;
             mLogtf.e("start", e);
             XESToastUtils.showToast(activity, "能量条启动失败，打开录音权限或者关闭其他录音程序");
         }
