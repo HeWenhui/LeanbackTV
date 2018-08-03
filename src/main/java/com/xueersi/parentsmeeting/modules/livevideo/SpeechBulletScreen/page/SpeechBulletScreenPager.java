@@ -57,6 +57,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.dialog.CloseConfirmDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.ShortToastDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.KeyboardPopWindow;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
@@ -198,7 +199,7 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager impleme
 //                startEvaluator();
 //            }
 //        });
-        XesPermission.checkPermission(mContext, new PermissionCallback() {
+        XesPermission.checkPermission(mContext, new LiveActivityPermissionCallback() {
             /**
              * 结束
              */

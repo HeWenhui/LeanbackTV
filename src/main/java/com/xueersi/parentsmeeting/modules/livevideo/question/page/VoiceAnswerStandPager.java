@@ -43,6 +43,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSw
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
 import com.xueersi.common.util.FontCache;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
@@ -223,7 +224,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
      * readygo 以后。检查权限
      */
     private void afterReadGo() {
-        boolean have = XesPermission.checkPermission(mContext, new PermissionCallback() {
+        boolean have = XesPermission.checkPermission(mContext, new LiveActivityPermissionCallback() {
 
             @Override
             public void onFinish() {

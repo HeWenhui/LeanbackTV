@@ -587,20 +587,21 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                if (AppConfig.DEBUG) {
-                    GoldTeamStatus entity = new GoldTeamStatus();
-                    for (int i = 0; i < 3; i++) {
-                        GoldTeamStatus.Student student = new GoldTeamStatus.Student();
-                        student.setNickname("测试" + (test1++));
-                        student.createShowName();
-                        student.setScore("90");
-                        student.setAvatar_path(mGetInfo.getHeadImgPath());
-                        entity.getStudents().add(student);
-                    }
-                    callBack.onDataSucess(entity);
-                } else {
-                    callBack.onDataFail(1, responseEntity.getErrorMsg());
-                }
+//                if (AppConfig.DEBUG) {
+//                    GoldTeamStatus entity = new GoldTeamStatus();
+//                    for (int i = 0; i < 3; i++) {
+//                        GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                        student.setNickname("测试" + (test1++));
+//                        student.createShowName();
+//                        student.setScore("90");
+//                        student.setAvatar_path(mGetInfo.getHeadImgPath());
+//                        entity.getStudents().add(student);
+//                    }
+//                    callBack.onDataSucess(entity);
+//                } else {
+//                    callBack.onDataFail(1, responseEntity.getErrorMsg());
+//                }
+                callBack.onDataFail(1, responseEntity.getErrorMsg());
             }
         });
     }

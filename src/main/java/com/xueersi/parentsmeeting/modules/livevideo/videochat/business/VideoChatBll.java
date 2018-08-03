@@ -38,6 +38,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.dialog.RaiseHandDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.page.AgoraVideoChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -1216,7 +1217,7 @@ public class VideoChatBll implements VideoChatAction {
 
     private void checkPermissionUnPerList(final OnPermissionFinish onPermissionFinish) {
         final List<PermissionItem> unList = new ArrayList<>();
-        List<PermissionItem> unList2 = XesPermission.checkPermissionUnPerList(activity, new PermissionCallback() {
+        List<PermissionItem> unList2 = XesPermission.checkPermissionUnPerList(activity, new LiveActivityPermissionCallback() {
             @Override
             public void onFinish() {
 
