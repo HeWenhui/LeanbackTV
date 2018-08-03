@@ -410,7 +410,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         mContentView.addView(view);
         viewRoot = view.findViewById(com.xueersi.parentsmeeting.module.player.R.id.cl_course_video_root);// 播放器所在的io.vov.vitamio.widget.CenterLayout
         rlContent = (RelativeLayout) view.findViewById(com.xueersi.parentsmeeting.module.player.R.id.rl_course_video_content);
-        videoBackgroundRefresh = getLayoutInflater().inflate(mLayoutBackgroundRefresh, rlContent, false); // 失败时播放器显示的背景
+        videoBackgroundRefresh = LayoutInflater.from(activity).inflate(mLayoutBackgroundRefresh, rlContent, false); // 失败时播放器显示的背景
         videoBackgroundRefresh.setVisibility(View.GONE);
         rlContent.addView(videoBackgroundRefresh);
         tvVideoLoadingText = (TextView) view.findViewById(com.xueersi.parentsmeeting.module.player.R.id.tv_course_video_loading_tip); // 加载进度文字框
