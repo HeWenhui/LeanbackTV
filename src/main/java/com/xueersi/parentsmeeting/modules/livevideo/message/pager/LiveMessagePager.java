@@ -134,6 +134,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     private View mFloatView;
     private PopupWindow mPopupWindow;
 
+
+    /** 测试用 */
     public LiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                             LiveAndBackDebug ums, BaseLiveMediaControllerBottom
             liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity>
