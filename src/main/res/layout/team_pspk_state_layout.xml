@@ -115,7 +115,7 @@
         android:layout_below="@id/rl_teampk_pkstate_container_2"
         android:layout_marginTop="3dp"
         android:background="@drawable/livevideo_pspeaking_energbg"
-        app:innerProgressBarHeight="6dp"
+        app:innerProgressBarHeight="8dp"
         app:sliderHeader="@drawable/livevideo_psenergyname_img_disable" />
 
     <View

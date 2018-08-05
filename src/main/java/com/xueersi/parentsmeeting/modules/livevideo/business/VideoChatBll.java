@@ -106,6 +106,7 @@ public class VideoChatBll implements VideoChatAction {
     private String onmicStatus = "off";
     private LiveRemarkBll mLiveRemarkBll;
     private PsRaiseHandDialog mPsHandDialog;
+    private boolean mSet;
 
     public VideoChatBll(LiveVideoActivityBase activity) {
         this.activity = activity;
@@ -596,9 +597,9 @@ public class VideoChatBll implements VideoChatAction {
                                                 raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
                                                 raiseHandDialog.setRaiseHandsCount(raiseHandCount);
                                                 raiseHandDialog.showDialog();
+                                                mSet = raiseHandDialog.setSuccess();
                                             }
                                         }
-
                                         btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands_check);
                                         if(LiveVideoConfig.isPrimary) {
                                             BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
@@ -606,8 +607,7 @@ public class VideoChatBll implements VideoChatAction {
                                             dialog.setSuccess();
                                             dialog.showDialog();
                                         }
-                                        boolean set = raiseHandDialog.setSuccess();
-                                        if (set) {
+                                        if (mSet) {
                                             isSuccess = true;
                                             final RaiseHandDialog finalRaiseHandDialog = raiseHandDialog;
                                             btRaiseHands.postDelayed(new Runnable() {
@@ -766,6 +766,7 @@ public class VideoChatBll implements VideoChatAction {
 
     @Override
     public void raiseHandStatus(final String status, int num, String from) {
+        mLogtf.d("raisehandStatus:status=" + status +"num=" + num + "from=" + from);
         raiseHandCount = num;
         this.from = from;
         btRaiseHands.post(new Runnable() {
@@ -812,6 +813,8 @@ public class VideoChatBll implements VideoChatAction {
                         PsRaiseHandDialog psHandDialog = new PsRaiseHandDialog(activity,baseApplication);
                         psHandDialog.setRaiseHandsCount(raiseHandCount);
                         psHandDialog.showDialog();
+                        psHandDialog.setSuccess();
+                        btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands_check);
                     } else {
                         BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
                         raiseHandDialog = new RaiseHandDialog(activity, baseApplication);

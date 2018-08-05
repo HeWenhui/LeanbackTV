@@ -857,13 +857,15 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (liveBll.isSeniorOfHighSchool()) {
-                    tvMessageCount.setText("班内" + peopleCount + "人");
+//                    tvMessageCount.setText("班内" + peopleCount + "人");
+                    tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
                 } else {
                     if (liveBll.isHaveTeam()) {
 //                        tvMessageCount.setText("组内" + peopleCount + "人");
                         tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
                     } else {
-                        tvMessageCount.setText(peopleCount + "人正在上课");
+//                        tvMessageCount.setText(peopleCount + "人正在上课");
+                        tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
                     }
                 }
             }
@@ -913,13 +915,15 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (liveBll.isSeniorOfHighSchool()) {
-                    tvMessageCount.setText("班内" + peopleCount + "人");
+//                    tvMessageCount.setText("班内" + peopleCount + "人");
+                    tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
                 } else {
                     if (liveBll.isHaveTeam()) {
 //                        tvMessageCount.setText("组内" + peopleCount + "人");
                         tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
                     } else {
-                        tvMessageCount.setText(peopleCount + "人正在上课");
+//                        tvMessageCount.setText(peopleCount + "人正在上课");
+                        tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
                     }
                 }
             }
@@ -932,13 +936,15 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (liveBll.isSeniorOfHighSchool()) {
-                    tvMessageCount.setText("班内" + peopleCount + "人");
+//                    tvMessageCount.setText("班内" + peopleCount + "人");
+                    tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
                 } else {
                     if (liveBll.isHaveTeam()) {
 //                        tvMessageCount.setText("组内" + peopleCount + "人");
                         tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
                     } else {
-                        tvMessageCount.setText(peopleCount + "人正在上课");
+//                        tvMessageCount.setText(peopleCount + "人正在上课");
+                        tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
                     }
                 }
             }
