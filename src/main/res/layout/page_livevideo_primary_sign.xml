@@ -59,16 +59,18 @@
             android:visibility="gone"
             android:id="@+id/iv_sign_success"
             android:background="@drawable/primarysignsuccess"
+            android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="75dp"
+            android:layout_marginBottom="60dp"
             android:layout_width="137dp"
             android:layout_height="127dp"/>
         <ImageView
             android:visibility="gone"
             android:id="@+id/iv_sign_fail"
             android:background="@drawable/primarysignfail"
+            android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="75dp"
+            android:layout_marginBottom="60dp"
             android:layout_width="143dp"
             android:layout_height="119dp"/>
     </RelativeLayout>

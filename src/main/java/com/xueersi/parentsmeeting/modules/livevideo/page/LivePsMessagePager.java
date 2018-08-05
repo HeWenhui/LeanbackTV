@@ -153,10 +153,6 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
         cbMessageClock = liveMediaControllerBottom.getCbMessageClock();
         lvCommonWord = liveMediaControllerBottom.getLvCommonWord();
 
-//        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
-//        btMsgCommon.setBackgroundResource(R.drawable.bg_livevideo_message_pscommon);
-//        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
-
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -497,6 +493,12 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
         if (getInfo != null) {
             String educationStage = getInfo.getEducationStage();
             initPrimaryFlower();
+            new Thread() {
+                @Override
+                public void run() {
+                    OtherModulesEnter.requestGoldTotal(mContext);
+                }
+            }.start();
         }
     }
 
@@ -608,12 +610,6 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
                                             }
                                         }
                                     }
-//                                    if(LiveVideoConfig.isPrimary){
-////                                        addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
-//                                        liveBll.getLiveAutoNoticeBll().showGiftSuccessNotice(getTips(index), getHeard(index));
-//                                    }else{
-//                                        addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
-//                                    }
                                     liveBll.getLiveAutoNoticeBll().showGiftSuccessNotice(getTips(index), getHeard(index));
                                     mView.postDelayed(new Runnable() {
                                         @Override
