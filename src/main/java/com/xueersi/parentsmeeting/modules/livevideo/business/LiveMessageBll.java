@@ -177,13 +177,15 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction {
         }
 
         long before = System.currentTimeMillis();
-        if(LiveVideoConfig.isPrimary){
-            LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, questionBll, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
-            mLiveMessagePager = liveMessagePager;
-        } else {
-            LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
-            mLiveMessagePager = liveMessagePager;
-        }
+//        if(LiveVideoConfig.isPrimary){
+//            LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, questionBll, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+//            mLiveMessagePager = liveMessagePager;
+//        } else {
+//            LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+//            mLiveMessagePager = liveMessagePager;
+//        }
+        LiveMessagePager liveMessagePager = new LiveMessagePager(activity, questionBll, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+        mLiveMessagePager = liveMessagePager;
         Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
 
         mLiveMessagePager.setGetInfo(getInfo);

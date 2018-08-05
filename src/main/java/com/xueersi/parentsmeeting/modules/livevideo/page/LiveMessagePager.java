@@ -145,7 +145,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
         Resources resources = context.getResources();
-        nameColors[0] = resources.getColor(R.color.COLOR_32B16C);
+        if(LiveVideoConfig.isPrimary){
+            nameColors[0] = resources.getColor(R.color.COLOR_FFFFFF);
+        }else{
+            nameColors[0] = resources.getColor(R.color.COLOR_32B16C);
+        }
         nameColors[1] = resources.getColor(R.color.COLOR_E74C3C);
         nameColors[2] = resources.getColor(R.color.COLOR_20ABFF);
 
@@ -166,7 +170,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public View initView() {
-        mView = View.inflate(mContext, R.layout.page_livevideo_message, null);
+        if(LiveVideoConfig.isPrimary){
+            mView = View.inflate(mContext, R.layout.page_livevideo_psmessage, null);
+        } else {
+            mView = View.inflate(mContext, R.layout.page_livevideo_message, null);
+        }
         tvMessageCount = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
         ivMessageOnline = (ImageView) mView.findViewById(R.id.iv_livevideo_message_online);
         lvMessage = (ListView) mView.findViewById(R.id.lv_livevideo_message);
@@ -418,7 +426,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
                     @Override
                     public int getLayoutResId() {
-                        return R.layout.item_livevideo_message;
+                        if (LiveVideoConfig.isPrimary){
+                            return R.layout.item_livevideo_psmessage;
+                        } else {
+                            return R.layout.item_livevideo_message;
+                        }
+
                     }
 
                     @Override
@@ -514,6 +527,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             } else {
                 initFlower(educationStage);
             }
+            new Thread() {
+                @Override
+                public void run() {
+                    OtherModulesEnter.requestGoldTotal(mContext);
+                }
+            }.start();
         }
     }
 
