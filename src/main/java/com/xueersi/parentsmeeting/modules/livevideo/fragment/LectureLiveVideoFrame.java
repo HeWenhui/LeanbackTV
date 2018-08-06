@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIR
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
@@ -388,6 +389,11 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
 //                    ViewGroup.LayoutParams.MATCH_PARENT);
 //            mParent.addView(videoView, params);
 //        }
+    }
+
+    @Override
+    public void onPlayError(int errorCode, PlayErrorCode playErrorCode) {
+        liveVideoAction.onPlayError(errorCode, playErrorCode);
     }
 
     /**

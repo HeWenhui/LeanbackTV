@@ -64,6 +64,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.Spee
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandSpeechTop3Bll;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.StarInteractAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
+import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
@@ -1725,6 +1726,11 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                 super.onUserBackPressed();
             }
         }
+    }
+
+    @Override
+    public void onPlayError(int errorCode, PlayErrorCode playErrorCode) {
+
     }
 
     /**

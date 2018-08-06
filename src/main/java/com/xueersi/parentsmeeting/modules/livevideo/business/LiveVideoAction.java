@@ -16,7 +16,6 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity2;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -25,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
+import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -124,26 +124,34 @@ public class LiveVideoAction implements VideoAction {
         });
     }
 
-    public void onFail(int arg1, final int arg2) {
+    public void onFail(final int arg1, final int arg2) {
         mHandler.post(new Runnable() {
 
             @Override
             public void run() {
                 if (tvLoadingHint != null) {
-                    String errorMsg = null;
-                    AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
-                    if (error != null) {
-                        errorMsg = error.getNum() + " (" + error.getTag() + ")";
-                    }
-                    TextView tvFail = (TextView) mContentView.findViewById(R.id.tv_course_video_loading_fail);
-                    if (errorMsg != null) {
+                    PlayErrorCode playErrorCode = PlayErrorCode.getError(arg2);
+                    TextView tvFail = mContentView.findViewById(R.id.tv_course_video_loading_fail);
+                    if (playErrorCode == null) {
                         if (tvFail != null) {
                             tvFail.setVisibility(View.VISIBLE);
-                            tvFail.setText(errorMsg);
+                            tvFail.setText("视频播放失败[" + playErrorCode.getCode() + "]");
                         }
                     } else {
-                        if (tvFail != null) {
-                            tvFail.setVisibility(View.INVISIBLE);
+                        String errorMsg = null;
+                        AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
+                        if (error != null) {
+                            errorMsg = error.getNum() + " (" + error.getTag() + ")";
+                        }
+                        if (errorMsg != null) {
+                            if (tvFail != null) {
+                                tvFail.setVisibility(View.VISIBLE);
+                                tvFail.setText(errorMsg);
+                            }
+                        } else {
+                            if (tvFail != null) {
+                                tvFail.setVisibility(View.INVISIBLE);
+                            }
                         }
                     }
                     if (mLiveBll.isPresent()) {
@@ -264,6 +272,18 @@ public class LiveVideoAction implements VideoAction {
                 activity.finish();
             }
         }, 3000);
+    }
+
+    @Override
+    public void onPlayError(int errorCode, PlayErrorCode playErrorCode) {
+        if (ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
+            setFirstBackgroundVisible(View.VISIBLE);
+            TextView tvFail = mContentView.findViewById(R.id.tv_course_video_loading_fail);
+            if (tvFail != null) {
+                tvFail.setVisibility(View.VISIBLE);
+                tvFail.setText(playErrorCode.getTip());
+            }
+        }
     }
 
     public void updateLoadingImage() {

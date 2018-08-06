@@ -46,6 +46,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.Play
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerListener;
@@ -1520,6 +1521,11 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     protected void updateIcon() {
         updateLoadingImage();
         updateRefreshImage();
+    }
+
+    @Override
+    public void onPlayError(int errorCode, PlayErrorCode playErrorCode) {
+
     }
 
     protected void updateLoadingImage() {

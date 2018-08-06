@@ -4,6 +4,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 
 /**
  * 视频事件
@@ -59,4 +60,6 @@ public interface VideoAction {
      * @param msg
      */
     void onLiveDontAllow(String msg);
+
+    void onPlayError(int errorCode, PlayErrorCode playErrorCode);
 }

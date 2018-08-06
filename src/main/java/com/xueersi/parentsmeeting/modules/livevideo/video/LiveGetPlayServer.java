@@ -165,9 +165,11 @@ public class LiveGetPlayServer {
                 } else {
                     if (ex instanceof UnknownHostException) {
                         totalFrameStat.liveGetPlayServer(time, 1, "", ipsb, serverurl);
+                        mVideoAction.onPlayError(0, PlayErrorCode.PLAY_SERVER_CODE_101);
                     } else {
                         if (ex instanceof SocketTimeoutException) {
                             totalFrameStat.liveGetPlayServer(time, 2, "", ipsb, serverurl);
+                            mVideoAction.onPlayError(0, PlayErrorCode.PLAY_SERVER_CODE_102);
                         }
                     }
                     mLogtf.e("liveGetPlayServer:onError:isOnCallback=" + isOnCallback, ex);

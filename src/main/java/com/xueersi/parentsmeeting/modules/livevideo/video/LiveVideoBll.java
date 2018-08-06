@@ -538,6 +538,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 vPlayer.releaseSurface();
                 vPlayer.stop();
             }
+            mVideoAction.onPlayError(0, PlayErrorCode.PLAY_TIMEOUT_300);
             long openTimeOut = System.currentTimeMillis() - openStartTime;
             mLogtf.d("openTimeOut:progress=" + vPlayer.getBufferProgress() + ",openTimeOut=" + openTimeOut);
             liveGetPlayServer.liveGetPlayServer(false);

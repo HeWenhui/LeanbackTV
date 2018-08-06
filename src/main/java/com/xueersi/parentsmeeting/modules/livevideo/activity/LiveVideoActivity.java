@@ -59,6 +59,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.Spee
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechFeedBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
+import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
@@ -1664,6 +1665,11 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
     @Override
     public void onMsgUrlClick(String url) {
 //        onPauseNotStopVideo = true;
+    }
+
+    @Override
+    public void onPlayError(int errorCode, PlayErrorCode playErrorCode) {
+
     }
 
     @Override
