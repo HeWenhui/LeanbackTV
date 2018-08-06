@@ -32,8 +32,11 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /**
  * Created by linyuqiang on 2018/8/3.
@@ -42,6 +45,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class BaseVideoFragment extends Fragment implements VideoView.SurfaceCallback {
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     BaseActivity activity;
+    /** 视频的名称，用于显示在播放器上面的信息栏 */
+    protected String mDisplayName;
+    /** 是否从头开始播放 */
+    private boolean mFromStart = true;
+    /** 开始播放的起始点位 */
+    protected long mStartPos;
+    /** 当前视频是否播放到了结尾 */
+    protected boolean mIsEnd = false;
+
     /** 所在的Activity是否已经onCreated */
     private boolean mCreated = false;
     /** 播放器核心服务 */
@@ -134,8 +146,58 @@ public class BaseVideoFragment extends Fragment implements VideoView.SurfaceCall
     /** 加载中动画Loading */
     private View videoLoadingLayout;
 
-    public void playNewVideo(Uri uri, String displayName) {
 
+    public void playNewVideo() {
+        if (mUri != null && mDisplayName != null) {
+            playNewVideo(mUri, mDisplayName);
+        }
+    }
+
+    public void playNewVideo(Uri uri, String displayName) {
+        logger.d("playNewVideo:uri=" + uri);
+        if (isInitialized()) {
+            vPlayer.release();
+            vPlayer.releaseContext();
+        }
+        mDisplayName = "";
+        mIsHWCodec = false;
+        mFromStart = false;
+        mStartPos = 0;
+        mIsEnd = false;
+
+        mUri = uri;
+        mDisplayName = displayName;
+
+        if (viewRoot != null) {
+            viewRoot.invalidate();
+        }
+        if (mOpened != null) {
+            mOpened.set(false);
+        }
+
+        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+    }
+
+    public void playNewVideo(Uri uri, String displayName, String shareKey) {
+        if (isInitialized()) {
+            vPlayer.release();
+            vPlayer.releaseContext();
+        }
+        mDisplayName = "";
+        mIsHWCodec = false;
+        mFromStart = false;
+        mStartPos = 0;
+        mIsEnd = false;
+
+        mUri = uri;
+        mDisplayName = displayName;
+
+        if (viewRoot != null)
+            viewRoot.invalidate();
+        if (mOpened != null)
+            mOpened.set(false);
+
+        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
     }
 
     @Override
@@ -370,6 +432,11 @@ public class BaseVideoFragment extends Fragment implements VideoView.SurfaceCall
         }
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
     public void removeLoadingView() {
         videoLoadingLayout.setVisibility(View.GONE);
     }
@@ -578,8 +645,51 @@ public class BaseVideoFragment extends Fragment implements VideoView.SurfaceCall
 
     }
 
+    /** 视频非正常播放完毕，有可能是断网了，也有可能一开始打开失败了 */
     protected void resultFailed(int arg1, int arg2) {
+        showRefresyLayout(arg1, arg2);
+    }
 
+    /** 加载视频异常时出现可重新刷新的背景界面 TODO */
+    protected void showRefresyLayout(int arg1, int arg2) {
+        if (videoBackgroundRefresh == null) {
+            return;
+        }
+        videoBackgroundRefresh.setVisibility(View.VISIBLE);
+        TextView errorInfo = (TextView) videoBackgroundRefresh.findViewById(R.id.tv_course_video_errorinfo);
+        AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
+        if (error != null) {
+            errorInfo.setVisibility(View.VISIBLE);
+            errorInfo.setText(error.getNum() + " (" + error.getTag() + ")");
+        } else {
+            errorInfo.setVisibility(View.GONE);
+        }
+        videoBackgroundRefresh.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+
+    }
+
+    /** 控制开始播放视频 */
+    public void start() {
+        if (isInitialized())
+            vPlayer.start();
+    }
+
+    /** 控制视频暂停 */
+    public void pause() {
+        if (isInitialized())
+            vPlayer.pause();
+    }
+
+    /** 停止（按了返回键） */
+    public void stop() {
+        onBackPressed();
+    }
+
+    public void seekTo(long pos) {
+        if (isInitialized())
+            // vPlayer.seekTo((float) ((double) pos / vPlayer.getDuration()));
+            vPlayer.seekTo(pos);
+        mShareDataManager.put(mUri + VP.SESSION_LAST_POSITION_SUFIX, (long) 0, ShareDataManager.SHAREDATA_USER);//重置播放进度
     }
 
     /** 设置播放器的界面布局 */
@@ -665,6 +775,47 @@ public class BaseVideoFragment extends Fragment implements VideoView.SurfaceCall
             if (mIsPlayerEnable && vPlayer.needResume())
                 vPlayer.start();
         }
+    }
+
+    public long getCurrentPosition() {
+        if (isInitialized())
+            return vPlayer.getCurrentPosition();
+        // return (long) (getStartPosition() * vPlayer.getDuration());
+        return 0;
+    }
+
+    public long getDuration() {
+        if (isInitialized())
+            return vPlayer.getDuration();
+        return 0;
+    }
+
+    public int getBufferPercentage() {
+        if (isInitialized())
+            return (int) (vPlayer.getBufferProgress() * 100);
+        return 0;
+    }
+
+    public float scale(float scaleFactor) {
+        float userRatio = VP.DEFAULT_ASPECT_RATIO;
+        int videoWidth = vPlayer.getVideoWidth();
+        int videoHeight = vPlayer.getVideoHeight();
+        float videoRatio = vPlayer.getVideoAspectRatio();
+        float currentRatio = videoView.mVideoHeight / (float) videoHeight;
+
+        currentRatio += (scaleFactor - 1);
+        if (videoWidth * currentRatio >= LiveVideoConfig.VIDEO_MAXIMUM_WIDTH)
+            currentRatio = LiveVideoConfig.VIDEO_MAXIMUM_WIDTH / (float) videoWidth;
+
+        if (videoHeight * currentRatio >= LiveVideoConfig.VIDEO_MAXIMUM_HEIGHT)
+            currentRatio = LiveVideoConfig.VIDEO_MAXIMUM_HEIGHT / (float) videoHeight;
+
+        if (currentRatio < 0.5f)
+            currentRatio = 0.5f;
+
+        videoView.mVideoHeight = (int) (videoHeight * currentRatio);
+        videoView.setVideoLayout(mVideoMode, userRatio, videoWidth, videoHeight, videoRatio);
+        return currentRatio;
     }
 
     public int getVideoHeight() {

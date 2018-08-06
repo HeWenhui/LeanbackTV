@@ -93,8 +93,6 @@ public class LiveVideoFragmentBase extends Fragment {
     protected PlayerService vPlayer;
     /** 是否可以自动横竖屏转换 */
     protected boolean mIsAutoOrientation = true;
-    /** 是否可以播放视频 */
-    protected boolean mIsPlayerEnable = true;
     /** 播放器统计时长 */
     private double mUMPlayVideoTime;
     /** 视频类型 */
@@ -157,15 +155,14 @@ public class LiveVideoFragmentBase extends Fragment {
     public void onResume() {
         super.onResume();
         // 设置视频可播放
-        mIsPlayerEnable = true;
+        videoFragment.setIsPlayerEnable(true);
     }
-
 
     @Override
     public void onPause() {
         super.onPause();
         // 设置视频不可播放
-        mIsPlayerEnable = false;
+        videoFragment.setIsPlayerEnable(false);
         if (!mCreated) {
             return;
         }

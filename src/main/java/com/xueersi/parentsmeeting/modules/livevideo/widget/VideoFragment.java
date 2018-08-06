@@ -58,14 +58,6 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  * @date 2018/6/22
  */
 public class VideoFragment extends BaseVideoFragment implements VideoView.SurfaceCallback, LiveMediaController.MediaPlayerControl {
-    /** 视频的名称，用于显示在播放器上面的信息栏 */
-    private String mDisplayName;
-    /** 是否从头开始播放 */
-    private boolean mFromStart = true;
-    /** 开始播放的起始点位 */
-    private long mStartPos;
-    /** 当前视频是否播放到了结尾 */
-    protected boolean mIsEnd = false;
 
     /** 播放器的控制对象 */
     protected LiveMediaController mMediaController;
@@ -114,7 +106,6 @@ public class VideoFragment extends BaseVideoFragment implements VideoView.Surfac
     public void onResume() {
         logger.d("onResume");
         super.onResume();
-        mIsPlayerEnable = true;
         if (isInitialized()) {
             KeyguardManager keyguardManager = (KeyguardManager) activity.getSystemService(Activity.KEYGUARD_SERVICE);
             if (!keyguardManager.inKeyguardRestrictedInputMode()) {
@@ -134,8 +125,11 @@ public class VideoFragment extends BaseVideoFragment implements VideoView.Surfac
     @Override
     public void onPause() {
         logger.d("onPause");
-        mIsPlayerEnable = false;
         super.onPause();
+    }
+
+    public void setIsPlayerEnable(boolean mIsPlayerEnable) {
+        this.mIsPlayerEnable = mIsPlayerEnable;
     }
 
     /** 解锁广播 */
@@ -202,7 +196,7 @@ public class VideoFragment extends BaseVideoFragment implements VideoView.Surfac
     }
 
     /** 在所有资源初始化完毕后，调用开始播放 */
-    protected void startPlayer() {
+    public void startPlayer() {
         if (mIsPlayerEnable && isInitialized() && mScreenReceiver.screenOn && !vPlayer.isBuffering()) {
             // 播放器初始化完毕，屏幕点亮，没有缓冲
             if (!vPlayer.isPlaying()) {
@@ -256,6 +250,7 @@ public class VideoFragment extends BaseVideoFragment implements VideoView.Surfac
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+        mIsLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         if (isInitialized()) {
             setVideoLayout(); // 设置播放器VideoView的布局样式
             if (mIsLand) {
@@ -297,81 +292,10 @@ public class VideoFragment extends BaseVideoFragment implements VideoView.Surfac
         }
     }
 
-    protected void playNewVideo() {
-        if (mUri != null && mDisplayName != null) {
-            playNewVideo(mUri, mDisplayName);
-        }
-    }
-
-    public void playNewVideo(Uri uri, String displayName) {
-        if (isInitialized()) {
-            vPlayer.release();
-            vPlayer.releaseContext();
-        }
-        mDisplayName = "";
-        mIsHWCodec = false;
-        mFromStart = false;
-        mStartPos = 0;
-        mIsEnd = false;
-
-        mUri = uri;
-        mDisplayName = displayName;
-
-        if (viewRoot != null) {
-            viewRoot.invalidate();
-        }
-        if (mOpened != null) {
-            mOpened.set(false);
-        }
-
-        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
-    }
-
-    public void playNewVideo(Uri uri, String displayName, String shareKey) {
-        if (isInitialized()) {
-            vPlayer.release();
-            vPlayer.releaseContext();
-        }
-        mDisplayName = "";
-        mIsHWCodec = false;
-        mFromStart = false;
-        mStartPos = 0;
-        mIsEnd = false;
-
-        mUri = uri;
-        mDisplayName = displayName;
-
-        if (viewRoot != null)
-            viewRoot.invalidate();
-        if (mOpened != null)
-            mOpened.set(false);
-
-        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
-    }
-
-
-    /** 视频非正常播放完毕，有可能是断网了，也有可能一开始打开失败了 */
-    protected void resultFailed(int arg1, int arg2) {
-        showRefresyLayout(arg1, arg2);
-    }
-
     /** 加载视频异常时出现可重新刷新的背景界面 TODO */
     protected void showRefresyLayout(int arg1, int arg2) {
-        if (videoBackgroundRefresh == null) {
-            return;
-        }
-        videoBackgroundRefresh.setVisibility(View.VISIBLE);
+        super.showRefresyLayout(arg1, arg2);
         updateRefreshImage();
-        TextView errorInfo = (TextView) videoBackgroundRefresh.findViewById(R.id.tv_course_video_errorinfo);
-        AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
-        if (error != null) {
-            errorInfo.setVisibility(View.VISIBLE);
-            errorInfo.setText(error.getNum() + " (" + error.getTag() + ")");
-        } else {
-            errorInfo.setVisibility(View.GONE);
-        }
-        videoBackgroundRefresh.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
-
     }
 
     /** 当前视频播放完毕 */
@@ -396,33 +320,6 @@ public class VideoFragment extends BaseVideoFragment implements VideoView.Surfac
 
     }
 
-    /** 控制开始播放视频 */
-    @Override
-    public void start() {
-        if (isInitialized())
-            vPlayer.start();
-    }
-
-    /** 控制视频暂停 */
-    @Override
-    public void pause() {
-        if (isInitialized())
-            vPlayer.pause();
-    }
-
-    /** 停止（按了返回键） */
-    @Override
-    public void stop() {
-        onBackPressed();
-    }
-
-    @Override
-    public void seekTo(long pos) {
-        if (isInitialized())
-            // vPlayer.seekTo((float) ((double) pos / vPlayer.getDuration()));
-            vPlayer.seekTo(pos);
-        mShareDataManager.put(mUri + VP.SESSION_LAST_POSITION_SUFIX, (long) 0, ShareDataManager.SHAREDATA_USER);//重置播放进度
-    }
 
     @Override
     public void next() {
@@ -434,51 +331,6 @@ public class VideoFragment extends BaseVideoFragment implements VideoView.Surfac
         if (isInitialized())
             return vPlayer.isPlaying();
         return false;
-    }
-
-    @Override
-    public long getCurrentPosition() {
-        if (isInitialized())
-            return vPlayer.getCurrentPosition();
-        // return (long) (getStartPosition() * vPlayer.getDuration());
-        return 0;
-    }
-
-    @Override
-    public long getDuration() {
-        if (isInitialized())
-            return vPlayer.getDuration();
-        return 0;
-    }
-
-    @Override
-    public int getBufferPercentage() {
-        if (isInitialized())
-            return (int) (vPlayer.getBufferProgress() * 100);
-        return 0;
-    }
-
-    @Override
-    public float scale(float scaleFactor) {
-        float userRatio = VP.DEFAULT_ASPECT_RATIO;
-        int videoWidth = vPlayer.getVideoWidth();
-        int videoHeight = vPlayer.getVideoHeight();
-        float videoRatio = vPlayer.getVideoAspectRatio();
-        float currentRatio = videoView.mVideoHeight / (float) videoHeight;
-
-        currentRatio += (scaleFactor - 1);
-        if (videoWidth * currentRatio >= LiveVideoConfig.VIDEO_MAXIMUM_WIDTH)
-            currentRatio = LiveVideoConfig.VIDEO_MAXIMUM_WIDTH / (float) videoWidth;
-
-        if (videoHeight * currentRatio >= LiveVideoConfig.VIDEO_MAXIMUM_HEIGHT)
-            currentRatio = LiveVideoConfig.VIDEO_MAXIMUM_HEIGHT / (float) videoHeight;
-
-        if (currentRatio < 0.5f)
-            currentRatio = 0.5f;
-
-        videoView.mVideoHeight = (int) (videoHeight * currentRatio);
-        videoView.setVideoLayout(mVideoMode, userRatio, videoWidth, videoHeight, videoRatio);
-        return currentRatio;
     }
 
     @Override
