@@ -118,7 +118,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
         BaseLiveMessagePager.OnMsgUrlClick, BaseLiveMediaControllerBottom.MediaChildViewClick, AudioRequest,
         WebViewRequest, VideoChatEvent {
 
-    private String TAG = "StandLiveVideoActivity";
+    private String TAG = "StandLiveVideoFragment";
 
     {
         mLayoutVideo = R.layout.activity_video_live_stand;

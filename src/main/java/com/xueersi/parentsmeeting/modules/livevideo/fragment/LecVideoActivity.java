@@ -3,10 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.ViewGroup;
-
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity2;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 /**
  * Created by lyqai on 2018/7/18.

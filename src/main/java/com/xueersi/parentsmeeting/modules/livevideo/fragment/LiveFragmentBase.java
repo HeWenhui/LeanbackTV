@@ -53,7 +53,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 直播的一些公共方法
  */
 public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements VideoAction {
-    private String TAG = "LiveVideoActivity2Log";
+    private String TAG = "LiveFragmentBase";
     /** 播放器同步 */
     protected static final Object mIjkLock = new Object();
     protected WeakHandler mHandler = new WeakHandler(null);

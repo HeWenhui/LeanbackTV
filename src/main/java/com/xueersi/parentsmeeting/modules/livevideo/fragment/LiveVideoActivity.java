@@ -2,20 +2,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
 
 import com.xueersi.common.business.AppBll;
-import com.xueersi.common.event.AppEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity2;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * 直播
@@ -52,9 +45,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
     protected LiveVideoFragmentBase getFragment() {
         int pattern = getIntent().getIntExtra("pattern", 0);
         if (pattern == 2) {
-            return new StandLiveVideoActivity2();
+            return new StandLiveVideoFragment();
         }
-        return new LiveVideoActivity2();
+        return new LiveVideoFragment();
     }
 
     @Override

@@ -250,54 +250,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     }
 
     public boolean onBack() {
-        if (h5CoursewarePager != null) {
-            if (h5CoursewarePager.isFinish()) {
-                h5CoursewarePager.close();
-                onQuestionShow(false);
-            } else {
-                VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(context, (BaseApplication)
-                        BaseApplication.getContext(), false,
-                        VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
-                cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (h5CoursewarePager != null) {
-                            mH5AndBool.add(h5CoursewarePager.getUrl());
-                            h5CoursewarePager.onBack();
-                            h5CoursewarePager.destroy();
-                            bottomContent.removeView(h5CoursewarePager.getRootView());
-                            h5CoursewarePager = null;
-                            WebViewRequest webViewRequest = ProxUtil.getProxUtil().get(context, WebViewRequest.class);
-                            if (webViewRequest != null) {
-                                webViewRequest.releaseWebView();
-                            }
-                        }
-                    }
-                });
-                cancelDialog.setCancelShowText("取消").setVerifyShowText("确定").initInfo("您正在答题，是否结束作答？",
-                        VerifyCancelAlertDialog.CANCEL_SELECTED).showDialog();
-            }
-            return true;
-        }
-        if (voiceAnswerPager != null) {
-            VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(context, (BaseApplication)
-                    BaseApplication.getContext(), false,
-                    VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
-            cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (voiceAnswerPager != null) {
-                        voiceAnswerPager.onUserBack();
-                        VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) voiceAnswerPager.getBaseVideoQuestionEntity();
-                        mH5AndBool.add(videoQuestionLiveEntity.getUrl());
-                        stopVoiceAnswerPager();
-                    }
-                }
-            });
-            cancelDialog.setCancelShowText("取消").setVerifyShowText("确定").initInfo("您正在答题，是否结束作答？",
-                    VerifyCancelAlertDialog.CANCEL_SELECTED).showDialog();
-            return true;
-        }
         return false;
     }
 

@@ -61,11 +61,11 @@ import java.util.List;
  *
  * @author linyuqiang
  */
-public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction, BaseLiveMessagePager.OnMsgUrlClick {
-    private String TAG = "LiveVideoActivity2Log";
+public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, BaseLiveMessagePager.OnMsgUrlClick {
+    private String TAG = "LiveVideoFragment";
     Logger logger = LoggerFactory.getLogger(TAG);
 
-    public LiveVideoActivity2() {
+    public LiveVideoFragment() {
         mLayoutVideo = R.layout.activity_video_live_new;
     }
 
@@ -355,7 +355,7 @@ public class LiveVideoActivity2 extends LiveFragmentBase implements VideoAction,
 
     @Override
     public void onModeChange(final String mode, final boolean isPresent) {
-        LiveVideoActivity2.this.mode = mGetInfo.getMode();
+        LiveVideoFragment.this.mode = mGetInfo.getMode();
         mHandler.post(new Runnable() {
 
             @Override

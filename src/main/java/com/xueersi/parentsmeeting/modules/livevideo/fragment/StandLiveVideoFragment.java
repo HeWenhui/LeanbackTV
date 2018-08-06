@@ -1,40 +1,32 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
-import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity2;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.StandLiveVideoAction;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 
 /**
- * Created by lyqai on 2018/7/13.
+ * Created by linyuqiang on 2018/7/13.
+ * 站立直播
  */
-
-public class StandLiveVideoActivity2 extends LiveVideoActivity2 {
-    private String TAG = "StandLiveVideoActivity2Log";
+public class StandLiveVideoFragment extends LiveVideoFragment {
+    private String TAG = "StandLiveVideoFragment";
     Logger logger = LoggerFactory.getLogger(TAG);
     LiveStandFrameAnim liveStandFrameAnim;
     boolean startGetInfo = false;
     LiveStandMediaControllerBottom standMediaControllerBottom;
     boolean isSetFirstParam = true;
 
-    public StandLiveVideoActivity2() {
+    public StandLiveVideoFragment() {
         mLayoutVideo = R.layout.activity_video_live_stand_new;
     }
 
@@ -89,7 +81,7 @@ public class StandLiveVideoActivity2 extends LiveVideoActivity2 {
                 if (activity.isFinishing()) {
                     return;
                 }
-                StandLiveVideoActivity2.super.onVideoCreateEnd();
+                StandLiveVideoFragment.super.onVideoCreateEnd();
             }
         });
     }
