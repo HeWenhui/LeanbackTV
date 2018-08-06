@@ -14,6 +14,7 @@ import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentCoinAndTotalEnergyEntity;
@@ -34,6 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
+import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
@@ -46,6 +48,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import okhttp3.Call;
 
@@ -269,22 +273,44 @@ public class TeamPkBll {
         }
         final String eventId = getLogEventId(event.getH5Type());
 
-        mHttpManager.teamEnergyNumAndContributionStar(mLiveBll.getLiveId(),
-                roomInitInfo.getStudentLiveInfo().getTeamId(),
-                roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), testId, testPlan, new
-                        HttpCallBack() {
-                            @Override
-                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                TeamEnergyAndContributionStarEntity entity = mHttpResponseParser
-                                        .parseTeanEnergyAndContribution(responseEntity);
-                                showPkResultScene(entity, PK_RESULT_TYPE_PKRESULT);
-                                if (mLiveBll != null && entity != null) {
-                                    TeamPkLog.showPerTestPk(mLiveBll, entity.isMe(),getNonce(),eventId,
-                                            entity.getMyTeamEngerInfo().getTeamName());
-                                }
+        if(LiveVideoConfig.isNewEnglishH5){
 
-                            }
-                        });
+            mHttpManager.teamEnergyNumAndContributionmulStar(mLiveBll.getLiveId(),
+                    roomInitInfo.getStudentLiveInfo().getTeamId(),
+                    roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), LiveVideoConfig.tests, LiveVideoConfig.ctId, LiveVideoConfig.pSrc,new
+                            HttpCallBack() {
+                                @Override
+                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                    TeamEnergyAndContributionStarEntity entity = mHttpResponseParser
+                                            .parseTeanEnergyAndContribution(responseEntity);
+                                    showPkResultScene(entity, PK_RESULT_TYPE_PKRESULT);
+                                    if (mLiveBll != null && entity != null) {
+                                        TeamPkLog.showPerTestPk(mLiveBll, entity.isMe(),getNonce(),eventId,
+                                                entity.getMyTeamEngerInfo().getTeamName());
+                                    }
+
+                                }
+                            });
+
+        } else {
+            mHttpManager.teamEnergyNumAndContributionStar(mLiveBll.getLiveId(),
+                    roomInitInfo.getStudentLiveInfo().getTeamId(),
+                    roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), testId, testPlan, new
+                            HttpCallBack() {
+                                @Override
+                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                    TeamEnergyAndContributionStarEntity entity = mHttpResponseParser
+                                            .parseTeanEnergyAndContribution(responseEntity);
+                                    showPkResultScene(entity, PK_RESULT_TYPE_PKRESULT);
+                                    if (mLiveBll != null && entity != null) {
+                                        TeamPkLog.showPerTestPk(mLiveBll, entity.isMe(),getNonce(),eventId,
+                                                entity.getMyTeamEngerInfo().getTeamName());
+                                    }
+
+                                }
+                            });
+        }
+
     }
 
     /**

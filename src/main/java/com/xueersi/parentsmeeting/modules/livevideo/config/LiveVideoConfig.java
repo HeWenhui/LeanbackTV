@@ -177,6 +177,10 @@ public class LiveVideoConfig {
     public static Boolean isMulLiveBack = false;
     /** 年级阶段的标识*/
     public static String educationstage;
+    /** 战队PK改版 */
+    public static String tests;
+    public static String ctId;
+    public static String pSrc;
     public static interface SubjectIds {
         /**
          * 学科id，语文
