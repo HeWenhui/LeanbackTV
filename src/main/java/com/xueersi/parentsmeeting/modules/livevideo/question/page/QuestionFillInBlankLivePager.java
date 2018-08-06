@@ -250,6 +250,7 @@ public class QuestionFillInBlankLivePager extends BaseLiveQuestionPager {
             }
         }
         if (putQuestion != null) {
+            mLogtf.d("commit:result=" + quesReslutEntity.getResult());
             putQuestion.onPutQuestionResult(baseVideoQuestionEntity, quesReslutEntity.getResult());
         }
     }

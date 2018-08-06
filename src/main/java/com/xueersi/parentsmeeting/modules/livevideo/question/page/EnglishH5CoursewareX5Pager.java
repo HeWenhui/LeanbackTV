@@ -243,7 +243,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         Loger.i(TAG, "initData:loadUrl=" + loadUrl);
         loadUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
         loadUrl(loadUrl);
-        Loger.e(TAG, "======> loadUrl:" + loadUrl);
+        mLogtf.d("initData:loadUrl=" + loadUrl);
         reloadurl = loadUrl;
         mGoldNum = -1;
         mEnergyNum = -1;

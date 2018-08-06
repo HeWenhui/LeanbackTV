@@ -152,7 +152,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         examUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
         Loger.e("ExamQuestionPager", "======> loadUrl:" + examUrl);
         wvSubjectWeb.loadUrl(examUrl);
-
+        mLogtf.d("initData:examUrl=" + examUrl);
         mGoldNum = -1;
         mEnergyNum = -1;
 

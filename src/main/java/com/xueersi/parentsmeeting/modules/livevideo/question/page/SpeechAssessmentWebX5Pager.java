@@ -189,6 +189,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             url += "&isStandingLive=1&isAudio=1";
         }
         wvSubjectWeb.loadUrl(url);
+        mLogtf.d("initData:url=" + url);
     }
 
     @android.webkit.JavascriptInterface
