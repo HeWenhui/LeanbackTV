@@ -11,7 +11,7 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/rl_livevideo_message_top"
+            android:id="@id/rl_livevideo_message_top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -114,7 +114,8 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_above="@id/rl_livevideo_message_panelcontent"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:visibility="gone">
 
         <Button
             android:id="@id/bt_livevideo_message_send"
