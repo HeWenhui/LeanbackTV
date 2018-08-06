@@ -33,6 +33,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
@@ -46,6 +49,7 @@ import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenBll;
+import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.page.BaseSpeechBulletScreenPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
@@ -57,8 +61,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.dialog.CloseConfirmDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.ShortToastDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.KeyboardPopWindow;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import com.xueersi.parentsmeeting.widget.blurpopupwindow.BlurPopupWindow;
@@ -102,7 +108,7 @@ import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
  * Created by Zhang Yuansun on 2018/7/11.
  */
 
-public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager implements KeyboardPopWindow.KeyboardObserver, RoomAction{
+public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager implements RoomAction, KeyboardPopWindow.KeyboardObserver {
     /** 语音录入标题 */
     TextView tvSpeechbulTitle;
     /** 关闭按钮 */
@@ -125,6 +131,12 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager impleme
     RelativeLayout root;
     private View mCloseDialog;
     private KeyboardPopWindow keyboardPopWindow;
+    private LiveMessageBll liveMessageBll;
+
+    private SpeechBulletScreenHttp speechBulletScreenHttp;
+    public void setSpeechBulletScreenHttp(SpeechBulletScreenHttp speechBulletScreenHttp) {
+        this.speechBulletScreenHttp = speechBulletScreenHttp;
+    }
 
     // 面板View
 //    private KPSwitchFSPanelLinearLayout mPanelLayout;
@@ -224,6 +236,7 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager impleme
                 Log.d(TAG, "onGuarantee()");
             }
         }, PermissionConfig.PERMISSION_CODE_AUDIO);
+        liveMessageBll = ProxUtil.getProxUtil().get(mContext, LiveMessageBll.class);
         initDanmaku();
     }
 
@@ -303,14 +316,14 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager impleme
             @Override
             public void onClick(View view) {
                 Log.d(TAG,"onClick: tvSpeechbulSend");
-
+                addDanmaKuFlowers( "我", etSpeechbulWords.getText().toString(),"http://xesfile.xesimg.com/user/h/def10002.png" ,false);
             }
         });
 
         keyboardPopWindow.setKeyboardObserver(this);
     }
 
-    public void showShortToast(String tips) {
+    private void showShortToast(String tips) {
         ShortToastDialog shortToastDialog= new ShortToastDialog(mContext);
         shortToastDialog.setTips(tips);
         shortToastDialog.showDialog();
@@ -474,98 +487,6 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager impleme
     }
 
     @Override
-    public void onStartConnect() {
-
-    }
-
-    @Override
-    public void onConnect() {
-
-    }
-
-    @Override
-    public void onRegister() {
-
-    }
-
-    @Override
-    public void onDisconnect() {
-
-    }
-
-    @Override
-    public void onUserList(String channel, User[] users) {
-
-    }
-
-    @Override
-    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-
-    }
-
-    @Override
-    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target, final String message) {
-        mWeakHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    JSONObject jsonObject = new JSONObject(message);
-                    int type = jsonObject.getInt("type");
-                    if (type == XESCODE.TEACHER_MESSAGE) {
-//                        addMessage(jsonObject.getString("name"), LiveMessageEntity.MESSAGE_CLASS, jsonObject
-//                                .getString("msg"), "");
-                    } else if (type == XESCODE.FLOWERS) {
-                        //{"ftype":2,"name":"林玉强","type":"110"}
-//                        addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"));
-                    }
-                } catch (JSONException e) {
-//                    addMessage(sender, LiveMessageEntity.MESSAGE_CLASS, message, "");
-                }
-            }
-        });
-    }
-
-    @Override
-    public void onJoin(String target, String sender, String login, String hostname) {
-
-    }
-
-    @Override
-    public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-
-    }
-
-    @Override
-    public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
-
-    }
-
-    @Override
-    public void onDisable(boolean disable, boolean fromNotice) {
-
-    }
-
-    @Override
-    public void onOtherDisable(String id, String name, boolean disable) {
-
-    }
-
-    @Override
-    public void onopenchat(boolean openchat, String mode, boolean fromNotice) {
-
-    }
-
-    @Override
-    public void onOpenbarrage(boolean openbarrage, boolean fromNotice) {
-
-    }
-
-    @Override
-    public void videoStatus(String status) {
-
-    }
-
-    @Override
     public void onKeyboardHeightChanged(int height, int orientation) {
         String or = orientation == Configuration.ORIENTATION_PORTRAIT ? "portrait" : "landscape";
         Rect r = new Rect();
@@ -594,21 +515,27 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager impleme
      */
 
     private static final long ADD_DANMU_TIME = 2000;
-    private int   BITMAP_WIDTH    = 34;//头像的宽度
-    private int   BITMAP_HEIGHT   = 34;//头像的高度
-    private float DANMU_TEXT_SIZE = 14;//弹幕字体的大小
-    private int DANMU_PADDING       = 11;//控制两行弹幕之间的间距
-    private int DANMU_RADIUS        = 16;//圆角半径
+    private int   BITMAP_WIDTH_GUEST    = 34;//头像的宽度
+    private int   BITMAP_HEIGHT_GUEST   = 34;//头像的高度
+    private int   BITMAP_WIDTH_ME       = 42;//头像的宽度
+    private int   BITMAP_HEIGHT_ME      = 42;//头像的高度
+    private float DANMU_TEXT_SIZE       = 14;//弹幕字体的大小
+    private int DANMU_PADDING           = 11;//控制两行弹幕之间的间距
+    private int DANMU_RADIUS            = 16;//圆角半径
+    private int DANMU_BACKGROUND_HEIGHT = 33;
 
     /**
      * 对数值进行转换，适配手机，必须在初始化之前，否则有些数据不会起作用
      */
     private void setSize(Context context) {
-        BITMAP_WIDTH = SizeUtils.Dp2Px(context, BITMAP_HEIGHT);
-        BITMAP_HEIGHT = SizeUtils.Dp2Px(context, BITMAP_HEIGHT);
+        BITMAP_WIDTH_GUEST = SizeUtils.Dp2Px(context, BITMAP_WIDTH_GUEST);
+        BITMAP_HEIGHT_GUEST = SizeUtils.Dp2Px(context, BITMAP_HEIGHT_GUEST);
+        BITMAP_WIDTH_ME = SizeUtils.Dp2Px(context, BITMAP_WIDTH_ME);
+        BITMAP_HEIGHT_ME = SizeUtils.Dp2Px(context, BITMAP_HEIGHT_ME);
         DANMU_PADDING = SizeUtils.Dp2Px(context, DANMU_PADDING);
         DANMU_RADIUS = SizeUtils.Dp2Px(context, DANMU_RADIUS);
         DANMU_TEXT_SIZE = SizeUtils.Dp2Px(context, DANMU_TEXT_SIZE);
+        DANMU_BACKGROUND_HEIGHT = SizeUtils.Dp2Px(context, DANMU_BACKGROUND_HEIGHT);
     }
 
     /** 同学献花提示 */
@@ -677,17 +604,120 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager impleme
             @Override
             public void run() {
                 while(true) {
-                    int time = new Random().nextInt(300);
+                    final int time = new Random().nextInt(300);
                     String content = "" + time + time;
-                    addDanmaKuFlowers(FLOWERS_BIG, time + "");
+                    mWeakHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            addDanmaKuFlowers(time + "",time + "","http://xesfile.xesimg.com/user/h/def10002.png" ,true);
+                        }
+                    });
                     try {
-                        Thread.sleep(time);
+                        Thread.sleep(800);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
             }
         }).start();
+    }
+
+    @Override
+    public void onStartConnect() {
+
+    }
+
+    @Override
+    public void onConnect() {
+
+    }
+
+    @Override
+    public void onRegister() {
+
+    }
+
+    @Override
+    public void onDisconnect() {
+
+    }
+
+    @Override
+    public void onUserList(String channel, User[] users) {
+
+    }
+
+    @Override
+    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
+
+    }
+
+    @Override
+    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target, final String message) {
+        mWeakHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject jsonObject = new JSONObject(message);
+                    int type = jsonObject.getInt("type");
+                    if (type == XESCODE.XCR_ROOM_DANMU_SEND) {
+//                        {
+//                                "type":"261",
+//                                "headImg":"http://xesfile.xesimg.com/user/h/def10002.png",
+//                                "senderId":"s_3_205592_17600_1",
+//                                "name":"张远荪",
+//                                "msg":"老师好"
+//                        }
+                        String name = jsonObject.optString("name");
+                        String headImgUrl = jsonObject.optString("headImg");
+                        String msg = jsonObject.optString("msg");
+                        addDanmaKuFlowers(name, msg, headImgUrl,true);
+                    }
+                } catch (JSONException e) {
+                    liveMessageBll.addMessage("",0,"");
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onJoin(String target, String sender, String login, String hostname) {
+
+    }
+
+    @Override
+    public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+
+    }
+
+    @Override
+    public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
+
+    }
+
+    @Override
+    public void onDisable(boolean disable, boolean fromNotice) {
+
+    }
+
+    @Override
+    public void onOtherDisable(String id, String name, boolean disable) {
+
+    }
+
+    @Override
+    public void onopenchat(boolean openchat, String mode, boolean fromNotice) {
+
+    }
+
+    @Override
+    public void onOpenbarrage(boolean openbarrage, boolean fromNotice) {
+
+    }
+
+    @Override
+    public void videoStatus(String status) {
+
     }
 
     /**
@@ -709,12 +739,18 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager impleme
             paint.setColor(Color.BLACK);
             paint.setAlpha((int)(255*0.6)); //  透明度0.6
 
-            int height = SizeUtils.Dp2Px(mContext,33);
-            //由于该库并没有提供margin的设置，所以我这边试出这种方法：将danmaku.padding也就是内间距设置大一点，并在这里的RectF中设置绘制弹幕背景的位置，就可以形成类似margin的效果
-            canvas.drawRoundRect(new RectF(left + DANMU_PADDING, top + DANMU_PADDING
-                            , left + danmaku.paintWidth - DANMU_PADDING,
-                            top + height + DANMU_PADDING),
-                    DANMU_RADIUS, DANMU_RADIUS, paint);
+            if (danmaku.isGuest) {
+                canvas.drawRoundRect(new RectF(left + danmaku.padding, top + danmaku.padding + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT)/2 + 1
+                                , left + danmaku.paintWidth - danmaku.padding ,
+                                top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT)/2 + 1 + danmaku.padding),
+                        DANMU_RADIUS, DANMU_RADIUS, paint);
+            }
+            else {
+                canvas.drawRoundRect(new RectF(left + danmaku.padding, top + danmaku.padding + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT)/2 + 1
+                                , left + danmaku.paintWidth - danmaku.padding ,
+                                top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT)/2 + 1 + danmaku.padding),
+                        DANMU_RADIUS, DANMU_RADIUS, paint);
+            }
         }
 
         @Override
@@ -740,45 +776,58 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager impleme
         }
     };
 
-    public void addDanmaKuFlowers(final int ftype, final String name) {
+    public void addDanmaKuFlowers(final String name, final String msg, final String headImgUrl , final boolean isGuest) {
         if (mDanmakuContext == null) {
-            mView.postDelayed(new Runnable() {
+            mWeakHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    addDanmaKuFlowers(ftype, name);
+                    addDanmaKuFlowers(name, msg, headImgUrl, isGuest);
                 }
             }, 20);
             return;
         }
-        BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
+        final BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
         if (danmaku == null || dvSpeechbulDanmaku == null) {
             return;
         }
-        Drawable drawable = mContext.getResources().getDrawable(flowsDrawLittleTips[ftype - 2]);
-        drawable.setBounds(0, 0, BITMAP_WIDTH, BITMAP_HEIGHT);
-        SpannableStringBuilder spannable = createSpannable(ftype, name, drawable);
-        danmaku.text = spannable;
-        danmaku.textColor = Color.WHITE;
-        danmaku.padding = DANMU_PADDING;
-        danmaku.priority = 0;  // 1:一定会显示, 一般用于本机发送的弹幕,但会导致限制行数和禁止堆叠失效
-        danmaku.isLive = false;
-        danmaku.time = dvSpeechbulDanmaku.getCurrentTime() + 1200;
-        danmaku.textSize = SizeUtils.Dp2Px(mContext,14f);
+        danmaku.isGuest = isGuest;
+        Glide.with(mContext).load(headImgUrl).into(new SimpleTarget<Drawable>() {
+            @Override
+            public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                Drawable drawable = resource;
+                if (isGuest) {
+                    drawable.setBounds(0, 0, BITMAP_WIDTH_GUEST, BITMAP_WIDTH_GUEST);
+                    danmaku.textColor = Color.WHITE;
+                    danmaku.priority = 0;
+                    danmaku.padding = DANMU_PADDING;
+                }
+                else {
+                    drawable.setBounds(0, 0, BITMAP_WIDTH_ME, BITMAP_WIDTH_ME);
+                    danmaku.textColor = Color.YELLOW;
+                    danmaku.priority = 0;  // 1:一定会显示, 一般用于本机发送的弹幕,但会导致限制行数和禁止堆叠失效
+                    danmaku.padding = DANMU_PADDING - (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2;
+                }
+                SpannableStringBuilder spannable = createSpannable(name, msg, drawable);
+                danmaku.text = spannable;
 
-        danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
-//        danmaku.underlineColor = Color.GREEN;
-        dvSpeechbulDanmaku.addDanmaku(danmaku);
+                danmaku.isLive = false;
+                danmaku.time = dvSpeechbulDanmaku.getCurrentTime() + 1200;
+                danmaku.textSize = SizeUtils.Dp2Px(mContext,14f);
+                danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
+//                danmaku.underlineColor = Color.GREEN;
+                dvSpeechbulDanmaku.addDanmaku(danmaku);
+            }
+        });
     }
 
-    protected SpannableStringBuilder createSpannable(int ftype, String name, Drawable drawable) {
+    protected SpannableStringBuilder createSpannable(String name, String msg, Drawable drawable) {
 //        Loger.i(TAG, "createSpannable:name=" + name + ",ftype=" + ftype);
-        String tip = "";
-        tip = flowsTips[ftype - 2];
-        String msg = name + ":" + tip + ",献上";
-        SpannableStringBuilder spannable = new BaseLiveMessagePager.TypeSpannableStringBuilder(msg, name, ftype);
-        spannable.append(msg);
+
+        String text = " " + name + " : " + msg + "  ";
+        SpannableStringBuilder spannable = new SpannableStringBuilder(text);
+        spannable.append(text);
         ImageSpan span = new VerticalImageSpan(drawable);
-        spannable.setSpan(span, 0, msg.length() , Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(span, 0, text.length() , Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
 //        spannableStringBuilder.setSpan(new BackgroundColorSpan(Color.parseColor("#8A2233B1")), 0, spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         return spannable;
     }
@@ -854,5 +903,4 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager impleme
         }
 
     }
-
 }
