@@ -1803,4 +1803,5 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                 ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
         }
     }
+
 }

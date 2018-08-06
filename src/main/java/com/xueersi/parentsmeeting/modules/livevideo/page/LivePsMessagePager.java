@@ -276,7 +276,8 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
                     commonAction.clickTran();
                     return;
                 }
-                mFlowerWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
+//                mFlowerWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
+                mFlowerWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
                 isHaveFlowers = true;
             }
         });
