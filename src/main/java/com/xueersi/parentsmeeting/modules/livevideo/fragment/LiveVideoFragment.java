@@ -510,7 +510,7 @@
 //        return new LiveVideoPlayFragment();
 //    }
 //
-//    protected class LiveVideoPlayFragment extends VideoFragment {
+//    protected class LiveLivePlayerPlayFragment extends VideoFragment {
 //
 //        @Override
 //        protected void onPlayOpenStart() {

@@ -37,7 +37,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoFragment;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -72,7 +72,7 @@ public class LiveVideoFragmentBase extends Fragment {
     protected long mDuration;
     /** 播放器界面的模式 */
     protected int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
-    protected VideoFragment videoFragment;
+    protected LivePlayerFragment videoFragment;
     /** 放播放器的 io.vov.vitamio.widget.CenterLayout */
     protected ViewGroup viewRoot;
     /** 播放器的VideoView com.xueersi.parentsmeeting.player.media.VideoView */
@@ -266,7 +266,7 @@ public class LiveVideoFragmentBase extends Fragment {
 
     LiveOnVideoCreate videoCreate = new LiveOnVideoCreate();
 
-    class LiveOnVideoCreate implements VideoFragment.OnVideoCreate {
+    class LiveOnVideoCreate implements LivePlayerFragment.OnVideoCreate {
         Bundle savedInstanceState;
 
         @Override
@@ -293,10 +293,10 @@ public class LiveVideoFragmentBase extends Fragment {
         rlContent.addView(videoBackgroundRefresh);
         tvVideoLoadingText = (TextView) mContentView.findViewById(R.id.tv_course_video_loading_tip); // 加载进度文字框
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        VideoFragment fragment = (VideoFragment) getChildFragmentManager().findFragmentByTag("VideoFragment");
+        LivePlayerFragment fragment = (LivePlayerFragment) getChildFragmentManager().findFragmentByTag("LivePlayerFragment");
         if (fragment == null) {
             fragment = getFragment();
-            transaction.add(R.id.rl_live_video_frag, fragment, "VideoFragment");
+            transaction.add(R.id.rl_live_video_frag, fragment, "LivePlayerFragment");
         } else {
             restoreFragment(fragment);
         }
@@ -316,11 +316,11 @@ public class LiveVideoFragmentBase extends Fragment {
         loadLandOrPortView();
     }
 
-    protected VideoFragment getFragment() {
-        return new VideoFragment();
+    protected LivePlayerFragment getFragment() {
+        return new LivePlayerFragment();
     }
 
-    protected void restoreFragment(VideoFragment videoFragment) {
+    protected void restoreFragment(LivePlayerFragment videoFragment) {
 
     }
 

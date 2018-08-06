@@ -11,9 +11,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
-import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -24,14 +22,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
-import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseVideoFragment;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoFragment;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -62,7 +58,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
     private PlayServerEntity.PlayserverEntity lastPlayserverEntity;
     private ArrayList<PlayServerEntity.PlayserverEntity> failPlayserverEntity = new ArrayList<>();
     private ArrayList<PlayServerEntity.PlayserverEntity> failFlvPlayserverEntity = new ArrayList<>();
-    private BaseVideoFragment videoFragment;
+    private BasePlayerFragment videoFragment;
     private Activity activity;
     private LiveBll2 mLiveBll;
     private LiveHttpManager mHttpManager;
@@ -167,7 +163,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         liveGetPlayServer.liveGetPlayServer(mode, modechange);
     }
 
-    public void setVideoFragment(BaseVideoFragment videoFragment) {
+    public void setVideoFragment(BasePlayerFragment videoFragment) {
         this.videoFragment = videoFragment;
     }
 

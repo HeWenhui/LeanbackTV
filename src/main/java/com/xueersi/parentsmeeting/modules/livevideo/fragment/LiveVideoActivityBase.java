@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.WindowManager;
 
@@ -16,7 +15,6 @@ import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.service.LiveService;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoFragment;
 import com.xueersi.ui.dataload.DataLoadManager;
 
 import org.greenrobot.eventbus.EventBus;

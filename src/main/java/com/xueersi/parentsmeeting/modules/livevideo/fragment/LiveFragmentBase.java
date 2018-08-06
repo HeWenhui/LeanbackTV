@@ -37,7 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoFragment;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -227,24 +227,24 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     }
 
     @Override
-    protected VideoFragment getFragment() {
-        LiveVideoPlayFragment liveVideoPlayFragment = new LiveVideoPlayFragment();
+    protected LivePlayerFragment getFragment() {
+        LiveLivePlayerPlayFragment liveVideoPlayFragment = new LiveLivePlayerPlayFragment();
         liveVideoPlayFragment.liveFragmentBase = this;
         return liveVideoPlayFragment;
     }
 
     @Override
-    protected void restoreFragment(VideoFragment videoFragment) {
-        LiveVideoPlayFragment liveVideoPlayFragment = (LiveVideoPlayFragment) videoFragment;
+    protected void restoreFragment(LivePlayerFragment videoFragment) {
+        LiveLivePlayerPlayFragment liveVideoPlayFragment = (LiveLivePlayerPlayFragment) videoFragment;
         liveVideoPlayFragment.liveFragmentBase = this;
     }
 
-    public static class LiveVideoPlayFragment extends VideoFragment {
-        private final String TAG = "LiveVideoPlayFragment";
+    public static class LiveLivePlayerPlayFragment extends LivePlayerFragment {
+        private final String TAG = "LiveLivePlayerPlayFragment";
         LiveFragmentBase liveFragmentBase;
 
-        public LiveVideoPlayFragment() {
-            Loger.d(TAG, "LiveVideoPlayFragment");
+        public LiveLivePlayerPlayFragment() {
+            Loger.d(TAG, "LiveLivePlayerPlayFragment");
         }
 
         @Override

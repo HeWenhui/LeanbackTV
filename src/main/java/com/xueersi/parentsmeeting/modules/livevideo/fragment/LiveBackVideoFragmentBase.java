@@ -33,7 +33,6 @@ import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
@@ -42,13 +41,12 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
-import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayVideoFragment;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 import com.xueersi.ui.dataload.DataLoadManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -72,7 +70,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
     protected int mLayoutVideo = R.layout.liveback_video_fragment;
     /** 播放器可刷新布局 */
     protected int mLayoutBackgroundRefresh = R.layout.layout_video_resfresh;
-    LiveBackPlayVideoFragment liveBackPlayVideoFragment;
+    LiveBackPlayerFragment liveBackPlayVideoFragment;
     /** 所在的Activity是否已经onCreated */
     private boolean mCreated = false;
     /** 视频的名称，用于显示在播放器上面的信息栏 */
@@ -421,10 +419,10 @@ public class LiveBackVideoFragmentBase extends Fragment {
         ivBack.setOnClickListener(ivRefreshBackListener); // 刷新页面的回退
 
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        LiveBackPlayVideoFragment fragment = (LiveBackPlayVideoFragment) getChildFragmentManager().findFragmentByTag("VideoFragment");
+        LiveBackPlayerFragment fragment = (LiveBackPlayerFragment) getChildFragmentManager().findFragmentByTag("LivePlayerFragment");
         if (fragment == null) {
             fragment = getFragment();
-            transaction.add(R.id.rl_live_video_frag, fragment, "VideoFragment");
+            transaction.add(R.id.rl_live_video_frag, fragment, "LivePlayerFragment");
         } else {
             restoreFragment(fragment);
         }
@@ -435,18 +433,18 @@ public class LiveBackVideoFragmentBase extends Fragment {
         loadLandOrPortView();
     }
 
-    protected LiveBackPlayVideoFragment getFragment() {
-        LiveVideoPlayFragmentBase liveVideoPlayFragment = new LiveVideoPlayFragmentBase();
+    protected LiveBackPlayerFragment getFragment() {
+        LiveVideoFragmentBase liveVideoPlayFragment = new LiveVideoFragmentBase();
         liveVideoPlayFragment.liveBackVideoFragment = this;
         return liveVideoPlayFragment;
     }
 
-    protected void restoreFragment(LiveBackPlayVideoFragment videoFragment) {
-        LiveVideoPlayFragmentBase liveVideoPlayFragment = (LiveVideoPlayFragmentBase) videoFragment;
+    protected void restoreFragment(LiveBackPlayerFragment videoFragment) {
+        LiveVideoFragmentBase liveVideoPlayFragment = (LiveVideoFragmentBase) videoFragment;
         liveVideoPlayFragment.liveBackVideoFragment = this;
     }
 
-    public static class LiveVideoPlayFragmentBase extends LiveBackPlayVideoFragment {
+    public static class LiveVideoFragmentBase extends LiveBackPlayerFragment {
         LiveBackVideoFragmentBase liveBackVideoFragment;
 
         @Override
@@ -493,7 +491,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
 
     LiveOnVideoCreate videoCreate = new LiveOnVideoCreate();
 
-    class LiveOnVideoCreate implements LiveBackPlayVideoFragment.OnVideoCreate {
+    class LiveOnVideoCreate implements LiveBackPlayerFragment.OnVideoCreate {
         Bundle savedInstanceState;
 
         @Override

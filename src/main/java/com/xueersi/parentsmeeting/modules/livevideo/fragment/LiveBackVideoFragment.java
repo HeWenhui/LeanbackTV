@@ -1,9 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,15 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -43,8 +38,6 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.item.MoreChoiceItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
@@ -52,10 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.dialog.RedPacketAlertDialog;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5PlayBackBll;
@@ -65,11 +55,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBl
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoFragment;
-import com.xueersi.ui.adapter.AdapterItemInterface;
-import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;

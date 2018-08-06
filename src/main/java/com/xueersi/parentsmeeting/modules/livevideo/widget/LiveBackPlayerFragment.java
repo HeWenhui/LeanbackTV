@@ -1,70 +1,40 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.Rect;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.OrientationEventListener;
-import android.view.SurfaceHolder;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.ActivityUtils;
-import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
-import com.xueersi.lib.log.LoggerFactory;
-import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
-import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
-import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
-import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
-import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
+import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
-
 /**
- * @author linyuqiang
+ * @author lyqai
  * @date 2018/6/22
  */
-public class VideoFragment extends BaseVideoFragment implements VideoView.SurfaceCallback, LiveMediaController.MediaPlayerControl {
-
+public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoView.SurfaceCallback, MediaPlayerControl {
+ 
     /** 播放器的控制对象 */
-    protected LiveMediaController mMediaController;
-
+    protected MediaController2 mMediaController;
     /** 是否完成了一系列的系统广播 */
     private boolean mReceiverRegistered = false;
-
     /** 是否显示控制栏 */
     protected boolean mIsShowMediaController = true;
 
@@ -98,28 +68,15 @@ public class VideoFragment extends BaseVideoFragment implements VideoView.Surfac
         }
     }
 
-    public void setMediaController(LiveMediaController mediaController) {
+    public void setMediaController(MediaController2 mediaController) {
         this.mMediaController = mediaController;
+        mMediaController.setFileName(mDisplayName);
     }
 
     @Override
     public void onResume() {
         logger.d("onResume");
         super.onResume();
-        if (isInitialized()) {
-            KeyguardManager keyguardManager = (KeyguardManager) activity.getSystemService(Activity.KEYGUARD_SERVICE);
-            if (!keyguardManager.inKeyguardRestrictedInputMode()) {
-                // 如果当前并不是锁屏状态，则开始播放
-                if (mIsShowMediaController) {
-                    startPlayer();
-                }
-            }
-        } else {
-            if (mCloseComplete) {
-                // 如果当前没有初始化，并且是已经播放完毕的状态则重新打开播放
-                playNewVideo();
-            }
-        }
     }
 
     @Override
@@ -136,6 +93,8 @@ public class VideoFragment extends BaseVideoFragment implements VideoView.Surfac
     private static final IntentFilter USER_PRESENT_FILTER = new IntentFilter(Intent.ACTION_USER_PRESENT);
     /** 屏幕点亮 */
     private static final IntentFilter SCREEN_FILTER = new IntentFilter(Intent.ACTION_SCREEN_ON);
+    /** 耳麦拔插广播 */
+    private static final IntentFilter HEADSET_FILTER = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
 
     static {
         // 同时监听屏幕被灭掉的监听
@@ -144,6 +103,7 @@ public class VideoFragment extends BaseVideoFragment implements VideoView.Surfac
 
     private ScreenReceiver mScreenReceiver;
     private UserPresentReceiver mUserPresentReceiver;
+    private HeadsetPlugReceiver mHeadsetPlugReceiver;
 
     private class ScreenReceiver extends BroadcastReceiver {
         private boolean screenOn = true;
@@ -168,6 +128,25 @@ public class VideoFragment extends BaseVideoFragment implements VideoView.Surfac
         }
     }
 
+    public class HeadsetPlugReceiver extends BroadcastReceiver {
+        /** 是否是正在播放时插拔耳机 */
+        private boolean mHeadsetPlaying = false;
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null && intent.hasExtra("state")) {
+                int state = intent.getIntExtra("state", -1);
+                if (state == 0) {
+                    mHeadsetPlaying = isPlaying();
+                    stopPlayer();
+                } else if (state == 1) {
+                    if (mHeadsetPlaying)
+                        startPlayer();
+                }
+            }
+        }
+    }
+
     /** 视频是否正在前台播放(用于解锁后判断界面是否在最上层是的话就开始播放) */
     private boolean isRootActivity() {
         return ActivityUtils.isForceShowActivity(activity.getApplicationContext(), getClass().getName());
@@ -182,6 +161,9 @@ public class VideoFragment extends BaseVideoFragment implements VideoView.Surfac
             // 解锁广播
             mUserPresentReceiver = new UserPresentReceiver();
             activity.registerReceiver(mUserPresentReceiver, USER_PRESENT_FILTER);
+            // 耳麦广播
+            mHeadsetPlugReceiver = new HeadsetPlugReceiver();
+            activity.registerReceiver(mHeadsetPlugReceiver, HEADSET_FILTER);
             mReceiverRegistered = true;
         } else {
             try {
@@ -189,6 +171,8 @@ public class VideoFragment extends BaseVideoFragment implements VideoView.Surfac
                     activity.unregisterReceiver(mScreenReceiver);
                 if (mUserPresentReceiver != null)
                     activity.unregisterReceiver(mUserPresentReceiver);
+                if (mHeadsetPlugReceiver != null)
+                    activity.unregisterReceiver(mHeadsetPlugReceiver);
             } catch (IllegalArgumentException e) {
             }
             mReceiverRegistered = false;
@@ -283,6 +267,10 @@ public class VideoFragment extends BaseVideoFragment implements VideoView.Surfac
 
     /** 判断当前为竖屏并且处于播放状态时，显示控制栏 */
     public void showLongMediaController() {
+        if (mMediaController == null) {
+            logger.d("showLongMediaController:mMediaController==null");
+            return;
+        }
         if (!mIsLand) {
             // 竖屏时长时间显示
             mMediaController.showLong();
@@ -290,8 +278,7 @@ public class VideoFragment extends BaseVideoFragment implements VideoView.Surfac
             // 横屏时短时间显示
             mMediaController.show();
         }
-    }
-
+    }   
     /** 加载视频异常时出现可重新刷新的背景界面 TODO */
     protected void showRefresyLayout(int arg1, int arg2) {
         super.showRefresyLayout(arg1, arg2);
@@ -322,6 +309,21 @@ public class VideoFragment extends BaseVideoFragment implements VideoView.Surfac
 
 
     @Override
+    public void setSpeed(float speed) {
+        if (isInitialized())
+            // vPlayer.seekTo((float) ((double) pos / vPlayer.getDuration()));
+            vPlayer.setSpeed(speed);
+    }
+
+    @Override
+    public float getSpeed() {
+        if (isInitialized())
+            // vPlayer.seekTo((float) ((double) pos / vPlayer.getDuration()));
+            vPlayer.getSpeed();
+        return 1.0f;
+    }
+
+    @Override
     public void next() {
         startPlayNextVideo();
     }
@@ -334,7 +336,20 @@ public class VideoFragment extends BaseVideoFragment implements VideoView.Surfac
     }
 
     @Override
-    public void onTitleShow(boolean show) {
+    public boolean isPlayInitialized() {
+        return isInitialized();
+    }
+ 
+
+    @Override
+    public void toggleVideoMode(int mode) {
+
+    }
+
+
+
+    @Override
+    public void onShare() {
 
     }
 
@@ -347,6 +362,5 @@ public class VideoFragment extends BaseVideoFragment implements VideoView.Surfac
                 ImageLoader.with(activity).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivRefresh);
         }
     }
-
 
 }

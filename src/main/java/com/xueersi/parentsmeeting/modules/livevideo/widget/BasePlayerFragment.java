@@ -42,7 +42,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  * Created by linyuqiang on 2018/8/3.
  * 直播和回放的基础控制
  */
-public class BaseVideoFragment extends Fragment implements VideoView.SurfaceCallback {
+public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCallback {
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     BaseActivity activity;
     /** 视频的名称，用于显示在播放器上面的信息栏 */
@@ -397,7 +397,7 @@ public class BaseVideoFragment extends Fragment implements VideoView.SurfaceCall
                     if (videoView != null) {
                         videoView.setVisibility(View.GONE);
                         videoView.setVisibility(View.VISIBLE);
-                        videoView.initialize(activity, BaseVideoFragment.this, false);
+                        videoView.initialize(activity, BasePlayerFragment.this, false);
                     }
                     break;
                 case LOAD_PREFS:
@@ -600,7 +600,7 @@ public class BaseVideoFragment extends Fragment implements VideoView.SurfaceCall
         /** 播放出现错误 */
         @Override
         public void onPlayError() {
-            BaseVideoFragment.this.onPlayError();
+            BasePlayerFragment.this.onPlayError();
             PlayerService.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onPlayError();
