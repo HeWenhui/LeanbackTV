@@ -55,6 +55,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBl
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
+import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -96,8 +97,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     private boolean mIsShowNoWifiAlert = true;
     /** 我的课程业务层 */
     LectureLivePlayBackBll lectureLivePlayBackBll;
-    /** 讲座购课广告的页面 */
-    private LecAdvertPager lecAdvertPager;
     /** onPause状态不暂停视频 */
     PauseNotStopVideoIml pauseNotStopVideoIml;
 
@@ -253,13 +252,16 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     protected void showRefresyLayout(int arg1, int arg2) {
         super.showRefresyLayout(arg1, arg2);
-        TextView errorInfo = (TextView) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.base.R.id.tv_course_video_errorinfo);
+        TextView errorInfo = videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.base.R.id.tv_course_video_errorinfo);
+        videoBackgroundRefresh.findViewById(R.id.tv_course_video_errortip).setVisibility(View.GONE);
         AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
         if (error != null) {
             errorInfo.setVisibility(View.VISIBLE);
-            String videoKey = getVideoKey();
             if (error == AvformatOpenInputError.HTTP_NOT_FOUND) {
-                errorInfo.setText("(" + videoKey + ")" + " 回放未生成");
+                errorInfo.setText("回放视频未生成，请重试[" + mVideoEntity.getLiveId() + "]");
+            } else {
+                PlayErrorCode playErrorCode = PlayErrorCode.getError(arg2);
+                errorInfo.setText("视频播放失败 [" + playErrorCode.getCode() + "]");
             }
         }
         rlQuestionContent.setVisibility(View.GONE);
@@ -665,10 +667,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     @Override
     protected void resultComplete() {
-        // 没有广告，播放完毕直接退出
-        if (lecAdvertPager == null) {
-            onUserBackPressed();
-        }
+        onUserBackPressed();
     }
 
     @Override

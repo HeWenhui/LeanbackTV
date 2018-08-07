@@ -23,6 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONObject;
@@ -43,6 +44,7 @@ public class LecAdvertPlayBackBll extends LiveBackBaseBll implements LecBackAdve
         lecAdvertAction = new LecBackAdvertBll(activity);
         lecBackAdvertPopBll = new LecBackAdvertPopBll(activity);
         lecAdvertAction.setLecBackAdvertPopBll(lecBackAdvertPopBll);
+        lecAdvertAction.getLecAdvertPager();
     }
 
     @Override
@@ -65,6 +67,10 @@ public class LecAdvertPlayBackBll extends LiveBackBaseBll implements LecBackAdve
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         lecBackAdvertPopBll.onConfigurationChanged(newConfig);
+    }
+
+    public LecAdvertPager getLecAdvertPager() {
+        return lecAdvertAction.getLecAdvertPager();
     }
 
     @Override

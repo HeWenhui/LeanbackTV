@@ -53,6 +53,10 @@ public class LecBackAdvertBll {
         this.rlQuestionContent = rlQuestionContent;
     }
 
+    public LecAdvertPager getLecAdvertPager() {
+        return lecAdvertPager;
+    }
+
     /** 讲座广告 */
     public void showLecAdvertPager(final VideoQuestionEntity questionEntity) {
         final LecAdvertEntity lecAdvertEntity = new LecAdvertEntity();
@@ -76,7 +80,7 @@ public class LecBackAdvertBll {
                         }
                         Loger.d(TAG, "showLecAdvertPager:close=" + (questionEntity == null));
                         lecAdvertPager = null;
-                        if(land){
+                        if (land) {
                             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                         }
                     }

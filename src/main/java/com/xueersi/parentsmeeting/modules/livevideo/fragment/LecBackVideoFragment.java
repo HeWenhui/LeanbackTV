@@ -19,7 +19,7 @@ import java.util.Map;
  * 直播讲座的回放
  */
 public class LecBackVideoFragment extends LiveBackVideoFragment {
-
+    LecAdvertPlayBackBll lecAdvertPlayBackBll;
 //    {
 //        mLayoutVideo = R.layout.fram_live_stand_back_video;
 //    }
@@ -27,11 +27,18 @@ public class LecBackVideoFragment extends LiveBackVideoFragment {
     @Override
     protected void addBusiness(Activity activity) {
         super.addBusiness(activity);
-        liveBackBll.addBusinessBll(new LecAdvertPlayBackBll(activity, liveBackBll));
+        lecAdvertPlayBackBll = new LecAdvertPlayBackBll(activity, liveBackBll);
+        liveBackBll.addBusinessBll(lecAdvertPlayBackBll);
     }
 
     protected void onNewIntent(Intent intent) {
         liveBackBll.onNewIntent(intent);
     }
 
+    @Override
+    protected void resultComplete() {
+        if (lecAdvertPlayBackBll.getLecAdvertPager() == null) {
+            super.resultComplete();
+        }
+    }
 }
