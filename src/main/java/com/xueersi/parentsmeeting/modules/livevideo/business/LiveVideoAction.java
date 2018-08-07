@@ -13,6 +13,7 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -43,14 +44,15 @@ public class LiveVideoAction implements VideoAction {
     protected RelativeLayout rlFirstBackgroundView;
     /** 老师不在直播间 */
     protected ImageView ivTeacherNotpresent;
+    PlayErrorCode lastPlayErrorCode;
     RelativeLayout mContentView;
     private TextView tvLoadingHint;
     /** 缓冲提示 */
     private ImageView ivLoading;
     /** 连接老师加载-主讲 */
-    private final String mainTeacherLoad = "正在连接主讲老师，请耐心等候";
+    private final String mainTeacherLoad = "正在获取视频资源，请稍后";
     /** 连接老师加载-辅导 */
-    private final String coachTeacherLoad = "正在连接辅导老师，请耐心等候";
+    private final String coachTeacherLoad = "正在获取视频资源，请稍后";
     /** 直播类型 */
     protected int liveType;
     protected LiveGetInfo mGetInfo;
@@ -66,7 +68,7 @@ public class LiveVideoAction implements VideoAction {
         ivTeacherNotpresent = mContentView.findViewById(R.id.iv_course_video_teacher_notpresent);
         tvLoadingHint = mContentView.findViewById(R.id.tv_course_video_loading_content);
         ivLoading = mContentView.findViewById(R.id.iv_course_video_loading_bg);
-        tvLoadingHint.setText("获取课程信息");
+        tvLoadingHint.setText("正在获取视频资源，请稍后");
         mLogtf = new LogToFile(mLiveBll, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         updateLoadingImage();
@@ -110,7 +112,8 @@ public class LiveVideoAction implements VideoAction {
                         @Override
                         public void run() {
                             if (tvLoadingHint != null) {
-                                mLogtf.d("rePlay:liveType=" + liveType + ",mode=" + mGetInfo.getLiveTopic().getMode());
+                                mLogtf.d("rePlay:liveType=" + liveType + ",mode=" + mGetInfo.getLiveTopic().getMode() + ",lastPlayErrorCode=" + lastPlayErrorCode);
+                                lastPlayErrorCode = null;
                                 if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
                                     tvLoadingHint.setText(mainTeacherLoad);
                                 } else {
@@ -131,36 +134,23 @@ public class LiveVideoAction implements VideoAction {
             public void run() {
                 if (tvLoadingHint != null) {
                     PlayErrorCode playErrorCode = PlayErrorCode.getError(arg2);
-                    TextView tvFail = mContentView.findViewById(R.id.tv_course_video_loading_fail);
-                    if (playErrorCode == null) {
-                        if (tvFail != null) {
-                            tvFail.setVisibility(View.VISIBLE);
-                            tvFail.setText("视频播放失败[" + playErrorCode.getCode() + "]");
-                        }
-                    } else {
-                        String errorMsg = null;
-                        AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
-                        if (error != null) {
-                            errorMsg = error.getNum() + " (" + error.getTag() + ")";
-                        }
-                        if (errorMsg != null) {
-                            if (tvFail != null) {
-                                tvFail.setVisibility(View.VISIBLE);
-                                tvFail.setText(errorMsg);
-                            }
+                    lastPlayErrorCode = playErrorCode;
+                    if (tvLoadingHint != null) {
+                        tvLoadingHint.setVisibility(View.VISIBLE);
+                        int netWorkState = NetWorkHelper.getNetWorkState(activity);
+                        if (netWorkState == NetWorkHelper.NO_NETWORK) {
+                            tvLoadingHint.setText(PlayErrorCode.PLAY_NO_WIFI.getTip());
                         } else {
-                            if (tvFail != null) {
-                                tvFail.setVisibility(View.INVISIBLE);
-                            }
+                            tvLoadingHint.setText("视频播放失败[" + playErrorCode.getCode() + "]");
                         }
                     }
-                    if (mLiveBll.isPresent()) {
-                        if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
-                            tvLoadingHint.setText(mainTeacherLoad);
-                        } else {
-                            tvLoadingHint.setText(coachTeacherLoad);
-                        }
-                    }
+//                    if (mLiveBll.isPresent()) {
+//                        if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
+//                            tvLoadingHint.setText(mainTeacherLoad);
+//                        } else {
+//                            tvLoadingHint.setText(coachTeacherLoad);
+//                        }
+//                    }
                     LiveTopic.RoomStatusEntity status = mGetInfo.getLiveTopic().getMainRoomstatus();
                     if (status != null) {
                         mLogtf.d("onFail:classbegin=" + status.isClassbegin());
@@ -233,6 +223,7 @@ public class LiveVideoAction implements VideoAction {
 
             @Override
             public void run() {
+                lastPlayErrorCode = null;
                 setFirstBackgroundVisible(View.VISIBLE);
                 if (isPresent) {
                     if (tvLoadingHint != null) {
@@ -276,12 +267,12 @@ public class LiveVideoAction implements VideoAction {
 
     @Override
     public void onPlayError(int errorCode, PlayErrorCode playErrorCode) {
-        if (ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
+        lastPlayErrorCode = playErrorCode;
+        if (playErrorCode != null && ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
             setFirstBackgroundVisible(View.VISIBLE);
-            TextView tvFail = mContentView.findViewById(R.id.tv_course_video_loading_fail);
-            if (tvFail != null) {
-                tvFail.setVisibility(View.VISIBLE);
-                tvFail.setText(playErrorCode.getTip());
+            if (tvLoadingHint != null) {
+                tvLoadingHint.setVisibility(View.VISIBLE);
+                tvLoadingHint.setText(playErrorCode.getTip());
             }
         }
     }

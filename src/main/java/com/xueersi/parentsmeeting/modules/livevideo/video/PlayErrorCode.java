@@ -5,12 +5,12 @@ package com.xueersi.parentsmeeting.modules.livevideo.video;
  * 黑屏错误码
  */
 public enum PlayErrorCode {
-    PLAY_SERVER_CODE_101(101, "获取视频资源失败"),
-    PLAY_SERVER_CODE_102(102, "获取视频资源失败，正在尝试重连"),
-    PLAY_SERVER_CODE_103(103, "获取视频资源失败"),
-    PLAY_TIMEOUT_300(300, "视频连接超时，正在尝试重连"),
+    PLAY_SERVER_CODE_101(101, "获取视频资源失败[101]"),
+    PLAY_SERVER_CODE_102(102, "获取视频资源失败[102]，正在尝试重连…"),
+    PLAY_SERVER_CODE_103(103, "获取视频资源失败[103]"),
+    PLAY_TIMEOUT_300(300, "视频连接超时[300]，正在尝试重连…"),
     TEACHER_LEAVE_200(200, "教师不在直播间"),
-    PLAY_NO_WIFI(400, "连接超时，请检查网络"),
+    PLAY_NO_WIFI(400, "连接超时，请检查网络[400]"),
     E2BIG(-7, -1, "Argument list too long", ""),
     EACCES(-13, -1, "Permission denied", ""),
     EAGAIN(-11, -1, "Resource temporarily unavailable", ""),
@@ -85,7 +85,7 @@ public enum PlayErrorCode {
     HTTP_NOT_FOUND(-875574520, 225, "HTTP_NOT_FOUND", "Server returned 404 Not Found"),
     HTTP_OTHER_4XX(-1482175736, 226, "HTTP_OTHER_4XX", "Server returned 4XX Client Error , but not one of 40{0','1','3','4}'"),
     HTTP_SERVER_ERROR(-1482175992, 227, "HTTP_SERVER_ERROR", "Server returned 5XX Server Error reply"),
-    P(103, "获取视频资源失败");
+    PLAY_UNKNOWN(-22222, "获取视频资源失败");
     int ffmpegCode = 0;
     int code;
     String tip;
@@ -125,7 +125,9 @@ public enum PlayErrorCode {
                 return es[i];
             }
         }
-        return null;
+        PLAY_UNKNOWN.ffmpegCode = num;
+        PLAY_UNKNOWN.code = num;
+        return PLAY_UNKNOWN;
     }
 
 }
