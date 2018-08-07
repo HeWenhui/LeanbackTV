@@ -121,6 +121,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     protected ThreadPoolExecutor pool;
     protected Handler mainHandler = new Handler(Looper.getMainLooper());
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
+
     public BaseLiveMessagePager(Context context) {
         super(context);
         pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(3);

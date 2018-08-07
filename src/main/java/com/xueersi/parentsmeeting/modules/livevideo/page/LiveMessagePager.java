@@ -427,7 +427,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     @Override
                     public int getLayoutResId() {
                         if (LiveVideoConfig.isPrimary){
-                            return R.layout.item_livevideo_psmessage;
+//                            return R.layout.item_livevideo_psmessage;
+                            return R.layout.item_livevideo_message;
                         } else {
                             return R.layout.item_livevideo_message;
                         }
@@ -646,7 +647,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                                     }
                                     if(LiveVideoConfig.isPrimary){
 //                                        addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
-                                        liveBll.getLiveAutoNoticeBll().showGiftSuccessNotice(getTips(index), getHeard(index));
+//                                        liveBll.getLiveAutoNoticeBll().showGiftSuccessNotice(getTips(index), getHeard(index));
                                     }else{
                                         addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
                                     }
