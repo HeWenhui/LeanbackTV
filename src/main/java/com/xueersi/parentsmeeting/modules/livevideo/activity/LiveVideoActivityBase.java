@@ -580,7 +580,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         // 设置当前是否为横屏
         setFileName(); // 设置视频显示名称
         showLongMediaController();
-        totalFrameStat = new TotalFrameStat(this);
+        totalFrameStat = new TotalFrameStat(this,true);
         totalFrameStat.setvPlayer(vPlayer);
     }
 
