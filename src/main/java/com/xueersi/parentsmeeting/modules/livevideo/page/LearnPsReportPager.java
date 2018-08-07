@@ -155,8 +155,8 @@ public class LearnPsReportPager extends BasePager {
         LearnReportEntity.ReportEntity stu = reportEntity.getStu();
         int time = stu.getTime() / 60;
         tvLearnfeedbackDuration.setText(time + "分钟");
-        tvLearnfeedbackAccuracy.setText(stu.getRate());
-        tvLearnfeedbackAccuracyAverage.setText("" + stu.getAverageRate());
+        tvLearnfeedbackAccuracy.setText("0".equals(stu.getRate()) ? "0%" : stu.getRate());
+        tvLearnfeedbackAccuracyAverage.setText("0".equals(stu.getAverageRate()) ? "0%" :"" + stu.getAverageRate());
         tvLearnfeedbackRanking.setText("第" + stu.getRank() + "名");
     }
 }

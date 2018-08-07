@@ -1187,10 +1187,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.courseware_type);
                         }
                     } else {
-                        LiveVideoConfig.isNewEnglishH5 = true;
+                        LiveVideoConfig.isNewEnglishH5 = false;
                         if (englishH5CoursewareAction != null) {
                             JSONObject object = jsonObject.optJSONObject("platformTest");
                             if (object != null && !object.toString().equals("{}")) {
+                                LiveVideoConfig.isNewEnglishH5 = true;
                                 LiveVideoConfig.isSend = true;
                                 status = LiveVideoConfig.isSend ? "on" : "off";
                                 String nonce = object.optString("nonce");
@@ -1494,14 +1495,14 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     case XESCODE.UNDERSTANDT:
                         msg += "UNDERSTANDT";
                         // 测试待放开 07.31
-                        if ("off".equals(voiceChatStatus)) {//接麦懂了么无效
-                            if (mQuestionAction != null) {
-                                String nonce = object.optString("nonce");
-                                mQuestionAction.understand(nonce);
-                            }
-                        }
+//                        if ("off".equals(voiceChatStatus)) {//接麦懂了么无效
+//                            if (mQuestionAction != null) {
+//                                String nonce = object.optString("nonce");
+//                                mQuestionAction.understand(nonce);
+//                            }
+//                        }
                         // 学习反馈的测试
-//                        getLearnReport(2, 1000);
+                        getLearnReport(2, 1000);
                         ////////////////////////////  06.28 测试红包的弹窗
                         //接麦红包无效
 //                        String voiceChatStatus = "off";
@@ -1841,9 +1842,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
+                            // 08.07  课件之前的功能添加
                             if (!LiveVideoConfig.isSend) {
-
                                 if (englishH5CoursewareAction instanceof EnglishH5CoursewareBll) {
                                     ((EnglishH5CoursewareBll) englishH5CoursewareAction).setWebViewCloseByTeacher(true);
                                 }

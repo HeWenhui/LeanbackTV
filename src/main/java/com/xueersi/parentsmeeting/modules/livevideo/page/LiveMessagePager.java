@@ -427,8 +427,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     @Override
                     public int getLayoutResId() {
                         if (LiveVideoConfig.isPrimary){
-//                            return R.layout.item_livevideo_psmessage;
-                            return R.layout.item_livevideo_message;
+                            return R.layout.item_livevideo_psmessage;
                         } else {
                             return R.layout.item_livevideo_message;
                         }

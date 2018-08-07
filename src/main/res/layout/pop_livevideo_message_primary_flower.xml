@@ -5,8 +5,8 @@
     android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/iv_livevideo_primarygiftbg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="714dp"
+        android:layout_height="520dp"
         android:layout_centerInParent="true"
         android:background="@drawable/primarygiftbg"/>
     <RelativeLayout

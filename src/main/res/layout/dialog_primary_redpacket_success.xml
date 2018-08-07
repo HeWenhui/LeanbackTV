@@ -46,7 +46,7 @@
                 android:textColor="@color/COLOR_REDBAG"
                 android:textSize="15sp"/>
         </LinearLayout>
-        <TextView
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:layout_below="@+id/ll_detail_message"
             android:id="@id/tv_livevideo_redpackage_autoclose"
             android:layout_centerHorizontal="true"
