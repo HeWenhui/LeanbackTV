@@ -46,6 +46,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 import com.xueersi.ui.dataload.DataLoadManager;
 
@@ -98,6 +99,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
     private View viewRoot;
     /** 播放器的VideoView com.xueersi.parentsmeeting.player.media.VideoView */
     protected VideoView videoView;
+    protected LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
     /** 播放器父布局 */
     protected RelativeLayout rlContent;
     /** 加载中动画Loading */
@@ -207,6 +209,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);// 设置在该页面音量控制键的音频流为媒体音量
         mCreated = true; // 界面onCreate完毕
         videoView = (VideoView) mContentView.findViewById(R.id.vv_course_video_video); // 播放器的videoView
+        setVideoLayout();
         createPlayer();
         onVideoCreate(savedInstanceState);
     }
@@ -527,6 +530,10 @@ public class LiveBackVideoFragmentBase extends Fragment {
     protected void setVideoLayout() {
         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, vPlayer.getVideoWidth(),
                 vPlayer.getVideoHeight(), vPlayer.getVideoAspectRatio());
+        if (mIsLand.get()) {
+            ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+            LiveVideoPoint.initLiveVideoPoint(activity, liveVideoPoint, lp);
+        }
     }
 
     /** 加载缓冲进度动画 */
