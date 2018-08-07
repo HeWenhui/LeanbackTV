@@ -33,13 +33,15 @@
         <ProgressBar
             android:id="@id/tv_livevideo_english_prog"
             style="@style/Small_english_ProgressBar_live_english"
-            android:layout_width="match_parent"
-            android:layout_height="9dp"
+            android:layout_width="150dp"
+            android:layout_height="13dp"
             android:layout_below="@id/tv_livevideo_english_time"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
-            android:max="45" />
+            android:max="45"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp" />
 
         <RelativeLayout
             android:id="@id/rl_livevideo_english_stat"

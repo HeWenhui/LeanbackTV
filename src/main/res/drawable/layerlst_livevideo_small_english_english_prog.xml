@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@android:id/background">
+    <item
+        android:id="@android:id/background"
+        android:drawable="@drawable/bg_livideo_small_english_play_energybar_progress">
         <!--<shape>-->
         <!--<corners android:radius="4.5dp" />-->
         <!--<solid android:color="@color/COLOR_333368" />-->
         <!--</shape>-->
-        <bitmap android:src="@drawable/bg_livideo_small_english_play_energybar_progress" />
+        <!--<bitmap android:src="@drawable/bg_livideo_small_english_play_energybar_progress" />-->
         <!--<scale-->
         <!--android:drawable="@drawable/bg_livideo_small_english_play_energybar_progress"-->
         <!--android:scaleWidth="100%"/>-->
     </item>
-    <item android:id="@android:id/progress">
+    <item
+        android:id="@android:id/progress"
+        android:width="142dp"
+        android:bottom="2dp"
+        android:gravity="left|center_vertical"
+        android:left="-2dp">
         <scale
             android:drawable="@drawable/shape_livevideo_small_english_english_bg"
             android:scaleWidth="100%" />
