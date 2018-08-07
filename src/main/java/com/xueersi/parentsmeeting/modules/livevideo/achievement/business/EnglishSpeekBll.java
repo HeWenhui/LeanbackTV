@@ -60,7 +60,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by lyqai on 2017/10/31.
+ * Created by linyuqiang on 2017/10/31.
+ * 三分屏直播说英语
  */
 public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements EnglishSpeekAction {
     static int staticInt = 0;

@@ -57,7 +57,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2017/10/31.
+ * Created by linyuqiang on 2017/10/31.
+ * 站立直播说英语
  */
 public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements EnglishSpeekAction {
     static int staticInt = 0;
