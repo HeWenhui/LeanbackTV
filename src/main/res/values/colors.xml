@@ -18,4 +18,6 @@
     <color name="COLOR_PKO">#47B7FF</color>
     <color name="COLOR_REDBAG">#E54536</color>
     <color name="COLOR_PKDEVIDING">#1D1311</color>
+    <color name="COLOR_PSPK">#2B1D1A</color>
+    <color name="COLOR_PSONLINECOUNT">#EFCCA0</color>
 </resources>
