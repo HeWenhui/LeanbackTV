@@ -110,7 +110,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private RedPackageAction readPackageBll, psredpackageBll;
     private VideoAction mVideoAction;
     private RoomAction mRoomAction;
-    private LearnReportAction mLearnReportAction,mLearnPsReportAction;
+    private LearnReportAction mLearnReportAction, mLearnPsReportAction;
     private LecLearnReportAction mLecLearnReportAction;
     private H5CoursewareAction h5CoursewareAction;
     private EnglishH5CoursewareAction englishH5CoursewareAction;
@@ -168,7 +168,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
     private final String ROOM_MIDDLE = "L";
     private Callback.Cancelable mCataDataCancle;
     private Callback.Cancelable mGetPlayServerCancle;
-    /** 直播帧数统计 */
+    /**
+     * 直播帧数统计
+     */
     private TotalFrameStat totalFrameStat;
     /**
      * 学习记录提交时间间隔
@@ -1216,7 +1218,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                     objects.put("classId", classId);
                                     englishH5Entity.setClassId(classId);
                                     objects.put("classTestId", object.getString("ctId"));
-                                    mShareDataManager.put(LiveVideoConfig.newEnglishH5, objects.toString(), ShareDataManager.SHAREDATA_USER);
+                                    mShareDataManager.put(LiveVideoConfig.newEnglishH5, objects.toString(),
+                                            ShareDataManager.SHAREDATA_USER);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -1833,10 +1836,28 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                 objects.put("classId", classId);
                                 objects.put("classTestId", object.getString("ctId"));
                                 LiveVideoConfig.ctId = object.getString("ctId");
-                                mShareDataManager.put(LiveVideoConfig.newEnglishH5, objects.toString(), ShareDataManager.SHAREDATA_USER);
+                                mShareDataManager.put(LiveVideoConfig.newEnglishH5, objects.toString(),
+                                        ShareDataManager.SHAREDATA_USER);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+
+                            if (!LiveVideoConfig.isSend) {
+
+                                if (englishH5CoursewareAction instanceof EnglishH5CoursewareBll) {
+                                    ((EnglishH5CoursewareBll) englishH5CoursewareAction).setWebViewCloseByTeacher(true);
+                                }
+                                if (mTeamPKBll != null) {
+                                    mTeamPKBll.showCurrentPkResult();
+                                    if (mTeamPKBll != null) {
+                                        mTeamPKBll.setNonce(object.optString("nonce", ""));
+                                        mTeamPKBll.showCurrentPkResult();
+                                        Loger.e("TeamPkBll", "======>showCurrentPkResult: called in " +
+                                                "ENGLISH_H5_COURSEWARE");
+                                    }
+                                }
+                            }
+
                             englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
                         }
                     }
@@ -2290,7 +2311,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
         @Override
         public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target,
                                      String message) {
-            Loger.e("LiveBll", "=====> onPrivateMessage:" + sender + ":" + login + ":" + hostname + ":" + target + ":" + message);
+            Loger.e("LiveBll", "=====> onPrivateMessage:" + sender + ":" + login + ":" + hostname + ":" + target +
+                    ":" + message);
             if (!"T".equals(message) && haveTeam) {
                 StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
                 String teamId = studentLiveInfo.getTeamId();
@@ -2815,7 +2837,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     learnReportEntity.getStu().setStuName(mGetInfo.getStuName());
                     learnReportEntity.getStu().setTeacherName(mGetInfo.getTeacherName());
                     learnReportEntity.getStu().setTeacherIMG(mGetInfo.getTeacherIMG());
-                    if(LiveVideoConfig.isPrimary && mLearnPsReportAction != null){
+                    if (LiveVideoConfig.isPrimary && mLearnPsReportAction != null) {
                         mLearnPsReportAction.onLearnReport(learnReportEntity);
                         return;
                     }
@@ -4267,7 +4289,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     .get());
             mCompleteCounTeacherCount.set(mCompleteCounTeacherCount.get() > 1000 ? 1000 : mCompleteCounTeacherCount
                     .get());
-//            XesMobAgent.liveStatistics(mBufferCount.get(), mRepairBufferCount.get(), mRepairOpenCount.get(), mFailCount
+//            XesMobAgent.liveStatistics(mBufferCount.get(), mRepairBufferCount.get(), mRepairOpenCount.get(),
+// mFailCount
 //                            .get(),
 //                    mFailMainTeacherCount.get(), mFailCounTeacherCount.get(), mCompleteCount.get(),
 //                    mCompleteMainTeacherCount.get(), mCompleteCounTeacherCount.get());
