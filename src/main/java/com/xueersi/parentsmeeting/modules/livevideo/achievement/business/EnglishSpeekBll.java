@@ -755,13 +755,11 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
             mData.put("duration", "" + sendDbDuration);
             liveAndBackDebug.umsAgentDebugSys(eventId, mData);
             bottomContent.post(new Runnable() {
-                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+
                 @Override
                 public void run() {
                     final View view = LayoutInflater.from(activity).inflate(R.layout
                             .layout_livevideo_english_speek_praise, bottomContent, false);
-
-
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                             .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
 
@@ -791,8 +789,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                         ivSmallEnglish.setVisibility(View.GONE);
                         rlRemindOrPraise.setVisibility(View.VISIBLE);
                         lp.rightMargin = praiseWidth;
-                        tv_livevideo_english_praise.setBackgroundResource(R.drawable.bg_livevideo_english_speek_remind);
-                        tv_livevideo_english_praise.setVisibility(View.GONE);
+                        imageView.setBackgroundResource(R.drawable.bg_livevideo_english_speek_remind);
                         tv_livevideo_english_praise.setText("大声说英语啦！");
                     }
                     bottomContent.addView(view, lp);
