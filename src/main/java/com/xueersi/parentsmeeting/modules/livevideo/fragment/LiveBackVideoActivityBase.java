@@ -29,8 +29,6 @@ import org.greenrobot.eventbus.ThreadMode;
  */
 public class LiveBackVideoActivityBase extends XesActivity {
     private String TAG = "LiveVideoActivityBaseLog";
-    /** 所在的Activity是否已经onCreated */
-    private boolean mCreated = false;
     /** 当前界面是否横屏 */
     protected boolean mIsLand = false;
     LiveBackVideoFragmentBase liveVideoFragmentBase;
@@ -61,14 +59,6 @@ public class LiveBackVideoActivityBase extends XesActivity {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (!mCreated)
-            return;
-    }
-
-
-    @Override
     public void onResume() {
         super.onResume();
         FileLogger.runActivity = this;
@@ -87,20 +77,15 @@ public class LiveBackVideoActivityBase extends XesActivity {
     @Override
     public void onStop() {
         super.onStop();
-        if (!mCreated)
-            return;
         XesMobAgent.userMarkVideoDestory(MobEnumUtil.MARK_VIDEO_ONSTOP);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (!mCreated)
-            return;
         // 注销事件
         EventBus.getDefault().unregister(this);
-        Intent intent = new Intent(this, LiveService.class);
-        stopService(intent);
+        stopService(new Intent(this, LiveService.class));
     }
 
     @Override

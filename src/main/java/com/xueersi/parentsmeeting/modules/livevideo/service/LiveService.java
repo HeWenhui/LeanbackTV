@@ -28,9 +28,9 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * Created by lyqai on 2018/7/14.
+ * Created by linyuqiang on 2018/7/14.
+ * 直播守护进程
  */
-
 public class LiveService extends Service {
     String TAG = "LiveService";
     private File alldir;
@@ -96,8 +96,11 @@ public class LiveService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent == null) {
+            return START_NOT_STICKY;
+        }
         livepid = intent.getIntExtra("livepid", 0);
-        return super.onStartCommand(intent, flags, startId);
+        return START_NOT_STICKY;
     }
 
     public void writeLogcat(String filename) throws IOException {
