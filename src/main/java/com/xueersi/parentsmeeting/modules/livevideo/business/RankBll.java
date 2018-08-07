@@ -144,7 +144,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                             lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
                                 @Override
                                 public AdapterItemInterface<RankEntity> getItemView(Object type) {
-                                    return new RankItem(colorYellow, colorWhite);
+                                    return new RankItem(colorYellow, colorWhite, isSmallEnglish);
                                 }
                             });
                         }
@@ -217,23 +217,19 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     }
 
     private List<RankEntity> mArtsRankEntities = null;
-    private CommonAdapter<RankEntity> mArtsGroupCommonAdapter = new CommonAdapter<RankEntity>(mArtsRankEntities) {
-        @Override
-        public AdapterItemInterface<RankEntity> getItemView(Object type) {
-            return new RankItem(colorYellow, colorWhite);
-        }
-    };
+    private CommonAdapter<RankEntity> mArtsGroupCommonAdapter;
 
     public void initView(final RelativeLayout bottomContent) {
         //小英
         Log.i("testRankBll", mGetInfo.getGrade() + " " + mGetInfo.getIsArts());
-        if (mGetInfo != null) {
-            for (String sub : mGetInfo.getSubjectIds()) {
-                if (sub.equals("3")) {
-                    isSmallEnglish = true;
-                    break;
-                }
+        mArtsGroupCommonAdapter = new CommonAdapter<RankEntity>(mArtsRankEntities) {
+            @Override
+            public AdapterItemInterface<RankEntity> getItemView(Object type) {
+                return new RankItem(colorYellow, colorWhite, isSmallEnglish);
             }
+        };
+        if (mGetInfo != null) {
+            isSmallEnglish = mGetInfo.getSmallEnglish();
         }
         if (isSmallEnglish) {
 //            Log.i("testRankBll", mGetInfo.getGrade() + " " + mGetInfo.getIsArts());
@@ -363,7 +359,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                     lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
                         @Override
                         public AdapterItemInterface<RankEntity> getItemView(Object type) {
-                            return new RankItem(colorYellow, colorWhite);
+                            return new RankItem(colorYellow, colorWhite, isSmallEnglish);
                         }
                     });
                 }
@@ -386,7 +382,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                     lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
                         @Override
                         public AdapterItemInterface<RankEntity> getItemView(Object type) {
-                            return new RankItem(colorYellow, colorWhite);
+                            return new RankItem(colorYellow, colorWhite, isSmallEnglish);
                         }
                     });
                 }
@@ -409,7 +405,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                     lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
                         @Override
                         public AdapterItemInterface<RankEntity> getItemView(Object type) {
-                            return new RankItem(colorYellow, colorWhite);
+                            return new RankItem(colorYellow, colorWhite, isSmallEnglish);
                         }
                     });
                 }
