@@ -43,6 +43,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 
     public LiveAchievementIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
+        putInstance(LiveAchievementIRCBll.class, this);
     }
 
     @Override

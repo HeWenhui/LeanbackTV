@@ -89,14 +89,14 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             englishH5Cache.setHttpManager(mLiveBll.getHttpManager());
             englishH5Cache.getCourseWareUrl();
         }
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mAnswerRankBll != null) {
+        if (mAnswerRankBll != null) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
                     englishH5CoursewareBll.setAnswerRankBll(mAnswerRankBll.getAnswerRankBll());
                 }
-            }
-        });
+            });
+        }
     }
 
     public void setIse(SpeechEvaluatorUtils ise) {

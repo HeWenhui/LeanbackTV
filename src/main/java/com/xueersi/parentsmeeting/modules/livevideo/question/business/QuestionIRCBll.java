@@ -138,14 +138,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             englishH5CoursewareIRCBll.setIse(mIse);
         }
         mQuestionAction.initData();
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mAnswerRankBll != null) {
+        if (mAnswerRankBll != null) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
                     mQuestionAction.setAnswerRankBll(mAnswerRankBll.getAnswerRankBll());
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
