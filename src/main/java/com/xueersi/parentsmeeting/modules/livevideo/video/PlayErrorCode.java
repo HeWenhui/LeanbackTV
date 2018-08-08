@@ -9,7 +9,7 @@ public enum PlayErrorCode {
     PLAY_SERVER_CODE_102(102, "获取视频资源失败[102]，正在尝试重连…"),
     PLAY_SERVER_CODE_103(103, "获取视频资源失败[103]"),
     PLAY_TIMEOUT_300(300, "视频连接超时[300]，正在尝试重连…"),
-    TEACHER_LEAVE_200(200, "教师不在直播间"),
+    TEACHER_LEAVE_200(200, "教师不在直播间[200]"),
     PLAY_NO_WIFI(400, "连接超时，请检查网络[400]"),
     E2BIG(-7, -1, "Argument list too long", ""),
     EACCES(-13, -1, "Permission denied", ""),

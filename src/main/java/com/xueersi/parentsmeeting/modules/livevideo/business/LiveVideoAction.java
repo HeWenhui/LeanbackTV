@@ -127,6 +127,32 @@ public class LiveVideoAction implements VideoAction {
         });
     }
 
+    public void playComplete() {
+        mHandler.post(new Runnable() {
+
+            @Override
+            public void run() {
+                if (tvLoadingHint != null) {
+                    PlayErrorCode playErrorCode = PlayErrorCode.TEACHER_LEAVE_200;
+                    lastPlayErrorCode = playErrorCode;
+                    if (tvLoadingHint != null) {
+                        tvLoadingHint.setVisibility(View.VISIBLE);
+                        int netWorkState = NetWorkHelper.getNetWorkState(activity);
+                        if (netWorkState == NetWorkHelper.NO_NETWORK) {
+                            tvLoadingHint.setText(PlayErrorCode.PLAY_NO_WIFI.getTip());
+                        } else {
+                            tvLoadingHint.setText("视频播放失败[" + playErrorCode.getCode() + "]");
+                        }
+                    }
+                    LiveTopic.RoomStatusEntity status = mGetInfo.getLiveTopic().getMainRoomstatus();
+                    if (status != null) {
+                        mLogtf.d("onFail:classbegin=" + status.isClassbegin());
+                    }
+                }
+            }
+        });
+    }
+
     public void onFail(final int arg1, final int arg2) {
         mHandler.post(new Runnable() {
 
