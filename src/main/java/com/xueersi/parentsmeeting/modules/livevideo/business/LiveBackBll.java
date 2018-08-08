@@ -13,6 +13,8 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
@@ -28,6 +30,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +43,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick {
     private String TAG = "LiveBackBll";
+    Logger logger = LoggerFactory.getLogger(TAG);
     Activity activity;
     private AllLiveBasePagerIml allLiveBasePagerIml;
     /** 购课id */
@@ -178,6 +183,13 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
             liveGetInfo.setStudentLiveInfo(studentLiveInfo);
         }
         liveGetInfo.setPattern(pattern);
+        try {
+            String getInfoStr = mVideoEntity.getGetInfoStr();
+            JSONObject liveInfo = new JSONObject(getInfoStr);
+            liveGetInfo.setSmallEnglish("1".equals(liveInfo.optString("useSkin")));
+        } catch (Exception e) {
+            logger.e("onCreate", e);
+        }
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
             liveBackBaseBll.onCreateF(mVideoEntity, liveGetInfo, businessShareParamMap);
         }
