@@ -45,7 +45,7 @@ public class LiveExamQuestionCreat implements BaseExamQuestionCreat {
     @Override
     public BaseExamQuestionInter creatBaseExamQuestion(Activity activity, final String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity) {
         AnswerRankBll mAnswerRankBll = null;
-        if (mAnswerRankIRCBll == null) {
+        if (mAnswerRankIRCBll != null) {
             mAnswerRankBll = mAnswerRankIRCBll.getAnswerRankBll();
         }
         if (mAnswerRankBll != null) {

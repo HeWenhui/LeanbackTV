@@ -31,7 +31,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
     @Override
     public BaseEnglishH5CoursewarePager creat(Context context, VideoQuestionLiveEntity videoQuestionH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onH5ResultClose, String mVSectionID) {
         AnswerRankBll mAnswerRankBll = null;
-        if (mAnswerRankIRCBll == null) {
+        if (mAnswerRankIRCBll != null) {
             mAnswerRankBll = mAnswerRankIRCBll.getAnswerRankBll();
         }
         EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
