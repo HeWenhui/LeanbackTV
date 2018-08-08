@@ -545,7 +545,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void stop(AudioRequest.OnAudioRequest onAudioRequest) {
-        Loger.d(TAG, "stop:isAudioStart=" + isAudioStart);
+        mLogtf.d("stop:isAudioStart=" + isAudioStart + ",talLanguage=" + (talLanguage == null));
         this.onAudioRequest = onAudioRequest;
         if (!isAudioStart) {
             if (onAudioRequest != null) {
