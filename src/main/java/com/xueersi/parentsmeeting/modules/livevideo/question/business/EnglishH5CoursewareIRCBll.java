@@ -78,7 +78,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         liveBaseEnglishH5CoursewareCreat.setIS_SCIENCE(isArts != 1);
         if (isArts != 1) {
             if (mAnswerRankBll != null) {
-                liveBaseEnglishH5CoursewareCreat.setmAnswerRankBll(mAnswerRankBll.getAnswerRankBll());
+                liveBaseEnglishH5CoursewareCreat.setmAnswerRankBll(mAnswerRankBll);
             }
         }
         liveBaseEnglishH5CoursewareCreat.setLivePagerBack(englishH5CoursewareBll);
@@ -89,6 +89,14 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             englishH5Cache.setHttpManager(mLiveBll.getHttpManager());
             englishH5Cache.getCourseWareUrl();
         }
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mAnswerRankBll != null) {
+                    englishH5CoursewareBll.setAnswerRankBll(mAnswerRankBll.getAnswerRankBll());
+                }
+            }
+        });
     }
 
     public void setIse(SpeechEvaluatorUtils ise) {

@@ -7,6 +7,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 
 import org.json.JSONObject;
@@ -22,13 +23,17 @@ public class AnswerRankIRCBll extends LiveBaseBll implements NoticeAction {
 
     public AnswerRankIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
-        mAnswerRankBll = new AnswerRankBll(context, liveBll);
         putInstance(AnswerRankIRCBll.class, this);
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        mAnswerRankBll.initView(bottomContent);
+    public void onLiveInited(LiveGetInfo getInfo) {
+        super.onLiveInited(getInfo);
+        if (mGetInfo.getStudentLiveInfo() != null
+                && mGetInfo.getIs_show_ranks().equals("1")) {
+            mAnswerRankBll = new AnswerRankBll(activity, mLiveBll);
+            mAnswerRankBll.initView(mRootView);
+        }
     }
 
     public AnswerRankBll getAnswerRankBll() {

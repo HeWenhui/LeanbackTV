@@ -12,12 +12,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.EnglishH5Cours
  * Created by linyuqiang on 2018/7/26.
  */
 public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5CoursewareCreat {
-    private AnswerRankBll mAnswerRankBll;
+    private AnswerRankIRCBll mAnswerRankIRCBll;
     private boolean IS_SCIENCE;
     LivePagerBack livePagerBack;
 
-    public void setmAnswerRankBll(AnswerRankBll mAnswerRankBll) {
-        this.mAnswerRankBll = mAnswerRankBll;
+    public void setmAnswerRankBll(AnswerRankIRCBll mAnswerRankBll) {
+        this.mAnswerRankIRCBll = mAnswerRankBll;
     }
 
     public void setIS_SCIENCE(boolean IS_SCIENCE) {
@@ -30,6 +30,10 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
 
     @Override
     public BaseEnglishH5CoursewarePager creat(Context context, VideoQuestionLiveEntity videoQuestionH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onH5ResultClose, String mVSectionID) {
+        AnswerRankBll mAnswerRankBll = null;
+        if (mAnswerRankIRCBll == null) {
+            mAnswerRankBll = mAnswerRankIRCBll.getAnswerRankBll();
+        }
         EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
         EnglishH5CoursewareX5Pager h5CoursewarePager = new EnglishH5CoursewareX5Pager(context, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                 videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, mAnswerRankBll == null ? "0" : mAnswerRankBll.getIsShow(), IS_SCIENCE);

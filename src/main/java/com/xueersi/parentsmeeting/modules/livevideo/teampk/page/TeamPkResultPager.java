@@ -29,6 +29,7 @@ import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
@@ -51,10 +52,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-*战队 pk 结果页
-*@author chekun
-*created  at 2018/4/17 16:15
-*/
+ * 战队 pk 结果页
+ *
+ * @author chekun
+ *         created  at 2018/4/17 16:15
+ */
 public class TeamPkResultPager extends BasePager {
     private static final String TAG = "TeamPkResultPager";
     private LottieAnimationView lottieAnimationView;
@@ -295,7 +297,7 @@ public class TeamPkResultPager extends BasePager {
                 ivOtherTeamState.setImageResource(R.drawable.livevideo_alertview_pingshou_img_disable);
                 ivMyteamState.setImageResource(R.drawable.livevideo_alertview_pingshou_img_disable);
             }
-            ImageLoader.with(ivMyTeacherHead.getContext()).load(data.getMyTeamEngerInfo().getTeacherImg()).asBitmap
+            ImageLoader.with(BaseApplication.getContext()).load(data.getMyTeamEngerInfo().getTeacherImg()).asBitmap
                     (new SingleConfig.BitmapListener() {
                         @Override
                         public void onSuccess(Drawable drawable) {
@@ -311,7 +313,7 @@ public class TeamPkResultPager extends BasePager {
                         }
                     });
 
-            ImageLoader.with(ivOtherTeacherHead.getContext()).load(data.getCompetitorEngerInfo().getTeacherImg())
+            ImageLoader.with(BaseApplication.getContext()).load(data.getCompetitorEngerInfo().getTeacherImg())
                     .asBitmap(new SingleConfig.BitmapListener() {
                         @Override
                         public void onSuccess(Drawable drawable) {
@@ -326,8 +328,8 @@ public class TeamPkResultPager extends BasePager {
 
                         }
                     });
-            ImageLoader.with(ivMyTeamLogo.getContext()).load(data.getMyTeamEngerInfo().getImg()).into(ivMyTeamLogo);
-            ImageLoader.with(ivOtherTeamLogo.getContext()).load(data.getCompetitorEngerInfo().getImg()).into
+            ImageLoader.with(BaseApplication.getContext()).load(data.getMyTeamEngerInfo().getImg()).into(ivMyTeamLogo);
+            ImageLoader.with(BaseApplication.getContext()).load(data.getCompetitorEngerInfo().getImg()).into
                     (ivOtherTeamLogo);
             tvMyTeacherName.setText(data.getMyTeamEngerInfo().getTeacherName());
             tvOtherTeacherName.setText(data.getCompetitorEngerInfo().getTeacherName());
@@ -405,17 +407,17 @@ public class TeamPkResultPager extends BasePager {
         }
 
         public void bindData(TeamEnergyAndContributionStarEntity.ContributionStar data) {
-            ImageLoader.with(ivHead.getContext()).load(data.getAvaterPath()).asBitmap(new SingleConfig.BitmapListener
+            ImageLoader.with(BaseApplication.getContext()).load(data.getAvaterPath()).asBitmap(new SingleConfig.BitmapListener
                     () {
                 @Override
                 public void onSuccess(Drawable drawable) {
                     Bitmap headBitmap = null;
-                    if(drawable instanceof  BitmapDrawable){
+                    if (drawable instanceof BitmapDrawable) {
                         headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                    }else if(drawable instanceof GifDrawable){
-                        headBitmap = ((GifDrawable)drawable).getFirstFrame();
+                    } else if (drawable instanceof GifDrawable) {
+                        headBitmap = ((GifDrawable) drawable).getFirstFrame();
                     }
-                    if(headBitmap != null){
+                    if (headBitmap != null) {
                         Bitmap resultBitmap = scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap
                                 .getHeight()) / 2);
                         ivHead.setImageBitmap(resultBitmap);
@@ -530,9 +532,9 @@ public class TeamPkResultPager extends BasePager {
         closePkResultPager();
     }
 
-    /**老师昵称最大字符数*/
+    /** 老师昵称最大字符数 */
     private static final int TEACHER_NAME_MAXLEN = 6;
-    /**pk 对手音效进入时间点*/
+    /** pk 对手音效进入时间点 */
     private static final float FRACTION_MUSIC_IN = 0.11f;
 
     /**

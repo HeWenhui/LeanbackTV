@@ -92,7 +92,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         liveExamQuestionCreat.setQuestionBll(mQuestionAction);
         if (isArts != 1) {
             if (mAnswerRankBll != null) {
-                liveExamQuestionCreat.setmAnswerRankBll(mAnswerRankBll.getAnswerRankBll());
+                liveExamQuestionCreat.setmAnswerRankBll(mAnswerRankBll);
             }
         }
         liveExamQuestionCreat.setQuestionHttp(this);
@@ -138,6 +138,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             englishH5CoursewareIRCBll.setIse(mIse);
         }
         mQuestionAction.initData();
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mAnswerRankBll != null) {
+                    mQuestionAction.setAnswerRankBll(mAnswerRankBll.getAnswerRankBll());
+                }
+            }
+        });
     }
 
     @Override

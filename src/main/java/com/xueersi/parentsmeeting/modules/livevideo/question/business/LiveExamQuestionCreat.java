@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class LiveExamQuestionCreat implements BaseExamQuestionCreat {
     private boolean IS_SCIENCE;
     private LiveGetInfo liveGetInfo;
-    private AnswerRankBll mAnswerRankBll;
+    private AnswerRankIRCBll mAnswerRankIRCBll;
     QuestionHttp questionHttp;
     QuestionBll questionBll;
 
@@ -30,8 +30,8 @@ public class LiveExamQuestionCreat implements BaseExamQuestionCreat {
         this.liveGetInfo = liveGetInfo;
     }
 
-    public void setmAnswerRankBll(AnswerRankBll mAnswerRankBll) {
-        this.mAnswerRankBll = mAnswerRankBll;
+    public void setmAnswerRankBll(AnswerRankIRCBll mAnswerRankBll) {
+        this.mAnswerRankIRCBll = mAnswerRankBll;
     }
 
     public void setQuestionBll(QuestionBll questionBll) {
@@ -44,6 +44,10 @@ public class LiveExamQuestionCreat implements BaseExamQuestionCreat {
 
     @Override
     public BaseExamQuestionInter creatBaseExamQuestion(Activity activity, final String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity) {
+        AnswerRankBll mAnswerRankBll = null;
+        if (mAnswerRankIRCBll == null) {
+            mAnswerRankBll = mAnswerRankIRCBll.getAnswerRankBll();
+        }
         if (mAnswerRankBll != null) {
             mAnswerRankBll.showRankList(new ArrayList<RankUserEntity>(), XESCODE.EXAM_STOP);
             questionHttp.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
