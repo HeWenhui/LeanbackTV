@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.understand.page.SmallEnglishUnderstandPager;
 
 import java.io.File;
 import java.util.HashMap;
@@ -46,6 +47,8 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
     View understandView = null;
     View oldUnderstandView = null;
     public final int CANCEL_REDPAG = 1;
+
+    SmallEnglishUnderstandPager smallEnglishUnderstandPager;
 
     public UnderstandBll(Activity activity, LiveAndBackDebug liveAndBackDebug) {
         this.activity = activity;
@@ -104,26 +107,45 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                     params.addRule(RelativeLayout.CENTER_IN_PARENT);
 
                 } else {
-                    understandView = View.inflate(activity, R.layout.layout_livevideo_small_english_understand, null);
-                    understandView.findViewById(R.id.iv_livevideo_small_english_understand).setOnClickListener
-                            (smallEnglishListener);
-                    understandView.findViewById(R.id.iv_livevideo_small_english_no_understand).setOnClickListener
-                            (smallEnglishListener);
-                    understandView.findViewById(R.id.iv_livevideo_small_english_close).setOnClickListener
-                            (smallEnglishCloseListener);
+                    smallEnglishUnderstandPager = new SmallEnglishUnderstandPager(activity);
+                    understandView = smallEnglishUnderstandPager.getRootView();
 
+                    smallEnglishUnderstandPager.setListener(new SmallEnglishUnderstandPager.UnderStandListener() {
+
+                        @Override
+                        public void closeListener() {
+                            removeView(rlQuestionContent, understandView);
+                        }
+
+                        @Override
+                        public void underStandListener(boolean underStand) {
+                            smallEnglishUnderstandOnclick(underStand);
+                        }
+
+                        @Override
+                        public void noUnderStandListener(boolean noUnderStand) {
+                            smallEnglishUnderstandOnclick(noUnderStand);
+                        }
+                    });
+
+//                    understandView.findViewById(R.id.iv_livevideo_small_english_understand).setOnClickListener
+//                            (smallEnglishListener);
+//                    understandView.findViewById(R.id.iv_livevideo_small_english_no_understand).setOnClickListener
+//                            (smallEnglishListener);
+//                    understandView.findViewById(R.id.iv_livevideo_small_english_close).setOnClickListener
+//                            (smallEnglishCloseListener);
                     params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                             .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     //在中间位置显示
-                    LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
-
-                    Drawable drawable = activity.getResources().getDrawable(R.drawable
-                            .bg_livevideo_small_english_understand_board);
-                    int draweight = drawable.getIntrinsicWidth();
-
-                    params.leftMargin = (liveVideoPoint.x3 - liveVideoPoint.x2 - draweight) / 2;
-
-                    params.addRule(RelativeLayout.CENTER_VERTICAL);
+//                    LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+//
+//                    Drawable drawable = activity.getResources().getDrawable(R.drawable
+//                            .bg_livevideo_small_english_understand_board);
+//                    int draweight = drawable.getIntrinsicWidth();
+//
+//                    params.leftMargin = (liveVideoPoint.x3 - liveVideoPoint.x2 - draweight) / 2;
+//
+//                    params.addRule(RelativeLayout.CENTER_VERTICAL);
                 }
                 rlQuestionContent.getHandler().removeCallbacks(closeRedPackage);
                 rlQuestionContent.addView(understandView, params);
@@ -178,32 +200,37 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
             removeView(rlQuestionContent, understandView);
         }
     };
-    View.OnClickListener smallEnglishListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            boolean isUnderstand = v.getId() == R.id.iv_livevideo_small_english_understand;
-            mLogtf.d("understand:isUnderstand=" + isUnderstand);
-            String nonce = "" + StableLogHashMap.creatNonce();
-            understandHttp.understand(isUnderstand, nonce);
-            mIsShowUnderstand = false;
-            Map<String, String> mData = new HashMap<>();
-            mData.put("logtype", "sendUnderstand");
-            mData.put("answerType", isUnderstand ? "1" : "0");
-            mData.put("expect", "1");
-            mData.put("nonce", "" + nonce);
-            mData.put("sno", "3");
-            mData.put("stable", "1");
-            liveAndBackDebug.umsAgentDebugInter(understandEventId, mData);
+//    View.OnClickListener smallEnglishListener = new View.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//            boolean isUnderstand = v.getId() == R.id.iv_livevideo_small_english_understand;
+//
+//        }
+//    };
 
-            removeView(rlQuestionContent, understandView);
-        }
-    };
-    private View.OnClickListener smallEnglishCloseListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            removeView(rlQuestionContent, understandView);
-        }
-    };
+    private void smallEnglishUnderstandOnclick(boolean isUnderstand) {
+        mLogtf.d("understand:isUnderstand=" + isUnderstand);
+        String nonce = "" + StableLogHashMap.creatNonce();
+        understandHttp.understand(isUnderstand, nonce);
+        mIsShowUnderstand = false;
+        Map<String, String> mData = new HashMap<>();
+        mData.put("logtype", "sendUnderstand");
+        mData.put("answerType", isUnderstand ? "1" : "0");
+        mData.put("expect", "1");
+        mData.put("nonce", "" + nonce);
+        mData.put("sno", "3");
+        mData.put("stable", "1");
+        liveAndBackDebug.umsAgentDebugInter(understandEventId, mData);
+
+        removeView(rlQuestionContent, understandView);
+    }
+
+//    private View.OnClickListener smallEnglishCloseListener = new View.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//            removeView(rlQuestionContent, understandView);
+//        }
+//    };
 
     private void removeView(ViewGroup viewParent, View view) {
         if (view != null && viewParent != null && view.getParent() == viewParent) {
