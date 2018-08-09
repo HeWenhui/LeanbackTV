@@ -41,8 +41,8 @@ public class SmallEnglishClassSignPager extends BasePager {
     private SmallEnglishClassSign smallEnglishClassSign;
     //    private RollCallBll rollCallBll;
     //方便显示签到页面出来时，背景80%黑色透明，不可点击
-    RelativeLayout backGroundLayout;
-    //签到背景的布局
+//    RelativeLayout backGroundLayout;
+//    //签到背景的布局
     private RelativeLayout.LayoutParams layoutParams;
 
     public void setSmallEnglishClassSign(SmallEnglishClassSign smallEnglishClassSign) {
@@ -73,19 +73,19 @@ public class SmallEnglishClassSignPager extends BasePager {
         tvArtsStartSign = view.findViewById(R.id.tv_livevideo_small_english_sign_start_sign);
         ivSignClose = view.findViewById(R.id.iv_small_english_sign_close);
 
-        backGroundLayout = new RelativeLayout(mContext);
-        //80%半透明
-        backGroundLayout.setBackgroundColor(Color.parseColor("#CC000000"));
-        backGroundLayout.setClickable(true);//背景不可点击
-//        backGroundLayout.addView(smallEnglishSendFlowerPager.getRootView());
-        backGroundLayout.addView(view, getLayoutParams());
+//        backGroundLayout = new RelativeLayout(mContext);
+//        //80%半透明
+//        backGroundLayout.setBackgroundColor(Color.parseColor("#CC000000"));
+//        backGroundLayout.setClickable(true);//背景不可点击
+////        backGroundLayout.addView(smallEnglishSendFlowerPager.getRootView());
+//        backGroundLayout.addView(view, getLayoutParams());
         return view;
     }
 
     //返回已经在backGroundLayout中布好局的backGroundLayout
-    public RelativeLayout getBackground() {
-        return backGroundLayout;
-    }
+//    public RelativeLayout getBackground() {
+//        return backGroundLayout;
+//    }
 
     //全屏正中间显示
     public RelativeLayout.LayoutParams getLayoutParams() {
@@ -174,7 +174,7 @@ public class SmallEnglishClassSignPager extends BasePager {
             //3秒自动消失
             if (mView != null) {
 //                mView.getHandler().removeCallbacks(closeRun);
-                mView.getHandler().postDelayed(closeRun, 3000);
+                mView.postDelayed(closeRun, 3000);
             }
         } else {//签到失败
             tvArtsSignName.setVisibility(View.GONE);
@@ -185,7 +185,7 @@ public class SmallEnglishClassSignPager extends BasePager {
             //3秒自动消失
             if (mView != null) {
 //                mView.getHandler().removeCallbacks(closeRun);
-                mView.getHandler().postDelayed(closeRun, 3000);
+                mView.postDelayed(closeRun, 3000);
             }
         }
     }

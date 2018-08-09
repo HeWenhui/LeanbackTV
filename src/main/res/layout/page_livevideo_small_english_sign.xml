@@ -2,49 +2,56 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/COLOR_CC000000"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@id/iv_live_video_small_english_sign_background"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/bg_livevideo_small_english_sign_registration_board" />
+        android:layout_centerInParent="true">
 
-    <TextView
-        android:id="@id/tv_livevideo_small_english_sign_user_name"
-        android:layout_width="130dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="70dp"
-        android:layout_marginTop="100dp"
-        android:gravity="center"
-        android:text=""
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:textColor="@color/COLOR_9A4A19"
-        android:textSize="14sp" />
+        <ImageView
+            android:id="@id/iv_live_video_small_english_sign_background"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/bg_livevideo_small_english_sign_registration_board" />
 
-    <TextView
-        android:id="@id/tv_livevideo_small_english_sign_start_sign"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="90dp"
-        android:layout_marginTop="125dp"
-        android:text="现在开始课前点名"
-        android:textColor="@color/COLOR_9A4A19"
-        android:textSize="12sp" />
+        <TextView
+            android:id="@id/tv_livevideo_small_english_sign_user_name"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="70dp"
+            android:layout_marginTop="100dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text=""
+            android:textColor="@color/COLOR_9A4A19"
+            android:textSize="14sp" />
 
-    <ImageView
-        android:id="@id/iv_livevideo_arts_sign_click"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
-        android:layout_marginTop="140dp"
-        android:src="@drawable/selector_livevideo_small_english_sign" />
+        <TextView
+            android:id="@id/tv_livevideo_small_english_sign_start_sign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="90dp"
+            android:layout_marginTop="125dp"
+            android:text="现在开始课前点名"
+            android:textColor="@color/COLOR_9A4A19"
+            android:textSize="12sp" />
 
-    <ImageView
-        android:id="@id/iv_small_english_sign_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="230dp"
-        android:background="@drawable/selector_livevideo_small_english_close" />
+        <ImageView
+            android:id="@id/iv_livevideo_arts_sign_click"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="140dp"
+            android:src="@drawable/selector_livevideo_small_english_sign" />
+
+        <ImageView
+            android:id="@id/iv_small_english_sign_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="230dp"
+            android:background="@drawable/selector_livevideo_small_english_close" />
+    </RelativeLayout>
 </RelativeLayout>

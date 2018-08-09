@@ -256,14 +256,14 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                             @Override
                             public boolean containsView() {
                                 //当前签到页面是否仍然在rlRollCallContent中
-                                return smallEnglishClassSignPager != null && smallEnglishClassSignPager.getBackground()
+                                return smallEnglishClassSignPager != null && smallEnglishClassSignPager.getRootView()
                                         .getParent() == rlRollCallContent;
                             }
                         });
                         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                         params.addRule(RelativeLayout.CENTER_IN_PARENT);
-                        rlRollCallContent.addView(smallEnglishClassSignPager.getBackground(), params);
+                        rlRollCallContent.addView(smallEnglishClassSignPager.getRootView(), params);
                     }
 
                     activity.getWindow().getDecorView().requestLayout();
@@ -303,8 +303,9 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (smallEnglishClassSignPager != null && smallEnglishClassSignPager.getBackground() != null) {
-                        rlRollCallContent.removeView(smallEnglishClassSignPager.getBackground());
+                    if (smallEnglishClassSignPager != null && smallEnglishClassSignPager.getRootView() != null &&
+                            smallEnglishClassSignPager.getRootView().getParent() == rlRollCallContent) {
+                        rlRollCallContent.removeView(smallEnglishClassSignPager.getRootView());
                         smallEnglishClassSignPager = null;
                     }
                     mVPlayVideoControlHandler.sendEmptyMessage(NO_USERSIGN);
@@ -469,8 +470,9 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                         mClassSignPager = null;
                     }
                 } else {
-                    if (smallEnglishClassSignPager != null) {
-                        rlRollCallContent.removeView(smallEnglishClassSignPager.getBackground());
+                    if (smallEnglishClassSignPager != null && smallEnglishClassSignPager.getRootView().getParent() ==
+                            rlRollCallContent) {
+                        rlRollCallContent.removeView(smallEnglishClassSignPager.getRootView());
                         smallEnglishClassSignPager = null;
                     }
                 }

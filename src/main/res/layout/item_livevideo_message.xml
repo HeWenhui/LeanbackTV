@@ -8,6 +8,6 @@
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
         android:textColor="@color/white"
-        android:textSize="12sp" />
+        android:textSize="11sp" />
 
 </RelativeLayout>
