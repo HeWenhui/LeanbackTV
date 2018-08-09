@@ -16,8 +16,8 @@
         android:id="@+id/iv_livevideo_small_english_sendflower_cancel"
         android:layout_width="70px"
         android:layout_height="70px"
-        android:layout_marginLeft="805px"
-        android:layout_marginTop="110px"
+        android:layout_marginLeft="790px"
+        android:layout_marginTop="130px"
         android:src="@drawable/selector_livevideo_small_english_close" />
 
     <TextView
@@ -55,7 +55,7 @@
             android:layout_width="150px"
             android:layout_height="150px"
             android:clickable="false"
-            android:src="@drawable/bg_livevideo_small_english_sendflower_square_btn_nor" />
+            android:src="@drawable/bg_livevideo_small_english_sendflower_square_btn_click" />
 
         <ImageView
             android:layout_width="150px"
@@ -68,20 +68,18 @@
             android:layout_width="100px"
             android:layout_height="100px"
             android:clickable="false"
-            android:src="@drawable/bg_livevideo_small_english_sendflower_tick"
-            android:visibility="gone" />
+            android:src="@drawable/bg_livevideo_small_english_sendflower_tick" />
 
         <Button
             android:layout_width="120px"
             android:layout_height="40px"
-            android:layout_marginLeft="10px"
-            android:layout_marginTop="145px"
+            android:layout_marginTop="148px"
             android:background="@drawable/bg_livevideo_small_english_sendflower_idol_img"
             android:clickable="false"
-            android:gravity="right"
-            android:text="10金币"
+
+            android:text="&#160;&#160;&#160;&#160;10金币"
             android:textColor="@color/COLOR_ECF4FF"
-            android:textSize="10sp" />
+            android:textSize="8sp" />
     </com.xueersi.ui.widget.ZoomerLayout>
 
     <com.xueersi.ui.widget.ZoomerLayout
@@ -121,10 +119,9 @@
             android:layout_marginTop="145px"
             android:background="@drawable/bg_livevideo_small_english_sendflower_idol_img"
             android:clickable="false"
-            android:gravity="right"
-            android:text="50金币"
+            android:text="&#160;&#160;&#160;&#160;50金币"
             android:textColor="@color/COLOR_ECF4FF"
-            android:textSize="10sp" />
+            android:textSize="8sp" />
     </com.xueersi.ui.widget.ZoomerLayout>
 
 
@@ -165,10 +162,9 @@
             android:layout_marginTop="145px"
             android:background="@drawable/bg_livevideo_small_english_sendflower_idol_img"
             android:clickable="false"
-            android:gravity="right"
-            android:text="100金币"
+            android:text="&#160;&#160;&#160;&#160;100金币"
             android:textColor="@color/COLOR_ECF4FF"
-            android:textSize="10sp" />
+            android:textSize="8sp" />
 
     </com.xueersi.ui.widget.ZoomerLayout>
 
