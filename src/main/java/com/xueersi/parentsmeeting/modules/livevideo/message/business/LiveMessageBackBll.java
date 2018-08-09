@@ -26,7 +26,7 @@ public class LiveMessageBackBll extends LiveBackBaseBll {
         }
         if (isSmallEnglish) {
             LiveBackVideoMessagePager liveBackVideoMessagePager = new LiveBackVideoMessagePager((mContext));
-            bottomContent.addView(liveBackVideoMessagePager.getRootView(), liveBackVideoMessagePager
+            bottomContent.addView(liveBackVideoMessagePager.getRootView(), 0, liveBackVideoMessagePager
                     .getBoardParams());
         }
     }
