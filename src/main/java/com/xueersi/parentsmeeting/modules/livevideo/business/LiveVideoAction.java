@@ -252,6 +252,7 @@ public class LiveVideoAction implements VideoAction {
                 lastPlayErrorCode = null;
                 setFirstBackgroundVisible(View.VISIBLE);
                 if (isPresent) {
+                    ivTeacherNotpresent.setVisibility(View.GONE);
                     if (tvLoadingHint != null) {
                         if (LiveTopic.MODE_CLASS.endsWith(mode)) {
                             tvLoadingHint.setText(mainTeacherLoad);
