@@ -606,11 +606,12 @@ public class VideoChatBll implements VideoChatAction {
                                 btRaiseHands.setAlpha(1.0f);
                                 if (finalContain) {
                                     if (!isSuccess) {
-                                        if(LiveVideoConfig.isPrimary){
+                                        if(LiveVideoConfig.isPrimary && psraiseHandDialog == null){
+                                            // 08.09
 //                                            BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
-//                                            PsRaiseHandDialog dialog = new PsRaiseHandDialog(activity, baseApplication);
-//                                            dialog.setRaiseHandsCount(raiseHandCount);
-//                                            dialog.showDialog();
+//                                            psraiseHandDialog = new PsRaiseHandDialog(activity, baseApplication);
+//                                            psraiseHandDialog.setDefault(raiseHandCount);
+//                                            psraiseHandDialog.showDialog();
                                         } else {
                                             if (raiseHandDialog == null) {
                                                 BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
@@ -820,23 +821,22 @@ public class VideoChatBll implements VideoChatAction {
         btRaiseHands.post(new Runnable() {
             @Override
             public void run() {
-                if (raiseHandDialog == null && "on".equals(status) && "off".equals(onMic)) {
+                if(LiveVideoConfig.isPrimary && psraiseHandDialog == null && "on".equals(status) && "off".equals(onMic)){
                     headsetPrompt = true;
                     raisehand = true;
-                    if(LiveVideoConfig.isPrimary){
-//                        BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
-//                        PsRaiseHandDialog psHandDialog = new PsRaiseHandDialog(activity, baseApplication);
-//                        psHandDialog.setRaiseHandsCount(raiseHandCount);
-//                        psHandDialog.showDialog();
-                        Log.d("Duncan","raiseHandStatusDetail");
-                    } else {
-                        BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
-                        raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
-                        raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
-                        raiseHandDialog.setRaiseHandsCount(raiseHandCount);
-                        raiseHandDialog.showDialog();
-                    }
-
+                    BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
+                    psraiseHandDialog = new PsRaiseHandDialog(activity, baseApplication);
+                    psraiseHandDialog.setRaiseHandGiveup(raisepsHandGiveup);
+                    psraiseHandDialog.setDefault(raiseHandCount);
+                    psraiseHandDialog.showDialog();
+                } else if(raiseHandDialog == null && "on".equals(status) && "off".equals(onMic)){
+                    headsetPrompt = true;
+                    raisehand = true;
+                    BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
+                    raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
+                    raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
+                    raiseHandDialog.setRaiseHandsCount(raiseHandCount);
+                    raiseHandDialog.showDialog();
                 }
             }
         });
@@ -857,6 +857,10 @@ public class VideoChatBll implements VideoChatAction {
             @Override
             public void run() {
                 if(LiveVideoConfig.isPrimary){
+                    if(psraiseHandDialog != null){
+                        psraiseHandDialog.cancelDialog();
+                        psraiseHandDialog = null;
+                    }
                     if (psraiseHandDialog == null) {
                         mLogtf.d("requestAccept:raiseHandDialog=null");
                         BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();

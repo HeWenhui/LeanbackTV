@@ -768,7 +768,7 @@ public class LiveRemarkBll {
 
             StringBuilder sb = new StringBuilder();
             ivShot.setScaleType(ImageView.ScaleType.CENTER);
-            if(AppConfig.isMulLiveBack){
+            if(entity.getType() == 24){
                 switch (entity.getNewType()){
                     case "1":
                     case "6":
@@ -794,13 +794,13 @@ public class LiveRemarkBll {
                         break;
 
                 }
-                if(CATEGORY_REDPACKET == entity.getType()){
-                    sb.append("红包");
-                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
-                    ivShot.setImageResource(R.drawable.bg_live_mark_redpack);
-                    sb.append(entity.getNum());
-                    tvText.setText(sb.toString());
-                }
+//                if(CATEGORY_REDPACKET == entity.getType()){
+//                    sb.append("红包");
+//                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
+//                    ivShot.setImageResource(R.drawable.bg_live_mark_redpack);
+//                    sb.append(entity.getNum());
+//                    tvText.setText(sb.toString());
+//                }
 //                sb.append(entity.getNum());
                 tvText.setText(sb.toString());
 

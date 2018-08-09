@@ -70,6 +70,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private final File mMorecacheout;
     private EnglishH5Entity englishH5Entity;
     private String mLoadUrls;
+    private String releasedPageInfos;
 
     @Override
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
@@ -158,6 +159,16 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         logHashMap.put("status", "success");
         logHashMap.put("loadurl", url);
         liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
+        if(LiveVideoConfig.isNewEnglishH5){
+            StableLogHashMap newlogHashMap = new StableLogHashMap("loadPlatformtest");
+            newlogHashMap.put("sno", "3");
+            newlogHashMap.put("testids", releasedPageInfos);
+            newlogHashMap.put("stable", "1");
+            newlogHashMap.put("loadurl", mLoadUrls);
+            newlogHashMap.put("eventid", "live_platformtest");
+            newlogHashMap.put("nonce", newlogHashMap.creatNonce());
+            liveAndBackDebug.umsAgentDebugPv(eventId, newlogHashMap.getData());
+        }
     }
 
     @Override
@@ -300,7 +311,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 String packageId = "";
                 String packageSource = "";
                 String packageAttr = "";
-                String releasedPageInfos = AppConfig.LIVEPLAYBACKINFOS;
+                releasedPageInfos = AppConfig.LIVEPLAYBACKINFOS;
                 String teamId = AppConfig.LIVEPLAYBACKTEAMID;
                 String stuCouId = AppConfig.LIVEPLAYBACKSTUID;
                 String classId = AppConfig.LIVEPLAYBACKCLASSID;
@@ -320,7 +331,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 String packageId = "";
                 String packageSource = "";
                 String packageAttr = "";
-                String releasedPageInfos = "";
                 String teamId = "";
                 String stuCouId = "";
                 String stuId = "";
@@ -341,6 +351,14 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     e.printStackTrace();
                 }
                 mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" + LiveVideoConfig.educationstage + "&isPlayBack=0";
+                // 上传接收到教师端指令的日志
+                StableLogHashMap logHashMap = new StableLogHashMap("receivePlatformtest");
+                logHashMap.put("sno", "2");
+                logHashMap.put("testids", releasedPageInfos);
+                logHashMap.put("stable", "1");
+                logHashMap.put("eventid", "live_platformtest");
+                logHashMap.put("nonce", LiveVideoConfig.nonce);
+                liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
             }
             if (LiveBll.isAllowTeamPk) {
                 mLoadUrls += "&isShowTeamPk=1";

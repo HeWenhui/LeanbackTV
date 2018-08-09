@@ -1162,6 +1162,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     String courseware_type = "";
                     if ("on".equals(status)) {
                         LiveVideoConfig.isNewEnglishH5 = false;
+                        LiveVideoConfig.isSend = false;
                         id = h5_Experiment.getString("id");
                         courseware_type = h5_Experiment.getString("courseware_type");
                         play_url = liveVideoSAConfig.inner.coursewareH5 + mLiveId + "/" + vStuCourseID + "/" + id +
@@ -1814,8 +1815,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                         if (englishH5CoursewareAction != null) {
                             VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                             LiveVideoConfig.isSend = object.optBoolean("open");
-                            String status = "";
+//                            String status = "";
+                            String status = object.optString("status", "off");
                             String nonce = object.optString("nonce");
+                            LiveVideoConfig.nonce = nonce;
                             StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
                             String teamId = studentLiveInfo.getTeamId();
                             String classId = studentLiveInfo.getClassId();
@@ -1857,7 +1860,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                                     }
                                 }
                             }
-
                             englishH5CoursewareAction.onH5Courseware(status, videoQuestionLiveEntity);
                         }
                     }

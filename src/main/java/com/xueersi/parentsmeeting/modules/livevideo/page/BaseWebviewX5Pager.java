@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.logerhelper.LogerTag;
 import com.xueersi.parentsmeeting.logerhelper.UmsAgentUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.BuildConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.xesalib.utils.log.Loger;
@@ -56,6 +57,10 @@ public abstract class BaseWebviewX5Pager extends BasePager {
                 wvSubjectWeb.reload();
             }
         });
+        //  配合前端调试的临时代码08.09
+//        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            wvSubjectWeb.setWebContentsDebuggingEnabled(true);
+//        }
     }
 
     @Override
