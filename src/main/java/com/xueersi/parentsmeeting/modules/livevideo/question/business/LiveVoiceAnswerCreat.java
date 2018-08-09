@@ -44,6 +44,10 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     public BaseVoiceAnswerPager create(Context activity, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
                                        RelativeLayout rlQuestionContent, SpeechEvaluatorUtils mIse) {
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
+        if (questionSwitch instanceof WrapQuestionSwitch) {
+            WrapQuestionSwitch wrapQuestionSwitch = (WrapQuestionSwitch) questionSwitch;
+            wrapQuestionSwitch.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
+        }
         VoiceAnswerPager voiceAnswerPager2 = new VoiceAnswerPager(activity, baseVideoQuestionEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch);
         voiceAnswerPager2.setIse(mIse);
         voiceAnswerPager2.setLivePagerBack(livePagerBack);
