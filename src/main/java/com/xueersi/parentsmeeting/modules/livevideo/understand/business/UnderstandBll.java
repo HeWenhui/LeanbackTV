@@ -88,7 +88,6 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-
                 RelativeLayout.LayoutParams params = null;
                 //如果不是小英
                 if (!isSmallEnglish) {

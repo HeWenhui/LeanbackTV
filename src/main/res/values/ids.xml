@@ -750,4 +750,5 @@
     <item name="rl_livevideo_small_english_redpackage_open_animotion" type="id" />
     <item name="iv_livevideo_small_english_english_speek" type="id" />
     <item name="rl_livevideo_english_speek_remind_or_praise" type="id" />
+    <item name="rl_livevideo_small_english_understand" type="id" />
 </resources>

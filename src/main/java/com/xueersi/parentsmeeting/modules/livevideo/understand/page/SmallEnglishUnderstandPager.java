@@ -17,6 +17,8 @@ public class SmallEnglishUnderstandPager extends BasePager {
 
     public SmallEnglishUnderstandPager(Context context) {
         super(context);
+        initData();
+        initListener();
     }
 
     @Override
@@ -28,7 +30,7 @@ public class SmallEnglishUnderstandPager extends BasePager {
         ivClose = view.findViewById(R.id.iv_livevideo_small_english_close);
         //.setOnClickListener(smallEnglishCloseListener);
 
-        return mView;
+        return view;
     }
 
     @Override

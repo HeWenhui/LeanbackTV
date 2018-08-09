@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@id/rl_livevideo_small_english_understand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -37,6 +38,8 @@
         android:id="@id/iv_livevideo_small_english_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="230dp"
+        android:layout_alignRight="@id/rl_livevideo_small_english_understand"
+        android:layout_alignTop="@id/rl_livevideo_small_english_understand"
+        android:layout_marginTop="-5dp"
         android:src="@drawable/selector_livevideo_small_english_close" />
 </RelativeLayout>
