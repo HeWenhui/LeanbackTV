@@ -67,7 +67,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="5dp"
                 android:layout_toLeftOf="@id/iv_livevideo_english_stat"
-                android:text="再说15秒获得"
+                android:text="继续说15秒获得"
                 android:textColor="@color/COLOR_FFFFFF"
                 android:textSize="7sp" />
 

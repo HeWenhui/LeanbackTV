@@ -322,7 +322,12 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     }
 
     private void setTime(int second) {
-        SpannableString sp = new SpannableString("再说" + second + "秒获得");
+        SpannableString sp;
+        if (!isSmallEnglish) {
+            sp = new SpannableString("再说" + second + "秒获得");
+        } else {
+            sp = new SpannableString("继续说" + second + "秒获得");
+        }
         ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color
                 .COLOR_FFFF00));
         sp.setSpan(foregroundColorSpan, 2, 2 + ("" + second).length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
