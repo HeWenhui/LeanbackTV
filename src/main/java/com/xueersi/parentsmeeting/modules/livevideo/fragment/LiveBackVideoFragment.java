@@ -46,8 +46,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIm
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5PlayBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackagePlayBackBll;
@@ -71,7 +71,8 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 /**
  * Created by linyuqiang on 2018/7/23.
  */
-public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements ActivityChangeLand, MediaControllerAction {
+public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements ActivityChangeLand,
+        MediaControllerAction {
     String TAG = "LiveBackVideoFragment";
 
     {
@@ -127,9 +128,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     protected LiveBackBll liveBackBll;
     protected LiveBackVideoBll liveBackVideoBll;
 
+
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
-        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams
+                .FLAG_FULLSCREEN);
         super.onVideoCreate(savedInstanceState);
         times++;
         createTime = System.currentTimeMillis();
@@ -182,7 +185,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         this.mMediaController = mPlayBackMediaController;
         liveBackPlayVideoFragment.setMediaController(mMediaController);
         rl_course_video_live_controller_content.removeAllViews();
-        rl_course_video_live_controller_content.addView(mMediaController, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        rl_course_video_live_controller_content.addView(mMediaController, new ViewGroup.LayoutParams(ViewGroup
+                .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         if (mLiveRemarkBll == null || mVideoEntity.getIsAllowMarkpoint() != 1) {
             mMediaController.getTitleRightBtn().setVisibility(View.GONE);
         } else {
@@ -208,15 +212,18 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         } else {
 //            mPlayBackMediaController.onAttach(mIsLand.get());
 //            rl_course_video_live_controller_content.removeAllViews();
-//            rl_course_video_live_controller_content.addView(mMediaController, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+//            rl_course_video_live_controller_content.addView(mMediaController, new LayoutParams(LayoutParams
+// .MATCH_PARENT, LayoutParams.MATCH_PARENT));
         }
         if (mIsLand.get()) {
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_course_video_live_controller_content.getLayoutParams();
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_course_video_live_controller_content
+                    .getLayoutParams();
             lp.addRule(RelativeLayout.ALIGN_BOTTOM, 0);
             lp.bottomMargin = 0;
             rl_course_video_live_controller_content.setLayoutParams(lp);
         } else {
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_course_video_live_controller_content.getLayoutParams();
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_course_video_live_controller_content
+                    .getLayoutParams();
             lp.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.rl_course_video_content);
             lp.bottomMargin = 0;
             rl_course_video_live_controller_content.setLayoutParams(lp);
@@ -233,13 +240,15 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             return;
         }
         if (mVideoEntity.getIsAllowMarkpoint() != 1) {
-            mPlayBackMediaController.setVideoQuestions("playback" + mVideoEntity.getvLivePlayBackType() + "-", lstVideoQuestion,
+            mPlayBackMediaController.setVideoQuestions("playback" + mVideoEntity.getvLivePlayBackType() + "-",
+                    lstVideoQuestion,
                     vPlayer.getDuration());
         }
     }
 
     protected LivePlaybackMediaController createLivePlaybackMediaController() {
-        LivePlaybackMediaController mPlayBackMediaController = new LivePlaybackMediaController(activity, liveBackPlayVideoFragment, mIsLand.get());
+        LivePlaybackMediaController mPlayBackMediaController = new LivePlaybackMediaController(activity,
+                liveBackPlayVideoFragment, mIsLand.get());
         return mPlayBackMediaController;
     }
 
@@ -252,7 +261,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     protected void showRefresyLayout(int arg1, int arg2) {
         super.showRefresyLayout(arg1, arg2);
-        TextView errorInfo = videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.base.R.id.tv_course_video_errorinfo);
+        TextView errorInfo = videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.base.R.id
+                .tv_course_video_errorinfo);
         videoBackgroundRefresh.findViewById(R.id.tv_course_video_errortip).setVisibility(View.GONE);
         AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
         if (error != null) {
@@ -293,7 +303,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 }
             });
         }
-        rl_course_video_live_controller_content = mContentView.findViewById(R.id.rl_course_video_live_controller_content);
+        rl_course_video_live_controller_content = mContentView.findViewById(R.id
+                .rl_course_video_live_controller_content);
         // 加载横屏时互动题的列表布局
         rlQuestionContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         // 加载竖屏时显示更多课程广告的布局
@@ -308,6 +319,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         Intent intent = activity.getIntent();
         where = intent.getStringExtra("where");
         isArts = intent.getIntExtra("isArts", 0);
+
+
         if (isArts == 1) {
             appID = UmsConstants.ARTS_APP_ID_BACK;
             IS_SCIENCE = false;
@@ -340,6 +353,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         liveBackBll = new LiveBackBll(activity, mVideoEntity);
         liveBackBll.setStuCourId(stuCourId);
         liveBackBll.setvPlayer(vPlayer);
+        //如果是小英使用MMD皮肤，聊天区需要覆盖
+
     }
 
     protected void initBll() {
@@ -417,12 +432,14 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         }
     }
 
+    //添加功能模块
     protected void addBusiness(Activity activity) {
         liveBackBll.addBusinessBll(new QuestionPlayBackBll(activity, liveBackBll));
         RedPackagePlayBackBll redPackagePlayBackBll = new RedPackagePlayBackBll(activity, liveBackBll);
         liveBackBll.addBusinessBll(redPackagePlayBackBll);
         liveBackBll.addBusinessBll(new EnglishH5PlayBackBll(activity, liveBackBll));
         liveBackBll.addBusinessBll(new NBH5PlayBackBll(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new LiveMessageBackBll(activity, liveBackBll));//回放聊天区加上MMD的皮肤
         initLiveRemarkBll();
     }
 
@@ -528,7 +545,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             if (mPlayVideoTime >= mSendPlayVideoTime) {
                 String liveId = mVideoEntity.getLiveId();
                 // 发送观看视频时间
-                lectureLivePlayBackBll.sendLiveCourseVisitTime(stuCourId, liveId, mSendPlayVideoTime, sendPlayVideoHandler, 1000);
+                lectureLivePlayBackBll.sendLiveCourseVisitTime(stuCourId, liveId, mSendPlayVideoTime,
+                        sendPlayVideoHandler, 1000);
                 // 时长初始化
                 mPlayVideoTime = 0;
             }
@@ -612,7 +630,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(), false,
+                    VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(activity, activity
+                            .getApplication(), false,
                             VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                     cancelDialog.setCancelBtnListener(new View.OnClickListener() {
                         @Override
@@ -693,11 +712,14 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     }
 
     protected void updateLoadingImage() {
-        FooterIconEntity footerIconEntity = ShareDataManager.getInstance().getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
+        FooterIconEntity footerIconEntity = ShareDataManager.getInstance().getCacheEntity(FooterIconEntity.class,
+                false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
         if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
             if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
-                ImageLoader.with(activity).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
+                ImageLoader.with(activity).load(loadingNoClickUrl).placeHolder(R.drawable
+                        .livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into
+                        (ivLoading);
         }
     }
 
