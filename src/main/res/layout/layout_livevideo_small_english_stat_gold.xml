@@ -20,7 +20,7 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="5dp"
         android:layout_toLeftOf="@id/rl_livevideo_starinteract_count"
-        android:src="@drawable/bg_livevideo_small_english_english_stat" />
+        android:src="@drawable/bg_livevideo_english_stat" />
 
     <RelativeLayout
         android:id="@id/rl_livevideo_starinteract_count"
