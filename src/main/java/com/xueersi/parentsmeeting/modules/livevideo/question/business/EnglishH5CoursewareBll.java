@@ -226,6 +226,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     cancelDialog.setCancelShowText("取消").setVerifyShowText("确定").initInfo("您正在答题，是否结束作答？",
                             VerifyCancelAlertDialog.CANCEL_SELECTED).showDialog();
                 }
+            } else {
+                logToFile.d("onBack:BaseEnglishH5CoursewarePager");
+                if (liveBasePager != null) {
+                    liveBasePager.onDestroy();
+                }
             }
         } else if (liveBasePager instanceof BaseVoiceAnswerPager) {
             if (voiceAnswerPager != null) {
@@ -245,6 +250,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 });
                 cancelDialog.setCancelShowText("取消").setVerifyShowText("确定").initInfo("您正在答题，是否结束作答？",
                         VerifyCancelAlertDialog.CANCEL_SELECTED).showDialog();
+            } else {
+                logToFile.d("onBack:BaseVoiceAnswerPager");
+                if (liveBasePager != null) {
+                    liveBasePager.onDestroy();
+                }
             }
         }
     }

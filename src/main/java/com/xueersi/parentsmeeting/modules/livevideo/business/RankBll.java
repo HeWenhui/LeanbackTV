@@ -37,6 +37,7 @@ import com.xueersi.ui.adapter.CommonAdapter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by lyqai on 2017/9/20.
@@ -48,6 +49,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     BaseLiveMediaControllerBottom liveMediaControllerBottom;
     Button rl_livevideo_common_rank;//排名
     View relativeLayout;
+    View tempView;
     /** 动画出现 */
     private Animation mAnimSlideIn;
     /** 动画隐藏 */
@@ -196,6 +198,13 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
         if (mGetInfo != null) {
             isSmallEnglish = mGetInfo.getSmallEnglish();
         }
+    }
+
+    @Override
+    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+        super.initView(bottomContent, mIsLand);
+        tempView = new View(activity);
+        bottomContent.addView(tempView);
     }
 
     @Override
@@ -416,7 +425,9 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                 RelativeLayout.LayoutParams.MATCH_PARENT);
 //        relativeLayout.setBackgroundColor(liveVideoActivity.getResources().getColor(R.color.translucent_black));
         lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        bottomContent.addView(relativeLayout, lp);
+        int index = bottomContent.indexOfChild(tempView);
+        bottomContent.removeViewInLayout(tempView);
+        bottomContent.addView(relativeLayout, index, lp);
         setVideoLayout();
     }
 

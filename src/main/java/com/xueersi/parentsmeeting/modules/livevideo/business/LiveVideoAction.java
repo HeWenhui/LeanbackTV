@@ -30,10 +30,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
-
 /**
- * Created by lyqai on 2018/7/18.
+ * Created by linyuqiang on 2018/7/18.
  */
 
 public class LiveVideoAction implements VideoAction {
@@ -49,10 +47,12 @@ public class LiveVideoAction implements VideoAction {
     private TextView tvLoadingHint;
     /** 缓冲提示 */
     private ImageView ivLoading;
+    /** 视频连接 */
+    private final String playLoad = "正在获取视频资源，请稍后";
     /** 连接老师加载-主讲 */
-    private final String mainTeacherLoad = "正在获取视频资源，请稍后";
+    private final String mainTeacherLoad = "正在连接主讲老师，请耐心等候";
     /** 连接老师加载-辅导 */
-    private final String coachTeacherLoad = "正在获取视频资源，请稍后";
+    private final String coachTeacherLoad = "正在连接辅导老师，请耐心等候";
     /** 直播类型 */
     protected int liveType;
     protected LiveGetInfo mGetInfo;
@@ -115,9 +115,9 @@ public class LiveVideoAction implements VideoAction {
                                 mLogtf.d("rePlay:liveType=" + liveType + ",mode=" + mGetInfo.getLiveTopic().getMode() + ",lastPlayErrorCode=" + lastPlayErrorCode);
                                 lastPlayErrorCode = null;
                                 if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
-                                    tvLoadingHint.setText(mainTeacherLoad);
+                                    tvLoadingHint.setText(playLoad);
                                 } else {
-                                    tvLoadingHint.setText(coachTeacherLoad);
+                                    tvLoadingHint.setText(playLoad);
                                 }
                             }
                         }

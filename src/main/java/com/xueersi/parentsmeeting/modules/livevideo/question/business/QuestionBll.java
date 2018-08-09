@@ -1039,6 +1039,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             @Override
             public void onClick(View v) {
                 if (liveBasePager instanceof BaseSpeechAssessmentPager) {
+                    boolean isNotNull = speechAssessmentPager != null;
                     rlQuestionContent.removeView(speechAssessmentPager.getRootView());
                     mQueAndBool.add("" + speechAssessmentPager.getId());
                     onPause();
@@ -1064,6 +1065,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                     }
                                 });
                     }
+                    if (isNotNull) {
+                        return;
+                    }
                 } else if (liveBasePager instanceof BaseExamQuestionInter) {
                     if (examQuestionPager != null) {
                         rlQuestionContent.removeView(examQuestionPager.getRootView());
@@ -1075,6 +1079,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         mData.put("closetype", "clickBackButton");
                         umsAgentDebugSys(examQuestionEventId, mData);
                         setHaveExam(false);
+                        return;
+                    } else {
+                        mLogtf.d("onBack:BaseExamQuestionInter");
                     }
                 } else if (liveBasePager instanceof BaseQuestionWebInter) {
                     if (questionWebPager != null) {
@@ -1087,6 +1094,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         mData.put("logtype", "interactTestClose");
                         umsAgentDebugSys(questionEventId, mData);
                         setHaveWebQuestion(false);
+                        return;
+                    } else {
+                        mLogtf.d("onBack:BaseQuestionWebInter");
                     }
                 } else if (liveBasePager instanceof BaseVoiceAnswerPager) {
                     if (voiceAnswerPager != null) {
@@ -1098,13 +1108,24 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         if (audioRequest != null) {
                             audioRequest.release();
                         }
+                        return;
+                    } else {
+                        mLogtf.d("onBack:BaseVoiceAnswerPager");
                     }
                 } else if (liveBasePager instanceof BaseLiveQuestionPager) {
                     if (baseQuestionPager != null) {
                         baseQuestionPager.onDestroy();
                         rlQuestionContent.removeView(baseQuestionPager.getRootView());
                         baseQuestionPager = null;
+                        return;
+                    } else {
+                        mLogtf.d("onBack:BaseLiveQuestionPager");
                     }
+                } else {
+                    mLogtf.d("onBack:liveBasePager=" + liveBasePager);
+                }
+                if (liveBasePager != null) {
+                    liveBasePager.onDestroy();
                 }
             }
         });
