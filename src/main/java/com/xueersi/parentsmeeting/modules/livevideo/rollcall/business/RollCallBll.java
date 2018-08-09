@@ -252,11 +252,18 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                             public void sign(HttpCallBack httpCallBack) {
                                 userSign(classSignEntity, httpCallBack);
                             }
+
+                            @Override
+                            public boolean containsView() {
+                                //当前签到页面是否仍然在rlRollCallContent中
+                                return smallEnglishClassSignPager != null && smallEnglishClassSignPager.getBackground()
+                                        .getParent() == rlRollCallContent;
+                            }
                         });
                         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
-                                .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                         params.addRule(RelativeLayout.CENTER_IN_PARENT);
-                        rlRollCallContent.addView(smallEnglishClassSignPager.getRootView(), params);
+                        rlRollCallContent.addView(smallEnglishClassSignPager.getBackground(), params);
                     }
 
                     activity.getWindow().getDecorView().requestLayout();
@@ -296,8 +303,8 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (smallEnglishClassSignPager != null && smallEnglishClassSignPager.getRootView() != null) {
-                        rlRollCallContent.removeView(smallEnglishClassSignPager.getRootView());
+                    if (smallEnglishClassSignPager != null && smallEnglishClassSignPager.getBackground() != null) {
+                        rlRollCallContent.removeView(smallEnglishClassSignPager.getBackground());
                         smallEnglishClassSignPager = null;
                     }
                     mVPlayVideoControlHandler.sendEmptyMessage(NO_USERSIGN);
@@ -426,6 +433,8 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                             .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                     params.addRule(RelativeLayout.CENTER_IN_PARENT);
                     rlRollCallContent.addView(mClassSignPager.getRootView(), params);
+                    //80%的透明度
+                    rlRollCallContent.setBackgroundColor(0xCC000000);
                     activity.getWindow().getDecorView().requestLayout();
                     activity.getWindow().getDecorView().invalidate();
                 }
@@ -461,7 +470,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                     }
                 } else {
                     if (smallEnglishClassSignPager != null) {
-                        rlRollCallContent.removeView(smallEnglishClassSignPager.getRootView());
+                        rlRollCallContent.removeView(smallEnglishClassSignPager.getBackground());
                         smallEnglishClassSignPager = null;
                     }
                 }

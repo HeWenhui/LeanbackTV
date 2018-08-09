@@ -1,10 +1,16 @@
 package com.xueersi.parentsmeeting.modules.livevideo.rollcall.page;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Environment;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
@@ -31,10 +37,13 @@ public class SmallEnglishClassSignPager extends BasePager {
     private TextView tvArtsStartSign;
     //关闭按钮
     private ImageView ivSignClose;
-
+    //签到按钮的监听器
     private SmallEnglishClassSign smallEnglishClassSign;
-//    private RollCallBll rollCallBll;
-
+    //    private RollCallBll rollCallBll;
+    //方便显示签到页面出来时，背景80%黑色透明，不可点击
+    RelativeLayout backGroundLayout;
+    //签到背景的布局
+    private RelativeLayout.LayoutParams layoutParams;
 
     public void setSmallEnglishClassSign(SmallEnglishClassSign smallEnglishClassSign) {
         this.smallEnglishClassSign = smallEnglishClassSign;
@@ -63,11 +72,34 @@ public class SmallEnglishClassSignPager extends BasePager {
         ivArtsSignBtn = view.findViewById(R.id.iv_livevideo_arts_sign_click);
         tvArtsStartSign = view.findViewById(R.id.tv_livevideo_small_english_sign_start_sign);
         ivSignClose = view.findViewById(R.id.iv_small_english_sign_close);
+
+        backGroundLayout = new RelativeLayout(mContext);
+        //80%半透明
+        backGroundLayout.setBackgroundColor(Color.parseColor("#CC000000"));
+        backGroundLayout.setClickable(true);//背景不可点击
+//        backGroundLayout.addView(smallEnglishSendFlowerPager.getRootView());
+        backGroundLayout.addView(view, getLayoutParams());
         return view;
+    }
+
+    //返回已经在backGroundLayout中布好局的backGroundLayout
+    public RelativeLayout getBackground() {
+        return backGroundLayout;
+    }
+
+    //全屏正中间显示
+    public RelativeLayout.LayoutParams getLayoutParams() {
+        if (layoutParams == null) {
+            layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout
+                    .LayoutParams.MATCH_PARENT);
+            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        }
+        return layoutParams;
     }
 
     @Override
     public void initData() {
+
         tvArtsSignName.setText(classSignEntity.getStuName() + " 你好");
         updateStatus(classSignEntity.getStatus());
 
@@ -124,6 +156,7 @@ public class SmallEnglishClassSignPager extends BasePager {
         }
     };
 
+    //更新状态
     public void updateStatus(int status) {
         if (status == Config.SIGN_STATE_CODE_UNSIGN) {//准备签到
             tvArtsStartSign.setVisibility(View.VISIBLE);
@@ -138,21 +171,43 @@ public class SmallEnglishClassSignPager extends BasePager {
             tvArtsSignName.setVisibility(View.GONE);
             ivArtsSignBoard.setVisibility(View.VISIBLE);
             ivArtsSignBoard.setImageResource(R.drawable.shellwindow_registration_success_bg);
-
+            //3秒自动消失
+            if (mView != null) {
+//                mView.getHandler().removeCallbacks(closeRun);
+                mView.getHandler().postDelayed(closeRun, 3000);
+            }
         } else {//签到失败
-            // FIXME: 2018/7/22 签到失败啥情况？ 什么情况下签到失败？小英这里还有设么特殊措施吗？
             tvArtsSignName.setVisibility(View.GONE);
             tvArtsStartSign.setVisibility(View.GONE);
             ivArtsSignBtn.setVisibility(View.GONE);
             ivArtsSignBoard.setVisibility(View.VISIBLE);
             ivArtsSignBoard.setImageResource(R.drawable.bg_livevideo_small_english_registrationfail);
+            //3秒自动消失
+            if (mView != null) {
+//                mView.getHandler().removeCallbacks(closeRun);
+                mView.getHandler().postDelayed(closeRun, 3000);
+            }
         }
     }
 
+    Runnable closeRun = new Runnable() {
+        @Override
+        public void run() {
+            if (smallEnglishClassSign != null && smallEnglishClassSign.containsView()) {
+                smallEnglishClassSign.close();
+            }
+        }
+    };
+
     public interface SmallEnglishClassSign {
+        //关闭签到
         void close();
 
+        //签到回调服务器
         void sign(HttpCallBack httpCallBack);
+
+        //当前View是否任然存活
+        boolean containsView();
     }
 
 }
