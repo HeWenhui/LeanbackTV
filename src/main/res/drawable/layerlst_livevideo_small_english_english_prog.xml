@@ -7,7 +7,6 @@
         <!--<corners android:radius="4.5dp" />-->
         <!--<solid android:color="@color/COLOR_333368" />-->
         <!--</shape>-->
-        <!--<bitmap android:src="@drawable/bg_livideo_small_english_play_energybar_progress" />-->
         <!--<scale-->
         <!--android:drawable="@drawable/bg_livideo_small_english_play_energybar_progress"-->
         <!--android:scaleWidth="100%"/>-->

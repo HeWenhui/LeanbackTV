@@ -68,7 +68,6 @@ public class RankItem implements AdapterItemInterface<RankEntity> {
         } else {
             tv_livevideo_rank_item_left.setBackgroundDrawable(null);
             tv_livevideo_rank_item_left.setText("" + entity.getRank());
-
         }
         tv_livevideo_rank_item_mid.setText(entity.getName());
         tv_livevideo_rank_item_right.setText(entity.getRate());
