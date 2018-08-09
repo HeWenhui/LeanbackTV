@@ -34,8 +34,8 @@
             android:id="@id/tv_livevideo_english_prog"
             style="@style/Small_english_ProgressBar_live_english"
             android:layout_width="150dp"
-            android:layout_height="13dp"
-            android:layout_below="@id/tv_livevideo_english_time"
+            android:layout_height="11dp"
+            android:layout_below="@id/rl_livevideo_english_stat"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/bg_livevideo_english_stat" />
+                android:src="@drawable/bg_livevideo_small_english_statinteract_stat_small" />
 
             <TextView
 
@@ -69,7 +69,7 @@
                 android:layout_toLeftOf="@id/iv_livevideo_english_stat"
                 android:text="再说15秒获得"
                 android:textColor="@color/COLOR_FFFFFF"
-                android:textSize="10sp" />
+                android:textSize="7sp" />
 
         </RelativeLayout>
 

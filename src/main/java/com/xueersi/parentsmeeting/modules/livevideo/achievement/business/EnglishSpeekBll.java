@@ -5,9 +5,7 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Environment;
-import android.support.annotation.RequiresApi;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -26,7 +24,6 @@ import com.tal.speech.language.LanguageEncodeThread;
 import com.tal.speech.language.LanguageListener;
 import com.tal.speech.language.TalLanguage;
 import com.tal.speech.speechrecognizer.ResultEntity;
-import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -34,6 +31,7 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnglishSpeekPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
@@ -266,14 +264,23 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
             this.talLanguage = talLanguage;
         }
         this.mode = mode;
+        //辅导态，去掉能量条，开口时长
         if (LiveTopic.MODE_TRANING.equals(mode)) {
+            if (isSmallEnglish) {
+                tv_livevideo_english_time.setVisibility(View.GONE);
+            }
             tv_livevideo_english_prog.setVisibility(View.GONE);
             rl_livevideo_english_stat.setVisibility(View.GONE);
+
         } else {
+            tv_livevideo_english_time.setVisibility(View.VISIBLE);
             tv_livevideo_english_prog.setVisibility(View.VISIBLE);
             rl_livevideo_english_stat.setVisibility(View.VISIBLE);
+
             start();
         }
+        //view或者gone之后需要刷新下界面，因为布局中可能存在相对位置
+        activity.getWindow().getDecorView().invalidate();
         return true;
     }
 
@@ -686,8 +693,13 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
         }
     }
 
+    private EnglishSpeekPager englishSpeekPager;
+
     @Override
     public void praise(int answer) {
+        if (englishSpeekPager == null) {
+            englishSpeekPager = new EnglishSpeekPager(activity);
+        }
         Loger.d(TAG, "praise:dbDuration=" + sendDbDuration + ",answer=" + answer);
         if (sendDbDuration >= answer) {
             Map<String, String> mData = new HashMap<>();
@@ -698,41 +710,51 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
             bottomContent.post(new Runnable() {
                 @Override
                 public void run() {
-                    final View view = LayoutInflater.from(activity).inflate(R.layout
-                            .layout_livevideo_english_speek_praise, bottomContent, false);
-                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
-                            .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                    final View view;
+                    RelativeLayout.LayoutParams lp;
+                    if (!isSmallEnglish) {
+                        view = LayoutInflater.from(activity).inflate(R.layout
+                                .layout_livevideo_english_speek_praise, bottomContent, false);
+                        lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                                .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
 
-                    ImageView imageView = view.findViewById(R.id.iv_livevideo_english_praise);
-                    TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id
-                            .tv_livevideo_english_praise);
-                    ImageView ivSmallEnglish = view.findViewById(R.id.iv_livevideo_small_english_english_speek);
-                    RelativeLayout rlRemindOrPraise = view.findViewById(R.id
-                            .rl_livevideo_english_speek_remind_or_praise);
-                    //小学英语
-                    if (isSmallEnglish) {
-                        rlRemindOrPraise.setVisibility(View.GONE);
-                        ivSmallEnglish.setVisibility(View.VISIBLE);
-                        tv_livevideo_english_praise.setVisibility(View.GONE);
-                        ivSmallEnglish.setImageResource(R.drawable.bg_small_english_livevideo_english_speek_praise);
-//                        ivSmallEnglish.setBackground(activity.getResources().getDrawable(R.color.COLOR_000000));
-                        //让弹窗居中显示
-
-                        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
-                        Drawable drawable = activity.getResources().getDrawable(R.drawable
-                                .bg_small_english_livevideo_english_speek_praise);
-                        int wight = (liveVideoPoint.x3 - liveVideoPoint.x2 - drawable.getIntrinsicWidth()) / 2;
-                        Log.e("EnglishSpeekBll", wight + " " + liveVideoPoint.x3 + " " + liveVideoPoint.x2 + " " +
-                                drawable.getIntrinsicWidth());
-                        lp.leftMargin = wight;
-                    } else {//其他
-                        ivSmallEnglish.setVisibility(View.GONE);
+                        ImageView imageView = view.findViewById(R.id.iv_livevideo_english_praise);
+                        TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id
+                                .tv_livevideo_english_praise);
+//                        ImageView ivSmallEnglish = view.findViewById(R.id.iv_livevideo_small_english_english_speek);
+                        RelativeLayout rlRemindOrPraise = view.findViewById(R.id
+                                .rl_livevideo_english_speek_remind_or_praise);
+                        //小学英语
+//                        if (isSmallEnglish) {
+//
+//                        } else {//其他
+//                        ivSmallEnglish.setVisibility(View.GONE);
                         rlRemindOrPraise.setVisibility(View.VISIBLE);
                         lp.rightMargin = praiseWidth;
                         tv_livevideo_english_praise.setVisibility(View.VISIBLE);
                         imageView.setImageResource(R.drawable.bg_livevideo_english_speek_praise);
 
                         tv_livevideo_english_praise.setText("老师表扬了你！");
+//                        }
+                    } else {
+                        view = englishSpeekPager.getRootView();
+                        lp = englishSpeekPager.getLayoutParams();
+                        englishSpeekPager.updateStatus(EnglishSpeekPager.PRAISE);
+
+//                        rlRemindOrPraise.setVisibility(View.GONE);
+//                        ivSmallEnglish.setVisibility(View.VISIBLE);
+//                        tv_livevideo_english_praise.setVisibility(View.GONE);
+//                        ivSmallEnglish.setImageResource(R.drawable.bg_small_english_livevideo_english_speek_praise);
+//                        ivSmallEnglish.setBackground(activity.getResources().getDrawable(R.color.COLOR_000000));
+                        //让弹窗居中显示
+
+//                        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+//                        Drawable drawable = activity.getResources().getDrawable(R.drawable
+//                                .bg_small_english_livevideo_english_speek_praise);
+//                        int wight = (liveVideoPoint.x3 - liveVideoPoint.x2 - drawable.getIntrinsicWidth()) / 2;
+//                        Log.e("EnglishSpeekBll", wight + " " + liveVideoPoint.x3 + " " + liveVideoPoint.x2 + " " +
+//                                drawable.getIntrinsicWidth());
+//                        lp.leftMargin = wight;
                     }
                     bottomContent.addView(view, lp);
                     bottomContent.postDelayed(new Runnable() {
@@ -741,6 +763,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                             bottomContent.removeView(view);
                         }
                     }, 1000);
+
                 }
             });
         }
@@ -749,6 +772,9 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     @Override
     public void remind(int answer) {
         Loger.d(TAG, "remind:sendDbDuration=" + sendDbDuration + ",answer=" + answer);
+        if (englishSpeekPager == null) {
+            englishSpeekPager = new EnglishSpeekPager(activity);
+        }
         if (sendDbDuration <= answer) {
             Map<String, String> mData = new HashMap<>();
             mData.put("logtype", "sendRemind");
@@ -759,40 +785,49 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
                 @Override
                 public void run() {
-                    final View view = LayoutInflater.from(activity).inflate(R.layout
-                            .layout_livevideo_english_speek_praise, bottomContent, false);
-                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
-                            .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-
-                    ImageView imageView = (ImageView) view.findViewById(R.id.iv_livevideo_english_praise);
-                    TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id
-                            .tv_livevideo_english_praise);
-
-                    ImageView ivSmallEnglish = view.findViewById(R.id.iv_livevideo_small_english_english_speek);
-                    RelativeLayout rlRemindOrPraise = view.findViewById(R.id
-                            .rl_livevideo_english_speek_remind_or_praise);
-                    //小英
-                    if (isSmallEnglish) {
-                        //让弹窗居中显示
-                        ivSmallEnglish.setVisibility(View.VISIBLE);
-                        rlRemindOrPraise.setVisibility(View.GONE);
-                        tv_livevideo_english_praise.setVisibility(View.GONE);
-                        ivSmallEnglish.setImageResource(R.drawable.bg_small_english_livevideo_english_speek_remind);
-//                        ivSmallEnglish.setBackground(activity.getResources().getDrawable(R.color.COLOR_000000));
-                        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
-                        Drawable drawable = activity.getResources().getDrawable(R.drawable
-                                .bg_small_english_livevideo_english_speek_remind);
-                        int wight = (liveVideoPoint.x3 - liveVideoPoint.x2 - drawable.getIntrinsicWidth()) / 2;
-                        lp.leftMargin = wight;
-                        Log.e("EnglishSpeekBll", wight + " " + liveVideoPoint.x3 + " " + liveVideoPoint.x2 + " " +
-                                drawable.getIntrinsicWidth());
-                    } else {
-                        ivSmallEnglish.setVisibility(View.GONE);
+                    final View view;
+                    RelativeLayout.LayoutParams lp;
+                    //不是小英
+                    if (!isSmallEnglish) {
+                        view = LayoutInflater.from(activity).inflate(R.layout
+                                .layout_livevideo_english_speek_praise, bottomContent, false);
+                        ImageView imageView = (ImageView) view.findViewById(R.id.iv_livevideo_english_praise);
+                        TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id
+                                .tv_livevideo_english_praise);
+//                    ImageView ivSmallEnglish = view.findViewById(R.id.iv_livevideo_small_english_english_speek);
+                        RelativeLayout rlRemindOrPraise = view.findViewById(R.id
+                                .rl_livevideo_english_speek_remind_or_praise);
                         rlRemindOrPraise.setVisibility(View.VISIBLE);
-                        lp.rightMargin = praiseWidth;
                         imageView.setBackgroundResource(R.drawable.bg_livevideo_english_speek_remind);
                         tv_livevideo_english_praise.setText("大声说英语啦！");
+                        lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                                .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                        lp.rightMargin = praiseWidth;
+                    } else {
+                        view = englishSpeekPager.getRootView();
+                        englishSpeekPager.updateStatus(EnglishSpeekPager.REMIND);
+                        lp = englishSpeekPager.getLayoutParams();
                     }
+                    //小英
+//                    if (isSmallEnglish) {
+                    //让弹窗全屏居中显示
+
+
+//                        rlRemindOrPraise.setVisibility(View.GONE);
+//                        tv_livevideo_english_praise.setVisibility(View.GONE);
+////                        ivSmallEnglish.setBackground(activity.getResources().getDrawable(R.color.COLOR_000000));
+//                        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+//                        Drawable drawable = activity.getResources().getDrawable(R.drawable
+//                                .bg_small_english_livevideo_english_speek_remind);
+//                        int wight = (liveVideoPoint.x3 - liveVideoPoint.x2 - drawable.getIntrinsicWidth()) / 2;
+//                        lp.leftMargin = wight;
+//                        Log.e("EnglishSpeekBll", wight + " " + liveVideoPoint.x3 + " " + liveVideoPoint.x2 + " " +
+//                                drawable.getIntrinsicWidth());
+//                    } else {
+//                        ivSmallEnglish.setVisibility(View.GONE);
+
+//                    }
+
                     bottomContent.addView(view, lp);
                     bottomContent.postDelayed(new Runnable() {
                         @Override
