@@ -38,6 +38,13 @@ public class SmallEnglishRedPackagePager extends BasePager {
     public SmallEnglishRedPackagePager(Context context) {
         super(context);
         initListener();
+        initStates();
+    }
+
+    private void initStates() {
+        rlArtsUnopenRed.setVisibility(View.VISIBLE);
+        rlArtsOpenRed.setVisibility(View.GONE);
+
     }
 
     public void setRedPackageOpenListenr(RedPackageOpenListenr RedPackageOpenListenr) {
@@ -105,12 +112,17 @@ public class SmallEnglishRedPackagePager extends BasePager {
     }
 
     /**
-     * 打开红包，更新状态
+     * 打开红包，更新状态，3秒后自动消失
      */
     public void updateStatus(String goldNum) {
         rlArtsUnopenRed.setVisibility(View.GONE);
         rlArtsOpenRed.setVisibility(View.VISIBLE);
         tvArtsOpenRedMoney.setText("+" + goldNum);
+        if (mView != null) {
+            mView.getHandler().removeCallbacks(closeRunnable);
+            mView.getHandler().postDelayed(closeRunnable, 3000);
+
+        }
 //        rlArtsOpenRed.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 //            @Override
 //            public void onGlobalLayout() {
@@ -124,6 +136,15 @@ public class SmallEnglishRedPackagePager extends BasePager {
 //        });
 
     }
+
+    Runnable closeRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (cancelRedPackageTouchListener != null && cancelRedPackageTouchListener.containsView()) {
+                cancelRedPackageTouchListener.cancelRedPackage();
+            }
+        }
+    };
 
     /**
      * 开始进行动画
@@ -146,6 +167,8 @@ public class SmallEnglishRedPackagePager extends BasePager {
 
     public interface CancelRedPackageTouchListener {
         void cancelRedPackage();
+
+        boolean containsView();
     }
 
     public CancelRedPackageTouchListener getCancelRedPackageTouchListener() {

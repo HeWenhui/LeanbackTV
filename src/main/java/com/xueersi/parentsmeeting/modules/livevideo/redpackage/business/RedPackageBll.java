@@ -42,7 +42,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author linyuqiang
- *         Created by linyuqiang on 2016/9/23.
+ * Created by linyuqiang on 2016/9/23.
  */
 public class RedPackageBll implements RedPackageAction, Handler.Callback {
     private static final String TAG = "RedPackageBll";
@@ -168,6 +168,8 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
                         .WRAP_CONTENT);
                 params.addRule(RelativeLayout.CENTER_IN_PARENT);
             }
+
+
         } else {
             view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_view, rlRedpacketContent, false);
             ImageView imageView = view.findViewById(R.id.iv_livevideo_redpackage_monkey);
@@ -209,6 +211,12 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
         public void cancelRedPackage() {
             rlRedpacketContent.removeAllViews();
         }
+
+        @Override
+        public boolean containsView() {
+            return artsRedPackagePager != null && artsRedPackagePager.getRootView() != null && rlRedpacketContent ==
+                    artsRedPackagePager.getRootView().getParent();
+        }
     };
 
     private void sendReceiveGold(final int operateId, String sectionID) {
@@ -236,18 +244,23 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
     }
 
     /**
-     * 获取红包成功
+     * 获取红包成功,3秒后自动消失
      *
      * @param goldNum 金币数量
      */
     private void initRedPacketResult(int goldNum) {
         //小英
         if (isSmallEnglish) {
-            artsRedPackagePager.updateStatus(String.valueOf(goldNum));
+
             if (artsRedPackagePager.getCancelRedPackageTouchListener() == null) {
                 artsRedPackagePager.setCancelRedPackageTouchListener(cancelRedPackageTouchListener);
             }
-            rlRedpacketContent.addView(artsRedPackagePager.getRootView());
+            //如果当前artsRedPackagePager仍然在rlRedPackketContent中(即没有remove掉)
+            if (artsRedPackagePager != null && artsRedPackagePager.getRootView().getRootView() != null &&
+                    artsRedPackagePager.getRootView().getParent() != rlRedpacketContent) {
+                rlRedpacketContent.addView(artsRedPackagePager.getRootView());
+            }
+            artsRedPackagePager.updateStatus(String.valueOf(goldNum));
             postDelayedIfNotFinish(new Runnable() {
                 @Override
                 public void run() {
@@ -258,6 +271,16 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
                     }
                 }
             }, 2900);
+
+//            postDelayedIfNotFinish(new Runnable() {
+//                @Override
+//                public void run() {
+//                    //3秒后自动消失
+//                    if (artsRedPackagePager.getRootView().getParent() == rlRedpacketContent) {
+//                        rlRedpacketContent.removeAllViews();
+//                    }
+//                }
+//            }, 3000);
         } else {
             String msg = "+" + goldNum + "金币";
             View view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_success, rlRedpacketContent,
