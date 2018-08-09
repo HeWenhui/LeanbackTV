@@ -17,6 +17,7 @@ import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -292,6 +293,10 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     AudioRequest audioRequest = ProxUtil.getProxUtil().get(mContext, AudioRequest.class);
                     if (audioRequest != null) {
                         audioRequest.release();
+                    }
+                    UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext,UpdateAchievement.class);
+                    if (updateAchievement != null) {
+                        updateAchievement.getStuGoldCount();
                     }
                 }
             }
