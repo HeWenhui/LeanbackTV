@@ -3,7 +3,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.content.Context;
 import android.util.Log;
 
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -22,6 +24,7 @@ public class LogToFile {
     public static LiveBll liveBll;
     public LiveBll2 liveBll2;
     public static AuditClassLiveBll auditClassLiveBll;
+    LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
     static {
         dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
@@ -34,6 +37,7 @@ public class LogToFile {
         if (!parent.exists()) {
             parent.mkdirs();
         }
+        file.delete();
     }
 
     public LogToFile(LiveBll2 liveBll2, String tag, File file) {
@@ -44,6 +48,7 @@ public class LogToFile {
         if (!parent.exists()) {
             parent.mkdirs();
         }
+        file.delete();
     }
 
     public LogToFile(Context context, String tag, File file) {
@@ -54,6 +59,7 @@ public class LogToFile {
         if (!parent.exists()) {
             parent.mkdirs();
         }
+        file.delete();
     }
 
     public void clear() {
@@ -75,9 +81,9 @@ public class LogToFile {
                 }
             }
         }
-//        if (BuildConfig.DEBUG) {
-//            new Thread(new WriteThread(message)).start();
-//        }
+        if (AppConfig.DEBUG) {
+            liveThreadPoolExecutor.execute(new WriteThread(message));
+        }
     }
 
     public void d(String message) {
@@ -89,9 +95,16 @@ public class LogToFile {
                 auditClassLiveBll.getOnloadLogs(TAG, TAG + "**" + message);
             }
         }
-//        if (BuildConfig.DEBUG) {
-//            new Thread(new WriteThread(message)).start();
-//        }
+        if (AppConfig.DEBUG) {
+            liveThreadPoolExecutor.execute(new WriteThread(message));
+        }
+    }
+
+    public void debugSave(String message) {
+        Loger.i(TAG, message);
+        if (AppConfig.DEBUG) {
+            liveThreadPoolExecutor.execute(new WriteThread(message));
+        }
     }
 
     public void e(String message, Throwable e) {
@@ -103,7 +116,7 @@ public class LogToFile {
                 auditClassLiveBll.getOnloadLogs(TAG, TAG + "**" + message);
             }
         }
-//        new Thread(new WriteThread(message, e)).start();
+        liveThreadPoolExecutor.execute(new WriteThread(message, e));
     }
 
     class WriteThread implements Runnable {

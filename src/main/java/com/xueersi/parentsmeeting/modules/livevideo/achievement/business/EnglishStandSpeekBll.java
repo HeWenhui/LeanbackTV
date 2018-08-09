@@ -316,7 +316,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
                 @Override
                 public void onError(ResultEntity result) {
                     isAudioStart = false;
-                    Loger.d(TAG, "onError:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",result=" + result);
+                    mLogtf.d("onError:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",result=" + result);
                     isDestory = true;
                     isDestory2 = true;
 //                    rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
@@ -329,6 +329,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
 
                 @Override
                 public void onProcessData(final String out) {
+                    mLogtf.debugSave("onProcessData:out=" + out);
                     myView.post(new Runnable() {
                         String lastduration;
 

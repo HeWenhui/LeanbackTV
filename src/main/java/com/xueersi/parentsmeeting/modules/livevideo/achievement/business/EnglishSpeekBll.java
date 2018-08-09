@@ -383,6 +383,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
                 @Override
                 public void onProcessData(final String out) {
+                    mLogtf.debugSave("onProcessData:out=" + out);
                     tv_livevideo_english_time.post(new Runnable() {
                         String lastduration;
 
