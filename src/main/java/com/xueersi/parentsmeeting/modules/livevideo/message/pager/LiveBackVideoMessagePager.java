@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.message.pager;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -30,6 +31,7 @@ public class LiveBackVideoMessagePager extends BasePager {
     @Override
     public View initView() {
         mView = new RelativeLayout(mContext);
+        mView.setBackgroundColor(Color.parseColor("#5AC8FF"));
         mView.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable
                 .bg_livevideo_small_english_playback_misslive_board));
 
