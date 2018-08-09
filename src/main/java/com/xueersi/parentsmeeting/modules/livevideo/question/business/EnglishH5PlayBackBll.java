@@ -132,12 +132,17 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
         videoQuestionLiveEntity.id = questionEntity.getvQuestionID();
         videoQuestionLiveEntity.englishH5Entity = questionEntity.getEnglishH5Entity();
-        videoQuestionLiveEntity.setIsVoice(questionEntity.getIsVoice());
+        String isVoice = questionEntity.getIsVoice();
+        videoQuestionLiveEntity.setIsVoice(isVoice);
+        if ("1".equals(isVoice)) {
+            videoQuestionLiveEntity.type = questionEntity.getVoiceQuestiontype();
+        }
         videoQuestionLiveEntity.assess_ref = questionEntity.getAssess_ref();
         videoQuestionLiveEntity.setUrl(questionEntity.getEnglishH5Play_url());
         videoQuestionLiveEntity.courseware_type = questionEntity.getvQuestionType();
         videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
         videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
+        videoQuestionLiveEntity.setAnswerDay(questionEntity.getAnswerDay());
         return videoQuestionLiveEntity;
     }
 
@@ -163,7 +168,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
             String userMode = "1";
             getCourseHttpManager().sumitCourseWareH5(enstuId, videoQuestionLiveEntity.srcType,
-                    videoQuestionLiveEntity.id, mVideoEntity.getLiveId(), testAnswer, courseware_type, userMode, isSubmit, voiceTime, isRight, new
+                    videoQuestionLiveEntity.id, testAnswer, videoQuestionLiveEntity.getAnswerDay(), mVideoEntity.getLiveId(), videoQuestionLiveEntity.courseware_type, isSubmit, voiceTime, isRight, new
                             HttpCallBack() {
 
                                 @Override
