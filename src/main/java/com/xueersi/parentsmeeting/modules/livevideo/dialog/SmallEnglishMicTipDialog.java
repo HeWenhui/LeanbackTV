@@ -5,11 +5,15 @@ import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -75,7 +79,20 @@ public class SmallEnglishMicTipDialog extends BaseAlertDialog {
         return oldStatus != status;
     }
 
+    //过一段时间自动消失,左半屏居中
     public void showDialogAutoClose(int seconds) {
+//        Window window = mAlertDialog.getWindow();
+//        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+////        WindowManager.LayoutParams lp = window.getAttributes();
+////        lp.alpha = 0.8f;
+//
+//        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+//        int width = (liveVideoPoint.x3 - liveVideoPoint.x2 - lp.width) / 2;
+//        lp.x = width;
+//
+//        lp.y = SizeUtils.Dp2Px(mContext, 139);
+//
+//        window.setAttributes(lp);
         super.showDialog();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -86,5 +103,9 @@ public class SmallEnglishMicTipDialog extends BaseAlertDialog {
         }, seconds);
 
     }
+
+//    public void showDialog() {
+//
+//    }
 
 }

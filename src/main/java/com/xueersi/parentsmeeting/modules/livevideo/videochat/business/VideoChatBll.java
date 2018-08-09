@@ -1221,26 +1221,27 @@ public class VideoChatBll implements VideoChatAction {
 
     private void checkPermissionUnPerList(final OnPermissionFinish onPermissionFinish) {
         final List<PermissionItem> unList = new ArrayList<>();
-        List<PermissionItem> unList2 = XesPermission.checkPermissionUnPerList(activity, new LiveActivityPermissionCallback() {
-            @Override
-            public void onFinish() {
+        List<PermissionItem> unList2 = XesPermission.checkPermissionUnPerList(activity, new
+                LiveActivityPermissionCallback() {
+                    @Override
+                    public void onFinish() {
 
-            }
+                    }
 
-            @Override
-            public void onDeny(String permission, int position) {
+                    @Override
+                    public void onDeny(String permission, int position) {
 
-            }
+                    }
 
-            @Override
-            public void onGuarantee(String permission, int position) {
-                unList.remove(0);
-                if (unList.isEmpty()) {
-                    isHasPermission = true;
-                    onPermissionFinish.onFinish();
-                }
-            }
-        }, PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO);
+                    @Override
+                    public void onGuarantee(String permission, int position) {
+                        unList.remove(0);
+                        if (unList.isEmpty()) {
+                            isHasPermission = true;
+                            onPermissionFinish.onFinish();
+                        }
+                    }
+                }, PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO);
         unList.addAll(unList2);
         isHasPermission = unList.isEmpty();
     }
