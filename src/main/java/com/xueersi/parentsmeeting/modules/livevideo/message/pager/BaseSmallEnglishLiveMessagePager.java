@@ -37,15 +37,31 @@ import master.flame.danmaku.danmaku.danmaku.parser.BaseDanmakuParser;
 import master.flame.danmaku.danmaku.danmaku.parser.IDataSource;
 import master.flame.danmaku.danmaku.danmaku.parser.android.BiliDanmukuParser;
 
+/**
+ * 继承与BaseLiveMessagePager，主要是为了重写献花的弹幕
+ */
 public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePager {
     private BaseDanmakuParser mParser;
     private int DANMU_RADIUS;//圆角半径
     public int DANMU_PADDING;
 
+    private int DANMU_BACKGROUND_HEIGHT = 33;
+    private int BITMAP_WIDTH_ME = 61;//头像的宽度
+    private int BITMAP_HEIGHT_ME = 60;//头像的高度
+
+    private int CIRCEL_WIDTH = 40;
+    private int CIRCEL_HEIGHT = 40;
+
     public BaseSmallEnglishLiveMessagePager(Context context) {
         super(context);
-        DANMU_PADDING = SizeUtils.Dp2Px(context, 13);
+        DANMU_PADDING = SizeUtils.Dp2Px(context, 0);
         DANMU_RADIUS = SizeUtils.Dp2Px(context, 20);
+
+        DANMU_BACKGROUND_HEIGHT = SizeUtils.Dp2Px(context, DANMU_BACKGROUND_HEIGHT);
+        BITMAP_WIDTH_ME = SizeUtils.Dp2Px(context, BITMAP_WIDTH_ME);
+        BITMAP_HEIGHT_ME = SizeUtils.Dp2Px(context, BITMAP_HEIGHT_ME);
+        CIRCEL_HEIGHT = SizeUtils.Dp2Px(context, CIRCEL_HEIGHT);
+        CIRCEL_WIDTH = SizeUtils.Dp2Px(context, CIRCEL_WIDTH);
     }
 
     @Override
@@ -233,10 +249,10 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
                 danmaku.textColor = Color.BLUE;
                 break;
         }
-        drawable.setBounds(0, 0, SizeUtils.Dp2Px(mContext, 60), SizeUtils.Dp2Px(mContext, 60));
+        drawable.setBounds(0, 0, BITMAP_HEIGHT_ME, BITMAP_HEIGHT_ME);
         SpannableStringBuilder spannable = createSpannable(ftype, name, drawable);
         danmaku.text = spannable;
-        danmaku.padding = SizeUtils.Dp2Px(mContext, 13);
+        danmaku.padding = DANMU_PADDING;
         danmaku.priority = 1;  // 一定会显示, 一般用于本机发送的弹幕
         danmaku.isLive = false;
         danmaku.time = dvMessageDanmaku.getCurrentTime() + 1200;
@@ -292,12 +308,35 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
             paint.setColor(Color.BLACK);
             paint.setAlpha((int) (255 * 0.6)); //  透明度0.6
 
-            int height = SizeUtils.Dp2Px(mContext, 33);
+            int height = SizeUtils.Dp2Px(mContext, 40);
             //由于该库并没有提供margin的设置，所以我这边试出这种方法：将danmaku.padding也就是内间距设置大一点，并在这里的RectF中设置绘制弹幕背景的位置，就可以形成类似margin的效果
-            canvas.drawRoundRect(new RectF(left + DANMU_PADDING, top + DANMU_PADDING
-                            , left + danmaku.paintWidth - DANMU_PADDING,
-                            top + height + DANMU_PADDING),
+//            canvas.drawRoundRect(new RectF(left + DANMU_PADDING, top + DANMU_PADDING
+//                            , left + danmaku.paintWidth - DANMU_PADDING,
+//                            top + height + DANMU_PADDING),
+//                    DANMU_RADIUS, DANMU_RADIUS, paint);
+
+
+//            if (danmaku.isGuest) {
+//            canvas.drawRoundRect(new RectF(left + danmaku.padding, top + danmaku.padding + (BITMAP_HEIGHT_GUEST -
+//                            DANMU_BACKGROUND_HEIGHT) / 2 + 1
+//                            , left + danmaku.paintWidth - danmaku.padding,
+//                            top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 +
+//                                    1 + danmaku.padding),
+//                    DANMU_RADIUS, DANMU_RADIUS, paint);
+//            } else {
+            //绘制圆，宽高一样
+            int imgWidth = BITMAP_WIDTH_ME / 2;
+            int circleHeith = imgWidth;
+            canvas.drawCircle(left + danmaku.padding + imgWidth, left + danmaku.padding + imgWidth,
+                    CIRCEL_WIDTH/2, paint);
+            canvas.drawRoundRect(new RectF(left + danmaku.padding, top + danmaku.padding + (BITMAP_HEIGHT_ME -
+                            DANMU_BACKGROUND_HEIGHT) / 2 + 1
+                            , left + danmaku.paintWidth - danmaku.padding,
+                            top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1
+                                    + danmaku.padding),
                     DANMU_RADIUS, DANMU_RADIUS, paint);
+//            }
+
         }
 
         @Override

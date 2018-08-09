@@ -50,18 +50,16 @@ public class SmallEnglishSendFlowerPager extends BasePager {
     private SendFlowerListener sendFlowerListener;
     //关闭献花的监听器
     private CloseFlowerListener closeFlowerListener;
-    //是否选中了花
-    private boolean isSelectFlower = false;
-
-    //选中了第几朵花
-    private int whichFlower = 0;
+    //是否选中了花,默认选中
+    private boolean isSelectFlower = true;
+    //选中了第几朵花，默认选中小花
+    private int whichFlower = BaseLiveMessagePager.FLOWERS_SMALL;
 
     public SmallEnglishSendFlowerPager(Context context) {
         super(context);
         initListener();
         initData();
     }
-
 
     @Override
     public View initView() {
@@ -192,7 +190,7 @@ public class SmallEnglishSendFlowerPager extends BasePager {
 
     private void updateOneStatus(boolean one) {
         if (one) {
-            ivOneFlowerSquare.setImageResource(R.drawable.shellwindow_sendflower_square_btn_click);
+            ivOneFlowerSquare.setImageResource(R.drawable.bg_livevideo_small_english_sendflower_square_btn_click);
             ivOneFlowerTick.setVisibility(View.VISIBLE);
         } else {
             ivOneFlowerSquare.setImageResource(R.drawable.bg_livevideo_small_english_sendflower_square_btn_nor);
@@ -202,7 +200,7 @@ public class SmallEnglishSendFlowerPager extends BasePager {
 
     private void updateThreeStatus(boolean three) {
         if (three) {
-            ivThreeFlowerSquare.setImageResource(R.drawable.shellwindow_sendflower_square_btn_click);
+            ivThreeFlowerSquare.setImageResource(R.drawable.bg_livevideo_small_english_sendflower_square_btn_click);
             ivThreeFlowerTick.setVisibility(View.VISIBLE);
         } else {
             ivThreeFlowerSquare.setImageResource(R.drawable.bg_livevideo_small_english_sendflower_square_btn_nor);
@@ -212,7 +210,7 @@ public class SmallEnglishSendFlowerPager extends BasePager {
 
     private void updateFiveStatus(boolean five) {
         if (five) {
-            ivFiveFlowerSquare.setImageResource(R.drawable.shellwindow_sendflower_square_btn_click);
+            ivFiveFlowerSquare.setImageResource(R.drawable.bg_livevideo_small_english_sendflower_square_btn_click);
             ivFiveFlowerTick.setVisibility(View.VISIBLE);
         } else {
             ivFiveFlowerSquare.setImageResource(R.drawable.bg_livevideo_small_english_sendflower_square_btn_nor);

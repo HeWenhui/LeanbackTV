@@ -1,9 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.message.pager;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -28,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -44,7 +45,6 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem;
-import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
@@ -72,9 +72,12 @@ import java.util.ArrayList;
 import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
-import master.flame.danmaku.danmaku.danmaku.model.BaseDanmaku;
 import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
 
+/**
+ * 小英LiveMessagePager，类似于LiveMessagePager，在其基础上面进行修改
+ * 献花弹窗，弹幕，聊天信息界面，以及发送消息，小英区别于LiveMessagePager。
+ */
 public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePager {
     //本组在线人数
     private TextView tvOnlineNum;
@@ -133,6 +136,12 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     private PopupWindow mPopupWindow;
     //是否是小英
     private SmallEnglishSendFlowerPager smallEnglishSendFlowerPager;
+    //测试使用的布尔值，用来控制无限发送弹幕
+    private boolean blTestSE = false;
+    //打开献花弹窗时，北京变为80%黑色透明，且不可点击.
+    private FrameLayout frameLayout;
+    //整个布局的根View,用来献花弹窗增加背景时使用
+    private ViewGroup decorView;
 
     public SmallEnglishLiveMessagePager(Context context) {
         super(context);
@@ -161,7 +170,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             public void run() {
                 initListener();
                 initData();
-
             }
         });
         setVideoLayout(LiveVideoPoint.getInstance());
@@ -171,6 +179,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 resources.getColor(R.color.COLOR_C3DAFF), resources.getColor(R.color.COLOR_FFB400)};
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public View initView() {
 
@@ -201,7 +210,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 //                .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
 //        }
-
 //        int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
 //        int hradio = (int) ((LiveVideoConfig.VIDEO_HEIGHT - LiveVideoConfig.VIDEO_HEAD_HEIGHT) * screenHeight /
 //                LiveVideoConfig.VIDEO_HEIGHT);
@@ -210,6 +218,9 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         params.topMargin = liveVideoPoint.y3;
         logger.setLogMethod(false);
         logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
+
+        decorView = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
+
         return mView;
     }
 
@@ -310,6 +321,8 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         initCommonWord();
         Loger.i(TAG, "initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
+
+
     }
 
     private void initCommonWord() {
@@ -402,6 +415,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
 
         btMessageFlowers.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View v) {
                 liveMediaControllerBottom.onChildViewClick(v);
@@ -427,8 +441,16 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 //                    RelativeLayout.LayoutParams flowerLayoutParams = artsSendFlowerPager
 //                            .getCenterInVideoLayoutParams();
 //                    liveMediaControllerBottom.addView(artsSendFlowerPager.getRootView(), flowerLayoutParams);
-                    mFlowerWindow.setContentView(smallEnglishSendFlowerPager.getRootView());
-                    mFlowerWindow.showAtLocation(mView, Gravity.LEFT, 0, 0);
+//                    WindowManager.LayoutParams lp = ((Activity) mContext).getWindow().getAttributes();
+//                    lp.alpha = 0.8f; // 0.0~1.0
+//                    ((Activity) mContext).getWindow().setAttributes(lp); //act 是上下文context
+
+                    FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
+                            .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    decorView.addView(frameLayout, layoutParams);
+//                    mFlowerWindow.setBackgroundDrawable(dw);
+//                    mFlowerWindow.setContentView(smallEnglishSendFlowerPager.getRootView());
+//                    mFlowerWindow.showAtLocation(mView, Gravity.LEFT, 0, 0);
                 }
                 isHaveFlowers = true;
             }
@@ -564,21 +586,19 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         {
-            int wradio = liveVideoPoint.x4 - liveVideoPoint.x3;
+            int wradio = liveVideoPoint.getRightMargin();
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
-            if (wradio != params.width || params.rightMargin != liveVideoPoint.screenWidth - liveVideoPoint.x4) {
+            if (wradio != params.width) {
                 //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
                 // + ",wradio=" + wradio + "," + params.width);
                 params.width = wradio;
-                params.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
 //                rlInfo.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
             }
             if (cbMessageClock != null) {
-                int rightMargin = liveVideoPoint.getRightMargin();
                 params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
-                if (params.rightMargin != rightMargin) {
-                    params.rightMargin = rightMargin;
+                if (params.rightMargin != wradio) {
+                    params.rightMargin = wradio;
 //                cbMessageClock.setLayoutParams(params);
                     LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
                 }
@@ -679,11 +699,19 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     @Override
     public void setHaveFlowers(boolean haveFlowers) {
         super.setHaveFlowers(haveFlowers);
-        if (mFlowerWindow != null) {
+//        if (mFlowerWindow != null) {
+        if (frameLayout != null && decorView != null) {
             if (haveFlowers) {
-                mFlowerWindow.showAtLocation(btMessageFlowers, Gravity.BOTTOM, 0, 0);
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
+                        .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                decorView.addView(frameLayout, layoutParams);
+//                mFlowerWindow.showAtLocation(btMessageFlowers, Gravity.BOTTOM, 0, 0);
             } else {
-                mFlowerWindow.dismiss();
+                if (frameLayout.getParent() == decorView) {
+                    decorView.removeView(frameLayout);
+                }
+
+//                mFlowerWindow.dismiss();
             }
         }
     }
@@ -753,9 +781,18 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         });
     }
 
+    @SuppressLint("ResourceAsColor")
     private void initFlower(String educationStage) {
         long before = System.currentTimeMillis();
         smallEnglishSendFlowerPager = new SmallEnglishSendFlowerPager(mContext);
+        //打开献花弹窗时的布局初始化
+        frameLayout = new FrameLayout(mContext);
+        //80%透明
+        frameLayout.setBackgroundColor(0xCC000000);
+//        frameLayout.setAlpha(0.8f);
+        frameLayout.setClickable(true);
+        frameLayout.addView(smallEnglishSendFlowerPager.getRootView());
+
         //设置点击赠送的监听器
         smallEnglishSendFlowerPager.setSendFlowerListener(new SmallEnglishSendFlowerPager.SendFlowerListener() {
             @Override
@@ -788,19 +825,28 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                                             mView.postDelayed(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    mFlowerWindow.dismiss();
+                                                    if (frameLayout != null && frameLayout.getParent() == decorView) {
+                                                        decorView.removeView(frameLayout);
+                                                    }
+//                                                    mFlowerWindow.dismiss();
                                                 }
                                             }, 1000);
                                         }
 
                                         @Override
                                         public void onPmFailure(Throwable error, String msg) {
-                                            mFlowerWindow.dismiss();
+//                                            mFlowerWindow.dismiss();
+                                            if (frameLayout.getParent() == decorView) {
+                                                decorView.removeView(frameLayout);
+                                            }
                                         }
 
                                         @Override
                                         public void onPmError(ResponseEntity responseEntity) {
-                                            mFlowerWindow.dismiss();
+//                                            mFlowerWindow.dismiss();
+                                            if (frameLayout.getParent() == decorView) {
+                                                decorView.removeView(frameLayout);
+                                            }
                                         }
                                     });
 //                        liveBll.sendFlowerMessage(entity.getFtype());
@@ -815,20 +861,39 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 }
             }
         });
-        //设置点击取消后的监听器
+        //设置点击取消献花弹窗后的监听器
         smallEnglishSendFlowerPager.setCloseFlowerListener(new SmallEnglishSendFlowerPager.CloseFlowerListener() {
             @Override
             public void onTouch() {
 //                    liveMediaControllerBottom.removeAllViews();
                 if (mFlowerWindow != null) {
+                    //去掉背景色
+                    if (frameLayout.getParent() == decorView) {
+                        decorView.removeView(frameLayout);
+                    }
                     mFlowerWindow.dismiss();
                 }
             }
         });
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (blTestSE) {
+                    addDanmaKuFlowers(FLOWERS_SMALL, "zyy");
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+
+
         PopupWindow flowerWindow = new PopupWindow(mContext);
         flowerWindow.setBackgroundDrawable(new BitmapDrawable());
-        flowerWindow.setOutsideTouchable(true);
+        flowerWindow.setOutsideTouchable(false);
         flowerWindow.setFocusable(true);
 //        flowerContentView = View.inflate(mContext, R.layout.pop_livevideo_message_flower, null);
 
@@ -847,6 +912,8 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 //        final CompoundButtonGroup group = new CompoundButtonGroup();
         Loger.i(TAG, "initFlower:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
+
+
         mFlowerWindow = flowerWindow;
 
 //        for (int i = 0; i < flowerEntities.size(); i++) {
