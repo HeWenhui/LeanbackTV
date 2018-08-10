@@ -488,6 +488,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 .getvQuestionID())) {
                             return;
                         }
+                        if (questionWebPager != null) {
+                            mLogtf.d("showQuestion:oldTestId=" + questionWebPager.getTestId());
+                            questionWebPager.onDestroy();
+                            rlQuestionContent.removeView(questionWebPager.getRootView());
+                            questionWebPager = null;
+                        }
                         QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, QuestionBll.this, liveGetInfo
                                 .getTestPaperUrl(), liveGetInfo.getStuId(), liveGetInfo.getUname(),
                                 liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
