@@ -703,9 +703,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void praise(int answer) {
-        if (englishSpeekPager == null) {
-            englishSpeekPager = new EnglishSpeekPager(activity);
-        }
+
         Loger.d(TAG, "praise:dbDuration=" + sendDbDuration + ",answer=" + answer);
         if (sendDbDuration >= answer) {
             Map<String, String> mData = new HashMap<>();
@@ -743,6 +741,16 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                         tv_livevideo_english_praise.setText("老师表扬了你！");
 //                        }
                     } else {
+
+                        if (englishSpeekPager == null) {
+                            englishSpeekPager = new EnglishSpeekPager(activity);
+                        } else {
+                            //移出之前的弹窗
+                            if (englishSpeekPager.getRootView().getParent() == bottomContent) {
+                                bottomContent.removeView(englishSpeekPager.getRootView());
+                            }
+                        }
+
                         view = englishSpeekPager.getRootView();
                         lp = englishSpeekPager.getLayoutParams();
                         englishSpeekPager.updateStatus(EnglishSpeekPager.PRAISE);
@@ -777,10 +785,9 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void remind(int answer) {
+
         Loger.d(TAG, "remind:sendDbDuration=" + sendDbDuration + ",answer=" + answer);
-        if (englishSpeekPager == null) {
-            englishSpeekPager = new EnglishSpeekPager(activity);
-        }
+
         if (sendDbDuration <= answer) {
             Map<String, String> mData = new HashMap<>();
             mData.put("logtype", "sendRemind");
@@ -810,6 +817,16 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                         lp.rightMargin = praiseWidth;
                     } else {
+
+                        if (englishSpeekPager == null) {
+                            englishSpeekPager = new EnglishSpeekPager(activity);
+                        } else {
+                            //移出之前的弹窗
+                            if (englishSpeekPager.getRootView().getParent() == bottomContent) {
+                                bottomContent.removeView(englishSpeekPager.getRootView());
+                            }
+                        }
+
                         view = englishSpeekPager.getRootView();
                         englishSpeekPager.updateStatus(EnglishSpeekPager.REMIND);
                         lp = englishSpeekPager.getLayoutParams();
