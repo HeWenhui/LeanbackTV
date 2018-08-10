@@ -132,6 +132,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         if (!dir.exists()) {
             dir.mkdirs();
         }
+        mLogtf.d("SpeechAssess:isLive=" + isLive + ",stuId=" + stuId + ",liveid=" + liveid + ",testId=" + testId + ",stuCouId=" + stuCouId);
     }
 
 
