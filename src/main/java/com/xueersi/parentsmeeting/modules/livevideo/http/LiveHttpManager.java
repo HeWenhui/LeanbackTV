@@ -1032,13 +1032,15 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param classId
      * @param teamId
      * @param stuId
+     * @param isAIPartner  是否是 Ai伴侣直播间
      */
-    public void getStuChest(int isWin, String classId, String teamId, String stuId, String liveId, HttpCallBack requestCallBack) {
+    public void getStuChest(int isWin, String classId, String teamId, String stuId, String liveId,boolean isAIPartner, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("isWin", isWin + "");
         params.addBodyParam("stuId", stuId);
+        params.addBodyParam("isAIPartner",isAIPartner?"1":"0");
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_TEMPK_GETSTUCHESTURL + "/" + liveId, params, requestCallBack);
 
@@ -1067,12 +1069,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param stuId
      * @param teamId
      * @param classId
+     * @param isAIPartner
      */
-    public void getClassChestResult(String liveId, String stuId, String teamId, String classId, HttpCallBack requestCallBack) {
+    public void getClassChestResult(String liveId, String stuId, String teamId, String classId,boolean isAIPartner, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
+        params.addBodyParam("isAIPartner",isAIPartner?"1":"0");
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_TEMPK_GETCLASSCHESTRESULT + "/" + liveId, params, requestCallBack);
     }

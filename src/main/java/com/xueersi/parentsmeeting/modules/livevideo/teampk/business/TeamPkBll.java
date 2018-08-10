@@ -113,6 +113,10 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      */
     private List<LiveRoomH5CloseEvent> h5CloseEvents;
 
+    /**
+     * 是否是带碎片的直播间
+     */
+    private boolean isAIPartner;
 
     /**
      * log埋点 nonce
@@ -236,7 +240,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     private void getClassChestResult() {
         mHttpManager.getClassChestResult(mLiveBll.getLiveId(), roomInitInfo.getStuId(),
                 roomInitInfo.getStudentLiveInfo().getTeamId(), roomInitInfo.getStudentLiveInfo().getClassId()
-                , new HttpCallBack() {
+                ,isAIPartner,new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         ClassChestEntity classChestEntity = mHttpResponseParser.parseClassChest(responseEntity);
@@ -765,6 +769,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         setRoomInitInfo(data);
         attachToRootView();
         roomInitInfo = data;
+        isAIPartner = roomInitInfo.getIsAIPartner() == 1;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -1050,9 +1055,13 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
             setTopicHandled(true);
         }
-
-
     }
 
-
+    /**
+     * 是否是AlPartner 直播间
+     * @return
+     */
+    public boolean isAIPartner(){
+        return isAIPartner;
+    }
 }

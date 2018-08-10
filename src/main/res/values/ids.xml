@@ -652,6 +652,10 @@
     <!--开宝箱-->
     <item name="lav_teampk_open_box" type="id" />
     <item name="cad_teampk_open_box_team_coin" type="id" />
+    <item name="cad_teampk_open_box_team_patch" type="id" />
+    <item name="ll_teampk_open_box_team_coin_container" type="id" />
+    <item name="tv_teampk_lucky_start_patch" type="id" />
+
 
     <item name="cad_teampk_open_box_my_coin" type="id" />
     <item name="iv_teampk_open_box_open_state" type="id" />
@@ -667,6 +671,13 @@
     <item name="tv_teampk_open_box_winner_coin" type="id" />
     <item name="iv_teampk_open_box_lucky_guy" type="id" />
     <item name="rl_teampk_open_box_lucy_start_root" type="id" />
+    <item name="ll_teampk_aipartner_award_root"  type="id"/>
+    <item name="tv_teampk_aipartner_award_remind" type="id"/>
+
+    <item name="tv_teampk_aipartner_award_coin" type="id"/>
+    <item name="tv_teampk_aipartner_award_patch" type="id"/>
+    <item name="tv_teampk_aipartner_award_patchname" type="id"/>
+
 
     <item name="iv_roleplayer_item_shadow" type="id" />
     <item name="tv_live_roleplayer_match_tip2" type="id" />

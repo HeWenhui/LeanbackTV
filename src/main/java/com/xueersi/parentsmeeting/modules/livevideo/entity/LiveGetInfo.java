@@ -250,6 +250,8 @@ public class LiveGetInfo {
      * 1 :是pk 直播间  0 :非pk直播间
      */
     private String isAllowTeamPk;
+    /**是否是AI 伴侣直播间*/
+    private int isAIPartner;
     private String[] subjectIds;//所有学科id
     /** 小学理科改版，教育阶段，区分献花 */
     private String educationStage;
@@ -275,6 +277,14 @@ public class LiveGetInfo {
 
     public void setGrade(int grade) {
         this.grade = grade;
+    }
+
+    public void setIsAIPartner(int isAIPartner) {
+        this.isAIPartner = isAIPartner;
+    }
+
+    public int getIsAIPartner() {
+        return isAIPartner;
     }
 
     public void setIsAllowTeamPk(String isAllowTeamPk) {

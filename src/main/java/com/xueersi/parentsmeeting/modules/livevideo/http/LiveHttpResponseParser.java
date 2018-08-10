@@ -104,6 +104,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 getInfo.setIsAllowTeamPk(data.getString("isAllowTeamPk"));
             }
             getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));
+            getInfo.setIsAIPartner(data.optInt("isAIPartner"));
+
             //getInfo.setIsShowMarkPoint("0");
             getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
             try {
@@ -1289,10 +1291,18 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         StudentChestEntity studentChestEntity = null;
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
-            String gold = data.getString("gold");
+            int gold = data.optInt("gold");
+            studentChestEntity = new StudentChestEntity();
             String isGet = data.getString("isGet");
-            studentChestEntity = new StudentChestEntity(gold, isGet);
+            studentChestEntity.setIsGet(isGet);
+            studentChestEntity.setGold(gold);
 
+            if(data.has("chip")){
+                JSONObject chipObject = data.getJSONObject("chip");
+                studentChestEntity.setAiPatner(true);
+                studentChestEntity.setChipName(chipObject.optString("chipName",""));
+                studentChestEntity.setChipNum(chipObject.optInt("chipNum"));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1312,7 +1322,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             JSONObject data = (JSONObject) responseEntity.getJsonObject();
             if (data.has("sumGold")) {
                 long sumGold = data.getLong("sumGold");
+                long sumChip = data.optLong("sumChip");
                 classChestEntity.setSumGold(sumGold);
+                classChestEntity.setSumChip(sumChip);
             }
             if (data.has("stuList")) {
                 List<ClassChestEntity.SubChestEntity> list = new ArrayList<ClassChestEntity.SubChestEntity>();
@@ -1325,6 +1337,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     String avatarPath = jsonObject.getString("avatarPath");
                     String stuId = jsonObject.getString("stuId");
                     subChestEntity = new ClassChestEntity.SubChestEntity(gold, stuName, avatarPath, stuId);
+                    long chipNum = jsonObject.optLong("chipNum");
+                    String chipName = jsonObject.optString("chipName");
+                    subChestEntity.setChipName(chipName);
+                    subChestEntity.setChipNum(chipNum);
                     list.add(subChestEntity);
                 }
                 classChestEntity.setSubChestEntityList(list);
