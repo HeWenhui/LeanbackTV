@@ -8,9 +8,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseQuestionWe
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SubjectResultX5Pager;
 
 /**
- * Created by lyqai on 2018/7/26.
+ * Created by linyuqiang on 2018/7/26.
+ * 直播回放的互动题结果页
  */
-
 public class LiveBackSubjectResultCreat implements BaseSubjectResultCreat {
     private LiveGetInfo liveGetInfo;
     private WrapQuestionWebStop wrapQuestionWebStop;
@@ -25,7 +25,9 @@ public class LiveBackSubjectResultCreat implements BaseSubjectResultCreat {
 
     @Override
     public SubjectResultX5Pager creat(Context context, BaseQuestionWebInter.StopWebQuestion questionBll, String testPaperUrl, String stuId, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, String stuCouId) {
-        SubjectResultX5Pager subjectResultPager = new SubjectResultX5Pager(context, questionBll,
+        wrapQuestionWebStop.setStopWebQuestion(questionBll);
+        wrapQuestionWebStop.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
+        SubjectResultX5Pager subjectResultPager = new SubjectResultX5Pager(context, wrapQuestionWebStop,
                 liveGetInfo.getSubjectiveTestAnswerResult(),
                 liveGetInfo.getStuId(), liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
                 stuCouId);

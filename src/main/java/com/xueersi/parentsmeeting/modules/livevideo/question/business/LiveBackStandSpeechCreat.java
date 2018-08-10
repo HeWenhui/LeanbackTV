@@ -64,7 +64,7 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
                                                     SpeechEvalAction speechEvalAction, String stuCouId) {
         SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
                 liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
+                false, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
         speechAssessmentPager.setStandingLive(true);
         RolePlayStandLog.sno3(liveAndBackDebug, testId);
         return speechAssessmentPager;

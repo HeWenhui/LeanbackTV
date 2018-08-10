@@ -439,7 +439,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         liveBackBll.addBusinessBll(redPackagePlayBackBll);
         liveBackBll.addBusinessBll(new EnglishH5PlayBackBll(activity, liveBackBll));
         liveBackBll.addBusinessBll(new NBH5PlayBackBll(activity, liveBackBll));
-        liveBackBll.addBusinessBll(new LiveMessageBackBll(activity, liveBackBll));//回放聊天区加上MMD的皮肤
+        if (liveBackBll.getPattern() != 2) {
+            liveBackBll.addBusinessBll(new LiveMessageBackBll(activity, liveBackBll));//回放聊天区加上MMD的皮肤
+        }
         initLiveRemarkBll();
     }
 
