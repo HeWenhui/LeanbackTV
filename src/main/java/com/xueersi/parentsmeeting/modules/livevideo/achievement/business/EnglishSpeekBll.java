@@ -329,12 +329,16 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
         SpannableString sp;
         if (!isSmallEnglish) {
             sp = new SpannableString("再说" + second + "秒获得");
+            ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color
+                    .COLOR_FFFF00));
+            sp.setSpan(foregroundColorSpan, 2, 2 + ("" + second).length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         } else {
             sp = new SpannableString("继续说" + second + "秒获得");
+            ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color
+                    .COLOR_FFFF00));
+            sp.setSpan(foregroundColorSpan, 3, 3 + ("" + second).length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color
-                .COLOR_FFFF00));
-        sp.setSpan(foregroundColorSpan, 2, 2 + ("" + second).length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
         tv_livevideo_english_time2.setText(sp);
     }
 
