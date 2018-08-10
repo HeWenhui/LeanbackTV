@@ -254,14 +254,14 @@ public class LiveAchievementBll implements StarInteractAction {
 //            myView.setVisibility(View.INVISIBLE);
 //        }
         if (starCount < 10) {
-            tvStarInteractCount.setText("×0" + starCount);
+            tvStarInteractCount.setText(isSmallEnglish ? "0" + starCount : "×0" + starCount);
         } else {
-            tvStarInteractCount.setText("×" + starCount);
+            tvStarInteractCount.setText(isSmallEnglish ? "" + starCount : "×" + starCount);
         }
         if (goldCount < 10) {
-            tvStarInteractGoldCount.setText("×0" + goldCount);
+            tvStarInteractGoldCount.setText(isSmallEnglish ? "0" + goldCount : "×0" + goldCount);
         } else {
-            tvStarInteractGoldCount.setText("×" + goldCount);
+            tvStarInteractGoldCount.setText(isSmallEnglish ? "" + goldCount : "×" + goldCount);
         }
 //        if (AppConfig.DEBUG) {
 //            ivStarInteractStat.setOnClickListener(new View.OnClickListener() {
