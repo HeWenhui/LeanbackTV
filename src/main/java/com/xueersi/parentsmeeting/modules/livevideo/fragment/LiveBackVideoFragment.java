@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -37,6 +36,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
@@ -320,7 +320,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         where = intent.getStringExtra("where");
         isArts = intent.getIntExtra("isArts", 0);
 
-
+        liveBackVideoBll = new LiveBackVideoBll(activity);
+        liveBackVideoBll.setVideoEntity(mVideoEntity);
+        liveBackVideoBll.setLiveBackPlayVideoFragment(liveBackPlayVideoFragment);
+        liveBackVideoBll.setvPlayer(vPlayer);
+        liveBackVideoBll.setSectionName(mSectionName);
         if (isArts == 1) {
             appID = UmsConstants.ARTS_APP_ID_BACK;
             IS_SCIENCE = false;
@@ -364,7 +368,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         initBusiness();
         if (islocal) {
             // 互动题播放地址
-            playNewVideo(Uri.parse(mWebPath), mSectionName);
+            playNewVideo();
         } else {
             activity.getWindow().getDecorView().getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver
                     .OnPreDrawListener() {
@@ -374,7 +378,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                     if (AppBll.getInstance(activity).isNetWorkAlert()) {
                         // 互动题播放地址
                         AppBll.getInstance(activity.getApplication());
-                        playNewVideo(Uri.parse(mWebPath), mSectionName);
+                        playNewVideo();
                     } else {
                         mIsShowNoWifiAlert = false;
                         AppBll.getInstance(activity.getApplication());
@@ -383,6 +387,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 }
             });
         }
+    }
+
+    @Override
+    protected void playNewVideo() {
+        liveBackVideoBll.playNewVideo();
     }
 
     protected void initBusiness() {
@@ -498,6 +507,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     }
 
     @Override
+    protected PlayerService.VPlayerListener getWrapListener() {
+        return liveBackVideoBll.getPlayListener();
+    }
+
+    @Override
     protected void resultFailed(int arg1, int arg2) {
         super.resultFailed(arg1, arg2);
         resultFailed = true;
@@ -590,7 +604,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         } else if (event.netWorkType == NetWorkHelper.WIFI_STATE) {
             if (!mIsShowNoWifiAlert) {
                 mIsShowNoWifiAlert = true;
-                playNewVideo(Uri.parse(mWebPath), mSectionName);
+                playNewVideo();
             }
         }
     }
@@ -657,7 +671,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                                     XESToastUtils.showToast(activity, "视频资源错误，请您尝试重新播放课程");
                                     onUserBackPressed();
                                 } else {
-                                    playNewVideo(Uri.parse(mWebPath), mSectionName);
+                                    playNewVideo();
                                 }
                             }
                         }
@@ -698,7 +712,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             videoBackgroundRefresh.setVisibility(View.GONE);
             Loger.d(TAG, "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
             rlQuestionContent.setVisibility(View.VISIBLE);
-            playNewVideo(Uri.parse(mWebPath), mSectionName);
+            playNewVideo();
         }
 //        if (AppBll.getInstance(this).isNetWorkAlert()) {
 //            loadView(mLayoutVideo);

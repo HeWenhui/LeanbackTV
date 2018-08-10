@@ -76,7 +76,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
     /** 所在的Activity是否已经onCreated */
     private boolean mCreated = false;
     /** 视频的名称，用于显示在播放器上面的信息栏 */
-    private String mDisplayName;
+    protected String mDisplayName;
     /** 是否从头开始播放 */
     private boolean mFromStart = true;
     protected boolean pausePlay = false;
@@ -490,11 +490,17 @@ public class LiveBackVideoFragmentBase extends Fragment {
         }
 
         @Override
+        protected PlayerService.VPlayerListener getWrapListener() {
+            return liveBackVideoFragment.getWrapListener();
+        }
+
+        @Override
         protected void resultComplete() {
             super.resultComplete();
             mIsEnd = true;
         }
     }
+
 
     LiveOnVideoCreate videoCreate = new LiveOnVideoCreate();
 
