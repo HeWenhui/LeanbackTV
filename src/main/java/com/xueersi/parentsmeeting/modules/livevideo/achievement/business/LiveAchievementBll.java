@@ -336,9 +336,9 @@ public class LiveAchievementBll implements StarInteractAction {
             @Override
             public void onAnimationEnd(Animation animation) {
                 if (starCount < 10) {
-                    tvStarInteractCount.setText("×0" + starCount);
+                    tvStarInteractCount.setText(isSmallEnglish ? "0" + starCount : "×0" + starCount);
                 } else {
-                    tvStarInteractCount.setText("×" + starCount);
+                    tvStarInteractCount.setText(isSmallEnglish ? "" + starCount : "×" + starCount);
                 }
                 TextView tempTextView = tvStarInteractCount;
                 tvStarInteractCount = tvStarInteractCountHind;
@@ -466,9 +466,9 @@ public class LiveAchievementBll implements StarInteractAction {
                     public void onDataSucess(Object... objData) {
                         starCount++;
                         if (starCount < 10) {
-                            tvStarInteractCountHind.setText("×0" + starCount);
+                            tvStarInteractCountHind.setText(isSmallEnglish ? "0" + starCount : "×0" + starCount);
                         } else {
-                            tvStarInteractCountHind.setText("×" + starCount);
+                            tvStarInteractCountHind.setText(isSmallEnglish ? "" + starCount : "×" + starCount);
                         }
                         if (mIsLand) {
                             onReceiveStat(AnimationType_STAR, 1, nonce);
@@ -554,14 +554,14 @@ public class LiveAchievementBll implements StarInteractAction {
         }
         goldCount = starAndGoldEntity.getGoldCount();
         if (starCount < 10) {
-            tvStarInteractCountHind.setText("×0" + starCount);
+            tvStarInteractCountHind.setText(isSmallEnglish ? "0" + starCount : "×0" + starCount);
         } else {
-            tvStarInteractCountHind.setText("×" + starCount);
+            tvStarInteractCountHind.setText(isSmallEnglish ? "" + starCount : "×" + starCount);
         }
         if (goldCount < 10) {
-            tvStarInteractGoldHind.setText("×0" + goldCount);
+            tvStarInteractGoldHind.setText(isSmallEnglish ? "0" + goldCount : "×0" + goldCount);
         } else {
-            tvStarInteractGoldHind.setText("×" + goldCount);
+            tvStarInteractGoldHind.setText(isSmallEnglish ? "" + goldCount : "×" + goldCount);
         }
     }
 
@@ -570,9 +570,9 @@ public class LiveAchievementBll implements StarInteractAction {
         Point startPoint = new Point(x, y);
         starCount += star;
         if (starCount < 10) {
-            tvStarInteractCountHind.setText("×0" + starCount);
+            tvStarInteractCountHind.setText(isSmallEnglish ? "0" + starCount : "×0" + starCount);
         } else {
-            tvStarInteractCountHind.setText("×" + starCount);
+            tvStarInteractCountHind.setText(isSmallEnglish ? "" + starCount : "×" + starCount);
         }
         final View flyStat = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_english_stat_fly,
                 bottomContent, false);
