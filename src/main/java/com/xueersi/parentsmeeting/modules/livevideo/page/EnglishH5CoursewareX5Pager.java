@@ -39,6 +39,7 @@ import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.UUID;
 
 import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
@@ -165,9 +166,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             newlogHashMap.put("testids", releasedPageInfos);
             newlogHashMap.put("stable", "1");
             newlogHashMap.put("loadurl", mLoadUrls);
-            newlogHashMap.put("eventid", "live_platformtest");
             newlogHashMap.put("nonce", newlogHashMap.creatNonce());
-            liveAndBackDebug.umsAgentDebugPv(eventId, newlogHashMap.getData());
+            liveAndBackDebug.umsAgentDebugPv("live_platformtest", newlogHashMap.getData());
         }
     }
 
@@ -325,7 +325,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" + AppConfig.LIVEPLAYBACKSTAGE + "&isPlayBack=1";
+                mLoadUrls = "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" + AppConfig.LIVEPLAYBACKSTAGE + "&isPlayBack=1";
             } else {
                 // 一题多发的课件预加载(直播)
                 String packageId = "";
@@ -350,15 +350,14 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                mLoadUrls = "http://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" + LiveVideoConfig.educationstage + "&isPlayBack=0";
+                mLoadUrls = "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" + LiveVideoConfig.educationstage + "&isPlayBack=0" + "&nonce=" + "" + UUID.randomUUID();
                 // 上传接收到教师端指令的日志
                 StableLogHashMap logHashMap = new StableLogHashMap("receivePlatformtest");
                 logHashMap.put("sno", "2");
                 logHashMap.put("testids", releasedPageInfos);
                 logHashMap.put("stable", "1");
-                logHashMap.put("eventid", "live_platformtest");
                 logHashMap.put("nonce", LiveVideoConfig.nonce);
-                liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
+                liveAndBackDebug.umsAgentDebugSys("live_platformtest", logHashMap.getData());
             }
             if (LiveBll.isAllowTeamPk) {
                 mLoadUrls += "&isShowTeamPk=1";
