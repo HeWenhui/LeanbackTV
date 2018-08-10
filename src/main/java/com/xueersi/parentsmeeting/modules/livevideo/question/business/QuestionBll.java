@@ -944,6 +944,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 if (examQuestionPager != null && videoQuestionLiveEntity.id.equals(examQuestionPager.getNum())) {
                     return;
                 }
+                if (examQuestionPager != null) {
+                    mLogtf.d("onExamStart:old:num=" + examQuestionPager.getNum());
+                    examQuestionPager.onDestroy();
+                    rlQuestionContent.removeView(examQuestionPager.getRootView());
+                    setHaveExam(false);
+                }
                 hasExam = true;
                 if (mExamAndBool.contains(videoQuestionLiveEntity.id)) {
                     return;
