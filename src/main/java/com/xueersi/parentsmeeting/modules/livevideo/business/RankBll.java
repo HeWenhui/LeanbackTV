@@ -16,6 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RankItem;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
@@ -135,7 +136,12 @@ public class RankBll {
     }
 
     public void initView(final RelativeLayout bottomContent, ViewGroup.LayoutParams lp2) {
-        relativeLayout = LayoutInflater.from(liveVideoActivity).inflate(R.layout.layout_livevodeo_rank, bottomContent, false);
+        if(LiveVideoConfig.isPrimary){
+            relativeLayout = LayoutInflater.from(liveVideoActivity).inflate(R.layout.layout_livevideo_psrank, bottomContent, false);
+        } else {
+            relativeLayout = LayoutInflater.from(liveVideoActivity).inflate(R.layout.layout_livevodeo_rank, bottomContent, false);
+        }
+//        relativeLayout = LayoutInflater.from(liveVideoActivity).inflate(R.layout.layout_livevodeo_rank, bottomContent, false);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
 //        relativeLayout.setBackgroundColor(liveVideoActivity.getResources().getColor(R.color.translucent_black));
         lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);

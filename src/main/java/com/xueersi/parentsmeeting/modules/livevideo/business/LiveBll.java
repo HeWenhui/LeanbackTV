@@ -1496,14 +1496,14 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug {
                     case XESCODE.UNDERSTANDT:
                         msg += "UNDERSTANDT";
                         // 测试待放开 07.31
-//                        if ("off".equals(voiceChatStatus)) {//接麦懂了么无效
-//                            if (mQuestionAction != null) {
-//                                String nonce = object.optString("nonce");
-//                                mQuestionAction.understand(nonce);
-//                            }
-//                        }
+                        if ("off".equals(voiceChatStatus)) {//接麦懂了么无效
+                            if (mQuestionAction != null) {
+                                String nonce = object.optString("nonce");
+                                mQuestionAction.understand(nonce);
+                            }
+                        }
                         // 学习反馈的测试
-                        getLearnReport(2, 1000);
+//                        getLearnReport(2, 1000);
                         ////////////////////////////  06.28 测试红包的弹窗
                         //接麦红包无效
 //                        String voiceChatStatus = "off";

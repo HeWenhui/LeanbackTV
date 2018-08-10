@@ -22,6 +22,7 @@ import com.xueersi.parentsmeeting.http.HttpCallBack;
 import com.xueersi.parentsmeeting.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SlowHorizontalScrollView;
 import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
@@ -225,7 +226,11 @@ public class LiveAutoNoticeBll {
         }
         try {
             if (root == null) {
-                root = View.inflate(mContext, R.layout.layout_live_auto_notice, null);
+                if(LiveVideoConfig.isPrimary){
+                    root = View.inflate(mContext, R.layout.layout_live_auto_psnotice, null);
+                } else {
+                    root = View.inflate(mContext, R.layout.layout_live_auto_notice, null);
+                }
                 mSlowHorizontalScrollView = (SlowHorizontalScrollView) root.findViewById(R.id.sv_live_auto_notice);
                 vLeft = root.findViewById(R.id.v_live_auto_notice_left);
                 vRight = root.findViewById(R.id.v_live_auto_notice_right);
