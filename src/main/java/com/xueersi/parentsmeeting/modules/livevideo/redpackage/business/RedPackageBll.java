@@ -156,17 +156,17 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
             });
             artsRedPackagePager.setCancelRedPackageTouchListener(cancelRedPackageTouchListener);
 
-            Drawable drawable = activity.getResources().getDrawable(R.drawable
-                    .bg_livevideo_small_english_redppackage_board);
+//            Drawable drawable = activity.getResources().getDrawable(R.drawable
+//                    .bg_livevideo_small_english_redppackage_board);
 //            if (isLive) {
 //                params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
 //                        .MATCH_PARENT);
 //                LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
 //                params.leftMargin = (liveVideoPoint.x3 - liveVideoPoint.x2 - drawable.getIntrinsicWidth()) / 2;
 //            } else {
-            params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams
-                    .WRAP_CONTENT);
-            params.addRule(RelativeLayout.CENTER_IN_PARENT);
+            params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
+                    .MATCH_PARENT);
+            params.addRule(RelativeLayout.CENTER_HORIZONTAL);
 //            }
 
 
