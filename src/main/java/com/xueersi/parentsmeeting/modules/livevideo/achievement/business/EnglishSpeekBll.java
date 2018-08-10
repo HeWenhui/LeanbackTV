@@ -266,16 +266,20 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
         this.mode = mode;
         //辅导态，去掉能量条，开口时长
         if (LiveTopic.MODE_TRANING.equals(mode)) {
-            if (isSmallEnglish) {
-                tv_livevideo_english_time.setVisibility(View.GONE);
-            }
-            tv_livevideo_english_prog.setVisibility(View.GONE);
-            rl_livevideo_english_stat.setVisibility(View.GONE);
+//            tv_livevideo_english_time.setVisibility(isSmallEnglish ? View.GONE : View.GONE);
+//            if (isSmallEnglish) {
+//            tv_livevideo_english_time.setVisibility(View.GONE);
+//            }
+            rl_livevideo_english_speak_content.setVisibility(View.GONE);
+//            tv_livevideo_english_prog.setVisibility(View.GONE);
+//            rl_livevideo_english_stat.setVisibility(View.GONE);
 
         } else {
-            tv_livevideo_english_time.setVisibility(View.VISIBLE);
-            tv_livevideo_english_prog.setVisibility(View.VISIBLE);
-            rl_livevideo_english_stat.setVisibility(View.VISIBLE);
+
+            rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+//            tv_livevideo_english_time.setVisibility(View.VISIBLE);
+//            tv_livevideo_english_prog.setVisibility(View.VISIBLE);
+//            rl_livevideo_english_stat.setVisibility(View.VISIBLE);
 
             start();
         }
