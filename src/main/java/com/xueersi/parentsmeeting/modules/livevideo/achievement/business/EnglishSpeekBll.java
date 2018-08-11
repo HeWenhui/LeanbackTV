@@ -266,16 +266,20 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
         this.mode = mode;
         //辅导态，去掉能量条，开口时长
         if (LiveTopic.MODE_TRANING.equals(mode)) {
-            if (isSmallEnglish) {
-                tv_livevideo_english_time.setVisibility(View.GONE);
-            }
-            tv_livevideo_english_prog.setVisibility(View.GONE);
-            rl_livevideo_english_stat.setVisibility(View.GONE);
+//            tv_livevideo_english_time.setVisibility(isSmallEnglish ? View.GONE : View.GONE);
+//            if (isSmallEnglish) {
+//            tv_livevideo_english_time.setVisibility(View.GONE);
+//            }
+            rl_livevideo_english_speak_content.setVisibility(View.GONE);
+//            tv_livevideo_english_prog.setVisibility(View.GONE);
+//            rl_livevideo_english_stat.setVisibility(View.GONE);
 
         } else {
-            tv_livevideo_english_time.setVisibility(View.VISIBLE);
-            tv_livevideo_english_prog.setVisibility(View.VISIBLE);
-            rl_livevideo_english_stat.setVisibility(View.VISIBLE);
+
+            rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+//            tv_livevideo_english_time.setVisibility(View.VISIBLE);
+//            tv_livevideo_english_prog.setVisibility(View.VISIBLE);
+//            rl_livevideo_english_stat.setVisibility(View.VISIBLE);
 
             start();
         }
@@ -325,12 +329,16 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
         SpannableString sp;
         if (!isSmallEnglish) {
             sp = new SpannableString("再说" + second + "秒获得");
+            ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color
+                    .COLOR_FFFF00));
+            sp.setSpan(foregroundColorSpan, 2, 2 + ("" + second).length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         } else {
             sp = new SpannableString("继续说" + second + "秒获得");
+            ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color
+                    .COLOR_FFFF00));
+            sp.setSpan(foregroundColorSpan, 3, 3 + ("" + second).length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color
-                .COLOR_FFFF00));
-        sp.setSpan(foregroundColorSpan, 2, 2 + ("" + second).length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
         tv_livevideo_english_time2.setText(sp);
     }
 
@@ -703,9 +711,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void praise(int answer) {
-        if (englishSpeekPager == null) {
-            englishSpeekPager = new EnglishSpeekPager(activity);
-        }
+
         Loger.d(TAG, "praise:dbDuration=" + sendDbDuration + ",answer=" + answer);
         if (sendDbDuration >= answer) {
             Map<String, String> mData = new HashMap<>();
@@ -743,6 +749,16 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                         tv_livevideo_english_praise.setText("老师表扬了你！");
 //                        }
                     } else {
+
+                        if (englishSpeekPager == null) {
+                            englishSpeekPager = new EnglishSpeekPager(activity);
+                        } else {
+                            //移出之前的弹窗
+                            if (englishSpeekPager.getRootView().getParent() == bottomContent) {
+                                bottomContent.removeView(englishSpeekPager.getRootView());
+                            }
+                        }
+
                         view = englishSpeekPager.getRootView();
                         lp = englishSpeekPager.getLayoutParams();
                         englishSpeekPager.updateStatus(EnglishSpeekPager.PRAISE);
@@ -777,10 +793,9 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void remind(int answer) {
+
         Loger.d(TAG, "remind:sendDbDuration=" + sendDbDuration + ",answer=" + answer);
-        if (englishSpeekPager == null) {
-            englishSpeekPager = new EnglishSpeekPager(activity);
-        }
+
         if (sendDbDuration <= answer) {
             Map<String, String> mData = new HashMap<>();
             mData.put("logtype", "sendRemind");
@@ -810,6 +825,16 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                         lp.rightMargin = praiseWidth;
                     } else {
+
+                        if (englishSpeekPager == null) {
+                            englishSpeekPager = new EnglishSpeekPager(activity);
+                        } else {
+                            //移出之前的弹窗
+                            if (englishSpeekPager.getRootView().getParent() == bottomContent) {
+                                bottomContent.removeView(englishSpeekPager.getRootView());
+                            }
+                        }
+
                         view = englishSpeekPager.getRootView();
                         englishSpeekPager.updateStatus(EnglishSpeekPager.REMIND);
                         lp = englishSpeekPager.getLayoutParams();

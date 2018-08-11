@@ -216,6 +216,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         if (mOrientationEventListener.canDetectOrientation()) {
             mOrientationEventListener.enable();
         }
+        if (mIsLand) {
+            mDirection = VideoOrientationEventListener.DIRECTION_RIGHT;
+        }
         mCreated = true;
     }
 

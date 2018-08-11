@@ -60,6 +60,7 @@
         <ImageView
             android:layout_width="150px"
             android:layout_height="150px"
+
             android:clickable="false"
             android:src="@drawable/bg_livevideo_small_english_sendflower_oneflower_img" />
 
@@ -99,8 +100,10 @@
             android:src="@drawable/bg_livevideo_small_english_sendflower_square_btn_nor" />
 
         <ImageView
-            android:layout_width="150px"
-            android:layout_height="150px"
+            android:layout_width="180px"
+            android:layout_height="190px"
+            android:layout_marginLeft="-15px"
+            android:layout_marginTop="-40px"
             android:clickable="false"
             android:src="@drawable/bg_livevideo_small_english_sendflower_threeflowers_img" />
 
@@ -142,8 +145,10 @@
             android:src="@drawable/bg_livevideo_small_english_sendflower_square_btn_nor" />
 
         <ImageView
-            android:layout_width="150px"
-            android:layout_height="150px"
+            android:layout_width="200px"
+            android:layout_height="190px"
+            android:layout_marginLeft="-15px"
+            android:layout_marginTop="-35px"
             android:clickable="false"
             android:src="@drawable/bg_livevideo_small_english_sendflower_fiveflowers_img" />
 
