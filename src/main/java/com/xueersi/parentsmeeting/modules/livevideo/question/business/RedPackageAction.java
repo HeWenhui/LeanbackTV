@@ -11,8 +11,8 @@ public interface RedPackageAction {
     /**
      * 红包消息
      *
-     * @param operateId
-     * @param onReceivePackage
+     * @param operateId        红包id
+     * @param onReceivePackage 红包介绍事件
      */
     void onReadPackage(int operateId, OnReceivePackage onReceivePackage);
 
@@ -23,7 +23,7 @@ public interface RedPackageAction {
         /**
          * 请求到金币
          *
-         * @param operateId
+         * @param operateId 红包id
          */
         void onReceivePackage(int operateId);
     }
@@ -40,7 +40,7 @@ public interface RedPackageAction {
 
     }
 
-    public interface ReceiveGoldStand extends ReceiveGold{
+    public interface ReceiveGoldStand extends ReceiveGold {
 
         /**
          * 请求小组成员得到红包
